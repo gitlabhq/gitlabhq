@@ -4,8 +4,10 @@ import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 import { visitUrl } from './lib/utils/url_utility';
 
-const DEFERRED_LINK_CLASS = '.deferred-link';
-
+/**
+ * Integrates with server-side rendered callouts, adding dismissing interaction to them.
+ * See https://docs.gitlab.com/development/callouts/#server-side-rendered-callouts
+ */
 export default class PersistentUserCallout {
   constructor(container, options = container.dataset) {
     const { dismissEndpoint, featureId, groupId, projectId, deferLinks } = options;
@@ -21,23 +23,13 @@ export default class PersistentUserCallout {
   }
 
   init() {
-    const followLink = this.container.querySelector('.js-follow-link');
-
-    if (this.closeButtons.length) {
-      this.handleCloseButtonCallout();
-    } else if (followLink) {
-      this.handleFollowLinkCallout(followLink);
-    }
-  }
-
-  handleCloseButtonCallout() {
     this.closeButtons.forEach((closeButton) => {
       closeButton.addEventListener('click', this.dismiss);
     });
 
-    if (this.deferLinks) {
+    if (this.closeButtons.length && this.deferLinks) {
       this.container.addEventListener('click', (event) => {
-        const deferredLinkEl = event.target.closest(DEFERRED_LINK_CLASS);
+        const deferredLinkEl = event.target.closest('.deferred-link');
         if (deferredLinkEl) {
           const { href, target } = deferredLinkEl;
 
@@ -45,10 +37,6 @@ export default class PersistentUserCallout {
         }
       });
     }
-  }
-
-  handleFollowLinkCallout(followLink) {
-    followLink.addEventListener('click', (event) => this.registerCalloutWithLink(event));
   }
 
   dismiss = (event, deferredLinkOptions = null) => {
@@ -79,27 +67,6 @@ export default class PersistentUserCallout {
         });
       });
   };
-
-  registerCalloutWithLink(event) {
-    event.preventDefault();
-
-    const { href } = event.currentTarget;
-
-    axios
-      .post(this.dismissEndpoint, {
-        feature_name: this.featureId,
-      })
-      .then(() => {
-        window.location.assign(href);
-      })
-      .catch(() => {
-        createAlert({
-          message: __(
-            'An error occurred while acknowledging the notification. Refresh the page and try again.',
-          ),
-        });
-      });
-  }
 
   static factory(container, options) {
     if (!container) {

@@ -37,6 +37,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     labelsManagePath,
     registerPath,
     signInPath,
+    hasBlockedIssuesFeature,
     hasGroupBulkEditFeature,
     hasIterationsFeature,
     hasOkrsFeature,
@@ -60,6 +61,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     hasLinkedItemsEpicsFeature,
     canCreateProjects,
     newProjectPath,
+    projectNamespaceFullPath,
     hasIssueDateFilterFeature,
     timeTrackingLimitToHours,
     hasStatusFeature,
@@ -67,7 +69,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
-  const router = createRouter({ fullPath, workspaceType, defaultBranch, isGroup });
+  const router = createRouter({ fullPath, workspaceType, defaultBranch });
   let listPath = issuesListPath;
 
   const breadcrumbParams = { workItemType, isGroup };
@@ -103,6 +105,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       fullPath,
       isGroup,
       isProject: !isGroup,
+      hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
@@ -133,6 +136,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       canCreateProjects: parseBoolean(canCreateProjects),
       newIssuePath: '',
       newProjectPath,
+      projectNamespaceFullPath,
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
       hasStatusFeature: parseBoolean(hasStatusFeature),

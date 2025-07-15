@@ -6,9 +6,8 @@
     .gl-grow-2
       .gl-flex.gl-flex-col.gl-text-default
         = title
-        - if Feature.enabled?(:work_item_epic_milestones, current_user)
-          .gl-text-subtle.gl-text-sm
-            = subtitle
+        .gl-text-subtle.gl-text-sm
+          = subtitle
     .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap.gl-text-subtle
       - if show_counter
         %span

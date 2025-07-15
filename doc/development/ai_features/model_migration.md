@@ -35,12 +35,12 @@ LLM models are constantly evolving, and GitLab needs to regularly update our AI 
 
 Model migrations typically follow these general timelines:
 
-- **Simple Model Updates (Same Provider):** 1-2 weeks
+- **Simple Model Updates (Same Provider)**: 1-2 weeks
   - Example: Upgrading from Claude Sonnet 3.5 to 3.7
   - Involves model validation, testing, and staged rollout
   - Primary focus on maintaining stability and performance
 
-- **Complex Migrations:** 1-2 months (full milestone or longer)
+- **Complex Migrations**: 1-2 months (full milestone or longer)
   - Example: Adding support for a new provider like AWS Bedrock
   - Example: Major version upgrades with breaking changes (for example, Claude 2 to 3)
   - Requires significant API integration work
@@ -213,7 +213,7 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 
 ### Anthropic Model Migration Tasks
 
-**AI Framework Team:**
+**AI Framework Team**:
 
 - Add new model to AI gateway configurations
 - Verify compatibility with current API specification
@@ -223,7 +223,7 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 - Verify infrastructure compatibility
 - Update model definitions following [prompt definition guidelines](actions.md#2-create-a-prompt-definition-in-the-ai-gateway)
 
-**Feature Team:**
+**Feature Team**:
 
 - Add new model to [available models list](https://gitlab.com/gitlab-org/gitlab/-/blob/32fa9eaa3c8589ee7f448ae683710ec7bd82f36c/ee/lib/gitlab/llm/concerns/available_models.rb#L5-10)
 - Change default model in [AI-Gateway client](https://gitlab.com/gitlab-org/gitlab/-/blob/41361629b302f2c55e35701d2c0a73cff32f9013/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L63-67) behind feature flag
@@ -239,13 +239,13 @@ While we're moving toward AI gateway holding the prompts, feature flag implement
 
 ### Vertex Models Migration Tasks
 
-**AI Framework Team:**
+**AI Framework Team**:
 
 - Activate model in Google Cloud Platform
 - Update AI gateway to support new Vertex model
 - Document model-specific parameters
 
-**Feature Team:**
+**Feature Team**:
 
 - Update model references in feature-specific code
 - Implement feature flags for controlled rollout
@@ -288,16 +288,16 @@ Implement model selection logic in:
 
 ### Simple Model Version Update (Same Provider)
 
-**Example:** Upgrading from Claude 3.5 to Claude 3.7
+**Example**: Upgrading from Claude 3.5 to Claude 3.7
 
-**AI Framework Team:**
+**AI Framework Team**:
 
 - Create migration issue
 - Add model configuration file
 - Verify API compatibility
 - Ensure infrastructure support
 
-**Feature Teams:**
+**Feature Teams**:
 
 - Create implementation issues
 - Test prompts with new model
@@ -307,9 +307,9 @@ Implement model selection logic in:
 
 ### New Provider Integration
 
-**Example:** Adding AWS Bedrock models
+**Example**: Adding AWS Bedrock models
 
-**AI Framework Team:**
+**AI Framework Team**:
 
 - Create integration plan
 - Implement provider API in AI gateway
@@ -318,7 +318,7 @@ Implement model selection logic in:
 - Document provider-specific parameters
 - Evaluate model performance
 
-**Feature Teams:**
+**Feature Teams**:
 
 - Evaluate feature quality and performance with the new model
 - Adapt prompts for new provider's models
@@ -328,9 +328,9 @@ Implement model selection logic in:
 
 ### Model Deprecation Response
 
-**Example:** Replacing discontinued Vertex AI Code Gecko v2
+**Example**: Replacing discontinued Vertex AI Code Gecko v2
 
-**AI Framework Team:**
+**AI Framework Team**:
 
 - Create epic to track deprecation
 - Evaluate replacement models
@@ -338,7 +338,7 @@ Implement model selection logic in:
 - Document routing logic
 - Verify infrastructure compatibility
 
-**Feature Teams:**
+**Feature Teams**:
 
 - Implement routing logic
 - Create feature flags for transition
@@ -352,12 +352,12 @@ Implement model selection logic in:
 
 If you encounter prompt compatibility issues:
 
-1. **Analyze Errors:**
+1. **Analyze Errors**:
    - Enable "expanded AI logging" to capture model responses
    - Check for "LLM didn't follow instructions" errors
    - Review model outputs for unexpected patterns
 
-1. **Resolve Issues:**
+1. **Resolve Issues**:
    - Create new prompt version (following semantic versioning)
    - Test prompt variations in evaluation environment
    - Use feature flags to control prompt deployment

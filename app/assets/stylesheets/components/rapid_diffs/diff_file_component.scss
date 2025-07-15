@@ -3,7 +3,7 @@
 .rd-diff-file-component {
   display: block;
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
-  margin-bottom: $gl-padding;
+  margin-bottom: var(--rd-diff-file-bottom-margin);
 }
 
 .rd-diff-file {
@@ -12,6 +12,10 @@
   $file-header-height: calc($header-padding + $gl-button-small-size);
   --rd-diff-file-header-height: #{$file-header-height};
   --rd-diff-file-border-radius: #{$gl-border-radius-base};
+}
+
+.rd-diff-file-details > summary {
+  display: none;
 }
 
 .rd-diff-file[data-virtual]:not([data-collapsed]) {
@@ -43,6 +47,7 @@
 
 .rd-diff-file-header {
   --rd-diff-file-header-horizontal-padding: #{$gl-spacing-scale-4};
+  --rd-diff-file-header-vertical-padding: #{$gl-spacing-scale-3};
   @apply gl-text-default;
   display: flex;
   background-color: var(--gl-background-color-subtle);
@@ -63,8 +68,8 @@
 .rd-diff-file-header-main {
   position: relative;
   // extra spacing to avoid accidental file collapse clicks
-  padding: $gl-spacing-scale-3;
-  margin: -$gl-spacing-scale-3;
+  padding: var(--rd-diff-file-header-vertical-padding);
+  margin: calc(var(--rd-diff-file-header-vertical-padding) * -1);
   z-index: 1;
 }
 
@@ -85,6 +90,11 @@
 .rd-diff-file-title .commit-sha {
   font-size: 85%;
   font-weight: normal;
+}
+
+.rd-diff-file-link {
+  font: inherit;
+  color: inherit;
 }
 
 .rd-diff-file-header-submodule,
@@ -125,13 +135,18 @@
 }
 
 .rd-diff-file-info {
+  $horizontal-padding: var(--rd-diff-file-header-horizontal-padding);
+  $horizontal-padding-inv: calc(var(--rd-diff-file-header-horizontal-padding) * -1);
+  $vertical-padding: var(--rd-diff-file-header-vertical-padding);
+  $vertical-padding-inv: calc(var(--rd-diff-file-header-vertical-padding) * -1);
   position: relative;
   display: flex;
   align-self: flex-start;
   align-items: center;
+  min-height: calc(#{$gl-button-small-size} + var(--rd-diff-file-header-vertical-padding) * 2);
   // extra spacing to avoid accidental file collapse clicks
-  padding:  $gl-spacing-scale-3       var(--rd-diff-file-header-horizontal-padding)         $gl-spacing-scale-3  $gl-spacing-scale-3;
-  margin: (-$gl-spacing-scale-3) calc(var(--rd-diff-file-header-horizontal-padding) * -1) (-$gl-spacing-scale-3) auto;
+  padding: $vertical-padding     $horizontal-padding     $vertical-padding     $vertical-padding;
+  margin:  $vertical-padding-inv $horizontal-padding-inv $vertical-padding-inv auto;
   gap: $gl-padding;
   z-index: 1;
 }
@@ -141,16 +156,15 @@
   align-items: center;
   margin: 0 0 0 auto;
   white-space: nowrap;
+  gap: $gl-padding-8;
 }
 
-.rd-lines-added {
+.rd-stats-added {
   @apply gl-text-success;
-  margin: 0;
 }
 
-.rd-lines-removed {
+.rd-stats-removed {
   @apply gl-text-danger;
-  margin: 0 0 0 $gl-padding-8;
 }
 
 .rd-diff-file-body {

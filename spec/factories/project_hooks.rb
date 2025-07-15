@@ -30,6 +30,7 @@ FactoryBot.define do
       deployment_events { true }
       feature_flag_events { true }
       releases_events { true }
+      milestone_events { true }
       emoji_events { true }
       vulnerability_events { true }
     end

@@ -440,7 +440,7 @@ describe('DiffsStoreUtils', () => {
       it('sets the collapsed attribute on files', () => {
         const checkLine = preparedDiff.diff_files[0][INLINE_DIFF_LINES_KEY][0];
 
-        expect(checkLine.discussions.length).toBe(0);
+        expect(checkLine.discussions).toHaveLength(0);
         expect(checkLine).not.toHaveAttr('text');
         const firstChar = checkLine.rich_text.charAt(0);
 
@@ -453,11 +453,11 @@ describe('DiffsStoreUtils', () => {
 
       it('guarantees an empty array for both diff styles', () => {
         expect(splitInlineDiff.diff_files[0][INLINE_DIFF_LINES_KEY].length).toBeGreaterThan(0);
-        expect(splitParallelDiff.diff_files[0][INLINE_DIFF_LINES_KEY].length).toEqual(0);
+        expect(splitParallelDiff.diff_files[0][INLINE_DIFF_LINES_KEY]).toHaveLength(0);
       });
 
       it('merges existing diff files with newly loaded diff files to ensure split diffs are eventually completed', () => {
-        expect(completedDiff.diff_files.length).toEqual(1);
+        expect(completedDiff.diff_files).toHaveLength(1);
         expect(completedDiff.diff_files[0][INLINE_DIFF_LINES_KEY].length).toBeGreaterThan(0);
       });
 
@@ -544,7 +544,7 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('guarantees an empty array of lines for both diff styles', () => {
-        expect(preparedDiffFiles[0][INLINE_DIFF_LINES_KEY].length).toEqual(0);
+        expect(preparedDiffFiles[0][INLINE_DIFF_LINES_KEY]).toHaveLength(0);
       });
 
       it('leaves files in the existing state', () => {
@@ -553,7 +553,7 @@ describe('DiffsStoreUtils', () => {
         const priorFiles = [fileMock];
         const updatedFilesList = utils.prepareDiffData({ diff: metaData, priorFiles, meta: true });
 
-        expect(updatedFilesList.length).toEqual(2);
+        expect(updatedFilesList).toHaveLength(2);
         expect(updatedFilesList[0]).toEqual(fileMock);
       });
 

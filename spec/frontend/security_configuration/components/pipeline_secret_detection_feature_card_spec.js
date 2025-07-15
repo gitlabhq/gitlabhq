@@ -1,13 +1,41 @@
-import { GlCard, GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import { GlCard, GlIcon, GlLink, GlButton, GlAlert, GlExperimentBadge } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineSecretDetectionFeatureCard from '~/security_configuration/components/pipeline_secret_detection_feature_card.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import SetValidityChecks from '~/security_configuration/graphql/set_validity_checks.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(VueApollo);
+
+const setMockResponse = {
+  data: {
+    setValidityChecks: {
+      validityChecksEnabled: true,
+      errors: [],
+    },
+  },
+};
 
 describe('PipelineSecretDetectionFeatureCard component', () => {
   let feature;
   let wrapper;
+  let apolloProvider;
+  let requestHandlers;
+  let mockToastShow;
+
+  const createMockApolloProvider = () => {
+    requestHandlers = {
+      setMutationHandler: jest.fn().mockResolvedValue(setMockResponse),
+    };
+    return createMockApollo([[SetValidityChecks, requestHandlers.setMutationHandler]]);
+  };
 
   const createComponent = (propsData = {}, provide = {}, stubs = {}) => {
+    apolloProvider = createMockApolloProvider();
+    mockToastShow = jest.fn();
     wrapper = shallowMountExtended(PipelineSecretDetectionFeatureCard, {
       propsData: {
         feature,
@@ -16,22 +44,31 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
       provide: {
         projectFullPath: 'group/project',
         userIsProjectAdmin: true,
+        validityChecksEnabled: false,
+        validityChecksAvailable: true,
         ...provide,
       },
+      apolloProvider,
       stubs: {
         ManageViaMr: true,
         GlCard,
         ...stubs,
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
       },
     });
   };
 
   const makeFeature = (overrides = {}) => ({
     type: 'secret_detection',
-    name: 'Secret Detection',
-    description: 'Analyze your source code for known secrets.',
-    helpPath: '/help/user/application_security/secret_detection',
-    configurationHelpPath: '/help/user/application_security/secret_detection/configuration',
+    name: 'Pipeline Secret Detection',
+    description: 'Analyze your source code and Git history for secrets by using CI/CD pipelines.',
+    helpPath: '/help/user/application_security/secret_detection/pipeline/_index.md',
+    configurationHelpPath:
+      '/help/user/application_security/secret_detection/pipeline/_index.md#configuration',
     available: true,
     configured: false,
     ...overrides,
@@ -43,11 +80,15 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   const findFeatureStatus = () => wrapper.findByTestId('feature-status');
   const findManageViaMr = () => wrapper.findComponent(ManageViaMr);
   const findSuccessIcon = () => wrapper.findComponent(GlIcon);
-
   const findConfigGuideButton = () => wrapper.findComponent(GlButton);
+  const findValidityChecksSection = () => wrapper.findByTestId('validity-checks-section');
+  const findValidityChecksToggle = () => wrapper.findByTestId('validity-checks-toggle');
+  const findValidityChecksAlert = () => wrapper.findComponent(GlAlert);
+  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   afterEach(() => {
     feature = undefined;
+    apolloProvider = null;
   });
 
   describe('basic structure', () => {
@@ -195,6 +236,156 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
           expect(findSuccessIcon().props('name')).toBe('check-circle-filled');
         });
       }
+    });
+  });
+
+  describe('validity checks section', () => {
+    it.each`
+      validityChecksAvailable | shouldRender
+      ${true}                 | ${true}
+      ${false}                | ${false}
+    `(
+      'should render $shouldRender when validityChecksAvailable=$validityChecksAvailable',
+      ({ validityChecksAvailable, shouldRender }) => {
+        feature = makeFeature({ available: true });
+        createComponent({}, { validityChecksAvailable });
+
+        expect(findValidityChecksSection().exists()).toBe(shouldRender);
+        expect(findExperimentBadge().exists()).toBe(shouldRender);
+      },
+    );
+
+    describe('toggle state', () => {
+      it.each`
+        available | configured | userIsProjectAdmin | shouldBeDisabled
+        ${true}   | ${true}    | ${true}            | ${false}
+        ${true}   | ${false}   | ${true}            | ${true}
+        ${true}   | ${true}    | ${false}           | ${true}
+        ${true}   | ${false}   | ${false}           | ${true}
+      `(
+        'disabled=$shouldBeDisabled when available=$available, configured=$configured, userIsProjectAdmin=$userIsProjectAdmin',
+        ({ available, configured, userIsProjectAdmin, shouldBeDisabled }) => {
+          feature = makeFeature({ available, configured });
+          createComponent(
+            {},
+            {
+              validityChecksAvailable: true,
+              userIsProjectAdmin,
+            },
+          );
+
+          expect(findValidityChecksToggle().props('disabled')).toBe(shouldBeDisabled);
+        },
+      );
+    });
+
+    describe('toggle value', () => {
+      it.each`
+        validityChecksEnabled | expectedValue
+        ${true}               | ${true}
+        ${false}              | ${false}
+      `(
+        'value is $expectedValue when validityChecksEnabled=$validityChecksEnabled',
+        ({ validityChecksEnabled, expectedValue }) => {
+          feature = makeFeature({ available: true, configured: true });
+          createComponent(
+            {},
+            {
+              validityChecksAvailable: true,
+              validityChecksEnabled,
+              userIsProjectAdmin: true,
+            },
+          );
+
+          expect(findValidityChecksToggle().props('value')).toBe(expectedValue);
+        },
+      );
+    });
+
+    it('calls mutation on toggle change with correct payload', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+      const toggle = findValidityChecksToggle();
+      expect(toggle.props('value')).toBe(false);
+      toggle.vm.$emit('change', true);
+
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(toggle.props('value')).toBe(true);
+      expect(wrapper.text()).toContain('Enabled');
+    });
+
+    it('shows success toast when toggle succeeds', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+
+      const toggle = findValidityChecksToggle();
+      expect(toggle.props('value')).toBe(false);
+
+      toggle.vm.$emit('change', true);
+
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(toggle.props('value')).toBe(true);
+      expect(mockToastShow).toHaveBeenCalledWith('Validity checks enabled');
+    });
+
+    it('shows error alert when an error message is set', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+
+      requestHandlers.setMutationHandler.mockReset();
+      requestHandlers.setMutationHandler.mockResolvedValue({
+        data: {
+          setValidityChecks: {
+            validityChecksEnabled: null,
+            errors: ['data response with errors'],
+          },
+        },
+      });
+
+      const toggle = findValidityChecksToggle();
+      toggle.vm.$emit('change', true);
+
+      await waitForPromises();
+
+      expect(findValidityChecksAlert().exists()).toBe(true);
+    });
+
+    it('handles GraphQL mutation errors', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+
+      requestHandlers.setMutationHandler.mockReset();
+      requestHandlers.setMutationHandler.mockRejectedValue(new Error('Network error'));
+
+      const toggle = findValidityChecksToggle();
+      toggle.vm.$emit('change', true);
+
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findValidityChecksAlert().exists()).toBe(true);
     });
   });
 

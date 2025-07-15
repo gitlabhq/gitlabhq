@@ -44,14 +44,22 @@ module ShardingKeySpecHelpers
   def has_multi_column_null_check_constraint?(table_name, column_names)
     # This regex searches for constraints that ensure at least one of a set of columns is NOT NULL.
     # It assumes the constraint was created using the #add_multi_column_not_null_constraint helper, which also
-    # sorts the list of columns. The constraint for `events` does not follow this convention hence the exception.
-    regex = {
-      events: '\\ACHECK \\(\\(\\(group_id IS NOT NULL\\) OR \\(project_id IS NOT NULL\\) ' \
-        'OR \\(personal_namespace_id IS NOT NULL\\)\\)\\)\\Z'
-    }.fetch(
-      table_name.to_sym,
-      "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"
-    )
+    # sorts the list of columns.
+    #
+    # The constraint for some tables does not follow this convention hence the custom search below.
+    regex = case ([table_name] + column_names.sort)
+            when %w[events group_id personal_namespace_id project_id]
+              '\\ACHECK \\(\\(\\(group_id IS NOT NULL\\) OR \\(project_id IS NOT NULL\\) ' \
+                'OR \\(personal_namespace_id IS NOT NULL\\)\\)\\)\\Z'
+            when %w[protected_branches namespace_id project_id]
+              '\\ACHECK \\(\\(\\(project_id IS NULL\\) <> \\(namespace_id IS NULL\\)\\)\\)\\Z'
+            when %w[protected_environments group_id project_id]
+              '\\ACHECK \\(\\(\\(project_id IS NULL\\) <> \\(group_id IS NULL\\)\\)\\)\\Z'
+            when %w[security_orchestration_policy_configurations namespace_id project_id]
+              '\\ACHECK \\(\\(\\(project_id IS NULL\\) <> \\(namespace_id IS NULL\\)\\)\\)\\Z'
+            end
+
+    regex ||= "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"
 
     sql = <<~SQL
     SELECT 1

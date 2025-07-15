@@ -362,8 +362,8 @@ FactoryBot.define do
 
     trait :artifacts do
       after(:create) do |build, evaluator|
-        create(:ci_job_artifact, :archive, :public, job: build, expire_at: build.artifacts_expire_at)
-        create(:ci_job_artifact, :metadata, :public, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :mocked_checksum, :archive, :public, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :mocked_checksum, :metadata, :public, job: build, expire_at: build.artifacts_expire_at)
         build.reload
       end
     end

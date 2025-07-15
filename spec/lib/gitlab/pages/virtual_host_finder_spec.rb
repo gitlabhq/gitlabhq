@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
 
   before do
     stub_pages_setting(host: 'example.com')
@@ -30,6 +31,16 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         create(:pages_deployment, project: project)
       end
 
+      it 'passes the correct data to the virtual domain' do
+        expect(::Pages::VirtualDomain).to receive(:new).with(
+          projects: [project],
+          namespace: project.namespace,
+          domain: pages_domain
+        ).and_call_original
+
+        expect { virtual_domain }.not_to raise_error
+      end
+
       it 'returns the virtual domain' do
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
         expect(virtual_domain.lookup_paths.length).to eq(1)
@@ -47,18 +58,24 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
   end
 
   context 'when host is a namespace domain' do
-    context 'when there are no pages deployed for the project' do
-      it 'returns no result if the provided host is not subdomain of the Pages host' do
-        virtual_domain = described_class.new("#{project.namespace.path}.something.io").execute
+    subject(:virtual_domain) { described_class.new(domain).execute }
 
-        expect(virtual_domain).to eq(nil)
+    context 'when there are no pages deployed for the project' do
+      context 'if the provided host is not subdomain of the Pages host' do
+        let(:domain) { "#{project.namespace.path}.something.io" }
+
+        it 'returns no result' do
+          expect(virtual_domain).to eq(nil)
+        end
       end
 
-      it 'returns the virual domain with no lookup_paths' do
-        virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
+      context 'if the provided host is subdomain of the Pages host' do
+        let(:domain) { "#{project.namespace.path}.example.com" }
 
-        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.lookup_paths.length).to eq(0)
+        it 'returns the virtual domain with no lookup_paths' do
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths.length).to eq(0)
+        end
       end
     end
 
@@ -68,26 +85,42 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         project.namespace.update!(path: 'topNAMEspace')
       end
 
-      it 'returns no result if the provided host is not subdomain of the Pages host' do
-        virtual_domain = described_class.new("#{project.namespace.path}.something.io").execute
+      context 'if the provided host is not subdomain of the Pages host' do
+        let(:domain) { "#{project.namespace.path}.something.io" }
 
-        expect(virtual_domain).to eq(nil)
+        it 'returns no result' do
+          expect(virtual_domain).to eq(nil)
+        end
       end
 
-      it 'returns the virual domain when there are pages deployed for the project' do
-        virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
+      context 'if the provided host is subdomain of the Pages host' do
+        let(:domain) { "#{project.namespace.path}.example.com" }
 
-        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.lookup_paths.length).to eq(1)
-        expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+        it 'passes the correct data to the virtual domain' do
+          expect(::Pages::VirtualDomain).to receive(:new).with(
+            projects: [project],
+            namespace: project.namespace,
+            trim_prefix: project.namespace.path
+          ).and_call_original
+
+          expect { virtual_domain }.not_to raise_error
+        end
+
+        it 'returns the virtual domain when there are pages deployed for the project' do
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths.length).to eq(1)
+          expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+        end
       end
 
-      it 'finds domain with case-insensitive' do
-        virtual_domain = described_class.new("#{project.namespace.path}.Example.com").execute
+      context 'if the provided host contains capitals' do
+        let(:domain) { "#{project.namespace.path}.Example.com" }
 
-        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.lookup_paths.length).to eq(1)
-        expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+        it 'finds domain case-insensitive' do
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths.length).to eq(1)
+          expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+        end
       end
     end
   end
@@ -115,7 +148,16 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
           create(:pages_deployment, project: project)
         end
 
-        it 'returns the virual domain when there are pages deployed for the project' do
+        it 'passes the correct data to the virtual domain' do
+          expect(::Pages::VirtualDomain).to receive(:new).with(
+            projects: [project],
+            namespace: project.namespace
+          ).and_call_original
+
+          expect { virtual_domain }.not_to raise_error
+        end
+
+        it 'returns the virtual domain when there are pages deployed for the project' do
           expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
           expect(virtual_domain.lookup_paths.length).to eq(1)
           expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)

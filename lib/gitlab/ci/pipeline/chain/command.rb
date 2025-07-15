@@ -43,9 +43,7 @@ module Gitlab
           end
 
           def merge_request_ref_exists?
-            return check_merge_request_ref if Feature.enabled?(:pull_ref_directly_from_gitaly, project)
-
-            strong_memoize(:merge_request_ref_exists) { check_merge_request_ref }
+            check_merge_request_ref
           end
 
           def ref

@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-InternalAffairs/EmptyLineBetweenExpectOffenseAndCorrection:
-  Details: grace period
-  Exclude:
-    - 'spec/rubocop/cop/rails/strong_params_spec.rb'

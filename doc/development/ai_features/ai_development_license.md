@@ -17,7 +17,7 @@ This document walks you through how to get ensure these requirements are met for
 
 ## Set up GitLab Team Member License for GDK
 
-**Why:** Cloud licenses are mandatory for our cloud connected Duo features for
+**Why**: Cloud licenses are mandatory for our cloud connected Duo features for
 GitLab Self-Managed and Dedicated customers. As opposed to "legacy" GitLab
 licenses, cloud licenses require internet connectivity to validate with
 `customers.gitlab.com` (CustomersDot). GitLab periodically checks license
@@ -28,7 +28,7 @@ GitLab Duo is available to Premium and Ultimate customers only. You likely want
 an Ultimate license for your GDK. Ultimate gets you access to all GitLab Duo
 features. Premium gets access to only a subset of GitLab Duo features.
 
-**How:**
+**How**:
 
 1. Follow [the process to obtain an Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 for your local instance. Start with a GitLab Self-Managed Ultimate license. After you have a GitLab Self-Managed license configured, you can always [simulate a SaaS instance](../ee_features.md#simulate-a-saas-instance) and assign individual groups Premium and Ultimate licenses in the admin panel.
@@ -105,6 +105,6 @@ When working in staging environments, you may need to set up Duo add-ons for you
 
 ### Duo Enterprise
 
-**Internal use only:** Purchasing a license for Duo Enterprise is not
+**Internal use only**: Purchasing a license for Duo Enterprise is not
 self-serviceable; post a request in the `#g_provision` Slack channel to grant
 your staging account a Duo Enterprise license.

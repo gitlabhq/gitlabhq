@@ -145,6 +145,8 @@ namespace :gitlab do
     end
 
     def configure_pg_databases
+      check_topology_service_health!
+
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
       databases_loaded = []
@@ -190,6 +192,20 @@ namespace :gitlab do
       end
 
       load_database
+    end
+
+    def check_topology_service_health!
+      return unless Gitlab.config.cell.enabled
+
+      if Gitlab.config.cell.database.skip_sequence_alteration
+        return puts 'Skipping Topology Service health check due to cell sequences alteration being disabled'
+      end
+
+      unless Gitlab::TopologyServiceClient::HealthService.new.service_healthy?
+        raise 'Error: Topology Service is `UNAVAILABLE`. Exiting DB configuration.'
+      end
+
+      puts 'Topology Service is HEALTHY.'
     end
 
     def alter_cell_sequences_range
@@ -595,6 +611,41 @@ namespace :gitlab do
           puts inconsistency.display
         end
         logger.info "This task is a diagnostic tool to be used under the guidance of GitLab Support. You should not use the task for routine checks as database inconsistencies might be expected."
+      end
+    end
+
+    desc 'GitLab | DB | Check for PostgreSQL collation mismatches and list affected indexes'
+    task collation_checker: :environment do
+      Gitlab::Database::CollationChecker.run(logger: Logger.new($stdout))
+    end
+
+    namespace :collation_checker do
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Check for PostgreSQL collation mismatches on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::CollationChecker.run(database_name: database_name, logger: Logger.new($stdout))
+        end
+      end
+    end
+
+    desc 'GitLab | DB | Repair database indexes according to fixed configuration'
+    task repair_index: :environment do
+      Gitlab::Database::RepairIndex.run(
+        logger: Logger.new($stdout),
+        dry_run: ENV['DRY_RUN'] == 'true'
+      )
+    end
+
+    namespace :repair_index do
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Repair database indexes on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::RepairIndex.run(
+            database_name: database_name,
+            logger: Logger.new($stdout),
+            dry_run: ENV['DRY_RUN'] == 'true'
+          )
+        end
       end
     end
 

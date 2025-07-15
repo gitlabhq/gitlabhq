@@ -44,11 +44,6 @@ export default {
     };
   },
   computed: {
-    edited() {
-      const { createdAt, lastEditedAt } = this.updatedNote;
-
-      return new Date(createdAt).getTime() !== new Date(lastEditedAt).getTime();
-    },
     editedText() {
       return __('Edited');
     },
@@ -111,7 +106,7 @@ export default {
         ></div>
 
         <note-edited-text
-          v-if="edited"
+          v-if="updatedNote.lastEditedBy"
           :edited-at="updatedNote.lastEditedAt"
           :edited-by="updatedNote.lastEditedBy"
           :action-text="editedText"

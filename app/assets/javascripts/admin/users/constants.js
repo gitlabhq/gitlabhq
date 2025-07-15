@@ -23,72 +23,61 @@ export const I18N_USER_ACTIONS = {
   untrust: s__('AdminUsers|Untrust user'),
 };
 
-// NOTE: the 'access_level' token is overridden in EE version
-export const ACCESS_LEVEL_TOKEN_TYPE = 'access_level';
+const createTokenConfig = (options) => ({
+  token: GlFilteredSearchToken,
+  operators: OPERATORS_IS,
+  unique: true,
+  ...options,
+});
 
-export const TOKENS = [
-  {
+// This is exported so the EE version of constants.js can call it.
+export const getTokenConfigs = (accessLevelOptions) => [
+  createTokenConfig({
     title: s__('AdminUsers|Access level'),
-    type: ACCESS_LEVEL_TOKEN_TYPE,
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
-    options: [
-      { value: 'admins', title: s__('AdminUsers|Administrator') },
-      { value: 'external', title: s__('AdminUsers|External') },
-    ],
-  },
-  {
+    type: 'access_level',
+    options: accessLevelOptions,
+  }),
+  createTokenConfig({
     title: __('State'),
     type: 'state',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
     options: [
       { value: 'active', title: s__('AdminUsers|Active') },
       { value: 'banned', title: s__('AdminUsers|Banned') },
       { value: 'blocked', title: s__('AdminUsers|Blocked') },
       { value: 'deactivated', title: s__('AdminUsers|Deactivated') },
-      {
-        value: 'blocked_pending_approval',
-        title: s__('AdminUsers|Pending approval'),
-      },
+      { value: 'blocked_pending_approval', title: s__('AdminUsers|Pending approval') },
       { value: 'trusted', title: s__('AdminUsers|Trusted') },
       { value: 'wop', title: s__('AdminUsers|Without projects') },
     ],
-  },
-  {
+  }),
+  createTokenConfig({
     title: s__('AdminUsers|Two-factor authentication'),
     type: '2fa',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
     options: [
       { value: 'two_factor_enabled', title: __('On') },
       { value: 'two_factor_disabled', title: __('Off') },
     ],
-  },
-  {
+  }),
+  createTokenConfig({
     title: __('Type'),
     type: 'type',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
     options: [
       { value: 'without_bots', title: s__('AdminUsers|Humans') },
       { value: 'bots', title: s__('AdminUsers|Bots') },
       { value: 'placeholder', title: s__('UserMapping|Placeholder') },
     ],
-  },
-  {
+  }),
+  createTokenConfig({
     title: s__('AdminUsers|LDAP sync'),
     type: 'ldap_sync',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
     options: [{ value: 'ldap_sync', title: __('True') }],
-  },
+  }),
 ];
+
+export const TOKEN_CONFIGS = getTokenConfigs([
+  { value: 'admins', title: s__('AdminUsers|Administrator') },
+  { value: 'external', title: s__('AdminUsers|External') },
+]);
 
 export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;
 

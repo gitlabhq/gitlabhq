@@ -8,17 +8,17 @@ module Sidebars
 
         override :link
         def link
-          profile_chat_names_path
+          user_settings_integration_accounts_path
         end
 
         override :title
         def title
-          _('Chat')
+          s_('Integrations|Integration accounts')
         end
 
         override :sprite_icon
         def sprite_icon
-          'comment'
+          'connected'
         end
 
         override :active_routes

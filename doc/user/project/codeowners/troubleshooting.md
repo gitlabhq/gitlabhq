@@ -21,8 +21,9 @@ For more information about how the Code Owners feature handles errors, see [Erro
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15598) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `accessible_code_owners_validation`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15598) in GitLab 17.11 [with a flag](../../../administration/feature_flags/_index.md) named `accessible_code_owners_validation`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/524437) in GitLab 18.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/549626) in GitLab 18.2. Feature flag `accessible_code_owners_validation` removed.
 
 {{< /history >}}
 

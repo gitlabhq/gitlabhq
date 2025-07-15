@@ -101,7 +101,7 @@ describe('Code navigation popover component', () => {
     });
 
     expect(wrapper.find('[data-testid="references-tab"]').exists()).toBe(true);
-    expect(wrapper.findAll('[data-testid="reference-link"]').length).toBe(2);
+    expect(wrapper.findAll('[data-testid="reference-link"]')).toHaveLength(2);
   });
 
   describe('code output', () => {

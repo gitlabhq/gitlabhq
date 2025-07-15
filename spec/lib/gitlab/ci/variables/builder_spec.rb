@@ -91,6 +91,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.external_authorization_classification_label },
       { key: 'CI_DEFAULT_BRANCH',
         value: project.default_branch },
+      { key: 'CI_DEFAULT_BRANCH_SLUG',
+        value: Gitlab::Utils.slugify(project.default_branch.to_s) },
       { key: 'CI_CONFIG_PATH',
         value: project.ci_config_path_or_default },
       { key: 'CI_PAGES_DOMAIN',

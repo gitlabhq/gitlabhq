@@ -78,12 +78,8 @@
             = sprite_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
-          - if Feature.enabled?(:work_item_epic_milestones, current_user)
-            = s_('MilestoneSidebar|Work items')
-            = gl_badge_tag milestone.sorted_issues(current_user).length, variant: :muted
-          - else
-            = s_('MilestoneSidebar|Issues')
-            = gl_badge_tag milestone.issues_visible_to_user(current_user).count, variant: :muted
+          = s_('MilestoneSidebar|Work items')
+          = gl_badge_tag milestone.milestone_issues(current_user).length, variant: :muted
           - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "gl-float-right", title: s_('MilestoneSidebar|New Issue') do
               = s_('MilestoneSidebar|New issue')
@@ -91,17 +87,11 @@
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               = s_('MilestoneSidebar|Open:')
-              - if Feature.enabled?(:work_item_epic_milestones, current_user)
-                = milestone.sorted_issues(current_user).opened.length
-              - else
-                = milestone.issues_visible_to_user(current_user).opened.count
+              = milestone.milestone_issues(current_user).opened.length
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
               = s_('MilestoneSidebar|Closed:')
-              - if Feature.enabled?(:work_item_epic_milestones, current_user)
-                = milestone.sorted_issues(current_user).closed.length
-              - else
-                = milestone.issues_visible_to_user(current_user).closed.count
+              = milestone.milestone_issues(current_user).closed.length
 
     .block
       .js-sidebar-time-tracking-root{ data: { time_estimate: @milestone.total_time_estimate,

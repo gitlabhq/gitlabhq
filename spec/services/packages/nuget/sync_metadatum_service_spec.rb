@@ -39,7 +39,7 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
       let_it_be(:package) { create(:nuget_package, :with_metadatum) }
 
       it 'does not create a nuget metadatum' do
-        expect { subject }.to change { ::Packages::Nuget::Metadatum.count }.by(0)
+        expect { subject }.to not_change { ::Packages::Nuget::Metadatum.count }
       end
 
       it_behaves_like 'saving metadatum attributes'

@@ -36,7 +36,7 @@ module WebHooks
     included do
       delegate :auto_disabling_enabled?, to: :class
 
-      ignore_column :backoff_count, remove_with: '18.1', remove_after: '2025-05-20'
+      ignore_column :backoff_count, remove_with: '18.3', remove_after: '2025-07-20'
 
       # A webhook is disabled if:
       #

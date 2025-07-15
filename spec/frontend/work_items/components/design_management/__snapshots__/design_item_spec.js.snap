@@ -49,6 +49,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
         <timeago-stub
           cssclass=""
           datetimeformat="asDateTime"
+          href=""
           showdatewhenoverayear="true"
           time="01-01-2019"
           tooltipplacement="bottom"
@@ -116,6 +117,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
         <timeago-stub
           cssclass=""
           datetimeformat="asDateTime"
+          href=""
           showdatewhenoverayear="true"
           time="01-01-2019"
           tooltipplacement="bottom"

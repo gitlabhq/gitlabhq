@@ -27,6 +27,15 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       expect(item.name).to eq('Item 2')
     end
 
+    it 'returns the correct item by id string' do
+      item = TestStaticModel.find('2')
+      expect(item.name).to eq('Item 2')
+    end
+
+    it 'returns nil for non-numeric string id' do
+      expect(TestStaticModel.find('invalid')).to be_nil
+    end
+
     it 'returns nil for non-existent id' do
       expect(TestStaticModel.find(999)).to be_nil
     end
@@ -162,6 +171,148 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
     it 'returns a string representation of the object' do
       item = TestStaticModel.find(1)
       expect(item.inspect).to eq('#<TestStaticModel id: 1, name: "Item 1", category: :a>')
+    end
+  end
+
+  describe "#==" do
+    let(:item) { TestStaticModel.new(id: 1) }
+
+    it "returns true when compared with the same object" do
+      expect(item).to eq(TestStaticModel.find(1))
+      expect(item).to eq(TestStaticModel.new(id: 1))
+      expect(item).to eq(TestStaticModel.all.first)
+      expect(item).to eq(TestStaticModel.where(id: 1).first)
+      expect(item).to eq(TestStaticModel.find_by(id: 1))
+      expect(item).to eq(TestStaticModel.find_by(name: 'Item 1'))
+    end
+
+    it "returns false when the objects are not the same" do
+      expect(item).not_to eq(TestStaticModel.find(2))
+      expect(item).not_to eq(TestStaticModel.new(id: 2))
+      expect(item).not_to eq(TestStaticModel.find_by(name: 'Item 2'))
+    end
+
+    it 'returns true when comparing same object' do
+      model = TestStaticModel.new(id: 1)
+      expect(model).to eq(model)
+    end
+
+    it 'handles string vs integer ids' do
+      model1 = TestStaticModel.new(id: 1)
+      model2 = TestStaticModel.new(id: '1')
+
+      # Depends on attribute casting
+      expect(model1).to eq(model2) # Both cast to integer
+    end
+
+    it "returns false when id is nil" do
+      expect(TestStaticModel.new).not_to eq(TestStaticModel.find(1))
+    end
+
+    context 'when comparing with different classes' do
+      before do
+        stub_const('AnotherStaticModel', Class.new do
+          include ActiveModel::Model
+          include ActiveModel::Attributes
+          include ActiveRecord::FixedItemsModel::Model
+
+          attribute :id, :integer
+          attribute :name, :string
+        end)
+
+        stub_const('AnotherStaticModel::ITEMS', [
+          { id: 1, name: 'Item 1' },
+          { id: 2, name: 'Item 2' }
+        ].freeze)
+      end
+
+      it 'returns false even with same id' do
+        model1 = TestStaticModel.new(id: 1)
+        model2 = AnotherStaticModel.new(id: 1)
+
+        expect(model1).not_to eq(model2)
+      end
+    end
+  end
+
+  describe '#hash' do
+    it 'returns same hash for instances with same id and class' do
+      model1 = TestStaticModel.new(id: 1)
+      model2 = TestStaticModel.new(id: 1)
+
+      expect(model1.hash).to eq(model2.hash)
+    end
+
+    it 'returns different hash for different ids' do
+      model1 = TestStaticModel.new(id: 1)
+      model2 = TestStaticModel.new(id: 2)
+
+      expect(model1.hash).not_to eq(model2.hash)
+    end
+
+    it 'without id falls back to object hash' do
+      model1 = TestStaticModel.new(id: nil)
+      model2 = TestStaticModel.new(id: nil)
+
+      expect(model1.hash).not_to eq(model2.hash)
+    end
+  end
+
+  describe "#hash key lookup" do
+    let(:item) { TestStaticModel.new(id: 1) }
+    let(:hash) { { item => 'item_hash' } }
+
+    it "returns the value when we look up with the same object" do
+      expect(hash[TestStaticModel.find(1)]).to eq('item_hash')
+      expect(hash[TestStaticModel.new(id: 1)]).to eq('item_hash')
+      expect(hash[TestStaticModel.find_by(id: 1)]).to eq('item_hash')
+      expect(hash[TestStaticModel.where(id: 1).first]).to eq('item_hash')
+      expect(hash[TestStaticModel.all.first]).to eq('item_hash')
+    end
+
+    it "returns nil when the look up objects are not the same" do
+      expect(hash[TestStaticModel.find(2)]).to be_nil
+      expect(hash[TestStaticModel.new(id: 2)]).to be_nil
+      expect(hash[TestStaticModel.find_by(name: 'Item 2')]).to be_nil
+    end
+
+    it 'handles nil id instances correctly' do
+      model1 = TestStaticModel.new(id: nil)
+      model2 = TestStaticModel.new(id: nil)
+
+      hash = { model1 => 'nil_value' }
+      expect(hash[model2]).to be_nil # Different objects
+      expect(hash[model1]).to eq('nil_value')  # Same object
+    end
+  end
+
+  describe 'Set usage' do
+    it 'removes duplicates based on id' do
+      model1 = TestStaticModel.new(id: 1)
+      model2 = TestStaticModel.new(id: 1)
+      model3 = TestStaticModel.new(id: 2)
+
+      set = Set.new([model1, model2, model3])
+
+      expect(set.size).to eq(2)
+      expect(set.to_a.map(&:id).sort).to eq([1, 2])
+    end
+  end
+
+  describe 'Array#uniq' do
+    it 'removes duplicates based on id' do
+      models = [
+        TestStaticModel.new(id: 1),
+        TestStaticModel.new(id: 1),
+        TestStaticModel.new(id: 2),
+        TestStaticModel.new(id: 2),
+        TestStaticModel.new(id: 3)
+      ]
+
+      unique = models.uniq
+
+      expect(unique.size).to eq(3)
+      expect(unique.map(&:id)).to eq([1, 2, 3])
     end
   end
 end

@@ -17,13 +17,32 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scan do
 
     context 'when all params are given' do
       it 'initializes an instance' do
-        expect { subject }.not_to raise_error
-
         expect(subject).to have_attributes(
           status: 'success',
           type: 'dependency-scanning',
           start_time: 'placeholer',
-          end_time: 'placholder'
+          end_time: 'placholder',
+          partial_scan_mode: nil
+        )
+      end
+    end
+
+    context 'when partial scan' do
+      let(:params) do
+        {
+          status: 'success',
+          type: 'dependency-scanning',
+          start_time: 'placeholer',
+          end_time: 'placholder',
+          partial_scan: {
+            mode: 'differential'
+          }
+        }
+      end
+
+      it 'sets partial_scan_mode attribute' do
+        expect(subject).to have_attributes(
+          partial_scan_mode: 'differential'
         )
       end
     end

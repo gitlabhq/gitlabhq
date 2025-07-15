@@ -72,3 +72,33 @@ verify-tests-metadata:
     - install_activesupport_gem
   script:
     - run_with_custom_exit_code scripts/setup/tests-metadata.rb verify
+
+export-predictive-test-metrics:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
+  extends:
+    - .predictive:rules:default
+  stage: post-test
+  allow_failure: true
+  dependencies: []
+  variables:
+    GLCI_CRYSTALBALL_MAPPING_DIR: "tmp/crystalball_mappings"
+    GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR: "tmp/predictive_tests"
+    GLCI_ALL_FAILED_RSPEC_TESTS_FILE: "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt"
+  before_script:
+    - apt update && apt install -y curl
+    - source ./scripts/utils.sh
+    - source ./scripts/rspec_helpers.sh
+    - retrieve_failed_tests "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}" "oneline" "latest"
+    - |
+      mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class"
+      retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class/mapping.json"
+    - |
+      mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage"
+      retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage/mapping.json"
+  script:
+    - tooling/bin/predictive_tests --export-selected-test-metrics
+  artifacts:
+    expire_in: 7d
+    paths:
+      - $GLCI_CRYSTALBALL_MAPPING_DIR
+      - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR

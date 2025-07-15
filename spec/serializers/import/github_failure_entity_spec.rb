@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::GithubFailureEntity, feature_category: :importers do
-  let(:project) { instance_double(Project, id: 123456, import_url: 'https://github.com/example/repo.git', import_source: 'example/repo') }
+  let(:project) { instance_double(Project, id: 123456, safe_import_url: 'https://github.com/example/repo.git', import_source: 'example/repo') }
   let(:source) { 'Gitlab::GithubImport::Importer::PullRequestImporter' }
   let(:github_identifiers) { { 'iid' => 2, 'object_type' => 'pull_request', 'title' => 'Implement cool feature' } }
   let(:import_failure) do
@@ -309,7 +309,9 @@ RSpec.describe Import::GithubFailureEntity, feature_category: :importers do
   end
 
   context 'with an invalid import_url' do
-    let(:project) { instance_double(Project, id: 123456, import_url: 'Invalid url', import_source: 'example/repo') }
+    let(:project) do
+      instance_double(Project, id: 123456, safe_import_url: 'Invalid url', import_source: 'example/repo')
+    end
 
     it_behaves_like 'import failure entity' do
       let(:title) { 'Implement cool feature' }

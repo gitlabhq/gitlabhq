@@ -32,13 +32,13 @@ describe('ImportHistoryTableRowStats component', () => {
     });
 
     it('renders status icon for each stat', () => {
-      expect(findStats().length).toEqual(findIcons().length);
+      expect(findStats()).toHaveLength(findIcons().length);
     });
     it('renders name of stat', () => {
-      expect(findStats().length).toEqual(findStatNames().length);
+      expect(findStats()).toHaveLength(findStatNames().length);
     });
     it('renders count of stats remaining', () => {
-      expect(findStats().length).toEqual(findStatCounts().length);
+      expect(findStats()).toHaveLength(findStatCounts().length);
     });
   });
   describe('errors', () => {

@@ -68,7 +68,7 @@ describe('User Popovers', () => {
         triggerEvent('mouseover', el);
       });
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
   });
 
@@ -83,17 +83,18 @@ describe('User Popovers', () => {
       resetHTMLFixture();
     });
 
-    describe('shows a placeholder popover on hover', () => {
+    describe.each(['mouseover', 'focusin'])('shows a placeholder popover on %s', (eventType) => {
       let linksWithUsers;
+
       beforeEach(() => {
         linksWithUsers = findFixtureLinks();
         linksWithUsers.forEach((el) => {
-          triggerEvent('mouseover', el);
+          triggerEvent(eventType, el);
         });
       });
 
       it('for initial links', () => {
-        expect(findPopovers().length).toBe(linksWithUsers.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length);
       });
 
       it('for elements added after initial load', () => {
@@ -105,10 +106,10 @@ describe('User Popovers', () => {
         jest.runOnlyPendingTimers();
 
         addedLinks.forEach((link) => {
-          triggerEvent('mouseover', link);
+          triggerEvent(eventType, link);
         });
 
-        expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length + addedLinks.length);
       });
 
       it('for non-link elements', () => {
@@ -119,11 +120,11 @@ describe('User Popovers', () => {
 
         jest.runOnlyPendingTimers();
 
-        expect(findPopovers().length).toBe(linksWithUsers.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length);
 
-        triggerEvent('mouseover', div);
+        triggerEvent(eventType, div);
 
-        expect(findPopovers().length).toBe(linksWithUsers.length + 1);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length + 1);
       });
     });
 
@@ -133,7 +134,7 @@ describe('User Popovers', () => {
       triggerEvent('mouseover', groupLink);
       jest.runOnlyPendingTimers();
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
 
     // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/18442
@@ -144,53 +145,60 @@ describe('User Popovers', () => {
       triggerEvent('mouseover', projectLink);
       jest.runOnlyPendingTimers();
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
 
     it('does not initialize the user popovers twice for the same element', () => {
       const [firstUserLink] = findFixtureLinks();
-      triggerEvent('mouseover', firstUserLink);
-      jest.runOnlyPendingTimers();
-      triggerEvent('mouseleave', firstUserLink);
-      jest.runOnlyPendingTimers();
-      triggerEvent('mouseover', firstUserLink);
-      jest.runOnlyPendingTimers();
 
-      expect(findPopovers().length).toBe(1);
+      const events = ['mouseover', 'mouseleave', 'mouseover', 'focusin', 'focusout'];
+
+      events.forEach((event) => {
+        triggerEvent(event, firstUserLink);
+        jest.runOnlyPendingTimers();
+      });
+
+      expect(findPopovers()).toHaveLength(1);
     });
 
-    describe('when user link emits mouseenter event with empty user cache', () => {
+    describe.each(['focusin', 'mouseover'])(
+      'when user link emits %s event with empty user cache',
+      (eventType) => {
+        let userLink;
+
+        beforeEach(() => {
+          UsersCache.retrieveById.mockReset();
+
+          [userLink] = findFixtureLinks();
+
+          triggerEvent(eventType, userLink);
+        });
+
+        it('populates popover with preloaded user data', () => {
+          const { name, userId, username, email } = userLink.dataset;
+
+          expect(userLink.user).toEqual(
+            expect.objectContaining({
+              name,
+              userId,
+              username,
+              email,
+            }),
+          );
+        });
+      },
+    );
+
+    describe.each([
+      { eventType: 'mouseover', leaveEvent: 'mouseleave' },
+      { eventType: 'focusin', leaveEvent: 'focusout' },
+    ])('when user link emits $eventType event', ({ eventType, leaveEvent }) => {
       let userLink;
 
       beforeEach(() => {
-        UsersCache.retrieveById.mockReset();
-
         [userLink] = findFixtureLinks();
 
-        triggerEvent('mouseover', userLink);
-      });
-
-      it('populates popover with preloaded user data', () => {
-        const { name, userId, username, email } = userLink.dataset;
-
-        expect(userLink.user).toEqual(
-          expect.objectContaining({
-            name,
-            userId,
-            username,
-            email,
-          }),
-        );
-      });
-    });
-
-    describe('when user link emits mouseenter event', () => {
-      let userLink;
-
-      beforeEach(() => {
-        [userLink] = findFixtureLinks();
-
-        triggerEvent('mouseover', userLink);
+        triggerEvent(eventType, userLink);
       });
 
       it('removes title attribute from user links', () => {
@@ -205,9 +213,9 @@ describe('User Popovers', () => {
         expect(UsersCache.retrieveStatusById).toHaveBeenCalledWith(userId);
       });
 
-      it('removes aria-describedby attribute from the user link on mouseleave', () => {
+      it(`removes aria-describedby attribute from the user link on ${leaveEvent}`, () => {
         userLink.setAttribute('aria-describedby', 'popover');
-        triggerEvent('mouseleave', userLink);
+        triggerEvent(leaveEvent, userLink);
 
         expect(userLink.getAttribute('aria-describedby')).toBe(null);
       });

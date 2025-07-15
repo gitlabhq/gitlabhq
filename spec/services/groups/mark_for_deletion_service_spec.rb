@@ -90,7 +90,7 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
       it 'does not mark the group for deletion' do
         result
 
-        expect(group.marked_for_deletion?).to be_falsey
+        expect(group.self_deletion_scheduled?).to be_falsey
       end
 
       it 'returns error' do

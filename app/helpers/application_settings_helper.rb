@@ -148,14 +148,18 @@ module ApplicationSettingsHelper
   end
 
   def import_sources_checkboxes(form)
-    Gitlab::ImportSources.options.map do |name, source|
-      checked = @application_setting.import_sources.include?(source)
+    import_sources_without_templates = Gitlab::ImportSources.import_table.reject do |importer|
+      Gitlab::ImportSources.template?(importer.name)
+    end
+
+    import_sources_without_templates.map do |source|
+      checked = @application_setting.import_sources.include?(source.name)
 
       form.gitlab_ui_checkbox_component(
         :import_sources,
-        name,
+        source.title,
         checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
-        checked_value: source,
+        checked_value: source.name,
         unchecked_value: nil
       )
     end
@@ -297,6 +301,7 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :default_syntax_highlighting_theme,
+      :default_dark_syntax_highlighting_theme,
       :delete_inactive_projects,
       :deletion_adjourned_period,
       :deny_all_requests_except_allowed,
@@ -570,6 +575,7 @@ module ApplicationSettingsHelper
       :can_create_organization,
       :bulk_import_concurrent_pipeline_batch_limit,
       :concurrent_relation_batch_export_limit,
+      :relation_export_batch_size,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
       :silent_admin_exports_enabled,
@@ -628,7 +634,8 @@ module ApplicationSettingsHelper
       :reindexing_minimum_index_size,
       :reindexing_minimum_relative_bloat_size,
       :anonymous_searches_allowed,
-      :git_push_pipeline_limit
+      :git_push_pipeline_limit,
+      :delay_user_account_self_deletion
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

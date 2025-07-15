@@ -41,7 +41,7 @@ describe('Reviewer component', () => {
         editable: true,
       });
 
-      expect(wrapper.findAll('[data-testid="reviewer"]').length).toBe(users.length);
+      expect(wrapper.findAll('[data-testid="reviewer"]')).toHaveLength(users.length);
     });
 
     it('shows sorted reviewer where "can merge" users are sorted first', () => {
@@ -72,7 +72,7 @@ describe('Reviewer component', () => {
 
       const userItems = wrapper.findAll('[data-testid="reviewer"]');
 
-      expect(userItems.length).toBe(3);
+      expect(userItems).toHaveLength(3);
     });
   });
 });

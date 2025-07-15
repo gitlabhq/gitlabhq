@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import your project from Bitbucket Cloud
 ---
@@ -14,7 +14,7 @@ title: Import your project from Bitbucket Cloud
 
 {{< history >}}
 
-- Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
+- Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags/_index.md) named `bitbucket_parallel_importer`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.7. Feature flag `bitbucket_parallel_importer` removed.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.

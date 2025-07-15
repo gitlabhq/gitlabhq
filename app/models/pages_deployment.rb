@@ -126,7 +126,7 @@ class PagesDeployment < ApplicationRecord
 
   # Stop existing active deployment with same path when a deleted one is restored
   def deactivate_deployments_with_same_path_prefix
-    project.pages_deployments.active.where.not(id: id).with_path_prefix(path_prefix).each(&:deactivate)
+    project.pages_deployments.active.id_not_in(id).with_path_prefix(path_prefix).each(&:deactivate)
   end
 end
 

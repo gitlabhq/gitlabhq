@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ActiveRecord Transaction Observer', feature_category: :cloud_connector do
+RSpec.describe 'ActiveRecord Transaction Observer', feature_category: :durability_metrics do
   def load_initializer
     load Rails.root.join('config/initializers/active_record_transaction_observer.rb')
   end

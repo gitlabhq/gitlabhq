@@ -34,7 +34,7 @@ export default {
           'ServiceDesk|On public projects, tickets are always confidential by default.',
         ),
         confidential: s__(
-          'ServiceDesk|Only project members with at least the Reporter role can view new tickets.',
+          'ServiceDesk|Only project members with at least the Planner role can view new tickets.',
         ),
         nonConfidential: s__('ServiceDesk|Any project member can view new tickets.'),
       },

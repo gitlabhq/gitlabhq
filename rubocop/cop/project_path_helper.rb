@@ -29,7 +29,7 @@ module RuboCop
 
           replacement = "#{helper_name}(#{arguments.map(&:source).join(', ')})"
 
-          corrector.replace(node.source_range, replacement)
+          corrector.replace(node, replacement)
         end
       end
 

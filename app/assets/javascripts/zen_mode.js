@@ -48,9 +48,13 @@ export default class ZenMode {
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
     $(document).on('zen_mode:enter', (e) => {
+      // Ensure the top bar is not fixed when entering zen mode so it doesn't cover the textarea
+      $('.top-bar-fixed').css('position', 'static');
       this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
     });
     $(document).on('zen_mode:leave', () => {
+      // Restore the top bar to its original position
+      $('.top-bar-fixed').css('position', '');
       this.exit();
     });
     // eslint-disable-next-line consistent-return
@@ -71,7 +75,7 @@ export default class ZenMode {
     // Prevent a user-resized textarea from persisting to fullscreen
     this.storedStyle = this.active_textarea.attr('style');
     this.active_textarea.removeAttr('style');
-    this.active_textarea.focus();
+    this.active_textarea.trigger('focus');
   }
 
   exit() {
@@ -84,6 +88,7 @@ export default class ZenMode {
       autosize(this.active_textarea);
       autosize.update(this.active_textarea);
 
+      this.active_textarea.trigger('focus');
       this.active_textarea = null;
       this.active_backdrop = null;
 

@@ -53,7 +53,7 @@ describe('DeleteButton', () => {
     it('submits the form when primary action is clicked', () => {
       findModal().vm.$emit('primary');
 
-      expect(wrapper.emitted('confirm-deletion').length).toEqual(1);
+      expect(wrapper.emitted('confirm-deletion')).toHaveLength(1);
     });
   });
 });

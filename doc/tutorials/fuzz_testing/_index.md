@@ -2,8 +2,10 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: 'Tutorial: Perform fuzz testing in GitLab'
+title: 'Tutorial: Perform fuzz testing in GitLab (deprecated)'
 ---
+
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -11,6 +13,13 @@ title: 'Tutorial: Perform fuzz testing in GitLab'
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+Coverage-guided fuzz testing was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+and is planned for removal in 19.0. This is a breaking change.
+
+{{< /alert >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -250,3 +259,5 @@ Congratulations, you've successfully run a fuzz test and fixed the identified
 security vulnerabilities!
 
 For more information, see [coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md).
+
+<!--- end_remove -->

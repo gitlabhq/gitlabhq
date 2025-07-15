@@ -187,11 +187,11 @@ export default {
       return sprintfWorkItem(s__('WorkItem|Add %{workItemType}'), this.childrenTypeText);
     },
     confidentialityCheckboxLabel() {
-      return sprintfWorkItem(
+      return sprintf(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
+          'WorkItem|Turn on confidentiality: Limit visibility to %{namespace} members with at least the Planner role.',
         ),
-        this.childrenTypeText,
+        { namespace: this.isGroup ? __('group') : __('project') },
       );
     },
     confidentialityCheckboxTooltip() {

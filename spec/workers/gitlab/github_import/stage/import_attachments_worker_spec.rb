@@ -15,6 +15,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker, feature_cat
   end
 
   it_behaves_like Gitlab::GithubImport::StageMethods
+  it_behaves_like Import::ResumableImportJob
 
   describe '#import' do
     let(:client) { instance_double('Gitlab::GithubImport::Client') }

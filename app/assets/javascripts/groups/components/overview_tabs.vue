@@ -263,26 +263,24 @@ export default {
         </template>
       </groups-app>
     </gl-tab>
-    <template #tabs-end>
-      <li class="gl-w-full">
-        <filtered-search-and-sort
-          class="gl-border-b-0"
-          :filtered-search-namespace="$options.filteredSearch.namespace"
-          :filtered-search-tokens="$options.filteredSearch.tokens"
-          :filtered-search-term-key="$options.filteredSearch.searchTermKey"
-          :filtered-search-recent-searches-storage-key="
-            $options.filteredSearch.recentSearchesStorageKey
-          "
-          :filtered-search-query="$route.query"
-          :is-ascending="isAscending"
-          :sort-options="activeTabSortOptions"
-          :active-sort-option="activeSortOption"
-          :search-input-placeholder="$options.i18n.searchPlaceholder"
-          @filter="onFilter"
-          @sort-direction-change="onSortDirectionChange"
-          @sort-by-change="onSortByChange"
-        />
-      </li>
+    <template #toolbar-end>
+      <filtered-search-and-sort
+        class="gl-w-full gl-border-b-0"
+        :filtered-search-namespace="$options.filteredSearch.namespace"
+        :filtered-search-tokens="$options.filteredSearch.tokens"
+        :filtered-search-term-key="$options.filteredSearch.searchTermKey"
+        :filtered-search-recent-searches-storage-key="
+          $options.filteredSearch.recentSearchesStorageKey
+        "
+        :filtered-search-query="$route.query"
+        :is-ascending="isAscending"
+        :sort-options="activeTabSortOptions"
+        :active-sort-option="activeSortOption"
+        :search-input-placeholder="$options.i18n.searchPlaceholder"
+        @filter="onFilter"
+        @sort-direction-change="onSortDirectionChange"
+        @sort-by-change="onSortByChange"
+      />
     </template>
   </gl-tabs>
 </template>

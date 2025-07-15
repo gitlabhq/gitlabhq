@@ -22,7 +22,7 @@ module QA
 
           expect(show).to have_comment('new comment to start review')
           expect(show).to have_comment('comment added to review')
-          expect(show).to have_content("2 unresolved threads")
+          expect(show).to have_content("2 open threads")
         end
       end
 

@@ -115,7 +115,7 @@ Unable to create pipeline
 ```
 
 This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
-with [the deprecated `only` or `except` syntax.](../../ci/yaml/_index.md#only--except)
+with [the deprecated `only` or `except` syntax.](../../ci/yaml/deprecated_keywords.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
@@ -126,7 +126,7 @@ For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-
 ### Transitioning your `only/except` syntax to `rules`
 
 When overriding the template to control job execution, previous instances of
-[`only` or `except`](../../ci/yaml/_index.md#only--except) are no longer compatible
+[`only` or `except`](../../ci/yaml/deprecated_keywords.md#only--except) are no longer compatible
 and must be transitioned to [the `rules` syntax](../../ci/yaml/_index.md#rules).
 
 If your override is aimed at limiting jobs to only run on `main`, the previous syntax
@@ -207,7 +207,7 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 In these circumstances, that the job succeeds is the default behavior. The job's status indicates
 success or failure of the analyzer itself. Analyzer results are displayed in the
 [job logs](../../ci/jobs/job_logs.md#expand-and-collapse-job-log-sections),
-[merge request widget](detect/security_scan_results.md#merge-request), or
+[merge request widget](detect/security_scanning_results.md), or
 [security dashboard](security_dashboard/_index.md).
 
 ## Error: job `is used for configuration only, and its script should not be executed`

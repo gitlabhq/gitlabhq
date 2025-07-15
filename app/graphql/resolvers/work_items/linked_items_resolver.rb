@@ -49,11 +49,21 @@ module Resolvers
         linked_items.each_with_object({}) do |item, result|
           # Find the ID of the item that this item links to
           target_id = [item.issue_link_source_id, item.issue_link_target_id].find { |id| id != item.id }
-          next unless item_ids.include?(target_id)
+          # Skip items that don't link to our target or that the user can't read
+          # We optimize authorization for items with the same properties to avoid redundant checks
+          next unless item_ids.include?(target_id) && can_read_linked_item?(item)
 
           result[target_id] ||= []
           result[target_id] << item
         end
+      end
+
+      def can_read_linked_item?(item)
+        return true if work_item.work_item_type_id == item.work_item_type_id &&
+          work_item.resource_parent == item.resource_parent &&
+          work_item.confidential == item.confidential
+
+        Ability.allowed?(current_user, :read_work_item, item)
       end
     end
   end

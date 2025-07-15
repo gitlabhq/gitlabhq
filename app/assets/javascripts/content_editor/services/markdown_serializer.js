@@ -55,6 +55,12 @@ import table from './serializer/table';
 import time from './serializer/time';
 import htmlNode from './serializer/html_node';
 
+const LIST_TYPES = [
+  extensions.BulletList.name,
+  extensions.OrderedList.name,
+  extensions.TaskList.name,
+];
+
 const defaultSerializerConfig = {
   marks: {
     [extensions.Bold.name]: bold,
@@ -141,10 +147,14 @@ const createChangeTracker = (doc, pristineDoc) => {
       const pristineNode = pristineSourceMarkdownMap.get(
         `${node.attrs.sourceMapKey}${node.type.name}`,
       );
+      let isPristine = false;
 
       if (pristineNode) {
-        changeTracker.set(node, node.eq(pristineNode));
+        isPristine = node.eq(pristineNode);
+        changeTracker.set(node, isPristine);
       }
+
+      if (!isPristine && LIST_TYPES.includes(node.type.name)) return false;
 
       node.marks?.forEach((mark) => {
         const { node: pristineNodeForMark, mark: pristineMark } =
@@ -154,6 +164,8 @@ const createChangeTracker = (doc, pristineDoc) => {
           changeTracker.set(mark, mark.eq(pristineMark) && node.eq(pristineNodeForMark));
         }
       });
+
+      return true;
     });
   }
 

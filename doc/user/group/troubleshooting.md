@@ -50,7 +50,7 @@ If you need to find all the groups that are pending deletion, you can use the fo
 
 ```ruby
 Group.all.each do |g|
- if g.marked_for_deletion?
+ if g.self_deletion_scheduled?
     puts "Group ID: #{g.id}"
     puts "Group name: #{g.name}"
     puts "Group path: #{g.full_path}"

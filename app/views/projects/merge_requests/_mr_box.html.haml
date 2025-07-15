@@ -1,3 +1,5 @@
-.detail-page-description.gl-pt-2.gl-pb-4.gl-flex.gl-items-baseline.gl-flex-wrap.gl-text-subtle{ class: "#{'is-merge-request' if !fluid_layout}" }
-  .js-mr-header{ data: { project_path: @merge_request.project.path_with_namespace, hidden: @merge_request.hidden?.to_s, imported: @merge_request.imported?.to_s, iid: @merge_request.iid, state: @merge_request.state } }
+.detail-page-description.gl-pt-2.gl-pb-4.gl-flex.gl-items-baseline.gl-flex-wrap.gl-text-subtle.gl-relative.md:gl-z-1{ class: "#{'is-merge-request' if !fluid_layout}" }
+  .js-mr-header{ data: { project_path: @merge_request.project.path_with_namespace, hidden: @merge_request.hidden?.to_s, imported: @merge_request.imported?.to_s, iid: @merge_request.iid, state: @merge_request.state, is_draft: @merge_request.draft?.to_s } }
+  = link_to '#top', class: 'gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default merge-request-sticky-title', 'aria-hidden': 'true' do
+    = strip_tags(markdown_field(@merge_request, :title))
   = merge_request_header(@merge_request)

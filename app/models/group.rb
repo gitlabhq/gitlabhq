@@ -134,6 +134,8 @@ class Group < Namespace
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
+  has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting', inverse_of: :group
+
   has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
   delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
 
@@ -473,7 +475,14 @@ class Group < Namespace
     end
 
     def with_api_scopes
-      preload(:namespace_settings, :namespace_details, :group_feature, :parent, :deletion_schedule)
+      preload(
+        :namespace_settings,
+        :namespace_settings_with_ancestors_inherited_settings,
+        :namespace_details,
+        :group_feature,
+        :parent,
+        :deletion_schedule
+      )
     end
 
     # Handle project creation permissions based on application setting and group setting. The `default_project_creation`
@@ -706,12 +715,12 @@ class Group < Namespace
   def last_owner?(user)
     return false unless user
 
-    all_owners = member_owners_excluding_project_bots
+    all_owners = member_owners_excluding_project_bots_and_service_accounts
     last_owner_in_list?(user, all_owners)
   end
 
   # This is used in BillableMember Entity to
-  # avoid multiple "member_owners_excluding_project_bots" calls
+  # avoid multiple "member_owners_excluding_project_bots_and_service_accounts" calls
   # for each billable members
   def last_owner_in_list?(user, all_owners)
     return false unless user
@@ -721,18 +730,18 @@ class Group < Namespace
 
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
-  def member_owners_excluding_project_bots
-    members_from_hiearchy = if root?
-                              members.non_minimal_access.without_invites_and_requests
-                            else
-                              members_with_parents(only_active_users: false)
-                            end
+  # Excludes service accounts
+  def member_owners_excluding_project_bots_and_service_accounts
+    members_from_hierarchy = if root?
+                               members.non_minimal_access.without_invites_and_requests
+                             else
+                               members_with_parents(only_active_users: false)
+                             end
 
     owners = []
-
-    members_from_hiearchy.all_owners.non_invite.each_batch do |relation|
+    members_from_hierarchy.all_owners.non_invite.each_batch do |relation|
       owners += relation.preload(:user, :source).load.reject do |member|
-        member.user.nil? || member.user.project_bot?
+        member.user.nil? || member.user.project_bot? || member.user.service_account?
       end
     end
 
@@ -841,21 +850,21 @@ class Group < Namespace
   def members_with_descendants
     GroupMember
       .active_without_invites_and_requests
-      .where(source_id: self_and_descendants.reorder(nil).select(:id))
+      .where(source_id: self_and_descendants.without_order.select(:id))
   end
 
   # Returns all members that are part of the group, it's subgroups, and ancestor groups
   def hierarchy_members
     GroupMember
       .active_without_invites_and_requests
-      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+      .where(source_id: self_and_hierarchy.without_order.select(:id))
   end
 
   def hierarchy_members_with_inactive
     GroupMember
       .non_request
       .non_invite
-      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+      .where(source_id: self_and_hierarchy.without_order.select(:id))
   end
 
   def descendant_project_members_with_inactive
@@ -867,8 +876,8 @@ class Group < Namespace
 
   def users_with_descendants
     User
-      .where(id: members_with_descendants.select(:user_id))
-      .reorder(nil)
+      .id_in(members_with_descendants.select(:user_id))
+      .without_order
   end
 
   def users_count
@@ -1094,17 +1103,13 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_item_epic_milestones_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_epic_milestones, type: :beta)
-  end
-
   def work_item_status_feature_available?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :beta) &&
       licensed_feature_available?(:work_item_status)
   end
 
-  def continue_indented_text_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:continue_indented_text, type: :wip)
+  def markdown_placeholders_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:markdown_placeholders, type: :gitlab_com_derisk)
   end
 
   def glql_integration_feature_flag_enabled?
@@ -1115,8 +1120,8 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
   end
 
-  def work_item_epics_list_enabled?
-    ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :beta)
+  def work_items_bulk_edit_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_bulk_edit, type: :wip)
   end
 
   # overriden in EE

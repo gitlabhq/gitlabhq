@@ -38,6 +38,7 @@ module API
 
       expose :star_count, documentation: { type: 'integer', example: 1 }
       expose :last_activity_at, documentation: { type: 'dateTime', example: '2013-09-30T13:46:02Z' }
+      expose :visibility, documentation: { type: 'string', example: 'public' }
       expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
@@ -54,6 +55,7 @@ module API
         projects_relation.preload(:project_feature, :route)
                          .preload(:import_state, :topics)
                          .preload(:auto_devops)
+                         .preload(project_namespace: [:namespace_settings_with_ancestors_inherited_settings])
                          .preload(namespace: [:route, :owner])
       end
       # rubocop: enable CodeReuse/ActiveRecord

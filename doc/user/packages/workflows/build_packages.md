@@ -10,9 +10,11 @@ Use the GitLab package registry to install and build packages for different pack
 The following package managers are supported:
 
 - [Composer](#composer)
-- [Conan](#conan)
+- [Conan 1](#conan-1)
+- [Conan 2](#conan-2)
 - [Maven](#maven)
 - [Gradle](#gradle)
+- [sbt](#sbt)
 - [npm](#npm)
 - [Yarn](#yarn)
 - [NuGet](#nuget)
@@ -48,13 +50,13 @@ The following package managers are supported:
    }
    ```
 
-## Conan
+## Conan 1
 
-### Install Conan
+### Install Conan 1
 
 Prerequisites:
 
-- You must install Conan version 1.x. Support for Conan version 2 is proposed in [epic 8258](https://gitlab.com/groups/gitlab-org/-/epics/8258).
+- You must install Conan version 1.x.
 
 Download the Conan package manager to your local development environment by
 following the instructions at [conan.io](https://conan.io/downloads).
@@ -96,7 +98,7 @@ The CMake version is printed in the output.
 To test the package registry, you need a C++ project. If you don't already have
 one, you can clone the Conan [hello world starter project](https://github.com/conan-io/hello).
 
-### Build a Conan package
+### Build a Conan 1 package
 
 To build a package:
 
@@ -116,8 +118,8 @@ To build a package:
 
    {{< alert type="note" >}}
 
-   If you use an [instance remote](../conan_repository/_index.md#add-a-remote-for-your-instance), you must
-   follow a specific [naming convention](../conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
+   If you use an [instance remote](../conan_1_repository/_index.md#add-a-remote-for-your-instance), you must
+   follow a specific [naming convention](../conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
 
    {{< /alert >}}
 
@@ -125,6 +127,111 @@ A package with the recipe `Hello/0.1@mycompany/beta` is created.
 
 For more details about creating and managing Conan packages, see the
 [Conan documentation](https://docs.conan.io/en/latest/creating_packages.html).
+
+## Conan 2
+
+### Install Conan 2
+
+Prerequisites:
+
+- You must install Conan version 2.x. Base Conan version 2 is available and future improvements can be tracked in [epic 8258](https://gitlab.com/groups/gitlab-org/-/epics/8258).
+
+Install the Conan package manager to your local development environment by
+following the instructions at [conan.io](https://docs.conan.io/2/installation.html).
+
+When you complete the installation, run the following command to verify you can use Conan in your terminal:
+
+```shell
+conan --version
+```
+
+The Conan version is printed in the output:
+
+```plaintext
+Conan version 2.17.0
+```
+
+### Create Conan 2 profile
+
+You must define a profile for Conan 2. If you already defined a profile, skip this step.
+
+To create a profile, run the following command:
+
+```shell
+conan profile detect
+```
+
+Check the profile:
+
+```shell
+conan profile list
+```
+
+The command lists the profile in the output:
+
+```plaintext
+Profiles found in the cache:
+default
+```
+
+The generated profile is usually enough to get started. For more information on Conan profiles, see [Conan 2 profiles](https://docs.conan.io/2/reference/config_files/profiles.html#profiles).
+
+### Install CMake
+
+When you develop with C++ and Conan, you can select from many available
+compilers. The following example uses the CMake build system generator.
+
+Prerequisites:
+
+- Install CMake.
+  - For macOS, install [Homebrew](https://brew.sh/) and run `brew install cmake`.
+  - For other operating systems, follow the instructions at [cmake.org](https://cmake.org/resources/).
+
+When installation is complete, verify you can use CMake in your terminal with
+the following command:
+
+```shell
+cmake --version
+```
+
+The CMake version is printed in the output.
+
+### Create a project
+
+Prerequisites:
+
+- To test the package registry, you must have a C++ project.
+
+Go to your local project folder and use the `conan new` command to create a `“Hello World”` C++ library example project with the `cmake_lib` template:
+
+```shell
+mkdir hello && cd hello
+conan new cmake_lib -d name=hello -d version=0.1
+```
+
+For more advanced examples, see the Conan 2 [examples project](https://github.com/conan-io/examples2).
+
+### Build a Conan 2 package
+
+Prerequisites:
+
+- [Create a C++ project](#create-a-project).
+
+To build a package:
+
+1. Make sure you are in the `hello` folder created in the previous section.
+
+1. Create a package for the recipe by running `conan create` with the Conan user
+   and channel:
+
+   ```shell
+   conan create . --channel=beta --user=mycompany
+   ```
+
+A package with the recipe `hello/0.1@mycompany/beta` is created.
+
+For more details about creating and managing Conan packages, see
+[Creating packages](https://docs.conan.io/2/tutorial/creating_packages).
 
 ## Maven
 

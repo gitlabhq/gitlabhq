@@ -412,7 +412,7 @@ RSpec.describe Ability, feature_category: :system_access do
 
   describe '.allowed?' do
     let_it_be(:group) { create(:group, :private) }
-    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user, :service_account) }
     let_it_be(:delegated_user) { create(:user) }
 
     let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, user.id) }
@@ -422,7 +422,7 @@ RSpec.describe Ability, feature_category: :system_access do
     context 'with composite identity', :request_store do
       before do
         ::Gitlab::SafeRequestStore[request_store_key] = delegated_user
-        allow(user).to receive(:composite_identity_enforced).and_return(true)
+        user.update!(composite_identity_enforced: true)
       end
 
       context 'when both users are members' do
@@ -457,7 +457,7 @@ RSpec.describe Ability, feature_category: :system_access do
 
         context 'with unenforced composite identity' do
           before do
-            allow(user).to receive(:composite_identity_enforced).and_return(false)
+            user.update!(composite_identity_enforced: false)
           end
 
           it 'returns true' do

@@ -18,6 +18,9 @@ export class DiffFile extends HTMLElement {
   trigger;
   /** @type {Object} Storage for intermediate state used by adapters */
   sink = {};
+  _hookTeardowns = {
+    [events.MOUNTED]: new Set(),
+  };
 
   static findByFileHash(hash) {
     return document.querySelector(`diff-file[id="${hash}"]`);
@@ -37,11 +40,19 @@ export class DiffFile extends HTMLElement {
     this.observeVisibility();
     // eslint-disable-next-line no-underscore-dangle
     this.trigger = this._trigger.bind(this);
-    this.trigger(events.MOUNTED);
+    this.trigger(events.MOUNTED, this.registerMountedTeardowns.bind(this));
     this.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
   }
 
   disconnectedCallback() {
+    // eslint-disable-next-line no-underscore-dangle
+    const mountedTeardowns = this._hookTeardowns[events.MOUNTED];
+    mountedTeardowns.forEach((cb) => {
+      cb();
+    });
+    mountedTeardowns.clear();
+    // eslint-disable-next-line no-underscore-dangle
+    this._hookTeardowns = undefined;
     // app might be missing if the file was destroyed before mounting
     // for example: changing view settings in the middle of the streaming
     if (this.app) this.unobserveVisibility();
@@ -58,6 +69,11 @@ export class DiffFile extends HTMLElement {
         `Missing event declaration: ${event}. Did you forget to declare this in ~/rapid_diffs/events.js?`,
       );
     this.adapters.forEach((adapter) => adapter[event]?.call?.(this.adapterContext, ...args));
+  }
+
+  registerMountedTeardowns(callback) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._hookTeardowns[events.MOUNTED].add(callback);
   }
 
   observeVisibility() {

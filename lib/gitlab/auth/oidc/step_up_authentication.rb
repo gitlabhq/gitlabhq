@@ -97,6 +97,14 @@ module Gitlab
             Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY, session)
           end
 
+          def disable_step_up_authentication!(session:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+            omniauth_step_up_auth_session_data(session)
+                      &.to_h
+                      &.each_value do |step_up_auth_object|
+                        step_up_auth_object.delete(scope.to_s)
+                      end
+          end
+
           private
 
           def oauth_providers

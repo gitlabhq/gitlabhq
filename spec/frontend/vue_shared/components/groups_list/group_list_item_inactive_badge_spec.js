@@ -19,18 +19,20 @@ describe('GroupListItemInactiveBadge', () => {
   const findGlBadge = () => wrapper.findComponent(GlBadge);
 
   describe.each`
-    markedForDeletionOn | variant      | text
-    ${null}             | ${false}     | ${false}
-    ${'2024-01-01'}     | ${'warning'} | ${'Pending deletion'}
+    markedForDeletion | isSelfDeletionInProgress | variant      | text
+    ${false}          | ${false}                 | ${false}     | ${false}
+    ${true}           | ${false}                 | ${'warning'} | ${'Pending deletion'}
+    ${false}          | ${true}                  | ${'warning'} | ${'Deletion in progress'}
   `(
-    'when group.markedForDeletionOn is $markedForDeletionOn',
-    ({ markedForDeletionOn, variant, text }) => {
+    'when group.markedForDeletion is $markedForDeletion and group.isSelfDeletionInProgress is $isSelfDeletionInProgress',
+    ({ markedForDeletion, isSelfDeletionInProgress, variant, text }) => {
       beforeEach(() => {
         createComponent({
           props: {
             group: {
               ...group,
-              markedForDeletionOn,
+              markedForDeletion,
+              isSelfDeletionInProgress,
             },
           },
         });

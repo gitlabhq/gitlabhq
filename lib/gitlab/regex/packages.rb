@@ -268,7 +268,7 @@ module Gitlab
       end
 
       def generic_package_file_name_regex
-        generic_package_name_regex
+        @generic_package_file_name_regex ||= /\A(?!~)(?!@)[A-Za-z0-9\.\_\-\+~@]+(?<!~)(?<!@)\z/
       end
 
       def sha256_regex
@@ -277,6 +277,10 @@ module Gitlab
 
       def slack_link_regex
         @slack_link_regex ||= Gitlab::UntrustedRegexp.new('<([^|<>]*[|][^|<>]*)>')
+      end
+
+      def helm_index_app_version_quote_regex
+        @helm_index_app_version_quote_regex ||= /^(\s*appVersion:\s+)(?!["'])([^\n\r]+)$/m
       end
 
       private

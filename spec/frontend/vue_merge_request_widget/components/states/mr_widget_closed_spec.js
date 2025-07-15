@@ -91,7 +91,7 @@ describe('MRWidgetClosed', () => {
       });
 
       it('shows the "reopen" button', () => {
-        expect(wrapper.findComponent(StateContainer).props().actions.length).toBe(1);
+        expect(wrapper.findComponent(StateContainer).props().actions).toHaveLength(1);
         expect(findReopenActionButton(wrapper).text()).toBe('Reopen');
       });
 

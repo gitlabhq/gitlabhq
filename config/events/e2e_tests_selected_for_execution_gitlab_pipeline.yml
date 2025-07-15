@@ -12,6 +12,8 @@ additional_properties:
     description: whether tests were selected or full suite was executed
   value:
     description: number of selected tests
+  property:
+    description: whether the mr label is frontend, backend, fullstack or other
 product_group: development_analytics
 milestone: '17.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184867

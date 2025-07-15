@@ -36,7 +36,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
     end
 
     it do
-      expect { subject }.to change { Packages::Protection::Rule.count }.by(0)
+      expect { subject }.to not_change { Packages::Protection::Rule.count }
 
       expect(Packages::Protection::Rule.where(project: project).count).to eq package_protection_rule_count_expected
       expect(Packages::Protection::Rule.where(project: project,
@@ -102,7 +102,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
       it { is_expected.to be_error }
 
       it do
-        expect { service_execute }.to change { Packages::Protection::Rule.count }.by(0)
+        expect { service_execute }.to not_change { Packages::Protection::Rule.count }
 
         expect(Packages::Protection::Rule.where(project: project).count).to eq 1
         expect(

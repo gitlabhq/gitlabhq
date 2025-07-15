@@ -141,20 +141,20 @@ This table is a simplified version of the `users` table which contains several r
 smaller gaps in the `id` column to make the example a bit more realistic (a few records were
 already deleted). One index exists on the `id` field:
 
-| `ID` | `sign_in_count` | `created_at` |
-| -- | :-------------: | ------------ |
-| 1 | 1 | 2020-01-01 |
-| 2 | 4 | 2020-01-01 |
-| 9 | 1 | 2020-01-03 |
-| 300 | 5 | 2020-01-03 |
-| 301 | 9 | 2020-01-03 |
-| 302 | 8 | 2020-01-03 |
-| 303 | 2 | 2020-01-03 |
-| 350 | 1 | 2020-01-03 |
-| 351 | 3 | 2020-01-04 |
-| 352 | 0 | 2020-01-05 |
-| 353 | 9 | 2020-01-11 |
-| 354 | 3 | 2020-01-12 |
+| `ID`  | `sign_in_count` | `created_at` |
+|-------|:----------------|--------------|
+| `1`   | `1`             | 2020-01-01   |
+| `2`   | `4`             | 2020-01-01   |
+| `9`   | `1`             | 2020-01-03   |
+| `300` | `5`             | 2020-01-03   |
+| `301` | `9`             | 2020-01-03   |
+| `302` | `8`             | 2020-01-03   |
+| `303` | `2`             | 2020-01-03   |
+| `350` | `1`             | 2020-01-03   |
+| `351` | `3`             | 2020-01-04   |
+| `352` | `0`             | 2020-01-05   |
+| `353` | `9`             | 2020-01-11   |
+| `354` | `3`             | 2020-01-12   |
 
 Loading all users into memory (avoid):
 
@@ -182,7 +182,7 @@ database query:
 SELECT "users"."id" FROM "users" ORDER BY "users"."id" ASC LIMIT 1
 ```
 
-![Reading the start ID value](img/each_batch_users_table_iteration_1_v13_7.png)
+![A users table and an ID column with a value of 1 highlighted.](img/each_batch_users_table_iteration_1_v13_7.png)
 
 Notice that the query only reads data from the index (`INDEX ONLY SCAN`), the table is not
 accessed. Database indexes are sorted so taking out the first item is a very cheap operation.
@@ -195,7 +195,7 @@ to get a "shifted" `id` value.
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 1 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
 ```
 
-![Reading the end ID value](img/each_batch_users_table_iteration_2_v13_7.png)
+![A users table and an ID column with the values 1, 2, 9, 300, 301, and 302 highlighted.](img/each_batch_users_table_iteration_2_v13_7.png)
 
 Again, the query only looks into the index. The `OFFSET 5` takes out the sixth `id` value: this
 query reads a maximum of six items from the index regardless of the table size or the iteration
@@ -208,7 +208,7 @@ for the `relation` block.
 SELECT "users".* FROM "users" WHERE "users"."id" >= 1 AND "users"."id" < 302
 ```
 
-![Reading the rows from the `users` table](img/each_batch_users_table_iteration_3_v13_7.png)
+![A users table with the first four rows highlighted and an ID column with the first four rows highlighted.](img/each_batch_users_table_iteration_3_v13_7.png)
 
 Notice the `<` sign. Previously six items were read from the index and in this query, the last
 value is "excluded". The query looks at the index to get the location of the five `user`

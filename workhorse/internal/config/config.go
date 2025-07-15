@@ -172,6 +172,7 @@ type ListenerConfig struct {
 
 // CircuitBreakerConfig holds circuit breaker settings
 type CircuitBreakerConfig struct {
+	Enabled             bool   `toml:"enabled" json:"enabled"`
 	Timeout             uint32 `toml:"timeout" json:"timeout"`
 	Interval            uint32 `toml:"interval" json:"interval"`
 	MaxRequests         uint32 `toml:"max_requests" json:"max_requests"`
@@ -222,6 +223,7 @@ var DefaultMetadataConfig = MetadataConfig{
 
 // DefaultCircuitBreakerConfig contains default settings for the circuit breaker
 var DefaultCircuitBreakerConfig = CircuitBreakerConfig{
+	Enabled:             false,
 	Timeout:             60,
 	Interval:            180,
 	MaxRequests:         1,

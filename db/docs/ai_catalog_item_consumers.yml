@@ -1,0 +1,14 @@
+---
+table_name: ai_catalog_item_consumers
+classes:
+  - Ai::Catalog::ItemConsumer
+feature_categories:
+  - workflow_catalog
+description: AI catalog item implementation/enablement settings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196764
+milestone: "18.2"
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+  group_id: namespaces
+  project_id: projects

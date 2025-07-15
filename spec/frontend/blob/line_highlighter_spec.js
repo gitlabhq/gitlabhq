@@ -160,7 +160,7 @@ describe('LineHighlighter', () => {
           });
 
           expect(document.querySelector('#LC13').classList).toContain(testContext.css);
-          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(1);
+          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(1);
         });
 
         it('sets the hash', () => {
@@ -180,7 +180,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
           for (let line = 15; line <= 20; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -192,7 +192,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
           for (let line = 5; line <= 10; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -214,7 +214,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
           for (let line = 5; line <= 10; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -225,7 +225,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
           for (let line = 10; line <= 15; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }

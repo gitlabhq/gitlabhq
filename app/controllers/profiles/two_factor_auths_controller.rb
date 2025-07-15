@@ -38,7 +38,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       render 'create'
     else
-      @error = { message: _('Invalid pin code.') }
+      @otp_error = { message: _('Invalid pin code.') }
       @account_string = account_string
 
       setup_show_page

@@ -107,6 +107,10 @@ RSpec.describe DeploymentEntity do
       context 'when deployable is bridge job' do
         let(:job) { create(:ci_bridge, :success, pipeline: pipeline) }
 
+        before do
+          create(:ci_sources_pipeline, pipeline: create(:ci_pipeline, source_job: bridge))
+        end
+
         it 'returns nil' do
           expect(subject[:scheduled_actions]).to be_nil
         end

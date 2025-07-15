@@ -42,38 +42,6 @@ For more detailed job logs, you can [enable CI/CD debug logging](../variables/va
 and try the job again. This logging might provide more information about why the file
 wasn't created.
 
-## Error message `Missing /usr/bin/gitlab-runner-helper. Uploading artifacts is disabled.`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3068) in GitLab 15.2, GitLab Runner uses `RUNNER_DEBUG` instead of `DEBUG`, fixing this issue.
-
-{{< /history >}}
-
-In GitLab 15.1 and earlier, setting a CI/CD variable named `DEBUG` can cause artifact uploads to fail.
-
-To work around this, you can:
-
-- Update to GitLab and GitLab Runner 15.2
-- Use a different variable name
-- Set it as an environment variable in a `script` command:
-
-  ```yaml
-  failing_test_job:  # This job might fail due to issue gitlab-org/gitlab-runner#3068
-    variables:
-      DEBUG: true
-    script: bin/mycommand
-    artifacts:
-      paths:
-        - bin/results
-
-  successful_test_job:  # This job does not define a CI/CD variable named `DEBUG` and is not affected by the issue
-    script: DEBUG=true bin/mycommand
-    artifacts:
-      paths:
-        - bin/results
-  ```
-
 ## Error message `FATAL: invalid argument` when uploading a dotenv artifact on a Windows runner
 
 The PowerShell `echo` command writes files with UCS-2 LE BOM (Byte Order Mark) encoding,
@@ -184,6 +152,6 @@ On GitLab SaaS:
 
 On GitLab Self-Managed:
 
-- [Enable the feature flag](../../administration/feature_flags.md) named `ci_unlock_pipelines_extra_low`.
+- [Enable the feature flag](../../administration/feature_flags/_index.md) named `ci_unlock_pipelines_extra_low`.
 
 For more information see the comment in [merge request 140318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140318#note_1718600424).

@@ -1,4 +1,4 @@
-mutation projectsUserPreferencesUpdate($input: UserPreferencesUpdateInput!) {
+mutation userPreferencesUpdateMutation($input: UserPreferencesUpdateInput!) {
   userPreferencesUpdate(input: $input) {
     userPreferences {
       projectsSort

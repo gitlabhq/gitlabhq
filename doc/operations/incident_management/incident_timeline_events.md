@@ -14,7 +14,7 @@ title: Timeline events
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags/_index.md) named `incident_timeline`. Enabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.5. [Feature flag `incident_timeline`](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) removed.
 
@@ -122,7 +122,7 @@ of an incident.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365489) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365489) in GitLab 15.3 [with a flag](../../administration/feature_flags/_index.md) named `incident_timeline_events_from_labels`. Disabled by default.
 
 {{< /history >}}
 
@@ -169,7 +169,7 @@ Alternatively:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8741) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `incident_event_tags`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8741) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `incident_event_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.9.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.11. Feature flag `incident_event_tags` removed.

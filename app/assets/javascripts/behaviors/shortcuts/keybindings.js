@@ -457,13 +457,20 @@ export const MR_GO_TO_FILE = {
   customizable: false,
 };
 
-export const MR_TOGGLE_FILE_BROWSER = {
-  id: 'mergeRequests.toggleFileBrowser',
+export const MR_TOGGLE_FILE_BROWSER_DEPRECATED = {
+  id: 'mergeRequests.toggleFileBrowserDeprecated',
   description: __('Toggle file browser'),
   defaultKeys: ['f'],
   customizable: false,
   // TODO: remap https://gitlab.com/gitlab-org/gitlab/-/issues/533312#note_2433282146
   overrideGlobalHotkey: true,
+};
+
+export const MR_TOGGLE_FILE_BROWSER = {
+  id: 'mergeRequests.toggleFileBrowser',
+  description: __('Toggle file browser'),
+  defaultKeys: ['mod+b'],
+  customizable: false,
 };
 
 export const MR_ADD_TO_REVIEW = {
@@ -489,13 +496,13 @@ export const MR_TOGGLE_REVIEW = {
 
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
-  description: __('Next unresolved thread'),
+  description: __('Next open thread'),
   defaultKeys: ['n'],
 };
 
 export const MR_PREVIOUS_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.previousUnresolvedDiscussion',
-  description: __('Previous unresolved thread'),
+  description: __('Previous open thread'),
   defaultKeys: ['p'],
 };
 

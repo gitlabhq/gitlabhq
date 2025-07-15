@@ -55,7 +55,8 @@ module ActiveContext
         def process_prefix(conditions)
           relation = base_relation
           conditions.each do |key, value|
-            relation = relation.where("#{model.connection.quote_column_name(key)} LIKE ?", "#{value}%")
+            sanitized_value = model.sanitize_sql_like(value)
+            relation = relation.where("#{model.connection.quote_column_name(key)} LIKE ?", "#{sanitized_value}%")
           end
           relation
         end
@@ -105,7 +106,7 @@ module ActiveContext
           preset_values = collection.current_search_embedding_version
 
           column = node.value[:target] || preset_values[:field]
-          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values[:model])
+          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values)
           limit = node.value[:k]
           vector_str = "[#{vector.join(',')}]"
 

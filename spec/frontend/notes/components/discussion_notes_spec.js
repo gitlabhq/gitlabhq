@@ -1,13 +1,17 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { SYSTEM_NOTE } from '~/notes/constants';
-import createStore from '~/notes/stores';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -20,14 +24,18 @@ const DISCUSSION_WITH_LINE_RANGE = {
   },
 };
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiscussionNotes', () => {
-  let store;
+  let pinia;
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
+  const findNoteableNotes = () => wrapper.findAllComponents(NoteableNote);
+
   const createComponent = (props, mountingMethod = shallowMount) => {
     wrapper = mountingMethod(DiscussionNotes, {
-      store,
+      pinia,
       propsData: {
         discussion: discussionMock,
         isExpanded: false,
@@ -48,58 +56,60 @@ describe('DiscussionNotes', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes().noteableData = noteableDataMock;
+    useNotes().notesData = notesDataMock;
   });
 
   describe('rendering', () => {
     it('renders an element for each note in the discussion', () => {
       createComponent();
       const notesCount = discussionMock.notes.length;
-      const els = wrapper.findAllComponents(NoteableNote);
-      expect(els.length).toBe(notesCount);
+      expect(findNoteableNotes()).toHaveLength(notesCount);
     });
 
     it('renders one element if replies groupping is enabled', () => {
       createComponent({ shouldGroupReplies: true });
-      const els = wrapper.findAllComponents(NoteableNote);
-      expect(els.length).toBe(1);
+      expect(findNoteableNotes()).toHaveLength(1);
     });
 
-    it('uses proper component to render each note type', () => {
-      const discussion = { ...discussionMock };
-      const notesData = [
-        // PlaceholderSystemNote
-        {
+    it.each([
+      {
+        note: {
           id: 1,
           isPlaceholderNote: true,
           placeholderType: SYSTEM_NOTE,
           notes: [{ body: 'PlaceholderSystemNote' }],
         },
-        // PlaceholderNote
-        {
+        component: PlaceholderSystemNote,
+      },
+      {
+        note: {
           id: 2,
           isPlaceholderNote: true,
           notes: [{ body: 'PlaceholderNote' }],
         },
-        // SystemNote
-        {
+        component: PlaceholderNote,
+      },
+      {
+        note: {
           id: 3,
           system: true,
           note: 'SystemNote',
         },
-        // NoteableNote
-        discussion.notes[0],
-      ];
-      discussion.notes = notesData;
-      createComponent({ discussion, shouldRenderDiffs: true });
-      const notes = wrapper.findAll('.notes > *');
+        component: SystemNote,
+      },
+      {
+        note: discussionMock.notes[0],
+        component: NoteableNote,
+      },
+    ])('uses $component.name to render note', ({ note, component }) => {
+      createComponent({
+        discussion: { ...discussionMock, notes: [note] },
+      });
 
-      expect(notes.at(0).is(PlaceholderSystemNote)).toBe(true);
-      expect(notes.at(1).is(PlaceholderNote)).toBe(true);
-      expect(notes.at(2).is(SystemNote)).toBe(true);
-      expect(notes.at(3).is(NoteableNote)).toBe(true);
+      expect(wrapper.findComponent(component).exists()).toBe(true);
     });
 
     it('renders footer scoped slot with showReplies === true when expanded', () => {
@@ -119,35 +129,27 @@ describe('DiscussionNotes', () => {
   });
 
   describe('events', () => {
-    describe('with groupped notes and replies expanded', () => {
-      const findNoteAtIndex = (index) => {
-        const noteComponents = [NoteableNote, SystemNote, PlaceholderNote, PlaceholderSystemNote];
-        return wrapper
-          .findAll('.notes *')
-          .filter((w) => noteComponents.some((Component) => w.is(Component)))
-          .at(index);
-      };
-
+    describe('with grouped notes and replies expanded', () => {
       beforeEach(() => {
         createComponent({ shouldGroupReplies: true, isExpanded: true });
       });
 
       it('emits deleteNote when first note emits handleDeleteNote', async () => {
-        findNoteAtIndex(0).vm.$emit('handleDeleteNote');
+        findNoteableNotes().at(0).vm.$emit('handleDeleteNote');
 
         await nextTick();
         expect(wrapper.emitted().deleteNote).toHaveLength(1);
       });
 
       it('emits startReplying when first note emits startReplying', async () => {
-        findNoteAtIndex(0).vm.$emit('startReplying');
+        findNoteableNotes().at(0).vm.$emit('startReplying');
 
         await nextTick();
         expect(wrapper.emitted().startReplying).toHaveLength(1);
       });
 
       it('emits deleteNote when second note emits handleDeleteNote', async () => {
-        findNoteAtIndex(1).vm.$emit('handleDeleteNote');
+        findNoteableNotes().at(1).vm.$emit('handleDeleteNote');
 
         await nextTick();
         expect(wrapper.emitted().deleteNote).toHaveLength(1);
@@ -171,20 +173,27 @@ describe('DiscussionNotes', () => {
   });
 
   describe.each`
-    desc                               | props                                         | event           | expectedCalls
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${[]}
-  `('$desc', ({ props, event, expectedCalls }) => {
+    desc                               | props                                         | event           | shouldSelectPosition | shouldIncludeRange
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${true}              | ${true}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${true}              | ${false}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${false}             | ${false}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${false}             | ${false}
+  `('$desc', ({ props, event, shouldSelectPosition, shouldIncludeRange }) => {
     beforeEach(() => {
       createComponent(props);
-      jest.spyOn(store, 'dispatch');
     });
 
-    it(`calls store ${expectedCalls.length} times on ${event}`, () => {
+    it(`calls store on ${event}`, () => {
       getList().dispatchEvent(new MouseEvent(event));
-      expect(store.dispatch.mock.calls).toEqual(expectedCalls);
+      if (shouldSelectPosition) {
+        if (shouldIncludeRange) {
+          expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith(LINE_RANGE);
+        } else {
+          expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith();
+        }
+      } else {
+        expect(useNotes().setSelectedCommentPositionHover).not.toHaveBeenCalled();
+      }
     });
   });
 

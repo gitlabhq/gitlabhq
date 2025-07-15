@@ -1,14 +1,19 @@
-import { GlFormSelect } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlFormSelect, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
-import notesModule from '~/notes/stores/modules';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+
+Vue.use(PiniaVuePlugin);
 
 describe('MultilineCommentForm', () => {
-  Vue.use(Vuex);
-  const setSelectedCommentPosition = jest.fn();
+  let wrapper;
+  let pinia;
+
   const testLine = {
     line_code: 'test',
     type: 'test',
@@ -16,63 +21,64 @@ describe('MultilineCommentForm', () => {
     new_line: 'test',
   };
 
-  const createWrapper = (props = {}, state) => {
-    setSelectedCommentPosition.mockReset();
-
-    const store = new Vuex.Store({
-      modules: { notes: notesModule() },
-      actions: { setSelectedCommentPosition },
-    });
-    if (state) store.replaceState({ ...store.state, ...state });
-
+  const createWrapper = (props = {}) => {
     const propsData = {
       line: { ...testLine },
       commentLineOptions: [{ text: '1' }],
       ...props,
     };
-    return mount(MultilineCommentForm, { propsData, store });
+    wrapper = shallowMount(MultilineCommentForm, { propsData, pinia, stubs: { GlSprintf } });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+  });
 
   describe('created', () => {
     it('sets commentLineStart to line', () => {
       const line = { ...testLine };
-      const wrapper = createWrapper({ line });
+      createWrapper({ line });
 
-      expect(wrapper.vm.commentLineStart).toEqual(line);
-      expect(setSelectedCommentPosition).toHaveBeenCalled();
+      // we can't check for .attributes() because of GlFormSelect design
+      // all the attributes get converted to a string, so the line object becomes [object Object]
+      // we can test for the component internals instead which is as reliable as VTUs checks
+      expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(line);
+      expect(useNotes().setSelectedCommentPosition).toHaveBeenCalled();
     });
 
     it('sets commentLineStart to lineRange', () => {
       const lineRange = {
         start: { ...testLine },
       };
-      const wrapper = createWrapper({ lineRange });
+      createWrapper({ lineRange });
 
-      expect(wrapper.vm.commentLineStart).toEqual(lineRange.start);
-      expect(setSelectedCommentPosition).toHaveBeenCalled();
+      expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(lineRange.start);
+      expect(useNotes().setSelectedCommentPosition).toHaveBeenCalled();
     });
   });
 
   describe('destroyed', () => {
     it('calls setSelectedCommentPosition', () => {
-      const wrapper = createWrapper();
+      createWrapper();
       wrapper.destroy();
 
       // Once during created, once during destroyed
-      expect(setSelectedCommentPosition).toHaveBeenCalledTimes(2);
+      expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledTimes(2);
     });
   });
 
   it('handles changing the start line', () => {
     const line = { ...testLine };
-    const wrapper = createWrapper({ line });
+    createWrapper({ line });
     const glSelect = wrapper.findComponent(GlFormSelect);
 
     glSelect.vm.$emit('change', { ...testLine });
 
-    expect(wrapper.vm.commentLineStart).toEqual(line);
+    expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(line);
     expect(wrapper.emitted('input')).toHaveLength(1);
     // Once during created, once during updateCommentLineStart
-    expect(setSelectedCommentPosition).toHaveBeenCalledTimes(2);
+    expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledTimes(2);
   });
 });

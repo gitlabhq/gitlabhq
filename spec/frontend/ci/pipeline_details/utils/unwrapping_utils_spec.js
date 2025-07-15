@@ -1,8 +1,4 @@
-import {
-  unwrapGroups,
-  unwrapNodesWithName,
-  unwrapStagesWithNeeds,
-} from '~/ci/pipeline_details/utils/unwrapping_utils';
+import { unwrapGroups, unwrapNodesWithName } from '~/ci/pipeline_details/utils/unwrapping_utils';
 
 const groupsArray = [
   {
@@ -84,15 +80,6 @@ const jobArrayWithElephant = [
   },
 ];
 
-const completeMock = [
-  {
-    ...basicStageInfo,
-    groups: {
-      nodes: groupsArray.map((group) => ({ ...group, jobs: { nodes: jobArrayWithNeeds } })),
-    },
-  },
-];
-
 describe('Shared pipeline unwrapping utils', () => {
   describe('unwrapGroups', () => {
     it('takes stages without nodes and returns the unwrapped groups', () => {
@@ -113,15 +100,6 @@ describe('Shared pipeline unwrapping utils', () => {
       expect(unwrapNodesWithName(jobArrayWithElephant, 'needs', 'elephant')[0].needs).toEqual([
         elephantArray[0].elephant,
       ]);
-    });
-  });
-
-  describe('unwrapStagesWithNeeds', () => {
-    it('removes nodes from groups, jobs, and needs', () => {
-      const firstProcessedGroup = unwrapStagesWithNeeds(completeMock)[0].groups[0];
-      expect(firstProcessedGroup).toMatchObject(groupsArray[0]);
-      expect(firstProcessedGroup.jobs[0]).toMatchObject(baseJobs);
-      expect(firstProcessedGroup.jobs[0].needs[0]).toBe(needArray[0].name);
     });
   });
 });

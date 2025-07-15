@@ -83,13 +83,128 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, fe
       gitlab_sign_in(admin)
       visit user_settings_active_sessions_path
       expect(page).to have_content('with Admin Mode')
+      expect(page).not_to have_content('with Step-up Authentication')
+    end
+  end
+
+  context 'when session step-up authenticated', :with_current_organization do
+    let(:admin) { create(:omniauth_user, :admin, password_automatically_set: false, extern_uid: extern_uid, provider: provider_oidc) }
+    let(:extern_uid) { 'my-uid' }
+    let(:provider_oidc) { 'openid_connect' }
+
+    let(:provider_oidc_config_with_step_up_auth) do
+      GitlabSettings::Options.new(
+        name: provider_oidc,
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { acr: 'gold' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:additional_info) { { extra: { raw_info: { acr: 'gold' } } } }
+
+    around do |example|
+      with_omniauth_full_host { example.run }
+    end
+
+    before do
+      user
+
+      stub_omniauth_setting(enabled: true, auto_link_user: true, providers: [provider_oidc_config_with_step_up_auth])
+    end
+
+    it 'marks admin session as step-up authenticated' do
+      using_session :admin_session do
+        gitlab_sign_in(admin)
+
+        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+
+        visit user_settings_active_sessions_path
+
+        within('.settings-section') do
+          expect(page).to have_content('with Admin Mode')
+          expect(page).to have_content('with Step-up Authentication')
+        end
+      end
+    end
+
+    it 'does not marks admin session as step-up authenticated when acr is not matching' do
+      using_session :admin_session do
+        gitlab_sign_in(admin)
+
+        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: { extra: { raw_info: { acr: 'bronze' } } })
+
+        visit user_settings_active_sessions_path
+
+        within('.settings-section') do
+          expect(page).not_to have_content('with Admin Mode')
+          expect(page).not_to have_content('with Step-up Authentication')
+        end
+      end
+    end
+
+    it 'does not marks admin session as step-up authenticated after leaving admin mode', :js do
+      using_session :admin_session do
+        gitlab_sign_in(admin)
+
+        wait_for_requests
+
+        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+
+        wait_for_requests
+
+        visit user_settings_active_sessions_path
+
+        wait_for_requests
+
+        within('.settings-section') do
+          expect(page).to have_content('with Admin Mode')
+          expect(page).to have_content('with Step-up Authentication')
+        end
+
+        gitlab_disable_admin_mode
+
+        visit user_settings_active_sessions_path
+
+        within('.settings-section') do
+          expect(page).not_to have_content('with Admin Mode')
+          expect(page).not_to have_content('with Step-up Authentication')
+        end
+      end
+    end
+
+    context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+      end
+
+      it 'does not mark admin session as step-up authenticated' do
+        using_session :admin_session do
+          gitlab_sign_in(admin)
+
+          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+
+          visit user_settings_active_sessions_path
+
+          within('.settings-section') do
+            expect(page).to have_content('with Admin Mode')
+            expect(page).not_to have_content('with Step-up Authentication')
+          end
+        end
+      end
     end
   end
 
   it 'does not display admin mode text in case its not' do
     using_session :admin_session do
       gitlab_sign_in(admin)
+
       visit user_settings_active_sessions_path
+
       expect(page).not_to have_content('with Admin Mode')
     end
   end

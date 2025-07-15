@@ -7,13 +7,14 @@ RSpec.describe 'Updating an existing Prometheus Integration', feature_category: 
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
-  let_it_be(:integration) { create(:prometheus_integration, project: project) }
+  let_it_be(:old_integration) { create(:prometheus_integration, project: project) }
+  let_it_be(:integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
 
   let(:mutation) do
     variables = {
-      id: GitlabSchema.id_from_object(integration).to_s,
+      id: GitlabSchema.id_from_object(old_integration).to_s,
       api_url: 'http://modified-url.com',
-      active: true
+      active: false
     }
     graphql_mutation(:prometheus_integration_update, variables) do
       <<~QL
@@ -37,7 +38,7 @@ RSpec.describe 'Updating an existing Prometheus Integration', feature_category: 
 
     expect(response).to have_gitlab_http_status(:success)
     expect(integration_response['id']).to eq(GitlabSchema.id_from_object(integration).to_s)
-    expect(integration_response['apiUrl']).to eq('http://modified-url.com')
-    expect(integration_response['active']).to be_truthy
+    expect(integration_response['apiUrl']).to be_nil
+    expect(integration_response['active']).to be_falsey
   end
 end

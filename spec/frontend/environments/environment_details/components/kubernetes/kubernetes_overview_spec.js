@@ -1,12 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import {
-  GlEmptyState,
-  GlAlert,
-  GlSprintf,
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
-} from '@gitlab/ui';
+import { GlEmptyState, GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
@@ -14,7 +8,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WorkloadDetailsDrawer from '~/kubernetes_dashboard/components/workload_details_drawer.vue';
 import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
@@ -22,9 +15,7 @@ import KubernetesAgentInfo from '~/environments/environment_details/components/k
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import DeletePodModal from '~/environments/environment_details/components/kubernetes/delete_pod_modal.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
-import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
-import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import {
   FLUX_RECONCILE_ACTION,
   FLUX_SUSPEND_ACTION,
@@ -103,9 +94,6 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           methods: { toggle: toggleDetailsDrawerSpy, close: closeDetailsDrawerSpy },
         }),
       },
-      directives: {
-        GlModalDirective: createMockDirective('gl-modal-directive'),
-      },
     });
   };
 
@@ -116,9 +104,6 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkloadDetailsDrawer = () => wrapper.findComponent(WorkloadDetailsDrawer);
   const findDeletePodModal = () => wrapper.findComponent(DeletePodModal);
-  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
-  const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
 
   const itemHasAction = (action) => {
     const { lastCall } = toggleDetailsDrawerSpy.mock;
@@ -163,34 +148,6 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         resourceType: k8sResourceType.k8sPods,
         fluxApiError: '',
         fluxResourceStatus: { conditions: [] },
-      });
-    });
-
-    describe('actions menu', () => {
-      beforeEach(() => {
-        wrapper = createWrapper();
-      });
-
-      it('renders dropdown for the actions', () => {
-        expect(findDisclosureDropdown().attributes('title')).toBe('Actions');
-      });
-
-      it('renders dropdown item for connecting to cluster action', () => {
-        expect(findDisclosureDropdownItem().text()).toBe('Connect to agent');
-      });
-
-      it('binds dropdown item to the proper modal', () => {
-        const binding = getBinding(findDisclosureDropdownItem().element, 'gl-modal-directive');
-
-        expect(binding.value).toBe(CONNECT_MODAL_ID);
-      });
-
-      it('renders connect to agent modal', () => {
-        expect(findConnectModal().props()).toEqual({
-          agentId: 'gid://gitlab/ClusterAgent/1',
-          projectPath: 'path/to/agent/project',
-          isConfigured: true,
-        });
       });
     });
 

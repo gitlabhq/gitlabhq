@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { translations } from '~/environments/environment_details/constants';
 import ActionsComponent from '~/environments/components/environment_actions.vue';
 import setEnvironmentToRollback from '~/environments/graphql/mutations/set_environment_to_rollback.mutation.graphql';
@@ -10,6 +10,7 @@ const EnvironmentApprovalComponent = import(
 
 export default {
   components: {
+    GlButtonGroup,
     GlButton,
     ActionsComponent,
     EnvironmentApproval: () => EnvironmentApprovalComponent,
@@ -106,7 +107,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <gl-button-group>
     <actions-component v-if="isActionsShown" :actions="actions" />
     <gl-button
       v-if="isRollbackAvailable"
@@ -124,5 +125,5 @@ export default {
       :show-text="false"
       :status="status"
     />
-  </div>
+  </gl-button-group>
 </template>

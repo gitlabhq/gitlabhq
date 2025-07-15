@@ -574,25 +574,6 @@ export const uniquifyString = (originalStr, otherStrings, modifier) =>
     return uniqueString === acc ? acc + modifier : acc;
   }, originalStr);
 
-/**
- * Checks if a string contains a search string (with optional wildcards)
- *
- * @param {String} str String to search within
- * @param {String} pattern String to look for (with * representing wildcards)
- *
- * @returns {Boolean} Whether the string matches the search pattern
- */
-export const wildcardMatch = (str, pattern) => {
-  const lowerPattern = pattern.toLowerCase();
-  const lowerStr = str.toLowerCase();
-
-  if (!pattern.includes('*')) return lowerPattern === lowerStr;
-
-  const escapedPattern = lowerPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`^${escapedPattern.replace(/\\\*/g, '.*')}$`);
-  return regex.test(lowerStr);
-};
-
 export const sha256 = async (str) => {
   const data = new TextEncoder().encode(str);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);

@@ -7,18 +7,19 @@ title: Analytics dashboards
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+- Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags/_index.md) named `combined_analytics_dashboards`. Disabled by default.
 - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
 - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
 - `filters` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505317) in GitLab 17.9. Disabled by default.
 - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in 18.2.
 
 {{< /history >}}
 
@@ -87,7 +88,7 @@ To view a list of dashboards (both built-in and custom) for a project:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
 - Feature flag `group_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439718) in GitLab 16.11.
 
@@ -262,9 +263,9 @@ create a `line_chart.yaml` file with the following required fields:
 
 {{< history >}}
 
-- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `combined_analytics_dashboards_editor`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/525203) to experiment in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `customizable_dashboards`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/525203) to experiment in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `customizable_dashboards`. Disabled by default.
 
 {{< /history >}}
 

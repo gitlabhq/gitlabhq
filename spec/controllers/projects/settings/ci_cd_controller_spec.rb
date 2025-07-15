@@ -18,10 +18,10 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
       let_it_be(:group) { create(:group, parent: parent_group) }
       let_it_be(:other_project) { create(:project, group: group) }
 
-      subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
+      subject(:request) { get :show, params: { namespace_id: project.namespace, project_id: project } }
 
       it 'renders show with 200 status code' do
-        subject
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
@@ -33,7 +33,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'renders show with 404 status code' do
-          subject
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -47,7 +47,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'sets assignable project runners' do
-          subject
+          request
 
           expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
         end
@@ -57,7 +57,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
         it 'sets project runners' do
-          subject
+          request
 
           expect(assigns(:project_runners)).to contain_exactly(project_runner)
         end
@@ -68,7 +68,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
         it 'sets group runners' do
-          subject
+          request
 
           expect(assigns(:group_runners_count)).to be(1)
           expect(assigns(:group_runners)).to contain_exactly(group_runner)
@@ -79,7 +79,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
         it 'sets shared runners' do
-          subject
+          request
 
           expect(assigns(:shared_runners_count)).to be(1)
           expect(assigns(:shared_runners)).to contain_exactly(shared_runner)
@@ -119,7 +119,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'returns a success header' do
-          subject
+          request
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -131,15 +131,17 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'returns not found' do
-          subject
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
 
-    describe '#reset_cache' do
-      subject { post :reset_cache, params: { namespace_id: project.namespace, project_id: project }, format: :json }
+    describe 'POST reset_cache' do
+      subject(:request) do
+        post :reset_cache, params: { namespace_id: project.namespace, project_id: project }, format: :json
+      end
 
       before do
         sign_in(user)
@@ -155,12 +157,12 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         it 'calls reset project cache service' do
           expect(ResetProjectCacheService).to receive_message_chain(:new, :execute)
 
-          subject
+          request
         end
 
         context 'when service returns successfully' do
           it 'returns a success header' do
-            subject
+            request
 
             expect(response).to have_gitlab_http_status(:ok)
           end
@@ -172,7 +174,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
 
           it 'returns an error header' do
-            subject
+            request
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
@@ -185,23 +187,25 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'returns not found' do
-          subject
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
 
-    describe 'PUT #reset_registration_token' do
-      subject { put :reset_registration_token, params: { namespace_id: project.namespace, project_id: project } }
+    describe 'PUT reset_registration_token' do
+      subject(:request) do
+        put :reset_registration_token, params: { namespace_id: project.namespace, project_id: project }
+      end
 
       it 'resets runner registration token' do
-        expect { subject }.to change { project.reload.runners_token }
+        expect { request }.to change { project.reload.runners_token }
         expect(flash[:toast]).to eq('New runners registration token has been generated!')
       end
 
       it 'redirects the user to admin runners page' do
-        subject
+        request
 
         expect(response).to redirect_to(namespace_project_settings_ci_cd_path)
       end
@@ -210,7 +214,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
     describe 'PATCH update' do
       let(:params) { { ci_config_path: '' } }
 
-      subject do
+      subject(:request) do
         patch :update, params: {
           namespace_id: project.namespace.to_param,
           project_id: project,
@@ -219,7 +223,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
       end
 
       it 'redirects to the settings page' do
-        subject
+        request
 
         expect(response).to have_gitlab_http_status(:found)
         expect(flash[:toast]).to eq("Pipelines settings for &#39;#{project.name}&#39; were successfully updated.")
@@ -232,7 +236,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           let(:params) { { auto_devops_attributes: { enabled: '' } } }
 
           it 'allows enabled to be set to nil' do
-            subject
+            request
             project_auto_devops.reload
 
             expect(project_auto_devops.enabled).to be_nil
@@ -248,7 +252,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
           context 'when the project repository is empty' do
             it 'sets a notice flash' do
-              subject
+              request
 
               expect(controller).to set_flash[:notice]
             end
@@ -256,7 +260,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             it 'does not queue a CreatePipelineWorker' do
               expect(CreatePipelineWorker).not_to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
 
-              subject
+              request
             end
           end
 
@@ -266,7 +270,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             it 'displays a toast message' do
               allow(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
 
-              subject
+              request
 
               expect(controller).to set_flash[:toast]
             end
@@ -274,13 +278,13 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             it 'queues a CreatePipelineWorker' do
               expect(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
 
-              subject
+              request
             end
 
             it 'creates a pipeline', :sidekiq_inline do
               project.repository.create_file(user, 'Gemfile', 'Gemfile contents', message: 'Add Gemfile', branch_name: 'master')
 
-              expect { subject }.to change { Ci::Pipeline.count }.by(1)
+              expect { request }.to change { Ci::Pipeline.count }.by(1)
             end
           end
         end
@@ -295,7 +299,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           it 'does not queue a CreatePipelineWorker' do
             expect(CreatePipelineWorker).not_to receive(:perform_async).with(project.id, user.id, :web, any_args)
 
-            subject
+            request
           end
         end
       end
@@ -305,7 +309,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           let(:params) { { build_timeout_human_readable: '' } }
 
           it 'set default timeout' do
-            subject
+            request
 
             project.reload
             expect(project.build_timeout).to eq(3600)
@@ -316,7 +320,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           let(:params) { { build_timeout_human_readable: '1h 30m' } }
 
           it 'set specified timeout' do
-            subject
+            request
 
             project.reload
             expect(project.build_timeout).to eq(5400)
@@ -327,7 +331,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           let(:params) { { build_timeout_human_readable: '5m' } }
 
           it 'set specified timeout' do
-            subject
+            request
 
             expect(controller).to set_flash[:alert]
             expect(response).to redirect_to(namespace_project_settings_ci_cd_path)
@@ -342,7 +346,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
 
           it 'set specified git depth' do
-            subject
+            request
 
             project.reload
             expect(project.ci_default_git_depth).to eq(10)
@@ -357,7 +361,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
 
           it 'sets forward deployment enabled' do
-            subject
+            request
 
             project.reload
             expect(project.ci_forward_deployment_enabled).to eq(false)
@@ -368,7 +372,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           let(:params) { { ci_cd_settings_attributes: { forward_deployment_rollback_allowed: false } } }
 
           it 'changes forward deployment rollback allowed' do
-            expect { subject }.to change { project.reload.ci_forward_deployment_rollback_allowed }.from(true).to(false)
+            expect { request }.to change { project.reload.ci_forward_deployment_rollback_allowed }.from(true).to(false)
           end
         end
 
@@ -377,7 +381,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
           context 'and user is a maintainer' do
             it 'does not set delete_pipelines_in_human_readable' do
-              subject
+              request
 
               project.reload
               expect(project.ci_delete_pipelines_in_seconds).to be_nil
@@ -388,7 +392,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             it 'sets delete_pipelines_in_human_readable' do
               project.add_owner(user)
 
-              subject
+              request
 
               project.reload
               expect(project.ci_delete_pipelines_in_seconds).to eq(1.week)
@@ -401,7 +405,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
           context 'and user is not an admin' do
             it 'does not set max_artifacts_size' do
-              subject
+              request
 
               project.reload
               expect(project.max_artifacts_size).to be_nil
@@ -413,7 +417,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
             context 'with admin mode disabled' do
               it 'does not set max_artifacts_size' do
-                subject
+                request
 
                 project.reload
                 expect(project.max_artifacts_size).to be_nil
@@ -422,7 +426,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
             context 'with admin mode enabled', :enable_admin_mode do
               it 'sets max_artifacts_size' do
-                subject
+                request
 
                 project.reload
                 expect(project.max_artifacts_size).to eq(10)
@@ -438,7 +442,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'returns a success header' do
-          subject
+          request
 
           expect(response).to redirect_to(project_settings_ci_cd_path(project))
         end
@@ -450,14 +454,14 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'returns not found' do
-          subject
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
 
-    describe 'GET #runner_setup_scripts' do
+    describe 'GET runner_setup_scripts' do
       it 'renders the setup scripts' do
         get :runner_setup_scripts, params: { os: 'linux', arch: 'amd64', namespace_id: project.namespace, project_id: project }
 
@@ -474,8 +478,8 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
       end
     end
 
-    describe 'GET #export_job_token_authorizations' do
-      subject(:get_authorizations) do
+    describe 'GET export_job_token_authorizations' do
+      subject(:request) do
         get :export_job_token_authorizations, params: {
           namespace_id: project.namespace,
           project_id: project
@@ -488,7 +492,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
       context 'when the export is successful' do
         it 'renders the CSV' do
-          get_authorizations
+          request
 
           expect(response).to have_gitlab_http_status(:ok)
           rows = response.body.lines
@@ -509,7 +513,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
 
         it 'sets a flash alert and redirects to the project CI/CD settings' do
-          get_authorizations
+          request
 
           expect(flash[:alert]).to eq('Failed to generate export')
           expect(response).to redirect_to(project_settings_ci_cd_path(project))
@@ -518,38 +522,44 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
     end
   end
 
-  context 'as a developer' do
-    before do
-      sign_in(user)
-      project.add_developer(user)
+  describe 'GET show' do
+    subject(:request) do
       get :show, params: { namespace_id: project.namespace, project_id: project }
     end
 
-    it 'responds with 404' do
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
+    context 'as a developer' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
 
-  context 'as a reporter' do
-    before do
-      sign_in(user)
-      project.add_reporter(user)
-      get :show, params: { namespace_id: project.namespace, project_id: project }
-    end
+      it 'responds with 404' do
+        request
 
-    it 'responds with 404' do
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
-
-  context 'as an unauthenticated user' do
-    before do
-      get :show, params: { namespace_id: project.namespace, project_id: project }
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
-    it 'redirects to sign in' do
-      expect(response).to have_gitlab_http_status(:found)
-      expect(response).to redirect_to('/users/sign_in')
+    context 'as a reporter' do
+      before do
+        sign_in(user)
+        project.add_reporter(user)
+      end
+
+      it 'responds with 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'as an unauthenticated user' do
+      it 'redirects to sign in' do
+        request
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to('/users/sign_in')
+      end
     end
   end
 end

@@ -76,9 +76,10 @@ To contribute more languages to the component, open a merge request in the
    the LSIF artifact for `golang`:
 
    ```yaml
-   - component: ${CI_SERVER_FQDN}/components/code-intelligence/golang-code-intel@v0.0.3
-    inputs:
-      golang_version: ${GO_VERSION}
+   include:
+     - component: ${CI_SERVER_FQDN}/components/code-intelligence/golang-code-intel@v0.0.3
+       inputs:
+         golang_version: ${GO_VERSION}
    ```
 
 1. For configuration instructions for the [code intelligence component](https://gitlab.com/components/code-intelligence),

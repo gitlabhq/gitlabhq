@@ -1,8 +1,0 @@
----
-name: mr_experience_survey
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90036
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366561
-milestone: '15.2'
-type: development
-group: group::code review
-default_enabled: false

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:group) do
     base_group = create(:group) do |g|
       create(:project_statistics, namespace_id: g.id)
@@ -65,6 +67,30 @@ RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
 
     it 'does not expose statistics' do
       expect(json.keys).not_to(include(:statistics, :root_storage_statistics))
+    end
+  end
+
+  describe 'archived attribute' do
+    let_it_be(:non_archived) { create(:group) }
+    let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
+    let_it_be(:archived_group) { create(:group, :archived) }
+    let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
+    let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived_group) }
+
+    where(:group, :result) do
+      lazy { non_archived }                               | false
+      lazy { non_archived_subgroup }                      | false
+      lazy { archived_group }                             | true
+      lazy { archived_subgroup_with_non_archived_parent } | true
+      lazy { non_archived_subgroup_with_archived_parent } | true
+    end
+
+    with_them do
+      let(:params) { { archived: archived } }
+
+      subject(:json) { described_class.new(group).as_json[:archived] }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

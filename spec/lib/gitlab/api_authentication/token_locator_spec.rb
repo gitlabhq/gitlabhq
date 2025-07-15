@@ -178,23 +178,30 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
       end
     end
 
-    context 'with :token_param' do
-      let(:type) { :token_param }
+    %i[
+      token
+      private_token
+      job_token
+      access_token
+    ].each do |token_type|
+      context "with :#{token_type}_param" do
+        let(:type) { :"#{token_type}_param" }
 
-      context 'without credentials' do
-        let(:request) { double(query_parameters: {}) }
+        context 'without credentials' do
+          let(:request) { double(query_parameters: {}) }
 
-        it 'returns nil' do
-          expect(subject).to be_nil
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
         end
-      end
 
-      context 'with credentials' do
-        let(:password) { 'bar' }
-        let(:request) { double(query_parameters: { 'token' => password }) }
+        context 'with credentials' do
+          let(:password) { 'bar' }
+          let(:request) { double(query_parameters: { token_type.to_s => password }) }
 
-        it 'returns the credentials' do
-          expect(subject.password).to eq(password)
+          it 'returns the credentials' do
+            expect(subject.password).to eq(password)
+          end
         end
       end
     end

@@ -88,7 +88,7 @@
 
 .md-suggestion-diff {
   display: table !important;
-  @apply gl-border #{!important};
+  @apply gl-border gl-border-section #{!important};
 
   td {
     border: 0 !important;

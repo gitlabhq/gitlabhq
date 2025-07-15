@@ -94,7 +94,7 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
     end
 
     def result(html)
-      HTML::Pipeline.new([Banzai::Filter::MarkdownFilter, described_class]).call(html)
+      Banzai::PipelineBase.new([Banzai::Filter::MarkdownFilter, described_class]).call(html)
     end
 
     let(:results) { result("[toc]\n\n#{header(1, 'Header 1')}#{header(2, 'Header 2')}") }

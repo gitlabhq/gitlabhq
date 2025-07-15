@@ -235,7 +235,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
 
         expect { execute }
           .to change { project_1.statistics.reload.build_artifacts_size }.by(expected_amount)
-          .and change { project_2.statistics.reload.build_artifacts_size }.by(0)
+          .and not_change { project_2.statistics.reload.build_artifacts_size }
       end
 
       it 'increments project statistics with artifact size as amount and job artifact id as ref' do

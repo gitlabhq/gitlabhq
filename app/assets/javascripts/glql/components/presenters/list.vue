@@ -1,9 +1,6 @@
 <script>
 import { GlIcon, GlIntersperse, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { __ } from '~/locale';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import GlqlFooter from '../common/footer.vue';
-import GlqlActions from '../common/actions.vue';
+import { eventHubByKey } from '../../utils/event_hub_factory';
 
 export default {
   name: 'ListPresenter',
@@ -13,9 +10,6 @@ export default {
     GlLink,
     GlSprintf,
     GlSkeletonLoader,
-    CrudComponent,
-    GlqlActions,
-    GlqlFooter,
   },
   inject: ['presenter', 'queryKey'],
   props: {
@@ -35,7 +29,7 @@ export default {
       default: 'ul',
       validator: (value) => ['ul', 'ol'].includes(value),
     },
-    isPreview: {
+    showPreview: {
       required: false,
       type: Boolean,
       default: false,
@@ -43,88 +37,72 @@ export default {
   },
   data() {
     return {
-      isCollapsed: false,
+      eventHub: eventHubByKey(this.queryKey),
+      isLoadingMore: false,
+      pageSize: 5,
     };
   },
   computed: {
-    title() {
-      return this.config.title || __('GLQL list');
-    },
     items() {
       return this.data.nodes || [];
     },
     fields() {
       return this.config.fields?.filter((item) => item.key !== 'title');
     },
-    showCopyContentsAction() {
-      return Boolean(this.items.length) && !this.isCollapsed && !this.isPreview;
-    },
-    showEmptyState() {
-      return !this.items.length && !this.isPreview;
-    },
-    liMarginClass() {
-      if (this.listType === 'ul') return '';
+  },
+  mounted() {
+    this.eventHub.$on('loadMore', (pageSize) => {
+      this.pageSize = pageSize;
+      this.isLoadingMore = true;
+    });
 
-      if (this.items.length >= 100) return '!gl-ml-9';
-      if (this.items.length >= 10) return '!gl-ml-8';
+    this.eventHub.$on('loadMoreComplete', () => {
+      this.isLoadingMore = false;
+    });
 
-      return '!gl-ml-7';
-    },
+    this.eventHub.$on('loadMoreError', () => {
+      this.isLoadingMore = false;
+    });
   },
 };
 </script>
 <template>
-  <crud-component
-    :anchor-id="queryKey"
-    :title="title"
-    :description="config.description"
-    :count="items.length"
-    persist-collapsed-state
-    is-collapsible
-    class="!gl-mt-5"
-    @collapsed="isCollapsed = true"
-    @expanded="isCollapsed = false"
-  >
-    <template #actions>
-      <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
-    </template>
-    <component :is="listType" class="content-list !gl-mb-0" data-testid="list">
-      <template v-if="isPreview">
-        <li
-          v-for="i in 5"
-          :key="i"
-          :class="['gl-py-3', liMarginClass, { 'gl-border-b gl-border-b-section': i !== 4 }]"
-        >
-          <gl-skeleton-loader :width="400" :lines="1" />
-        </li>
-      </template>
-      <template v-else-if="items.length">
-        <li
-          v-for="(item, itemIndex) in items"
-          :key="itemIndex"
-          :class="[
-            'gl-py-3',
-            liMarginClass,
-            { 'gl-border-b gl-border-b-section': itemIndex !== items.length - 1 },
-          ]"
-          :data-testid="`list-item-${itemIndex}`"
-        >
-          <h3 class="!gl-heading-5 !gl-mb-1">
-            <component :is="presenter.forField(item, 'title')" />
-          </h3>
+  <component :is="listType" class="content-list !gl-mb-0" data-testid="list">
+    <li
+      v-for="(item, itemIndex) in items"
+      :key="itemIndex"
+      class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
+      :class="{
+        'gl-border-b !gl-border-b-section': itemIndex !== items.length - 1 || isLoadingMore,
+      }"
+      :data-testid="`list-item-${itemIndex}`"
+    >
+      <div
+        class="gl-str-truncated gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top"
+      >
+        <h3 class="!gl-heading-5 !gl-mb-1 gl-truncate">
+          <component :is="presenter.forField(item, 'title')" />
+        </h3>
+        <div>
           <gl-intersperse separator=" · ">
             <span v-for="field in fields" :key="field.key">
               <component :is="presenter.forField(item, field.key)" />
             </span>
           </gl-intersperse>
-        </li>
-      </template>
-    </component>
-
-    <template v-if="showEmptyState" #empty>
-      {{ __('No data found for this query.') }}
+        </div>
+      </div>
+    </li>
+    <template v-if="showPreview || isLoadingMore">
+      <li
+        v-for="i in pageSize"
+        :key="i"
+        class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
+        :class="{ 'gl-border-b !gl-border-b-section': i !== pageSize }"
+      >
+        <div class="gl-inline-block gl-align-top">
+          <gl-skeleton-loader :width="400" :lines="1" :equal-width-lines="true" />
+        </div>
+      </li>
     </template>
-
-    <template #footer><glql-footer /></template>
-  </crud-component>
+  </component>
 </template>

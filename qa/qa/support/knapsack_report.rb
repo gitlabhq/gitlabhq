@@ -155,9 +155,9 @@ module QA
 
       # GCS client
       #
-      # @return [Fog::Storage::GoogleJSON]
+      # @return [Fog::Google::Storage]
       def client
-        @client ||= Fog::Storage::Google.new(google_project: PROJECT, **gcs_credentials)
+        @client ||= Fog::Google::Storage.new(google_project: PROJECT, **gcs_credentials)
       end
 
       # Base path of knapsack report

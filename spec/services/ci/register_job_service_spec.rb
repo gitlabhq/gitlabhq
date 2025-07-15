@@ -774,10 +774,9 @@ module Ci
           subject { build_on(project_runner) }
 
           it 'does drop the build and logs both failures' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
               .with(anything, a_hash_including(build_id: pending_job.id))
               .twice
-              .and_call_original
 
             expect(subject).to be_nil
 
@@ -798,10 +797,9 @@ module Ci
             allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'scheduler error')
             allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
 
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
               .with(anything, a_hash_including(build_id: pending_job.id))
               .once
-              .and_call_original
 
             expect(subject).to be_nil
 

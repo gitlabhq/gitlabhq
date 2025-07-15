@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class UserPreference < ApplicationRecord
-  include SafelyChangeColumnDefault
-
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
@@ -11,8 +9,6 @@ class UserPreference < ApplicationRecord
 
   belongs_to :user
   belongs_to :home_organization, class_name: "Organizations::Organization", optional: true
-
-  columns_changing_default :organization_groups_projects_display
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
@@ -44,7 +40,7 @@ class UserPreference < ApplicationRecord
 
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
-  attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
+  attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_dark_syntax_highlighting_theme }
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
   attribute :time_display_format, default: 0

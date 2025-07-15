@@ -14,10 +14,8 @@ module Gitlab
 
               next unless structure_sql_table
 
-              inconsistencies = database_table.columns.filter_map do |database_table_column|
-                next if structure_sql_table.column_exists?(database_table_column.name)
-
-                database_table_column
+              inconsistencies = database_table.columns.reject do |database_table_column|
+                structure_sql_table.column_exists?(database_table_column.name)
               end
 
               if inconsistencies.any?

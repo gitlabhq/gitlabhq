@@ -29,7 +29,7 @@ class ActiveSession
     :ip_address, :browser, :os,
     :device_name, :device_type,
     :is_impersonated, :session_id, :session_private_id,
-    :admin_mode
+    :admin_mode, :step_up_authenticated
   ].freeze
   ATTR_READER_LIST = [
     :created_at, :updated_at
@@ -88,7 +88,10 @@ class ActiveSession
         updated_at: timestamp,
         session_private_id: session_private_id,
         is_impersonated: request.session[:impersonator_id].present?,
-        admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?
+        admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?,
+        step_up_authenticated:
+          Feature.enabled?(:omniauth_step_up_auth_for_admin_mode, user) &&
+            ::Gitlab::Auth::Oidc::StepUpAuthentication.succeeded?(request.session)
       )
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do

@@ -97,7 +97,7 @@ describe('Branch rules app', () => {
 
     const { nodes } = branchRulesMockResponse.data.project.branchRules;
 
-    expect(findAllBranchRules().length).toBe(nodes.length);
+    expect(findAllBranchRules()).toHaveLength(nodes.length);
 
     expect(findAllBranchRules().at(0).props()).toEqual(
       expect.objectContaining({
@@ -232,7 +232,7 @@ describe('Branch rules app', () => {
         await findAddBranchRuleDropdown().vm.$emit('shown');
         await nextTick();
 
-        expect(findAddBranchRuleDropdown().props('items').length).toEqual(
+        expect(findAddBranchRuleDropdown().props('items')).toHaveLength(
           addBranchRulesItems.length - nodes.length,
         );
       });

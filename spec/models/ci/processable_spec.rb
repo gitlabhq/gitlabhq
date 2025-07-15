@@ -342,6 +342,45 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
+  it_behaves_like 'a degenerable job' do
+    subject(:job) { create(:ci_bridge, pipeline: pipeline) }
+  end
+
+  describe '#archived?' do
+    shared_examples 'an archivable job' do
+      it { is_expected.not_to be_archived }
+
+      context 'when job is degenerated' do
+        before do
+          job.degenerate!
+        end
+
+        it { is_expected.to be_archived }
+      end
+
+      context 'when pipeline is archived' do
+        before do
+          pipeline.update!(created_at: 1.day.ago)
+          stub_application_setting(archive_builds_in_seconds: 3600)
+        end
+
+        it { is_expected.to be_archived }
+      end
+    end
+
+    context 'when job is a build' do
+      subject(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it_behaves_like 'an archivable job'
+    end
+
+    context 'when job is a bridge' do
+      subject(:job) { create(:ci_bridge, pipeline: pipeline) }
+
+      it_behaves_like 'an archivable job'
+    end
+  end
+
   describe '#aggregated_needs_names' do
     let(:with_aggregated_needs) { pipeline.processables.select_with_aggregated_needs(project) }
 
@@ -585,17 +624,25 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
   describe 'manual_confirmation_message' do
     context 'when job is manual' do
-      subject { build(:ci_build, :manual, :with_manual_confirmation) }
+      subject(:job) { build(:ci_build, :manual, :with_manual_confirmation) }
 
       it 'return manual_confirmation from option' do
-        expect(subject.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+        expect(job.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+      end
+
+      context "when job is not playable because it's archived" do
+        before do
+          allow(job).to receive(:archived?).and_return(true)
+        end
+
+        it { expect(job.manual_confirmation_message).to be_nil }
       end
     end
 
     context 'when job is not manual' do
-      subject { build(:ci_build) }
+      subject(:job) { build(:ci_build) }
 
-      it { expect(subject.manual_confirmation_message).to be_nil }
+      it { expect(job.manual_confirmation_message).to be_nil }
     end
   end
 
@@ -686,6 +733,38 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     it 'delegates to trigger' do
       expect(processable.trigger).to receive(:short_token)
       processable.trigger_short_token
+    end
+  end
+
+  describe '#redis_state' do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    it 'is a memoized Ci::JobRedisState record' do
+      expect(processable.redis_state).to be_an_instance_of(Ci::JobRedisState)
+      expect(processable.strong_memoized?(:redis_state)).to be(true)
+    end
+  end
+
+  describe '#enqueue_immediately?', :clean_gitlab_redis_shared_state do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    [true, false].each do |value|
+      context "when enqueue_immediately is set to #{value}" do
+        before do
+          processable.redis_state.enqueue_immediately = value
+        end
+
+        it { expect(processable.enqueue_immediately?).to be(value) }
+      end
+    end
+  end
+
+  describe '#set_enqueue_immediately!', :clean_gitlab_redis_shared_state do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    it 'changes enqueue_immediately to true' do
+      expect { processable.set_enqueue_immediately! }
+        .to change { processable.enqueue_immediately? }.to(true)
     end
   end
 end

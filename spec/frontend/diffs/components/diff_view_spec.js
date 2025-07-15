@@ -78,7 +78,7 @@ describe('DiffView', () => {
           inline: type === 'inline',
         },
       });
-      expect(wrapper.findAllComponents(DiffCommentCell).length).toBe(total);
+      expect(wrapper.findAllComponents(DiffCommentCell)).toHaveLength(total);
       expect(wrapper.find(container).findComponent(DiffCommentCell).exists()).toBe(true);
     },
   );

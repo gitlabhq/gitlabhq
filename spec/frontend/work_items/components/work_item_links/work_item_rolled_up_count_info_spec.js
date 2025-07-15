@@ -31,6 +31,6 @@ describe('Work item rolled up count info', () => {
   it('renders the correct number of counts', () => {
     createComponent();
 
-    expect(findCountInfo().length).toBe(mockRolledUpCountsByType.length);
+    expect(findCountInfo()).toHaveLength(mockRolledUpCountsByType.length);
   });
 });

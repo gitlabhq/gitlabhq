@@ -167,3 +167,6 @@ Scalability/RandomCronSchedule:
 
 Database/AvoidUsingConnectionExecute:
   Enabled: false
+
+RSpec/RedundantMetatagType:
+  Enabled: false

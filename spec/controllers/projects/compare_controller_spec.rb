@@ -76,6 +76,11 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
     let(:straight) { nil }
     let(:page) { nil }
 
+    before do
+      stub_feature_flags(rapid_diffs: false)
+      stub_feature_flags(rapid_diffs_on_compare_show: false)
+    end
+
     context 'when the refs exist in the same project' do
       context 'when we set the white space param' do
         let(:from_project_id) { nil }
@@ -743,7 +748,7 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
   end
 
   describe 'GET #rapid_diffs' do
-    subject(:send_request) { get :rapid_diffs, params: request_params }
+    subject(:send_request) { get :show, params: request_params }
 
     let(:format) { :html }
     let(:request_params) do
@@ -758,20 +763,7 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
     it 'renders rapid_diffs template' do
       send_request
 
-      expect(assigns(:diffs).diff_files.first).to be_present
       expect(response).to render_template(:rapid_diffs)
-    end
-
-    context 'when the feature flag rapid_diffs is disabled' do
-      before do
-        stub_feature_flags(rapid_diffs: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
 
     describe 'Get #diff_files_metadata' do

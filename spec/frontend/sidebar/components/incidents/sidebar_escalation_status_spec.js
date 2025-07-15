@@ -88,6 +88,11 @@ describe('SidebarEscalationStatus', () => {
       expect(findSidebarComponent().exists()).toBe(true);
     });
 
+    it('renders the label as `Paging status`', async () => {
+      await createComponent(mockApollo);
+      expect(findSidebarComponent().props('title')).toBe('Paging status');
+    });
+
     describe('status icon', () => {
       it('is visible', async () => {
         await createComponent(mockApollo);
@@ -102,7 +107,7 @@ describe('SidebarEscalationStatus', () => {
         const tooltip = getBinding(findIcon().element, 'gl-tooltip');
 
         expect(tooltip).toBeDefined();
-        expect(tooltip.value).toBe('Status: Triggered');
+        expect(tooltip.value).toBe('Paging status: Triggered');
       });
     });
 

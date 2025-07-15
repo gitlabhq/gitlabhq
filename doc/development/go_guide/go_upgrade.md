@@ -44,6 +44,32 @@ ensure that all projects have been updated to test against the new Go version
 before changing the package builders to use it. Despite [Go's compatibility promise](https://go.dev/doc/go1compat),
 changes between minor versions can expose bugs or cause problems in our projects.
 
+### Version in `go.mod`
+
+**Key Requirements:**
+
+- Always use `0` as the patch version (for example, `go 1.23.0`, not `go 1.23.4`).
+- Do not set a version newer than what is used in CNG and Omnibus, otherwise this will cause build failures.
+
+The Go version in your `go.mod` affects all downstream projects.
+When you specify a minimum Go version, any project that imports your package must use that version or newer.
+This can create impossible situations for projects with different Go version constraints.
+
+For example, if CNG uses Go 1.23.4 but your project declares `go 1.23.5` as the minimum required version, CNG will
+fail to build your package.
+Similarly, other projects importing your package will be forced to upgrade their Go version, which may not be feasible.
+
+[See above](#testing-against-shipped-go-versions) to find out what versions are used in CNG and Omnibus.
+
+From the [Go Modules Reference](https://go.dev/ref/mod#go-mod-file-go):
+
+> The go directive sets the minimum version of Go required to use this module.
+
+You don't need to set `go 1.24.0` to be compatible with Go 1.24.0.
+Having it at `go 1.23.0` works fine.
+Go 1.23.0 and any newer version will almost certainly build your package without issues thanks to the
+[Go 1 compatibility promise](https://go.dev/doc/go1compat).
+
 ### Upgrade cadence
 
 GitLab adopts major Go versions within eight months of their release

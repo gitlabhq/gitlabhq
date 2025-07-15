@@ -21,8 +21,8 @@ module Ci
       expose_project_variables:,
       expose_group_variables:,
       environment: expanded_environment_name,
-      dependencies: true)
-
+      dependencies: true
+    )
       track_duration do
         pipeline
           .variables_builder

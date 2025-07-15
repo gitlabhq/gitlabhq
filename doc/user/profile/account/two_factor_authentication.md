@@ -104,7 +104,7 @@ in a safe place.
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`.
+[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_authenticator`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}
@@ -248,7 +248,7 @@ On your GitLab server:
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`.
+[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_token_cloud`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
@@ -306,7 +306,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 {{< history >}}
 
-- Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
+- Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `webauthn_without_totp`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/396931) in GitLab 17.6. Feature flag `webauthn_without_totp` removed.
 
 {{< /history >}}

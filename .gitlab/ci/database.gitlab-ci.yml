@@ -1,7 +1,7 @@
 include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
-db:setup pg16:
+.db:setup pg16:
   stage: prepare
   needs: []
   extends:
@@ -17,6 +17,16 @@ db:setup pg16:
   artifacts:
     paths:
       - pg_dumpall.sql
+
+db:setup pg16:
+  extends:
+    - .db:setup pg16
+
+# Job name is detected in scripts/utils.sh to set up EE-only databases.
+db:setup-ee pg16:
+  extends:
+    - .db:setup pg16
+    - .rails:rules:setup-test-env-ee
 
 db:rollback single-db-ci-connection:
   extends:
@@ -118,11 +128,11 @@ db:migrate:multi-version-upgrade:
 
       run_with_custom_exit_code db_migrate_multi_version_upgrade
 
-# Validate minimum PG version supported by GitLab
-db:migrate:multi-version-upgrade-pg14:
+# Validate PG version supported by GitLab
+db:migrate:multi-version-upgrade-pg17:
   extends:
     - db:migrate:multi-version-upgrade
-    - .use-pg14
+    - .use-pg17
 
 db:migrate:reset:
   extends: .db-job-base

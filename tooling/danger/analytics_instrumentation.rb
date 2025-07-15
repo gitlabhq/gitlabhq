@@ -34,6 +34,11 @@ module Tooling
         Redis and RedisHLL tracking is deprecated, consider using Internal Events tracking instead https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#defining-event-and-metrics
       MSG
 
+      PII_WARNING = <<~MSG
+        Make sure the additional properties don't contain any sensitive information, like customer data or personal data.
+        For more information, see the Data Classification Standard at https://about.gitlab.com/handbook/security/data-classification-standard/
+      MSG
+
       WORKFLOW_LABELS = [
         APPROVED_LABEL,
         REVIEW_LABEL
@@ -111,6 +116,20 @@ module Tooling
         end
 
         warn "Redis keys overrides were added. Please consider cover keys merging with specs. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475191) for details"
+      end
+
+      def warn_about_potential_pii_tracking
+        file_list = helper.modified_files.concat(helper.added_files).select do |f|
+          f.end_with?(".rb") && !f.end_with?("_spec.rb")
+        end
+
+        file_list.each do |file_name|
+          add_suggestion(
+            filename: file_name,
+            regex: /\+\s*additional_properties\s*[:=]\s*{/,
+            comment_text: PII_WARNING
+          )
+        end
       end
 
       private

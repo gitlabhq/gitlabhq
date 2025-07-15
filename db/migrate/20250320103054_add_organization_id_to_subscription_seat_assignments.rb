@@ -4,7 +4,6 @@ class AddOrganizationIdToSubscriptionSeatAssignments < Gitlab::Database::Migrati
   milestone '17.11'
 
   DEFAULT_ORGANIZATION_ID = 1
-  enable_lock_retries!
 
   def change
     add_column :subscription_seat_assignments, :organization_id, :bigint, default: DEFAULT_ORGANIZATION_ID, null: false

@@ -12,5 +12,14 @@ FactoryBot.define do
     trait :revoked do
       status { :revoked }
     end
+
+    trait :with_plaintext_token do
+      token_encrypted { nil } # Don't set the encrypted token
+
+      after(:build) do |token|
+        # Let the model generate the token naturally
+        token.save! if token.persisted? == false
+      end
+    end
   end
 end

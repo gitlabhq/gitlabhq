@@ -100,7 +100,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
       # We call the same command twice, as it means it would try to recreate
       # projects that were already created!
       expect { seed }.to change { group.projects.count }.by(seed_count)
-      expect { seed }.to change { group.projects.count }.by(0)
+      expect { seed }.not_to change { group.projects.count }
     end
 
     it 'creates as many projects as specific in the argument' do

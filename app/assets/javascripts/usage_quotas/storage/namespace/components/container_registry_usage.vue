@@ -58,7 +58,7 @@ export default {
       {{ $options.i18n.storageUsed }}
     </template>
     <template #right-secondary-text>
-      <number-to-human-size :value="containerRegistrySize" data-testid="total-size-section" />
+      <number-to-human-size :value="containerRegistrySize" data-testid="container-registry-size" />
       <storage-type-warning v-if="containerRegistrySizeIsEstimated">
         {{ $options.i18n.estimatedWarningTooltip }}
         <help-page-link

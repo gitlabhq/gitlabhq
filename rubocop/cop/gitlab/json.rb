@@ -12,6 +12,7 @@ module RuboCop
 
         AVAILABLE_METHODS = %i[parse parse! load decode dump generate encode pretty_generate].to_set.freeze
 
+        # @!method json_node?(node)
         def_node_matcher :json_node?, <<~PATTERN
           (send (const {nil? | (const nil? :ActiveSupport)} :JSON) $_ $...)
         PATTERN
@@ -23,7 +24,7 @@ module RuboCop
           add_offense(node) do |corrector|
             replacement = "#{cbased(node)}Gitlab::Json.#{method_name}(#{arg_source})"
 
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node, replacement)
           end
         end
 

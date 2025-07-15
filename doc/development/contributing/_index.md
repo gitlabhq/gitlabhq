@@ -2,6 +2,7 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+description: Code contribution guidelines, style guides, and processes.
 title: Contribute to GitLab development
 ---
 
@@ -21,6 +22,13 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 1. [Choose a development environment](#choose-a-development-environment).
 1. Make changes and open a merge request.
 1. Your merge request is triaged, reviewed, and can then be incorporated into the product.
+
+{{< alert type="note" >}}
+
+All contributions must be submitted in English. GitLab engineering work is done in English,
+and merge requests and issues in other languages cannot be reviewed or accepted.
+
+{{< /alert >}}
 
 ## GitLab technologies
 

@@ -146,7 +146,7 @@ You can also download the security scan results:
 
 - In the pipeline's **Security** tab, select **Download results**.
 
-For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
 {{< alert type="note" >}}
 
@@ -291,7 +291,7 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags/_index.md) named `sec_mark_dropped_findings_as_resolved`.
 - Enabled by default in GitLab 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
 
@@ -369,7 +369,7 @@ In Ultimate, the [SAST report file](#download-a-sast-report) is processed by Git
 - [Merge request widget](#merge-request-widget)
 - [Merge request changes view](#merge-request-changes-view)
 - [Vulnerability report](../vulnerability_report/_index.md)
-- [Pipeline security report](../vulnerability_report/pipeline.md)
+- [Pipeline security report](../detect/security_scanning_results.md)
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
@@ -392,7 +392,7 @@ The results are compared using [Advanced Vulnerability Tracking](#advanced-vulne
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags/_index.md) named `sast_reports_in_inline_diff`. Disabled by default.
 - Enabled by default in GitLab 16.8.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
 
@@ -1083,7 +1083,13 @@ When using the Semgrep-based analyzer, the following options are also available:
 
 - Ignore a line of code for specific rule - add `// nosemgrep: RULE_ID` comment at the end of the line (the prefix is according to the development language).
 
-- Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there.
+- Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there. GitLab Semgrep analyzer automatically merges your custom `.semgrepignore` file with [GitLab built-in ignore patterns](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/abcea7419961320f9718a2f24fe438cc1a7f8e08/semgrepignore).
+
+{{< alert type="note" >}}
+
+The Semgrep analyzer does not respect `.gitignore` files. Files listed in `.gitignore` are analyzed unless explicitly excluded by using `.semgrepignore` or `SAST_EXCLUDED_PATHS`.
+
+{{< /alert >}}
 
 For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-files-folders-code).
 

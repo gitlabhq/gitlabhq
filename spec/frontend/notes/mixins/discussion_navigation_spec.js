@@ -1,16 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import createEventHub from '~/helpers/event_hub_factory';
 import * as utils from '~/lib/utils/common_utils';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
-import notesModule from '~/notes/stores/modules';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 const discussion = (id, index) => ({
   id,
@@ -30,14 +28,11 @@ const createComponent = () => ({
   },
 });
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 describe('Discussion navigation mixin', () => {
   let wrapper;
-  let store;
   let pinia;
-  let expandDiscussion;
 
   const findDiscussionEl = (id) => document.querySelector(`div[data-discussion-id="${id}"]`);
 
@@ -60,20 +55,9 @@ describe('Discussion navigation mixin', () => {
 
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-
-    expandDiscussion = jest.fn();
-    const { actions, ...notesRest } = notesModule();
-    store = new Vuex.Store({
-      modules: {
-        notes: {
-          ...notesRest,
-          actions: { ...actions, expandDiscussion },
-        },
-      },
-    });
-    store.state.notes.discussions = createDiscussions();
-
-    wrapper = shallowMount(createComponent(), { store, pinia });
+    useNotes().discussions = createDiscussions();
+    useNotes().setCurrentDiscussionId.mockReturnValue();
+    wrapper = shallowMount(createComponent(), { pinia });
   });
 
   afterEach(() => {
@@ -88,19 +72,16 @@ describe('Discussion navigation mixin', () => {
 
       ({ vm } = wrapper);
 
-      jest.spyOn(store, 'dispatch');
       jest.spyOn(vm, 'jumpToNextDiscussion');
     });
 
     it('triggers the setCurrentDiscussionId action with null as the value', () => {
       vm.jumpToFirstUnresolvedDiscussion();
 
-      expect(store.dispatch).toHaveBeenCalledWith('setCurrentDiscussionId', null);
+      expect(useNotes().setCurrentDiscussionId).toHaveBeenCalledWith(null);
     });
 
     it('triggers the jumpToNextDiscussion action when the previous store action succeeds', async () => {
-      store.dispatch.mockResolvedValue();
-
       vm.jumpToFirstUnresolvedDiscussion();
 
       await nextTick();
@@ -153,7 +134,7 @@ describe('Discussion navigation mixin', () => {
           });
 
           it('expands discussion', () => {
-            expect(expandDiscussion).toHaveBeenCalledWith(expect.any(Object), {
+            expect(useNotes().expandDiscussion).toHaveBeenCalledWith({
               discussionId: expectedId,
             });
           });

@@ -196,7 +196,7 @@ class GraphqlController < ApplicationController
 
   def any_mutating_query?
     if multiplex?
-      multiplex_queries.any? { |q| mutation?(q[:query], q[:operation_name]) }
+      multiplex_param.any? { |q| mutation?(q[:query], q[:operationName]) }
     else
       mutation?(query)
     end
@@ -295,6 +295,7 @@ class GraphqlController < ApplicationController
     @context ||= {
       current_user: current_user,
       is_sessionless_user: api_user,
+      current_organization: Current.organization,
       request: request,
       scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator),
       remove_deprecated: Gitlab::Utils.to_boolean(permitted_params[:remove_deprecated], default: false)

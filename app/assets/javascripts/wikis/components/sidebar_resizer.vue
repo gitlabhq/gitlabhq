@@ -74,7 +74,7 @@ export default {
 };
 </script>
 <template>
-  <div role="button" tabindex="0" @dblclick="resetSize">
+  <div role="button" :title="__('Resize sidebar')" tabindex="0" @dblclick="resetSize">
     <local-storage-sync
       v-model="sidebarWidth"
       storage-key="wiki_sidebar_width"

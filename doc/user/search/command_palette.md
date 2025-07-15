@@ -14,7 +14,7 @@ title: Command palette
 
 {{< history >}}
 
-- Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Enabled by default.
+- Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags/_index.md) named `command_palette`. Enabled by default.
 - Feature flag `command_palette` removed in GitLab 16.4.
 
 {{< /history >}}

@@ -18,6 +18,18 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
       sign_in(user)
     end
 
+    context 'when your_work_groups_vue feature flag is disabled' do
+      before do
+        stub_feature_flags(your_work_groups_vue: false)
+      end
+
+      it 'renders empty state' do
+        visit dashboard_groups_path
+
+        expect(page).to have_css '[data-testid="groups-empty-state"]'
+      end
+    end
+
     it 'renders empty state' do
       visit dashboard_groups_path
 
@@ -63,10 +75,22 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
       group.add_developer(user)
     end
 
-    it 'defaults sort dropdown to Created date' do
+    context 'when your_work_groups_vue feature flag is disabled' do
+      before do
+        stub_feature_flags(your_work_groups_vue: false)
+      end
+
+      it 'defaults sort dropdown to Created date' do
+        visit dashboard_groups_path
+
+        expect(page).to have_button('Created date')
+      end
+    end
+
+    it 'defaults sort dropdown to Updated date' do
       visit dashboard_groups_path
 
-      expect(page).to have_button('Created date')
+      expect(page).to have_button('Updated date')
     end
   end
 end

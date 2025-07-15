@@ -35,6 +35,7 @@ describe('Rapid Diffs App', () => {
     diffsStatsEndpoint: '/stats',
     diffFilesEndpoint: '/diff-files-metadata',
     shouldSortMetadataFiles: true,
+    lazy: false,
   };
   const getHiddenFilesWarningTarget = () => document.querySelector('[data-hidden-files-warning]');
   const getDiffFile = () => document.querySelector('diff-file');
@@ -97,12 +98,6 @@ describe('Rapid Diffs App', () => {
       browserTarget: document.querySelector('[data-file-browser]'),
       appData: app.appData,
     });
-  });
-
-  it('streams remaining diffs', () => {
-    createApp();
-    app.init();
-    app.streamRemainingDiffs();
     expect(useDiffsList().streamRemainingDiffs).toHaveBeenCalledWith(
       '/stream',
       document.querySelector('[data-stream-remaining-diffs]'),
@@ -115,7 +110,6 @@ describe('Rapid Diffs App', () => {
     window.gl.rapidDiffsPreload = preload;
     createApp();
     app.init();
-    app.streamRemainingDiffs();
     expect(useDiffsList().streamRemainingDiffs).toHaveBeenCalledWith(
       '/stream',
       document.querySelector('[data-stream-remaining-diffs]'),
@@ -123,17 +117,10 @@ describe('Rapid Diffs App', () => {
     );
   });
 
-  it('reloads diff files', () => {
-    createApp();
+  it('inits lazy app', () => {
+    // eslint-disable-next-line vue/one-component-per-file
+    createApp({ lazy: true });
     app.init();
-    app.reloadDiffs();
-    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload', undefined);
-  });
-
-  it('loads initial diff files', () => {
-    createApp();
-    app.init();
-    app.reloadDiffs(true);
     expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload', true);
   });
 
@@ -145,6 +132,7 @@ describe('Rapid Diffs App', () => {
   });
 
   it('skips sorting', () => {
+    // eslint-disable-next-line vue/one-component-per-file
     createApp({ shouldSortMetadataFiles: false });
     app.init();
     expect(app.appData.shouldSortMetadataFiles).toBe(false);

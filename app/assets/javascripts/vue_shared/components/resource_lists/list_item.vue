@@ -35,7 +35,7 @@ export default {
       type: Object,
       required: true,
       validator(resource) {
-        const requiredKeys = ['id', 'avatarUrl', 'avatarLabel', 'webUrl'];
+        const requiredKeys = ['id', 'avatarUrl', 'avatarLabel', 'relativeWebUrl'];
 
         return requiredKeys.every((key) => Object.prototype.hasOwnProperty.call(resource, key));
       },
@@ -77,6 +77,9 @@ export default {
     },
   },
   computed: {
+    avatarLabelLink() {
+      return this.resource.avatarLabelLink || this.resource.relativeWebUrl;
+    },
     statsPadding() {
       return this.showIcon ? 'gl-pl-11' : 'gl-pl-8';
     },
@@ -110,7 +113,7 @@ export default {
             :entity-id="resource.id"
             :entity-name="resource.avatarLabel"
             :label="resource.avatarLabel"
-            :label-link="resource.webUrl"
+            :label-link="avatarLabelLink"
             :src="resource.avatarUrl"
             shape="rect"
             :size="32"

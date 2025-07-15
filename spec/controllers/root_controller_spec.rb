@@ -183,6 +183,8 @@ RSpec.describe RootController, feature_category: :shared do
       end
 
       context 'who has customized their dashboard setting for personal homepage' do
+        let_it_be(:duo_code_review_bot) { create(:user, :duo_code_review_bot) }
+
         before do
           user.dashboard = 'homepage'
         end
@@ -196,6 +198,42 @@ RSpec.describe RootController, feature_category: :shared do
             get :index
 
             expect(response).to render_template 'dashboard/projects/index'
+          end
+
+          context 'when the `merge_request_dashboard` feature flag is enabled' do
+            before do
+              stub_feature_flags(merge_request_dashboard: true)
+            end
+
+            it 'passes the correct data to the view' do
+              get :index
+
+              expect(assigns[:homepage_app_data]).to eq({
+                review_requested_path: "/dashboard/merge_requests",
+                assigned_merge_requests_path: "/dashboard/merge_requests",
+                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
+                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
+                duo_code_review_bot_username: duo_code_review_bot.username
+              })
+            end
+          end
+
+          context 'when the `merge_request_dashboard` feature flag is disabled' do
+            before do
+              stub_feature_flags(merge_request_dashboard: false)
+            end
+
+            it 'passes the correct data to the view' do
+              get :index
+
+              expect(assigns[:homepage_app_data]).to eq({
+                review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
+                assigned_merge_requests_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
+                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
+                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
+                duo_code_review_bot_username: duo_code_review_bot.username
+              })
+            end
           end
         end
 

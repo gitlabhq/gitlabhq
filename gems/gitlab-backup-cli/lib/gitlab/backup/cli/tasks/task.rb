@@ -74,17 +74,6 @@ module Gitlab
             nil
           end
 
-          def object_storage?
-            return false unless config
-            return false unless config.respond_to?(:object_store) && config.object_store.enabled
-
-            return false unless Gitlab::Backup::Cli::Targets::ObjectStorage::SUPPORTED_PROVIDERS.include?(
-              config.object_store.connection.provider
-            )
-
-            true
-          end
-
           def asynchronous?
             target.asynchronous? || false
           end
@@ -96,13 +85,7 @@ module Gitlab
           def target
             return @target unless @target.nil?
 
-            @target = if object_storage?
-                        ::Gitlab::Backup::Cli::Targets::ObjectStorage.find_task(id, options, config)
-                      else
-                        local
-                      end
-
-            @target
+            @target ||= local
           end
 
           private

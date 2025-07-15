@@ -2,7 +2,7 @@
 
 require 'rubocop-rspec'
 
-module Rubocop
+module RuboCop
   module Cop
     module RSpec
       # Checks for let_it_be with before instead of before_all when using `add_*` methods

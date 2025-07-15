@@ -287,7 +287,7 @@ export default {
           ...labelTokenBase,
           operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
-          fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
+          fetchLatestLabels: this.fetchLatestLabels,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },
       ];

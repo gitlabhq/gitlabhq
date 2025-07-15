@@ -58,11 +58,6 @@ export default {
       })),
     };
   },
-  computed: {
-    codeTheme() {
-      return gon.user_color_scheme || 'white';
-    },
-  },
   mounted() {
     this.chunk.lines.forEach(this.processLine);
   },
@@ -97,8 +92,7 @@ export default {
 <template>
   <div
     id="search-blob-content"
-    class="file-content code gl-rounded-none !gl-border-0 !gl-border-transparent"
-    :class="codeTheme"
+    class="file-content code code-syntax-highlight-theme gl-rounded-none !gl-border-0 !gl-border-transparent"
   >
     <div class="blob-content">
       <div

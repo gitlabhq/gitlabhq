@@ -30,6 +30,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
           icon=""
           label="true"
           size="medium"
+          tag="button"
+          type="button"
           variant="default"
         >
           12345678
@@ -52,6 +54,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
         href="/history"
         icon=""
         size="medium"
+        tag="button"
+        type="button"
         variant="default"
       >
         History

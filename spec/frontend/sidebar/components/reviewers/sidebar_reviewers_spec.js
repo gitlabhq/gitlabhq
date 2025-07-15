@@ -149,12 +149,12 @@ describe('sidebar reviewers', () => {
       createComponent();
 
       expect(mediator.addSelfReview).not.toHaveBeenCalled();
-      expect(mediator.store.reviewers.length).toBe(0);
+      expect(mediator.store.reviewers).toHaveLength(0);
 
       wrapper.vm.reviewBySelf();
 
       expect(mediator.addSelfReview).toHaveBeenCalled();
-      expect(mediator.store.reviewers.length).toBe(1);
+      expect(mediator.store.reviewers).toHaveLength(1);
     });
   });
 });

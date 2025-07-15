@@ -50,7 +50,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       protectable_branches available_deploy_keys explore_catalog_path
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
-      merge_request_title_regex
+      merge_request_title_regex merge_request_title_regex_description
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -352,7 +352,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :target_branches,
         :state,
         :draft,
-        :approved,
         :labels,
         :label_name,
         :before,
@@ -1577,11 +1576,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     before_all do
-      create(:container_registry_protection_tag_rule, :immutable,
-        project: project,
-        tag_name_pattern: 'immutable-1'
-      )
-
       create(:container_registry_protection_tag_rule,
         project: project,
         minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
@@ -1607,6 +1601,21 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
           'minimumAccessLevelForDelete' => 'OWNER'
         )
       )
+    end
+  end
+
+  describe '.authorization_scopes' do
+    it 'includes :ai_workflows' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'fields with :ai_workflows scope' do
+    %w[id fullPath workItems languages].each do |field_name|
+      it "includes :ai_workflows scope for the #{field_name} field" do
+        field = described_class.fields[field_name]
+        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
     end
   end
 end

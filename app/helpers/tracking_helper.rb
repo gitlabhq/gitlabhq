@@ -2,8 +2,6 @@
 
 module TrackingHelper
   def tracking_attrs(label, action, property)
-    return {} unless ::Gitlab::Tracking.enabled?
-
     {
       data: {
         track_label: label,

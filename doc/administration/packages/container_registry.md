@@ -1352,7 +1352,7 @@ only starts it again after garbage collection completes. If you prefer to avoid 
 you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
 
 This command proceeds only if the metadata is in object storage. This command does not proceed
-if the [container registry metadata database](#container-registry-metadata-database) is enabled. 
+if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 
 {{< /alert >}}
 
@@ -1677,52 +1677,59 @@ To configure GitLab and the container registry on separate nodes:
    1. Ensure file permissions are correct.
    1. Run `sudo gitlab-ctl reconfigure` on both nodes.
 
-## Architecture of GitLab container registry
+## Container registry architecture
 
-The GitLab registry is what users use to store their own Docker images.
-Because of that the Registry is client facing, meaning that we expose it directly
-on the web server (or load balancers, LB for short).
+Users can store their own Docker images in the container registry. Because the registry
+is client facing, the registry is directly exposed
+on the web server or load balancer (LB).
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
-    A[User] --->|1: Docker login<br>on port 443| C{Frontend load<br>balancer}
-    C --->|2: connection attempt<br>without token fails| D[Registry]
-    C --->|5: connect with <br>token succeeds| D[Registry]
-    C --->|3: Docker<br>requests token| E[API frontend]
-    E --->|4:API returns<br>signed token| C
+    accTitle: Container registry authentication flow
+    accDescr: Shows how users authenticate with the container registry with GitLab API to push and pull Docker images
+
+    A[User] --->|1: Docker loginon port 443| C{Frontend loadbalancer}
+    C --->|2: connection attemptwithout token fails| D[Container registry]
+    C --->|5: connect with token succeeds| D[Container registry]
+    C --->|3: Dockerrequests token| E[API frontend]
+    E --->|4:API returnssigned token| C
 
     linkStyle 1 stroke-width:4px,stroke:red
     linkStyle 2 stroke-width:4px,stroke:green
 ```
 
-The flow described by the previous diagram:
+The authentication flow includes these steps:
 
-1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
-1. Web server connects to the Registry backend pool (by default, using port 5000). Because the user
-   didn't provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
-   Registry configuration) where to get one. This points to the GitLab API.
-1. The Docker client then connects to the GitLab API and obtains a token.
-1. The API signs the token with the registry key and hands it to the Docker client
-1. The Docker client now logs in again with the token received from the API. It can now push and pull Docker images.
+1. A user runs `docker login registry.gitlab.example` on their client. This request reaches the web server (or LB) on port 443.
+1. The web server connects to the registry backend pool (port 5000 by default). Because the user does not have a valid token, the registry returns a `401 Unauthorized` HTTP code and a URL to get a token. The URL is defined by the [`token_realm`](#registry-node-settings) setting in the registry configuration and points to the GitLab API.
+1. The Docker client connects to the GitLab API and obtains a token.
+1. The API signs the token with the registry key and sends it to the Docker client.
+1. The Docker client logs in again with the token received from the API. The authenticated client can now push and pull Docker images.
 
 Reference: <https://distribution.github.io/distribution/spec/auth/token/>
 
-### Communication between GitLab and Registry
+### Communication between GitLab and the container registry
 
-Registry doesn't have a way to authenticate users internally so it relies on
-GitLab to validate credentials. The connection between Registry and GitLab is
-TLS encrypted. The key is used by GitLab to sign the tokens while the certificate
-is used by Registry to validate the signature. By default, a self-signed certificate key pair is generated
-for all installations. This can be overridden as needed.
+The container registry cannot authenticate users internally, so it validates credentials through GitLab.
+The connection between the registry and GitLab is
+TLS encrypted.
 
-GitLab interacts with the Registry using the Registry private key. When a Registry
-request goes out, a new short-living (10 minutes) namespace limited token is generated
+GitLab uses the private key to sign tokens, and the registry uses the public key provided
+by the certificate to validate the signature.
+
+By default, a self-signed certificate key pair is generated
+for all installations. You can override this behavior using the [`internal_key`](#registry-node-settings) setting in the registry configuration.
+
+The following steps describe the communication flow:
+
+1. GitLab interacts with the registry using the registry's private key. When a registry
+request is sent, a short-lived (10 minutes), namespace-limited token is generated
 and signed with the private key.
-The Registry then verifies that the signature matches the registry certificate
+1. The registry verifies that the signature matches the registry certificate
 specified in its configuration and allows the operation.
-GitLab background jobs processing (through Sidekiq) also interacts with Registry.
-These jobs talk directly to Registry to handle image deletion.
+1. GitLab processes background jobs through Sidekiq, which also interacts with the registry.
+These jobs communicate directly with the registry to handle image deletion.
 
 ## Migrate from a third-party registry
 
@@ -1755,7 +1762,7 @@ The GitLab container registry should accept the same configuration that you are 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../feature_flags.md) named `set_delete_failed_container_repository`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `set_delete_failed_container_repository`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490354) in GitLab 17.6. Feature flag `set_delete_failed_container_repository` removed.
 
 {{< /history >}}

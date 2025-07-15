@@ -87,7 +87,7 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     end
   end
 
-  context "with access control", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509488' do
+  context "with access control" do
     before do
       stub_licensed_features(protected_refs_for_users: false)
     end
@@ -95,8 +95,7 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     include_examples "protected tags > access control > CE"
   end
 
-  context 'when the users for protected tags feature is off',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509488' do
+  context 'when the users for protected tags feature is off' do
     before do
       stub_licensed_features(protected_refs_for_users: false)
     end

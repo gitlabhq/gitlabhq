@@ -283,7 +283,7 @@ GitLab で、Vault サーバーに関する詳細を提供するために、次�
 - `VAULT_SERVER_URL` - Vault サーバーの URL（`https://vault.example.com:8200` など）。
 - `VAULT_AUTH_ROLE` - オプション。認証を試行するときに使用する Vault JWT 認証ロールの名前。このチュートリアルでは、`myproject-staging`および`myproject-production`という名前の2つのロールをすでに作成しました。ロールが指定されていない場合、Vault は認証方法のConfigure時に指定された[デフォルトロール](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role)を使用します。
 - `VAULT_AUTH_PATH` - オプション。認証方法がマウントされているパス。デフォルトは `jwt` です。
-- `VAULT_NAMESPACE` - オプション。シークレットの読み取りと認証に使用する[ Vault Enterprise ネームスペース](https://developer.hashicorp.com/vault/docs/enterprise/namespaces)。ネームスペースが指定されていない場合、Vault はルート（`/`）ネームスペースを使用します。この設定は Vault オープンソースでは無視されます。
+- `VAULT_NAMESPACE` - オプション。シークレットの読み取りと認証に使用する[Vault Enterprise ネームスペース](https://developer.hashicorp.com/vault/docs/enterprise/namespaces)。ネームスペースが指定されていない場合、Vault はルート（`/`）ネームスペースを使用します。この設定は Vault オープンソースでは無視されます。
 
 ### Hashicorp Vault を使用した自動IDトークン認証
 

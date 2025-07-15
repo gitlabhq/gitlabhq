@@ -20,10 +20,29 @@ module Gitlab
               from_markdown_image(markdown_node)
             when :link
               from_markdown_link(markdown_node)
+            when :text, :paragraph
+              from_markdown_text(markdown_node)
             end
           end
 
           private
+
+          # this checks for any attachment links that appear as plain text without
+          # a filetype suffix e.g. "https://github.com/user-attachments/assets/75334fd4"
+          # each markdown_node will only ever have a single url as embedded media on
+          # GitHub is always on its own line
+          def from_markdown_text(markdown_node)
+            text = markdown_node.to_plaintext.strip
+
+            url = URI.extract(text, %w[http https]).first
+            return if url.nil?
+
+            return unless github_url?(url, media: true)
+            return unless whitelisted_type?(url, media: true)
+
+            # we don't have the :alt or :name so we use a default name
+            new("media_attachment", url)
+          end
 
           def from_markdown_image(markdown_node)
             url = markdown_node.url
@@ -100,6 +119,10 @@ module Gitlab
             "#{::Gitlab::GithubImport::MarkdownText.github_url}/#{import_source}/assets",
             ::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN
           )
+        end
+
+        def user_attachment?
+          url.start_with?("#{::Gitlab::GithubImport::MarkdownText.github_url}/user-attachments/")
         end
 
         def inspect

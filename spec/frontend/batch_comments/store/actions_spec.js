@@ -201,6 +201,21 @@ describe('Batch comments store actions', () => {
     });
   });
 
+  describe('publishReviewInBatches', () => {
+    it('publishes draft notes in batches', async () => {
+      mock.onAny().reply(HTTP_STATUS_OK);
+      jest.spyOn(axios, 'post');
+
+      store.$patch({ drafts: [{ id: 1 }, { id: 2 }] });
+
+      await store.publishReviewInBatches({}, 1);
+
+      expect(axios.post.mock.calls[0]).toEqual(['http://test.host', { ids: [1] }]);
+      expect(axios.post.mock.calls[1]).toEqual(['http://test.host', { ids: [2] }]);
+      expect(store[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]).toHaveBeenCalled();
+    });
+  });
+
   describe('updateDraft', () => {
     service.update = jest.fn();
     service.update.mockResolvedValue({ data: { id: 1 } });

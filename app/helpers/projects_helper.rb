@@ -399,7 +399,7 @@ module ProjectsHelper
                       .external_authorization_service_default_label
 
     s_(
-      "ExternalAuthorizationService|When no classification label is set the "\
+      "ExternalAuthorizationService|When no classification label is set the " \
         "default label `%{default_label}` will be used."
     ) % { default_label: default_label }
   end
@@ -498,7 +498,7 @@ module ProjectsHelper
     return unless current_user
     return if project.empty_repo?
 
-    if current_user.already_forked?(project) && !current_user.has_forkable_groups?
+    if current_user.already_forked?(project) && !current_user.has_groups_allowing_project_creation?
       user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
 
@@ -555,7 +555,7 @@ module ProjectsHelper
       cicd_catalog_path: cicd_catalog_path,
       is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
-      is_project_marked_for_deletion: project.marked_for_deletion?.to_s,
+      is_project_marked_for_deletion: project.self_deletion_scheduled?.to_s,
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
@@ -575,7 +575,7 @@ module ProjectsHelper
   def archiving_available?(project)
     return false unless project
 
-    project.persisted? && !project.marked_for_deletion? && can?(current_user, :archive_project, project)
+    project.persisted? && !project.self_deletion_scheduled? && can?(current_user, :archive_project, project)
   end
 
   def show_archived_project_banner?(project)
@@ -988,20 +988,6 @@ module ProjectsHelper
   end
 
   def project_permissions_data(project, target_form_id = nil)
-    data = visibility_confirm_modal_data(project, target_form_id)
-    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(
-      :duo_features_enabled,
-      project,
-      method(:edit_group_path)
-    ).to_json
-    data.merge!(
-      {
-        cascading_settings_data: cascading_settings_data
-      }
-    )
-  end
-
-  def visibility_confirm_modal_data(project, target_form_id = nil)
     {
       target_form_id: target_form_id,
       button_testid: 'reduce-project-visibility-button',
@@ -1011,6 +997,16 @@ module ProjectsHelper
       additional_information: _('Note: current forks will keep their visibility level.'),
       html_confirmation_message: true.to_s,
       show_visibility_confirm_modal: show_visibility_confirm_modal?(project).to_s
+    }
+  end
+
+  def gitlab_duo_settings_data(project)
+    {
+      cascadingSettingsData: project_cascading_namespace_settings_tooltip_data(
+        :duo_features_enabled,
+        project,
+        method(:edit_group_path)
+      )
     }
   end
 

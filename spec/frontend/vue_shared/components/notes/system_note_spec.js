@@ -1,30 +1,38 @@
+import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';
-import createStore from '~/notes/stores';
 import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
+Vue.use(PiniaVuePlugin);
+
 describe('system note component', () => {
+  let pinia;
   let vm;
   let props;
   let mock;
 
   function createComponent(propsData = {}) {
-    const store = createStore();
-    store.dispatch('setTargetNoteHash', `note_${props.note.id}`);
+    useNotes().setTargetNoteHash(`note_${props.note.id}`);
 
     vm = mount(IssueSystemNote, {
-      store,
+      pinia,
       propsData,
     });
   }
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
     props = {
       note: {
         id: '1424',
@@ -43,6 +51,8 @@ describe('system note component', () => {
     };
 
     mock = new MockAdapter(axios);
+    useLegacyDiffs();
+    useNotes();
   });
 
   afterEach(() => {

@@ -15,8 +15,11 @@ All record pertaining to dependency graphs are stored in `sbom_graph_paths` data
 
 ## Implementation details
 
-> [!note]
-> This feature is a work in progress so this document can get out of date
+{{< alert type="note" >}}
+
+This feature is a work in progress so this document can get out of date
+
+{{< /alert >}}
 
 1. [Sbom::Ingestion::IngestReportService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/sbom/ingestion/ingest_report_service.rb#L5) is responsible for consuming the SBoM report.
 1. After it's done, we fire off [Sbom::BuildDependencyGraphWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/sbom/build_dependency_graph_worker.rb) which kicks off the dependency graph calculation to a background worker.

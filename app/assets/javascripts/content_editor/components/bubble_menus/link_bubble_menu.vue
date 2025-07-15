@@ -11,6 +11,7 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { getMarkType, getMarkRange } from '@tiptap/core';
+import { joinPaths } from '~/lib/utils/url_utility';
 import Link from '../../extensions/link';
 import EditorStateObserver from '../editor_state_observer.vue';
 import BubbleMenu from './bubble_menu.vue';
@@ -167,7 +168,11 @@ export default {
     },
 
     copyLinkHref() {
-      navigator.clipboard.writeText(this.linkCanonicalSrc);
+      const fullUrl = this.linkCanonicalSrc.startsWith('http')
+        ? this.linkCanonicalSrc
+        : joinPaths(gon.gitlab_url, this.linkHref);
+
+      navigator.clipboard.writeText(fullUrl);
     },
 
     removeLink() {

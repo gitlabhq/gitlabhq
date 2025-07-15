@@ -25,8 +25,8 @@ module BulkImports
 
     def uploads_sharding_key
       {
-        project_id: export&.project_id,
-        namespace_id: export&.group_id
+        project_id: project_id,
+        namespace_id: group_id
       }
     end
   end

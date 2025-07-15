@@ -30,6 +30,7 @@ module Issues
       issue.update_project_counter_caches
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
       track_incident_action(current_user, issue, :incident_reopened)
+      GraphqlTriggers.work_item_updated(issue)
     end
 
     # overriden in EE

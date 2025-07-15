@@ -5,7 +5,7 @@ import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
-import RootCauseAnalysisHotspotExperiment from 'ee_else_ce/ci/job_details/components/root_cause_analysis_hotspot_experiment.vue';
+import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
@@ -31,7 +31,7 @@ export default {
     GlIcon,
     Log,
     JobLogTopBar,
-    RootCauseAnalysisHotspotExperiment,
+    RootCauseAnalysisButton,
     StuckBlock,
     UnmetPrerequisitesBlock,
     Sidebar,
@@ -324,8 +324,8 @@ export default {
             ]"
             data-testid="rca-bar-component"
           >
-            <div class="rca-bar-content gl-flex gl-w-full" data-testid="rca-bar-content">
-              <root-cause-analysis-hotspot-experiment
+            <div class="gl-flex gl-w-full">
+              <root-cause-analysis-button
                 :job-id="job.id"
                 :job-status-group="job.status.group"
                 :can-troubleshoot-job="glAbilities.troubleshootJobWithAi"
@@ -339,7 +339,6 @@ export default {
         <empty-state
           v-if="!hasJobLog || showUpdateVariablesState"
           :illustration-path="emptyStateIllustration.image"
-          :illustration-size-class="emptyStateIllustration.size"
           :is-retryable="isJobRetryable"
           :job-id="job.id"
           :job-name="jobName"

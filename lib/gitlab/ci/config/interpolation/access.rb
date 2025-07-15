@@ -48,7 +48,9 @@ module Gitlab
             @value ||= objects.inject(@ctx) do |memo, value|
               key = value.to_sym
 
-              break @errors.push("unknown input name provided: `#{key}`") unless memo.key?(key)
+              unless memo.respond_to?(:key?) && memo.key?(key)
+                break @errors.push("unknown input name provided: `#{key}` in `#{@content}`")
+              end
 
               memo.fetch(key)
             end

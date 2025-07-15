@@ -20,5 +20,14 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
     def self.analyzer_types
       ANALYZER_TYPES
     end
+
+    def self.extended_analyzer_types
+      ANALYZER_TYPES.merge({
+        secret_detection_secret_push_protection: 10,
+        container_scanning_for_registry: 11,
+        secret_detection_pipeline_based: 12,
+        container_scanning_pipeline_based: 13
+      })
+    end
   end
 end

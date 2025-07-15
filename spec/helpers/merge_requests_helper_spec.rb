@@ -211,13 +211,14 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
   describe '#sticky_header_data' do
     let_it_be(:project) { create(:project) }
-    let(:merge_request) do
+    let_it_be(:draft_merge_request) { create(:merge_request, :opened, :draft_merge_request) }
+    let(:imported_merge_request) do
       create(:merge_request, source_project: project, target_project: project, imported_from: imported_from)
     end
 
-    subject { sticky_header_data(project, merge_request) }
-
     context 'when the merge request is not imported' do
+      subject { sticky_header_data(project, imported_merge_request) }
+
       let(:imported_from) { :none }
 
       it 'returns data with imported set as false' do
@@ -226,10 +227,20 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
 
     context 'when the merge request is imported' do
+      subject { sticky_header_data(project, imported_merge_request) }
+
       let(:imported_from) { :gitlab_migration }
 
       it 'returns data with imported set as true' do
         expect(subject[:imported]).to eq('true')
+      end
+    end
+
+    context 'when the merge request isDraft' do
+      subject { sticky_header_data(project, draft_merge_request) }
+
+      it 'returns data with is_draft set as true' do
+        expect(subject[:isDraft]).to eq('true')
       end
     end
   end
@@ -395,7 +406,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     it 'returns the correct data' do
       expected_data = {
-        group_id: group.id,
+        namespace_id: group.id,
         full_path: group.full_path,
         show_new_resource_dropdown: "false",
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,

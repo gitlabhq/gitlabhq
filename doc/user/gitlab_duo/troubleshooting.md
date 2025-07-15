@@ -102,7 +102,7 @@ you can also do the following:
 
 - If you have GitLab Duo Core, verify that you have:
   - A Premium or Ultimate subscription.
-  - [Turned on IDE features](turn_on_off.md#change-gitlab-duo-core-availability).
+  - [Turned on IDE features](turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - If you have GitLab Duo Pro or Enterprise:
   - Verify that [a subscription add-on has been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
   - Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).

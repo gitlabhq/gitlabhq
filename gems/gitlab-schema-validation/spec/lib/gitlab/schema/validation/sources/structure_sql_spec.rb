@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'structure sql schema assertions for' do |object_exists_method, all_objects_method|
+RSpec.shared_examples 'structure sql schema assertions for' do |object_exists_method, all_objects_method,
+                                                                fetch_object_method|
   subject(:structure_sql) { described_class.new(structure_file_path, schema_name) }
 
   let(:structure_file_path) { 'spec/fixtures/structure.sql' }
@@ -15,6 +16,11 @@ RSpec.shared_examples 'structure sql schema assertions for' do |object_exists_me
 
     it 'returns false when schema object does not exists' do
       expect(structure_sql.public_send(object_exists_method, 'invalid-object-name')).to be_falsey
+    end
+
+    it 'fetch fetches the schema object' do
+      expect(structure_sql.public_send(fetch_object_method,
+        valid_schema_object_name)).to be_an_instance_of(schema_object)
     end
   end
 
@@ -42,7 +48,7 @@ RSpec.describe Gitlab::Schema::Validation::Sources::StructureSql, feature_catego
         index_on_deploy_keys_id_and_type_and_public index_users_on_public_email_excluding_null_and_empty]
     end
 
-    include_examples 'structure sql schema assertions for', 'index_exists?', 'indexes'
+    include_examples 'structure sql schema assertions for', 'index_exists?', 'indexes', 'fetch_index_by_name'
   end
 
   context 'when having triggers' do
@@ -50,7 +56,7 @@ RSpec.describe Gitlab::Schema::Validation::Sources::StructureSql, feature_catego
     let(:valid_schema_object_name) { 'trigger' }
     let(:expected_objects) { %w[trigger wrong_trigger missing_trigger_1 projects_loose_fk_trigger] }
 
-    include_examples 'structure sql schema assertions for', 'trigger_exists?', 'triggers'
+    include_examples 'structure sql schema assertions for', 'trigger_exists?', 'triggers', 'fetch_trigger_by_name'
   end
 
   context 'when having tables' do
@@ -61,6 +67,6 @@ RSpec.describe Gitlab::Schema::Validation::Sources::StructureSql, feature_catego
         operations_user_lists]
     end
 
-    include_examples 'structure sql schema assertions for', 'table_exists?', 'tables'
+    include_examples 'structure sql schema assertions for', 'table_exists?', 'tables', 'fetch_table_by_name'
   end
 end

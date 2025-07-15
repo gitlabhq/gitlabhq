@@ -98,7 +98,7 @@ Project audit events can also be accessed using the [project audit events API](.
 
 The time zone used for audit events depends on where you view them:
 
-- In GitLab UI, your local time zone (GitLab 15.7 and later) or UTC (GitLab 15.6 and earlier) is used.
+- In GitLab UI, your local time zone is used.
 - The [audit events API](../../api/audit_events.md) returns dates and times in UTC by default, or the
   [configured time zone](../../administration/timezone.md) on GitLab Self-Managed.
 - In CSV exports, UTC is used.

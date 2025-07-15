@@ -15,11 +15,11 @@ title: Product analytics
 
 {{< history >}}
 
-- Introduced in GitLab 15.4 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+- Introduced in GitLab 15.4 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags/_index.md) named `cube_api_proxy`. Disabled by default.
 - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
 - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-- Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+- Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags/_index.md) named `product_analytics_snowplow_support`. Disabled by default.
 - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab Self-Managed to GitLab.com in 16.7.
 - Enabled in GitLab 16.7 as a [beta](../../policy/development_stages_support.md#beta) feature.
@@ -92,8 +92,8 @@ accDescr: How data is collected, processed, and visualized in dashboards.
 
 {{< history >}}
 
-- Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-- Moved behind a [flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+- Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `cube_api_proxy`. Disabled by default.
+- Moved behind a [flag](../../administration/feature_flags/_index.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
 - Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 - Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 - Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
@@ -251,7 +251,7 @@ You can instrument code to collect data by using [tracking SDKs](../_index.md).
 
 {{< history >}}
 
-- Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+- Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags/_index.md) named `product_analytics_internal_preview`. Disabled by default.
 
 {{< /history >}}
 
@@ -276,7 +276,7 @@ When product analytics is enabled and onboarded, two built-in dashboards are ava
 
 {{< history >}}
 
-- Introduced in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+- Introduced in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `product_analytics_dashboards`. Disabled by default.
 
 {{< /history >}}
 
@@ -346,7 +346,7 @@ If the request is successful, the returned JSON includes an array of rows of res
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `product_analytics_usage_quota`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427838) in GitLab 16.7. Feature flag `product_analytics_usage_quota` removed.
 
 {{< /history >}}

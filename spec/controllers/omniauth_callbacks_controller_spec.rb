@@ -163,7 +163,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
-    context 'when authentication succeeds' do
+    context 'when authentication succeeds', :prometheus do
       let(:extern_uid) { 'my-uid' }
       let(:provider) { :github }
 
@@ -171,9 +171,10 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         it 'increments Prometheus counter' do
           expect { post(provider) }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                             .get(:gitlab_omniauth_login_total)
-                            .get(omniauth_provider: 'github', status: 'succeeded')
+                            &.get(omniauth_provider: 'github', status: 'succeeded')
+                            .to_f
             end.by(1)
           )
         end
@@ -185,7 +186,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         end
       end
 
-      context 'with signed-in user' do
+      context 'with signed-in user', :prometheus do
         before do
           sign_in user
         end
@@ -197,9 +198,10 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         it 'increments Prometheus counter' do
           expect { post(provider) }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                              .get(:gitlab_omniauth_login_total)
-                             .get(omniauth_provider: 'github', status: 'succeeded')
+                             &.get(omniauth_provider: 'github', status: 'succeeded')
+                             .to_f
             end.by(1)
           )
         end
@@ -252,6 +254,23 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       end
     end
 
+    context 'when the user is trying to sign-in from restricted country' do
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :github }
+      let(:error_message) { "It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong" }
+
+      before do
+        allow(controller).to receive(:allowed_new_user?).and_raise(OmniauthCallbacksController::SignUpFromRestrictedCountyError)
+
+        post provider
+      end
+
+      it 'redirects to root path with message' do
+        expect(response).to redirect_to new_user_session_path
+        expect(flash[:alert]).to include(error_message)
+      end
+    end
+
     context 'when the user is on the last sign in attempt' do
       let(:extern_uid) { 'my-uid' }
 
@@ -286,7 +305,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       end
     end
 
-    context 'when sign in fails' do
+    context 'when sign in fails', :prometheus do
       include RoutesHelpers
 
       let(:extern_uid) { 'my-uid' }
@@ -310,9 +329,10 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         ForgeryProtection.with_forgery_protection do
           expect { post :failure }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                              .get(:gitlab_omniauth_login_total)
-                             .get(omniauth_provider: 'saml', status: 'failed')
+                             &.get(omniauth_provider: 'saml', status: 'failed')
+                             .to_f
             end.by(1)
           )
         end
@@ -910,6 +930,12 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         end
       end
     end
+
+    it 'does not log saml_response for debugging' do
+      expect(Gitlab::AuthLogger).not_to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+      get provider
+    end
   end
 
   describe '#saml' do
@@ -1079,9 +1105,21 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
 
         expect(request.env['warden']).to be_authenticated
       end
+
+      it 'logs saml_response for debugging' do
+        expect(Gitlab::AuthLogger).to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+        post :saml_okta, params: { SAMLResponse: mock_saml_response }
+      end
     end
 
     it_behaves_like "stores value for provider_2FA to session according to saml response"
+
+    it 'logs saml_response for debugging' do
+      expect(Gitlab::AuthLogger).to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+      post :saml, params: { SAMLResponse: mock_saml_response }
+    end
   end
 
   describe 'enable admin mode' do

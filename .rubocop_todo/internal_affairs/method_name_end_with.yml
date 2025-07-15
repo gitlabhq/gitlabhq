@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-InternalAffairs/MethodNameEndWith:
-  Details: grace period
-  Exclude:
-    - 'rubocop/cop/gitlab/predicate_memoization.rb'

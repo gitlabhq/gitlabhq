@@ -44,23 +44,6 @@ module Gitlab
         connection.execute(alter_new_sequences_range_trigger)
       end
 
-      private
-
-      def sequences
-        if sequence_names.present?
-          Gitlab::Database::PostgresSequence.where(seq_name: sequence_names)
-        else
-          Gitlab::Database::PostgresSequence.all
-        end
-      end
-
-      def with_lock_retries(&)
-        Gitlab::Database::WithLockRetries.new(
-          connection: connection,
-          logger: logger
-        ).run(raise_on_exhaustion: false, &)
-      end
-
       def alter_new_sequences_range_function
         <<~SQL
           CREATE OR REPLACE FUNCTION alter_new_sequences_range()
@@ -80,7 +63,9 @@ module Gitlab
                 SELECT min_value, max_value INTO current_minval, current_maxval FROM pg_sequences
                 WHERE sequencename = sequence_name;
 
-                IF current_minval != #{minval} OR current_maxval != #{maxval} THEN
+                -- On bumping sequence ranges using gitlab:db:increase_sequences_range, new ranges will always be
+                -- greater than the existing ones. The below check catches the default minval (1) and updates accordingly.
+                IF current_minval < #{minval} OR current_maxval < #{maxval} THEN
                   RAISE NOTICE 'Altering sequence "%" with range [%, %]', sequence_name, #{minval}, #{maxval};
 
                   EXECUTE FORMAT('ALTER SEQUENCE %I START %s RESTART %s MINVALUE %s MAXVALUE %s',
@@ -106,6 +91,23 @@ module Gitlab
             WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE', 'CREATE SEQUENCE', 'ALTER SEQUENCE')
           EXECUTE FUNCTION alter_new_sequences_range();
         SQL
+      end
+
+      private
+
+      def sequences
+        if sequence_names.present?
+          Gitlab::Database::PostgresSequence.where(seq_name: sequence_names)
+        else
+          Gitlab::Database::PostgresSequence.all
+        end
+      end
+
+      def with_lock_retries(&)
+        Gitlab::Database::WithLockRetries.new(
+          connection: connection,
+          logger: logger
+        ).run(raise_on_exhaustion: false, &)
       end
     end
   end

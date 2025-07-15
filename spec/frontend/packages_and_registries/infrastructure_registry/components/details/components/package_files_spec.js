@@ -1,6 +1,6 @@
 import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue/';
+import { nextTick } from 'vue';
 import stubChildren from 'helpers/stub_children';
 import component from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';

@@ -21,7 +21,9 @@ module Search
         projects,
         order_by: params[:order_by],
         sort: params[:sort],
-        filters: filters)
+        filters: filters,
+        source: params[:source]
+      )
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
     create(
       :import_source_user,
       source_user_identifier: 999,
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )
@@ -129,8 +129,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
           it 'does not import second approve and note' do
             expect { subject.execute }
-              .to change { Note.count }.by(0)
-              .and change { Approval.count }.by(0)
+              .to not_change { Note.count }
+              .and not_change { Approval.count }
           end
 
           it 'only pushes placeholder references for reviewer' do
@@ -315,8 +315,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
             it 'does not import second approve and note' do
               expect { subject.execute }
-                .to change { Note.count }.by(0)
-                .and change { Approval.count }.by(0)
+                .to not_change { Note.count }
+                .and not_change { Approval.count }
             end
           end
         end

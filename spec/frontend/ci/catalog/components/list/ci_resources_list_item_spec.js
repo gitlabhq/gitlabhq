@@ -58,6 +58,7 @@ describe('CiResourcesListItem', () => {
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
   const findVersionBadge = () => wrapper.findComponent(GlBadge);
+  const findArchiveBadge = () => wrapper.findByTestId('archive-badge');
 
   const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
@@ -106,7 +107,7 @@ describe('CiResourcesListItem', () => {
       createComponent();
 
       const markdown = findMarkdown();
-      expect(markdown.props().markdown.length).toBe(260);
+      expect(markdown.props().markdown).toHaveLength(260);
     });
 
     it('hides the resource description on mobile devices', () => {
@@ -404,6 +405,34 @@ describe('CiResourcesListItem', () => {
           expect(findUsage().text()).toBe('4');
         });
       });
+    });
+  });
+
+  describe('archive badge', () => {
+    it('renders the archive badge when resource is archived', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...resource,
+            archived: true,
+          },
+        },
+      });
+
+      expect(findArchiveBadge().exists()).toBe(true);
+    });
+
+    it('does not render the archive badge when resource is not archived', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...resource,
+            archived: false,
+          },
+        },
+      });
+
+      expect(findArchiveBadge().exists()).toBe(false);
     });
   });
 });

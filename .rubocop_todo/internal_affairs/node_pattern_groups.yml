@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-InternalAffairs/NodePatternGroups:
-  Details: grace period
-  Exclude:
-    - 'rubocop/cop/user_admin.rb'

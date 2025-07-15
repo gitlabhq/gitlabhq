@@ -50,6 +50,8 @@ export const initSecurityConfiguration = (el) => {
       ...parseBooleanDataAttributes(el, [
         'secretPushProtectionAvailable',
         'secretPushProtectionEnabled',
+        'validityChecksAvailable',
+        'validityChecksEnabled',
         'userIsProjectAdmin',
       ]),
     },

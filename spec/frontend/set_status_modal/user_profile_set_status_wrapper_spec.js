@@ -80,9 +80,7 @@ describe('UserProfileSetStatusWrapper', () => {
 
         await nextTick();
 
-        expect(
-          findInput(defaultProvide.fields.clearStatusAfter.name).attributes('value'),
-        ).toBeUndefined();
+        expect(findInput(defaultProvide.fields.clearStatusAfter.name).element.value).toBe('');
       });
     });
 

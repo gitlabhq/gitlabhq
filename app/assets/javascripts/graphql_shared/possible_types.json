@@ -3,6 +3,14 @@
     "ContainerProtectionAccessLevel",
     "ContainerProtectionTagRule"
   ],
+  "AiCatalogItem": [
+    "AiCatalogAgent",
+    "AiCatalogFlow"
+  ],
+  "AiCatalogItemVersion": [
+    "AiCatalogAgentVersion",
+    "AiCatalogFlowVersion"
+  ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
@@ -170,6 +178,7 @@
     "EpicIssue",
     "Issue",
     "MergeRequest",
+    "ProjectComplianceViolation",
     "Snippet",
     "Vulnerability",
     "WikiPage"
@@ -286,6 +295,7 @@
     "MergeRequestReviewer",
     "Namespace",
     "Project",
+    "ProjectComplianceViolation",
     "UserCore",
     "Vulnerability",
     "WikiPage",

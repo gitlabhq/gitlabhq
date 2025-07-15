@@ -123,10 +123,10 @@ describe('deprecatedJQueryDropdown', () => {
     });
 
     it('should select a following item on DOWN keypress', () => {
-      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(0);
+      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement)).toHaveLength(0);
       const randomIndex = Math.floor(Math.random() * (test.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
+        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement)).toHaveLength(1);
         expect($(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, test.$dropdownMenuElement)).toHaveClass(
           'is-focused',
         );
@@ -134,12 +134,12 @@ describe('deprecatedJQueryDropdown', () => {
     });
 
     it('should select a previous item on UP keypress', () => {
-      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(0);
+      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement)).toHaveLength(0);
       navigateWithKeys('down', test.projectsData.length - 1, () => {
-        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
+        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement)).toHaveLength(1);
         const randomIndex = Math.floor(Math.random() * (test.projectsData.length - 2)) + 0;
         navigateWithKeys('up', randomIndex, () => {
-          expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
+          expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement)).toHaveLength(1);
           expect(
             $(
               `${ITEM_SELECTOR}:eq(${test.projectsData.length - 2 - randomIndex}) a`,
@@ -296,7 +296,7 @@ describe('deprecatedJQueryDropdown', () => {
       const li = dropdown.renderItem(sep);
 
       expect(li).toHaveClass('separator');
-      expect(li.childNodes.length).toEqual(0);
+      expect(li.childNodes).toHaveLength(0);
     });
 
     it('should return an empty .divider li when when appropriate', () => {
@@ -305,7 +305,7 @@ describe('deprecatedJQueryDropdown', () => {
       const li = dropdown.renderItem(div);
 
       expect(li).toHaveClass('divider');
-      expect(li.childNodes.length).toEqual(0);
+      expect(li.childNodes).toHaveLength(0);
     });
 
     it('should return a .dropdown-header li with the correct content when when appropriate', () => {
@@ -315,7 +315,7 @@ describe('deprecatedJQueryDropdown', () => {
       const li = dropdown.renderItem(header);
 
       expect(li).toHaveClass('dropdown-header');
-      expect(li.childNodes.length).toEqual(1);
+      expect(li.childNodes).toHaveLength(1);
       expect(li.textContent).toEqual(text);
     });
 

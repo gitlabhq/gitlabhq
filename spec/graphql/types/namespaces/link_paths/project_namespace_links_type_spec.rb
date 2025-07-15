@@ -10,17 +10,27 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
 
   subject(:type) { described_class.resolve_type(namespace, {}) }
 
-  it_behaves_like "expose all link paths fields for the namespace"
+  it_behaves_like "expose all link paths fields for the namespace" do
+    let(:type_specific_fields) { %i[newWorkItemEmailAddress] }
+  end
 
   shared_examples "project namespace link paths values" do
+    before do
+      stub_incoming_email_setting(enabled: true, address: 'incoming+%{key}@localhost.com')
+    end
+
     it_behaves_like "common namespace link paths values"
 
     where(:field, :value) do
       :issues_list | lazy { "/#{namespace.full_path}/-/issues" }
       :labels_manage | lazy { "/#{namespace.full_path}/-/labels" }
       :new_project | lazy { "/projects/new?namespace_id=#{group.id}" }
-      :new_comment_template | "/-/profile/comment_templates"
+      :new_comment_template | [{ href: "/-/profile/comment_templates", text: "Your comment templates" }]
       :contribution_guide_path | nil
+      :new_work_item_email_address | lazy do
+        "incoming+#{namespace.project.full_path_slug}-#{namespace.project.id}-" \
+          "#{user.incoming_email_token}-issue@localhost.com"
+      end
     end
 
     with_them do

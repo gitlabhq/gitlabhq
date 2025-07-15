@@ -56,7 +56,7 @@ describe('ListItem', () => {
 
     expect(avatarLabeled.props()).toMatchObject({
       label: resource.avatarLabel,
-      labelLink: resource.webUrl,
+      labelLink: resource.relativeWebUrl,
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({
@@ -64,6 +64,18 @@ describe('ListItem', () => {
       'entity-name': resource.fullName,
       src: resource.avatarUrl,
       shape: 'rect',
+    });
+  });
+
+  describe('when resource.avatarLabelLink is defined', () => {
+    const avatarLabelLink = '/foo';
+
+    beforeEach(() => {
+      createComponent({ propsData: { resource: { ...resource, avatarLabelLink } } });
+    });
+
+    it('uses that for labeLink prop', () => {
+      expect(findAvatarLabeled().props('labelLink')).toBe(avatarLabelLink);
     });
   });
 

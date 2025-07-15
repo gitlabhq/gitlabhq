@@ -1,6 +1,6 @@
 ---
 stage: Tenant Scale
-group: Organizations
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Achievements
 ---
@@ -15,14 +15,14 @@ title: Achievements
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `achievements`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags/_index.md) named `achievements`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `achievements`.
+an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `achievements`.
 
 {{< /alert >}}
 

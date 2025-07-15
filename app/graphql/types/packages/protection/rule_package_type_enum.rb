@@ -19,9 +19,7 @@ module Types
 
         value 'GENERIC',
           value: 'generic',
-          experiment: { milestone: '18.1' },
-          description: 'Packages of the Generic format. ' \
-            'Available only when feature flag `packages_protected_packages_generic` is enabled.'
+          description: 'Packages of the Generic format.'
 
         value 'MAVEN',
           value: 'maven',
@@ -33,9 +31,7 @@ module Types
 
         value 'NUGET',
           value: 'nuget',
-          experiment: { milestone: '18.0' },
-          description: 'Packages of the NuGet format. ' \
-            'Available only when feature flag `packages_protected_packages_nuget` is enabled.'
+          description: 'Packages of the NuGet format.'
 
         value 'PYPI',
           value: 'pypi',

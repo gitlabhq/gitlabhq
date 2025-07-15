@@ -228,8 +228,10 @@ module Ci
         .project_type
     end
 
-    scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
-    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
+    # Never contacted runners (NULL contacted_at) appear first when sorting ascending
+    scope :order_contacted_at_asc, -> { order(arel_table[:contacted_at].asc.nulls_first) }
+    # Never contacted runners (NULL contacted_at) appear last when sorting descending
+    scope :order_contacted_at_desc, -> { order(arel_table[:contacted_at].desc.nulls_last) }
     scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
     scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }
@@ -238,14 +240,11 @@ module Ci
     scope :with_tags, -> { preload(:tags) }
     scope :with_creator, -> { preload(:creator) }
 
-    scope :with_encrypted_tokens, ->(token_values) do
-      where(token_encrypted: Array.wrap(token_values))
-    end
-
     scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints
     validates :sharding_key_id, presence: true, unless: :instance_type?
+    validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
     validates :access_level, presence: true
@@ -254,6 +253,7 @@ module Ci
 
     validate :no_projects, unless: :project_type?
     validate :no_sharding_key_id, if: :instance_type?
+    validate :no_organization_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
@@ -550,6 +550,8 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
+        ensure_organization_id # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/523850
+
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
@@ -625,10 +627,11 @@ module Ci
         .min&.from_now
     end
 
+    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
     def ensure_organization_id
-      return unless instance_type? || owner.present?
+      return if instance_type?
 
-      self.organization_id = instance_type? ? nil : owner.organization_id
+      self.organization_id ||= owner&.organization_id
     end
 
     def cleanup_runner_queue
@@ -662,6 +665,10 @@ module Ci
 
     def no_sharding_key_id
       errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
+    end
+
+    def no_organization_id
+      errors.add(:runner, 'cannot have organization_id assigned') if organization_id
     end
 
     def no_projects

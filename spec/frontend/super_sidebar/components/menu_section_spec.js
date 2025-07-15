@@ -40,7 +40,7 @@ describe('MenuSection component', () => {
         { title: 'Item2', href: '/item2' },
       ],
     });
-    expect(findNavItems().length).toBe(2);
+    expect(findNavItems()).toHaveLength(2);
   });
 
   it('associates button with list with aria-controls', () => {

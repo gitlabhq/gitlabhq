@@ -6,6 +6,10 @@ RSpec.describe "Admin > Admin sees projects statistics", feature_category: :grou
   let(:current_user) { create(:admin) }
 
   before do
+    # The project statistics isn't available when `admin_projects_vue` flag is enabled. This will be added
+    # later on in https://gitlab.com/gitlab-org/gitlab/-/issues/541504
+    stub_feature_flags(admin_projects_vue: false)
+
     create(:project, :repository)
     create(:project, :repository) { |project| project.statistics.destroy! }
 

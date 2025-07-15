@@ -294,10 +294,6 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it { is_expected.to validate_length_of(:twitter).is_at_most(500) }
     end
 
-    describe '#skype' do
-      it { is_expected.to validate_length_of(:skype).is_at_most(500) }
-    end
-
     describe '#discord' do
       it { is_expected.to validate_length_of(:discord).is_at_most(500) }
 
@@ -481,8 +477,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz',
         orcid: '1234-1234-1234-1234',
         mastodon: '@robin@example.com',
-        organization: 'organization',
-        skype: 'skype',
+        user_detail_organization: 'organization',
         twitter: 'twitter',
         website_url: 'https://example.com'
       }
@@ -507,7 +502,6 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it_behaves_like 'prevents `nil` value', :orcid
     it_behaves_like 'prevents `nil` value', :mastodon
     it_behaves_like 'prevents `nil` value', :organization
-    it_behaves_like 'prevents `nil` value', :skype
     it_behaves_like 'prevents `nil` value', :twitter
     it_behaves_like 'prevents `nil` value', :website_url
   end
@@ -530,7 +524,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       end
     end
 
-    %i[linkedin skype twitter website_url].each do |attr|
+    %i[linkedin twitter website_url].each do |attr|
       it_behaves_like 'sanitizes html', attr
 
       it 'encodes HTML entities' do

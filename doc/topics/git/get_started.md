@@ -4,7 +4,6 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn about the Git version control system.
 title: Get started with Git
-description: Understand Git, install, common commands, and tutorial.
 ---
 
 Git is a version control system you use to track changes to your code and collaborate with others.

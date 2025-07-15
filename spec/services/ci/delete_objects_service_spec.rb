@@ -102,7 +102,7 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
 
         expect { execute }
           .to raise_error(Ci::DeleteObjectsService::TransactionInProgressError)
-          .and change { Ci::DeletedObject.count }.by(0)
+          .and not_change { Ci::DeletedObject.count }
       end
     end
   end

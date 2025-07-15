@@ -1,0 +1,10 @@
+---
+name: optimize_ci_owned_project_runners_query
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464475
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194442
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551320
+milestone: '18.2'
+group: group::runner
+type: gitlab_com_derisk
+default_enabled: false

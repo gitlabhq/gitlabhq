@@ -15,6 +15,26 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
       sign_in(user)
     end
 
+    describe 'GET home' do
+      context 'when `personal_homepage` feature is disabled' do
+        it 'is not found (404)' do
+          get :home
+          expect(response).to be_not_found
+        end
+      end
+
+      context 'when `personal_homepage` feature is enabled' do
+        before do
+          stub_feature_flags(personal_homepage: true)
+        end
+
+        it 'renders the homepage' do
+          get :home
+          expect(response).to be_successful.and render_template('root/index')
+        end
+      end
+    end
+
     describe 'GET issues.atom' do
       it_behaves_like 'issuables list meta-data', :issue, :issues, format: :atom
       it_behaves_like 'issuables requiring filter', :issues, format: :atom

@@ -364,14 +364,14 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
 
 #### Important Considerations
 
-- **Keep Entry Points Lite:**
+- **Keep Entry Points Lite**:
   Page-specific JavaScript entry points should be as lite as possible. These
   files are exempt from unit tests, and should be used primarily for
   instantiation and dependency injection of classes and methods that live in
   modules outside of the entry point script. Just import, read the DOM,
   instantiate, and nothing else.
 
-- **`DOMContentLoaded` should not be used:**
+- **`DOMContentLoaded` should not be used**:
   All GitLab JavaScript files are added with the `defer` attribute.
   According to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer),
   this implies that "the script is meant to be executed after the document has
@@ -379,7 +379,7 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
   parsed, `DOMContentLoaded` is not needed to bootstrap applications because all
   the DOM nodes are already at our disposal.
 
-- **Supporting Module Placement:**
+- **Supporting Module Placement**:
   - If a class or a module is _specific to a particular route_, try to locate
     it close to the entry point in which it is used. For instance, if
     `my_widget.js` is only imported in `pages/widget/show/index.js`, you
@@ -392,7 +392,7 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
     place the module at `pages/widget/shared/my_widget.js` and import it with
     a relative path if possible (for example, `../shared/my_widget`).
 
-- **Enterprise Edition Caveats:**
+- **Enterprise Edition Caveats**:
   For GitLab Enterprise Edition, page-specific entry points override their
   Community Edition counterparts with the same name, so if
   `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it takes

@@ -7,11 +7,6 @@ module Gitlab
         class Base
           ERROR_MESSAGE = 'A schema inconsistency has been found'
 
-          def initialize(structure_sql, database)
-            @structure_sql = structure_sql
-            @database = database
-          end
-
           def self.all_validators
             [
               ExtraTables,
@@ -24,11 +19,18 @@ module Gitlab
               MissingIndexes,
               MissingTriggers,
               MissingForeignKeys,
+              MissingSequences,
               DifferentDefinitionTables,
               DifferentDefinitionIndexes,
               DifferentDefinitionTriggers,
-              DifferentDefinitionForeignKeys
+              DifferentDefinitionForeignKeys,
+              DifferentSequenceOwners
             ]
+          end
+
+          def initialize(structure_sql, database)
+            @structure_sql = structure_sql
+            @database = database
           end
 
           def execute

@@ -135,5 +135,27 @@ RSpec.describe GraphqlChannel, feature_category: :api do
         ))
       end
     end
+
+    describe 'context' do
+      let_it_be(:organization) { create(:organization) }
+      let(:graphql_result) do
+        instance_double(GraphQL::Query::Result, to_h: {}, subscription?: false, context: {})
+      end
+
+      before do
+        stub_action_cable_connection current_organization: organization
+      end
+
+      it 'includes current_organization context' do
+        expect(GitlabSchema).to receive(:execute).with(
+          anything,
+          hash_including(
+            context: hash_including(current_organization: organization)
+          )
+        ).and_return(graphql_result)
+
+        subscribe(subscribe_params)
+      end
+    end
   end
 end

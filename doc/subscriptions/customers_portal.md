@@ -2,14 +2,17 @@
 stage: Fulfillment
 group: Subscription Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Payment and company details.
+description: Customers Portal is a comprehensive self-service hub for purchasing and managing GitLab subscriptions and billing.
 title: The Customers Portal
 ---
 
-For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
+The Customers Portal is your comprehensive self-service hub for managing GitLab subscriptions and billing. You can purchase GitLab products, manage your subscriptions throughout the entire subscription lifecycle, view and pay invoices, and access your billing details and contact information.
+
+See the following pages for specific instructions on managing your subscription:
 
 - [GitLab SaaS subscription](gitlab_com/_index.md)
 - [GitLab Self-Managed subscription](self_managed/_index.md)
+- [Manage subscription](manage_subscription.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).
@@ -110,6 +113,32 @@ The invited user receives an email with an invitation to the Customers Portal.
 The invitation is valid for seven days.
 If the user does not accept the invitation before it expires, you can send them a new invitation.
 You can have maximum 15 pending invitations at a time.
+
+### Remove a billing account manager
+
+You can remove billing account managers from your account at any time.
+After you remove a billing account manager, they no longer have access to view or edit your billing account information.
+
+To remove a billing account manager:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Billing account managers** section.
+1. In the list, next to the billing account manager you want to remove, select **Remove**.
+1. In the confirmation dialog, select **Remove** to confirm the action.
+
+### Revoke a billing account manager invitation
+
+You can revoke invitations that have not yet been accepted.
+Users that have been invited but have not yet accepted the invitation display the name **Awaiting user registration**.
+
+To revoke an invitation:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Billing account managers** section.
+1. In the list, next to the invited user with the **Awaiting user registration** name, select **Remove**.
+1. In the confirmation dialog, select **Remove** to revoke the invitation.
 
 ### Change your billing contact
 
@@ -227,6 +256,16 @@ To change the GitLab.com account linked to your Customers Portal profile:
 1. On the Customers Portal page, select **My profile > Profile settings**.
 1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
+
+## Tax ID for non-US customers
+
+A Tax ID is a unique number assigned by tax authorities to businesses registered for Value Added Tax (VAT), Goods and Services Tax (GST), or similar indirect taxes.
+
+Providing a valid Tax ID may reduce your tax burden by allowing us to apply reverse charge mechanisms instead of charging VAT/GST on your invoices. Without a valid Tax ID, we charge applicable VAT/GST rates based on your location.
+
+If your business isn't registered for indirect taxes (due to size thresholds or other reasons), we apply the standard VAT/GST rate according to local regulations.
+
+For detailed Tax ID formats by country and additional information, see our [complete Tax ID reference guide](https://handbook.gitlab.com/handbook/finance/tax/#frequently-asked-questions---tax-id-for-non-us-customers).
 
 ## Customers that purchased through a reseller
 

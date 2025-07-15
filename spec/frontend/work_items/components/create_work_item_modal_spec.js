@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
@@ -24,6 +25,7 @@ import CreateWorkItemCancelConfirmationModal from '~/work_items/components/creat
 const showToast = jest.fn();
 
 describe('CreateWorkItemModal', () => {
+  useLocalStorageSpy();
   Vue.use(VueRouter);
   let wrapper;
   const router = new VueRouter({
@@ -76,6 +78,47 @@ describe('CreateWorkItemModal', () => {
     });
   };
 
+  beforeEach(() => {
+    gon.current_user_id = 1;
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft', async () => {
+    localStorage.setItem(
+      'autosave/new-full-path-widgets-draft',
+      JSON.stringify({ TYPE: { name: WORK_ITEM_TYPE_NAME_ISSUE } }),
+    );
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findForm().props('preselectedWorkItemType')).toBe(WORK_ITEM_TYPE_NAME_ISSUE);
+  });
+
+  it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft with related item id', async () => {
+    localStorage.setItem(
+      'autosave/new-full-path-related-22-widgets-draft',
+      JSON.stringify({ TYPE: { name: WORK_ITEM_TYPE_NAME_ISSUE } }),
+    );
+
+    createComponent({
+      relatedItem: {
+        id: 'gid://gitlab/WorkItem/22',
+        type: 'Issue',
+        reference: 'full-path#22',
+        webUrl: '/full-path/-/issues/22',
+      },
+    });
+
+    await waitForPromises();
+
+    expect(findForm().props('preselectedWorkItemType')).toBe(WORK_ITEM_TYPE_NAME_ISSUE);
+  });
+
   it('shows toast on workItemCreated', async () => {
     createComponent();
 
@@ -109,6 +152,19 @@ describe('CreateWorkItemModal', () => {
       const mockEvent = { preventDefault: jest.fn(), ctrlKey: true };
       findTrigger().vm.$emit('click', mockEvent);
 
+      await nextTick();
+
+      expect(findCreateModal().props('visible')).toBe(false);
+      expect(mockEvent.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('does not open modal or prevent link default when user is signed out', async () => {
+      window.gon = { current_user_id: undefined };
+      createComponent();
+      await waitForPromises();
+
+      const mockEvent = { preventDefault: jest.fn(), ctrlKey: true };
+      findTrigger().vm.$emit('click', mockEvent);
       await nextTick();
 
       expect(findCreateModal().props('visible')).toBe(false);

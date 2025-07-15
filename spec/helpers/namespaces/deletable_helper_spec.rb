@@ -21,20 +21,28 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       stub_application_setting(deletion_adjourned_period: 5)
     end
 
-    context 'when container responds to :self_deletion_scheduled_deletion_created_on' do
-      context 'when container.self_deletion_scheduled_deletion_created_on returns nil' do
-        let(:container) { instance_double(Namespace, self_deletion_scheduled_deletion_created_on: nil) }
+    context 'when namespace does not respond to :self_deletion_scheduled_deletion_created_on' do
+      let(:namespace) { instance_double(Namespace) }
+
+      it 'returns false' do
+        expect(permanent_deletion_date_formatted(namespace)).to be_nil
+      end
+    end
+
+    context 'when namespace responds to :self_deletion_scheduled_deletion_created_on' do
+      context 'when namespace.self_deletion_scheduled_deletion_created_on returns nil' do
+        let(:namespace) { instance_double(Namespace, self_deletion_scheduled_deletion_created_on: nil) }
 
         it 'returns nil' do
-          expect(permanent_deletion_date_formatted(container)).to be_nil
+          expect(permanent_deletion_date_formatted(namespace)).to be_nil
         end
       end
 
-      context 'when container.self_deletion_scheduled_deletion_created_on returns a date' do
-        let(:container) { instance_double(Namespace, self_deletion_scheduled_deletion_created_on: Date.yesterday) }
+      context 'when namespace.self_deletion_scheduled_deletion_created_on returns a date' do
+        let(:namespace) { instance_double(Namespace, self_deletion_scheduled_deletion_created_on: Date.yesterday) }
 
         it 'returns the date formatted' do
-          expect(permanent_deletion_date_formatted(container)).to eq(4.days.from_now.strftime('%F'))
+          expect(permanent_deletion_date_formatted(namespace)).to eq(4.days.from_now.strftime('%F'))
         end
       end
 
@@ -55,6 +63,87 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       it 'returns the date formatted with the given format' do
         expect(permanent_deletion_date_formatted(format: Date::DATE_FORMATS[:medium]))
           .to eq(5.days.from_now.strftime(Date::DATE_FORMATS[:medium]))
+      end
+    end
+  end
+
+  describe '#deletion_in_progress_or_scheduled_in_hierarchy_chain?' do
+    subject(:message) { helper.deletion_in_progress_or_scheduled_in_hierarchy_chain?(namespace) }
+
+    context 'when namespace does not respond to :deletion_in_progress_or_scheduled_in_hierarchy_chain?' do
+      let(:namespace) { build_stubbed(:organization) }
+
+      specify do
+        expect(message).to be(false)
+      end
+    end
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:namespace_type, :deletion_in_progress_or_scheduled_in_hierarchy_chain) do
+      :group             | false
+      :project           | false
+      :project_namespace | false
+      :group             | true
+      :project           | true
+      :project_namespace | true
+    end
+
+    with_them do
+      let(:namespace) { build_stubbed(namespace_type) }
+
+      before do
+        allow(namespace).to receive_messages(
+          deletion_in_progress_or_scheduled_in_hierarchy_chain?: deletion_in_progress_or_scheduled_in_hierarchy_chain
+        )
+      end
+
+      specify do
+        expect(message).to be(deletion_in_progress_or_scheduled_in_hierarchy_chain)
+      end
+    end
+  end
+
+  describe '#self_or_ancestors_deletion_in_progress_or_scheduled_message' do
+    subject(:message) { helper.self_or_ancestors_deletion_in_progress_or_scheduled_message(namespace) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    # rubocop:disable Layout/LineLength -- We cannot wrap lines when using RSpec::Parameterized::TableSyntax
+    where(:namespace_type, :self_deletion_in_progress, :self_deletion_scheduled, :expected_message) do
+      :group             | false | false | 'This group will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
+      :project           | false | false | 'This project will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
+      :project_namespace | false | false | 'This project will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
+      :group             | false | true | 'This group and its subgroups and projects are pending deletion, and will be deleted on <strong>2025-02-09</strong>.'
+      :project           | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
+      :project_namespace | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
+      :group             | true  | nil  | 'This group and its subgroups are being deleted.'
+      :project           | true  | nil  | 'This project is being deleted. Repository and other project resources are read-only.'
+      :project_namespace | true  | nil  | 'This project is being deleted. Repository and other project resources are read-only.'
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      let(:namespace) { build_stubbed(namespace_type) }
+      let(:ancestor_namespace) { build_stubbed(:namespace) }
+
+      before do
+        stub_application_setting(deletion_adjourned_period: 7)
+        allow(namespace).to receive_messages(
+          self_deletion_in_progress?: self_deletion_in_progress,
+          self_deletion_scheduled?: self_deletion_scheduled,
+          first_scheduled_for_deletion_in_hierarchy_chain: ancestor_namespace
+        )
+        allow(namespace)
+          .to receive(:self_deletion_scheduled_deletion_created_on)
+          .and_return(Date.parse('2025-02-02'))
+        allow(ancestor_namespace)
+          .to receive(:self_deletion_scheduled_deletion_created_on)
+          .and_return(Date.parse('2025-01-15'))
+      end
+
+      specify do
+        expect(message).to eq(expected_message)
       end
     end
   end
@@ -192,7 +281,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
 
     context 'when group is marked for deletion' do
       before do
-        allow(group).to receive_messages(marked_for_deletion?: true)
+        allow(group).to receive_messages(self_deletion_scheduled?: true)
       end
 
       it_behaves_like 'permanent deletion message'

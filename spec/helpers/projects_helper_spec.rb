@@ -1094,7 +1094,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     subject { helper.fork_button_data_attributes(project) }
 
-    where(:has_user, :project_already_forked, :has_forkable_groups, :expected) do
+    where(:has_user, :project_already_forked, :has_groups_allowing_project_creation, :expected) do
       false | false | false | nil
       true  | false | false | data_attributes_without_user_fork_url
       true  | false | true  | data_attributes_without_user_fork_url
@@ -1111,7 +1111,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         allow(user).to receive(:can?).with(:fork_project, project).and_return(true)
         allow(user).to receive(:can?).with(:create_projects, anything).and_return(true)
         allow(user).to receive(:already_forked?).with(project).and_return(project_already_forked)
-        allow(user).to receive(:has_forkable_groups?).and_return(has_forkable_groups)
+        allow(user).to receive(:has_groups_allowing_project_creation?).and_return(has_groups_allowing_project_creation)
 
         allow(project).to receive(:forks_count).and_return(4)
         allow(project).to receive(:full_path).and_return(project_path)
@@ -1249,7 +1249,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context "when project is not marked for deletion" do
       before do
-        allow(project).to receive(:marked_for_deletion?).and_return(false)
+        allow(project).to receive(:self_deletion_scheduled?).and_return(false)
       end
 
       subject { helper.home_panel_data_attributes }
@@ -1259,7 +1259,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context "when project is marked for deletion" do
       before do
-        allow(project).to receive(:marked_for_deletion?).and_return(true)
+        allow(project).to receive(:self_deletion_scheduled?).and_return(true)
       end
 
       subject { helper.home_panel_data_attributes }

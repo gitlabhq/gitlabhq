@@ -53,7 +53,7 @@ describe('vue_shared/components/confirm_modal', () => {
   const findFormData = () =>
     findForm()
       .findAll('input')
-      .wrappers.map((x) => ({ name: x.attributes('name'), value: x.attributes('value') }));
+      .wrappers.map((x) => ({ name: x.attributes('name'), value: x.element.value }));
   const findDomElementListener = () => wrapper.findComponent(DomElementListener);
   const triggerOpenWithEventHub = (modalData) => {
     eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, modalData);
@@ -83,7 +83,7 @@ describe('vue_shared/components/confirm_modal', () => {
     it('renders form missing values', () => {
       expect(findForm().attributes('action')).toBe('');
       expect(findFormData()).toEqual([
-        { name: '_method', value: undefined },
+        { name: '_method', value: '' },
         { name: 'authenticity_token', value: 'test-csrf-token' },
       ]);
     });

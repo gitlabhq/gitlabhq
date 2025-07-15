@@ -2,7 +2,6 @@
 
 class ChangeTimeEstimateDefaultFromNullToZeroOnMergeRequests < Gitlab::Database::Migration[2.2]
   milestone '17.4'
-  enable_lock_retries!
 
   TABLE_NAME = :merge_requests
   COLUMN_NAME = :time_estimate

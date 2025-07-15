@@ -2,7 +2,6 @@
 
 class UpdateScheduledScansMaxConcurrencyInApplicationSettingsForSelfManaged < Gitlab::Database::Migration[2.2]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
-  enable_lock_retries!
 
   milestone '17.2'
 

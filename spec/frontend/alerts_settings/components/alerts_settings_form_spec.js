@@ -124,13 +124,6 @@ describe('AlertsSettingsForm', () => {
       expect(findMultiSupportText().exists()).toBe(true);
     });
 
-    it('hides the name input when the selected value is prometheus', async () => {
-      await createComponent();
-      await selectOptionAtIndex(2);
-
-      expect(findNameField().exists()).toBe(false);
-    });
-
     it('verify pricing link url', async () => {
       await createComponent({ props: { canAddIntegration: false } });
 
@@ -179,8 +172,8 @@ describe('AlertsSettingsForm', () => {
         findForm().trigger('submit');
 
         expect(wrapper.emitted('create-new-integration')[0][0]).toMatchObject({
-          type: typeSet.http,
           variables: {
+            type: typeSet.http,
             name: integrationName,
             active: true,
             payloadAttributeMappings: sampleMapping,
@@ -207,8 +200,8 @@ describe('AlertsSettingsForm', () => {
         await findSubmitButton().trigger('click');
 
         expect(wrapper.emitted('update-integration')[0][0]).toMatchObject({
-          type: typeSet.http,
           variables: {
+            type: typeSet.http,
             name: updatedIntegrationName,
             active: true,
             payloadAttributeMappings: [],
@@ -222,7 +215,9 @@ describe('AlertsSettingsForm', () => {
       it('create', async () => {
         await createComponent();
         await selectOptionAtIndex(2);
-        enableIntegration(0);
+
+        const integrationName = 'Prometheus';
+        enableIntegration(0, integrationName);
 
         expect(findSubmitButton().exists()).toBe(true);
         expect(findSubmitButton().text()).toBe('Save integration');
@@ -230,8 +225,13 @@ describe('AlertsSettingsForm', () => {
         findForm().trigger('submit');
 
         expect(wrapper.emitted('create-new-integration')[0][0]).toMatchObject({
-          type: typeSet.prometheus,
-          variables: { active: true },
+          variables: {
+            type: typeSet.prometheus,
+            name: integrationName,
+            active: true,
+            payloadAttributeMappings: [],
+            payloadExample: '{}',
+          },
         });
       });
 
@@ -242,7 +242,8 @@ describe('AlertsSettingsForm', () => {
         };
         await createComponent({ currentIntegration });
 
-        enableIntegration(0);
+        const updatedIntegrationName = 'Test prometheus post';
+        enableIntegration(0, updatedIntegrationName);
 
         expect(findSubmitButton().exists()).toBe(true);
         expect(findSubmitButton().text()).toBe('Save integration');
@@ -250,8 +251,13 @@ describe('AlertsSettingsForm', () => {
         findForm().trigger('submit');
 
         expect(wrapper.emitted('update-integration')[0][0]).toMatchObject({
-          type: typeSet.prometheus,
-          variables: { active: true },
+          variables: {
+            type: typeSet.prometheus,
+            name: updatedIntegrationName,
+            active: true,
+            payloadAttributeMappings: [],
+            payloadExample: '{}',
+          },
         });
       });
     });
@@ -407,7 +413,7 @@ describe('AlertsSettingsForm', () => {
     describe.each`
       alertFieldsProvided | multiIntegrations | integrationOption | visible
       ${true}             | ${true}           | ${1}              | ${true}
-      ${true}             | ${true}           | ${2}              | ${false}
+      ${true}             | ${true}           | ${2}              | ${true}
       ${true}             | ${false}          | ${1}              | ${false}
       ${false}            | ${true}           | ${1}              | ${false}
     `(

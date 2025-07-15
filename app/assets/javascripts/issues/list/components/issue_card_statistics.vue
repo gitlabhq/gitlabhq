@@ -19,7 +19,7 @@ export default {
     closingMergeRequestsCount() {
       return (
         this.issue.mergeRequestsCount ||
-        findDevelopmentWidget(this.issue)?.closingMergeRequests.count
+        findDevelopmentWidget(this.issue)?.closingMergeRequests?.count
       );
     },
     downvotes() {
@@ -28,44 +28,47 @@ export default {
     upvotes() {
       return this.issue.upvotes || findAwardEmojiWidget(this.issue)?.upvotes;
     },
+    buttonResetClasses() {
+      return '!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 focus-visible:gl-focus-inset';
+    },
   },
 };
 </script>
 
 <template>
   <ul class="gl-contents gl-list-none">
-    <li v-if="upvotes">
-      <span
+    <li v-if="upvotes" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+      <button
         v-gl-tooltip
-        class="gl-hidden sm:gl-block"
         :title="__('Upvotes')"
         data-testid="issuable-upvotes"
+        :class="buttonResetClasses"
       >
         <gl-icon name="thumb-up" />
         {{ upvotes }}
-      </span>
+      </button>
     </li>
-    <li v-if="downvotes">
-      <span
+    <li v-if="downvotes" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+      <button
         v-gl-tooltip
-        class="gl-hidden sm:gl-block"
         :title="__('Downvotes')"
         data-testid="issuable-downvotes"
+        :class="buttonResetClasses"
       >
         <gl-icon name="thumb-down" />
         {{ downvotes }}
-      </span>
+      </button>
     </li>
-    <li v-if="closingMergeRequestsCount">
-      <span
+    <li v-if="closingMergeRequestsCount" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+      <button
         v-gl-tooltip
-        class="gl-hidden sm:gl-block"
         :title="__('Related merge requests')"
         data-testid="merge-requests"
+        :class="buttonResetClasses"
       >
         <gl-icon name="merge-request" />
         {{ closingMergeRequestsCount }}
-      </span>
+      </button>
     </li>
     <slot></slot>
   </ul>

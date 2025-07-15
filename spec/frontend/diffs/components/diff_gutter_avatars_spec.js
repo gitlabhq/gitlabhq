@@ -61,7 +61,7 @@ describe('DiffGutterAvatars', () => {
     });
 
     it('renders correct amount of user avatars', () => {
-      expect(findUserAvatars().length).toBe(3);
+      expect(findUserAvatars()).toHaveLength(3);
     });
 
     // Avoid images in file contents copy: https://gitlab.com/gitlab-org/gitlab/-/issues/337139

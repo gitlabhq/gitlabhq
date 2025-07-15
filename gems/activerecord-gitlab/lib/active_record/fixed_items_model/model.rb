@@ -39,6 +39,8 @@ module ActiveRecord
       class_methods do
         # Caches created instances for fast retrieval used in associations.
         def find(id)
+          id = id.to_i
+
           find_instances[id] ||= self::ITEMS.find { |item| item[:id] == id }&.then do |item_data|
             new(item_data)
           end
@@ -89,6 +91,22 @@ module ActiveRecord
 
         def inspect
           "#<#{self.class} #{attributes.map { |k, v| "#{k}: #{v.inspect}" }.join(', ')}>"
+        end
+
+        def ==(other)
+          super ||
+            (other.instance_of?(self.class) && # Same exact class
+              !id.nil? && # This object has an ID
+              other.id == id) # Same ID
+        end
+        alias_method :eql?, :==
+
+        def hash
+          if id
+            [self.class, id].hash
+          else
+            super  # Falls back to Object#hash for unsaved records
+          end
         end
       end
     end

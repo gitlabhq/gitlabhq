@@ -5,20 +5,20 @@ module Gitlab
     module Reports
       module Security
         class Report
-          attr_reader :created_at, :type, :findings, :scans, :scanners, :identifiers
+          attr_reader :created_at, :type, :findings, :identifiers
           attr_accessor :pipeline, :scanned_resources, :errors,
-            :analyzer, :version, :schema_validation_status, :warnings
+            :analyzer, :version, :schema_validation_status, :warnings,
+            :scan, :scanner
 
           delegate :project_id, to: :pipeline
           delegate :project, to: :pipeline
+          delegate :primary_identifiers, to: :scanner
 
           def initialize(type, pipeline, created_at)
             @type = type
             @pipeline = pipeline
             @created_at = created_at
             @findings = []
-            @scans = {}
-            @scanners = {}
             @identifiers = {}
             @scanned_resources = []
             @errors = []
@@ -45,18 +45,6 @@ module Gitlab
             warnings.present?
           end
 
-          def add_scan(scan)
-            scans[scan.start_time] ||= scan
-          end
-
-          def add_scanner(scanner)
-            scanners[scanner.key] ||= scanner
-          end
-
-          def scan
-            scans.first&.last
-          end
-
           def add_identifier(identifier)
             identifiers[identifier.key] ||= identifier
           end
@@ -79,19 +67,11 @@ module Gitlab
             replace_with!(::Security::MergeReportsService.new(self, other).execute)
           end
 
-          def primary_identifiers
-            scanners.values.flat_map(&:primary_identifiers).compact
-          end
+          def scanner_order_to(other)
+            return 1 unless scanner
+            return -1 unless other.scanner
 
-          def primary_scanner
-            scanners.first&.second
-          end
-
-          def primary_scanner_order_to(other)
-            return 1 unless primary_scanner
-            return -1 unless other.primary_scanner
-
-            primary_scanner <=> other.primary_scanner
+            scanner <=> other.scanner
           end
 
           def has_signatures?

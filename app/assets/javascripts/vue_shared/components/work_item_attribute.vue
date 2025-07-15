@@ -68,12 +68,13 @@ export default {
 </script>
 
 <template>
-  <component :is="isLink ? 'gl-link' : 'span'" :href="href">
+  <component :is="isLink ? 'gl-link' : 'span'" :href="isLink ? href : null">
     <!-- wrapper  -->
     <component
       :is="wrapperComponent"
       ref="wrapperRef"
       :class="wrapperComponentClass"
+      :href="!isLink ? href : null"
       :data-testid="anchorId"
     >
       <!-- icon  -->

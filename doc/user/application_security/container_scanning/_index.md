@@ -54,40 +54,28 @@ will stop working.
 
 {{< /alert >}}
 
-GitLab compares the found vulnerabilities between the source and target branches, then:
-
-- Displays the results in the merge request widget.
-- Saves the results as a [container scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
-  that you can download and analyze later. When downloading, you always receive the most recent
-  artifact.
-- Saves a [CycloneDX SBOM JSON report](#cyclonedx-software-bill-of-materials) which lists the
-  components detected.
-
-![Container Scanning Widget](img/container_scanning_v13_2.png)
-
 ## Features
 
-| Features | In Free and Premium | In Ultimate |
-| --- | ------ | ------ |
-| Customize Settings ([Variables](#available-cicd-variables), [Overriding](#overriding-the-container-scanning-template), [offline environment support](#running-container-scanning-in-an-offline-environment), etc) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [View JSON Report](#reports-json-format) as a CI job artifact | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Generate a [CycloneDX SBOM JSON report](#cyclonedx-software-bill-of-materials) as a CI job artifact | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Ability to enable container scanning via an MR in the GitLab UI | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [UBI Image Support](#fips-enabled-images) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Support for Trivy | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Inclusion of GitLab Advisory Database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
-| Presentation of Report data in Merge Request and Security tab of the CI pipeline job | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| Support for the [vulnerability allow list](#vulnerability-allowlisting) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access to Dependency List page](../dependency_list/_index.md) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Features                                                                                                                                                                                                          | In Free and Premium                                                                                                                   | In Ultimate                                                                                                    |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| Customize Settings ([Variables](#available-cicd-variables), [Overriding](#overriding-the-container-scanning-template), [offline environment support](#running-container-scanning-in-an-offline-environment), etc) | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [View JSON Report](#reports-json-format) as a CI job artifact                                                                                                                                                     | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| Generate a [CycloneDX SBOM JSON report](#cyclonedx-software-bill-of-materials) as a CI job artifact                                                                                                               | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| Ability to enable container scanning via an MR in the GitLab UI                                                                                                                                                   | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [UBI Image Support](#fips-enabled-images)                                                                                                                                                                         | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| Support for Trivy                                                                                                                                                                                                 | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [End-of-life Operating System Detection](#end-of-life-operating-system-detection)                                                                                                                                 | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| Inclusion of GitLab Advisory Database                                                                                                                                                                             | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Presentation of Report data in Merge Request and Security tab of the CI pipeline job                                                                                                                              | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation)                                                                                                               | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| Support for the [vulnerability allow list](#vulnerability-allowlisting)                                                                                                                                           | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [Access to Dependency List page](../dependency_list/_index.md)                                                                                                                                                    | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 
-## Configuration
+## Getting started
 
 Enable the Container Scanning analyzer in your CI/CD pipeline. When a pipeline runs, the images your
 application depends on are scanned for vulnerabilities. You can customize Container Scanning by
 using CI/CD variables.
-
-### Enabling the analyzer
 
 Prerequisites:
 
@@ -101,6 +89,8 @@ Prerequisites:
   credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
 
+Please see details below for [user and project-specific requirements](#prerequisites).
+
 To enable the analyzer, either:
 
 - Enable Auto DevOps, which includes dependency scanning.
@@ -109,7 +99,7 @@ To enable the analyzer, either:
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
 
-#### Use a preconfigured merge request
+### Use a preconfigured merge request
 
 This method automatically prepares a merge request that includes the container scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
@@ -132,7 +122,7 @@ To enable Container Scanning:
 
 Pipelines now include a Container Scanning job.
 
-#### Edit the `.gitlab-ci.yml` file manually
+### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex or you need to use non-default options.
@@ -163,6 +153,81 @@ To enable Container Scanning:
    passes, then select **Merge**.
 
 Pipelines now include a Container Scanning job.
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - CVSS score: Provides a numeric value that maps to severity.
+   - EPSS: Shows the likelihood of a vulnerability being exploited in the wild.
+   - Has Known Exploit (KEV): Indicates that a given vulnerability has been exploited.
+   - Project: Highlights the project where the vulnerability was identified.
+   - Report type: Explains the output type.
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Image: Provides the image attributed to the vulnerability
+   - Namespace: Identifies the workspace attributed to the vulnerability.
+   - Links: Evidence of the vulnerability being cataloged in various advisory databases.
+   - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
+
+For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+
+Additional ways to see Container Scanning results:
+
+- [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
+- [Container scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
+
+## Roll out
+
+After you are confident in the Container Scanning results for a single project, you can extend its implementation to additional projects:
+
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Container Scanning settings across groups.
+- If you have unique requirements, Container Scanning can be run in [offline environments](#running-container-scanning-in-an-offline-environment).
+
+## Supported distributions
+
+The following Linux distributions are supported:
+
+- Alma Linux
+- Alpine Linux
+- Amazon Linux
+- CentOS
+- CBL-Mariner
+- Debian
+- Distroless
+- Oracle Linux
+- Photon OS
+- Red Hat (RHEL)
+- Rocky Linux
+- SUSE
+- Ubuntu
+
+### FIPS-enabled images
+
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
+images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
+standard tag plus the `-fips` extension.
+
+{{< alert type="note" >}}
+
+The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
+
+{{< /alert >}}
+
+Container scanning of images in authenticated registries is not supported when FIPS mode
+is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
+the analyzer exits with an error and does not perform the scan.
+
+## Configuration
 
 ### Customizing analyzer behavior
 
@@ -265,31 +330,34 @@ positives.
 
 {{< /alert >}}
 
-| CI/CD Variable                 | Default       | Description |
-| ------------------------------ | ------------- | ----------- |
-| `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
-| `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. |
-| `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:8` | Docker image of the analyzer. Do not use the `:latest` tag with analyzer images provided by GitLab. |
-| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. |
-| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | {{< icon name="warning" >}} **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.0. |
-| `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. |
-| `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. |
-| `CS_DOCKERFILE_PATH`           | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. |
-| `CS_INCLUDE_LICENSES`           | `""` | If set, this variable includes licenses for each component. It is only applicable to cyclonedx reports and those licenses are provided by [trivy](https://trivy.dev/v0.60/docs/scanner/license/)|
-| `CS_IGNORE_STATUSES`           | `""` | Force the analyzer to ignore findings with specified statuses in a comma-delimited list. The following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. <sup>1</sup> |
-| `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore findings that are not fixed. Ignored findings are not included in the report. |
-| `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. |
-| `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. |
-| `CS_QUIET`                     | `""`          | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1. |
-| `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. |
-| `CS_REGISTRY_PASSWORD`         | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled. |
-| `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled. |
-| `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. |
-| `CS_TRIVY_JAVA_DB`             | `"registry.gitlab.com/gitlab-org/security-products/dependencies/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database. |
-| `CS_TRIVY_DETECTION_PRIORITY` | `"precise"` | Scan using the defined Trivy [detection priority](https://trivy.dev/latest/docs/scanner/vulnerability/#detection-priority). The following values are allowed: `precise` or `comprehensive`. |
-| `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. |
-| `TRIVY_TIMEOUT`                | `5m0s`        | Set the timeout for the scan. |
+| CI/CD Variable                           | Default                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                   |
+|------------------------------------------|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ADDITIONAL_CA_CERT_BUNDLE`              | `""`                                                                            | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details.                                                                                                                                                                                                                                  |
+| `CI_APPLICATION_REPOSITORY`              | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG`                                        | Docker repository URL for the image to be scanned.                                                                                                                                                                                                                                                                                                                                            |
+| `CI_APPLICATION_TAG`                     | `$CI_COMMIT_SHA`                                                                | Docker repository tag for the image to be scanned.                                                                                                                                                                                                                                                                                                                                            |
+| `CS_ANALYZER_IMAGE`                      | `registry.gitlab.com/security-products/container-scanning:8`                    | Docker image of the analyzer. Do not use the `:latest` tag with analyzer images provided by GitLab.                                                                                                                                                                                                                                                                                           |
+| `CS_DEFAULT_BRANCH_IMAGE`                | `""`                                                                            | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details.                                                                                                                                                                                                                                                 |
+| `CS_DISABLE_DEPENDENCY_LIST`             | `"false"`                                                                       | {{< icon name="warning" >}} **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.0.                                                                                                                                                                                                                                                                               |
+| `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"`                                                                        | Disable scanning for language-specific packages installed in the scanned image.                                                                                                                                                                                                                                                                                                               |
+| `CS_DOCKER_INSECURE`                     | `"false"`                                                                       | Allow access to secure Docker registries using HTTPS without validating the certificates.                                                                                                                                                                                                                                                                                                     |
+| `CS_DOCKERFILE_PATH`                     | `Dockerfile`                                                                    | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. |
+| `CS_INCLUDE_LICENSES`                    | `""`                                                                            | If set, this variable includes licenses for each component. It is only applicable to cyclonedx reports and those licenses are provided by [trivy](https://trivy.dev/v0.60/docs/scanner/license/)                                                                                                                                                                                              |
+| `CS_IGNORE_STATUSES`                     | `""`                                                                            | Force the analyzer to ignore findings with specified statuses in a comma-delimited list. The following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. <sup>1</sup>                                                                                                                                                      |
+| `CS_IGNORE_UNFIXED`                      | `"false"`                                                                       | Ignore findings that are not fixed. Ignored findings are not included in the report.                                                                                                                                                                                                                                                                                                          |
+| `CS_IMAGE`                               | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`                                | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables.                                                                                                                                                                                                                                                         |
+| `CS_IMAGE_SUFFIX`                        | `""`                                                                            | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details.                                                                                                                                                                                                                              |
+| `CS_QUIET`                               | `""`                                                                            | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1.                                                                                                                                       |
+| `CS_REGISTRY_INSECURE`                   | `"false"`                                                                       | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work.                                                                                                                                                                                       |
+| `CS_REGISTRY_PASSWORD`                   | `$CI_REGISTRY_PASSWORD`                                                         | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled.                                                                                                                                                                |
+| `CS_REGISTRY_USER`                       | `$CI_REGISTRY_USER`                                                             | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled.                                                                                                                                                                |
+| `CS_REPORT_OS_EOL`                       | `"false"`                                                                       | Enable EOL detection                                                                                                                                                                                                                                                                                                                                                                          |
+| `CS_REPORT_OS_EOL_SEVERITY`              | `"Medium"`                                                                      | Severity level assigned to EOL OS findings when `CS_REPORT_OS_EOL` is enabled. EOL findings are always reported regardless of `CS_SEVERITY_THRESHOLD`. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`.                                                                                                                                                               |
+| `CS_SEVERITY_THRESHOLD`                  | `UNKNOWN`                                                                       | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`.                                                                                                                                                                                            |
+| `CS_TRIVY_JAVA_DB`                       | `"registry.gitlab.com/gitlab-org/security-products/dependencies/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database.                                                                                                                                                                                                                                                                  |
+| `CS_TRIVY_DETECTION_PRIORITY`            | `"precise"`                                                                     | Scan using the defined Trivy [detection priority](https://trivy.dev/latest/docs/scanner/vulnerability/#detection-priority). The following values are allowed: `precise` or `comprehensive`.                                                                                                                                                                                                   |
+| `SECURE_LOG_LEVEL`                       | `info`                                                                          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`.                                                                                                                                                                                                       |
+| `TRIVY_TIMEOUT`                          | `5m0s`                                                                          | Set the timeout for the scan.                                                                                                                                                                                                                                                                                                                                                               |
+| `TRIVY_PLATFORM`                         | `linux/amd64`                                                                   | Set platform in the format `os/arch` if image is multi-platform capable.                                                                                                                     |
 
 **Footnotes**:
 
@@ -298,41 +366,6 @@ positives.
    interpretation by individual container scanners. In cases where a container scanner misreports
    the availability of a fixed package for a vulnerability, using `CS_IGNORE_STATUSES` can lead to
    false positive or false negative filtering of findings when this setting is enabled.
-
-### Supported distributions
-
-The following Linux distributions are supported:
-
-- Alma Linux
-- Alpine Linux
-- Amazon Linux
-- CentOS
-- CBL-Mariner
-- Debian
-- Distroless
-- Oracle Linux
-- Photon OS
-- Red Hat (RHEL)
-- Rocky Linux
-- SUSE
-- Ubuntu
-
-#### FIPS-enabled images
-
-GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
-images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
-standard tag plus the `-fips` extension.
-
-{{< alert type="note" >}}
-
-The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
-
-{{< /alert >}}
-
-Container scanning of images in authenticated registries is not supported when FIPS mode
-is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
-the analyzer exits with an error and does not perform the scan.
 
 ### Overriding the container scanning template
 
@@ -410,6 +443,20 @@ container_scanning:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+
+### Scanning a multi-arch image
+
+You can use the `TRIVY_PLATFORM` CI/CD variable to configure the container scan to run against a specific
+operating system and architecture. For example, to configure this value in the `.gitlab-ci.yml` file, use
+the following:
+
+```yaml
+container_scanning:
+  # Use an arm64 SaaS runner to scan this natively
+  tags: ["saas-linux-small-arm64"]
+  variables:
+    TRIVY_PLATFORM: "linux/arm64"
+```
 
 ### Vulnerability allowlisting
 
@@ -525,7 +572,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use container scanning in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#enabling-the-analyzer).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#getting-started).
 - To configure a local Docker container registry with copies of the container scanning images. You
   can find these images in their respective registries:
 
@@ -676,13 +723,57 @@ container_scanning:
 
 ## Scanning archive formats
 
+{{< history >}}
+
+- Scanning tar files [introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/3151) in GitLab 18.0.
+
+{{< /history >}}
+
 Container Scanning supports images in archive formats (`.tar`, `.tar.gz`).
-Such images may be created, for example, using `docker save` or `docker buildx build -o - . > out.tar`.
+Such images may be created, for example, using `docker save` or `docker buildx build`.
 
 To scan an archive file, set the environment variable `CS_IMAGE` to the format `archive://path/to/archive`:
 
 - The `archive://` scheme prefix specifies that the analyzer is to scan an archive.
 - `path/to/archive` specifies the path to the archive to scan, whether an absolute path or a relative path.
+
+Container Scanning supports tar image files following the [Docker Image Specification](https://github.com/moby/docker-image-spec).
+OCI tarballs are not supported.
+For more information regarding supported formats, see [Trivy tar file support](https://trivy.dev/v0.48/docs/target/container_image/#tar-files).
+
+### Building supported tar files
+
+Container Scanning uses metadata from the tar file for image naming.
+When building tar image files, ensure the image is tagged:
+
+```shell
+# Pull or build an image with a name and a tag
+docker pull image:latest
+# OR
+docker build . -t image:latest
+# Then export to tar using docker save
+docker save image:latest -o image-latest.tar
+
+# Or build an image with a tag using buildx build
+docker buildx create --name container --driver=docker-container
+docker buildx build -t image:latest --builder=container -o type=docker,dest=- . > image-latest.tar
+
+# With podman
+podman build -t image:latest .
+podman save -o image-latest.tar image:latest
+```
+
+### Image name
+
+Container Scanning determines the image name by first evaluating the archive's `manifest.json` and using the first item in `RepoTags`.
+If this is not found, `index.json` is used to fetch the `io.containerd.image.name` annotation. If this is not found, the archive filename
+is used instead.
+
+- `manifest.json` is defined in [Docker Image Specification v1.1.0](https://github.com/moby/docker-image-spec/blob/v1.1.0/v1.1.md#combined-image-json--filesystem-changeset-format)
+and created by using the command `docker save`.
+- `index.json` format is defined in the [OCI image specification v1.1.1](https://github.com/opencontainers/image-spec/blob/v1.1.1/spec.md).
+`io.containerd.image.name` is [available in containerd v1.3.0 and later](https://github.com/containerd/containerd/blob/v1.3.0/images/annotations.go)
+when using `ctr image export`.
 
 ### Scanning archives built in a previous job
 
@@ -692,14 +783,15 @@ Use the [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths) and [`dep
 ```yaml
 build_job:
   script:
-    - docker buildx build -o - . > out.tar
+    - docker build . -t image:latest
+    - docker save image:latest -o image-latest.tar
   artifacts:
     paths:
-      - "out.tar"
+      - "image-latest.tar"
 
 container_scanning:
   variables:
-    CS_IMAGE: "archive://out.tar"
+    CS_IMAGE: "archive://image-latest.tar"
   dependencies:
     - build_job
 ```
@@ -714,11 +806,6 @@ container_scanning:
   variables:
     GIT_STRATEGY: fetch
 ```
-
-### Limitations
-
-Archive container scanning [does not support collecting location information](https://gitlab.com/gitlab-org/gitlab/-/issues/541110) for scanned dependencies.
-Moreover, there is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/501077) where vulnerability locations do not contain the image name, which may deduplicate vulnerabilities from different archives.
 
 ## Running the standalone container scanning tool
 
@@ -751,7 +838,7 @@ recognizes through the [`artifacts:reports`](../../../ci/yaml/_index.md#artifact
 keyword in the CI configuration file.
 
 Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
-the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
+the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../detect/security_scanning_results.md)
 and become part of the [vulnerability report](../vulnerability_report/_index.md).
 
 These reports must follow a format defined in the
@@ -800,6 +887,14 @@ container_scanning:
 
 It is important to mention that only SPDX licenses are supported. However, licenses that are non-compliant with SPDX will still be ingested without any user-facing error.
 
+## End-of-life operating system detection
+
+Container scanning includes the ability to detect and report when your container images are using operating systems that have reached their end-of-life (EOL). Operating systems that have reached EOL no longer receive security updates, leaving them vulnerable to newly discovered security issues.
+
+The EOL detection feature uses Trivy to identify operating systems that are no longer supported by their respective distributions. When an EOL operating system is detected, it's reported as a vulnerability in your container scanning report alongside other security findings.
+
+To enable EOL detection, set `CS_REPORT_OS_EOL` to `"true"`.
+
 ## Container Scanning for Registry
 
 {{< details >}}
@@ -811,7 +906,7 @@ It is important to mention that only SPDX licenses are supported. However, licen
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `enable_container_scanning_for_registry`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `enable_container_scanning_for_registry`. Disabled by default.
 - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2. Feature flag `enable_container_scanning_for_registry` removed.
 

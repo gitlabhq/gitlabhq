@@ -6,7 +6,7 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
   subject(:execute) { described_class.new(**service_args).execute }
 
   let_it_be(:admin_user) { create(:user, :admin) }
-  let_it_be_with_refind(:owner_user) { create(:user) } # discard memoized ci_owned_runners
+  let_it_be_with_refind(:owner_user) { create(:user) } # discard memoized ci_available_runners
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 

@@ -13,6 +13,8 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
   let_it_be(:label1) { create(:group_label, group: parent_group) }
   let_it_be(:label2) { create(:group_label, group: parent_group) }
   let_it_be(:label3) { create(:group_label, group: private_group) }
+  let_it_be(:assignee) { create(:user, developer_of: group) }
+  let_it_be(:milestone) { create(:milestone, group: group) }
   let_it_be_with_reload(:work_item1) { create(:work_item, :group_level, namespace: group, labels: [label1]) }
   let_it_be_with_reload(:work_item2) { create(:work_item, project: project, labels: [label1]) }
   let_it_be_with_reload(:work_item3) { create(:work_item, :group_level, namespace: parent_group, labels: [label1]) }
@@ -21,7 +23,7 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
 
   let(:updatable_work_items) { [work_item1, work_item2, work_item3, work_item4] }
   let(:updatable_work_item_ids) { updatable_work_items.map(&:id) }
-  let(:widget_params) do
+  let(:attributes) do
     {
       labels_widget: {
         add_label_ids: [label2.id],
@@ -35,7 +37,7 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
       parent: parent,
       current_user: current_user,
       work_item_ids: updatable_work_item_ids,
-      widget_params: widget_params
+      attributes: attributes
     ).execute
   end
 
@@ -60,6 +62,42 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
 
         it 'returns update count' do
           expect(service_result[:updated_work_item_count]).to eq(1)
+        end
+
+        context 'when updating non-widget attributes' do
+          let(:attributes) { { confidential: true } }
+
+          it 'updates confidential attribute' do
+            expect do
+              service_result
+            end.to change { work_item2.reload.confidential }.from(false).to(true)
+          end
+        end
+
+        context 'when updating multiple attributes' do
+          let(:attributes) do
+            {
+              confidential: true,
+              assignees_widget: {
+                assignee_ids: [assignee.id]
+              },
+              milestone_widget: {
+                milestone_id: milestone.id
+              },
+              labels_widget: {
+                add_label_ids: [label2.id]
+              }
+            }
+          end
+
+          it 'updates all attributes correctly' do
+            expect do
+              service_result
+            end.to change { work_item2.reload.confidential }.from(false).to(true)
+              .and change { work_item2.assignee_ids }.from([]).to([assignee.id])
+              .and change { work_item2.milestone_id }.from(nil).to(milestone.id)
+              .and change { work_item2.label_ids }.from([label1.id]).to([label1.id, label2.id])
+          end
         end
 
         context 'with EE license', if: Gitlab.ee? do

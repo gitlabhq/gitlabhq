@@ -170,15 +170,6 @@
                   %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                     = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('No')
-              - if ::Feature.enabled?(:mr_approved_filter, type: :ops)
-                #js-dropdown-approved.gl-filtered-search-suggestion-list.dropdown-menu
-                  %ul.filter-dropdown{ data: { dropdown: true } }
-                    %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                      = render Pajamas::ButtonComponent.new(variant: :link) do
-                        = _('Yes')
-                    %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                      = render Pajamas::ButtonComponent.new(variant: :link) do
-                        = _('No')
               #js-dropdown-confidential.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul.filter-dropdown{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }

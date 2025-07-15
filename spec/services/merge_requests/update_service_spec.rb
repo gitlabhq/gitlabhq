@@ -740,6 +740,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end
 
         it 'triggers GraphQL subscription userMergeRequestUpdated' do
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(merge_request.author, merge_request)
           expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user3, merge_request)
           expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user2, merge_request)
 
@@ -1120,10 +1121,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     describe 'AutoMerge::TitleDescriptionUpdateEvent' do
       let(:auto_merge_enabled) { true }
       let(:title_regex) { 'test' }
+      let(:description) { 'description' }
 
       before do
         merge_request.update!(auto_merge_enabled: true, merge_user: user) if auto_merge_enabled
-        project.update!(merge_request_title_regex: title_regex)
+        project.update!(merge_request_title_regex_description: description, merge_request_title_regex: title_regex)
       end
 
       context 'when the title changes' do
@@ -1151,6 +1153,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
         context 'when project has no required regex' do
           let(:title_regex) { nil }
+          let(:description) { nil }
 
           it_behaves_like 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent'
         end
@@ -1169,6 +1172,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         it 'triggers a workItemUpdated subscription for all affected records' do
           service = described_class.new(project: project, current_user: user, params: update_params)
           allow(service).to receive(:execute_hooks)
+          allow(GraphqlTriggers).to receive(:work_item_updated).and_call_original
 
           WorkItem.where(id: issues_to_notify).find_each do |work_item|
             expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original

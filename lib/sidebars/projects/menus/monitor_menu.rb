@@ -63,9 +63,10 @@ module Sidebars
         end
 
         def alert_management_menu_item
-          unless can?(context.current_user, :read_alert_management_alert, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :alert_management)
-          end
+          should_hide_menu = Feature.enabled?(:hide_incident_management_features, context.project) ||
+            !can?(context.current_user, :read_alert_management_alert, context.project)
+
+          return ::Sidebars::NilMenuItem.new(item_id: :incidents) if should_hide_menu
 
           ::Sidebars::MenuItem.new(
             title: _('Alerts'),
@@ -77,8 +78,8 @@ module Sidebars
         end
 
         def incidents_menu_item
-          should_hide_menu = !can?(context.current_user, :read_issue, context.project) ||
-            Feature.enabled?(:hide_incident_management_features, context.project)
+          should_hide_menu = Feature.enabled?(:hide_incident_management_features, context.project) ||
+            !can?(context.current_user, :read_issue, context.project)
 
           return ::Sidebars::NilMenuItem.new(item_id: :incidents) if should_hide_menu
 

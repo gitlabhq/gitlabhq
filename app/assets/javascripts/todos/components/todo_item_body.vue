@@ -21,6 +21,8 @@ import {
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
   DUO_ACCESS_GRANTED_ACTIONS,
 } from '../constants';
+import TodoItemTitle from './todo_item_title.vue';
+import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
 
 export default {
   components: {
@@ -66,6 +68,9 @@ export default {
         !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action) ||
         this.todo.author.id !== this.currentUserId
       );
+    },
+    titleComponent() {
+      return this.isHiddenBySaml ? TodoItemTitleHiddenBySaml : TodoItemTitle;
     },
     author() {
       if (this.isHiddenBySaml) {
@@ -179,30 +184,37 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
-    <div v-if="showAvatarOnNote" class="gl-mr-3 gl-hidden sm:gl-inline-block">
-      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1">
-        <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
+  <div class="gl-flex gl-min-w-0 gl-gap-3" data-testid="todo-item-container">
+    <div v-if="showAvatarOnNote" class="gl-hidden sm:gl-inline-block">
+      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1" class="gl-mt-1">
+        <gl-avatar :size="32" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>
     </div>
-    <div>
-      <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
-        <gl-link
-          v-if="author"
-          :href="author.webUrl"
-          class="!gl-text-default"
-          data-testid="todo-author-name-content"
-          >{{ authorOnNote }}</gl-link
-        >
-        <span v-else>{{ $options.i18n.removed }}</span>
-        <span v-if="todo.note">:</span>
-      </div>
-      <span v-if="actionName" data-testid="todo-action-name-content">
-        {{ actionName }}
-      </span>
-      <span v-if="noteText" v-safe-html="noteText"></span>
 
-      <!-- TODO: AI? Review summary here: https://gitlab.com/gitlab-org/gitlab/-/work_items/483061 -->
+    <div class="gl-flex gl-min-w-0 gl-flex-col gl-gap-1">
+      <component
+        :is="titleComponent"
+        :todo="todo"
+        class="gl-flex gl-min-w-0 gl-items-center gl-gap-1 gl-overflow-hidden gl-whitespace-nowrap gl-text-sm gl-text-subtle"
+      />
+
+      <div>
+        <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
+          <gl-link
+            v-if="author"
+            :href="author.webUrl"
+            class="!gl-text-default"
+            data-testid="todo-author-name-content"
+            >{{ authorOnNote }}</gl-link
+          >
+          <span v-else>{{ $options.i18n.removed }}</span>
+          <span v-if="todo.note">:</span>
+        </div>
+        <span v-if="actionName" data-testid="todo-action-name-content">
+          {{ actionName }}
+        </span>
+        <span v-if="noteText" v-safe-html="noteText"></span>
+      </div>
     </div>
   </div>
 </template>

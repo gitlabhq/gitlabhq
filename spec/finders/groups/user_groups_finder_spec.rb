@@ -183,7 +183,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
         end
       end
 
-      it 'prioritizes exact matches first' do
+      it 'prioritizes exact matches first', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/537365' do
         expect(result.first).to eq(private_maintainer_group)
         expect(result[1..]).to match_array(other_groups)
       end

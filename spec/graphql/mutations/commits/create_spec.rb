@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Commits::Create do
+RSpec.describe Mutations::Commits::Create, feature_category: :source_code_management do
   include GraphqlHelpers
 
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
@@ -171,7 +171,7 @@ RSpec.describe Mutations::Commits::Create do
 
           it 'returns errors' do
             expect(mutated_commit).to be_nil
-            expect(subject[:errors].to_s).to match(/empty CommitMessage/)
+            expect(subject[:errors]).to include('You must provide a commit message')
           end
         end
 

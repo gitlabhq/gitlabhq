@@ -18,7 +18,7 @@ RSpec.describe API::Entities::User do
       # UserBasic
       :state, :locked, :avatar_url, :web_url,
       # User
-      :created_at, :bio, :location, :public_email, :skype, :linkedin, :twitter, :discord,
+      :created_at, :bio, :location, :public_email, :linkedin, :twitter, :discord,
       :github, :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
       :followers, :following, :is_followed, :local_time
     )

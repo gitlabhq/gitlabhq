@@ -3,8 +3,6 @@
 class CleanupBigintConversionForMergeRequestsHeadPipelineId < Gitlab::Database::Migration[2.2]
   milestone '17.3'
 
-  enable_lock_retries!
-
   TABLE = :merge_requests
   COLUMNS = [:head_pipeline_id]
 

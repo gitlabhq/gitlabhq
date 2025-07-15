@@ -21,6 +21,6 @@ describe('InputsTableSkeletonLoader', () => {
   });
 
   it('renders 8 rects (2 rows x 4 columns)', () => {
-    expect(findSkeletonRects().length).toBe(8);
+    expect(findSkeletonRects()).toHaveLength(8);
   });
 });

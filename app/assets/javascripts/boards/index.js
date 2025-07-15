@@ -162,7 +162,7 @@ function mountBoardApp(el) {
       hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       statusListsAvailable: parseBoolean(el.dataset.statusListsAvailable),
-      workItemStatusAvailable: parseBoolean(el.dataset.workItemStatusAvailable),
+      hasStatusFeature: parseBoolean(el.dataset.workItemStatusAvailable),
     },
     render: (createComponent) => createComponent(BoardApp),
   });

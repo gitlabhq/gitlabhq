@@ -29,10 +29,6 @@ class SearchService
   end
   strong_memoize_attr :group
 
-  def projects
-    # overridden in EE
-  end
-
   def search_type_errors
     # overridden in EE
   end
@@ -177,7 +173,10 @@ class SearchService
       current_user_id: current_user&.id,
       query: params[:search],
       "meta.search.type": search_type,
-      "meta.search.level": level
+      "meta.search.level": level,
+      "meta.search.scope": scope,
+      "meta.search.group_id": group&.id,
+      "meta.search.project_id": project&.id
     }
 
     logger.error(request_info)

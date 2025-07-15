@@ -90,7 +90,7 @@ module RuboCop
               receiver = "#{receiver.source}." if receiver
               expression = "#{receiver}#{type}"
               replacement = node.source.sub(expression, REPLACEMENT)
-              corrector.replace(node.source_range, replacement)
+              corrector.replace(node, replacement)
             end
           end
 

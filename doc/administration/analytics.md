@@ -15,7 +15,7 @@ title: Use ClickHouse for analytics reports
 
 {{< history >}}
 
-- ClickHouse data collector [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414610) in GitLab 16.3 [with a flag](feature_flags.md) named `clickhouse_data_collection`. Disabled by default.
+- ClickHouse data collector [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414610) in GitLab 16.3 [with a flag](feature_flags/_index.md) named `clickhouse_data_collection`. Disabled by default.
 - Feature flag `clickhouse_data_collection` removed in GitLab 17.0 and replaced with an application setting.
 
 {{< /history >}}

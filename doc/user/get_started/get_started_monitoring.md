@@ -4,7 +4,6 @@ group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how to monitor your app and respond to incidents.
 title: Get started with monitoring your application in GitLab
-description: Overview of how features fit together.
 ---
 
 Monitoring is a crucial part of maintaining and optimizing your applications.

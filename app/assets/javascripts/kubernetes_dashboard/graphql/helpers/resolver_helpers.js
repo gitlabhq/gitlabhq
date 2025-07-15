@@ -135,19 +135,15 @@ export const watchWorkloadItems = async ({
 
   updateStatus(connectionStatus.connecting);
 
-  if (gon?.features?.useWebsocketForK8sWatch && watchParams) {
-    const watchId = namespace ? `${queryField}-n-${namespace}` : `${queryField}-all-namespaces`;
-    const cacheParams = {
-      updateQueryCache,
-      updateConnectionStatusFn: updateStatus,
-    };
+  const watchId = namespace ? `${queryField}-n-${namespace}` : `${queryField}-all-namespaces`;
+  const cacheParams = {
+    updateQueryCache,
+    updateConnectionStatusFn: updateStatus,
+  };
 
-    try {
-      await subscribeToSocket({ watchId, watchParams, cacheParams, config });
-    } catch {
-      await watchFunction();
-    }
-  } else {
+  try {
+    await subscribeToSocket({ watchId, watchParams, cacheParams, config });
+  } catch {
     await watchFunction();
   }
 };

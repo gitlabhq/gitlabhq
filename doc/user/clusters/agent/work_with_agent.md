@@ -137,7 +137,7 @@ For more information about debugging, see [troubleshooting documentation](troubl
 
 {{< history >}}
 
-- Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
+- Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags/_index.md) named `cluster_agents_limit_tokens_created`.
 - Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
 
 {{< /history >}}

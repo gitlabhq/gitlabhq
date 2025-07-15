@@ -213,6 +213,7 @@ describe('IssuableListRoot component', () => {
         isActive: false,
         fullPath: null,
         detailLoading: false,
+        hiddenMetadataKeys: [],
       });
     });
 

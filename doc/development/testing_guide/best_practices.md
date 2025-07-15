@@ -555,8 +555,6 @@ You must [set feature category metadata for each RSpec example](../feature_categ
 
 You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to execute tests depending on whether running with `FOSS_ONLY=1`.
 
-Example: [SchemaValidator reads a different path depending on the license](https://gitlab.com/gitlab-org/gitlab/-/blob/7cdcf9819cfa02c701d6fa9f18c1e7a8972884ed/spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb#L571)
-
 ### Tests depending on SaaS
 
 You can use the `:saas` RSpec metadata tag helper on context/spec blocks to test code that only runs on GitLab.com. This helper sets `Gitlab.config.gitlab['url']` to `Gitlab::Saas.com_url`.
@@ -1085,7 +1083,7 @@ end
 
 #### Timestamp truncation
 
-Active Record timestamps are [set by the Rails’ `ActiveRecord::Timestamp`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L105)
+Active Record timestamps are [set by the Rails' `ActiveRecord::Timestamp`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L105)
 module [using `Time.now`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L78).
 Time precision is [OS-dependent](https://ruby-doc.org/core-2.6.3/Time.html#method-c-new),
 and as the docs state, may include fractional seconds.

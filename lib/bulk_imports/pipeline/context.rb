@@ -61,6 +61,12 @@ module BulkImports
       def importer_user_mapping_enabled?
         Import::BulkImports::EphemeralData.new(bulk_import_id).importer_user_mapping_enabled?
       end
+
+      def override_file_size_limit?
+        Feature.enabled?(:import_admin_override_max_file_size, current_user) &&
+          Feature.enabled?(:import_admin_override_max_file_size, portable.root_ancestor) &&
+          current_user.can_admin_all_resources?
+      end
     end
   end
 end

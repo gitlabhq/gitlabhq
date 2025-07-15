@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab for Jira Cloud app
 ---
@@ -134,7 +134,7 @@ After you link to a GitLab group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../../administration/feature_flags/_index.md) named `enable_jira_connect_configuration`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467117) in GitLab 17.4. Feature flag `enable_jira_connect_configuration` removed.
 
 {{< /history >}}
@@ -208,11 +208,11 @@ This token authenticates the service account token used to manage GitLab deploym
 
 To create the service account token:
 
-1. [Create a service account user](../../api/user_service_accounts.md#create-a-service-account-user).
+1. [Create a service account user](../../api/service_accounts.md#create-an-instance-service-account).
 1. [Add the service account to a group or project](../../api/members.md#add-a-member-to-a-group-or-project)
    by using your personal access token.
 1. [Add the service account to protected environments](../../ci/environments/protected_environments.md#protecting-environments).
-1. [Generate a service account token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)
+1. [Generate a service account token](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account)
    by using your personal access token.
 1. Copy the service account token value.
 

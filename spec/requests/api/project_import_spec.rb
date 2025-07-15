@@ -64,7 +64,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
 
-      expect(control.count).to be <= 128
+      expect(control.count).to be <= 135
     end
 
     it 'schedules an import using a namespace' do
@@ -73,6 +73,14 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       perform_archive_upload
 
+      expect(json_response).to include({
+        'id' => kind_of(Integer),
+        'name' => 'test-import',
+        'name_with_namespace' => "#{namespace.name} / test-import",
+        'path' => 'test-import',
+        'import_type' => 'gitlab_project',
+        'path_with_namespace' => "#{namespace.path}/test-import"
+      })
       expect(response).to have_gitlab_http_status(:created)
     end
 
@@ -337,7 +345,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     def stub_import(namespace)
       expect_any_instance_of(ProjectImportState).to receive(:schedule)
-      expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original
+      expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id, import_type: 'gitlab_project')).and_call_original
     end
   end
 

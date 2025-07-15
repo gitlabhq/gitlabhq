@@ -82,8 +82,8 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
         it 'does not create a new package' do
           expect { subject }
-            .to change { ::Packages::Composer::Package.count }.by(0)
-            .and change { Packages::Composer::Metadatum.count }.by(0)
+            .to not_change { ::Packages::Composer::Package.count }
+            .and not_change { Packages::Composer::Metadatum.count }
         end
       end
 

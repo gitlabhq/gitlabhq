@@ -8,6 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportNotesWorker, feature_
   subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::BitbucketServerImport::StageMethods
+  it_behaves_like Import::ResumableImportJob
 
   describe '#perform' do
     context 'when the import succeeds' do

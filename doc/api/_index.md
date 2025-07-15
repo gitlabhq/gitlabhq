@@ -1,8 +1,9 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Extend with GitLab
+description: Connect GitLab to your tools and workflows to build a customized development environment.
 ---
 
 Connect GitLab to your tools and workflows to build a customized development environment.

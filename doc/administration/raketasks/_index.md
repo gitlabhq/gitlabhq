@@ -15,6 +15,8 @@ title: Rake tasks
 GitLab provides [Rake](https://ruby.github.io/rake/) tasks to assist you with common administration and operational
 processes.
 
+All Rake tasks must be run on a Rails node unless the documentation for a task specifically states otherwise.
+
 You can perform GitLab Rake tasks by using:
 
 - `gitlab-rake <raketask>` for [Linux package](https://docs.gitlab.com/omnibus/) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
@@ -38,7 +40,7 @@ The following Rake tasks are available for use with GitLab:
 | [Integrity checks](check.md)                                                                          | Check the integrity of repositories, files, LDAP, and more. |
 | [LDAP maintenance](ldap.md)                                                                           | [LDAP](../auth/ldap/_index.md)-related tasks. |
 | [Password](password.md)                                                                               | Password management tasks. |
-| [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect.md)-related tasks. |
+| [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)-related tasks. |
 | [Project import/export](project_import_export.md)                                                     | Prepare for [project exports and imports](../../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../sidekiq/sidekiq_job_migration.md)                                          | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [Service Desk email](service_desk_email.md)                                                           | Service Desk email-related tasks. |

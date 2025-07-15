@@ -10,7 +10,7 @@ import { __, sprintf } from '~/locale';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
-import { WIKI_CONTAINER_TYPE } from '../../constants';
+import { WIKI_CONTAINER_TYPE } from '~/wikis/constants';
 
 export default {
   i18n: {
@@ -33,11 +33,16 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['containerName', 'containerType'],
+  inject: ['containerName', 'containerType', 'pageAuthorEmail'],
   props: {
     authorId: {
       type: String,
       required: true,
+    },
+    authorEmails: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     showReply: {
       type: Boolean,
@@ -80,13 +85,21 @@ export default {
       return true;
     },
     showMemberBadge() {
-      return this.containerType === WIKI_CONTAINER_TYPE.PROJECT && this.accessLevel;
+      return Boolean(this.accessLevel);
+    },
+    showAuthorBadge() {
+      return this.authorEmails.includes(this.pageAuthorEmail);
     },
     displayMemberBadgeText() {
-      return sprintf(__('This user has the %{access} role in the %{name} project.'), {
-        access: this.accessLevel.toLowerCase(),
-        name: this.containerName,
-      });
+      return sprintf(
+        this.containerType === WIKI_CONTAINER_TYPE.PROJECT
+          ? __('This user has the %{access} role in the %{name} project.')
+          : __('This user has the %{access} role in the %{name} group.'),
+        {
+          access: this.accessLevel.toLowerCase(),
+          name: this.containerName,
+        },
+      );
     },
   },
   methods: {
@@ -102,8 +115,18 @@ export default {
 <template>
   <div class="note-actions gl-justify-end">
     <user-access-role-badge
+      v-if="showAuthorBadge"
+      v-gl-tooltip
+      data-testid="wiki-note-user-author-badge"
+      class="gl-mr-3 gl-hidden sm:gl-block"
+      :title="__('This user is the author of this page.')"
+    >
+      {{ __('Author') }}
+    </user-access-role-badge>
+    <user-access-role-badge
       v-if="showMemberBadge"
       v-gl-tooltip
+      data-testid="wiki-note-user-access-role-badge"
       class="gl-mr-3 gl-hidden sm:gl-block"
       :title="displayMemberBadgeText"
     >

@@ -43,7 +43,7 @@ GitLab supports the following work item types:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `work_item_planning_view`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `work_item_planning_view`. Disabled by default.
 
 {{< /history >}}
 
@@ -67,8 +67,8 @@ When you enable this feature, it:
 
 Prerequisites:
 
-- In the Free tier, your administrator must enable the [flag](../../administration/feature_flags.md) named `namespace_level_work_items`.
-- In the Premium and Ultimate tiers, your administrator must enable the [flag](../../administration/feature_flags.md) named `work_item_epics`.
+- In the Free tier, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `namespace_level_work_items`.
+- In the Premium and Ultimate tiers, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `work_item_epics`.
 
 To view work items for a project or group:
 
@@ -136,6 +136,18 @@ To toggle the sorting order between ascending and descending:
 
 For more information about sorting logic, see
 [Sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
+
+## Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../markdown.md#gitlab-specific-references).
 
 ## Related topics
 

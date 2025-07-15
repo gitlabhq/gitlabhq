@@ -73,6 +73,8 @@ module Users
         group_as_hash(participant)
       when User
         user_as_hash(participant)
+      when Organizations::OrganizationUserDetail
+        org_user_detail_as_hash(participant)
       else
         participant
       end
@@ -96,6 +98,19 @@ module Users
         avatar_url: group.avatar_url,
         count: group_counts.fetch(group.id, 0),
         mentionsDisabled: group.mentions_disabled
+      }
+    end
+
+    def org_user_detail_as_hash(org_user_detail)
+      user = org_user_detail.user
+      {
+        type: user.class.name,
+        username: org_user_detail.username,
+        name: org_user_detail.display_name,
+        avatar_url: user.avatar_url,
+        availability: lazy_user_availability(user).itself, # calling #itself to avoid returning a BatchLoader instance
+        original_username: user.username,
+        original_displayname: user.name
       }
     end
 

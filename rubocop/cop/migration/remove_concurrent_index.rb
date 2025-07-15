@@ -18,7 +18,7 @@ module RuboCop
           return unless node.children[1] == :remove_concurrent_index
 
           node.each_ancestor(:def) do |def_node|
-            add_offense(def_node.loc.name) if def_node.method_name == :change
+            add_offense(def_node.loc.name) if def_node.method?(:change)
           end
         end
       end

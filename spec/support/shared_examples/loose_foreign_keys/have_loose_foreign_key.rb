@@ -48,20 +48,23 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
   it 'cleans up record deletions' do
     model = create(factory_name) # rubocop: disable Rails/SaveBang
+    model_id = model.id
 
     expect { model.delete }.to change { deleted_records.count }.by(1)
 
     LooseForeignKeys::ProcessDeletedRecordsService.new(connection: connection).execute
 
-    expect(deleted_records.status_pending.count).to be(0)
-    expect(deleted_records.status_processed.count).to be(1)
+    expect(deleted_records.where(primary_key_value: model_id).status_pending.count).to eq(0)
+    expect(deleted_records.where(primary_key_value: model_id).status_processed.count).to eq(1)
   end
 end
 
-RSpec.shared_examples 'cleanup by a loose foreign key' do
+RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
   include_context 'for loose foreign keys'
 
   it 'cleans up (delete or nullify) the model' do
+    expect(foreign_key_definition.on_delete).to eq(on_delete.to_sym) if on_delete.present?
+
     puts("##+ Additional Debug Logs for LFK flakiness +##")
     puts("## Parent: #{parent.inspect} ##")
     parent.delete

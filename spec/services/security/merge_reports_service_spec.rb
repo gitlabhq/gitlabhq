@@ -129,7 +129,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
   let(:report_1) do
     build(
       :ci_reports_security_report,
-      scanners: [scanner_1, scanner_2],
+      scanner: scanner_1,
       findings: report_1_findings,
       identifiers: report_1_findings.flat_map(&:identifiers),
       scanned_resources: [scanned_resource, scanned_resource_1, scanned_resource_2]
@@ -141,7 +141,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
   let(:report_2) do
     build(
       :ci_reports_security_report,
-      scanners: [scanner_2],
+      scanner: scanner_2,
       findings: report_2_findings,
       identifiers: finding_id_2_loc_2.identifiers,
       scanned_resources: [scanned_resource, scanned_resource_1, scanned_resource_3]
@@ -153,7 +153,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
   let(:report_3) do
     build(
       :ci_reports_security_report,
-      scanners: [scanner_1, scanner_3],
+      scanner: scanner_3,
       findings: report_3_findings,
       identifiers: report_3_findings.flat_map(&:identifiers)
     )
@@ -185,8 +185,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     it { is_expected.to match_array([{ type: 'foo', message: 'bar' }, { type: 'zoo', message: 'baz' }]) }
   end
 
-  it 'copies scanners into target report and eliminates duplicates' do
-    expect(merged_report.scanners.values).to contain_exactly(scanner_1, scanner_2, scanner_3)
+  it 'sets target report to last scanner' do
+    expect(merged_report.scanner).to eq(scanner_3)
   end
 
   it 'copies identifiers into target report and eliminates duplicates' do
@@ -265,7 +265,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     let(:bandit_report) do
       build(:ci_reports_security_report,
         type: :sast,
-        scanners: [bandit_scanner],
+        scanner: bandit_scanner,
         findings: [finding_id_1],
         identifiers: finding_id_1.identifiers
       )
@@ -275,7 +275,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       build(
         :ci_reports_security_report,
         type: :sast,
-        scanners: [semgrep_scanner],
+        scanner: semgrep_scanner,
         findings: [finding_id_2, finding_id_3],
         identifiers: finding_id_2.identifiers + finding_id_3.identifiers
       )
@@ -285,7 +285,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       build(
         :ci_reports_security_report,
         type: :sast,
-        scanners: [scanner_2],
+        scanner: scanner_2,
         findings: [finding_id_2_loc_1],
         identifiers: finding_id_2_loc_1.identifiers
       )
@@ -294,7 +294,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     context 'when reports are gathered in an unprioritized order' do
       subject(:sast_merged_report) { described_class.new(semgrep_report, bandit_report).execute }
 
-      specify { expect(sast_merged_report.scanners.values).to eql([bandit_scanner, semgrep_scanner]) }
+      specify { expect(sast_merged_report.scanner).to eq(semgrep_scanner) }
       specify { expect(sast_merged_report.findings.count).to eq(2) }
       specify { expect(sast_merged_report.findings.first.identifiers).to eql([identifier_bandit, identifier_cve]) }
       specify { expect(sast_merged_report.findings.last.identifiers).to contain_exactly(identifier_semgrep) }
@@ -303,7 +303,7 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     context 'when a custom analyzer is completed before the known analyzers' do
       subject(:sast_merged_report) { described_class.new(custom_analyzer_report, semgrep_report, bandit_report).execute }
 
-      specify { expect(sast_merged_report.scanners.values).to eql([bandit_scanner, semgrep_scanner, scanner_2]) }
+      specify { expect(sast_merged_report.scanner).to eq(scanner_2) }
       specify { expect(sast_merged_report.findings.count).to eq(3) }
       specify { expect(sast_merged_report.findings.last.identifiers).to match_array(finding_id_2_loc_1.identifiers) }
     end

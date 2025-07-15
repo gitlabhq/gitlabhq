@@ -1105,6 +1105,9 @@ Example configuration:
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
                idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
+               # or
+               # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
+
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1134,6 +1137,8 @@ Example configuration:
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
      idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
+     # or
+     # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1269,6 +1274,9 @@ Example configuration:
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
                idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
+               # or
+               # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
+
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1578,11 +1586,28 @@ Example configuration:
 
 For information on automatically managing GitLab group membership, see [SAML Group Sync](../user/group/saml_sso/group_sync.md).
 
+### Customize SAML session timeout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+
+{{< /history >}}
+
+By default, GitLab ends SAML sessions after 24 hours. You can customize this duration with
+the `SessionNotOnOrAfter` attribute in the SAML2 AuthnStatement. This attribute contains an
+ISO 8601 timestamp value that indicates when to end the user session. When specified this
+value overrides the default SAML session timeout of 24 hours.
+
+If the instance has a custom [session duration](../administration/settings/account_and_limit_settings.md#session-duration) configured
+that is earlier than the `SessionNotOnOrAfter` timestamp, users must re-authenticate
+when their GitLab user session ends.
+
 ## Bypass two-factor authentication
 
 {{< history >}}
 
-- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `by_pass_two_factor_current_session`.
+- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags/_index.md) named `by_pass_two_factor_current_session`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/416535) in GitLab 17.8.
 
 {{< /history >}}
@@ -1776,7 +1801,7 @@ membership is required.
 
 ### Using `idp_cert_fingerprint`
 
-You configure the response signature validation using `idp_cert_fingerprint`.
+You can configure the response signature validation using `idp_cert_fingerprint`.
 An example configuration:
 
 {{< tabs >}}
@@ -1922,8 +1947,7 @@ An example configuration:
 
 ### Using `idp_cert`
 
-If your IdP does not support configuring this using `idp_cert_fingerprint`, you
-can instead configure GitLab directly using `idp_cert`.
+You can also configure GitLab directly using `idp_cert`.
 An example configuration:
 
 {{< tabs >}}
@@ -3030,7 +3054,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
 ## Assertion encryption (optional)
 
 Encrypting the SAML assertion is optional but recommended. This adds an additional layer of protection
-to prevent unencrypted data being logged or intercepted by malicious actors. 
+to prevent unencrypted data being logged or intercepted by malicious actors.
 
 {{< alert type="note" >}}
 

@@ -84,12 +84,21 @@ module ProfilesHelper
       pronunciation: user.pronunciation,
       website_url: user.website_url,
       job_title: user.job_title,
-      organization: user.organization,
+      organization: user.user_detail_organization,
       bio: user.bio,
       include_private_contributions: user.include_private_contributions?.to_s,
       achievements_enabled: user.achievements_enabled.to_s,
       private_profile: user.private_profile?.to_s,
       **user_status_properties(user)
+    }
+  end
+
+  def delete_account_modal_data
+    {
+      action_url: user_registration_path,
+      confirm_with_password: current_user.confirm_deletion_with_password?.to_s,
+      username: current_user.username,
+      delay_user_account_self_deletion: Gitlab::CurrentSettings.delay_user_account_self_deletion.to_s
     }
   end
 end

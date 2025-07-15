@@ -57,6 +57,7 @@ To enforce policies to meet your requirements, consider the following factors:
 - **Inheritance**: By default, a policy is enforced on the organizational units it's linked to, and
   all their descendent subgroups and their projects.
 - **Scope**: To customize policy enforcement, you can define a policy's scope to match your needs.
+- **Centralized security policy management**: To apply security policies across multiple groups and projects from a single, centralized location, GitLab Self-Managed instance administrators can designate a compliance and security policy (CSP) group. For more information, see [centralized security policy management](centralized_security_policy_management.md).
 
 #### Inheritance
 
@@ -123,7 +124,7 @@ Assuming no policies are enforced, consider the following examples:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_policy_scope`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
 - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
 
@@ -418,3 +419,17 @@ When working with security policies, consider these troubleshooting tips:
   contact your group administrator to ensure you have the necessary permissions in the group.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.
+
+### Resynchronize policies with the GraphQL API
+
+If you notice inconsistencies in any of the policies, such as policies that aren't being enforced or approvals that are incorrect, you can manually force a resynchronization of the policies with the GraphQL `resyncSecurityPolicies` mutation:
+
+```graphql
+mutation {
+  resyncSecurityPolicies(input: { fullPath: "group-or-project-path" }) {
+    errors
+  }
+}
+```
+
+Set `fullPath` to the path of the project or group to which the security policy project is assigned.

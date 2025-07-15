@@ -326,13 +326,13 @@ module Clusters
 
       duplicate_management_clusters = management_project.management_clusters
         .where(environment_scope: environment_scope)
-        .where.not(id: id)
+        .id_not_in(id)
 
       errors.add(:environment_scope, 'cannot add duplicated environment scope') if duplicate_management_clusters.any?
     end
 
     def unique_environment_scope
-      if clusterable.present? && clusterable.clusters.where(environment_scope: environment_scope).where.not(id: id).exists?
+      if clusterable.present? && clusterable.clusters.where(environment_scope: environment_scope).id_not_in(id).exists?
         errors.add(:environment_scope, 'cannot add duplicated environment scope')
       end
     end

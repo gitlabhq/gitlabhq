@@ -15,7 +15,7 @@ title: Custom fields
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `custom_fields_feature`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `custom_fields_feature`.
   Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 18.0. Feature flag `custom_fields_feature` removed.
 

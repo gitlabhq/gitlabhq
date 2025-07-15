@@ -17,9 +17,11 @@ This page outlines steps for investigating [end-to-end test](_index.md) failures
 
 Note when viewing a deployment failure from the `#announcements` Slack channel, you will have to click into the pipeline and look at the `Downstream` results to understand if the deployment failure arose from a failure in `Staging-Canary` or if the failure occurred in `Staging`.
 
-Click on the diagram below to visit the announcement issue for more context and view an uncompressed image:
+Visit the [announcement issue](https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2280) for more context
+and to view an uncompressed version of the following image:
 
-[![Pipeline Reorder](img/deployment_pipeline_and_e2e_tests_v18_0.png "pipeline diagram")](https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2280)
+![Pipeline Reorder](img/deployment_pipeline_and_e2e_tests_v18_0.png)
+
 Note the diagram has been updated as part of increasing rollback availability by removing the [blocking nature of post-deployment migrations](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/585).
 
 ### Staging Ref
@@ -182,7 +184,7 @@ The following can help with your investigation:
 | [QA Logs](../../../ci/jobs/job_artifacts.md#browse-the-contents-of-the-artifacts-archive)                                                                                                                                                                                                                                                      | Included in the job's artifacts; valuable for determining the steps taken by the tests before failing                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | [System Logs](../../../administration/logs/_index.md) (GitLab-rails, Sidekiq, etc.)                                                                                                                                                                                                                                                            | Included in the job's artifacts for containerized test runs, such as master and nightly. These are useful for investigating errors originating from the GitLab application itself. <br/><br />  A summary of the system logs related to a test failure can also be found in the description of QA failure issues generated from master and nightly runs containing a correlation ID.                                                                                                                                                                                                                                                                                           |
 | Sentry logs ([Staging](https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg), [Staging Ref](https://new-sentry.gitlab.net/organizations/gitlab/projects/staging-ref), [Preprod](https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=pre), [Production](https://sentry.gitlab.net/gitlab/gitlabcom/)) | If staging, preprod or production tests fail due to a server error, there should be a record in [Sentry](https://handbook.gitlab.com/handbook/support/workflows/sentry/). For example, you can search for all unresolved staging errors linked to the `gitlab-qa` user with the query [`is:unresolved user:"username:gitlab-qa"`](https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg&query=is%3Aunresolved+user%3Ausername%3Agitlab-qa). However, note that some actions aren't linked to the `gitlab-qa` user, so they might only appear in the [full unresolved list](https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg). |
-| Kibana logs ([Staging and Preprod](https://nonprod-log.gitlab.net/app/kibana#/discover), [Production](https://log.gprd.gitlab.net/app/kibana#/discover))                                                                                                                                                                                       | Various system logs from live environments are sent to [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/), including Rails, Postgres, Sidekiq, and Gitaly logs. <br><br>**Note:** Staging and Preprod logs both use the same URL, but the search index pattern will be different. Staging indices contain `gstg` while Preprod contains `pre`. For example, to search within the Staging Rails index, you would change the index pattern dropdown value to `pubsub-rails-inf-gstg*`. More information on how to do this can be found [here](https://handbook.gitlab.com/handbook/support/workflows/kibana/#parameters).                                  |
+| Kibana logs ([Staging and Preprod](https://nonprod-log.gitlab.net/app/kibana#/discover), [Production](https://log.gprd.gitlab.net/app/kibana#/discover))                                                                                                                                                                                       | Various system logs from live environments are sent to [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/), including Rails, Postgres, Sidekiq, and Gitaly logs. <br><br>**Note**: Staging and Preprod logs both use the same URL, but the search index pattern will be different. Staging indices contain `gstg` while Preprod contains `pre`. For example, to search within the Staging Rails index, you would change the index pattern dropdown value to `pubsub-rails-inf-gstg*`. More information on how to do this can be found [here](https://handbook.gitlab.com/handbook/support/workflows/kibana/#parameters).                                  |
 
 ### Kibana and Sentry Logs
 
@@ -221,13 +223,13 @@ Tests can then be ran with the `FIPS` variable set:
 You can run the test (or perform the test steps manually) against your local GitLab instance to see if the failure is reproducible. For example:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 Orchestrated tests are excluded by default. To run them, use `-- --tag orchestrated` before your file name. For example:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag orchestrated qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag orchestrated qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 ### Run the test against a GitLab Docker container
@@ -248,7 +250,7 @@ To run Nightly images change `registry.gitlab.com/gitlab-org/build/omnibus-gitla
 You can now run the test against this Docker instance. E.g.:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 ### Run the tests against CustomersDot staging environment

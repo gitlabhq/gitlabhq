@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Analytics' do
     describe 'Service ping default checked', product_group: :analytics_instrumentation do
-      context 'when using default gitlab.yml config', :requires_admin do
+      context 'when using default gitlab.yml config', :requires_admin, :skip_live_env do
         before do
           Flow::Login.sign_in_as_admin
 
@@ -13,7 +13,11 @@ module QA
 
         it(
           'has service ping checked (but disabled)',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348335'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348335',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues/621',
+            type: :investigating
+          }
         ) do
           Page::Admin::Settings::MetricsAndProfiling.perform do |setting|
             setting.expand_usage_statistics do |page|

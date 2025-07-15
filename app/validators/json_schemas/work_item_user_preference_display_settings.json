@@ -19,7 +19,8 @@
           "popularity",
           "weight",
           "comments",
-          "iteration"
+          "iteration",
+          "status"
         ]
       },
       "uniqueItems": true

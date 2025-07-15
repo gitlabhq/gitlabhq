@@ -119,18 +119,12 @@ export default {
         { value: 'PYPI', text: s__('PackageRegistry|PyPI') },
         { value: 'MAVEN', text: s__('PackageRegistry|Maven') },
         { value: 'CONAN', text: s__('PackageRegistry|Conan') },
+        { value: 'GENERIC', text: s__('PackageRegistry|Generic') },
+        { value: 'NUGET', text: s__('PackageRegistry|NuGet') },
       ];
-
-      if (this.glFeatures.packagesProtectedPackagesNuget) {
-        packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
-      }
 
       if (this.glFeatures.packagesProtectedPackagesHelm) {
         packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });
-      }
-
-      if (this.glFeatures.packagesProtectedPackagesGeneric) {
-        packageTypeOptions.push({ value: 'GENERIC', text: s__('PackageRegistry|Generic') });
       }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));

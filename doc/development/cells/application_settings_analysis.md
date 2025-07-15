@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 487
-- Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 293 (60.0%)
-- Number of attributes on GitLab.com different from the defaults: 222 (46.0%)
-- Number of attributes with `clusterwide` set: 487 (100.0%)
-- Number of attributes with `clusterwide: true` set: 125 (26.0%)
+- Number of attributes: 498
+- Number of encrypted attributes: 42 (8.0%)
+- Number of attributes documented: 294 (59.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
+- Number of attributes with `clusterwide` set: 498 (100.0%)
+- Number of attributes with `clusterwide: true` set: 131 (26.0%)
 
 ## Individual columns
 
@@ -116,6 +116,7 @@ title: Application Settings analysis
 | `default_ci_config_path` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `default_group_visibility` | `false` | `integer` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `default_preferred_language` | `false` | `text` | `string` | `true` | `'en'::text` | `false` | `false`| `true` |
+| `default_profile_preferences` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `default_project_creation` | `false` | `integer` | `integer` | `true` | `2` | `false` | `false`| `true` |
 | `default_project_deletion_protection` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `default_project_visibility` | `false` | `integer` | `string` | `true` | `0` | `false` | `false`| `true` |
@@ -380,6 +381,7 @@ title: Application Settings analysis
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
 | `runners_registration_token` | `true` | `character` | `` | `false` | `null` | `true` | `false`| `false` |
+| `sdrs_jwt_signing_key` | `true` | `jsonb` | `Hash` | `false` | `null` | `false` | `true` | `false` |
 | `search` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `search_max_docs_denominator` | `false` | `integer` | `` | `true` | `5000000` | `false` | `false`| `false` |
 | `search_max_shard_size_gb` | `false` | `integer` | `` | `true` | `50` | `false` | `false`| `false` |
@@ -387,6 +389,8 @@ title: Application Settings analysis
 | `search_rate_limit` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
 | `search_rate_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |
 | `search_rate_limit_unauthenticated` | `false` | `integer` | `integer` | `true` | `100` | `false` | `false`| `true` |
+| `sdrs_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `sdrs_url` | `false` | `text` | `` | `false` | `null` | `false` | `true`| `false` |
 | `secret_detection_revocation_token_types_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_service_auth_token` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_service_url` | `false` | `text` | `` | `true` | `''::text` | `true` | `false`| `false` |
@@ -394,6 +398,7 @@ title: Application Settings analysis
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_push_protection_available` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
+| `security_and_compliance_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |

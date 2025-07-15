@@ -10,6 +10,10 @@ module Types
 
     authorize :read_project
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     expose_permissions Types::PermissionTypes::Project
 
     implements Types::TodoableInterface
@@ -17,7 +21,8 @@ module Types
 
     field :id, GraphQL::Types::ID,
       null: false,
-      description: 'ID of the project.'
+      description: 'ID of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :ci_config_path_or_default, GraphQL::Types::String,
       null: false,
@@ -56,6 +61,7 @@ module Types
 
     field :full_path, GraphQL::Types::ID,
       null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Full path of the project.'
 
     field :path, GraphQL::Types::String,
@@ -78,7 +84,8 @@ module Types
 
     field :name, GraphQL::Types::String,
       null: false,
-      description: 'Name of the project without the namespace.'
+      description: 'Name of the project without the namespace.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :name_with_namespace, GraphQL::Types::String,
       null: false,
@@ -86,7 +93,8 @@ module Types
 
     field :description, GraphQL::Types::String,
       null: true,
-      description: 'Short description of the project.'
+      description: 'Short description of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :tag_list, GraphQL::Types::String,
       null: true,
@@ -101,15 +109,18 @@ module Types
 
     field :http_url_to_repo, GraphQL::Types::String,
       null: true,
-      description: 'URL to connect to the project via HTTPS.'
+      description: 'URL to connect to the project via HTTPS.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :ssh_url_to_repo, GraphQL::Types::String,
       null: true,
-      description: 'URL to connect to the project via SSH.'
+      description: 'URL to connect to the project via SSH.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :web_url, GraphQL::Types::String,
       null: true,
-      description: 'Web URL of the project.'
+      description: 'Web URL of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :forks_count, GraphQL::Types::Int,
       null: false,
@@ -312,6 +323,7 @@ module Types
       Types::WorkItemType.connection_type,
       null: true,
       experiment: { milestone: '15.1' },
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Work items of the project.',
       extras: [:lookahead],
       resolver: Resolvers::WorkItemsResolver
@@ -525,7 +537,8 @@ module Types
     field :alert_management_integrations, Types::AlertManagement::IntegrationType.connection_type,
       null: true,
       description: 'Integrations which can receive alerts for the project.',
-      resolver: Resolvers::AlertManagement::IntegrationsResolver
+      resolver: Resolvers::AlertManagement::IntegrationsResolver,
+      deprecated: { reason: 'Use `alertManagementHttpIntegrations`', milestone: '18.2' }
 
     field :alert_management_http_integrations, Types::AlertManagement::HttpIntegrationType.connection_type,
       null: true,
@@ -680,6 +693,10 @@ module Types
       null: true,
       description: 'Regex used to validate the title of merge requests.'
 
+    field :merge_request_title_regex_description, GraphQL::Types::String,
+      null: true,
+      description: 'Description of the regex used to validate the title of merge requests.'
+
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',
@@ -718,6 +735,7 @@ module Types
     field :languages, [Types::Projects::RepositoryLanguageType],
       null: true,
       description: "Programming languages used in the project.",
+      scopes: [:api, :read_api, :ai_workflows],
       calls_gitaly: true
 
     field :runners, Types::Ci::RunnerType.connection_type,

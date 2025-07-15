@@ -187,30 +187,27 @@ The external redirect warning page is displayed by default. To hide it:
 1. Clear the **Enable the external redirect page for job artifacts** checkbox.
 1. Select **Save changes**.
 
-### Jobs
+### Pipelines
 
-#### Archive older jobs
+#### Archive pipelines
 
-Archive older jobs automatically after a specified time period. Archived jobs:
+Archive old pipelines and all their jobs automatically after a specified time period. Archived jobs:
 
 - Display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
-- Cannot be re-run individually.
-- Are still visible in job logs.
-- Can still be retried.
-- Are no longer subject to expiration settings.
+- Cannot be re-run or retried.
+- Cannot run as [on-stop deployment actions](../../ci/environments/_index.md#stopping-an-environment) when environments auto-stop.
+- Continue to have visible job logs.
 
-The archive duration must be at least 1 day.
+The archive duration is measured from the time the pipeline is created. It must be at least 1 day.
 Examples of valid durations include `15 days`, `1 month`, and `2 years`.
-Leave this field empty to never archive jobs automatically.
+Leave this field empty to never archive pipelines automatically.
 
 For GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
 
 To set up job archiving:
 
-1. Enter a value in the **Archive jobs** field.
+1. Enter a value in the **Archive pipelines** field.
 1. Select **Save changes**.
-
-### Pipelines
 
 #### Allow pipeline variables by default
 
@@ -473,12 +470,6 @@ To access these settings:
 
 ### Control runner version management
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
-
-{{< /history >}}
-
 Control whether your instance fetches official runner version data from GitLab.com
 to [determine if runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 
@@ -491,7 +482,6 @@ By default, GitLab fetches runner version data. To stop fetching this data:
 
 {{< history >}}
 
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 - **Allow runner registration token** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11.
 
 {{< /history >}}
@@ -617,10 +607,9 @@ To turn on incremental logging for all projects:
 
 {{< history >}}
 
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
-- [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) behind the `required_pipelines` feature flag in GitLab 17.4. Disabled by default.
+- [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `required_pipelines`. Disabled by default.
 
 {{< /history >}}
 

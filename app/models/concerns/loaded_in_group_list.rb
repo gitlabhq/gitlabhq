@@ -4,48 +4,72 @@ module LoadedInGroupList
   extend ActiveSupport::Concern
 
   class_methods do
-    def with_counts(archived:)
+    def with_counts(archived: nil, active: nil)
+      projects_cte = projects_cte(archived, active)
+      subgroups_cte = subgroups_cte(archived, active)
+
       selects_including_counts = [
         'namespaces.*',
-        "(#{project_count_sql(archived).to_sql}) AS preloaded_project_count",
+        "(#{project_count_sql(projects_cte).to_sql}) AS preloaded_project_count",
         "(#{member_count_sql.to_sql}) AS preloaded_member_count",
-        "(#{subgroup_count_sql.to_sql}) AS preloaded_subgroup_count"
+        "(#{subgroup_count_sql(subgroups_cte).to_sql}) AS preloaded_subgroup_count"
       ]
 
       select(selects_including_counts)
+        .with(projects_cte.to_arel)
+        .with(subgroups_cte.to_arel)
     end
 
-    def with_selects_for_list(archived: nil)
-      with_route.with_namespace_details.with_counts(archived: archived).preload(:deletion_schedule)
+    def with_selects_for_list(archived: nil, active: nil)
+      with_route.with_namespace_details.with_counts(archived:, active:).preload(:deletion_schedule)
     end
 
     private
 
-    def project_count_sql(archived = nil)
-      projects = Project.arel_table
-      namespaces = Namespace.arel_table
+    def by_archived(relation, archived)
+      return relation if archived.nil?
 
-      base_count = projects.project(Arel.star.count.as('preloaded_project_count'))
-                     .where(projects[:namespace_id].eq(namespaces[:id]))
-
-      if archived == 'only'
-        base_count.where(projects[:archived].eq(true))
-      elsif Gitlab::Utils.to_boolean(archived)
-        base_count
-      else
-        base_count.where(projects[:archived].not_eq(true))
-      end
+      archived ? relation.self_or_ancestors_archived : relation.self_and_ancestors_non_archived
     end
 
-    def subgroup_count_sql
-      namespaces = Namespace.arel_table
-      children = namespaces.alias('children')
+    def by_active(relation, active)
+      return relation if active.nil?
 
-      # TODO 6473: remove the filtering of the Namespaces::ProjectNamespace see https://gitlab.com/groups/gitlab-org/-/epics/6473
-      namespaces.project(Arel.star.count.as('preloaded_subgroup_count'))
-        .from(children)
-        .where(children[:parent_id].eq(namespaces[:id]))
-        .where(children[:type].is_distinct_from(Namespaces::ProjectNamespace.sti_name))
+      active ? relation.self_and_ancestors_active : relation.self_or_ancestors_inactive
+    end
+
+    def projects_cte(archived = nil, active = nil)
+      projects = Project.unscoped.select(:namespace_id)
+      projects = by_archived(projects, archived)
+      projects = by_active(projects, active)
+
+      Gitlab::SQL::CTE.new(:projects_cte, projects, materialized: false)
+    end
+
+    def project_count_sql(cte)
+      namespaces = Namespace.arel_table
+
+      Arel::SelectManager.new
+        .from(cte.table)
+        .project(Arel.star.count.as('preloaded_project_count'))
+        .where(cte.table[:namespace_id].eq(namespaces[:id]))
+    end
+
+    def subgroups_cte(archived = nil, active = nil)
+      subgroups = Group.unscoped.select(:parent_id)
+      subgroups = by_archived(subgroups, archived)
+      subgroups = by_active(subgroups, active)
+
+      Gitlab::SQL::CTE.new(:subgroups_cte, subgroups, materialized: false)
+    end
+
+    def subgroup_count_sql(cte)
+      namespaces = Namespace.arel_table
+
+      Arel::SelectManager.new
+        .from(cte.table)
+        .project(Arel.star.count.as('preloaded_subgroup_count'))
+        .where(cte.table[:parent_id].eq(namespaces[:id]))
     end
 
     def member_count_sql

@@ -33,16 +33,10 @@ For more information, see also [Sharing projects and groups](../project/members/
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
-In GitLab 15.4 and later, to configure push rules for a group:
+To configure push rules for a group:
 
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
-1. Select the settings you want.
-1. Select **Save push rules**.
-
-In GitLab 15.3 and earlier, to configure push rules for a group:
-
-1. On the left sidebar, select **Push rules**.
 1. Select the settings you want.
 1. Select **Save push rules**.
 
@@ -86,7 +80,7 @@ address. This top-level group setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - The API.
-- On GitLab Self-Managed, in 15.1 and later, you can also configure
+- On GitLab Self-Managed you can also configure
   [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
   for the group.
 
@@ -95,13 +89,24 @@ Administrators can combine restricted access by IP address with
 
 {{< alert type="warning" >}}
 
-The server that receives direct requests from users must use the
-`X-Forwarded-For` header to correctly capture the user's original IP address.
+IP restriction requires proper configuration of the `X-Forwarded-For` header. To limit the risk
+of IP spoofing, you must overwrite, and not append, any `X-Forwarded-For` headers sent by clients.
 
-In NGINX, you can modify your configuration file to include:
+For deployments without an upstream proxy or load balancer, configure the server that receives direct
+requests from users to preserve the original client IP address and overwrite any `X-Forwarded-For` headers.
+In NGINX, for example, modify your configuration file to include:
 
 ```plaintext
 proxy_set_header X-Forwarded-For $remote_addr;
+```
+
+For deployments with an upstream proxy or load balancer, configure the proxy or load balancer to
+preserve the original client IP address and overwrite any `X-Forwarded-For` headers. This approach ensures that
+GitLab receives the full chain of IPs, starting from the original client, and can correctly evaluate
+the IP restrictions. In NGINX, for example, modify your configuration file to include:
+
+```plaintext
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 ```
 
 {{< /alert >}}

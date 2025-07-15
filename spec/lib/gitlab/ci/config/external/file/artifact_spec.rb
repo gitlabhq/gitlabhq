@@ -162,7 +162,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                       parent_pipeline: parent_pipeline,
                       project: anything,
                       sha: anything,
-                      user: anything
+                      user: anything,
+                      variables: anything
                     }
                     expect(context).to receive(:mutate).with(expected_attrs).and_call_original
 

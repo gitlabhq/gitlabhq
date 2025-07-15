@@ -244,6 +244,59 @@ describe('GridstackWrapper', () => {
     });
   });
 
+  describe('when panel properties change', () => {
+    beforeEach(() => {
+      loadCSSFile.mockResolvedValue();
+      createWrapper({
+        value: {
+          ...dashboard,
+          panels: [{ ...dashboard.panels[0], loading: true }],
+        },
+      });
+    });
+
+    const getLatestPanelData = () => panelSlots.at(-1).panel;
+
+    it('updates the UI when panel properties change', async () => {
+      const updatedPanel = {
+        ...dashboard.panels[0],
+        loading: false,
+      };
+
+      expect(getLatestPanelData().loading).toBe(true);
+
+      await wrapper.setProps({
+        value: {
+          ...dashboard,
+          panels: [updatedPanel],
+        },
+      });
+
+      expect(getLatestPanelData().loading).toBe(false);
+    });
+
+    it('does not update gridAttributes in panel props when panel properties change', async () => {
+      const updatedPanel = {
+        ...dashboard.panels[0],
+        loading: false,
+        gridAttributes: {
+          ...dashboard.panels[0].gridAttributes,
+          xPos: 999,
+          yPos: 888,
+        },
+      };
+
+      await wrapper.setProps({
+        value: {
+          ...dashboard,
+          panels: [updatedPanel],
+        },
+      });
+
+      expect(getLatestPanelData()).not.toHaveProperty('gridAttributes');
+    });
+  });
+
   describe('when an error occurs while loading the CSS', () => {
     const sentryError = new Error('Network error');
 

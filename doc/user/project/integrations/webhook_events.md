@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Webhook events
 ---
@@ -37,6 +37,7 @@ Event type                                   | Trigger
 [Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created, edited, or deleted.
+[Milestone event](#milestone-events)         | A milestone is created, closed, reopened, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
 [Vulnerability event](#vulnerability-events) | A vulnerability is created or updated.
@@ -225,7 +226,8 @@ Payload example:
 {{< history >}}
 
 - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
-- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../../group/epics/epic_work_items.md) must be enabled.
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../../group/epics/_index.md#epics-as-work-items) must be enabled.
+- Support for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -1578,7 +1580,7 @@ Payload example:
 
 {{< history >}}
 
-- `retries_count` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `job_webhook_retries_count`. Disabled by default.
+- `retries_count` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a flag](../../../administration/feature_flags/_index.md) named `job_webhook_retries_count`. Disabled by default.
 - `retries_count` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 16.2.
 
 {{< /history >}}
@@ -1774,7 +1776,7 @@ Payload example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `group_access_request_webhooks`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 {{< /history >}}
@@ -1809,7 +1811,7 @@ Payload example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `group_access_request_webhooks`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 {{< /history >}}
@@ -2137,11 +2139,74 @@ Payload example:
 }
 ```
 
+## Milestone events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14213) in GitLab 18.2.
+
+{{< /history >}}
+
+Milestone events are triggered when a milestone is created, closed, reopened, or deleted.
+
+The available values for `object_attributes.action` in the payload are:
+
+- `create`
+- `close`
+- `reopen`
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Milestone Hook
+```
+
+Payload example:
+
+```json
+{
+  "object_kind": "milestone",
+  "event_type": "milestone",
+  "project": {
+    "id": 1,
+    "name": "Gitlab Test",
+    "description": "Aut reprehenderit ut est.",
+    "web_url": "http://example.com/gitlabhq/gitlab-test",
+    "avatar_url": null,
+    "git_ssh_url": "git@example.com:gitlabhq/gitlab-test.git",
+    "git_http_url": "http://example.com/gitlabhq/gitlab-test.git",
+    "namespace": "GitlabHQ",
+    "visibility_level": 20,
+    "path_with_namespace": "gitlabhq/gitlab-test",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "http://example.com/gitlabhq/gitlab-test",
+    "url": "http://example.com/gitlabhq/gitlab-test.git",
+    "ssh_url": "git@example.com:gitlabhq/gitlab-test.git",
+    "http_url": "http://example.com/gitlabhq/gitlab-test.git"
+  },
+  "object_attributes": {
+    "id": 61,
+    "iid": 10,
+    "title": "v1.0",
+    "description": "First stable release",
+    "state": "active",
+    "created_at": "2025-06-16 14:10:57 UTC",
+    "updated_at": "2025-06-16 14:10:57 UTC",
+    "due_date": "2025-06-30",
+    "start_date": "2025-06-16",
+    "group_id": null,
+    "project_id": 1
+  },
+  "action": "create"
+}
+```
+
 ## Emoji events
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `emoji_webhooks`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `emoji_webhooks`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.3.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.4.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 17.5. Feature flag `emoji_webhooks` removed.
@@ -2286,7 +2351,7 @@ Payload example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `access_token_webhooks`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
 - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4.
@@ -2372,7 +2437,7 @@ Payload example for group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
 - Creating an event when a vulnerability is created or when an issue is linked to a vulnerability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176064) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/528397) in GitLab 17.11. Feature flag `vulnerabilities_as_webhook_events` removed.
 

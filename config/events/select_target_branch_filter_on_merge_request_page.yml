@@ -1,0 +1,19 @@
+---
+description: Merge request target branch filter
+internal_events: true
+status: active
+action: select_target_branch_filter_on_merge_request_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: include or exclude
+product_group: global_search
+milestone: '18.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195169/diffs#b574730ab0a59c6ca3a0330f2cea26d27d3178c5
+tiers:
+- free
+- premium
+- ultimate

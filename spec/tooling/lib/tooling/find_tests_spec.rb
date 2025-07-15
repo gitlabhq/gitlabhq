@@ -5,17 +5,24 @@ require_relative '../../../../tooling/lib/tooling/find_tests'
 require 'fast_spec_helper'
 
 RSpec.describe Tooling::FindTests, feature_category: :tooling do
-  include StubENV
-
   attr_accessor :changed_files_file, :predictive_tests_file
 
-  let(:instance)                     { described_class.new(changed_files_pathname, predictive_tests_pathname) }
+  let(:instance) do
+    described_class.new(
+      changed_files_pathname,
+      predictive_tests_pathname,
+      mappings_file: mappings_file,
+      mappings_limit_percentage: 50
+    )
+  end
+
   let(:mock_test_file_finder)        { instance_double(TestFileFinder::FileFinder) }
   let(:new_matching_tests)           { ["new_matching_spec.rb"] }
   let(:changed_files_pathname)       { changed_files_file.path }
   let(:predictive_tests_pathname)    { predictive_tests_file.path }
   let(:changed_files_content)        { "changed_file1 changed_file2" }
   let(:predictive_tests_content)     { "previously_matching_spec.rb" }
+  let(:mappings_file)                { nil }
 
   around do |example|
     self.changed_files_file    = Tempfile.new('changed_files_file')
@@ -37,11 +44,6 @@ RSpec.describe Tooling::FindTests, feature_category: :tooling do
     allow(mock_test_file_finder).to receive(:use)
     allow(mock_test_file_finder).to receive(:test_files).and_return(new_matching_tests)
     allow(TestFileFinder::FileFinder).to receive(:new).and_return(mock_test_file_finder)
-
-    stub_env(
-      'RSPEC_TESTS_MAPPING_ENABLED' => nil,
-      'RSPEC_TESTS_MAPPING_PATH' => '/tmp/does-not-exist.out'
-    )
 
     # We write into the temp files initially, to later check how the code modified those files
     File.write(changed_files_pathname, changed_files_content)
@@ -90,51 +92,15 @@ RSpec.describe Tooling::FindTests, feature_category: :tooling do
       subject
     end
 
-    context 'when RSPEC_TESTS_MAPPING_ENABLED env variable is set' do
-      before do
-        stub_env(
-          'RSPEC_TESTS_MAPPING_ENABLED' => 'true',
-          'RSPEC_TESTS_MAPPING_PATH' => 'crystalball-test/mapping.json'
-        )
-      end
+    context 'when test mapping file is set' do
+      let(:mappings_file) { 'crystalball-test/mapping.json' }
 
       it 'loads the direct matching pattern file' do
         expect(TestFileFinder::MappingStrategies::DirectMatching)
           .to receive(:load_json)
-          .with('crystalball-test/mapping.json', limit_min: 14, limit_percentage: 50)
+          .with(mappings_file, limit_min: 14, limit_percentage: 50)
 
         subject
-      end
-    end
-
-    context 'when RSPEC_TESTS_MAPPING_ENABLED env variable is not set' do
-      let(:rspec_tests_mapping_enabled) { '' }
-
-      before do
-        stub_env(
-          'RSPEC_TESTS_MAPPING_ENABLED' => rspec_tests_mapping_enabled,
-          'RSPEC_TESTS_MAPPING_PATH' => rspec_tests_mapping_path
-        )
-      end
-
-      context 'when RSPEC_TESTS_MAPPING_PATH is set' do
-        let(:rspec_tests_mapping_path) { 'crystalball-test/mapping.json' }
-
-        it 'does not load the direct matching pattern file' do
-          expect(TestFileFinder::MappingStrategies::DirectMatching).not_to receive(:load_json)
-
-          subject
-        end
-      end
-
-      context 'when RSPEC_TESTS_MAPPING_PATH is not set' do
-        let(:rspec_tests_mapping_path) { nil }
-
-        it 'does not load the direct matching pattern file' do
-          expect(TestFileFinder::MappingStrategies::DirectMatching).not_to receive(:load_json)
-
-          subject
-        end
       end
     end
 

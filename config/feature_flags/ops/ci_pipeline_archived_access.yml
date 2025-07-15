@@ -1,0 +1,13 @@
+---
+name: ci_pipeline_archived_access
+description: |
+  Tracks interactions with pipelines that are archived or will be archived (90+ days old).
+  Helps assess impact of archival policies on user workflows before implementation.
+  Primarily for GitLab.com data collection.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549512
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194452
+rollout_issue_url:
+milestone: '18.2'
+group: group::ci platform
+type: ops
+default_enabled: false

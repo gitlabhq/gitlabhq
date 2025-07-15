@@ -152,7 +152,7 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags/_index.md) named `pages_unique_domain`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122229) in GitLab 16.3.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163523) unique domain URLs to be shorter in GitLab 17.4.

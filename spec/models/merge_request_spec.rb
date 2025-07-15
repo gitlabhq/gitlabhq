@@ -1434,28 +1434,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
     end
 
-    context 'feature flag: commits_from_gitaly' do
-      let_it_be(:user) { create(:user, guest_of: project) }
-
-      it 'loads commits from Gitaly' do
-        expect(merge_request).to receive(:commits).with(load_from_gitaly: true).and_call_original
-
-        related_issues
-      end
-
-      context 'when "commits_from_gitaly" is disabled' do
-        before do
-          stub_feature_flags(commits_from_gitaly: false)
-        end
-
-        it 'loads commits from DB' do
-          expect(merge_request).to receive(:commits).with(load_from_gitaly: false).and_call_original
-
-          related_issues
-        end
-      end
-    end
-
     context 'for guest' do
       let_it_be(:user) { create(:user, guest_of: project) }
 
@@ -1466,6 +1444,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           issue_referenced_in_mr_note,
           issue_referenced_in_mr_commit_msg
         )
+      end
+
+      it 'calls commits with load_from_gitaly: true' do
+        expect(merge_request).to receive(:commits).with(load_from_gitaly: true).and_call_original
+
+        related_issues
       end
     end
 
@@ -3230,14 +3214,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#has_sast_reports?' do
     subject { merge_request.has_sast_reports? }
 
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       stub_licensed_features(sast: true)
     end
 
     context 'when head pipeline has sast reports' do
-      let(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
 
@@ -3251,9 +3235,38 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when head pipeline does not have sast reports' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when the child pipeline has sast reports' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, :sast_report, pipeline: child_pipeline) }
+
+      context 'when the pipeline is still running' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :running, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+
+        it 'returns false if head pipeline is running' do
+          expect(subject).to eq(false)
+        end
+      end
+
+      it 'returns true if head pipeline is finished' do
+        expect(subject).to eq(true)
+      end
+
+      context 'when FF show_child_reports_in_mr_page is disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+        end
+
+        it 'returns false regardless of child pipeline reports' do
+          expect(subject).to eq(false)
+        end
+      end
     end
   end
 
@@ -4230,33 +4243,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#skipped_mergeable_checks' do
     subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
 
-    let(:feature_flag) { true }
+    let(:options) { { auto_merge_strategy: auto_merge_strategy } }
 
-    where(:options, :skip_ci_check) do
-      {}                              | false
-      { auto_merge_requested: false } | false
-      { auto_merge_requested: true }  | true
+    where(:auto_merge_strategy, :skip_checks) do
+      ''                                                      | false
+      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
     end
+
     with_them do
-      it { is_expected.to include(skip_ci_check: skip_ci_check) }
-    end
-
-    context 'when auto_merge_requested is true' do
-      let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
-
-      where(:auto_merge_strategy, :skip_checks) do
-        ''                                                      | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
-      end
-
-      with_them do
-        it do
-          is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
-            skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
-            skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
-            skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
-            skip_merge_time_check: skip_checks)
-        end
+      it do
+        is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
+          skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
+          skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
+          skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
+          skip_merge_time_check: skip_checks, skip_ci_check: skip_checks)
       end
     end
   end
@@ -5061,16 +5061,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#use_merge_base_pipeline_for_comparison?' do
-    let(:project) { create(:project, :public, :repository) }
-    let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
-    let(:service_class) { Ci::CompareReportsBaseService }
-
-    subject { merge_request.use_merge_base_pipeline_for_comparison?(service_class) }
-
-    it { is_expected.to eq(false) }
-  end
-
   describe '#comparison_base_pipeline' do
     subject(:pipeline) { merge_request.comparison_base_pipeline(service_class) }
 
@@ -5086,52 +5076,44 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
-    before do
-      allow(merge_request).to receive(:use_merge_base_pipeline_for_comparison?)
-        .with(service_class).and_return(uses_merge_base)
-    end
-
-    context 'when service class uses merge base pipeline' do
-      let(:uses_merge_base) { true }
-
-      context 'when merge request has a merge request pipeline' do
-        let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline, source_project: project)
-        end
-
-        let!(:merge_base_pipeline) do
-          create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
-        end
-
-        before do
-          merge_request.update_head_pipeline
-        end
-
-        it 'returns the merge_base_pipeline' do
-          expect(pipeline).to eq(merge_base_pipeline)
-        end
+    context 'when merge request has a merge request pipeline' do
+      let(:merge_request) do
+        create(:merge_request, :with_merge_request_pipeline, source_project: project)
       end
 
-      it 'returns the base_pipeline when merge does not have a merge request pipeline' do
-        expect(pipeline).to eq(base_pipeline)
+      let!(:merge_base_pipeline) do
+        create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
+      end
+
+      before do
+        merge_request.update_head_pipeline
+      end
+
+      it 'returns the merge_base_pipeline' do
+        expect(pipeline).to eq(merge_base_pipeline)
       end
     end
 
-    context 'when service_class does not use merge base pipeline' do
-      let(:uses_merge_base) { false }
+    it 'returns the base_pipeline when merge does not have a merge request pipeline' do
+      expect(pipeline).to eq(base_pipeline)
+    end
 
-      it 'returns the base_pipeline' do
-        expect(pipeline).to eq(base_pipeline)
+    context 'when there is no base pipeline' do
+      let!(:start_pipeline) do
+        create(:ci_pipeline,
+          :success,
+          project: project,
+          ref: merge_request.target_branch,
+          sha: merge_request.diff_start_sha
+        )
       end
 
-      context 'when merge request has a merge request pipeline' do
-        let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline, source_project: project)
-        end
+      before do
+        base_pipeline.destroy!
+      end
 
-        it 'returns the base pipeline' do
-          expect(pipeline).to eq(base_pipeline)
-        end
+      it 'returns the start pipeline' do
+        expect(pipeline).to eq(start_pipeline)
       end
     end
   end
@@ -6500,9 +6482,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#enabled_reports' do
     let(:project) { create(:project, :repository) }
 
-    where(:report_type, :with_reports, :feature) do
-      :sast                | :with_sast_reports                | :sast
-      :secret_detection    | :with_secret_detection_reports    | :secret_detection
+    where(:report_type, :with_reports, :feature, :artifact_report) do
+      :sast              | :with_sast_reports             | :sast             | :sast_report
+      :secret_detection  | :with_secret_detection_reports | :secret_detection | :secret_detection_report
     end
 
     with_them do
@@ -6522,6 +6504,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:merge_request) { create(:merge_request, source_project: project) }
 
         it { is_expected.to be_falsy }
+
+        context "but the child pipeline has reports" do
+          let(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+          let(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+          let!(:child_build) { create(:ci_build, artifact_report, pipeline: child_pipeline) }
+
+          it 'returns true for sast reports' do
+            if feature == :sast
+              is_expected.to be_truthy
+            else
+              is_expected.to be_falsy
+            end
+          end
+
+          context 'with FF show_child_reports_in_mr_page disabled' do
+            before do
+              stub_feature_flags(show_child_reports_in_mr_page: false)
+            end
+
+            it { is_expected.to be_falsy }
+          end
+        end
       end
     end
   end

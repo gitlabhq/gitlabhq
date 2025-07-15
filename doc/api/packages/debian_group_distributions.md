@@ -14,7 +14,7 @@ title: Debian group distributions API
 
 {{< history >}}
 
-- [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+- [Deployed behind a feature flag](../../administration/feature_flags/_index.md), disabled by default.
 
 {{< /history >}}
 
@@ -34,7 +34,7 @@ For more information about working with Debian packages, see the
 
 Debian group repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags/_index.md)
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian group API](../../user/packages/debian_repository/_index.md#enable-the-debian-group-api).
 

@@ -142,7 +142,10 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
         expect(dropdown_nodes[4]).to have_content(milestone_2.title)
         expect(dropdown_nodes.last).to have_content(milestone_1.title)
 
-        click_on milestone_1.title
+        within('.gl-filtered-search-suggestion-list') do
+          click_on milestone_1.title
+        end
+
         filter_submit.click
 
         expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)

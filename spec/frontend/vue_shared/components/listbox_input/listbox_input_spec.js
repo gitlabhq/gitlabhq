@@ -1,9 +1,11 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('ListboxInput', () => {
   let wrapper;
+  const defaultFooterSlot = jest.fn();
 
   // Props
   const label = 'label';
@@ -30,8 +32,8 @@ describe('ListboxInput', () => {
   const findGlListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findInput = () => wrapper.find('input');
 
-  const createComponent = (propsData) => {
-    wrapper = shallowMount(ListboxInput, {
+  const createComponent = (propsData, footerSlot = defaultFooterSlot) => {
+    wrapper = shallowMountExtended(ListboxInput, {
       propsData: {
         label,
         description,
@@ -42,6 +44,9 @@ describe('ListboxInput', () => {
       },
       attrs: {
         id,
+      },
+      scopedSlots: {
+        footer: footerSlot,
       },
     });
   };
@@ -215,6 +220,38 @@ describe('ListboxInput', () => {
       it('passes only the items that match the search string', () => {
         expect(findGlListbox().props('items')).toStrictEqual([{ text: 'Item 1', value: '1' }]);
       });
+    });
+  });
+
+  describe('footer slot behavior', () => {
+    const selectedOption = items[0].options[0];
+
+    it('emits select event when footer slot calls onSelect', async () => {
+      const footerSlot = `
+          <div slot-scope="{ onSelect }">
+            <button @click="onSelect('${selectedOption.value}')" data-testid="footer-button">
+              Select Item
+            </button>
+          </div>
+        `;
+
+      createComponent({}, footerSlot);
+
+      const footerButton = wrapper.findByTestId('footer-button');
+      await footerButton.trigger('click');
+      await nextTick();
+
+      expect(wrapper.emitted('select')).toEqual([[selectedOption.value]]);
+    });
+
+    it('passes onSelect function to footer slot', () => {
+      createComponent();
+
+      expect(defaultFooterSlot).toHaveBeenCalledWith(
+        expect.objectContaining({
+          onSelect: expect.any(Function),
+        }),
+      );
     });
   });
 });

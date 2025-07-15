@@ -15,9 +15,10 @@ title: Maven virtual registry
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../../administration/feature_flags.md) named `virtual_registry_maven`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -169,7 +170,7 @@ You should use one of the configurations below for each client.
 
 {{< tabs >}}
 
-{{< tab title="`mvn`" >}}
+{{< tab title="mvn" >}}
 
 | Token type            | Name must be    | Token                                                                   |
 | --------------------- | --------------- | ----------------------------------------------------------------------- |
@@ -240,7 +241,7 @@ To configure a Maven virtual registry as a replacement of the default registry, 
 
 {{< /tab >}}
 
-{{< tab title="`gradle`" >}}
+{{< tab title="gradle" >}}
 
 | Token type            | Name must be    | Token                                                                   |
 | --------------------- | --------------- | ----------------------------------------------------------------------- |
@@ -299,7 +300,7 @@ Add a `repositories` section to your
 
 {{< /tab >}}
 
-{{< tab title="`sbt`" >}}
+{{< tab title="sbt" >}}
 
 | Token type            | Username must be                                        | Token                                                                   |
 | --------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |

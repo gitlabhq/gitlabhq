@@ -16,7 +16,11 @@ module Import
         start_import
         success
       rescue Octokit::Unauthorized
-        error('Access denied to the GitHub account.', 401)
+        error('Access denied to the GitHub account', 401)
+      rescue Octokit::TooManyRequests
+        # Because `check_user_token` method uses octokit directly, it may raise
+        # the default rate limiting exception rather than our own.
+        error('GitHub API rate limit exceeded', 429)
       end
 
       private

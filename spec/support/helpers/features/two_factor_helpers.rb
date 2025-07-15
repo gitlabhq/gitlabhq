@@ -29,6 +29,20 @@ module Features
       wait_for_requests
     end
 
+    # Register OTP authenticator via UI
+    def otp_authenticator_registration(pin, password = nil)
+      click_button _('Register authenticator')
+      fill_in 'current_password', with: password if password
+      fill_in 'pin_code', with: pin
+      click_button _('Register with two-factor app')
+    end
+
+    def otp_authenticator_registration_and_copy_codes(pin, password = nil)
+      otp_authenticator_registration(pin, password)
+      click_button _('Copy codes')
+      click_link _('Proceed')
+    end
+
     # Registers webauthn device via UI
     def webauthn_device_registration(webauthn_device: nil, name: 'My device', password: 'fake')
       webauthn_device ||= FakeWebauthnDevice.new(page, name)

@@ -104,7 +104,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: s_('UsageQuota|Usage Quotas'),
             link: group_usage_quotas_path(context.group),
-            active_routes: { path: 'usage_quotas#index' },
+            active_routes: { path: 'usage_quotas#root' },
             item_id: :usage_quotas
           )
         end

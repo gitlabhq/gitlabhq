@@ -16,7 +16,7 @@ describe('Merge request merge checks message component', () => {
     ${'commits_status'}             | ${'Source branch exists and contains commits.'}
     ${'ci_must_pass'}               | ${'Pipeline must succeed.'}
     ${'conflict'}                   | ${'Merge conflicts must be resolved.'}
-    ${'discussions_not_resolved'}   | ${'Unresolved discussions must be resolved.'}
+    ${'discussions_not_resolved'}   | ${'Open threads must be resolved.'}
     ${'draft_status'}               | ${'Merge request must not be draft.'}
     ${'not_open'}                   | ${'Merge request must be open.'}
     ${'need_rebase'}                | ${'Merge request must be rebased, because a fast-forward merge is not possible.'}
@@ -24,7 +24,7 @@ describe('Merge request merge checks message component', () => {
     ${'merge_request_blocked'}      | ${'Merge request dependencies must be merged.'}
     ${'status_checks_must_pass'}    | ${'Status checks must pass.'}
     ${'jira_association_missing'}   | ${'Either the title or description must reference a Jira issue.'}
-    ${'requested_changes'}          | ${'The change requests must be completed or resolved.'}
+    ${'requested_changes'}          | ${'Change requests must be approved by the requesting user.'}
     ${'approvals_syncing'}          | ${'The merge request approvals are currently syncing.'}
     ${'locked_paths'}               | ${'All paths must be unlocked'}
     ${'locked_lfs_files'}           | ${'All LFS files must be unlocked.'}

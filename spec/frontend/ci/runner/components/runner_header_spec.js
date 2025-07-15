@@ -75,7 +75,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(findPageHeading().props('heading')).toBe(`#99 (${mockRunnerSha})`);
+    expect(findPageHeading().props('heading')).toBe(`Runner #99 (${mockRunnerSha})`);
   });
 
   it('displays the runner locked icon', () => {

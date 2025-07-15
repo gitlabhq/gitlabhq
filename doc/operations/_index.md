@@ -13,5 +13,6 @@ Visualize and analyze errors and incidents related to your application and its i
 - [Getting started](../user/get_started/get_started_monitoring.md)
 - [Error tracking](error_tracking.md)
 - [Incident management](incident_management/_index.md)
+- [Observability](observability.md)
 
 {{< /cards >}}

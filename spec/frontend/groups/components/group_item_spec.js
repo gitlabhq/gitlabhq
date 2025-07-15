@@ -55,7 +55,7 @@ describe('GroupItemComponent', () => {
         const classes = ['is-open', 'has-children', 'has-description', 'being-removed'];
         const { rowClass } = wrapper.vm;
 
-        expect(Object.keys(rowClass).length).toBe(classes.length);
+        expect(Object.keys(rowClass)).toHaveLength(classes.length);
         Object.keys(rowClass).forEach((className) => {
           expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });
@@ -205,7 +205,7 @@ describe('GroupItemComponent', () => {
 
     describe('for a group pending deletion', () => {
       beforeEach(() => {
-        group = { ...mockParentGroupItem, pendingRemoval: true };
+        group = { ...mockParentGroupItem, markedForDeletion: true };
         wrapper = createComponent({ group });
       });
 
@@ -219,7 +219,7 @@ describe('GroupItemComponent', () => {
 
     describe('for a group not scheduled for deletion', () => {
       beforeEach(() => {
-        group = { ...mockParentGroupItem, pendingRemoval: false };
+        group = { ...mockParentGroupItem, markedForDeletion: false };
         wrapper = createComponent({ group });
       });
 

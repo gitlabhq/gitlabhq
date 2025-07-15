@@ -17,23 +17,23 @@ RSpec.describe RuboCop::Cop::Gitlab::ServiceResponse do
   end
 
   it 'flags the use of `http_status:` parameter in ServiceResponse in error' do
-    expect_offense(<<~CODE, msg: described_class::MSG)
+    expect_offense(<<~RUBY, msg: described_class::MSG)
       ServiceResponse.error(message: "some error", http_status: :bad_request)
                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
-    CODE
+    RUBY
   end
 
   it 'flags the use of `http_status:` parameter in ServiceResponse in success' do
-    expect_offense(<<~CODE, msg: described_class::MSG)
+    expect_offense(<<~RUBY, msg: described_class::MSG)
       ServiceResponse.success(message: "some error", http_status: :bad_request)
                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
-    CODE
+    RUBY
   end
 
   it 'flags the use of `http_status:` parameter in ServiceResponse in initializer' do
-    expect_offense(<<~CODE, msg: described_class::MSG)
+    expect_offense(<<~RUBY, msg: described_class::MSG)
       ServiceResponse.new(message: "some error", http_status: :bad_request)
                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
-    CODE
+    RUBY
   end
 end

@@ -26,7 +26,7 @@ unless defined?(Rails)
 
       Ensure GDK is running, then run:
 
-      bin/rails runner scripts/internal_events/monitor.rb #{ARGV.any? ? ARGV.join(' ') : '<events-to-monitor>'}
+      bin/rails runner scripts/internal_events/monitor.rb #{ARGV.any? ? ARGV.join(' ') : '<events or key_path>'}
 
   TEXT
 
@@ -36,11 +36,15 @@ end
 unless ARGV.any?
   puts <<~TEXT
 
-    Error! The Internal Events Tracking Monitor requires events to be specified.
+    Error! The Internal Events Tracking Monitor requires events or key path to be specified.
 
       For example, to monitor events g_edit_by_web_ide and g_edit_by_sfe, run:
 
       bin/rails runner scripts/internal_events/monitor.rb g_edit_by_web_ide g_edit_by_sfe
+
+      to monitor metrics where the key_path starts with counts.count_total_invocations_of_internal_events, run:
+
+      bin/rails runner scripts/internal_events/monitor.rb counts.count_total_invocations_of_internal_events
 
   TEXT
 
@@ -58,7 +62,7 @@ Gitlab::Usage::TimeFrame.prepend(ServicePingHelpers::CurrentTimeFrame)
 def metric_definitions_from_args
   args = ARGV
   Gitlab::Usage::MetricDefinition.all.select do |metric|
-    metric.available? && args.any? { |arg| metric.events.key?(arg) }
+    metric.available? && args.any? { |arg| metric.events.key?(arg) || metric.key_path.start_with?(arg) }
   end
 end
 
@@ -191,7 +195,7 @@ def render_screen(paused)
   print TTY::Cursor.move_to(0, 0)
 
   puts "Updated at #{Time.current} #{'[PAUSED]' if paused}"
-  puts "Monitored events: #{ARGV.join(', ')}"
+  puts "Monitored events or key path prefix: #{ARGV.join(', ')}"
   puts
 
   puts metrics_table

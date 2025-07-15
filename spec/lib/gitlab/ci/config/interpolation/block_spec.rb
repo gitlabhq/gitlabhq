@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
 
       it 'returns the access error' do
         expect(subject).not_to be_valid
-        expect(subject.errors.first).to eq('unknown input name provided: `undefined`')
+        expect(subject.errors.first).to eq('unknown input name provided: `undefined` in `inputs.undefined`')
       end
     end
 

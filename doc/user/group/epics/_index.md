@@ -46,7 +46,6 @@ The possible relationships between epics and other items are:
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
 - An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
-  [The new look for epics](epic_work_items.md) must be enabled.
 
 Example set of relationships:
 
@@ -75,14 +74,6 @@ graph TD
 
 ### Child issues from different group hierarchies
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371081) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/373304) in GitLab 15.5.
-- Feature flag `epic_issues_from_different_hierarchies` removed in GitLab 15.6.
-
-{{< /history >}}
-
 You can add issues from a different group hierarchy to an epic.
 To do it, paste the issue URL when
 [adding an existing issue](manage_epics.md#add-an-existing-issue-to-an-epic).
@@ -102,6 +93,15 @@ A roadmap filtered for the parent epic opens.
 
 ## Epics as work items
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_epics`. Disabled by default. Introduced in [beta](../../../policy/development_stages_support.md#beta).
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
+- [Enabled by default on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1. Feature flag `work_item_epics` removed.
+
+{{< /history >}}
+
 We have changed how epics look by migrating them to a unified framework for work items to better
 meet the product needs of our Agile Planning offering.
 
@@ -114,6 +114,18 @@ following blog posts:
 If you run into any issues while trying out this change, you can use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
 
+## Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).
+
 ## Related topics
 
 - [Manage epics](manage_epics.md) and multi-level child epics.
@@ -123,3 +135,4 @@ If you run into any issues while trying out this change, you can use the
 - [Add an emoji reaction](../../emoji_reactions.md) to an epic or its comments.
 - Collaborate on an epic by posting comments in a [thread](../../discussions/_index.md).
 - Use [health status](manage_epics.md#health-status) to track your progress.
+- [Create epic templates](../../project/description_templates.md#create-a-description-template) to standardize epic descriptions.

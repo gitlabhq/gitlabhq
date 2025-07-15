@@ -2,18 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::GroupLinksController do
-  let(:shared_with_group) { create(:group, :private) }
-  let(:shared_group) { create(:group, :private) }
-  let(:user) { create(:user) }
-  let(:group_member) { create(:user) }
-  let!(:project) { create(:project, group: shared_group) }
+RSpec.describe Groups::GroupLinksController, feature_category: :system_access do
+  let_it_be(:shared_with_group) { create(:group, :private) }
+  let_it_be(:shared_group) { create(:group, :private) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group_member) { create(:user, developer_of: shared_with_group) }
+  let_it_be(:project) { create(:project, group: shared_group) }
 
   before do
     travel_to DateTime.new(2019, 4, 1)
     sign_in(user)
-
-    shared_with_group.add_developer(group_member)
   end
 
   after do
@@ -36,14 +34,13 @@ RSpec.describe Groups::GroupLinksController do
   end
 
   describe '#update' do
-    let!(:link) do
-      create(:group_group_link, { shared_group: shared_group,
-                                  shared_with_group: shared_with_group })
+    let_it_be(:link) do
+      create(:group_group_link, { shared_group: shared_group, shared_with_group: shared_with_group })
     end
 
     let(:expiry_date) { 1.month.from_now.to_date }
 
-    subject do
+    subject(:update_group_link) do
       post(
         :update,
         params: {
@@ -56,8 +53,11 @@ RSpec.describe Groups::GroupLinksController do
     end
 
     context 'when user has admin access to the shared group' do
-      before do
+      before_all do
         shared_group.add_owner(user)
+      end
+
+      before do
         shared_with_group.refresh_members_authorized_projects
       end
 
@@ -111,24 +111,31 @@ RSpec.describe Groups::GroupLinksController do
   end
 
   describe '#destroy' do
-    let!(:link) do
-      create(:group_group_link, { shared_group: shared_group,
-                                  shared_with_group: shared_with_group })
+    let_it_be_with_reload(:link) do
+      create(:group_group_link, { shared_group: shared_group, shared_with_group: shared_with_group })
     end
 
-    subject do
-      post(:destroy, params: { group_id: shared_group,
-                               id: link.id })
+    subject(:destroy_group_link) do
+      post(:destroy, params: { group_id: shared_group, id: link.id })
     end
 
     context 'when user has admin access to the shared group' do
-      before do
+      before_all do
         shared_group.add_owner(user)
+      end
+
+      before do
         shared_with_group.refresh_members_authorized_projects
       end
 
       it 'deletes existing link' do
         expect { subject }.to change(GroupGroupLink, :count).by(-1)
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(group_group_members_path(shared_group))
+        expect(flash[:notice]).to eq(
+          'Group invite removed. It might take a few minutes for the changes to user access levels to take effect.'
+        )
       end
 
       context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do

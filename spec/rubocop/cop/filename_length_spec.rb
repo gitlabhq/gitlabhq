@@ -11,36 +11,36 @@ RSpec.describe RuboCop::Cop::FilenameLength do
   it 'tags files with names 101 characters long' do
     filename = 'a' * 101
 
-    expect_offense(<<~SOURCE, filename)
+    expect_offense(<<~RUBY, filename)
     source code
     ^ This file name is too long. It should be 100 or less
-    SOURCE
+    RUBY
   end
 
   it 'tags files with names 256 characters long' do
     filename = 'a' * 256
 
-    expect_offense(<<~SOURCE, filename)
+    expect_offense(<<~RUBY, filename)
     source code
     ^ This file name is too long. It should be 100 or less
-    SOURCE
+    RUBY
   end
 
   it 'tags files with filepath 256 characters long' do
     filepath = File.join 'a', 'b' * 254
 
-    expect_offense(<<~SOURCE, filepath)
+    expect_offense(<<~RUBY, filepath)
     source code
     ^ This file name is too long. It should be 100 or less
-    SOURCE
+    RUBY
   end
 
   it 'tags files with filepath 257 characters long' do
     filepath = File.join 'a', 'b' * 255
 
-    expect_offense(<<~SOURCE, filepath)
+    expect_offense(<<~RUBY, filepath)
     source code
     ^ This file path is too long. It should be 256 or less
-    SOURCE
+    RUBY
   end
 end

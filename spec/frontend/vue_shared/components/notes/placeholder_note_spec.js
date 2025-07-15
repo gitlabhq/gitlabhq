@@ -1,26 +1,24 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import { userDataMock } from 'jest/notes/mock_data';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
-Vue.use(Vuex);
-
-const getters = {
-  getUserData: () => userDataMock,
-};
+Vue.use(PiniaVuePlugin);
 
 describe('Issue placeholder note component', () => {
+  let pinia;
   let wrapper;
 
   const findNote = () => wrapper.findComponent({ ref: 'note' });
 
   const createComponent = (isIndividual = false, propsData = {}) => {
     wrapper = shallowMount(IssuePlaceholderNote, {
-      store: new Vuex.Store({
-        getters,
-      }),
+      pinia,
       propsData: {
         note: {
           body: 'Foo',
@@ -30,6 +28,12 @@ describe('Issue placeholder note component', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes().userData = userDataMock;
+  });
 
   it('matches snapshot', () => {
     createComponent();

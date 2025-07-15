@@ -101,6 +101,9 @@ export default {
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
     },
+    isArchived() {
+      return Boolean(this.resource.archived);
+    },
   },
   methods: {
     onAbuseButtonClicked() {
@@ -150,6 +153,13 @@ export default {
             >
               {{ versionBadgeText }}
             </gl-badge>
+            <gl-badge
+              v-if="isArchived"
+              data-testid="archive-badge"
+              class="gl-my-1"
+              variant="info"
+              >{{ __('Archived') }}</gl-badge
+            >
           </span>
           <ci-verification-badge
             v-if="isVerified"

@@ -262,6 +262,7 @@ export const config = {
                   }
 
                   return {
+                    ...existingWidget,
                     ...incomingWidget,
                     linkedItems: {
                       ...incomingWidget.linkedItems,

@@ -23,7 +23,11 @@ class Import::GitlabProjectsController < Import::BaseController
       )
     end
 
-    @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
+    @project = ::Projects::GitlabProjectsImportService.new(
+      current_user,
+      project_params,
+      import_type: 'gitlab_project'
+    ).execute
 
     if @project.saved?
       redirect_to(

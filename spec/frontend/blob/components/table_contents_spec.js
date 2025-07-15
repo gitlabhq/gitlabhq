@@ -69,12 +69,12 @@ describe('Markdown table of contents component', () => {
       const dropdown = findDropdown();
 
       expect(dropdown.exists()).toBe(true);
-      expect(dropdown.props('items').length).toBe(4);
+      expect(dropdown.props('items')).toHaveLength(4);
 
       // make sure that this only happens once
       await setLoaded(true);
 
-      expect(dropdown.props('items').length).toBe(4);
+      expect(dropdown.props('items')).toHaveLength(4);
     });
 
     it('generates proper anchor links', async () => {

@@ -168,7 +168,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
           it 'verifies number of queries', :request_store do
             recorded = ActiveRecord::QueryRecorder.new { subject }
-            expected_queries = Gitlab.ee? ? 33 : 30
+            expected_queries = Gitlab.ee? ? 33 : 31
 
             expect(recorded.count).to be_within(3).of(expected_queries)
             expect(recorded.cached_count).to eq(0)
@@ -192,7 +192,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
             # pipeline. With the same ref this check is cached but if refs are
             # different then there is an extra query per ref
             # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
-            expected_queries = Gitlab.ee? ? 36 : 33
+            expected_queries = Gitlab.ee? ? 36 : 34
 
             expect(recorded.count).to be_within(3).of(expected_queries)
             expect(recorded.cached_count).to eq(0)

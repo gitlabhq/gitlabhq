@@ -100,6 +100,6 @@ describe('AddExclusionsDrawer component', () => {
     await nextTick();
 
     expect(wrapper.emitted('add')).toEqual([[mockData]]);
-    expect(findSelector().props('selectedItems').length).toBe(0);
+    expect(findSelector().props('selectedItems')).toHaveLength(0);
   });
 });

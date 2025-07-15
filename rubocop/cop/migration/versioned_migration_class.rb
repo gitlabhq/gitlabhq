@@ -62,10 +62,10 @@ module RuboCop
         def old_version_migration_class?(class_node)
           parent_class_node = class_node.parent_class
           return false if parent_class_node.nil?
-          return false unless parent_class_node.send_type? && parent_class_node.arguments.last.float_type?
+          return false unless parent_class_node.send_type? && parent_class_node.last_argument.float_type?
           return false unless parent_class_node.children[0].const_name == GITLAB_MIGRATION_CLASS
 
-          parent_class_node.arguments[0].value < CURRENT_MIGRATION_VERSION
+          parent_class_node.first_argument.value < CURRENT_MIGRATION_VERSION
         end
       end
     end

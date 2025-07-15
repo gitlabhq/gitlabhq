@@ -260,7 +260,7 @@ see [Group inheritance and eligibility](advanced.md#group-inheritance-and-eligib
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `codeowner_role_approvers`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512623) in GitLab 17.9 Feature flag `codeowner_role_approvers` removed.
 
@@ -425,7 +425,7 @@ use [directory paths](#directory-paths) with a trailing slash (`/`).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180162) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `codeowners_file_exclusions`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180162) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `codeowners_file_exclusions`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/517075) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/517309) in GitLab 17.11. Feature flag `codeowners_file_exclusions` removed.
 

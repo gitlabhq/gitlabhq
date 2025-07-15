@@ -56,3 +56,5 @@ module Mutations
     end
   end
 end
+
+Mutations::WorkItems::CSV::Export.prepend_mod

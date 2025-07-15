@@ -123,23 +123,40 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
     end
 
     context 'when strategy is provided' do
-      context 'when strategy is depend' do
-        let(:config) { { project: 'some/project', strategy: 'depend' } }
+      context 'when strategy is valid' do
+        context 'when strategy is `depend`' do
+          let(:config) { { project: 'some/project', strategy: 'depend' } }
 
-        describe '#valid?' do
-          it { is_expected.to be_valid }
+          describe '#valid?' do
+            it { is_expected.to be_valid }
+          end
+
+          describe '#value' do
+            it 'returns a trigger configuration hash' do
+              expect(subject.value)
+                .to eq(project: 'some/project', strategy: 'depend')
+            end
+          end
         end
 
-        describe '#value' do
-          it 'returns a trigger configuration hash' do
-            expect(subject.value)
-              .to eq(project: 'some/project', strategy: 'depend')
+        context 'when strategy is `mirror`' do
+          let(:config) { { project: 'some/project', strategy: 'mirror' } }
+
+          describe '#valid?' do
+            it { is_expected.to be_valid }
+          end
+
+          describe '#value' do
+            it 'returns a trigger configuration hash' do
+              expect(subject.value)
+                .to eq(project: 'some/project', strategy: 'mirror')
+            end
           end
         end
       end
 
       context 'when strategy is invalid' do
-        let(:config) { { project: 'some/project', strategy: 'notdepend' } }
+        let(:config) { { project: 'some/project', strategy: 'invalid' } }
 
         describe '#valid?' do
           it { is_expected.not_to be_valid }

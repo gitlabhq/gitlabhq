@@ -74,16 +74,6 @@ RSpec.describe 'event store matchers', feature_category: :shared do
     end
 
     it 'validates the event data' do
-      missing_data = -> do
-        expect { publishing_event(FakeEventType1, { 'id' => 1 }) }
-          .to publish_event(FakeEventType1)
-      end
-
-      expect(&missing_data).to raise_error <<~MESSAGE
-        expected FakeEventType1 with no data to be published, but only the following events were published:
-         - FakeEventType1 with {"id"=>1}
-      MESSAGE
-
       different_data = -> do
         expect { publishing_event(FakeEventType1, { 'id' => 1 }) }
           .to publish_event(FakeEventType1).with({ 'id' => 2 })
@@ -93,6 +83,32 @@ RSpec.describe 'event store matchers', feature_category: :shared do
         expected FakeEventType1 with {"id"=>2} to be published, but only the following events were published:
          - FakeEventType1 with {"id"=>1}
       MESSAGE
+    end
+
+    it 'allows any data if .with() is not used to specify data' do
+      unspecified_data = -> do
+        expect { publishing_event(FakeEventType1, { 'id' => 1 }) }
+          .to publish_event(FakeEventType1)
+      end
+
+      expect(&unspecified_data).not_to raise_error
+    end
+
+    it 'supports not_to when the event is published' do
+      matcher = -> do
+        expect { publishing_event(FakeEventType1, { 'id' => 1 }) }
+          .not_to publish_event(FakeEventType1)
+      end
+
+      expect(&matcher).to raise_error('expected FakeEventType1 not to be published')
+    end
+
+    it 'supports not_to when the event is not published' do
+      matcher = -> do
+        expect { 'do nothing' }.not_to publish_event(FakeEventType1)
+      end
+
+      expect(&matcher).not_to raise_error
     end
   end
 

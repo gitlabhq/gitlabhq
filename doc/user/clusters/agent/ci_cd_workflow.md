@@ -39,14 +39,14 @@ Prerequisites:
 To update a Kubernetes cluster with GitLab CI/CD:
 
 1. Ensure you have a working Kubernetes cluster and the manifests are in a GitLab project.
-1. In the same GitLab project, [register and install the GitLab agent](install/_index.md).
+1. In the same GitLab project, [register and install the GitLab agent for Kubernetes](install/_index.md).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
 
 If you have multiple GitLab projects that contain Kubernetes manifests:
 
-1. [Install the GitLab agent](install/_index.md) in its own project, or in one of the
+1. [Install the GitLab agent for Kubernetes](install/_index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
 1. [Authorize agent access](#authorize-agent-access) in your GitLab projects.
 1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
@@ -56,9 +56,9 @@ If you have multiple GitLab projects that contain Kubernetes manifests:
 
 ## Authorize agent access
 
-If you have multiple projects with Kubernetes manifests, you must authorize 
-these projects to access the agent. You can authorize agent access for individual 
-projects, groups, or subgroups so all projects have access.  
+If you have multiple projects with Kubernetes manifests, you must authorize
+these projects to access the agent. You can authorize agent access for individual
+projects, groups, or subgroups so all projects have access.
 For added security, you can also
 [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 
@@ -180,9 +180,11 @@ To authorize the agent to access all of the GitLab projects:
      instance: {}
    ```
 
-After making these changes to the agent configuration file: 
+After making these changes to the agent configuration file:
 
-- The agent is authorized to access all projects in your instance.
+- All CI/CD jobs in all projects in your instance are authorized to access the agent.
+  You can use CI/CD job impersonation with RBAC to grant or restrict access as needed.
+  For more information, see [Restrict project and group access by using impersonation](#restrict-project-and-group-access-by-using-impersonation).
 - All CI/CD jobs include a `kubeconfig` file with contexts for every shared agent connection.
 - The `kubeconfig` path is available in the `$KUBECONFIG` environment variable.
 - You can choose the context to run `kubectl` commands from your CI/CD scripts.
@@ -435,7 +437,7 @@ In this example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `kubernetes_agent_protected_branches`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `kubernetes_agent_protected_branches`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.10. Feature flag `kubernetes_agent_protected_branches` removed.
 
 {{< /history >}}

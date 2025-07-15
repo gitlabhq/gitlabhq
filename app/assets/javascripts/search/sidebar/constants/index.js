@@ -61,6 +61,9 @@ export const EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE =
 export const EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE =
   'select_source_branch_filter_on_merge_request_page';
 
+export const EVENT_SELECT_TARGET_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE =
+  'select_target_branch_filter_on_merge_request_page';
+
 export const EVENT_SELECT_AUTHOR_FILTER_ON_MERGE_REQUEST_PAGE =
   'event_select_author_filter_on_merge_request_page';
 
@@ -74,6 +77,8 @@ export const EXCLUDE_FORKS_FILTER_PARAM = 'exclude_forks';
 export const LANGUAGE_FILTER_PARAM = 'language';
 export const SOURCE_BRANCH_PARAM = 'source_branch';
 export const NOT_SOURCE_BRANCH_PARAM = 'not[source_branch]';
+export const TARGET_BRANCH_PARAM = 'target_branch';
+export const NOT_TARGET_BRANCH_PARAM = 'not[target_branch]';
 export const AUTHOR_PARAM = 'author_username';
 export const NOT_AUTHOR_PARAM = 'not[author_username]';
 
@@ -85,6 +90,7 @@ export const LABEL_FILTER_HEADER = __('Labels');
 export const LABEL_AGREGATION_NAME = 'labels';
 
 export const SOURCE_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_source_branches.json';
+export const TARGET_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_target_branches.json';
 export const AUTHOR_ENDPOINT_PATH = '/-/autocomplete/users.json';
 
 export const CONFIDENTIAL_FILTERS = {

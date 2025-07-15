@@ -21,12 +21,14 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   let_it_be(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
   let_it_be(:label_xss) { create(:label, project: project, title: label_xss_title) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   describe 'new issue page' do
     before do
       sign_in(user)
       visit new_project_issue_path(project)
-
-      wait_for_requests
     end
 
     it 'allows quick actions' do
@@ -42,31 +44,19 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     before do
       sign_in(user)
       visit project_issue_path(project, issue_to_edit)
-
-      wait_for_requests
     end
 
     it 'updates with GFM reference' do
       click_button 'Edit title and description'
-
-      wait_for_requests
-
       fill_in 'Description', with: "@#{user.name[0...3]}"
-
-      wait_for_requests
-
       find_highlighted_autocomplete_item.click
-
       click_button 'Save changes'
-
-      wait_for_requests
 
       expect(find('.description')).to have_text(user.to_reference)
     end
 
     it 'allows quick actions' do
       click_button 'Edit title and description'
-
       fill_in 'Description', with: '/'
 
       expect(find_autocomplete_menu).to be_visible
@@ -77,48 +67,46 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     before do
       sign_in(user)
       visit project_issue_path(project, issue)
-
-      wait_for_requests
     end
 
     describe 'triggering autocomplete' do
       it 'only opens autocomplete menu when trigger character is after whitespace', :aggregate_failures do
-        fill_in 'Comment', with: 'testing@'
+        fill_in 'Add a reply', with: 'testing@'
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: '@@'
+        fill_in 'Add a reply', with: '@@'
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: "@#{user.username[0..2]}!"
+        fill_in 'Add a reply', with: "@#{user.username[0..2]}!"
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: "hello:#{user.username[0..2]}"
+        fill_in 'Add a reply', with: "hello:#{user.username[0..2]}"
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: '7:'
+        fill_in 'Add a reply', with: '7:'
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: 'w:'
+        fill_in 'Add a reply', with: 'w:'
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: 'Ё:'
+        fill_in 'Add a reply', with: 'Ё:'
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: "test\n\n@"
+        fill_in 'Add a reply', with: "test\n\n@"
         expect(find_autocomplete_menu).to be_visible
       end
 
       it 'does not open label autocomplete menu after strikethrough', :aggregate_failures do
-        fill_in 'Comment', with: "~~"
+        fill_in 'Add a reply', with: "~~"
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: "~~gone~~"
+        fill_in 'Add a reply', with: "~~gone~~"
         expect(page).not_to have_css('.atwho-view')
 
-        fill_in 'Comment', with: "~"
+        fill_in 'Add a reply', with: "~"
         expect(find_autocomplete_menu).to be_visible
 
-        fill_in 'Comment', with: "test\n\n~"
+        fill_in 'Add a reply', with: "test\n\n~"
         expect(find_autocomplete_menu).to be_visible
       end
     end
@@ -128,17 +116,13 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
         issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
         create(:issue, project: project, title: issue_xss_title)
 
-        fill_in 'Comment', with: '#'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '#'
 
         expect(find_autocomplete_menu).to have_text(issue_xss_title)
       end
 
       it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
-        fill_in 'Comment', with: '@ev'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '@ev'
 
         expect(find_highlighted_autocomplete_item).to have_text(user_xss.username)
       end
@@ -147,17 +131,13 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
         milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
         create(:milestone, project: project, title: milestone_xss_title)
 
-        fill_in 'Comment', with: '%'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '%'
 
         expect(find_autocomplete_menu).to have_text('alert milestone')
       end
 
       it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
-        fill_in 'Comment', with: '~'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '~'
 
         expect(find_autocomplete_menu).to have_text('alert label')
       end
@@ -165,78 +145,67 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
     describe 'autocomplete highlighting' do
       it 'auto-selects the first item when there is a query, and only for assignees with no query', :aggregate_failures do
-        fill_in 'Comment', with: ':'
-        wait_for_requests
+        fill_in 'Add a reply', with: ':'
         expect(find_autocomplete_menu).not_to have_css('.cur')
 
-        fill_in 'Comment', with: ':1'
-        wait_for_requests
+        fill_in 'Add a reply', with: ':1'
         expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
 
-        fill_in 'Comment', with: '@'
-        wait_for_requests
+        fill_in 'Add a reply', with: '@'
         expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
       end
     end
 
     context 'autocomplete user mentions' do
       it 'does not wrap with quotes for assignee values' do
-        fill_in 'Comment', with: "@#{user.username}"
+        fill_in 'Add a reply', with: "@#{user.username}"
 
         find_highlighted_autocomplete_item.click
 
-        expect(find_field('Comment').value).to have_text("@#{user.username}")
+        expect(find_field('Add a reply').value).to have_text("@#{user.username}")
       end
 
       it 'includes items for assignee dropdowns with non-ASCII characters in name' do
-        fill_in 'Comment', with: "@#{user.name[0...8]}"
-
-        wait_for_requests
+        fill_in 'Add a reply', with: "@#{user.name[0...8]}"
 
         expect(find_autocomplete_menu).to have_text(user.name)
       end
 
       it 'searches across full name for assignees' do
-        fill_in 'Comment', with: '@speciąlsome'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '@speciąlsome'
 
         expect(find_highlighted_autocomplete_item).to have_text(user.name)
       end
 
       it 'shows names that start with the query as the top result' do
-        fill_in 'Comment', with: '@mar'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '@mar'
 
         expect(find_highlighted_autocomplete_item).to have_text(user2.name)
       end
 
       it 'shows usernames that start with the query as the top result' do
-        fill_in 'Comment', with: '@msi'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '@msi'
 
         expect(find_highlighted_autocomplete_item).to have_text(user2.name)
       end
 
       # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/321925
       it 'shows username when pasting then pressing Enter' do
-        fill_in 'Comment', with: "@#{user.username}\n"
+        fill_in 'Add a reply', with: "@#{user.username}\n"
 
-        expect(find_field('Comment').value).to have_text "@#{user.username}"
+        expect(find_field('Add a reply').value).to have_text "@#{user.username}"
       end
 
       it 'does not show `@undefined` when pressing `@` then Enter' do
-        fill_in 'Comment', with: "@\n"
+        fill_in 'Add a reply', with: "@\n"
 
-        expect(find_field('Comment').value).to have_text '@'
-        expect(find_field('Comment').value).not_to have_text '@undefined'
+        expect(find_field('Add a reply').value).to have_text '@'
+        expect(find_field('Add a reply').value).not_to have_text '@undefined'
       end
 
       context 'when /assign quick action is selected' do
         it 'triggers user autocomplete and lists users who are currently not assigned to the issue' do
-          fill_in 'Comment', with: '/as'
+          fill_in 'Add a reply', with: '/as'
 
           find_highlighted_autocomplete_item.click
 
@@ -251,40 +220,38 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       let_it_be(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
 
       it 'shows wiki pages in the autocomplete menu' do
-        fill_in 'Comment', with: '[[ho'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '[[ho'
 
         expect(find_autocomplete_menu).to have_text('Home')
         expect(find_autocomplete_menu).to have_text('How to use GitLab (How-to-use-GitLab)')
 
         send_keys [:arrow_down, :enter]
 
-        expect(find_field('Comment').value).to have_text('[[How to use GitLab|How-to-use-GitLab]]')
+        expect(find_field('Add a reply').value).to have_text('[[How to use GitLab|How-to-use-GitLab]]')
       end
     end
 
     context 'if a selected value has special characters' do
       it 'wraps the result in double quotes' do
-        fill_in 'Comment', with: "~#{label.title[0..2]}"
+        fill_in 'Add a reply', with: "~#{label.title[0..2]}"
 
         find_highlighted_autocomplete_item.click
 
-        expect(find_field('Comment').value).to have_text("~\"#{label.title}\"")
+        expect(find_field('Add a reply').value).to have_text("~\"#{label.title}\"")
       end
 
       it 'doesn\'t wrap for emoji values' do
-        fill_in 'Comment', with: ':cartwheel_'
+        fill_in 'Add a reply', with: ':cartwheel_'
 
         find_highlighted_autocomplete_item.click
 
-        expect(find_field('Comment').value).to have_text('cartwheel_tone1')
+        expect(find_field('Add a reply').value).to have_text('cartwheel_tone1')
       end
     end
 
     context 'quick actions' do
       it 'does not limit quick actions autocomplete list to 5' do
-        fill_in 'Comment', with: '/'
+        fill_in 'Add a reply', with: '/'
 
         expect(find_autocomplete_menu).to have_css('li', minimum: 6)
       end
@@ -292,33 +259,25 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
     context 'labels' do
       it 'allows colons when autocompleting scoped labels' do
-        fill_in 'Comment', with: '~scoped:'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '~scoped:'
 
         expect(find_autocomplete_menu).to have_text('scoped::label')
       end
 
       it 'allows spaces when autocompleting multi-word labels' do
-        fill_in 'Comment', with: '~accepting merge'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '~accepting merge'
 
         expect(find_autocomplete_menu).to have_text('Accepting merge requests')
       end
 
       it 'only autocompletes the last label' do
-        fill_in 'Comment', with: '~scoped:: foo bar ~Accepting merge'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '~scoped:: foo bar ~Accepting merge'
 
         expect(find_autocomplete_menu).to have_text('Accepting merge requests')
       end
 
       it 'does not autocomplete labels if no tilde is typed' do
-        fill_in 'Comment', with: 'Accepting merge'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: 'Accepting merge'
 
         expect(page).not_to have_css('.atwho-view')
       end
@@ -329,7 +288,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
       # This is meant to protect against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/228729
       it 'keeps autocomplete key listeners' do
-        note = find_field('Comment')
+        note = find_field('Add a reply')
 
         start_comment_with_emoji(note, '.atwho-view li')
 
@@ -345,11 +304,11 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
     shared_examples 'autocomplete suggestions' do
       it 'suggests objects correctly' do
-        fill_in 'Comment', with: object.class.reference_prefix
+        fill_in 'Add a reply', with: object.class.reference_prefix
 
         find_autocomplete_menu.find('li', text: object.title).click
 
-        expect(find_field('Comment').value).to have_text(expected_body)
+        expect(find_field('Add a reply').value).to have_text(expected_body)
       end
     end
 
@@ -364,7 +323,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
       shared_examples 'searching issue autocomplete' do
         it 'supports matching by iid' do
-          fill_in 'Comment', with: '#99'
+          fill_in 'Add a reply', with: '#99'
 
           page.within(find_autocomplete_menu) do
             expect(page).to have_selector('li', count: 2)
@@ -374,7 +333,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
         end
 
         it 'supports matching by title' do
-          fill_in 'Comment', with: '#gitlab'
+          fill_in 'Add a reply', with: '#gitlab'
 
           page.within(find_autocomplete_menu) do
             expect(page).to have_selector('li', count: 1)
@@ -408,12 +367,10 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
 
       before do
-        fill_in 'Comment', with: '/milestone %'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '/milestone %'
       end
 
-      it 'shows milestons list in the autocomplete menu' do
+      it 'shows milestones list in the autocomplete menu' do
         page.within(find_autocomplete_menu) do
           expect(page).to have_selector('li', count: 5)
         end
@@ -425,14 +382,12 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
         end
       end
 
-      it 'shows milestone due earliest at the top of the list' do
+      it 'shows milestone due earliest at the top of the list', :aggregate_failures do
         page.within(find_autocomplete_menu) do
-          aggregate_failures do
-            expect(page.all('li')[0]).to have_content milestone3.title
-            expect(page.all('li')[1]).to have_content milestone2.title
-            expect(page.all('li')[2]).to have_content milestone1.title
-            expect(page.all('li')[3]).to have_content milestone_no_duedate.title
-          end
+          expect(page).to have_css('li:nth-child(1)', text: milestone3.title)
+          expect(page).to have_css('li:nth-child(2)', text: milestone2.title)
+          expect(page).to have_css('li:nth-child(3)', text: milestone1.title)
+          expect(page).to have_css('li:nth-child(4)', text: milestone_no_duedate.title)
         end
       end
     end
@@ -441,9 +396,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       let_it_be(:contacts) { create_list(:contact, 2, group: group) }
 
       before do
-        fill_in 'Comment', with: '/add_contacts [contact:'
-
-        wait_for_requests
+        fill_in 'Add a reply', with: '/add_contacts [contact:'
       end
 
       it 'shows contacts list in the autocomplete menu' do
@@ -453,6 +406,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       end
 
       it 'shows all contacts' do
+        wait_for_requests
         page.within(find_autocomplete_menu) do
           expected_data = contacts.map { |c| "#{c.first_name} #{c.last_name} #{c.email}" }
 
@@ -463,9 +417,9 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
 
     context 'when typing enter for autocomplete in a markdown list' do
       it 'does not create a new list item' do
-        fill_in 'Comment', with: "- @#{user.username}\n"
+        fill_in 'Add a reply', with: "- @#{user.username}\n"
 
-        expect(find_field('Comment').value).to eq "- @#{user.username}\n"
+        expect(find_field('Add a reply').value).to eq "- @#{user.username}\n"
       end
     end
   end
@@ -475,19 +429,16 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   def start_comment_with_emoji(note, selector)
     note.native.send_keys('Hello :10')
 
-    wait_for_requests
-
     find(selector, text: '100')
   end
 
   def start_and_cancel_discussion
-    fill_in('Reply to comment', with: 'Whoops!')
+    click_button('Reply to comment')
+    send_keys('Whoops!')
     click_button('Cancel')
 
     page.within('.modal') do
       click_button('Discard changes', match: :first)
     end
-
-    wait_for_requests
   end
 end

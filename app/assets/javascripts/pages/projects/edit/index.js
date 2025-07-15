@@ -14,6 +14,7 @@ import initTopicsTokenSelector from '~/projects/settings/topics';
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import initPruneObjectsButton from '~/projects/prune_objects_button';
 import initProjectPermissionsSettings from '../shared/permissions';
+import initGitlabDuoSettings from '../shared/permissions/gitlab_duo_settings';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
 initFilePickers();
@@ -29,6 +30,7 @@ initServiceDesk();
 
 initProjectLoadingSpinner();
 initProjectPermissionsSettings();
+initGitlabDuoSettings();
 initTransferProjectForm();
 
 dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));

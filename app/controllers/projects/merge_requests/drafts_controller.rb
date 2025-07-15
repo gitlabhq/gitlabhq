@@ -57,7 +57,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def publish
-    result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft: draft_note(allow_nil: true))
+    result = DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
+      .execute(draft: draft_note(allow_nil: true))
 
     if create_note_params[:note]
       ::Notes::CreateService.new(@project, current_user, create_note_params).execute
@@ -130,6 +131,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       create_params[:noteable_type] = merge_request.class.name
       create_params[:noteable_id] = merge_request.id
     end
+  end
+
+  def draft_note_ids_param
+    permitted_params = params.permit(ids: [])
+    permitted_params[:ids] = permitted_params[:ids]&.map(&:to_i) if permitted_params[:ids].present?
+
+    permitted_params
   end
 
   def approve_params

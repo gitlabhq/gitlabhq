@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, feature_
   let!(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id, organization_id: organization.id) }
   let!(:issue) { issues.create!(iid: 100, project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: work_item_issue_type_id) }
   let!(:work_item) { issues.create!(iid: 200, project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: work_item_task_type_id) }
-  let!(:user) { users.create!(name: 'user', projects_limit: 10) }
+  let!(:user) { users.create!(name: 'user', projects_limit: 10, organization_id: organization.id) }
 
   # Given a system note generated for a child work item, "Added #100 as parent issue",
   # the migration searches for the parent issue with iid #100 using the child work item's project scope.

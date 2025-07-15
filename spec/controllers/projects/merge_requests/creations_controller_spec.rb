@@ -103,6 +103,73 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
         end
       end
     end
+
+    shared_examples 'renders rapid diffs' do
+      it 'renders the rapid_diffs template' do
+        get :new, params: params
+
+        expect(response).to be_successful
+        expect(response).to render_template(:rapid_diffs)
+      end
+
+      it 'sets @js_action_name to "rapid_diffs"' do
+        get :new, params: params
+
+        expect(assigns(:js_action_name)).to eq('rapid_diffs')
+      end
+    end
+
+    shared_examples 'renders default new template' do
+      it 'renders default template' do
+        get :new, params: params
+
+        expect(response).to be_successful
+        expect(response).to render_template(:new)
+        expect(response).not_to render_template(:rapid_diffs)
+      end
+
+      it 'does NOT set @js_action_name to "rapid_diffs"' do
+        get :new, params: params
+
+        expect(assigns(:js_action_name)).not_to eq('rapid_diffs')
+      end
+    end
+
+    context 'when rapid diffs are enabled' do
+      render_views
+
+      let(:params) { get_diff_params }
+
+      before do
+        stub_feature_flags(rapid_diffs: true, rapid_diffs_on_mr_creation: true, rapid_diffs_debug: true)
+      end
+
+      include_examples 'renders rapid diffs'
+
+      context 'when rapid_diffs_disabled parameter is "true"' do
+        let(:params) { get_diff_params.merge(rapid_diffs_disabled: true) }
+
+        include_examples 'renders default new template'
+
+        context 'and rapid_diffs_debug feature flag is disabled' do
+          before do
+            stub_feature_flags(rapid_diffs_debug: false)
+          end
+
+          include_examples 'renders rapid diffs'
+        end
+      end
+    end
+
+    context 'when rapid diffs are disabled' do
+      let(:params) { get_diff_params }
+
+      before do
+        stub_feature_flags(rapid_diffs: false, rapid_diffs_on_mr_creation: false)
+      end
+
+      include_examples 'renders default new template'
+    end
   end
 
   describe 'GET diffs' do

@@ -85,7 +85,7 @@ To export compute minutes used by instance runners:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.7 with [flags](../../administration/feature_flags.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.7 with [flags](../../administration/feature_flags/_index.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424866) in GitLab 16.10. Feature flags `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424789) to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.1.
 

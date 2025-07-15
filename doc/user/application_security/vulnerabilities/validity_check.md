@@ -64,6 +64,15 @@ Validity checks supports the following secret types:
 
 - GitLab personal access tokens
 - Routable GitLab personal access tokens
+- GitLab deploy tokens
+- GitLab Runner authentication tokens
+- Routable GitLab Runner authentication tokens
+- GitLab Kubernetes agent tokens
+- GitLab SCIM OAuth tokens
+- GitLab CI/CD job tokens
+- GitLab incoming email tokens
+- GitLab feed tokens (v2)
+- GitLab pipeline trigger tokens
 
 ## Secret status
 

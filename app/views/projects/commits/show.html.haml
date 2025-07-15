@@ -9,39 +9,43 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-.js-project-commits-show{ 'data-commits-limit' => @limit }
-  .tree-holder.gl-mt-5
-    .nav-block
-      .tree-ref-container
-        .tree-ref-holder.gl-max-w-26
-          #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project), "ref_type": @ref_type.to_s, "tree_path": @path } }
+- if Feature.enabled?(:project_commits_refactor, @project)
+  #js-commit-list{ data: { "project-path" => @project.path } }
 
-        %ul.breadcrumb.repo-breadcrumb
-          = commits_breadcrumbs
-      #js-author-dropdown{ data: { 'commits_path': project_commits_path(@project), 'project_id': @project.id } }
-      .tree-controls
-        .control
-          = link_button_to _('Browse files'), path_to_browse_file_or_directory(@project, @ref, @path)
-        - if @merge_request.present?
+- else
+  .js-project-commits-show{ 'data-commits-limit' => @limit }
+    .tree-holder.gl-mt-5
+      .nav-block
+        .tree-ref-container
+          .tree-ref-holder.gl-max-w-26
+            #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project), "ref_type": @ref_type.to_s, "tree_path": @path } }
+
+          %ul.breadcrumb.repo-breadcrumb
+            = commits_breadcrumbs
+        #js-author-dropdown{ data: { 'commits_path': project_commits_path(@project), 'project_id': @project.id } }
+        .tree-controls
+          .control
+            = link_button_to _('Browse files'), path_to_browse_file_or_directory(@project, @ref, @path)
+          - if @merge_request.present?
+            .control.gl-hidden.md:gl-block
+              = link_button_to _("View open merge request"), project_merge_request_path(@project, @merge_request)
+          - elsif create_mr_button?(from: @ref, source_project: @project)
+            .control.gl-hidden.md:gl-block
+              = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path(from: @ref, source_project: @project)) do
+                = _("Create merge request")
+
+          .control
+            = form_tag(project_commits_path(@project, @id, ref_type: @ref_type), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path(ref_type: @ref_type)}) do
+              = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control gl-form-input input-short gl-mt-3 sm:gl-mt-0 gl-min-w-full', spellcheck: false }
           .control.gl-hidden.md:gl-block
-            = link_button_to _("View open merge request"), project_merge_request_path(@project, @merge_request)
-        - elsif create_mr_button?(from: @ref, source_project: @project)
-          .control.gl-hidden.md:gl-block
-            = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path(from: @ref, source_project: @project)) do
-              = _("Create merge request")
+            = link_button_to nil, project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), icon: 'rss'
 
-        .control
-          = form_tag(project_commits_path(@project, @id, ref_type: @ref_type), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path(ref_type: @ref_type)}) do
-            = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control gl-form-input input-short gl-mt-3 sm:gl-mt-0 gl-min-w-full', spellcheck: false }
-        .control.gl-hidden.md:gl-block
-          = link_button_to nil, project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), icon: 'rss'
+    = render_if_exists 'projects/commits/mirror_status'
 
-  = render_if_exists 'projects/commits/mirror_status'
-
-  %div{ id: dom_id(@project) }
-    %ol#commits-list.list-unstyled.content_list
-      = render 'commits', project: @project, ref: @ref, is_commits_page: true
-  = gl_loading_icon(size: 'lg', css_class: 'loading hide')
+    %div{ id: dom_id(@project) }
+      %ol#commits-list.list-unstyled.content_list
+        = render 'commits', project: @project, ref: @ref, is_commits_page: true
+    = gl_loading_icon(size: 'lg', css_class: 'loading hide')
 
 -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
 #js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }

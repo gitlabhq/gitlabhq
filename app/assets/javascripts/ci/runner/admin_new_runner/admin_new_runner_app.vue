@@ -18,6 +18,12 @@ export default {
     PageHeading,
   },
   mixins: [glFeatureFlagsMixin()],
+  props: {
+    runnersPath: {
+      type: String,
+      required: true,
+    },
+  },
   methods: {
     onSaved(runner) {
       saveAlertToLocalStorage({
@@ -38,6 +44,7 @@ export default {
   <runner-create-wizard
     v-if="glFeatures.runnerCreateWizardAdmin"
     :runner-type="$options.INSTANCE_TYPE"
+    :runners-path="runnersPath"
   />
   <div v-else>
     <page-heading :heading="s__('Runners|Create instance runner')">

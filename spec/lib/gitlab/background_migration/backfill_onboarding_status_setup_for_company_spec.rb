@@ -6,7 +6,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusSetupForComp
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
   let(:user_preferences) { table(:user_preferences) }
-  let(:first_user) { users.create!(projects_limit: 0, email: 'user1@example.com') }
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:first_user) { users.create!(projects_limit: 0, email: 'user1@example.com', organization_id: organization.id) }
   let!(:user_preference) do
     user_preferences.create!(
       user_id: first_user.id,
@@ -21,7 +22,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusSetupForComp
     )
   end
 
-  let(:second_user) { users.create!(projects_limit: 0, email: 'user2@example.com') }
+  let(:second_user) { users.create!(projects_limit: 0, email: 'user2@example.com', organization_id: organization.id) }
   let!(:user_preference_to_change) do
     user_preferences.create!(
       user_id: second_user.id,
@@ -36,7 +37,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusSetupForComp
     )
   end
 
-  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com') }
+  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com', organization_id: organization.id) }
   let!(:user_preference_not_to_be_set) do
     user_preferences.create!(
       user_id: last_user.id,

@@ -260,7 +260,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     await waitForPromises();
 
     expect(findModelMetadata().findComponent(GlIcon).props('name')).toBe('machine-learning');
-    expect(findModelMetadata().text()).toBe('Version created in 3 years by Root');
+    expect(findModelMetadata().text()).toBe('Version created Dec 6, 2023 by Root');
 
     expect(findTimeAgoTooltip().props('time')).toBe(modelVersionWithCandidateAndAuthor.createdAt);
     expect(findTimeAgoTooltip().props('tooltipPlacement')).toBe('top');

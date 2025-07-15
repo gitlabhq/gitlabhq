@@ -27,13 +27,13 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
     end
 
     let(:note) { { id: 1 } }
-    let(:page) { double(objects: [note], number: 1) }
+    let(:page) { instance_double(Gitlab::GithubImport::Client::Page, objects: [note], url: nil) }
 
     it 'fetches data' do
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:pull_request_comments, 'github/repo', merge_request.iid, { page: 1 })
+        .with(:pull_request_comments, nil, 'github/repo', merge_request.iid, {})
         .and_yield(page)
 
       expect { |b| subject.each_object_to_import(&b) }.to yield_with_args(note)
@@ -48,15 +48,17 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
       ).to eq(true)
     end
 
-    it 'skips cached pages' do
-      Gitlab::Import::PageCounter
-        .new(project, "merge_request/#{merge_request.id}/pull_request_comments")
-        .set(2)
+    it 'resumes from the last processed URL' do
+      resume_url = 'https://api.github.com/repositories/1/pulls/999/comments?page=2'
+
+      Gitlab::Import::PageKeyset
+        .new(project, "merge_request/#{merge_request.id}/pull_request_comments", ::Import::SOURCE_GITHUB)
+        .set(resume_url)
 
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:pull_request_comments, 'github/repo', merge_request.iid, { page: 2 })
+        .with(:pull_request_comments, resume_url, 'github/repo', merge_request.iid, {})
 
       subject.each_object_to_import {}
     end

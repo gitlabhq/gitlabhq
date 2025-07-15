@@ -82,7 +82,6 @@ export default {
       );
     },
   },
-  colorScheme: gon?.user_color_scheme,
 };
 </script>
 
@@ -103,8 +102,7 @@ export default {
             <pre
               v-if="hover.language"
               ref="code-output"
-              :class="$options.colorScheme"
-              class="border-0 bg-transparent m-0 code highlight text-wrap"
+              class="border-0 bg-transparent m-0 code code-syntax-highlight-theme highlight text-wrap"
             ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens" /></pre>
             <markdown v-else ref="doc-output" class="gl-p-3" :markdown="hover.value" />
           </div>

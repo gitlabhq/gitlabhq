@@ -10,6 +10,7 @@ export const OptionsMenuAdapter = {
   clicks: {
     toggleOptionsMenu(event, button) {
       const menuContainer = this.diffElement.querySelector('[data-options-menu]');
+      if (!menuContainer) return;
       const items = getMenuItems(menuContainer);
       // eslint-disable-next-line no-new
       new Vue({

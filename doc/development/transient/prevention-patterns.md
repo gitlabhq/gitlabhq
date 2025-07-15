@@ -24,7 +24,7 @@ When working with multiple requests, it's easy to assume the order of the respon
 
 That's not always the case and can cause bugs that only happen if the order is switched.
 
-**Example:**
+**Example**:
 
 - `diffs_metadata.json` (lighter)
 - `diffs_batch.json` (heavier)
@@ -35,7 +35,7 @@ If your feature requires data from both, ensure that the two have finished loadi
 
 Add a network condition template to your browser's developer tools to enable you to toggle between a slow and a fast connection.
 
-**Example:**
+**Example**:
 
 - Turtle:
   - Down: 50kb/s

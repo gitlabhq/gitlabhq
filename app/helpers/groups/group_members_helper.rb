@@ -33,7 +33,7 @@ module Groups::GroupMembersHelper
       available_roles: available_group_roles(group),
       reassignment_csv_path: group_bulk_reassignment_file_path(group),
       allow_inactive_placeholder_reassignment: allow_admin_bypass?.to_s,
-      allow_bypass_placeholder_confirmation: allow_bypass_placeholder_confirmation?.to_s
+      allow_bypass_placeholder_confirmation: allow_bypass_placeholder_confirmation(group)
     }
   end
   # rubocop:enable Metrics/ParameterLists
@@ -44,6 +44,11 @@ module Groups::GroupMembersHelper
       strong_start: '<strong>'.html_safe,
       strong_end: '</strong>'.html_safe
     }
+  end
+
+  # Overriden in ee/app/helpers/ee/groups/group_members_helper.rb
+  def allow_group_owner_enterprise_bypass?(group)
+    false
   end
 
   private
@@ -101,8 +106,12 @@ module Groups::GroupMembersHelper
   end
   strong_memoize_attr :allow_admin_bypass?
 
-  def allow_bypass_placeholder_confirmation?
-    allow_admin_bypass?
+  def allow_bypass_placeholder_confirmation(group)
+    if allow_admin_bypass?
+      'admin'
+    elsif allow_group_owner_enterprise_bypass?(group)
+      'group_owner'
+    end
   end
 end
 

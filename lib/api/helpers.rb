@@ -268,7 +268,7 @@ module API
     def find_namespace(id)
       if INTEGER_ID_REGEX.match?(id.to_s)
         # We need to stick to an up-to-date replica or primary db here in order to properly observe the namespace
-        # recently created by GitlabSubscriptions::Trials::CreateService#create_group_flow.
+        # recently created by GitlabSubscriptions::Trials::UltimateCreateService.
         # See https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9808
         ::Namespace.sticking.find_caught_up_replica(:namespace, id)
 
@@ -499,11 +499,9 @@ module API
       permitted_attrs.to_h
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_iid(items, iid)
-      items.where(iid: iid)
+      items.iid_in(iid)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_title(items, title)
@@ -569,8 +567,8 @@ module API
       render_api_error!(message || '405 Method Not Allowed', :method_not_allowed)
     end
 
-    def not_acceptable!
-      render_api_error!('406 Not Acceptable', 406)
+    def not_acceptable!(message = nil)
+      render_api_error!(message || '406 Not Acceptable', 406)
     end
 
     def service_unavailable!(message = nil)
@@ -585,8 +583,8 @@ module API
       render_api_error!(message || '422 Unprocessable Entity', :unprocessable_entity)
     end
 
-    def file_too_large!
-      render_api_error!('413 Request Entity Too Large', 413)
+    def file_too_large!(message = nil)
+      render_api_error!(message || '413 Request Entity Too Large', 413)
     end
 
     def too_many_requests!(message = nil, retry_after: 1.minute)
@@ -595,20 +593,20 @@ module API
       render_api_error!(message || '429 Too Many Requests', 429)
     end
 
-    def not_modified!
-      render_api_error!('304 Not Modified', 304)
+    def not_modified!(message = nil)
+      render_api_error!(message || '304 Not Modified', 304)
     end
 
-    def no_content!
-      render_api_error!('204 No Content', 204)
+    def no_content!(message = nil)
+      render_api_error!(message || '204 No Content', 204)
     end
 
-    def created!
-      render_api_error!('201 Created', 201)
+    def created!(message = nil)
+      render_api_error!(message || '201 Created', 201)
     end
 
-    def accepted!(message = '202 Accepted')
-      render_api_error!(message, 202)
+    def accepted!(message = nil)
+      render_api_error!(message || '202 Accepted', 202)
     end
 
     def render_validation_error!(models, status = 400)

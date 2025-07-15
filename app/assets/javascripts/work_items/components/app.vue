@@ -1,5 +1,10 @@
 <script>
+import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata_provider.vue';
+
 export default {
+  components: {
+    WorkItemMetadataProvider,
+  },
   props: {
     newCommentTemplatePaths: {
       type: Array,
@@ -26,11 +31,13 @@ export default {
 </script>
 
 <template>
-  <router-view
-    :key="pageKey"
-    :new-comment-template-paths="newCommentTemplatePaths"
-    :root-page-full-path="rootPageFullPath"
-    :with-tabs="withTabs"
-    data-testid="work-item-router-view"
-  />
+  <work-item-metadata-provider :full-path="rootPageFullPath">
+    <router-view
+      :key="pageKey"
+      :new-comment-template-paths="newCommentTemplatePaths"
+      :root-page-full-path="rootPageFullPath"
+      :with-tabs="withTabs"
+      data-testid="work-item-router-view"
+    />
+  </work-item-metadata-provider>
 </template>

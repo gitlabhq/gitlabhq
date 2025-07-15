@@ -75,7 +75,7 @@ Generally available features:
 - Are ready for production use at any scale.
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
-- Must be available on all GitLab platforms (GitLab.com, GitLab Self-Managed, GitLab Dedicated).
+- Must be available on all GitLab platforms (GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government).
 
 ## Development guidelines
 

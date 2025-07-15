@@ -429,7 +429,7 @@ Unable to connect to the server: x509: certificate signed by unknown authority
 
 このエラーは、ジョブが KAS 証明書に署名した認証局（CA）を信頼しないために発生します。
 
-イシューを解決するには、[CA を信頼するように `kubectl` を Configure ](#environments-with-kas-that-use-self-signed-certificates)します。
+イシューを解決するには、[CA を信頼するように `kubectl` を Configure](#environments-with-kas-that-use-self-signed-certificates)します。
 
 ### 検証エラー
 

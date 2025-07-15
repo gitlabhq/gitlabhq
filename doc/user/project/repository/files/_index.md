@@ -115,7 +115,7 @@ To create a permalink:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `filter_blob_path`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `filter_blob_path`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 17.11.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 18.0.
 
@@ -127,7 +127,8 @@ The availability of this feature is controlled by a feature flag. For more infor
 
 {{< /alert >}}
 
-When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+When viewing a repository file, GitLab shows a badge with the number of open merge requests that target
+the current branch and modify the file. This helps you identify files that have pending changes.
 
 To view the open merge requests for a file:
 

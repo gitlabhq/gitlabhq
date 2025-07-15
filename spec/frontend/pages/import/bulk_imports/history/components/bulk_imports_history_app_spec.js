@@ -141,7 +141,7 @@ describe('BulkImportsHistoryApp', () => {
       findPaginationBar().vm.$emit('set-page', NEW_PAGE);
       await waitForPromises();
 
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       expect(mock.history.get[0].params).toStrictEqual(expect.objectContaining({ page: NEW_PAGE }));
     });
   });
@@ -159,7 +159,7 @@ describe('BulkImportsHistoryApp', () => {
     });
 
     it('makes a request to bulk_import_history endpoint', () => {
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       expect(mock.history.get[0].url).toBe(`/api/v4/bulk_imports/${mockId}/entities`);
       expect(mock.history.get[0].params).toStrictEqual({
         page: 1,
@@ -178,7 +178,7 @@ describe('BulkImportsHistoryApp', () => {
     findPaginationBar().vm.$emit('set-page-size', NEW_PAGE_SIZE);
     await waitForPromises();
 
-    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get).toHaveLength(1);
     expect(mock.history.get[0].params).toStrictEqual(
       expect.objectContaining({ per_page: NEW_PAGE_SIZE }),
     );
@@ -196,7 +196,7 @@ describe('BulkImportsHistoryApp', () => {
     findPaginationBar().vm.$emit('set-page-size', NEW_PAGE_SIZE);
     await waitForPromises();
 
-    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get).toHaveLength(1);
     expect(mock.history.get[0].params).toStrictEqual(
       expect.objectContaining({ per_page: NEW_PAGE_SIZE, page: 1 }),
     );

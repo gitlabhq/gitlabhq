@@ -162,12 +162,14 @@ Example response:
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "relation_export_batch_size": 50,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
   "silent_admin_exports_enabled": false,
   "top_level_group_creation_enabled": true,
-  "disable_invite_members": false
+  "disable_invite_members": false,
+  "enforce_pipl_compliance": true
 }
 ```
 
@@ -220,9 +222,19 @@ these parameters:
 - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
+- `throttle_unauthenticated_git_http_enabled`, `throttle_unauthenticated_git_http_period_in_seconds`, and `throttle_unauthenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147112) in GitLab 17.0.
 - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
+- `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of authenticated Git HTTP rate limits is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Updates the current [application settings](#available-settings) for this GitLab instance.
 
@@ -362,11 +374,13 @@ Example response:
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "relation_export_batch_size": 50,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
-  "silent_admin_exports_enabled": false
+  "silent_admin_exports_enabled": false,
+  "enforce_pipl_compliance": true
 }
 ```
 
@@ -500,6 +514,7 @@ to configure other related settings. These requirements are
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |
+| `default_dark_syntax_highlighting_theme` | integer          | no                                   | Default dark mode syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |
 | `default_project_deletion_protection`    | boolean          | no                                   | Enable default project deletion protection so only administrators can delete projects. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. |
 | `delete_unconfirmed_users`               | boolean          | no                                   | Specifies whether users who have not confirmed their email should be deleted. Default is `false`. When set to `true`, unconfirmed users are deleted after `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. GitLab Self-Managed, Premium and Ultimate only. |
 | `deletion_adjourned_period`              | integer          | no                                   | Number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. |
@@ -545,6 +560,7 @@ to configure other related settings. These requirements are
 | `elasticsearch_url`                        | string         | no                                   | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`). Premium and Ultimate only. |
 | `elasticsearch_username`                   | string         | no                                   | The `username` of your Elasticsearch instance. Premium and Ultimate only. |
 | `elasticsearch_password`                   | string         | no                                   | The password of your Elasticsearch instance. Premium and Ultimate only. |
+| `elasticsearch_prefix`                     | string         | no                                   | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. Premium and Ultimate only. |
 | `elasticsearch_retry_on_failure`           | integer        | no                                   | Maximum number of possible retries for Elasticsearch search requests. Premium and Ultimate only. |
 | `email_additional_text`                    | string         | no                                   | Additional text added to the bottom of every email for legal/auditing/compliance reasons. Premium and Ultimate only. |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
@@ -620,8 +636,8 @@ to configure other related settings. These requirements are
 | `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_login_attempts`                     | integer          | no                                   | Maximum number of sign-in attempts before locking out the user. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
-| `max_personal_access_token_lifetime`     | integer          | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked. GitLab Self-Managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.|
-| `max_ssh_key_lifetime`                   | integer          | no                                   | Maximum allowable lifetime for SSH keys in days. GitLab Self-Managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.|
+| `max_personal_access_token_lifetime`     | integer          | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked. GitLab Self-Managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`.|
+| `max_ssh_key_lifetime`                   | integer          | no                                   | Maximum allowable lifetime for SSH keys in days. GitLab Self-Managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`.|
 | `max_terraform_state_size_bytes`         | integer          | no                                   | Maximum size in bytes of the [Terraform state](../administration/terraform_state.md) files. Set this to 0 for unlimited file size. |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
 | `max_number_of_repository_downloads`     | integer          | no                                   | Maximum number of unique repositories a user can download in the specified time period before they are banned. Default: 0, Maximum: 10,000 repositories. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980) in GitLab 15.1. GitLab Self-Managed, Ultimate only. |
@@ -688,8 +704,9 @@ to configure other related settings. These requirements are
 | `login_recaptcha_protection_enabled`     | boolean          | no                                   | Enable reCAPTCHA for login. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for reCAPTCHA. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for reCAPTCHA. |
-| `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab Agents for Kubernetes. |
+| `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab agents for Kubernetes. |
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
+| `relation_export_batch_size`             | integer          | no                                   | The size of each batch when exporting batched relations. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607) in GitLab 18.2. |
 | `remember_me_enabled`                    | boolean          | no                                   | Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#configure-the-remember-me-option). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0. |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | Size limit per repository (MB). Premium and Ultimate only. |
@@ -747,6 +764,9 @@ to configure other related settings. These requirements are
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_authenticated_api_period_in_seconds`            | integer | required by:<br>`throttle_authenticated_api_enabled`            | Rate limit period (in seconds). |
 | `throttle_authenticated_api_requests_per_period`          | integer | required by:<br>`throttle_authenticated_api_enabled`            | Maximum requests per period per user. |
+| `throttle_authenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`. |
+| `throttle_authenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
+| `throttle_authenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_authenticated_packages_api_enabled`             | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_packages_api_period_in_seconds` and `throttle_authenticated_packages_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_authenticated_packages_api_period_in_seconds`   | integer | required by:<br>`throttle_authenticated_packages_api_enabled`   | Rate limit period (in seconds). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_authenticated_packages_api_requests_per_period` | integer | required by:<br>`throttle_authenticated_packages_api_enabled`   | Maximum requests per period per user. View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
@@ -759,6 +779,9 @@ to configure other related settings. These requirements are
 | `throttle_unauthenticated_api_enabled`                    | boolean | no                                                              | (**If enabled, requires**: `throttle_unauthenticated_api_period_in_seconds` and `throttle_unauthenticated_api_requests_per_period`) Enable unauthenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_unauthenticated_api_period_in_seconds`          | integer | required by:<br>`throttle_unauthenticated_api_enabled`          | Rate limit period in seconds. |
 | `throttle_unauthenticated_api_requests_per_period`        | integer | required by:<br>`throttle_unauthenticated_api_enabled`          | Max requests per period per IP. |
+| `throttle_unauthenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the unauthenticated Git HTTP request rate limit. Default value: `false`. |
+| `throttle_unauthenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`. |
+| `throttle_unauthenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_unauthenticated_packages_api_enabled`           | boolean | no                                                              | (**If enabled, requires**: `throttle_unauthenticated_packages_api_period_in_seconds` and `throttle_unauthenticated_packages_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_unauthenticated_packages_api_period_in_seconds` | integer | required by:<br>`throttle_unauthenticated_packages_api_enabled` | Rate limit period (in seconds). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_unauthenticated_packages_api_requests_per_period` | integer | required by:<br>`throttle_unauthenticated_packages_api_enabled` | Maximum requests per period per user. View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
@@ -797,6 +820,7 @@ to configure other related settings. These requirements are
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
+| `enforce_pipl_compliance` | boolean | no | Sets whether pipl compliance is enforced for the saas application or not |
 
 ### Dormant project settings
 

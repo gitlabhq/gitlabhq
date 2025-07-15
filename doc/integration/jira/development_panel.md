@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Jira development panel
 ---
@@ -25,7 +25,7 @@ For an overview, see [Jira development panel integration](https://www.youtube.co
 
 {{< history >}}
 
-- Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `jira_connect_remove_branches`. Disabled by default.
+- Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `jira_connect_remove_branches`. Disabled by default.
 - Ability to delete branches made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
 
 {{< /history >}}
@@ -71,7 +71,7 @@ For the [GitLab for Jira Cloud app](connect-app.md), the following information i
 
 **Footnotes**:
 
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default.
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags/_index.md) named `jira_deployment_issue_keys`. Enabled by default.
 1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.
 
 ## Jira Smart Commits

@@ -59,9 +59,6 @@ export default {
     };
   },
   computed: {
-    themeClass() {
-      return window.gon?.user_color_scheme;
-    },
     isCodeSuggestion() {
       return (
         this.node.attrs.isCodeSuggestion &&
@@ -72,7 +69,7 @@ export default {
     classList() {
       return this.isCodeSuggestion
         ? '!gl-p-0 suggestion-added-input'
-        : `gl-p-3 code highlight ${this.$options.userColorScheme}`;
+        : `gl-p-3 code highlight code-syntax-highlight-theme`;
     },
     lineOffset() {
       return langParamsToLineOffset(this.node.attrs.langParams);
@@ -160,7 +157,6 @@ export default {
         .run();
     },
   },
-  userColorScheme: gon.user_color_scheme,
 };
 </script>
 <template>
@@ -260,7 +256,10 @@ export default {
           </div>
         </div>
 
-        <div class="suggestion-deleted code" :class="themeClass" data-testid="suggestion-deleted">
+        <div
+          class="suggestion-deleted code code-syntax-highlight-theme"
+          data-testid="suggestion-deleted"
+        >
           <code
             v-for="(line, i) in deletedLines"
             :key="i"
@@ -272,8 +271,7 @@ export default {
           >
         </div>
         <div
-          class="suggestion-added code gl-absolute"
-          :class="themeClass"
+          class="suggestion-added code code-syntax-highlight-theme gl-absolute"
           data-testid="suggestion-added"
         >
           <code
@@ -292,8 +290,7 @@ export default {
         as="code"
         class="gl-relative gl-z-1 !gl-break-words"
         :class="{
-          'line_content new code': isCodeSuggestion,
-          [themeClass]: isCodeSuggestion,
+          'line_content new code code-syntax-highlight-theme': isCodeSuggestion,
         }"
         :spellcheck="false"
         data-testid="suggestion-field"

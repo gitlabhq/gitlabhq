@@ -17,6 +17,10 @@ describe('generateRefDestinationPath', () => {
     ${`${projectRootPath}/-/blob/${currentRef}/dir1/test.js`}           | ${`${projectRootPath}/-/blob/${selectedRef}/dir1/test.js`}
     ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js`}      | ${`${projectRootPath}/-/blob/${selectedRef}/dir1/dir2/test.js`}
     ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${`${projectRootPath}/-/blob/${selectedRef}/dir1/dir2/test.js#L123`}
+    ${`${projectRootPath}/blob/${currentRef}/test.js`}                  | ${`${projectRootPath}/blob/${selectedRef}/test.js`}
+    ${`${projectRootPath}/blob/${currentRef}/dir1/test.js`}             | ${`${projectRootPath}/blob/${selectedRef}/dir1/test.js`}
+    ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js`}        | ${`${projectRootPath}/blob/${selectedRef}/dir1/dir2/test.js`}
+    ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${`${projectRootPath}/blob/${selectedRef}/dir1/dir2/test.js#L123`}
   `('generates the correct destination path for $currentPath', ({ currentPath, result }) => {
     setWindowLocation(currentPath);
     expect(generateRefDestinationPath(projectRootPath, currentRef, selectedRef)).toBe(
@@ -30,10 +34,14 @@ describe('generateRefDestinationPath', () => {
       ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${'someHash'}                                       | ${`${projectRootPath}/-/blob/someHash/dir1/dir2/test.js#L123`}
       ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${'refs/heads/prefixedByUseSymbolicRefNames'}       | ${`${projectRootPath}/-/blob/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=heads#L123`}
       ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${'refs/tags/prefixedByUseSymbolicRefNames'}        | ${`${projectRootPath}/-/blob/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=tags#L123`}
+      ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${'branch%percent'}                                 | ${`${projectRootPath}/-/blob/branch%25percent/dir1/dir2/test.js#L123`}
+      ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${'someHash'}                                       | ${`${projectRootPath}/blob/someHash/dir1/dir2/test.js#L123`}
+      ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${'refs/heads/prefixedByUseSymbolicRefNames'}       | ${`${projectRootPath}/blob/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=heads#L123`}
+      ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${'refs/tags/prefixedByUseSymbolicRefNames'}        | ${`${projectRootPath}/blob/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=tags#L123`}
+      ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${'branch%percent'}                                 | ${`${projectRootPath}/blob/branch%25percent/dir1/dir2/test.js#L123`}
       ${`${projectRootPath}/-/tree/${currentRef}/dir1/dir2/test.js#L123`} | ${'refs/heads/prefixedByUseSymbolicRefNames'}       | ${`${projectRootPath}/-/tree/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=heads#L123`}
       ${`${projectRootPath}/-/tree/${currentRef}/dir1/dir2/test.js#L123`} | ${'refs/tags/prefixedByUseSymbolicRefNames'}        | ${`${projectRootPath}/-/tree/prefixedByUseSymbolicRefNames/dir1/dir2/test.js?ref_type=tags#L123`}
       ${`${projectRootPath}/-/tree/${currentRef}/dir1/dir2/test.js#L123`} | ${'refs/heads/refs/heads/branchNameContainsPrefix'} | ${`${projectRootPath}/-/tree/refs/heads/branchNameContainsPrefix/dir1/dir2/test.js?ref_type=heads#L123`}
-      ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${'branch%percent'}                                 | ${`${projectRootPath}/-/blob/branch%25percent/dir1/dir2/test.js#L123`}
     `(
       'generates the correct destination path for $currentPath with ref type when it can be extracted',
       ({ currentPath, result, nextRef }) => {

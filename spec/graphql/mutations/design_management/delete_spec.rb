@@ -87,7 +87,7 @@ RSpec.describe Mutations::DesignManagement::Delete, feature_category: :api do
           end
         end
 
-        it 'runs no more than 36 queries' do
+        it 'runs no more than 39 queries' do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
           allow(Gitlab::InternalEvents).to receive(:track_event)
 
@@ -129,7 +129,10 @@ RSpec.describe Mutations::DesignManagement::Delete, feature_category: :api do
           # 34. find plan for standard context
           # 35. find issue(work item) type, after query 09
           # 36. Fetch the associated issue's namespace when we create_for_designs in DesignManagement::Version
-          expect { run_mutation }.not_to exceed_query_limit(36)
+          # 37. find if self or ancestors projects archived
+          # 38. project or ancestors archived policy check for GraphQL authorization
+          # 39. project or ancestors archived policy check for authorization in DesignManagement::DeleteDesignsService
+          expect { run_mutation }.not_to exceed_query_limit(39)
         end
       end
 

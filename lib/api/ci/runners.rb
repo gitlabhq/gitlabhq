@@ -112,7 +112,7 @@ module API
 
       resource :runners do
         desc 'Get runners available for user' do
-          summary 'List owned runners'
+          summary 'List available runners'
           success Entities::Ci::Runner
           failure [[400, 'Scope contains invalid value'], [401, 'Unauthorized']]
           tags %w[runners]
@@ -122,7 +122,7 @@ module API
           use :filter_params
         end
         get do
-          runners = current_user.ci_owned_runners.with_api_entity_associations
+          runners = current_user.ci_available_runners.with_api_entity_associations
           runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED)
           runners = apply_filter(runners, params)
 

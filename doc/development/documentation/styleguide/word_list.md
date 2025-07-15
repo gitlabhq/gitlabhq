@@ -159,7 +159,7 @@ Instead of:
 
 Use lowercase for **advanced search** to refer to the faster, more efficient search across the entire GitLab instance.
 
-## agent
+## agent for Kubernetes
 
 Use lowercase to refer to the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
 For example:
@@ -197,6 +197,17 @@ Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
 ## AI, artificial intelligence
 
 Use **AI**. Do not spell out **artificial intelligence**.
+
+## AI agent
+
+When writing about AI, the **AI agent** is an entity that performs actions for the user.
+
+After first use, you can use **agent** without **AI**.
+
+When you're interacting with an AI agent, a [**session**](#session) is running.
+The user can stop a session.
+
+One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
 
 ## AI gateway
 
@@ -1033,7 +1044,7 @@ However, you can make an exception when you are writing a task and you want to r
 of the fields at once. For example:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
 
@@ -1051,6 +1062,13 @@ When you are viewing a list of items, like issues or merge requests, you filter 
 the available attributes. For example, you might filter by assignee or reviewer.
 
 Filtering is different from [searching](#search).
+
+## flows
+
+GitLab provides multiple **flows** that are run by [AI agents](#ai-agent).
+Both **flow** and **agent flow** are acceptable.
+
+You choose a flow. You start a [**session**](#session).
 
 ## foo
 
@@ -1169,6 +1187,12 @@ the following are the names of GitLab Duo features:
 Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
 without **GitLab Duo**.
 
+## GitLab Duo Agent Platform
+
+Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
+
+Do not use **Duo Agent Platform** by itself.
+
 ## GitLab Duo Enterprise
 
 Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise** unless approved by legal.
@@ -1191,17 +1215,17 @@ and in title case, unless you are
 
 Do not use **Self-Hosted** by itself.
 
-## GitLab Duo Workflow
-
-Use **GitLab Duo Workflow**. After first use, use **Workflow**.
-
-Do not use **Duo Workflow** by itself.
-
 ## GitLab Flavored Markdown
 
 When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
 
 If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
+
+## GitLab for Eclipse plugin, Eclipse
+
+Use **GitLab for Eclipse plugin** to refer to the editor extension.
+
+Use **Eclipse** to refer to the IDE.
 
 ## GitLab Helm chart, GitLab chart
 
@@ -1836,7 +1860,7 @@ For more information, see the
 
 When documenting high-level UI elements, use **on** as a preposition. For example:
 
-- On the left sidebar, select **Settings > CI/CD**.
+- On the left sidebar, select **Settings** > **CI/CD**.
 - On the **Grant permission** dialog, select **Group**.
 
 Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).
@@ -2305,6 +2329,11 @@ See [GitLab Self-Managed](#gitlab-self-managed).
 
 Use title case for **Service Desk**.
 
+## session
+
+When an [AI agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
+The session can start and stop.
+
 ## setup, set up
 
 Use **setup** as a noun, and **set up** as a verb. For example:
@@ -2763,7 +2792,7 @@ For example:
 - Use code review analytics to view merge request data.
 - Create a board to organize your team tasks.
 - Configure variables to restrict pushes to a repository.
-- Add links to external accounts you have, like Skype and Twitter.
+- Add links to external accounts you have, like Discord and Twitter.
 
 Use **you can** for optional actions. For example:
 

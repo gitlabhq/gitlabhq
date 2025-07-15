@@ -12,42 +12,21 @@ RSpec.describe Gitlab::Tracking::EventEligibilityChecker, feature_category: :ser
 
     subject { checker.eligible?(event_name) }
 
-    context 'when collect_product_usage_events feature flag is enabled' do
-      where(:product_usage_data_enabled, :snowplow_enabled, :result) do
-        true | false | true
-        false | true | true
-        false | false | false
-      end
-
-      before do
-        stub_application_setting(
-          snowplow_enabled: snowplow_enabled,
-          gitlab_product_usage_data_enabled?: product_usage_data_enabled
-        )
-      end
-
-      with_them do
-        it { is_expected.to eq(result) }
-      end
+    where(:product_usage_data_enabled, :snowplow_enabled, :result) do
+      true | false | true
+      false | true | true
+      false | false | false
     end
 
-    context 'when collect_product_usage_events feature flag is disabled' do
-      where(:product_usage_data_enabled, :snowplow_enabled, :result) do
-        true  | false | false
-        false | true  | true
-        false | false | false
-      end
+    before do
+      stub_application_setting(
+        snowplow_enabled: snowplow_enabled,
+        gitlab_product_usage_data_enabled?: product_usage_data_enabled
+      )
+    end
 
-      before do
-        stub_feature_flags(collect_product_usage_events: false)
-        stub_application_setting(
-          snowplow_enabled?: snowplow_enabled, gitlab_product_usage_data_enabled?: product_usage_data_enabled
-        )
-      end
-
-      with_them do
-        it { is_expected.to eq(result) }
-      end
+    with_them do
+      it { is_expected.to eq(result) }
     end
   end
 
@@ -62,7 +41,6 @@ RSpec.describe Gitlab::Tracking::EventEligibilityChecker, feature_category: :ser
     end
 
     before do
-      stub_feature_flags(collect_product_usage_events: false)
       stub_application_setting(
         snowplow_enabled?: snowplow_enabled, gitlab_product_usage_data_enabled?: product_usage_data_enabled
       )

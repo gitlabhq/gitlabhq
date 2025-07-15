@@ -665,6 +665,20 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       expect(response).to redirect_to(project_blob_path(project, 'master/docs/EXAMPLE_FILE'))
     end
 
+    context 'when commit message is missing' do
+      let(:default_params) { super().merge(commit_message: '') }
+
+      render_views
+
+      it 'renders an error message' do
+        request
+
+        expect(response).to be_successful
+        expect(response).to render_template(:new)
+        expect(response.body).to include('You must provide a commit message')
+      end
+    end
+
     context 'when file_name is missing' do
       let(:default_params) do
         {

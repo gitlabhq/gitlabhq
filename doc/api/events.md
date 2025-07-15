@@ -18,7 +18,7 @@ like joining projects, commenting on issues, pushing changes to MRs, or closing 
 For information about activity retention limits, see:
 
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
-- [Project activity time period limit](../user/project/working_with_projects.md#event-time-period-limit)
+- [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
 
 ## List all events
 
@@ -400,5 +400,5 @@ You can filter the results to return events from a specific target type. Possibl
 
 Footnotes:
 
-1. You must enable the [new look for epics](../user/group/epics/epic_work_items.md). Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
+1. Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
 1. Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).

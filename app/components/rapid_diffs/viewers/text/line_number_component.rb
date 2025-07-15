@@ -4,16 +4,11 @@ module RapidDiffs
   module Viewers
     module Text
       class LineNumberComponent < ViewComponent::Base
-        def initialize(line:, position:, file_hash:, file_path:, border: nil)
+        def initialize(line:, line_id:, position:, border: nil)
           @line = line
+          @line_id = line_id
           @position = position
-          @file_hash = file_hash
-          @file_path = file_path
           @border = border
-        end
-
-        def id
-          @line.id(@file_hash, @position)
         end
 
         def line_number

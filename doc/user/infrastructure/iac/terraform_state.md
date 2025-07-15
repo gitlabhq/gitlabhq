@@ -14,7 +14,7 @@ title: GitLab-managed Terraform/OpenTofu state
 
 {{< history >}}
 
-- Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
+- Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags/_index.md) named `allow_dots_on_tf_state_names`. Disabled by default.
 - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
 
 {{< /history >}}
@@ -192,7 +192,7 @@ the old state is, you can tell it about the new location:
 ```shell
 TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
 
-terraform init \
+tofu init \
   -migrate-state \
   -backend-config=address=${TF_ADDRESS} \
   -backend-config=lock_address=${TF_ADDRESS}/lock \

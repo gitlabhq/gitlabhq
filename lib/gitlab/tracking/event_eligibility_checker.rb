@@ -15,11 +15,7 @@ module Gitlab
       end
 
       def eligible?(_event, _app_id = nil)
-        if ::Feature.enabled?(:collect_product_usage_events, :instance)
-          snowplow_enabled? || send_usage_data?
-        else
-          snowplow_enabled?
-        end
+        snowplow_enabled? || send_usage_data?
       end
 
       private

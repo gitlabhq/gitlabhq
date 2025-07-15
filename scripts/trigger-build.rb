@@ -507,7 +507,7 @@ module Trigger
         file.write(container_versions_script)
         file.close
 
-        build_vars = version_fetch_env_variables
+        build_vars = version_fetch_env_variables.transform_values(&:to_s)
         logger.info("Computing container versions using following env variables:\n#{JSON.pretty_generate(build_vars)}")
         out, status = Open3.capture2e(build_vars, "bash -c 'source #{file.path} && get_all_versions'")
         raise "Failed to fetch container versions! #{out}" unless status.success?

@@ -388,7 +388,7 @@ describe('Issuable output', () => {
 
       it('removes the css class from the document body when unmounting', () => {
         wrapper.findComponent(StickyHeader).vm.$emit('show');
-        wrapper.vm.$destroy();
+        wrapper.destroy();
         expect(document.body.classList?.contains('issuable-sticky-header-visible')).toBe(false);
       });
     });

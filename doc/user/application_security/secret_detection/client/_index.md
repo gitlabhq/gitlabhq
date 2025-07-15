@@ -19,22 +19,55 @@ title: Client-side secret detection
 
 {{< /history >}}
 
-When you create an issue, propose a merge request, or write a comment, you might accidentally post a
+When you create an issue, add a description to a merge request, or write a comment, you might accidentally post a
 secret. For example, you might paste in the details of an API request or an environment variable
-that contains an authentication token. If a secret is leaked it could be used to do harm.
+that contains an authentication token. If a secret is leaked, an adversary can use it to impersonate a legitimate user.
 
-Client-side secret detection helps to minimize the risk of that happening. When you edit the
-description or comment in an issue or merge request, GitLab checks if it contains a secret. If a
-secret is found, a warning message is displayed. You can then edit the description or comment to
-remove the secret before posting your message, or add the description or comment as it is. This
-check occurs in your browser, so the secret is not revealed to anyone else unless you add it to
-GitLab. The check is always on; you don't have to set it up.
+Client-side secret detection helps minimize the risk of accidental secret exposure. When you edit a
+description, or comment in an issue or merge request, GitLab automatically scans the content for secrets.
 
-Client-side secret detection checks only the following for secrets:
+## Secret detection workflow
 
-- Comments in issues or merge requests.
-- Descriptions of issues or merge requests.
+Client-side secret detection operates entirely within your browser using pattern matching. This approach ensures that:
 
-Secrets with custom prefixes are supported only for GitLab personal access tokens.
-For more information about which types of secrets are covered by client-side secret detection, see
-[Detected secrets](../detected_secrets.md).
+- Secrets are detected before they are submitted to GitLab.
+- No sensitive information is transmitted during the detection process.
+- The feature works seamlessly without requiring additional configuration.
+
+## Getting started
+
+Client-side secret detection is enabled by default for all GitLab tiers. No setup or configuration is required.
+
+To test this feature:
+
+1. Navigate to any issue or merge request
+1. Add a comment containing a test secret pattern, such as `glpat-xxxxxxxxxxxxxxxxxxxx`
+1. Observe the warning message that appears before you submit
+
+Always use placeholder values when you test to avoid exposing real secrets.
+
+## Coverage
+
+Client-side secret detection analyzes the following content:
+
+- Issue descriptions and comments
+- Merge request descriptions and comments
+
+For detailed information about the specific types of secrets detected, see the [Detected secrets](../detected_secrets.md) documentation.
+
+## Understanding the results
+
+When client-side secret detection identifies a potential secret, GitLab displays a warning that highlights the detected secret.
+You can either:
+
+- **Edit** the content of the comment or description to remove the secret.
+- **Add** content without making any changes. Exercise caution before you add content that contains a potential secret.
+
+The detection occurs entirely in your browser. No information is transmitted unless you select **Add**.
+
+## Optimization
+
+To maximize the effectiveness of client-side secret detection:
+
+- Review warnings carefully. Always investigate flagged content before proceeding.
+- Use placeholders. Replace actual secrets with placeholder text like `[REDACTED]` or `<API_KEY>`.

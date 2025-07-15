@@ -100,6 +100,11 @@ function factory({
       commits,
     },
     apolloProvider: createMockApolloProvider(ref),
+    data() {
+      return {
+        ref,
+      };
+    },
   });
 }
 
@@ -137,7 +142,7 @@ describe('Repository table component', () => {
 
     const rows = findTableRows();
 
-    expect(rows.length).toEqual(3);
+    expect(rows).toHaveLength(3);
     expect(rows.at(2).attributes().mode).toEqual('120000');
     expect(rows.at(2).props().rowNumber).toBe(2);
     expect(rows.at(2).props().commitInfo).toEqual(MOCK_COMMITS[2]);

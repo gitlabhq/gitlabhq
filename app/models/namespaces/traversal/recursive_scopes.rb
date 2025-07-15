@@ -23,7 +23,7 @@ module Namespaces
           if include_self
             records
           else
-            records.where.not(id: all.as_ids)
+            records.id_not_in(all.as_ids)
           end
         end
         alias_method :recursive_self_and_ancestors, :self_and_ancestors

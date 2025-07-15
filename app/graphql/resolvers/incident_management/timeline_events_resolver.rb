@@ -24,6 +24,7 @@ module Resolvers
 
       def resolve_with_lookahead(**args)
         incident = args[:incident_id].find
+        raise GraphQL::ExecutionError, error_message if alert_is_disabled?(incident&.project)
 
         apply_lookahead(::IncidentManagement::TimelineEventsFinder.new(current_user, incident, args).execute)
       end
@@ -32,6 +33,16 @@ module Resolvers
         {
           timeline_event_tags: [:timeline_event_tags]
         }
+      end
+
+      private
+
+      def alert_is_disabled?(project)
+        Feature.enabled?(:hide_incident_management_features, project)
+      end
+
+      def error_message
+        "Field 'incidentManagementTimelineEvents' doesn't exist on type 'Project'."
       end
     end
   end

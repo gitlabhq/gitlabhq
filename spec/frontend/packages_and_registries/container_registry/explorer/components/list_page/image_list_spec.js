@@ -22,7 +22,7 @@ describe('Image List', () => {
     it('contains one list element for each image', () => {
       mountComponent();
 
-      expect(findRow().length).toBe(imagesListResponse.length);
+      expect(findRow()).toHaveLength(imagesListResponse.length);
     });
 
     it('when delete event is emitted on the row it emits up a delete event', () => {

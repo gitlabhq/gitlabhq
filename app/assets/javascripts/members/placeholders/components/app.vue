@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import {
+  GlTooltipDirective,
   GlBadge,
   GlTab,
   GlTabs,
@@ -47,6 +48,7 @@ import {
   TOKEN_TITLE_STATUS,
   TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import BypassConfirmationMessage from './bypass_confirmation_message.vue';
 import PlaceholdersTable from './placeholders_table.vue';
 import CsvUploadModal from './csv_upload_modal.vue';
 import KeepAllAsPlaceholderModal from './keep_all_as_placeholder_modal.vue';
@@ -70,12 +72,14 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
+    BypassConfirmationMessage,
     FilteredSearchBar,
     PlaceholdersTable,
     CsvUploadModal,
     KeepAllAsPlaceholderModal,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
   inject: {
@@ -83,7 +87,7 @@ export default {
       default: {},
     },
     allowBypassPlaceholderConfirmation: {
-      default: false,
+      default: null,
     },
   },
   data() {
@@ -339,17 +343,7 @@ export default {
       </gl-sprintf>
 
       <p v-if="allowBypassPlaceholderConfirmation" class="gl-mb-0 gl-mt-3">
-        <gl-sprintf
-          :message="
-            s__(
-              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
-            )
-          "
-        >
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
+        <bypass-confirmation-message />
       </p>
     </gl-alert>
     <gl-tabs
@@ -417,11 +411,10 @@ export default {
         />
       </gl-tab>
 
-      <template #tabs-end>
+      <template #toolbar-end>
         <div class="gl-ml-auto gl-flex gl-gap-2">
           <gl-button
             v-gl-modal="$options.uploadCsvModalId"
-            variant="link"
             icon="media"
             data-testid="reassign-csv-button"
           >
@@ -429,11 +422,12 @@ export default {
           </gl-button>
           <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
           <gl-disclosure-dropdown
+            v-gl-tooltip.hover.focus="__('More actions')"
             icon="ellipsis_v"
-            placement="bottom-end"
             category="tertiary"
             no-caret
-            block
+            text-sr-only
+            :toggle-text="__('More actions')"
             :auto-close="false"
           >
             <gl-disclosure-dropdown-item

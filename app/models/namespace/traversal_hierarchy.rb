@@ -115,7 +115,7 @@ class Namespace
         Gitlab::ObjectHierarchy
           .new(Namespace.where(id: namespace))
           .base_and_ancestors
-          .reorder(nil)
+          .without_order
           .find_top_level
       end
 

@@ -6,6 +6,8 @@ description: Create a custom workspace image to support any workspace you create
 title: 'Tutorial: Create a custom workspace image that supports arbitrary user IDs'
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 This tutorial guides you through creating a custom workspace image that supports arbitrary user IDs.
 Once complete, you can use this custom image with any [workspace](_index.md) you create in GitLab.
 

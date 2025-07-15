@@ -25,33 +25,75 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
         .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
     end
 
-    context 'when the fog provider is Google and on .com', :saas do
-      let(:package_file) { create(:package_file, :object_storage, package: package, file_name: filename) }
+    it 'logs content type determination' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        determined_content_type: 'application/zip'
+      )
 
+      subject
+    end
+
+    shared_examples 'not log' do
+      it 'does not enable log' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        subject
+      end
+    end
+
+    context 'when package type is not generic' do
       before do
-        stub_package_file_object_storage(
-          config: Gitlab.config.packages.object_store.merge(connection: {
-            provider: 'Google',
-            google_storage_access_key_id: 'test-access-id',
-            google_storage_secret_access_key: 'secret'
-          }),
-          proxy_download: true
-        )
+        package.update!(package_type: 'npm')
       end
 
-      it 'send the correct headers' do
-        subject
+      it_behaves_like 'not log'
+    end
 
-        command, encoded_params = response.headers[::Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
-        params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(packages_generic_package_content_type: false)
+      end
 
-        expect(command).to eq('send-url')
-        expect(params['URL']).to include(
-          %(response-content-disposition=attachment%3B%20filename%3D%22#{filename}),
-          'x-goog-custom-audit-gitlab-project',
-          'x-goog-custom-audit-gitlab-namespace',
-          'x-goog-custom-audit-gitlab-size-bytes'
-        )
+      it_behaves_like 'not log'
+    end
+
+    context 'with remote object storage' do
+      let(:package_file) { create(:package_file, :object_storage, package: package, file_name: filename) }
+
+      context 'when the fog provider is Google and on .com', :saas do
+        before do
+          stub_package_file_object_storage(
+            config: Gitlab.config.packages.object_store.merge(connection: {
+              provider: 'Google',
+              google_storage_access_key_id: 'test-access-id',
+              google_storage_secret_access_key: 'secret'
+            }),
+            proxy_download: true
+          )
+        end
+
+        it 'send the correct headers' do
+          subject
+
+          command, encoded_params = response.headers[::Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
+          params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+
+          expect(command).to eq('send-url')
+          expect(params['URL']).to include(
+            %(response-content-disposition=attachment%3B%20filename%3D%22#{filename}),
+            'x-goog-custom-audit-gitlab-project',
+            'x-goog-custom-audit-gitlab-namespace',
+            'x-goog-custom-audit-gitlab-size-bytes'
+          )
+        end
+      end
+
+      context 'when direct download is disabled' do
+        before do
+          stub_package_file_object_storage(proxy_download: true)
+        end
+
+        it_behaves_like 'package registry SSRF protection'
       end
     end
 

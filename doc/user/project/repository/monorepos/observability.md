@@ -103,7 +103,7 @@ and has two vectors:
 
 | Metric name                         | Vector            | Description |
 |-------------------------------------|-------------------|-------------|
-| `gitaly_praefect_read_distribution` | `virtual_storage` | The [virtual storage](../../../../administration/gitaly/praefect.md) name. |
+| `gitaly_praefect_read_distribution` | `virtual_storage` | The [virtual storage](../../../../administration/gitaly/praefect/_index.md) name. |
 | `gitaly_praefect_read_distribution` | `storage`         | The Gitaly storage name. |
 
 ## Pack objects cache

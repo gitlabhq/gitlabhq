@@ -28,7 +28,7 @@ to add this functionality to the [agent](../clusters/agent/_index.md).
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 {{< /alert >}}
 

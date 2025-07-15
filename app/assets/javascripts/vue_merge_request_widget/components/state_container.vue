@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import StatusIcon from './mr_widget_status_icon.vue';
@@ -8,6 +8,7 @@ import Actions from './action_buttons.vue';
 export default {
   components: {
     GlButton,
+    GlAnimatedChevronLgDownUpIcon,
     StatusIcon,
     Actions,
   },
@@ -58,8 +59,8 @@ export default {
   },
   computed: {
     wrapperClasses() {
-      if (this.status === STATUS_MERGED) return 'gl-bg-feedback-info';
-      if (this.status === STATUS_CLOSED) return 'gl-bg-feedback-danger';
+      if (this.status === STATUS_MERGED) return 'gl-bg-feedback-info widget-merge-status';
+      if (this.status === STATUS_CLOSED) return 'gl-bg-feedback-danger widget-merge-status';
       return null;
     },
     hasActionsSlot() {
@@ -71,7 +72,7 @@ export default {
 
 <template>
   <div
-    class="mr-widget-body media gl-relative gl-flex gl-items-center gl-py-4 gl-pl-5 gl-pr-4"
+    class="mr-widget-body media gl-flex gl-items-center gl-py-4 gl-pl-5 gl-pr-4"
     :class="wrapperClasses"
     v-on="$listeners"
   >
@@ -87,7 +88,7 @@ export default {
     </div>
     <template v-else>
       <slot name="icon">
-        <status-icon class="gl-z-1" :status="status" />
+        <status-icon :status="status" />
       </slot>
       <div class="gl-flex gl-w-full">
         <div
@@ -107,35 +108,29 @@ export default {
           class="gl-font-size-0 gl-flex gl-gap-3"
         >
           <slot name="actions">
-            <actions v-if="actions.length" :tertiary-buttons="actions" class="gl-z-1" />
+            <actions v-if="actions.length" :tertiary-buttons="actions" />
           </slot>
         </div>
         <div
           v-if="isCollapsible"
           :class="{ 'md:gl-hidden': !collapseOnDesktop }"
-          class="gl-border-l gl-z-1 gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
             :title="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
             :aria-label="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
             :aria-expanded="collapsed ? 'false' : 'true'"
-            :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"
-            class="gl-align-top"
+            class="btn-icon"
             data-testid="widget-toggle"
             @click="() => $emit('toggle')"
-          />
+          >
+            <gl-animated-chevron-lg-down-up-icon :is-on="!collapsed" />
+          </gl-button>
         </div>
       </div>
-      <button
-        v-if="isCollapsible"
-        class="gl-absolute gl-inset-0 gl-border-0 gl-bg-transparent"
-        tabindex="-1"
-        aria-hidden="true"
-        @click="() => $emit('toggle')"
-      ></button>
     </template>
   </div>
 </template>

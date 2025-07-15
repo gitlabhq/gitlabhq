@@ -29,6 +29,31 @@ RSpec.describe Projects::Settings::MergeRequestsController do
       sign_in(admin)
     end
 
+    context 'when it fails to update' do
+      before do
+        allow_next_instance_of(::Projects::UpdateService) do |service|
+          allow(service).to receive(:execute).and_return(status: :error, message: 'Some error has occurred')
+        end
+      end
+
+      it 'renders show' do
+        controller.instance_variable_set(:@project, project)
+
+        params = {
+          merge_method: :ff
+        }
+
+        put :update, params: {
+          namespace_id: project.namespace,
+          project_id: project.id,
+          project: params
+        }
+
+        expect(response).to render_template :show
+        expect(flash[:alert]).to eq('Some error has occurred')
+      end
+    end
+
     it 'updates Fast Forward Merge attributes' do
       controller.instance_variable_set(:@project, project)
 

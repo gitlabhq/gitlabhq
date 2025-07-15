@@ -11,25 +11,37 @@ module Types
 
     authorize :read_work_item
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     present_using WorkItemPresenter
     expose_permissions Types::PermissionTypes::WorkItem
 
     field :author, Types::UserType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'User that created the work item.',
       experiment: { milestone: '15.9' }
     field :closed_at, Types::TimeType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was closed.'
     field :confidential, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Indicates the work item is confidential.'
     field :created_at, Types::TimeType, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was created.'
     field :description, GraphQL::Types::String, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Description of the work item.'
     field :id, Types::GlobalIDType[::WorkItem], null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Global ID of the work item.'
     field :iid, GraphQL::Types::String, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Internal ID of the work item.'
     field :imported, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       method: :imported?,
       description: 'Indicates whether the work item was imported.'
     field :lock_version,
@@ -37,22 +49,30 @@ module Types
       null: false,
       description: 'Lock version of the work item. Incremented each time the work item is updated.'
     field :namespace, Types::NamespaceType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Namespace the work item belongs to.',
+      skip_type_authorization: [:read_namespace],
       experiment: { milestone: '15.10' }
     field :project, Types::ProjectType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Project the work item belongs to.',
+      skip_type_authorization: [:read_project],
       experiment: { milestone: '15.3' }
     field :state, WorkItemStateEnum, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'State of the work item.'
     field :title, GraphQL::Types::String, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Title of the work item.'
     field :updated_at, Types::TimeType, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was last updated.'
 
     field :create_note_email, GraphQL::Types::String,
       null: true,
       description: 'User specific email address for the work item.'
     field :user_discussions_count, GraphQL::Types::Int, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Number of user discussions in the work item.',
       resolver: Resolvers::UserDiscussionsCountResolver
 
@@ -66,23 +86,26 @@ module Types
     field :widgets,
       [Types::WorkItems::WidgetInterface],
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Collection of widgets that belong to the work item.' do
-        argument :except_types, [::Types::WorkItems::WidgetTypeEnum],
-          required: false,
-          default_value: nil,
-          description: 'Except widgets of the given types.'
-        argument :only_types, [::Types::WorkItems::WidgetTypeEnum],
-          required: false,
-          default_value: nil,
-          description: 'Only widgets of the given types.'
+      argument :except_types, [::Types::WorkItems::WidgetTypeEnum],
+        required: false,
+        default_value: nil,
+        description: 'Except widgets of the given types.'
+      argument :only_types, [::Types::WorkItems::WidgetTypeEnum],
+        required: false,
+        default_value: nil,
+        description: 'Only widgets of the given types.'
 
-        validates mutually_exclusive: %i[except_types only_types]
-      end
+      validates mutually_exclusive: %i[except_types only_types]
+    end
 
     field :work_item_type, Types::WorkItems::TypeType, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Type assigned to the work item.'
 
     field :archived, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Whether the work item belongs to an archived project. Always false for group level work items.',
       experiment: { milestone: '16.5' }
 

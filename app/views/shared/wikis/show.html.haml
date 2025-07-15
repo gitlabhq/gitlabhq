@@ -5,6 +5,7 @@
 - @gfm_form = true
 - @noteable_type = 'Wiki'
 - templates = @templates.map { |t| wiki_page_basic_info(t) }
+- page_version = @page.historical? ? @page.version.commit : @page.last_version
 
 = form_errors(@page, truncate: :title)
 
@@ -17,7 +18,7 @@
   is_page_template: @page.template?.to_s,
   is_page_historical: @page.historical?.to_s,
   last_version: @page.last_version,
-  page_version: @page.historical? ? @page.version.commit.to_json : @page.last_version.to_json,
+  page_version: page_version.to_json,
   wiki_path: @wiki.path,
   clone_ssh_url: ssh_clone_url_to_repo(@wiki),
   clone_http_url: http_clone_url_to_repo(@wiki),
@@ -46,7 +47,8 @@
     is_container_archived: @wiki.container.is_a?(Project) ? @wiki.container.archived : false,
     notes_filters: UserPreference.notes_filters.to_json,
     report_abuse_path: add_category_abuse_reports_path,
-    container_name: @wiki.container.name
+    container_name: @wiki.container.name,
+    page_author_email: page_version.author_email,
   }
 }
 

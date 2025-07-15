@@ -65,14 +65,53 @@ RSpec.describe ::Keeps::Prompts::RemoveFeatureFlags, feature_category: :global_s
         it 'returns the Markdown prompt for enabled flags' do
           result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
 
-          expect(result).to include('Your job is to remove old feature flags from code')
-          expect(result).to include('feature flag is called `test_feature_flag`')
-          expect(result).to include('When updating the markdown history notes you should not remove history notes')
+          expect(result).to include('CRITICAL FORMATTING REQUIREMENT: After making any changes')
+          expect(result).to include('Feature flag `test_feature_flag` removed.')
+          expect(result).to include('Remember: The document must pass markdown linting')
         end
       end
 
-      context 'with unsupported file types' do
+      context 'with JavaScript spec files' do
+        let(:file) { 'path/to/file_spec.js' }
+
+        it 'returns the JavaScript spec prompt for enabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('Jest Test Files Feature Flag Removal Guidelines')
+          expect(result).to include('testFeatureFlag')
+        end
+      end
+
+      context 'with JavaScript files' do
         let(:file) { 'path/to/file.js' }
+
+        it 'returns the JavaScript prompt for enabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('JavaScript Feature Flag Removal Guidelines')
+          expect(result).to include('testFeatureFlag')
+        end
+      end
+
+      context 'with Vue files' do
+        let(:file) { 'path/to/file.vue' }
+
+        it 'returns the Vue prompt for enabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('Vue.js Feature Flag Removal Guidelines')
+          expect(result).to include('this.glFeatures.testFeatureFlag')
+        end
+      end
+
+      context 'with truly unsupported file types' do
+        let(:file) { 'path/to/file.txt' }
 
         it 'logs a warning and returns nil' do
           expect(logger).to receive(:puts).with(/Unexpected file extension/)
@@ -128,8 +167,47 @@ RSpec.describe ::Keeps::Prompts::RemoveFeatureFlags, feature_category: :global_s
         end
       end
 
-      context 'with unsupported file types' do
+      context 'with JavaScript spec files' do
+        let(:file) { 'path/to/file_spec.js' }
+
+        it 'returns the JavaScript spec prompt for disabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('The feature flag has been disabled')
+          expect(result).to include('Jest Test Files Feature Flag Removal Guidelines')
+        end
+      end
+
+      context 'with JavaScript files' do
         let(:file) { 'path/to/file.js' }
+
+        it 'returns the JavaScript prompt for disabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('The feature flag has been disabled')
+          expect(result).to include('JavaScript Feature Flag Removal Guidelines')
+        end
+      end
+
+      context 'with Vue files' do
+        let(:file) { 'path/to/file.vue' }
+
+        it 'returns the Vue prompt for disabled flags' do
+          result = remove_feature_flags.fetch(feature_flag, file, flag_enabled)
+
+          expect(result).to include('Your job is to remove old feature flags from code')
+          expect(result).to include('feature flag is called `test_feature_flag`')
+          expect(result).to include('The feature flag has been disabled')
+          expect(result).to include('Vue.js Feature Flag Removal Guidelines')
+        end
+      end
+
+      context 'with truly unsupported file types' do
+        let(:file) { 'path/to/file.txt' }
 
         it 'logs a warning and returns nil' do
           expect(logger).to receive(:puts).with(/Unexpected file extension/)

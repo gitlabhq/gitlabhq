@@ -54,7 +54,7 @@ module Layouts
       default_classes = [
         'crud', 'gl-bg-subtle', 'gl-border', 'gl-border-section', 'gl-rounded-lg',
         ('js-toggle-container' if @toggle_text),
-        ('js-crud-collapsible-section' if @is_collapsible)
+        ('js-crud-collapsible-section gl-mt-5' if @is_collapsible)
       ]
       @options.merge(default_attrs(@options, default_testid, default_classes))
     end

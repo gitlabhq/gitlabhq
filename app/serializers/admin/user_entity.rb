@@ -15,10 +15,6 @@ module Admin
       user_badges_in_admin_section(user)
     end
 
-    expose :projects_count do |user|
-      user.authorized_projects.length
-    end
-
     expose :actions do |user|
       admin_actions(user)
     end

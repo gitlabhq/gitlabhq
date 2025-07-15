@@ -53,7 +53,11 @@ class PipelineSerializer < BaseSerializer
           target_project: [:route, { namespace: :route }]
         },
         pending_builds: :project,
-        project: [:route, { namespace: :route }],
+        project: [
+          :route,
+          { project_namespace: :namespace_settings_with_ancestors_inherited_settings },
+          { namespace: :route }
+        ],
         triggered_by_pipeline: [{ project: [:route, { namespace: :route }] }, :user],
         triggered_pipelines: [
           (:latest_statuses if preload_downstream_statuses),

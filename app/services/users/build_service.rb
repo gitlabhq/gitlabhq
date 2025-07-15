@@ -95,6 +95,7 @@ module Users
       # Allow invalid parameters for the validation errors to bubble up to the User.
       return if organization_params.blank?
 
+      @user.organization_id = organization_params[:organization_id]
       @user.organization_users << Organizations::OrganizationUser.new(
         organization_id: organization_params[:organization_id],
         access_level: organization_access_level
@@ -195,7 +196,7 @@ module Users
         :location,
         :name,
         :note,
-        :organization,
+        :user_detail_organization,
         :password,
         :password_automatically_set,
         :password_expires_at,
@@ -204,7 +205,6 @@ module Users
         :public_email,
         :remember_me,
         :skip_confirmation,
-        :skype,
         :theme_id,
         :twitter,
         :user_type,

@@ -72,6 +72,7 @@ RSpec.describe 'getting incident timeline events', feature_category: :incident_m
 
   before do
     project.add_guest(current_user)
+    stub_feature_flags(hide_incident_management_features: false)
     post_graphql(query, current_user: current_user)
   end
 

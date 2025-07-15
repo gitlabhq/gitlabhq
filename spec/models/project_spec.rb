@@ -1311,6 +1311,51 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#self_or_ancestors_archived?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user_namespace_project) { create(:project) }
+
+    let_it_be_with_reload(:group_project) { create(:project, group: group) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
+
+    context 'when project itself is archived' do
+      it 'returns true' do
+        group_project.update!(archived: true)
+
+        expect(group_project.self_or_ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when project is not archived but parent group is archived' do
+      it 'returns true' do
+        group.archive
+
+        expect(group_project.self_or_ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when project is not archived but parent subgroup is archived' do
+      it 'returns true' do
+        subgroup.archive
+
+        expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when neither project nor any ancestor group is archived' do
+      it 'returns false' do
+        expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project and any its ancestor are not archived' do
+      it 'returns false' do
+        expect(user_namespace_project.self_or_ancestors_archived?).to eq(false)
+      end
+    end
+  end
+
   describe '#ci_pipelines' do
     let_it_be(:project) { create(:project) }
 
@@ -1513,6 +1558,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
         merge_request_title_regex
+        merge_request_title_regex_description
         web_based_commit_signing_enabled
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
@@ -1525,6 +1571,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
         merge_request_title_regex=
+        merge_request_title_regex_description=
         web_based_commit_signing_enabled=
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
@@ -5197,6 +5244,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project.update!(namespace: namespace)
 
       expect(project.statistics.namespace_id).to eq namespace.id
+    end
+  end
+
+  describe '#invalidate_namespace_cache' do
+    let_it_be(:project) { create(:project) }
+
+    it 'calls Namespaces::Descendants.expire_for when archived is changed' do
+      expect(Namespaces::Descendants).to receive(:expire_for).with([project.namespace.id])
+
+      project.update!(archived: true)
     end
   end
 
@@ -9275,7 +9332,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  it_behaves_like 'it has loose foreign keys', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/526190' do
+  it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :project }
   end
 
@@ -9411,12 +9468,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#continue_indented_text_feature_flag_enabled?' do
+  describe '#work_items_bulk_edit_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
-      let(:feature_flag) { :continue_indented_text }
+      let(:feature_flag_method) { :work_items_bulk_edit_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_bulk_edit }
       let(:subject_project) { group_project }
     end
   end
@@ -10122,9 +10179,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#has_container_registry_protected_tag_rules?' do
     let_it_be_with_refind(:project) { create(:project) }
-    let(:include_immutable) { true }
 
-    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER, include_immutable: include_immutable) }
+    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER) }
 
     it 'returns false when there is no matching tag protection rule' do
       create(:container_registry_protection_tag_rule,
@@ -10147,57 +10203,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(subject).to eq(true)
     end
 
-    context 'with immutable tag rules only' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, project: project)
-      end
-
-      context 'when include_immutable is true' do
-        let(:include_immutable) { true }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when include_immutable is false' do
-        let(:include_immutable) { false }
-
-        it { is_expected.to be false }
-      end
-    end
-
-    context 'with both mutable and immutable tag rules' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, project: project)
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          tag_name_pattern: 'mutable',
-          minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
-          minimum_access_level_for_delete: Gitlab::Access::ADMIN
-        )
-      end
-
-      context 'when include_immutable is true' do
-        let(:include_immutable) { true }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when include_immutable is false' do
-        let(:include_immutable) { false }
-
-        it { is_expected.to be true }
-      end
-    end
-
     it 'memoizes calls with the same parameters' do
       allow(project.container_registry_protection_tag_rules).to receive(:for_actions_and_access).and_call_original
 
       2.times do
-        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer, include_immutable: true)
+        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer)
       end
 
-      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer, include_immutable: true).once
+      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
     end
   end
 

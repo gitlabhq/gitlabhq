@@ -4,9 +4,11 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -23,6 +25,8 @@ describe('WorkItemCreatedUpdated component', () => {
   const findCreatedAtText = () => findCreatedAt().text().replace(/\s+/g, ' ');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
+  const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
@@ -30,6 +34,8 @@ describe('WorkItemCreatedUpdated component', () => {
   const createComponent = async ({
     workItemIid = '1',
     author = null,
+    hidden = false,
+    imported = false,
     updatedAt,
     confidential = false,
     discussionLocked = false,
@@ -39,6 +45,8 @@ describe('WorkItemCreatedUpdated component', () => {
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       author,
+      hidden,
+      imported,
       updatedAt,
       confidential,
       discussionLocked,
@@ -157,6 +165,34 @@ describe('WorkItemCreatedUpdated component', () => {
       await createComponent({ discussionLocked: false });
 
       expect(findLockedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('hidden badge', () => {
+    it('renders when the work item is hidden', async () => {
+      await createComponent({ hidden: true });
+
+      expect(findHiddenBadge().exists()).toBe(true);
+    });
+
+    it('does not render when the work item is not hidden', async () => {
+      await createComponent({ hidden: false });
+
+      expect(findHiddenBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('imported badge', () => {
+    it('renders when the work item is imported', async () => {
+      await createComponent({ imported: true });
+
+      expect(findImportedBadge().exists()).toBe(true);
+    });
+
+    it('does not render when the work item is not imported', async () => {
+      await createComponent({ imported: false });
+
+      expect(findImportedBadge().exists()).toBe(false);
     });
   });
 });

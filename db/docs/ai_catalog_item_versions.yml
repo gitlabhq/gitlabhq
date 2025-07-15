@@ -1,0 +1,12 @@
+---
+table_name: ai_catalog_item_versions
+classes:
+  - Ai::Catalog::ItemVersion
+feature_categories:
+  - workflow_catalog
+description: Version metadata for items in the AI catalog
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195792
+milestone: "18.2"
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

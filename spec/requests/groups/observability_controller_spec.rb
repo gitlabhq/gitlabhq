@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::ObservabilityController, feature_category: :observability do
+  include ContentSecurityPolicyHelpers
+
   let(:group) { create(:group, :public) }
   let(:user) { create(:user) }
 
@@ -40,18 +42,29 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         it_behaves_like 'redirects to 404'
       end
 
-      context 'when the ENV var is not set' do
+      context 'when the group has observability settings' do
         subject(:services_page) { get group_observability_path(group, 'services') }
 
-        before do
-          stub_env('O11Y_URL', 'http://localhost:3301/')
+        let!(:observability_setting) do
+          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
         end
 
-        it 'sets the o11y url' do
+        it 'sets the o11y url from group settings' do
           services_page
           expect(response).to render_template(:show)
           expect(assigns(:path)).to eq('services')
-          expect(assigns(:o11y_url)).to eq('http://localhost:3301/')
+          expect(assigns(:o11y_url)).to eq('https://observability.example.com')
+        end
+      end
+
+      context 'when the group has no observability settings' do
+        subject(:services_page) { get group_observability_path(group, 'services') }
+
+        it 'sets the o11y url to nil' do
+          services_page
+          expect(response).to render_template(:show)
+          expect(assigns(:path)).to eq('services')
+          expect(assigns(:o11y_url)).to be_nil
         end
       end
 
@@ -95,6 +108,65 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         observability_page
 
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'Content Security Policy' do
+    let(:csp_header) { response.headers['Content-Security-Policy'] }
+    let(:frame_src_values) { find_csp_directive('frame-src', header: csp_header) }
+
+    before do
+      stub_feature_flags(observability_sass_features: group)
+    end
+
+    shared_examples 'includes o11y url in frame-src' do |o11y_url|
+      it "includes '#{o11y_url}' in frame-src directive" do
+        expect(frame_src_values).to include("'self'", o11y_url)
+      end
+    end
+
+    shared_examples 'does not modify frame-src directive' do
+      let(:baseline_frame_src_values) do
+        get group_path(group)
+        find_csp_directive('frame-src', header: response.headers['Content-Security-Policy'])
+      end
+
+      it 'does not modify frame-src directive' do
+        expect(frame_src_values).to match_array(baseline_frame_src_values)
+      end
+    end
+
+    context 'when group has no observability settings' do
+      before do
+        get group_observability_path(group, 'services')
+      end
+
+      it_behaves_like 'does not modify frame-src directive'
+    end
+
+    context 'when switching between groups with different observability settings' do
+      let(:group_with_different_o11y) { create(:group, :public) }
+      let(:o11y_url) { 'https://observability.example.com' }
+      let(:o11y_url_2) { 'https://observability.example.com/2' }
+
+      before do
+        group_with_different_o11y.add_maintainer(user)
+        stub_feature_flags(observability_sass_features: group_with_different_o11y)
+        create(:observability_group_o11y_setting, group: group_with_different_o11y, o11y_service_url: o11y_url_2)
+
+        get group_observability_path(group_with_different_o11y, 'services')
+      end
+
+      it 'adds o11y_service_url to frame-src directive' do
+        frame_src_values = find_csp_directive('frame-src', header: csp_header)
+        expect(frame_src_values).to include("'self'", o11y_url_2)
+
+        get group_observability_path(group, 'services')
+
+        frame_src_values = find_csp_directive('frame-src', header: csp_header)
+        expect(frame_src_values).not_to include(o11y_url)
+        expect(frame_src_values).to include("'self'", o11y_url_2)
       end
     end
   end

@@ -14,7 +14,7 @@ module Integrations
 
       private
 
-      def data
+      def data # rubocop:disable Metrics/CyclomaticComplexity -- despite a high count of cases, this isn't that complex
         strong_memoize(:data) do
           case event || integration.default_test_event
           when 'push', 'tag_push'
@@ -35,6 +35,8 @@ module Integrations
             deployment_events_data
           when 'release'
             releases_events_data
+          when 'milestone'
+            milestone_events_data
           when 'award_emoji'
             emoji_events_data
           when 'current_user'

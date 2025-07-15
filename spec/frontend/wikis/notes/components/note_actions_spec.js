@@ -4,12 +4,13 @@ import EmojiPicker from '~/emoji/components/picker.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteActions from '~/wikis/wiki_notes/components/note_actions.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 
 describe('WikiNoteActions', () => {
   let wrapper;
 
-  const findUserAccessRoleBadge = () => wrapper.findComponent(UserAccessRoleBadge);
+  const findAuthorBadge = () => wrapper.findByTestId('wiki-note-user-author-badge');
+  const findAuthorBadgeText = () => findAuthorBadge().text().trim();
+  const findUserAccessRoleBadge = () => wrapper.findByTestId('wiki-note-user-access-role-badge');
   const findUserAccessRoleBadgeText = () => findUserAccessRoleBadge().text().trim();
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findReportAbuseButton = () => wrapper.findByTestId('wiki-note-report-abuse-button');
@@ -23,6 +24,7 @@ describe('WikiNoteActions', () => {
     return shallowMountExtended(NoteActions, {
       provide: {
         containerName: 'test-project',
+        pageAuthorEmail: 'author@example.com',
         containerType: 'project',
         ...injectData,
       },
@@ -57,7 +59,9 @@ describe('WikiNoteActions', () => {
       describe('when the container is a group', () => {
         beforeEach(() => {
           wrapper = createWrapper(
-            {},
+            {
+              accessLevel: 'Owner',
+            },
             {
               containerName: 'test-group',
               containerType: 'group',
@@ -65,8 +69,38 @@ describe('WikiNoteActions', () => {
           );
         });
 
-        it('should not render the access level badge', () => {
-          expect(findUserAccessRoleBadge().exists()).toBe(false);
+        it('should render the access level badge', () => {
+          expect(findUserAccessRoleBadgeText()).toBe('Owner');
+          expect(findUserAccessRoleBadge().attributes('title')).toBe(
+            'This user has the owner role in the test-group group.',
+          );
+        });
+      });
+
+      describe('when the comment author is also the page author', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({
+            authorEmails: ['author@example.com', 'foo@example.com'],
+          });
+        });
+
+        it('should render author badge', () => {
+          expect(findAuthorBadgeText()).toBe('Author');
+          expect(findAuthorBadge().attributes('title')).toBe(
+            'This user is the author of this page.',
+          );
+        });
+      });
+
+      describe('when the comment author is not also the page author', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({
+            authorEmails: ['different@example.com'],
+          });
+        });
+
+        it('should not render author badge', () => {
+          expect(findAuthorBadge().exists()).toBe(false);
         });
       });
     });

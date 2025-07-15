@@ -501,7 +501,7 @@ curl --request DELETE \
 
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
-In GitLab 17.4 or later, if [the new look for epics](../user/group/epics/epic_work_items.md) is enabled, use the
+From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
 Work Items API instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
@@ -1088,7 +1088,7 @@ curl --request POST \
 
 ### Resolve a merge request thread
 
-Resolve or unresolve a thread of discussion in a merge request.
+Resolve or reopen a thread of discussion in a merge request.
 
 Prerequisites:
 
@@ -1105,7 +1105,7 @@ Parameters:
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `discussion_id`     | string        | yes      | The ID of a thread. |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
-| `resolved`          | boolean        | yes      | Resolve or unresolve the discussion. |
+| `resolved`          | boolean        | yes      | Resolve or reopen the discussion. |
 
 ```shell
 curl --request PUT \
@@ -1156,7 +1156,7 @@ Parameters:
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 | `note_id`           | integer        | yes      | The ID of a thread note. |
 | `body`              | string         | no       | The content of the note or reply. Exactly one of `body` or `resolved` must be set. |
-| `resolved`          | boolean        | no       | Resolve or unresolve the note. Exactly one of `body` or `resolved` must be set. |
+| `resolved`          | boolean        | no       | Resolve or reopen the note. Exactly one of `body` or `resolved` must be set. |
 
 ```shell
 curl --request PUT \

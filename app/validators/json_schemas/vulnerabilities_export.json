@@ -12,7 +12,7 @@
       ],
       "description": "This object should include an SVG asset to be rendered in PDF reports"
     },
-    "group_vulnerabilities_history": {
+    "group_vulnerabilities_over_time": {
       "type": [
         "object",
         "null"
@@ -21,7 +21,7 @@
     },
     "project_security_status": {
       "type": [
-        "array",
+        "object",
         "null"
       ],
       "description": "Data for rendering the project grades summary in PDF reports"
@@ -32,9 +32,9 @@
         "null"
       ],
       "enum": [
-        "product",
+        "project",
         "group",
-        "dashboard",
+        "instance",
         null
       ],
       "description": "The type of vulnerability grouping this report is being created for"

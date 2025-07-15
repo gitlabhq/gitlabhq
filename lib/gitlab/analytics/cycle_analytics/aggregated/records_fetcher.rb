@@ -8,7 +8,9 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
           include StageQueryHelpers
 
-          MAX_RECORDS = 20
+          # Increased from 20 to 30 as part of gradual optimization to reduce API requests
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/543147 for context
+          MAX_RECORDS = 30
 
           MAPPINGS = {
             Issue => {

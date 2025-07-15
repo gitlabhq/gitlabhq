@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
 
     context "when detail field uses a string" do
       it "does not add an offense" do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class SomeAPI
             resource :projects do
               desc 'Some API thing related to a project' do
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
       it "does not add an offense" do
         baz = "bat"
 
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class SomeAPI
             resource :projects do
               desc 'Some API thing related to a project' do
@@ -35,13 +35,13 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
     context "when detail field uses a multiline string" do
       it "does not add an offense" do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class SomeAPI
             resource :projects do
               desc 'Some API thing related to a project' do
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
       it "does not add an offense" do
         pending
 
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class SomeAPI
             resource :projects do
               DESCRIPTION = 'A string'
@@ -68,13 +68,13 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
     context "when detail field uses a HEREDOC string" do
       it "does not add an offense" do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class SomeAPI
             resource :projects do
               desc 'Some API thing related to a project' do
@@ -85,13 +85,13 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
     context "when detail field uses an array" do
       it "adds an offense" do
-        expect_offense(<<~CODE)
+        expect_offense(<<~RUBY)
           class SomeAPI
             resource :projects do
               desc 'Some API thing related to a project' do
@@ -101,17 +101,17 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
     context "when detail field is outside of desc block" do
       it "does not add an offense" do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           class Foo
             detail ["foo", "bar"]
           end
-        CODE
+        RUBY
       end
     end
   end
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
     end
 
     it "does not add an offense" do
-      expect_no_offenses(<<~CODE)
+      expect_no_offenses(<<~RUBY)
         class SomeAPI
           resource :projects do
             desc 'Some API thing related to a project' do
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::API::EnsureStringDetail do
             end
           end
         end
-      CODE
+      RUBY
     end
   end
 end

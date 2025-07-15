@@ -204,7 +204,7 @@ To edit a squash option:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../../administration/feature_flags.md) named `edit_branch_rules`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `edit_branch_rules`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
 

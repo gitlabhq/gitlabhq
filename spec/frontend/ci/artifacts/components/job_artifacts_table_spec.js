@@ -270,24 +270,24 @@ describe('JobArtifactsTable component', () => {
     });
 
     it('shows the created time', () => {
-      expect(findCreated().text()).toBe('5 years ago');
+      expect(findCreated().text()).toBe('Jul 3, 2015');
     });
 
     describe('row expansion', () => {
       it('toggles the visibility of the row details', async () => {
-        expect(findDetailsRows().length).toBe(0);
+        expect(findDetailsRows()).toHaveLength(0);
         expect(findCountIcon().props('isOn')).toBe(false);
 
         findCount().trigger('click');
         await nextTick();
 
-        expect(findDetailsRows().length).toBe(1);
+        expect(findDetailsRows()).toHaveLength(1);
         expect(findCountIcon().props('isOn')).toBe(true);
 
         findCount().trigger('click');
         await nextTick();
 
-        expect(findDetailsRows().length).toBe(0);
+        expect(findDetailsRows()).toHaveLength(0);
         expect(findCountIcon().props('isOn')).toBe(false);
       });
 

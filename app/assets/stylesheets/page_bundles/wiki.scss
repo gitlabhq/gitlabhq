@@ -56,7 +56,7 @@
     padding-left: 20px;
   }
 
-  .wiki-sidebar-custom-content { 
+  .wiki-sidebar-custom-content {
     h1 {
       @apply gl-heading-3;
     }
@@ -64,11 +64,11 @@
     h2 {
       @apply gl-heading-4;
     }
-  
+
     h3 {
       @apply gl-heading-5;
     }
-  
+
     h1, h2, h3 {
       @apply gl-mb-4;
     }
@@ -149,7 +149,7 @@ ul.wiki-pages-list.content-list {
     }
   }
 
-  &.collapsed + ul {
+  &.collapsed + .wiki-pages-list-container {
     display: none;
   }
 }

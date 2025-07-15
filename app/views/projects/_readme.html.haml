@@ -18,6 +18,7 @@
       compare_path: compare_path,
       web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
       web_ide_button_default_branch: @project.default_branch_or_main,
+      full_name: project.name_with_namespace,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
         download_links: []
     }.merge(vue_readme_header_additional_data) }

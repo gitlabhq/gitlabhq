@@ -21,6 +21,11 @@ describe('ProjectRunnersSettingsApp', () => {
         registrationToken: 'token123',
         newProjectRunnerPath: '/runners/new',
         projectFullPath: 'group/project',
+        instanceRunnersEnabled: true,
+        instanceRunnersDisabledAndUnoverridable: false,
+        groupName: 'My group',
+        instanceRunnersUpdatePath: 'group/project/-/runners/toggle_shared_runners',
+        instanceRunnersGroupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
         ...props,
       },
       stubs: {
@@ -65,7 +70,14 @@ describe('ProjectRunnersSettingsApp', () => {
   });
 
   it('renders runners tabs with correct props', () => {
-    expect(findRunnersTabs().props('projectFullPath')).toBe('group/project');
+    expect(findRunnersTabs().props()).toEqual({
+      projectFullPath: 'group/project',
+      instanceRunnersEnabled: true,
+      instanceRunnersDisabledAndUnoverridable: false,
+      groupName: 'My group',
+      instanceRunnersUpdatePath: 'group/project/-/runners/toggle_shared_runners',
+      instanceRunnersGroupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
+    });
   });
 
   it('does not show error alert by default', () => {

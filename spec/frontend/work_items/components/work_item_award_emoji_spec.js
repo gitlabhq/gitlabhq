@@ -81,9 +81,9 @@ describe('WorkItemAwardEmoji component', () => {
   };
 
   const createComponent = ({
+    props = {},
     awardEmojiQueryHandler = awardEmojiQuerySuccessHandler,
     awardEmojiMutationHandler = awardEmojiAddSuccessHandler,
-    workItemIid = '1',
   } = {}) => {
     mockApolloProvider = createMockApollo(
       [
@@ -112,7 +112,9 @@ describe('WorkItemAwardEmoji component', () => {
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemFullpath: 'test-project-path',
-        workItemIid,
+        workItemIid: '1',
+        workItemArchived: false,
+        ...props,
       },
     });
   };
@@ -349,6 +351,29 @@ describe('WorkItemAwardEmoji component', () => {
         });
         expect(awardEmojisQueryMoreThanDefaultHandler).toHaveBeenCalledTimes(2);
       });
+    });
+  });
+
+  describe('can award emoji', () => {
+    it('can award emoji when user is logged in and work item is not archived', () => {
+      isLoggedIn.mockReturnValue(true);
+      createComponent({ props: { workItemArchived: false } });
+
+      expect(findAwardsList().props('canAwardEmoji')).toBe(true);
+    });
+
+    it('returns false when user is not logged in', () => {
+      isLoggedIn.mockReturnValue(false);
+      createComponent({ props: { workItemArchived: false } });
+
+      expect(findAwardsList().props('canAwardEmoji')).toBe(false);
+    });
+
+    it('returns false when work item is archived', () => {
+      isLoggedIn.mockReturnValue(true);
+      createComponent({ props: { workItemArchived: true } });
+
+      expect(findAwardsList().props('canAwardEmoji')).toBe(false);
     });
   });
 });

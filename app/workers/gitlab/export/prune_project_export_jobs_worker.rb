@@ -9,6 +9,7 @@ module Gitlab
       # This worker updates several import states inline and does not schedule
       # other jobs. So no context needed
       include CronjobQueue
+
       # rubocop:enable Scalability/CronWorkerContext
 
       deduplicate :until_executed

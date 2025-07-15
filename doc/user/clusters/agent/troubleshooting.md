@@ -13,7 +13,7 @@ You can start by viewing the service logs:
 kubectl logs -f -l=app.kubernetes.io/name=gitlab-agent -n gitlab-agent
 ```
 
-If you are a GitLab administrator, you can also view the [GitLab agent server logs](../../../administration/clusters/kas.md#troubleshooting).
+If you are a GitLab administrator, you can also view the [GitLab agent server for Kubernetes logs](../../../administration/clusters/kas.md#troubleshooting).
 
 ## Transport: Error while dialing failed to WebSocket dial
 
@@ -123,7 +123,7 @@ items:
 kind: List
 ```
 
-You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/_index.md#gitlab-agent-server) of your GitLab application server:
+You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes) of your GitLab application server:
 
 ```json
 {"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
@@ -163,7 +163,7 @@ To resolve this issue, ensure that the agent version matches the GitLab version.
 If the versions match and the error persists:
 
 1. Make sure `gitlab-kas` is running with `gitlab-ctl status gitlab-kas`.
-1. Check the `gitlab-kas` [logs](../../../administration/logs/_index.md#gitlab-agent-server) to make sure the agent is functioning properly.
+1. Check the `gitlab-kas` [logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes) to make sure the agent is functioning properly.
 
 ## Failed to perform vulnerability scan on workload: jobs.batch already exists
 
@@ -177,7 +177,7 @@ If the versions match and the error persists:
 }
 ```
 
-The GitLab agent performs vulnerability scans by creating a job to scan each workload. If a scan
+The GitLab agent for Kubernetes performs vulnerability scans by creating a job to scan each workload. If a scan
 is interrupted, these jobs may be left behind and need to be cleaned up before more jobs can
 be run. You can clean up these jobs by running:
 

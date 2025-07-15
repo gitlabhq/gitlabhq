@@ -113,7 +113,7 @@ be embedded into incidents making problem resolving easier. Additionally, it can
 
 If you use the GitLab CI Pipelines Exporter, you should start with the [example configuration](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/main/docs/configuration_syntax.md).
 
-![Grafana Dashboard for GitLab CI Pipelines Prometheus Exporter](img/ci_efficiency_pipeline_health_grafana_dashboard_v13_7.png)
+![Grafana Dashboard showing CI run statuses and historical statistics including frequency and fail rate.](img/ci_efficiency_pipeline_health_grafana_dashboard_v13_7.png)
 
 Alternatively, you can use a monitoring tool that can execute scripts, like
 [`check_gitlab`](https://gitlab.com/6uellerBpanda/check_gitlab) for example.

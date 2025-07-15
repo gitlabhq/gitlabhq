@@ -1,0 +1,10 @@
+---
+name: repository_set_cache_logging
+description: Enable logging for RepositorySetCache cache miss operations to investigate error
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517676
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194301
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549485
+milestone: '18.1'
+group: group::source code
+type: beta
+default_enabled: true

@@ -9,6 +9,8 @@ describe('StatePresenter', () => {
     ${'issues'}        | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
     ${'workItems'}     | ${'OPEN'}   | ${'success'} | ${'Open'}   | ${'issue-open-m'}
     ${'workItems'}     | ${'CLOSED'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
+    ${'epics'}         | ${'opened'} | ${'success'} | ${'Open'}   | ${'issue-open-m'}
+    ${'epics'}         | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
     ${'mergeRequests'} | ${'opened'} | ${'success'} | ${'Open'}   | ${'merge-request-open'}
     ${'mergeRequests'} | ${'closed'} | ${'danger'}  | ${'Closed'} | ${'merge-request-close'}
     ${'mergeRequests'} | ${'merged'} | ${'info'}    | ${'Merged'} | ${'merge'}

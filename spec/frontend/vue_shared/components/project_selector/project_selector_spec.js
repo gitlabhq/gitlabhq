@@ -36,7 +36,7 @@ describe('ProjectSelector component', () => {
   });
 
   it('renders the search results', () => {
-    expect(wrapper.findAll('.js-project-list-item').length).toBe(5);
+    expect(wrapper.findAll('.js-project-list-item')).toHaveLength(5);
   });
 
   it(`triggers a search when the search input value changes`, () => {

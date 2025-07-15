@@ -1,0 +1,11 @@
+---
+name: merge_request_branch_bypassed_by_security_policy
+description: The merge request's approval is bypassed by the branches configured in
+  the security policy
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/549646
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195942
+feature_category: security_policy_management
+milestone: '18.2'
+saved_to_database: true
+streamed: true
+scope: [Project]

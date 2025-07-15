@@ -1,0 +1,11 @@
+query getUserWorkItemsDisplaySettingsPreferences($namespace: ID!) {
+  currentUser {
+    id
+    userPreferences {
+      workItemsDisplaySettings
+    }
+    workItemPreferences(namespacePath: $namespace) {
+      displaySettings
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 require_relative '../../../lib/gitlab/process_supervisor'
 
-RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
+RSpec.describe Gitlab::ProcessSupervisor, feature_category: :durability_metrics do
   let(:health_check_interval_seconds) { 0.1 }
   let(:check_terminate_interval_seconds) { 1 }
   let(:forwarded_signals) { [] }

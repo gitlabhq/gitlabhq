@@ -162,7 +162,7 @@ However, at this stage the data is in a raw format that is difficult to query. F
 
 The propagation process takes multiple hours to complete. The following diagram illustrates the availability of events:
 
-![A timeline of event collection and propagation on GitLab.com](https://lucid.app/publicSegments/view/17761ac4-85cf-42c2-8f6c-f36192224e6c/image.png)
+![A timeline of event collection and propagation on GitLab.com](img/event_collection_propagation_v17_5.png)
 
 [Source](https://lucid.app/lucidchart/fec2d72c-89d9-45a0-b40c-1d81ca13f671/edit?page=OCha14OI0mRw)
 
@@ -173,7 +173,7 @@ For GitLab.com this process is started on Monday morning and computes metrics fo
 
 The following diagram illustrates the process:
 
-![A timeline of Service Ping Computation on GitLab.com](https://lucid.app/publicSegments/view/4459bc54-2cb0-4376-b247-ebfe1957b56d/image.png)
+![A timeline of Service Ping Computation on GitLab.com](img/service_ping_computation_v17_5.png)
 
 [Source](https://lucid.app/lucidchart/fec2d72c-89d9-45a0-b40c-1d81ca13f671/edit?page=0_0)
 

@@ -1,5 +1,7 @@
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
+import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
 import BoolPresenter from '../components/presenters/bool.vue';
+import CodePresenter from '../components/presenters/code.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
 import HealthPresenter from '../components/presenters/health.vue';
 import IssuablePresenter from '../components/presenters/issuable.vue';
@@ -13,6 +15,7 @@ import StatePresenter from '../components/presenters/state.vue';
 import TablePresenter from '../components/presenters/table.vue';
 import TextPresenter from '../components/presenters/text.vue';
 import TimePresenter from '../components/presenters/time.vue';
+import TypePresenter from '../components/presenters/type.vue';
 import UserPresenter from '../components/presenters/user.vue';
 
 const presentersByObjectType = {
@@ -27,6 +30,8 @@ const presentersByObjectType = {
   UserCore: UserPresenter,
   Label: LabelPresenter,
   Iteration: IterationPresenter,
+  WorkItemStatus: StatusPresenter,
+  WorkItemType: TypePresenter,
 };
 
 const presentersByFieldName = {
@@ -35,6 +40,9 @@ const presentersByFieldName = {
   description: HtmlPresenter,
   descriptionHtml: HtmlPresenter,
   lastComment: HtmlPresenter,
+  sourceBranch: CodePresenter,
+  targetBranch: CodePresenter,
+  type: TypePresenter,
 };
 
 const presentersByDisplayType = {
@@ -69,13 +77,14 @@ export function componentForField(field, fieldName) {
 }
 
 export default class Presenter {
-  #config;
-  #component;
+  config;
+  component;
+  data;
 
   forField(item, fieldName, props) {
     const field = fieldName === 'title' || !fieldName ? item : item[fieldName];
     const component = componentForField(field, fieldName);
-    const { source } = this.#config || {};
+    const { source } = this.config || {};
 
     return {
       render(h) {
@@ -95,8 +104,9 @@ export default class Presenter {
     const component = presentersByDisplayType[display] || ListPresenter;
     const additionalProps = additionalPropsByDisplayType[display] || {};
 
-    this.#config = config;
-    this.#component = {
+    this.config = config;
+    this.data = data;
+    this.component = {
       provide: {
         presenter: this,
         queryKey,
@@ -110,13 +120,8 @@ export default class Presenter {
 
     return this;
   }
-
-  get component() {
-    return this.#component;
-  }
 }
 
 export const present = (data, config, props) => {
-  const presenter = new Presenter().init({ data, config, ...props });
-  return presenter.component;
+  return new Presenter().init({ data, config, ...props });
 };

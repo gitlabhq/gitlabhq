@@ -87,7 +87,6 @@ module AutoMerge
 
     def skippable_available_for_checks(merge_request)
       merge_request.skipped_mergeable_checks(
-        auto_merge_requested: true,
         auto_merge_strategy: strategy
       )
     end

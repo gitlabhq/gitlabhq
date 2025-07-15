@@ -85,6 +85,7 @@ module Ci
     def first_matching_pipeline
       limit = params[:pipeline_id] ? nil : DEFAULT_LIMIT_PIPELINES
       pipelines = project.ci_pipelines.newest_first(sha: sha, limit: limit)
+      pipelines = pipelines.not_archived
       pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
       pipelines = pipelines.id_in(params[:pipeline_id]) if params[:pipeline_id]
       pipelines.first

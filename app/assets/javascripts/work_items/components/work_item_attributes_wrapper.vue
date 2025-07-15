@@ -24,6 +24,7 @@ import {
   NAME_TO_ENUM_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
   WIDGET_TYPE_STATUS,
+  STATE_CLOSED,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
@@ -185,6 +186,9 @@ export default {
     hasParent() {
       return this.workItemHierarchy?.hasParent;
     },
+    isWorkItemClosed() {
+      return this.workItem.state === STATE_CLOSED;
+    },
     workItemCrmContacts() {
       const crmContactsWidget = this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
       return crmContactsWidget && crmContactsWidget.contactsAvailable ? crmContactsWidget : null;
@@ -324,6 +328,7 @@ export default {
     <work-item-health-status
       v-if="workItemHealthStatus"
       class="work-item-attributes-item"
+      :is-work-item-closed="isWorkItemClosed"
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"

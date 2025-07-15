@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class CleanupBigintConversionForGeoEventLogGeoEventId < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
-
   milestone '17.9'
 
   TABLE = :geo_event_log

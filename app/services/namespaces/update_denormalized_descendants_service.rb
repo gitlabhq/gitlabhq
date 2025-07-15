@@ -14,6 +14,36 @@ module Namespaces
     end
 
     def execute
+      if Feature.enabled?(:optimistic_locking_for_namespace_descendants_cache, type: :beta) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- Resolving the actor is not trivial
+        execute_with_optimistic_locking
+      else
+        execute_with_transaction
+      end
+    end
+
+    def execute_with_optimistic_locking
+      namespace = Namespace.primary_key_in(namespace_id).first
+      descendants = Namespaces::Descendants.primary_key_in(namespace_id).first
+      return if descendants.nil?
+
+      if namespace
+        begin
+          update_namespace_descendants_with_low_lock_timeout(namespace, descendants)
+        rescue ActiveRecord::LockWaitTimeout
+          return :not_updated_due_to_lock_timeout
+        end
+
+        descendants.reset
+
+        return :not_updated_due_to_optimistic_lock if descendants.outdated_at
+      else
+        descendants.destroy
+      end
+
+      :processed
+    end
+
+    def execute_with_transaction
       Namespaces::Descendants.transaction do
         namespace_exists = Namespace.primary_key_in(namespace_id).exists?
 
@@ -40,13 +70,33 @@ module Namespaces
 
     attr_reader :namespace_id
 
+    def update_namespace_descendants_with_low_lock_timeout(namespace, descendants)
+      ids = collect_namespace_ids
+
+      Namespaces::Descendants.transaction do
+        # Allow 1000ms to acquire lock on the descendants record
+        Namespaces::Descendants.connection.execute("SET LOCAL lock_timeout TO '1000ms'")
+
+        Namespaces::Descendants.upsert_with_consistent_data(
+          namespace: namespace,
+          self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
+          all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+            .order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          outdated_at: descendants.outdated_at
+        )
+      end
+    end
+
     def update_namespace_descendants(namespace)
       ids = collect_namespace_ids
 
       Namespaces::Descendants.upsert_with_consistent_data(
         namespace: namespace,
         self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
-        all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          .order(:id).pluck_primary_key # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
       )
     end
 

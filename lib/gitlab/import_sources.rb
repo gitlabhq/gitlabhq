@@ -16,34 +16,47 @@ module Gitlab
       ImportSource.new('git',              'Repository by URL', nil),
       ImportSource.new('gitlab_project',   'GitLab export',     Gitlab::ImportExport::Importer),
       ImportSource.new('gitea',            'Gitea',             Gitlab::LegacyGithubImport::Importer),
-      ImportSource.new('manifest',         'Manifest file',     nil)
+      ImportSource.new('manifest',         'Manifest file',     nil),
+      ImportSource.new(
+        'gitlab_built_in_project_template', 'GitLab built-in project template', Gitlab::ImportExport::Importer
+      )
     ].freeze
+
+    PROJECT_TEMPLATE_IMPORTERS = ['gitlab_built_in_project_template'].freeze
 
     class << self
       prepend_mod_with('Gitlab::ImportSources') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
-      def options
-        import_table.to_h { |importer| [importer.title, importer.name] }
-      end
 
       def values
         import_table.map(&:name)
       end
 
+      def import_source(name)
+        import_table.find { |import_source| import_source.name == name }
+      end
+
       def has_importer?(name)
-        import_table.select(&:importer).map(&:name).include?(name)
+        importer(name).present?
+      end
+
+      def template?(name)
+        project_template_importers.include?(name)
       end
 
       def importer(name)
-        import_table.find { |import_source| import_source.name == name }.importer
+        import_source(name)&.importer
       end
 
       def title(name)
-        options.key(name)
+        import_source(name)&.title
       end
 
       def import_table
         IMPORT_TABLE
+      end
+
+      def project_template_importers
+        PROJECT_TEMPLATE_IMPORTERS
       end
     end
   end

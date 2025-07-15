@@ -119,8 +119,21 @@ module Gitlab
           def parse_a_const(a_const)
             return unless a_const
 
-            type = a_const.val
-            get_value_from_key(a_const, key: type)
+            # In https://github.com/pganalyze/libpg_query/blob/17-6.1.0/protobuf/pg_query.proto,
+            # val is a oneof protobuf type. As explained in https://protobuf.dev/reference/ruby/ruby-generated/,
+            # at most one of the fields can be set. We can't use get_value_from_key
+            # because to_h may return an empty ival if the default value was set
+            # due to a google-protobuf 4 change to address
+            # https://github.com/protocolbuffers/protobuf/issues/6167.
+            #
+            # Get the active oneof field and use two public send methods.
+            # For example, if :ival is active, call `ival.ival`.
+            field_name = a_const.val
+            return unless field_name
+
+            # rubocop:disable GitlabSecurity/PublicSend -- This is the cleanest way to do this with a oneof protobuf type.
+            a_const.public_send(field_name)&.public_send(field_name)
+            # rubocop:enable GitlabSecurity/PublicSend
           end
 
           def get_value_from_key(node, key:)

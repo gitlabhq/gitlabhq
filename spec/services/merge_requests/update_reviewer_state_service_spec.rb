@@ -80,6 +80,7 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
 
       it 'triggers GraphQL subscription userMergeRequestUpdated' do
         expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(current_user, merge_request)
+        expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(merge_request.author, merge_request)
 
         result
       end

@@ -113,14 +113,15 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
 
   describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     before do
-      page = double(:page, objects: [pull_request], number: 1)
+      page = instance_double(Gitlab::GithubImport::Client::Page, objects: [pull_request], url: nil)
 
       expect(client)
         .to receive(:each_page)
         .with(
           :pull_requests,
+          nil,
           'foo/bar',
-          { state: 'all', sort: 'created', direction: 'asc', page: 1 }
+          { state: 'all', sort: 'created', direction: 'asc' }
         )
         .and_yield(page)
     end

@@ -107,13 +107,5 @@ RSpec.describe RecordUserLastActivity, feature_category: :seat_cost_management d
         it_behaves_like 'does not update publish an activity event'
       end
     end
-
-    context 'when the request is not a GET request' do
-      before do
-        allow(controller.request).to receive(:get?).and_return(false)
-      end
-
-      it_behaves_like 'does not update publish an activity event'
-    end
   end
 end

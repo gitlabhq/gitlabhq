@@ -215,7 +215,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 
 {{< history >}}
 
-- Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
 
 {{< /history >}}
 
@@ -255,7 +255,7 @@ CI/CD jobs can have the following statuses:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_source_table`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `populate_and_use_build_source_table`. Enabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11796) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.11.
 
 {{< /history >}}
@@ -270,7 +270,7 @@ The source attribute can have the following values:
 - `api`: Job initiated by a REST call to the Jobs API.
 - `chat`: Job initiated by a chat command using GitLab ChatOps.
 - `container_registry_push`: Job initiated by container registry push.
-- `duo_workflow`: Job initiated by GitLab Duo Workflow.
+- `duo_workflow`: Job initiated by GitLab Duo Agent Platform.
 - `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
 - `external_pull_request_event`: Job initiated by a pull request event in an external repository.
 - `merge_request_event`: Job initiated by a merge request event.
@@ -366,6 +366,7 @@ When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downst
 Prerequisites:
 
 - You must have at least the Developer role for the project.
+- The job must not be [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
 
 To retry a job from a merge request:
 
@@ -472,7 +473,7 @@ You can cancel all jobs in a running pipeline at once.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `force_cancel_build`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `force_cancel_build`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/519313) in GitLab 17.11. Feature flag `force_cancel_build` removed.
 
 {{< /history >}}

@@ -4,17 +4,16 @@ FactoryBot.define do
   factory :ci_reports_security_report, class: '::Gitlab::Ci::Reports::Security::Report' do
     type { :sast }
     pipeline { association(:ci_pipeline) }
+    scanner { association(:ci_reports_security_scanner) }
     created_at { 2.weeks.ago }
     scanned_resources { [] }
 
     transient do
       findings { [] }
-      scanners { [] }
       identifiers { [] }
     end
 
     after :build do |report, evaluator|
-      evaluator.scanners.each { |s| report.add_scanner(s) }
       evaluator.identifiers.each { |id| report.add_identifier(id) }
       evaluator.findings.each { |o| report.add_finding(o) }
     end

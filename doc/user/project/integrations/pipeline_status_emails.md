@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Verify
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Pipeline status emails
 ---
@@ -15,6 +15,8 @@ title: Pipeline status emails
 You can send notifications about pipeline status changes in a group or
 project to a list of email addresses.
 
+Pipeline notifications triggered by blocked users are not delivered.
+
 ## Enable pipeline status email notifications
 
 To enable pipeline status emails:
@@ -27,6 +29,3 @@ To enable pipeline status emails:
    **Notify only broken pipelines**.
 1. Select the branches to send notifications for.
 1. Select **Save changes**.
-
-In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
-and later, pipeline notifications triggered by blocked users are not delivered.

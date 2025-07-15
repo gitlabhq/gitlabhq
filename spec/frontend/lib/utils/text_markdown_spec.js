@@ -431,7 +431,7 @@ describe('init markdown', () => {
         });
       });
 
-      describe('Continuing indented text', () => {
+      describe('Maintain indented text', () => {
         let enterEvent;
 
         beforeAll(() => {
@@ -449,20 +449,23 @@ describe('init markdown', () => {
 
         beforeEach(() => {
           enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
-          gon.features = {
-            continueIndentedText: true,
-          };
         });
 
+        // Note that the `  a` tests use an invisible newline followed by a space, `0A20`
         it.each`
-          text          | markdownAutomaticLists | expected
-          ${'  nice'}   | ${true}                | ${'  nice\n  '}
-          ${'  a'}      | ${true}                | ${'  a\n  '}
-          ${'  - item'} | ${true}                | ${'  - item\n  - '}
-          ${'  - item'} | ${false}               | ${'  - item\n  '}
+          text          | markdownMaintainIndentation | markdownAutomaticLists | expected
+          ${'  nice'}   | ${true}                     | ${true}                | ${'  nice\n  '}
+          ${'  a'}      | ${true}                     | ${true}                | ${'  a\n  '}
+          ${'  - item'} | ${true}                     | ${true}                | ${'  - item\n  - '}
+          ${'  - item'} | ${true}                     | ${false}               | ${'  - item\n  '}
+          ${'  nice'}   | ${false}                    | ${true}                | ${'  nice'}
+          ${'  a'}      | ${false}                    | ${true}                | ${'  a'}
+          ${'  - item'} | ${false}                    | ${true}                | ${'  - item\n  - '}
+          ${'  - item'} | ${false}                    | ${false}               | ${'  - item'}
         `(
-          'adds correct indentation characters with markdown_automatic_lists preference: $markdownAutomaticLists',
-          ({ text, markdownAutomaticLists, expected }) => {
+          'adds correct indentation characters based on user preference markdownMaintainIndentation',
+          ({ text, markdownMaintainIndentation, markdownAutomaticLists, expected }) => {
+            gon.markdown_maintain_indentation = markdownMaintainIndentation;
             gon.markdown_automatic_lists = markdownAutomaticLists;
             textArea.value = text;
             textArea.setSelectionRange(text.length, text.length);
@@ -477,6 +480,8 @@ describe('init markdown', () => {
         it('does not duplicate a line item for IME characters', () => {
           const text = ' 日本語';
           const expected = ' 日本語\n ';
+
+          gon.markdown_maintain_indentation = true;
 
           textArea.dispatchEvent(new CompositionEvent('compositionstart'));
           textArea.value = text;

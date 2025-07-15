@@ -834,11 +834,11 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
       context 'selecting multiple lines of text' do
         it 'copies as a code block with the correct language' do
           verify(
-            '.line[id="LC27"], .line[id="LC28"]',
+            '.line[id="LC27"], .line[id="LC29"]',
             <<~GFM
               ```json
                   "bio": null,
-                  "skype": "",
+                  "linkedin": "",
               ```
             GFM
           )

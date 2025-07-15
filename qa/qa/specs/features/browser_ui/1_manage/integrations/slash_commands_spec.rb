@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', only: { subdomain: "staging-ref" } do
-    describe 'Slack app integration', :slack, product_group: :import_and_integrate do
+    describe 'Slack app integration', :slack, product_group: :import do
       context 'when using Slash commands' do
         # state to be seeded in the Slack UI
         let(:title) { "Issue - #{SecureRandom.hex(5)}" }

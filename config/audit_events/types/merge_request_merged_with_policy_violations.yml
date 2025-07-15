@@ -1,0 +1,10 @@
+---
+name: merge_request_merged_with_policy_violations
+description: A merge request merged with security policy violations
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/549813
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195775
+feature_category: security_policy_management
+milestone: '18.2'
+saved_to_database: true
+streamed: true
+scope: [Project]

@@ -65,12 +65,13 @@ To change the syntax highlighting theme:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. In the **Syntax highlights** section, select a theme.
+1. In the **Syntax highlighting** section, select a theme.
 1. Select **Save changes**.
 
 To view the updated syntax highlighting theme, refresh your project's page.
 
-To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#available-settings). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
+To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#available-settings). Use `default_syntax_highlighting_theme` and `default_dark_syntax_highlighting_theme` to change the syntax highlighting colors on a more
+granular level.
 
 If these steps do not work, your programming language might not be supported by the syntax highlighters.
 For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.
@@ -127,7 +128,7 @@ If you do not choose a default text editor, your last used choice is preserved.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
 
 {{< /history >}}
 
@@ -154,7 +155,7 @@ To choose your home organization:
 
 {{< history >}}
 
-- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Homepage option changes generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 
 {{< /history >}}
@@ -283,6 +284,18 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 1. Select the **Automatically add new list items** checkbox.
 1. Select **Save changes**.
 
+### Maintain cursor indentation
+
+Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new line is automatically indented the same as the previous line. This setting works only in description and comment boxes.
+
+To add a new list item when you press the <kbd>Enter</kbd> key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Scroll to the **Behavior** section.
+1. Select the **Maintain cursor indentation** checkbox.
+1. Select **Save changes**.
+
 ### Change the tab width
 
 Change the default size of tabs in diffs, blobs, and snippets. The Web IDE, file editor, and Markdown editor do not support this feature.
@@ -380,7 +393,7 @@ To customize the time format:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
 
@@ -485,12 +498,12 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 - `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
 - `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 - `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 - Enabled by default for [workspaces](../workspace/_index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../administration/feature_flags/_index.md) in GitLab 17.10. Disabled by default.
 - `web_ide_extensions_marketplace` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662), and `vscode_extension_marketplace_settings` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662) in GitLab 17.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192659) in GitLab 18.1. Feature flags `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` removed.
 

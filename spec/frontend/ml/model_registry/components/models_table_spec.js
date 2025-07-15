@@ -61,7 +61,7 @@ describe('ModelsTable', () => {
   });
 
   it('renders the correct number of rows', () => {
-    expect(findTableRows().length).toBe(1);
+    expect(findTableRows()).toHaveLength(1);
   });
 
   it('renders the model name link correctly', () => {
@@ -82,7 +82,7 @@ describe('ModelsTable', () => {
 
   it('renders the created date correctly', () => {
     const createdAtCell = findTableRows().at(0).findAll('td').at(3);
-    expect(createdAtCell.text()).toBe('in 3 years');
+    expect(createdAtCell.text()).toBe('Dec 6, 2023');
   });
 
   it('renders the author information correctly', () => {

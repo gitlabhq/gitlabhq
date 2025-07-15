@@ -11,6 +11,10 @@ axios.defaults.headers.common[csrf.headerKey] = csrf.token;
 // Used by Rails to check if it is a valid XHR request
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+if (gon.current_organization?.id) {
+  axios.defaults.headers.common['X-GitLab-Organization-ID'] = gon.current_organization.id;
+}
+
 // Maintain a global counter for active requests
 // see: spec/support/wait_for_requests.rb
 axios.interceptors.request.use((config) => {

@@ -23,6 +23,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
   setUrlFragment: jest.requireActual('~/lib/utils/url_utility').setUrlFragment,
+  isAbsolute: jest.requireActual('~/lib/utils/url_utility').isAbsolute,
 }));
 
 describe('AlertManagementTable', () => {
@@ -289,7 +290,7 @@ describe('AlertManagementTable', () => {
           },
           loading: false,
         });
-        expect(findDateFields().length).toBe(1);
+        expect(findDateFields()).toHaveLength(1);
       });
 
       it('should not display time ago dates when values not provided', () => {

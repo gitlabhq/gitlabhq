@@ -119,8 +119,8 @@ Geo is designed to be a active-passive, high-availability solution. It operates 
 
 ## Gitaly Cluster
 
-Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
-the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/_index.md#comparison-to-geo).
+Geo should not be confused with [Gitaly Cluster](../gitaly/praefect/_index.md). For more information about
+the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/praefect/_index.md#comparison-to-geo).
 
 ## How Geo works
 

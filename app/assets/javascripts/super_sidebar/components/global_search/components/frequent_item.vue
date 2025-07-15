@@ -33,14 +33,12 @@ export default {
 
     <div class="gl-flex gl-flex-row gl-items-center gl-gap-2 gl-truncate">
       <span class="gl-truncate"> {{ item.title }} </span>
-      <span class="gl-text-subtle" aria-hidden="true">·</span>
-      <div
-        v-if="item.subtitle"
-        data-testid="subtitle"
-        class="gl-truncate gl-text-sm gl-text-subtle"
-      >
-        {{ item.subtitle }}
-      </div>
+      <template v-if="item.subtitle">
+        <span class="gl-text-subtle" aria-hidden="true">·</span>
+        <span data-testid="subtitle" class="gl-truncate gl-text-sm gl-text-subtle">
+          {{ item.subtitle }}
+        </span>
+      </template>
     </div>
   </search-result-focus-layover>
 </template>

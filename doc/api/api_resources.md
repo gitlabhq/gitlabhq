@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: REST API resources
 ---
@@ -199,6 +199,7 @@ The following API resources are available outside of project and group contexts 
 | [Merge requests](merge_requests.md)                                                          | `/merge_requests` (also available for groups and projects) |
 | [Namespaces](namespaces.md)                                                                  | `/namespaces` |
 | [Notification settings](notification_settings.md)                                            | `/notification_settings` (also available for groups and projects) |
+| [Compliance and Policy settings](compliance_policy_settings.md)         | `/admin/security/compliance_policy_settings` |
 | [Pages domains](pages_domains.md)                                                            | `/pages/domains` (also available for projects) |
 | [Personal access tokens](personal_access_tokens.md)                                          | `/personal_access_tokens` |
 | [Plan limits](plan_limits.md)                                                                | `/application/plan_limits` |

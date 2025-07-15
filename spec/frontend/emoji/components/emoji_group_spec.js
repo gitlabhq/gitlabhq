@@ -37,7 +37,7 @@ describe('Emoji group component', () => {
     });
 
     expect(wrapper.findAllByTestId('emoji-button').exists()).toBe(true);
-    expect(wrapper.findAllByTestId('emoji-button').length).toBe(2);
+    expect(wrapper.findAllByTestId('emoji-button')).toHaveLength(2);
   });
 
   it('emits emoji-click', () => {

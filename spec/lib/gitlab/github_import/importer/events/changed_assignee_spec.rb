@@ -137,7 +137,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
           placeholder_user_id: author.id,
           source_user_identifier: 1000,
           source_username: 'github_author',
-          source_hostname: project.import_url,
+          source_hostname: project.safe_import_url,
           namespace_id: project.root_ancestor.id
         )
       end

@@ -207,8 +207,8 @@ components:
 
 デフォルトでは、ワークスペースは、devfileに定義された`gl/inject-editor`属性を持つコンテナに[GitLab VS Codeフォーク](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork)を挿入して起動します。GitLab VS Codeフォークが挿入されるワークスペースコンテナは、次のシステム要件を満たしている必要があります。
 
-- **システムアーキテクチャ: **AMD64
-- **システムライブラリ: **
+- **システムアーキテクチャ**: AMD64
+- **システムライブラリ**:
   - `glibc` 2.28以降
   - `glibcxx` 3.4.25以降
 

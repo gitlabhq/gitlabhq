@@ -14,7 +14,7 @@ title: Conan v2 API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `conan_package_revisions_support`. Disabled by default.
 
 {{< /history >}}
 
@@ -30,7 +30,7 @@ For Conan v1 operations, see [Conan v1 API](conan_v1.md).
 
 {{< /alert >}}
 
-Use this API to interact with the Conan v2 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md) or [Conan 2 package manager client](https://docs.conan.io/2/index.html).
+Use this API to interact with the Conan v2 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_2_repository/_index.md) or [Conan 2 package manager client](https://docs.conan.io/2/index.html).
 
 Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
 and are not meant for manual consumption.

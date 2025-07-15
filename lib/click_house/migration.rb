@@ -73,5 +73,22 @@ module ClickHouse
       length = [0, 75 - text.length].max
       write format('== %s %s', text, '=' * length)
     end
+
+    def column_default_present?(table, column)
+      q = <<~SQL
+      SELECT default_expression
+      FROM system.columns
+      WHERE table = {table:String} AND name = {column:String} AND database = {database:String}
+      SQL
+
+      query = ClickHouse::Client::Query.new(raw_query: q, placeholders: {
+        table: table,
+        column: column,
+        database: connection.database_name
+      })
+
+      row = connection.select(query).first
+      row['default_expression'] != ''
+    end
   end
 end

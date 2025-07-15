@@ -1,21 +1,13 @@
 <script>
-import { GlCollapsibleListbox, GlBadge, GlPopover } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { ACCESS_LEVEL_PLANNER_STRING } from '~/access_level/constants';
 
 export default {
-  components: { GlCollapsibleListbox, GlBadge, GlPopover },
+  components: { GlCollapsibleListbox },
   inject: {
     manageMemberRolesPath: { default: null },
   },
-  i18n: {
-    plannerRoleDescription: s__(
-      'MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows.',
-    ),
-  },
-  plannerRole: ACCESS_LEVEL_PLANNER_STRING,
-  badgeId: 'planner-role-badge',
   props: {
     roles: {
       type: Object,
@@ -72,14 +64,6 @@ export default {
         data-testid="role-data"
       >
         <span data-testid="role-name">{{ item.text }}</span>
-        <template v-if="$options.plannerRole === item.value">
-          <gl-badge :id="$options.badgeId" variant="info" class="gl-float-right gl-ml-2">
-            {{ __('New') }}
-          </gl-badge>
-          <gl-popover :target="$options.badgeId">
-            {{ $options.i18n.plannerRoleDescription }}
-          </gl-popover>
-        </template>
       </div>
       <div
         v-if="item.memberRoleId"

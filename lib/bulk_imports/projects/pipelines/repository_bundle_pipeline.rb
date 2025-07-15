@@ -48,7 +48,7 @@ module BulkImports
 
         def download_service
           BulkImports::FileDownloadService.new(
-            configuration: context.configuration,
+            context: context,
             relative_url: context.entity.relation_download_url_path(self.class.relation),
             tmpdir: tmpdir,
             filename: targz_filename
@@ -56,7 +56,7 @@ module BulkImports
         end
 
         def decompression_service
-          BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: targz_filename)
+          BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: targz_filename, context: context)
         end
 
         def extraction_service

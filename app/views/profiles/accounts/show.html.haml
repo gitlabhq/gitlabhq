@@ -93,9 +93,7 @@
         = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'delete-account-button', disabled: true, data: { testid: 'delete-account-button' }}) do
           = s_('Profiles|Delete account')
 
-        #delete-account-modal{ data: { action_url: user_registration_path,
-          confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
-          username: current_user.username } }
+        #delete-account-modal{ data: delete_account_modal_data }
       - else
         - if !current_user.can_be_removed?
           - if Feature.enabled?(:ui_for_organizations, current_user) && current_user.solo_owned_organizations.present?
@@ -119,7 +117,7 @@
           = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
             = c.with_body do
               %p= s_('Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account.').html_safe % { openingTag: "<a href='#{reset_user_settings_password_path}' rel=\"nofollow\" data-method=\"put\">".html_safe, closingTag: '</a>'.html_safe}
-              %p.gl-mb-0= s_('Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process.').html_safe % { link_start: '<a href="https://support.gitlab.io/account-deletion/" rel="nofollow noreferrer noopener" target="_blank">'.html_safe, link_end: '</a>'.html_safe}
+              %p.gl-mb-0= s_('Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process.').html_safe % { link_start: '<a href="https://support.gitlab.io/personal-data-request/" rel="nofollow noreferrer noopener" target="_blank">'.html_safe, link_end: '</a>'.html_safe}
         - else
           = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
             = c.with_body do

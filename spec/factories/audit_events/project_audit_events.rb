@@ -23,6 +23,7 @@ FactoryBot.define do
         entity_path: target_project.full_path
       }
     end
+    event_name { 'project_name_updated' }
 
     trait :unauthenticated do
       author_id { -1 }

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { assertProps } from 'helpers/assert_props';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 
 describe('Design note pin component', () => {
@@ -61,12 +62,9 @@ describe('Design note pin component', () => {
     });
 
     it('throws when passed any other value except `sm` or `md`', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      createComponent({ size: 'lg' });
-
-      // eslint-disable-next-line no-console
-      expect(console.error).toHaveBeenCalled();
+      expect(() => {
+        assertProps(DesignNotePin, { size: 'lg' });
+      }).toThrow('Invalid prop: custom validator check failed');
     });
   });
 

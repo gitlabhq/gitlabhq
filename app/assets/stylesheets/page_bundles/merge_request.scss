@@ -4,6 +4,7 @@
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
+$merge-request-sticky-header-height: 45px;
 
 .apply-suggestions-input-min-width {
   @include media-breakpoint-up(lg) {
@@ -157,26 +158,64 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.merge-request-tabs-holder {
-  top: $calc-application-header-height;
-  z-index: $tabs-holder-z-index;
-  @apply gl-border-b gl-bg-default;
+@supports (container-type: scroll-state) {
+  .merge-request-sticky-header {
+    @include media-breakpoint-up(md) {
+      @apply gl-sticky;
+      container-type: scroll-state;
+      container-name: sticky-header;
+      top: $calc-application-header-height;
+      z-index: $top-bar-z-index - 1;
 
-  @include media-breakpoint-up(md) {
-    position: sticky;
-  }
+      &:has(.detail-page-description)::after {
+        height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
+      }
 
-  &.affix {
-    left: 0;
-    transition: right 0.15s;
+      &::after {
+        content: '';
+        top: $calc-application-header-height;
+        height: $merge-request-sticky-header-height;
+        @include translucent-glass-background;
+        @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
+      }
 
-    @include media-breakpoint-down(xs) {
-      right: 0;
+      @container sticky-header scroll-state(stuck: top) {
+        &::after, .merge-request-sticky-title {
+          @apply gl-block;
+        }
+
+        .merge-request-tabs {
+          @apply gl-h-auto;
+        }
+
+        .nav-links li a {
+          @apply gl-py-4;
+        }
+
+        .detail-page-description {
+          @apply gl-pt-1 gl-pb-0 gl-flex-nowrap;
+        }
+
+        time,
+        .merge-request-author-container {
+          @apply gl-hidden;
+        }
+
+        @include media-breakpoint-down(md) {
+          .merge-request-tabs-actions {
+            @apply gl-hidden;
+          }
+        }
+      }
     }
   }
+}
 
-  .nav-links {
-    border: 0;
+@supports not (container-type: scroll-state) {
+  .merge-request-sticky-header {
+    z-index: calc($top-bar-z-index - 1);
+    height: $mr-sticky-header-height;
+    @include translucent-glass-background;
   }
 }
 
@@ -191,10 +230,6 @@ $comparison-empty-state-height: 62px;
     &:not(:only-child) {
       margin: $gl-padding-4;
     }
-  }
-
-  .merge-request-tabs {
-    height: $grid-size * 6;
   }
 }
 
@@ -237,30 +272,6 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.mr-experience-survey-wrapper {
-  // setting this explicitly because:
-  //   diff-files-holder has z-index 203
-  //   z-index 9999 utility class breaks tooltips
-  z-index: 210;
-}
-
-.mr-experience-survey-body {
-  width: 300px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.mr-experience-survey-legal {
-  order: 1;
-}
-
-.mr-experience-survey-logo {
-  width: 16px;
-
-  svg {
-    max-width: 100%;
-  }
-}
-
 // These are composite classes for use with Vue Transition
 // https://vuejs.org/guide/built-ins/transition
 .survey-slide-up-enter {
@@ -286,4 +297,12 @@ $comparison-empty-state-height: 62px;
 .mr-widget-check-checking .gl-spinner {
   width: 12px;
   height: 12px;
+}
+
+// Firefox rendering bug fix - force new stacking context
+.diffs.tab-pane,
+.notes.tab-pane {
+  @supports (-moz-appearance: none) {
+    transform: translateZ(0);
+  }
 }

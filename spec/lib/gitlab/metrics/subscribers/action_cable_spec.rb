@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :durability_metrics do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
   let(:transmitted_bytes_counter) { double(:counter) }

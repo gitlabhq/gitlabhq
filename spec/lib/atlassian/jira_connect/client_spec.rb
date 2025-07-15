@@ -127,6 +127,10 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     let(:errors) { [{ 'message' => 'X' }, { 'message' => 'Y' }] }
     let(:processed) { subject.send(:handle_response, response, 'foo') { |x| [:data, x] } }
 
+    before do
+      allow(subject).to receive(:parse_jira_error_messages).and_call_original
+    end
+
     context 'when the response is 200 OK' do
       let(:response) { double(code: 200, parsed_response: :foo) }
 
@@ -147,6 +151,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       let(:response) { double(code: 400, parsed_response: errors) }
 
       it 'extracts the errors messages' do
+        expect(subject).to receive(:parse_jira_error_messages).with(errors).and_return(%w[X Y])
         expect(processed).to eq('errorMessages' => %w[X Y], 'responseCode' => 400)
       end
     end
@@ -171,6 +176,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       let(:response) { double(code: 413, parsed_response: errors) }
 
       it 'extracts the errors messages' do
+        expect(subject).to receive(:parse_jira_error_messages).with(errors).and_return(%w[X Y])
         expect(processed).to eq('errorMessages' => ['Data too large', 'X', 'Y'], 'responseCode' => 413)
       end
     end
@@ -568,6 +574,50 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
         it 'returns nil' do
           expect(client.user_info(account_id)).to be_nil
         end
+      end
+    end
+  end
+
+  describe '#parse_jira_error_messages' do
+    subject { client.send(:parse_jira_error_messages, data) }
+
+    context 'with array data' do
+      let(:data) { [{ 'message' => 'Error 1' }, { 'message' => 'Error 2' }] }
+
+      it 'extracts messages from array' do
+        expect(subject).to match_array(['Error 1', 'Error 2'])
+      end
+    end
+
+    context 'with hash data containing message' do
+      let(:data) { { 'message' => 'Single error' } }
+
+      it 'returns message in array' do
+        expect(subject).to match_array(['Single error'])
+      end
+    end
+
+    context 'with hash data containing error' do
+      let(:data) { { 'error' => 'Error message' } }
+
+      it 'returns error in array' do
+        expect(subject).to match_array(['Error message'])
+      end
+    end
+
+    context 'with hash data without message or error' do
+      let(:data) { { 'foo' => 'bar' } }
+
+      it 'returns unknown error' do
+        expect(subject).to match_array(['Unknown error'])
+      end
+    end
+
+    context 'with unexpected data type' do
+      let(:data) { 'string' }
+
+      it 'returns invalid error format' do
+        expect(subject).to match_array(['Unknown error'])
       end
     end
   end

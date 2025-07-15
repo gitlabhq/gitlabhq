@@ -59,10 +59,6 @@
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('mail', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'gl-text-default', itemprop: 'email'
-                - if @user.skype.present?
-                  .gl-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('skype', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                    = link_to @user.skype, "skype:#{@user.skype}", class: 'gl-text-default', title: "Skype"
                 - if @user.linkedin.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('linkedin', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')

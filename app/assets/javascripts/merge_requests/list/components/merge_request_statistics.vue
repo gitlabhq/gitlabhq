@@ -21,14 +21,15 @@ export default {
 
 <template>
   <ul class="gl-list-none gl-gap-3 gl-p-0">
-    <li
-      v-if="mergeRequest.upvotes"
-      v-gl-tooltip
-      :title="$options.i18n.upvotes"
-      data-testid="issuable-upvotes"
-    >
-      <gl-icon name="thumb-up" />
-      {{ mergeRequest.upvotes }}
+    <li v-if="mergeRequest.upvotes" data-testid="issuable-upvotes">
+      <button
+        v-gl-tooltip
+        :title="$options.i18n.upvotes"
+        :aria-label="$options.i18n.upvotes"
+        class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 focus-visible:gl-focus-inset"
+      >
+        <gl-icon name="thumb-up" /> {{ mergeRequest.upvotes }}
+      </button>
     </li>
     <li
       v-if="mergeRequest.downvotes"

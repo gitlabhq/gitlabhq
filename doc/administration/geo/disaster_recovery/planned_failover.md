@@ -30,6 +30,80 @@ and if performed incorrectly, there is a high risk of data loss. Consider
 rehearsing the procedure until you are comfortable with the necessary steps and
 have a high degree of confidence in being able to perform them accurately.
 
+## Recommendations for failover
+
+Following these recommendations will help ensure a smooth failover process
+and minimize the risk of data loss or extended downtime.
+
+### Resolve sync and verification failures
+
+If there are Failed or Queued items during [preflight checks](#preflight-checks), the failover is blocked until these are either:
+
+- **Resolved**: Successfully synced (by hand-copying to secondary if necessary) and verified.
+- **Documented as acceptable**: With clear justification such as:
+  - Manual checksum comparison passed for these specific failures.
+  - Repositories are deprecated and can be excluded.
+  - Items are non-critical and will be copied post-failover.
+
+For help diagnosing sync and verification failures, see
+[Troubleshooting Geo synchronization and verification errors](../replication/troubleshooting/synchronization_verification.md).
+
+### Plan for data integrity resolution
+
+**Allow 4-6 weeks** before failover completion to resolve data integrity issues
+that are commonly surfaced after setting up Geo replication for the first time,
+such as orphaned database records or inconsistent file references.
+See [Troubleshooting common Geo errors](../replication/troubleshooting/common.md) for guidance.
+
+Start addressing sync issues early to avoid tough decisions during the maintenance window:
+
+1. **4-6 weeks before:** Identify and begin resolving outstanding sync problems
+1. **1 week before:** Target resolution or documentation of all remaining sync problems
+1. **1-2 days before:** Resolve any new failures
+1. **Hours before:** Last check for any new failures
+
+**Go/no-go decision**: Have clear criteria for when to abort the failover due to unresolved sync errors.
+
+### Test backup timing in Geo environments
+
+{{< alert type="warning" >}}
+
+Backups from Geo replica databases may be canceled if WAL transactions are in flight.
+
+{{< /alert >}}
+
+Test backup procedures ahead of time and consider:
+
+- Taking backups directly from the primary (may impact performance).
+- Using a dedicated read replica disconnected from replication.
+- Scheduling during low-activity periods.
+
+### Prepare comprehensive fallback procedures
+
+{{< alert type="warning" >}}
+
+Plan the rollback decision points before promotion completes, as falling back afterwards may result in data loss.
+
+{{< /alert >}}
+
+Document specific steps to revert to the original primary, including:
+
+- Decision criteria for when to abort the failover
+- DNS reversion procedures
+- Process to re-enable the original primary (see [Bring a demoted primary site back online](bring_primary_back.md))
+- User communication plan
+
+### Develop a failover runbook in a staging environment
+
+Practicing and documenting a highly-manual task in full detail ensures success.
+
+1. Provision a production-like environment if you don't already have one.
+1. Smoke test. For example, add groups, add projects, add a Runner, use Git push, add images to an issue.
+1. Failover to secondary site.
+1. Smoke test. Look for problems.
+1. As you go, write down every action taken, the actor, expected results, links to resources.
+1. Repeat as needed to refine the runbook and scripts.
+
 ## Not all data is automatically replicated
 
 If you are using any GitLab features that Geo doesn't support,

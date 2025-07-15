@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, :sidekiq_inline,
   feature_category: :groups_and_projects do
   let_it_be(:source, reload: true) { create(:project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:member) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:member) { create(:user) }
   let_it_be(:user_invited_by_id) { create(:user) }
   let_it_be(:user_id) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
@@ -101,7 +101,10 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     context 'when composite identity is being used' do
       context 'when a member has composite identity' do
         before do
-          allow(member).to receive(:composite_identity_enforced).and_return(true)
+          member.update!(
+            user_type: :service_account,
+            composite_identity_enforced: true
+          )
         end
 
         it 'successfuly adds a project member' do
@@ -112,7 +115,10 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       context 'when the user has composite identity' do
         before do
-          allow(user).to receive(:composite_identity_enforced).and_return(true)
+          user.update!(
+            user_type: :service_account,
+            composite_identity_enforced: true
+          )
         end
 
         it 'returns unauthorized error' do

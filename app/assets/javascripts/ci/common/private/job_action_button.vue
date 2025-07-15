@@ -132,7 +132,7 @@ export default {
       data-testid="ci-action-button"
       @click.prevent="onActionButtonClick"
     >
-      <gl-loading-icon v-if="isLoading" size="sm" class="gl-m-2" />
+      <gl-loading-icon v-if="isLoading" size="sm" />
       <gl-icon v-else :name="jobAction.icon" :size="12" />
     </gl-button>
     <job-action-modal

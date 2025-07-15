@@ -22,7 +22,7 @@ module RuboCop
       #   e.run
       # end
       def on_block(node)
-        return if node.method_name != :experiment
+        return unless node.method?(:experiment)
         return if covered_with_tests?(node)
 
         add_offense(node, message: BLOCK_OFFENSE)

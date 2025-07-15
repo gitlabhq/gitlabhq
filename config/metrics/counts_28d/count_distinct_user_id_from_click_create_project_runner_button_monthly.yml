@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_create_project_runner_button_monthly
 description: Monthly count of unique users who clicked the 'Create runner' button in a project
 product_group: runner
+product_categories:
+- fleet_visibility
 performance_indicator_type: []
 value_type: number
 status: active

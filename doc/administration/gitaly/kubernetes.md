@@ -9,14 +9,15 @@ title: Gitaly on Kubernetes
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Limited availability
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced in GitLab 17.3 as an [experiment](../../policy/development_stages_support.md#experiment).
-- Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
+- Introduced in GitLab 17.3 as an [experiment](../../policy/development_stages_support.md).
+- Changed from experiment to beta in GitLab 17.10.
+- Changed from beta to limited availability in GitLab 18.2.
 
 {{< /history >}}
 
@@ -39,7 +40,7 @@ masks the problem by:
 The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shutdown and start as a new container or pod.
 
 Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances. However, Gitaly Cluster is unsuited to run in Kubernetes
-because of [existing issues and design constraints](_index.md#known-issues) that are augmented by a container-based platform.
+because of [existing issues and design constraints](praefect/_index.md#known-issues) that are augmented by a container-based platform.
 
 To support a Cloud Native deployment, Gitaly (non-Cluster) is the only option.
 By leveraging the right Kubernetes and Gitaly features and configuration, you can minimize service disruption and provide a good user experience.
@@ -65,6 +66,7 @@ When running Gitaly in Kubernetes, you must:
 - [Address pod disruption](#address-pod-disruption).
 - [Address resource contention and saturation](#address-resource-contention-and-saturation).
 - [Optimize pod rotation time](#optimize-pod-rotation-time).
+- [Monitor disk usage](#monitor-disk-usage)
 
 ### Enable cgroup_writable field in Containerd
 
@@ -295,3 +297,8 @@ gitlab:
   gitaly:
     gracefulRestartTimeout: 1
 ```
+
+### Monitor disk usage
+
+Monitor disk usage regularly for long-running Gitaly containers because log file growth can cause storage issues if
+[log rotation is not enabled](https://docs.gitlab.com/charts/charts/globals/#log-rotation).

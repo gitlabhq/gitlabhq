@@ -1,19 +1,21 @@
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
-import { ACCESS_LEVELS_STRING_TO_INTEGER } from '~/access_level/constants';
+import { ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 
 export const formatGroupForGraphQLResolver = (group) => ({
   __typename: TYPENAME_GROUP,
   id: convertToGraphQLId(TYPENAME_GROUP, group.id),
   name: group.name,
   fullName: group.full_name,
-  fullPath: group.relative_path,
+  fullPath: group.full_path,
   descriptionHtml: group.markdown_description,
   visibility: group.visibility,
   createdAt: group.created_at,
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
-  markedForDeletionOn: group.marked_for_deletion_on,
+  markedForDeletion: group.marked_for_deletion,
+  isSelfDeletionInProgress: group.is_self_deletion_in_progress,
+  isSelfDeletionScheduled: group.is_self_deletion_scheduled,
   userPermissions: {
     canLeave: group.can_leave,
     removeGroup: group.can_remove,
@@ -24,9 +26,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   isLinkedToSubscription: group.is_linked_to_subscription,
   permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
-    integerValue: group.permission
-      ? ACCESS_LEVELS_STRING_TO_INTEGER[group.permission.toUpperCase()]
-      : null,
+    integerValue: group.permission_integer ?? ACCESS_LEVEL_NO_ACCESS_INTEGER,
   },
   parent: {
     id: group.parent_id,

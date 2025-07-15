@@ -33,17 +33,13 @@ class GroupsController < Groups::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   before_action only: :issues do
-    push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
+    push_frontend_feature_flag(:issues_list_create_modal, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
-  end
-
-  before_action only: :merge_requests do
-    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
@@ -58,8 +54,9 @@ class GroupsController < Groups::ApplicationController
     :destroy, :details, :transfer, :activity, :restore
   ]
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
-  feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
+  feature_category :code_review_workflow, [:merge_requests]
   feature_category :importers, [:export, :download_export]
+  feature_category :continuous_delivery, [:unfoldered_environment_names]
   urgency :low, [:export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
@@ -176,7 +173,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    return destroy_immediately if group.marked_for_deletion? && ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+    if group.self_deletion_scheduled? &&
+        ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+      return destroy_immediately
+    end
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
@@ -210,7 +210,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def restore
-    return render_404 unless group.marked_for_deletion?
+    return render_404 unless group.self_deletion_scheduled?
 
     result = ::Groups::RestoreService.new(group, current_user).execute
 

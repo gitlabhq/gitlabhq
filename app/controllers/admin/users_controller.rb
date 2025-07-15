@@ -16,7 +16,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     return redirect_to admin_cohorts_path if params[:tab] == 'cohorts'
 
-    @users = User.filter_items(params[:filter]).order_name_asc
+    @users = filter_users
 
     if params[:search_query].present?
       # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- available only for self-managed instances
@@ -327,7 +327,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def users_with_included_associations(users)
-    users.includes(:authorized_projects, :trusted_with_spam_attribute, :identities) # rubocop: disable CodeReuse/ActiveRecord
+    users.includes(:trusted_with_spam_attribute, :identities) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def admin_making_changes_for_another_user?
@@ -401,7 +401,6 @@ class Admin::UsersController < Admin::ApplicationController
       :projects_limit,
       :provider,
       :remember_me,
-      :skype,
       :theme_id,
       :twitter,
       :username,
@@ -460,6 +459,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def after_successful_update_flash
     { notice: _('User was successfully updated.') }
+  end
+
+  def filter_users
+    User.filter_items(params[:filter]).order_name_asc
   end
 end
 

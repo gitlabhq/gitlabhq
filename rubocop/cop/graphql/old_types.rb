@@ -25,6 +25,7 @@ module RuboCop
         MSG_BOOLEAN = 'Avoid using GraphQL::BOOLEAN_TYPE. Use GraphQL::Types::Boolean instead'
         MSG_FLOAT   = 'Avoid using GraphQL::FLOAT_TYPE. Use GraphQL::Types::Float instead'
 
+        # @!method has_old_type?(node)
         def_node_matcher :has_old_type?, <<~PATTERN
           (send nil? {:field :argument}
             (sym _)

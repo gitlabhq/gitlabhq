@@ -51,6 +51,9 @@ function findFiles() {
         'app/assets/javascripts/blob/stl_viewer.js',
         'app/assets/javascripts/blob/3d_viewer/index.js',
         'app/assets/javascripts/filtered_search/**/*',
+
+        // This component recursively uses itself, so it cannot be imported synchronously
+        '**/app/assets/javascripts/security_inventory/components/recursive_breadcrumbs.vue',
       ],
     })
     .sort();

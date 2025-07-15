@@ -179,7 +179,7 @@ describe('Repository breadcrumbs component', () => {
           directoryCodeDropdownUpdates: true,
         },
       });
-      expect(findGLBreadcrumb().props('items').length).toEqual(linkCount);
+      expect(findGLBreadcrumb().props('items')).toHaveLength(linkCount);
     });
 
     it.each`
@@ -237,7 +237,7 @@ describe('Repository breadcrumbs component', () => {
     `('renders $linkCount links for path $path', ({ path, linkCount }) => {
       factory({ currentPath: path });
 
-      expect(findRouterLinks().length).toEqual(linkCount);
+      expect(findRouterLinks()).toHaveLength(linkCount);
     });
 
     it.each`

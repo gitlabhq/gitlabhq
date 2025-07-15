@@ -38,14 +38,14 @@ For further details on this additional data, see [vulnerability risk assessment 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
 
-## Explaining a vulnerability
+## Vulnerability Explanation
 
 {{< details >}}
 
 - Tier: Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
@@ -59,18 +59,13 @@ the top of the vulnerability's page.
 
 {{< /history >}}
 
-GitLab can help you with a vulnerability by using a large language model to:
+GitLab Duo Vulnerability Explanation can help you with a vulnerability by using a large language model to:
 
 - Summarize the vulnerability.
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
-
-### Vulnerability Explanation
-
-Explain a vulnerability with GitLab Duo Vulnerability Explanation. Use the explanation to better
-understand a vulnerability and its possible mitigation.
 
 Prerequisites:
 
@@ -164,7 +159,7 @@ To resolve the vulnerability:
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
 1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
-1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
+1. After the pipeline is complete, on the [pipeline security tab](../detect/security_scanning_results.md), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
 
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
@@ -300,8 +295,8 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
-- **Resolution target could not be found in the merge request, unable to create suggestion**:
-  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scan_results.md#merge-request).
+- **Resolution target could not be found in the merge request, unable to create suggestion:**
+  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scanning_results.md).
 
 ## Vulnerability code flow
 
@@ -375,7 +370,7 @@ You can find a link to the commit that resolved the vulnerability at the top or 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `dismissal_reason`.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags/_index.md) named `dismissal_reason`.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/393005) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124397) in GitLab 16.2. Feature flag `dismissal_reason` removed.
 
@@ -589,7 +584,8 @@ To view the security training for a vulnerability:
 
 {{< history >}}
 
-- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `dependency_paths`. Disabled by default.
+- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
+- View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` enabled by default.
 
 {{< /history >}}
 

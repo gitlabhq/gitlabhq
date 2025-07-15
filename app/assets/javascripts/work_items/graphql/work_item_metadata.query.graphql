@@ -1,0 +1,26 @@
+query workItemMetadata($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    licensedFeatures {
+      hasIssueWeightsFeature
+      hasIterationsFeature
+      hasOkrsFeature
+      hasSubepicsFeature
+      hasIssuableHealthStatusFeature
+      hasEpicsFeature
+      hasScopedLabelsFeature
+      hasQualityManagementFeature
+      hasLinkedItemsEpicsFeature
+      hasIssueDateFilterFeature
+    }
+    linkPaths {
+      issuesList
+      contributionGuidePath
+      labelsManage
+      newProject
+      register
+      reportAbuse
+      signIn
+    }
+  }
+}

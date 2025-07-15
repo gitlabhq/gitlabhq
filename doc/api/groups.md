@@ -312,6 +312,7 @@ Parameters:
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
+| `archived`               | boolean           | no       | Limit by groups that are archived. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519587) in GitLab 18.2. This parameter is an experiment. |
 
 ```plaintext
 GET /groups
@@ -788,7 +789,6 @@ Example response:
     "bio": "",
     "location": null,
     "public_email": "",
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
@@ -879,7 +879,6 @@ Example response:
     "bio": "",
     "location": null,
     "public_email": "",
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
@@ -929,6 +928,13 @@ Example response:
 
 {{< /history >}}
 
+{{< alert type="warning" >}}
+
+This endpoint is scheduled for removal in GitLab 18.3 (August 11th, 2025).
+Use [`GET /groups/:id/saml_users`](#list-all-saml-users) and [`GET /groups/:id/service_accounts`](service_accounts.md#list-all-group-service-accounts) instead.
+
+{{< /alert >}}
+
 Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
 of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
 by the group or subgroups.
@@ -972,7 +978,6 @@ Example response:
     "bio": "",
     "location": null,
     "public_email": "",
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
@@ -1467,6 +1472,26 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### Archive a group
 
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
 Archive a group.
 
 Prerequisites:
@@ -1546,6 +1571,26 @@ Example response:
 ```
 
 ### Unarchive a group
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Unarchive a group.
 
@@ -1648,11 +1693,19 @@ Parameters:
 
 {{< history >}}
 
-- `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
-
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Updates the project group. Only available to group owners and administrators.
 
@@ -1705,6 +1758,7 @@ PUT /groups/:id
 | `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `max_artifacts_size`                                 | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
+| `web_based_commit_signing_enabled`                  | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only for top-level groups on GitLab SaaS. When enabled for a group, applies to all projects in the group. |
 
 {{< alert type="note" >}}
 
@@ -1869,7 +1923,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 {{< history >}}
 
-- Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `immediate_delete_subgroup_api`. Disabled by default.
+- Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `immediate_delete_subgroup_api`. Disabled by default.
 - Immediately deleting subgroups was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
 - Immediately deleting subgroups was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) by default in GitLab 15.4.
 - The flag `immediate_delete_subgroup_api` for immediately deleting subgroups was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/374069) in GitLab 15.9.
@@ -1922,7 +1976,7 @@ Parameters:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `group_agnostic_token_revocation`. Disabled by default.
 - Revocation of user feed tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468599) in GitLab 17.3.
 
 {{< /history >}}
@@ -2131,7 +2185,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
 
 {{< /history >}}
 

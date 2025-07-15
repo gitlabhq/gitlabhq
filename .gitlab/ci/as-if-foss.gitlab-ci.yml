@@ -120,7 +120,7 @@ start-as-if-foss:
 
 delete-as-if-foss-branch:
   extends:
-    - .as-if-foss:rules:start-as-if-foss:allow-failure:manual
+    - .as-if-foss:rules:start-as-if-foss
     - .as-if-foss-variables
   image:
     name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/git
@@ -134,6 +134,8 @@ delete-as-if-foss-branch:
     action: stop
   variables:
     GIT_STRATEGY: "none"
+  when: manual
+  allow_failure: true
   script:
     - |
       git init
@@ -145,7 +147,7 @@ delete-as-if-foss-branch:
 # https://docs.gitlab.com/ee/ci/environments/#delete-an-environment
 delete-as-if-foss-environment:
   extends:
-    - .as-if-foss:rules:start-as-if-foss:allow-failure
+    - .as-if-foss:rules:start-as-if-foss
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   stage: prepare
   needs:
@@ -160,3 +162,4 @@ delete-as-if-foss-environment:
     - |
       ENV_ID=$(curl --silent --fail --request GET --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${ENVIRONMENT_API_URL}?name=${ESCAPED_ENVIRONMENT_NAME}" | jq '.[0].id')
       curl --silent --request DELETE --header "Private-Token: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" "${ENVIRONMENT_API_URL}/${ENV_ID}"
+  allow_failure: true

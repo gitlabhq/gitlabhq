@@ -17,7 +17,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      *tables_with_alternative_not_null_constraint,
       'analytics_devops_adoption_segments.namespace_id',
       *['badges.project_id', 'badges.group_id'],
       'ci_pipeline_schedules.project_id',
@@ -29,20 +28,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *['todos.project_id', 'todos.group_id'],
       *uploads_and_partitions
-    ]
-  end
-
-  # The following tables have multiple sharding keys and a check constraint that
-  # correctly ensures at least one of the keys must be set, however the constraint
-  # definition is written in a way that is difficult to verify using these specs.
-  # For example:
-  #   `CONSTRAINT example_constraint CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))`
-  let(:tables_with_alternative_not_null_constraint) do
-    [
-      *['protected_environments.project_id', 'protected_environments.group_id'],
-      'security_orchestration_policy_configurations.project_id',
-      'security_orchestration_policy_configurations.namespace_id',
-      *['protected_branches.project_id', 'protected_branches.namespace_id']
     ]
   end
 
@@ -91,7 +76,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_build_pending_states.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
       'ci_resources.project_id', # LFK already present on ci_resource_groups and cascade delete all ci resources
       'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
@@ -320,7 +304,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "customer_relations_contacts" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549029",
       "issue_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549030",
       "jira_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549032",
-      "zentao_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549043"
+      "zentao_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549043",
+      "users" => "https://gitlab.com/gitlab-org/gitlab/-/issues/546559"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 

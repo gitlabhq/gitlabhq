@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe AuthHelper, feature_category: :system_access do
   include LoginHelpers
+  include Devise::Test::ControllerHelpers # Remove when we delete the redesign_user_account_otp feature flag
 
   describe "#enabled_button_based_providers_for_signup" do
     [[true, %w[github gitlab]],
@@ -574,6 +575,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       it 'returns data to delete the OTP authenticator' do
         expect(helper.delete_otp_authenticator_data(true)).to match(a_hash_including({
           button_text: _('Delete one-time password authenticator'),
+          icon: 'remove',
           message: _('Are you sure you want to delete this one-time password authenticator? ' \
             'Enter your password to continue.'),
           path: destroy_otp_profile_two_factor_auth_path,

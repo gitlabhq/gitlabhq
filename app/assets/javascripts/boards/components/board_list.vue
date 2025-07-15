@@ -310,7 +310,7 @@ export default {
       return shouldCloneCard(this.list.listType, this.toList.listType);
     },
     issuesDrawerEnabled() {
-      if (gon.current_user_use_work_items_view) return true;
+      if (this.glFeatures.workItemViewForIssues) return true;
       return Boolean(
         this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
       );
@@ -685,7 +685,10 @@ export default {
         });
       } finally {
         this.addItemToListInProgress = false;
-        this.setActiveWorkItem(issuable);
+        // Only open the drawer if issue creation was successful (default iid of '-1' indicates failure)
+        if (issuable && issuable?.iid !== '-1') {
+          this.setActiveWorkItem(issuable);
+        }
       }
     },
     setActiveWorkItem(boardItem) {

@@ -1,6 +1,6 @@
 - current_line = @blame.first_line
 
-.file-content.blame.code{ class: user_color_scheme }
+.file-content.blame.code.code-syntax-highlight-theme
   - groups_length = @blame.groups.size - 1
   - @blame.groups.each_with_index do |blame_group, index|
     - commit_data = @blame.commit_data(blame_group[:commit])

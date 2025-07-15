@@ -17,7 +17,11 @@ Doorkeeper.configure do
     else
       # Ensure user is redirected to redirect_uri after login
       session[:user_return_to] = request.fullpath
-      redirect_to(new_user_session_url)
+
+      root_namespace_id = request.query_parameters['root_namespace_id']
+
+      resolver = Gitlab::Auth::OAuth::OauthResourceOwnerRedirectResolver.new(root_namespace_id)
+      redirect_to(resolver.resolve_redirect_url)
       nil
     end
   end

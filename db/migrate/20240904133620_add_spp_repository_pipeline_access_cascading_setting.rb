@@ -3,8 +3,6 @@
 class AddSppRepositoryPipelineAccessCascadingSetting < Gitlab::Database::Migration[2.2]
   include Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings
 
-  enable_lock_retries!
-
   milestone '17.4'
 
   def up

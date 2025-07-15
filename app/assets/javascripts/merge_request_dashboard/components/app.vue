@@ -102,7 +102,7 @@ export default {
     },
   },
   mergeRequestIllustration,
-  docsPath: helpPagePath('/tutorials/merge_requests/homepage.html'),
+  docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
 };
 </script>
 
@@ -170,6 +170,7 @@ export default {
               }"
             >
               <collapsible-section
+                :id="list.id"
                 :count="count"
                 :has-merge-requests="mergeRequests.length > 0"
                 :title="list.title"
@@ -258,6 +259,7 @@ export default {
       <template #tabs-end>
         <li role="presentation" class="nav-item">
           <gl-link
+            role="tab"
             :href="mergeRequestsSearchDashboardPath"
             class="nav-link gl-tab-nav-item !gl-no-underline"
           >

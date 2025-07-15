@@ -29,12 +29,8 @@ export default {
 
 <template>
   <div>
-    <gl-link
-      :href="group.webUrl"
-      target="_blank"
-      class="gl-inline-flex gl-h-7 gl-items-center gl-gap-2"
-    >
-      {{ group.fullPath }} <gl-icon name="external-link" class="gl-fill-icon-link" />
+    <gl-link :href="group.webUrl" target="_blank">
+      {{ group.fullPath }}&nbsp;<gl-icon name="external-link" class="gl-fill-icon-link" />
     </gl-link>
     <div v-if="group.flags.isFinished && fullLastImportPath" class="gl-text-sm gl-text-subtle">
       <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">

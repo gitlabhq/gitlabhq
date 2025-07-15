@@ -481,7 +481,7 @@ Cloud Connector機能についての一連の状態チェックを実行しま�
 
 ### `Query.devopsAdoptionEnabledNamespaces`
 
-設定されているDevOpsアドプションネームスペースを取得します。**状態: **ベータ版。このエンドポイントは、予告なしに変更される場合があります。
+設定されているDevOpsアドプションネームスペースを取得します。**状態**: ベータ版。このエンドポイントは、予告なしに変更される場合があります。
 
 [`DevopsAdoptionEnabledNamespaceConnection`](#devopsadoptionenablednamespaceconnection)を返します。
 
@@ -3019,7 +3019,7 @@ AI機能の設定を更新または作成します。
 
 ### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
-**状態: **ベータ版。
+**状態**: ベータ版。
 
 入力型: `BulkEnableDevopsAdoptionNamespacesInput`
 
@@ -3110,8 +3110,8 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
-| <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` {{< icon name="warning-solid" >}} | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **非推奨: ****状態**: 実験。GitLab 17.5で導入。 |
+| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` {{< icon name="warning-solid" >}} | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **非推**: **状態**: 実験。GitLab 17.5で導入。 |
 | <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | CIジョブトークンスコープが属するプロジェクト。 |
 | <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | CIジョブトークンスコープに追加するグループまたはプロジェクト。 |
 
@@ -3120,7 +3120,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI ジョブトークンのアクセススコープ。 |
-| <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨: ****状態**: 実験。GitLab 17.6で導入。 |
+| <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨**: **状態**: 実験。GitLab 17.6で導入。 |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationcijobtokenscopeaddgrouporprojecterrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -3133,7 +3133,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **非推奨: **送信ジョブトークンスコープは削除されます。現在のところ、このフィールドで可能な設定値はINBOUNDだけです。GitLab 16.0で非推奨になりました。 |
+| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **非推奨**: 送信ジョブトークンスコープは削除されます。現在のところ、このフィールドで可能な設定値はINBOUNDだけです。GitLab 16.0で非推奨になりました。 |
 | <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | CIジョブトークンスコープが属するプロジェクト。 |
 | <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | CIジョブトークンスコープに追加するプロジェクト。 |
 
@@ -3142,7 +3142,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI ジョブトークンのアクセススコープ。 |
-| <a id="mutationcijobtokenscopeaddprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨: ****状態**: 実験。GitLab 17.6で導入。 |
+| <a id="mutationcijobtokenscopeaddprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨**: **状態**: 実験。GitLab 17.6で導入。 |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -3205,7 +3205,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemovegroupcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI ジョブトークンのアクセススコープ。 |
-| <a id="mutationcijobtokenscoperemovegroupcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨: ****状態**: 実験。GitLab 17.6で導入。 |
+| <a id="mutationcijobtokenscoperemovegroupcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨**: **状態**: 実験。GitLab 17.6で導入。 |
 | <a id="mutationcijobtokenscoperemovegroupclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationcijobtokenscoperemovegrouperrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -3218,7 +3218,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **非推奨: **送信ジョブトークンスコープは削除されます。現在のところ、このフィールドで可能な設定値はINBOUNDだけです。GitLab 16.9で非推奨になりました。 |
+| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **非推奨**: 送信ジョブトークンスコープは削除されます。現在のところ、このフィールドで可能な設定値はINBOUNDだけです。GitLab 16.9で非推奨になりました。 |
 | <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | CIジョブトークンスコープが属するプロジェクト。 |
 | <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | CIジョブトークンスコープから削除するプロジェクト。 |
 
@@ -3227,7 +3227,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI ジョブトークンのアクセススコープ。 |
-| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨: ****状態**: 実験。GitLab 17.6で導入。 |
+| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨**: **状態**: 実験。GitLab 17.6で導入。|
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationcijobtokenscoperemoveprojecterrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -3251,7 +3251,7 @@ AI機能の設定を更新または作成します。
 
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeupdatepoliciescijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨: ****状態**: 実験。GitLab 17.6で導入。 |
+| <a id="mutationcijobtokenscopeupdatepoliciescijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **非推奨**: **状態**: 実験。GitLab 17.6で導入。 |
 | <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationcijobtokenscopeupdatepolicieserrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -3764,7 +3764,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 | <a id="mutationcreatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
 ### `Mutation.createCustomEmoji`
@@ -3903,7 +3903,7 @@ AI機能の設定を更新または作成します。
 | <a id="mutationcreateissuedescription"></a>`description` | [`String`](#string) | イシューの説明。 |
 | <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | 解決するディスカッションのID。`merge_request_to_resolve_discussions_of`も渡してください。 |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | イシューの期限。 |
-| <a id="mutationcreateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationcreateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | 目的のヘルスステータス。 |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | プロジェクトイシューのIID（内部ID）。これを変更できるのは管理者とプロジェクトオーナーだけです。 |
 | <a id="mutationcreateissueiterationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | グローバルイテレーションケイデンスID。`iterationWildcardId`が指定されている場合は必須。 |
@@ -3993,7 +3993,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | パッケージをパッケージレジストリにプッシュするために必要な最小GitLabアクセスレベル。有効な値には`MAINTAINER`、`OWNER`、または`ADMIN`が含まれます。値が`nil`の場合のデフォルトの最小アクセスレベルは`DEVELOPER`です。 |
 | <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | 保護ルールによって保護されるパッケージ名。例：`@my-scope/my-package-*`。ワイルドカード文字`*`を使用できます。 |
 | <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | 保護ルールによって保護されるパッケージのタイプ。例: `NPM`、`PYPI`。 |
@@ -4338,7 +4338,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilerunclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationdastprofilerunfullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastprofilerunfullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastprofilerunid"></a>`id` | [`DastProfileID!`](#dastprofileid) | スキャンに使用するプロファイルのID。 |
 
 #### フィールド
@@ -4363,7 +4363,7 @@ AI機能の設定を更新または作成します。
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | 関連付けるスキャナープロファイルのID。 |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | 関連付けるサイトプロファイルのID。 |
 | <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | プロファイルの説明。デフォルトは空の文字列です。 |
-| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastprofileupdateid"></a>`id` | [`DastProfileID!`](#dastprofileid) | 削除するプロファイルのID。 |
 | <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | プロファイルの名前。 |
 | <a id="mutationdastprofileupdaterunafterupdate"></a>`runAfterUpdate` | [`Boolean`](#boolean) | 更新後にプロファイルを使用してスキャンを実行します。デフォルトはfalseです。 |
@@ -4392,7 +4392,7 @@ AI機能の設定を更新または作成します。
 | <a id="mutationdastscannerprofilecreatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | 実行するDASTスキャンのタイプを示します。パッシブスキャンかアクティブスキャンのどちらか。 |
 | <a id="mutationdastscannerprofilecreateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | デバッグメッセージをDASTコンソール出力に含めるかどうかを示します。デバッグメッセージを含める場合はtrue。 |
 | <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | スパイダーがサイトを走査する時間として許可される最大時間（分）。 |
-| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨: **DastProfileに移動しました。GitLab 15.8で非推奨になりました。 |
+| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨**: DastProfileに移動しました。GitLab 15.8で非推奨になりました。 |
 | <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | テスト対象のサイトがリクエストに応答するための時間として許可される最大秒数。 |
 | <a id="mutationdastscannerprofilecreateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | ターゲットサイトのクロールにAJAX Spiderを使用するかどうかを示します。従来のスパイダーに加えてAJAX Spiderを実行する場合はtrue、従来のスパイダーだけを実行する場合はfalse。 |
 
@@ -4414,7 +4414,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastscannerprofiledeleteid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | 削除するスキャナープロファイルのID。 |
 
 #### フィールド
@@ -4433,13 +4433,13 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | 更新するスキャナープロファイルのID。 |
 | <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | スキャナープロファイルの名前。 |
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | 実行するDASTスキャンのタイプを示します。パッシブスキャンかアクティブスキャンのどちらか。 |
 | <a id="mutationdastscannerprofileupdateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | デバッグメッセージをDASTコンソール出力に含めるかどうかを示します。デバッグメッセージを含める場合はtrue。 |
 | <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | スパイダーがサイトを走査する時間として許可される最大時間（分）。 |
-| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨: **DastProfileに移動しました。GitLab 15.8で非推奨になりました。 |
+| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨**: DastProfileに移動しました。GitLab 15.8で非推奨になりました。 |
 | <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | テスト対象のサイトがリクエストに応答するための時間として許可される最大秒数。 |
 | <a id="mutationdastscannerprofileupdateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | ターゲットサイトのクロールにAJAX Spiderを使用するかどうかを示します。従来のスパイダーに加えてAJAX Spiderを実行する場合はtrue、従来のスパイダーだけを実行する場合はfalse。 |
 
@@ -4490,7 +4490,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastsiteprofiledeleteid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | 削除するサイトプロファイルのID。 |
 
 #### フィールド
@@ -4511,7 +4511,7 @@ AI機能の設定を更新または作成します。
 | <a id="mutationdastsiteprofileupdateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | 認証のパラメータ。 |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | 認証スキャン中にスキップするURL。 |
-| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
+| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: グローバルIDを修飾する完全パスは不要です。GitLab 14.5で非推奨になりました。 |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | 更新するサイトプロファイルのID。 |
 | <a id="mutationdastsiteprofileupdateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | DASTスキャン用に設定できるオプション変数。 |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | サイトプロファイルの名前。 |
@@ -4655,7 +4655,7 @@ AI機能の設定を更新または作成します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationdeletecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 | <a id="mutationdeletecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
 ### `Mutation.deleteConversationThread`
@@ -5096,7 +5096,7 @@ Pagesデプロイを削除します。
 
 ### `Mutation.disableDevopsAdoptionNamespace`
 
-**状態: **ベータ版。
+**状態**: ベータ版。
 
 入力型: `DisableDevopsAdoptionNamespaceInput`
 
@@ -5207,7 +5207,7 @@ GitLab Duoの設定を更新します。
 
 ### `Mutation.enableDevopsAdoptionNamespace`
 
-**状態: **ベータ版。
+**状態**: ベータ版。
 
 入力型: `EnableDevopsAdoptionNamespaceInput`
 
@@ -6553,7 +6553,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistboardid"></a>`boardId` | [`BoardID!`](#boardid) | イシューの属するボードのグローバルID。 |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationissuemovelistepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationissuemovelistepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationissuemovelistfromlistid"></a>`fromListId` | [`ID`](#id) | イシューの移動元ボードリストのID。 |
 | <a id="mutationissuemovelistiid"></a>`iid` | [`String!`](#string) | 変異対象のイシューのIID。 |
 | <a id="mutationissuemovelistmoveafterid"></a>`moveAfterId` | [`ID`](#id) | 現在のイシューの後に配置するイシューのID。 |
@@ -6667,7 +6667,7 @@ Geoレジストリを変異します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationissuesetepicepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationissuesetepicepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | 変異対象のイシューのIID。 |
 | <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | 変異対象のイシューの属するプロジェクト。 |
 
@@ -6862,7 +6862,7 @@ Geoレジストリを変異します。
 | <a id="mutationissuesbulkupdateaddlabelids"></a>`addLabelIds` | [`[LabelID!]`](#labelid) | イシューに追加さすラベルのグローバルID配列。 |
 | <a id="mutationissuesbulkupdateassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | 指定されたイシューに割り当てるユーザーのグローバルID配列。既存の割り当てが、このリストの割り当てに置き換えられます。 |
 | <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationissuesbulkupdateepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationissuesbulkupdateepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationissuesbulkupdatehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | イシューに割り当てるヘルスステータス。 |
 | <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | 更新するイシューのグローバルID配列。ユーザーが更新できないIDは無視されます。最大100個まで指定できます。 |
 | <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | イシューに割り当てるイテレーションのグローバルID。 |
@@ -7007,7 +7007,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationjiraimportstartjiraprojectkey"></a>`jiraProjectKey` | [`String!`](#string) | インポーターJiraプロジェクトのプロジェクトキー。 |
-| <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: **引数は使用されません。GitLab 17.4で非推奨になりました。 |
+| <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: 引数は使用されません。GitLab 17.4で非推奨になりました。 |
 | <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | Jiraプロジェクトのインポート先プロジェクト。 |
 | <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | JiraからGitLabユーザーへのマッピング。 |
 
@@ -7877,7 +7877,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
-| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 
 ### `Mutation.namespaceDeleteRemoteDevelopmentClusterAgentMapping`
 
@@ -8190,7 +8190,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationorganizationuserupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationorganizationuserupdateerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
-| <a id="mutationorganizationuserupdateorganizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | **非推奨: ****状態**: 実験。GitLab 17.5で導入。 |
+| <a id="mutationorganizationuserupdateorganizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | **非推奨**: **状態**: 実験。GitLab 17.5で導入。 |
 
 ### `Mutation.pagesMarkOnboardingComplete`
 
@@ -8237,9 +8237,9 @@ Geoレジストリを変異します。
 
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
-| <a id="mutationpipelinecreateasync"></a>`async` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationpipelinecreateasync"></a>`async` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationpipelinecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | パイプラインをトリガーしているプロジェクトのフルパス。 |
 | <a id="mutationpipelinecreateref"></a>`ref` | [`String!`](#string) | パイプラインを実行するref。 |
 | <a id="mutationpipelinecreatevariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | パイプラインの変数。 |
@@ -8251,7 +8251,7 @@ Geoレジストリを変異します。
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationpipelinecreateerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 | <a id="mutationpipelinecreatepipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | 変異後に作成されたパイプライン。`async: true`の場合はnull。 |
-| <a id="mutationpipelinecreaterequestid"></a>`requestId` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationpipelinecreaterequestid"></a>`requestId` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 
 ### `Mutation.pipelineDestroy`
 
@@ -8303,7 +8303,7 @@ Geoレジストリを変異します。
 | <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | パイプラインスケジュールのcron式。 |
 | <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | ActiveSupport::TimeZoneでサポートされているcronタイムゾーン。例:「Pacific Time（US & Canada）」（デフォルト:「UTC」）。 |
 | <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | パイプラインスケジュールの説明。 |
-| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | パイプラインスケジュールが関連付けられているプロジェクトのフルパス。 |
 | <a id="mutationpipelineschedulecreateref"></a>`ref` | [`String!`](#string) | パイプラインスケジュールのref。 |
 | <a id="mutationpipelineschedulecreatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | パイプラインスケジュールの変数。 |
@@ -8386,7 +8386,7 @@ Geoレジストリを変異します。
 | <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | ActiveSupport::TimeZoneでサポートされているcronタイムゾーン。例:「Pacific Time（US & Canada）」（デフォルト:「UTC」）。 |
 | <a id="mutationpipelinescheduleupdatedescription"></a>`description` | [`String`](#string) | パイプラインスケジュールの説明。 |
 | <a id="mutationpipelinescheduleupdateid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | 変異対象のパイプラインスケジュールのID。 |
-| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨: ****状態**: 実験。GitLab 17.11で導入。 |
+| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **非推奨**: **状態**: 実験。GitLab 17.11で導入。 |
 | <a id="mutationpipelinescheduleupdateref"></a>`ref` | [`String`](#string) | パイプラインスケジュールのref。 |
 | <a id="mutationpipelinescheduleupdatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | パイプラインスケジュールの変数。 |
 
@@ -8543,7 +8543,7 @@ Geoレジストリを変異します。
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | 設定が属するプロジェクトのフルパス。 |
 | <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | このプロジェクトへのアクセスが他のプロジェクトで生成されたCI/CDジョブトークンによって制限されているかどうかを示します。 |
-| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨: **送信ジョブトークンスコープは削除されます。このフィールドで可能な設定値はfalseだけになりました。GitLab 16.0で非推奨になりました。 |
+| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨**: 送信ジョブトークンスコープは削除されます。このフィールドで可能な設定値はfalseだけになりました。GitLab 16.0で非推奨になりました。 |
 | <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | プロジェクトで最新のアーティファクトを保持する必要があるかどうかを示します。 |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | プロジェクトでマージ結果パイプラインが有効になっているかどうかを示します。 |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | プロジェクトでマージトレインが有効になっているかどうかを示します。 |
@@ -9371,9 +9371,9 @@ Geoレジストリを変異します。
 | <a id="mutationrunnercreatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runnerのメンテナンスノート。 |
 | <a id="mutationrunnercreatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Runnerが処理するジョブの最大タイムアウト（秒単位）。 |
 | <a id="mutationrunnercreatepaused"></a>`paused` | [`Boolean`](#boolean) | Runnerによるジョブ受信が許可されていないことを示します。 |
-| <a id="mutationrunnercreateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨: ****状態**: 実験。GitLab 17.7で導入。 |
+| <a id="mutationrunnercreateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨**: **状態**: 実験。GitLab 17.7で導入。 |
 | <a id="mutationrunnercreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Runnerを作成するプロジェクトのグローバルID（プロジェクトRunnerの場合のみ有効）。 |
-| <a id="mutationrunnercreatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨: ****状態**: 実験。GitLab 17.7で導入。 |
+| <a id="mutationrunnercreatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨**: **状態**: 実験。GitLab 17.7で導入。 |
 | <a id="mutationrunnercreaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Runnerがタグなしジョブを実行できることを示します。 |
 | <a id="mutationrunnercreaterunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | 作成するRunnerのタイプ。 |
 | <a id="mutationrunnercreatetaglist"></a>`tagList` | [`[String!]`](#string) | Runnerに関連付けられているタグ。 |
@@ -9413,7 +9413,7 @@ Geoレジストリを変異します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Runnerのアクセスレベル。 |
-| <a id="mutationrunnerupdateactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨: **名前が変更されました。`paused`を使用してください。GitLab 14.8で非推奨になりました。 |
+| <a id="mutationrunnerupdateactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨**: 名前が変更されました。`paused`を使用してください。GitLab 14.8で非推奨になりました。 |
 | <a id="mutationrunnerupdateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Runnerに関連付けられているプロジェクト。プロジェクトRunnerでのみ利用可能です。 |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Runnerの説明。 |
@@ -9422,8 +9422,8 @@ Geoレジストリを変異します。
 | <a id="mutationrunnerupdatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runnerのメンテナンスノート。 |
 | <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Runnerが処理するジョブの最大タイムアウト（秒単位）。 |
 | <a id="mutationrunnerupdatepaused"></a>`paused` | [`Boolean`](#boolean) | Runnerによるジョブ受信が許可されていないことを示します。 |
-| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨: ****状態**: 実験。GitLab 17.7で導入。 |
-| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨: ****状態**: 実験。GitLab 17.7で導入。 |
+| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨**: **状態**: 実験。GitLab 17.7で導入。 |
+| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **非推奨**: **状態**: 実験。GitLab 17.7で導入。 |
 | <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Runnerがタグなしジョブを実行できることを示します。 |
 | <a id="mutationrunnerupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Runnerに関連付けられているタグ。 |
 
@@ -9554,7 +9554,7 @@ Geoレジストリを変異します。
 | <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String!`](#string) | ポリシーの名前。名前がnullの場合、`policy_yaml`の`name`フィールドが使用されます。 |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | 操作モードを変更します。 |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | ポリシーのYAMLスニペット。 |
-| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **`fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
+| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: `fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
 
 #### フィールド
 
@@ -9699,7 +9699,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationsecuritypolicyprojectassignfullpath"></a>`fullPath` | [`String`](#string) | プロジェクトまたはグループのフルパス。 |
-| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **`fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
+| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: `fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
 | <a id="mutationsecuritypolicyprojectassignsecuritypolicyprojectid"></a>`securityPolicyProjectId` | [`ProjectID!`](#projectid) | セキュリティポリシープロジェクトのID。 |
 
 #### フィールド
@@ -9721,7 +9721,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationsecuritypolicyprojectcreatefullpath"></a>`fullPath` | [`String`](#string) | プロジェクトまたはグループのフルパス。 |
-| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **`fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
+| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: `fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
 
 #### フィールド
 
@@ -9733,7 +9733,7 @@ Geoレジストリを変異します。
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-**状態: **実験。指定されたプロジェクトまたはグループ（`full_path`）のセキュリティポリシープロジェクトを非同期で作成して割り当てます。
+**状態**: 実験。指定されたプロジェクトまたはグループ（`full_path`）のセキュリティポリシープロジェクトを非同期で作成して割り当てます。
 
 {{< details >}}GitLab 17.3で**導入**。**状態**: 実験。{{< /details >}}
 
@@ -9765,7 +9765,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationsecuritypolicyprojectunassignfullpath"></a>`fullPath` | [`String`](#string) | プロジェクトまたはグループのフルパス。 |
-| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **`fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
+| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: `fullPath`を使用してください。GitLab 14.10で非推奨になりました。 |
 
 #### フィールド
 
@@ -10583,7 +10583,7 @@ Geoレジストリを変異します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerexpirationpolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **非推奨: **`container_tags_expiration_policy`を使用してください。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **非推奨**: `container_tags_expiration_policy`を使用してください。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationupdatecontainerexpirationpolicycontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | 変異後のコンテナタグ有効期限ポリシー。 |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
@@ -10625,16 +10625,16 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationupdatecontainerprotectiontagruleid"></a>`id` | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | 更新するタグ保護ルールのグローバルID。 |
-| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
-| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
-| <a id="mutationupdatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationupdatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 
 #### フィールド
 
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
-| <a id="mutationupdatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨: ****状態**: 実験。GitLab 17.8で導入。 |
+| <a id="mutationupdatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **非推奨**: **状態**: 実験。GitLab 17.8で導入。 |
 | <a id="mutationupdatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
@@ -10804,7 +10804,7 @@ Geoレジストリを変異します。
 | <a id="mutationupdateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | イシューが機密であることを示します。 |
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | イシューの説明。 |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | イシューの期限。 |
-| <a id="mutationupdateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationupdateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | 目的のヘルスステータス。 |
 | <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | 変異対象のイシューのIID。 |
 | <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | 設定するラベルのID。既存のイシューラベルを置き換えます。 |
@@ -10860,7 +10860,7 @@ Geoレジストリを変異します。
 
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatenamespacepackagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationupdatenamespacepackagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | generic_duplicates_allowedがfalseの場合、この正規表現に一致する名前の重複パッケージを公開できます。それ以外の場合、この設定は無効です。 |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | ネームスペースで汎用パッケージの重複を許可するかどうかを示します。 |
@@ -10942,7 +10942,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | 更新するパッケージ保護ルールのグローバルID。 |
-| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | パッケージをパッケージレジストリにプッシュするために必要な最小GitLabアクセスレベル。有効な値には`MAINTAINER`、`OWNER`、または`ADMIN`が含まれます。値が`nil`の場合のデフォルトの最小アクセスレベルは`DEVELOPER`です。 |
 | <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | 保護ルールによって保護されるパッケージ名。例：`@my-scope/my-package-*`。ワイルドカード文字`*`を使用できます。 |
 | <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | 保護ルールによって保護されるパッケージのタイプ。例: `NPM`、`PYPI`。 |
@@ -10965,7 +10965,7 @@ Geoレジストリを変異します。
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | 要件の説明。 |
-| <a id="mutationupdaterequirementiid"></a>`iid` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: **代わりにwork_item_iidを使用してください。GitLab 15.8で非推奨になりました。 |
+| <a id="mutationupdaterequirementiid"></a>`iid` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: 代わりにwork_item_iidを使用してください。GitLab 15.8で非推奨になりました。 |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | 指定された状態の要件のテストレポートを作成します。 |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | 要件が関連付けられているプロジェクトのフルパス。 |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | 要件の状態。 |
@@ -11205,8 +11205,8 @@ Geoレジストリを変異します。
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | イシューリストのソート順。 |
 | <a id="mutationuserpreferencesupdatemergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | マージリクエストダッシュボードリストのレンダリングタイプ。 |
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | イシューリストのソート順。 |
-| <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **非推奨: ****状態**: 実験。GitLab 17.2で導入。 |
-| <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **非推奨: ****状態**: 実験。GitLab 17.2で導入。 |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **非推奨**: **状態**: 実験。GitLab 17.2で導入。 |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **非推奨**: **状態**: 実験。GitLab 17.2で導入。 |
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | プロジェクトのソート順。 |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | 従来のイシュービューではなく、作業アイテムビューを使用します。 |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | パイプラインリストにIDまたはIIDを表示するかどうかを決定します。 |
@@ -11732,7 +11732,7 @@ Geoレジストリを変異します。
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | 作業アイテムの機密性を設定します。 |
 | <a id="mutationworkitemcreatecreatedat"></a>`createdAt` | [`Time`](#time) | 作業アイテム作成時のタイムスタンプ。管理者とプロジェクトオーナーのみが使用できます。 |
 | <a id="mutationworkitemcreatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsCreateInput`](#workitemwidgetcrmcontactscreateinput) | CRM連絡先ウィジェットのインプット。 |
-| <a id="mutationworkitemcreatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationworkitemcreatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationworkitemcreatedescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨:** 代わりに説明ウィジェットを使用してください。GitLab 16.9で非推奨になりました。 |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | 説明ウィジェットのインプット。 |
 | <a id="mutationworkitemcreatediscussionstoresolve"></a>`discussionsToResolve` | [`WorkItemResolveDiscussionsInput`](#workitemresolvediscussionsinput) | 作業アイテムの作成時に、noteable（ノート可能）内のディスカッションを解決するために必要な情報。 |
@@ -11743,10 +11743,10 @@ Geoレジストリを変異します。
 | <a id="mutationworkitemcreatelinkeditemswidget"></a>`linkedItemsWidget` | [`WorkItemWidgetLinkedItemsCreateInput`](#workitemwidgetlinkeditemscreateinput) | リンクされたアイテムウィジェットのインプット。 |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | マイルストーンウィジェットのインプット。 |
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | 作業アイテムを作成するネームスペース（プロジェクトまたはグループ）のフルパス。 |
-| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨: **代わりにnamespacePathを使用してください。これはプロジェクトとグループの両方をカバーします。GitLab 15.10で非推奨になりました。 |
+| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **非推奨**: 代わりにnamespacePathを使用してください。これはプロジェクトとグループの両方をカバーします。GitLab 15.10で非推奨になりました。 |
 | <a id="mutationworkitemcreatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | 開始日と期限ウィジェットのインプット。 |
 | <a id="mutationworkitemcreatetitle"></a>`title` | [`String!`](#string) | 作業アイテムのタイトル。 |
-| <a id="mutationworkitemcreatevulnerabilityid"></a>`vulnerabilityId` {{< icon name="warning-solid" >}} | [`VulnerabilityID`](#vulnerabilityid) | **非推奨: ****状態**: 実験。GitLab 17.9で導入。 |
+| <a id="mutationworkitemcreatevulnerabilityid"></a>`vulnerabilityId` {{< icon name="warning-solid" >}} | [`VulnerabilityID`](#vulnerabilityid) | **非推奨**: **状態**: 実験。GitLab 17.9で導入。 |
 | <a id="mutationworkitemcreateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | ウェイトウィジェットのインプット。 |
 | <a id="mutationworkitemcreateworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | 作業アイテムタイプのグローバルID。 |
 
@@ -11805,7 +11805,7 @@ Geoレジストリを変異します。
 | <a id="mutationworkitemdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | 変異を実行しているクライアントの固有識別子。 |
 | <a id="mutationworkitemdeleteerrors"></a>`errors` | [`[String!]!`](#string) | 変異の実行中に発生したエラー。 |
 | <a id="mutationworkitemdeletenamespace"></a>`namespace` | [`Namespace`](#namespace) | 削除された作業アイテムが属していたネームスペース。 |
-| <a id="mutationworkitemdeleteproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **非推奨: **`namespace`を使用してください。GitLab 16.9で非推奨になりました。 |
+| <a id="mutationworkitemdeleteproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **非推奨**: `namespace`を使用してください。GitLab 16.9で非推奨になりました。 |
 
 ### `Mutation.workItemExport`
 
@@ -11919,7 +11919,7 @@ Geoレジストリを変異します。
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | 作業アイテムの機密性を設定します。 |
 | <a id="mutationworkitemupdatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsUpdateInput`](#workitemwidgetcrmcontactsupdateinput) | CRM連絡先ウィジェットのインプット。 |
 | <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | To Doウィジェットのインプット。 |
-| <a id="mutationworkitemupdatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="mutationworkitemupdatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | 説明ウィジェットのインプット。 |
 | <a id="mutationworkitemupdatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | ヘルスステータスウィジェットのインプット。 |
 | <a id="mutationworkitemupdatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | 階層ウィジェットのインプット。 |
@@ -12010,9 +12010,9 @@ Geoレジストリを変異します。
 | <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | 作成されたワークスペースが関連付けられるクラスターエージェントのGlobalID。 |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | 作成されたワークスペースの状態の希望値。 |
 | <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String`](#string) | ワークスペースの設定に使用するdevfileを含むプロジェクトパス。指定されていない場合、GitLabのデフォルトdevfileが使用されます。 |
-| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: **引数の名前がproject_refに変更されました。GitLab 17.8で非推奨になりました。 |
-| <a id="mutationworkspacecreateeditor"></a>`editor` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: **引数は使用されません。GitLab 17.5で非推奨になりました。 |
-| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int`](#int) | **非推奨: **フィールドは使用されていません。GitLab 17.9で非推奨になりました。 |
+| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: 引数の名前がproject_refに変更されました。GitLab 17.8で非推奨になりました。 |
+| <a id="mutationworkspacecreateeditor"></a>`editor` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: 引数は使用されません。GitLab 17.5で非推奨になりました。 |
+| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int`](#int) | **非推奨**: フィールドは使用されていません。GitLab 17.9で非推奨になりました。 |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | 作成されたワークスペースのdevfileを提供するプロジェクトのID。 |
 | <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | プロジェクトリポジトリのgit ref。 |
 | <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | ワークスペースに挿入する変数。 |
@@ -46013,8 +46013,8 @@ HTTPインテグレーションのカスタムマッピング属性に変更を�
 | <a id="boardissueinputassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | 割り当て先のワイルドカードでフィルタリングします。assigneeUsernameともassigneeUsernamesとも互換性がありません。 |
 | <a id="boardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | 作成者のユーザー名でフィルタリングします。 |
 | <a id="boardissueinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | 機密性でフィルタリングします。 |
-| <a id="boardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
-| <a id="boardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="boardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
+| <a id="boardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="boardissueinputepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | エピックIDのワイルドカードでフィルタリングします。epicIdと互換性がありません。 |
 | <a id="boardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | イシューのヘルスステータス。「none」と「any」の値がサポートされています。 |
 | <a id="boardissueinputiids"></a>`iids` | [`[String!]`](#string) | イシューのIIDのリスト。例: `["1", "2"]`。 |
@@ -46054,7 +46054,7 @@ HTTPインテグレーションのカスタムマッピング属性に変更を�
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="ciinputsinputtypedestroy"></a>`destroy` | [`Boolean`](#boolean) | これを`true`に設定すると、インプットが削除されます。 |
-| <a id="ciinputsinputtypeid"></a>`id` {{< icon name="warning-solid" >}} | [`CiPipelineScheduleInputID`](#cipipelinescheduleinputid) | **非推奨: ****状態**: 実験。GitLab 17.11で導入。 |
+| <a id="ciinputsinputtypeid"></a>`id` {{< icon name="warning-solid" >}} | [`CiPipelineScheduleInputID`](#cipipelinescheduleinputid) | **非推奨**: **状態**: 実験。GitLab 17.11で導入。 |
 | <a id="ciinputsinputtypename"></a>`name` | [`String!`](#string) | インプットの名前。 |
 | <a id="ciinputsinputtypevalue"></a>`value` | [`CiInputsValueInputType!`](#ciinputsvalueinputtype) | インプットの値。 |
 
@@ -46105,7 +46105,7 @@ CI/CD変数を定義するための属性。
 | <a id="complianceframeworkinputdefault"></a>`default` | [`Boolean`](#boolean) | コンプライアンスフレームワークをグループのデフォルトフレームワークとして設定します。 |
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | コンプライアンスフレームワークの新しい説明。 |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | コンプライアンスフレームワークの新しい名前。 |
-| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨: **代わりにパイプライン実行ポリシーを使用してください。GitLab 17.4で非推奨になりました。 |
+| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **非推奨**: 代わりにパイプライン実行ポリシーを使用してください。GitLab 17.4で非推奨になりました。 |
 
 ### `ComplianceRequirementInput`
 
@@ -46286,7 +46286,7 @@ DORAメトリクスについてプロジェクトを集計するためのフィ�
 | ---- | ---- | ----------- |
 | <a id="epicfiltersauthorusername"></a>`authorUsername` | [`String`](#string) | 作成者のユーザー名でフィルタリングします。 |
 | <a id="epicfiltersconfidential"></a>`confidential` | [`Boolean`](#boolean) | 機密性でフィルタリングします。 |
-| <a id="epicfilterscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **非推奨: ****状態**: 実験。GitLab 17.10で導入。 |
+| <a id="epicfilterscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **非推奨**: **状態**: 実験。GitLab 17.10で導入。 |
 | <a id="epicfilterslabelname"></a>`labelName` | [`[String]`](#string) | ラベル名でフィルタリングします。 |
 | <a id="epicfiltersmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | 現在のユーザーが適用したリアクション絵文字でフィルタリングします。ワイルドカード値「NONE」と「ANY」がサポートされています。 |
 | <a id="epicfiltersnot"></a>`not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | 否定条件となるエピック引数。 |
@@ -46385,11 +46385,11 @@ GKEクラスターのノードプールのラベル。
 | <a id="mergerequestsresolvernegatedparamsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | ここに指定する配列内のユーザー名に割り当てられているものを除外するよう、マージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamsauthorusername"></a>`authorUsername` | [`String`](#string) | ここに指定するユーザーが作成したものを除外するよう、マージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamslabelname"></a>`labelName` | [`[String!]`](#string) | ここに指定する配列に含まれる文字列をラベルとするものを除外するよう、マージリクエストをフィルタリングします。 |
-| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨: **`labelName`を使用してください。GitLab 17.7で非推奨になりました。 |
+| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨**: `labelName`を使用してください。GitLab 17.7で非推奨になりました。 |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | ここに指定するマイルストーンに含まれないマージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | 認証済みユーザーからここに指定するリアクションがないマージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | ここに指定するリリースタグがないマージリクエストをフィルタリングします。 |
-| <a id="mergerequestsresolvernegatedparamsreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **非推奨: ****状態**: 実験。GitLab 17.9で導入。 |
+| <a id="mergerequestsresolvernegatedparamsreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **非推奨**: **状態**: 実験。GitLab 17.9で導入。 |
 | <a id="mergerequestsresolvernegatedparamsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | ここに指定するユーザーによってレビューされていないマージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | ここに指定する配列に含まれるソースブランチ名を除外するよう、マージリクエストをフィルタリングします。 |
 | <a id="mergerequestsresolvernegatedparamstargetbranches"></a>`targetBranches` | [`[String!]`](#string) | ここに指定する配列に含まれるターゲットブランチ名を除外するよう、マージリクエストをフィルタリングします。 |
@@ -46413,7 +46413,7 @@ GKEクラスターのノードプールのラベル。
 | ---- | ---- | ----------- |
 | <a id="negatedboardissueinputassigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | 割り当て先ユーザー名でフィルタリングします。 |
 | <a id="negatedboardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | 作成者のユーザー名でフィルタリングします。 |
-| <a id="negatedboardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨: **これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
+| <a id="negatedboardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **非推奨**: これはWorkItem hierarchyWidgetに置き換えられる予定です。GitLab 17.5で非推奨になりました。 |
 | <a id="negatedboardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | イシューに適用されないヘルスステータス。ヘルスステータスが設定されていないイシューを含めます。 |
 | <a id="negatedboardissueinputiids"></a>`iids` | [`[String!]`](#string) | イシューのIIDのリスト。例: `["1", "2"]`。 |
 | <a id="negatedboardissueinputiterationid"></a>`iterationId` | [`[IterationID!]`](#iterationid) | イテレーションIDのリストでフィルタリングします。iterationWildcardId と互換性がありません。 |
@@ -46698,9 +46698,9 @@ SASTのCI設定を表します。
 
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
-| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨: **代わりにauthorUsernamesを使用してください。GitLab 16.6で非推奨になりました。 |
+| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨**: 代わりにauthorUsernamesを使用してください。GitLab 16.6で非推奨になりました。 |
 | <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | ここに指定するユーザーのいずれかが作成したエピックをフィルタリングします。 |
-| <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨: **代わりにlabelNamesを使用してください。GitLab 16.6で非推奨になりました。 |
+| <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **非推奨**: 代わりにlabelNamesを使用してください。GitLab 16.6で非推奨になりました。 |
 | <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | ここに指定する文字列の少なくとも1つをラベルとするエピックをフィルタリングします。 |
 
 ### `UnionedIssueFilterInput`
@@ -47065,6 +47065,6 @@ SASTのCI設定を表します。
 | 名前 | 型 | 説明 |
 | ---- | ---- | ----------- |
 | <a id="workspacevariableinputkey"></a>`key` | [`String!`](#string) | ワークスペース変数の名前。 |
-| <a id="workspacevariableinputtype"></a>`type` {{< icon name="warning-solid" >}} | [`WorkspaceVariableInputType`](#workspacevariableinputtype) | **非推奨: **代わりに、`variableType`を使用してください。GitLab 17.9で非推奨になりました。 |
+| <a id="workspacevariableinputtype"></a>`type` {{< icon name="warning-solid" >}} | [`WorkspaceVariableInputType`](#workspacevariableinputtype) | **非推奨**: 代わりに、`variableType`を使用してください。GitLab 17.9で非推奨になりました。 |
 | <a id="workspacevariableinputvalue"></a>`value` | [`String!`](#string) | 変数の値。 |
 | <a id="workspacevariableinputvariabletype"></a>`variableType` | [`WorkspaceVariableType`](#workspacevariabletype) | ワークスペースに注入する変数の型。 |

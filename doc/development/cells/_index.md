@@ -15,7 +15,7 @@ Below are available schemas related to Cells and Organizations:
 | ------ | ----------- |
 | `gitlab_main` (deprecated) | This is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
 | `gitlab_main_cell`| To be renamed to `gitlab_main_org`. Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
-| `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. |
+| `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_main_clusterwide` (deprecated) | All tables in the `main:` database where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `plans`. For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
@@ -24,7 +24,7 @@ Below are available schemas related to Cells and Organizations:
 
 Most tables will require a [sharding key](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables) to be defined.
 
-To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
+To understand how existing tables are classified, you can use [this dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/schema_migration).
 
 After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
 
@@ -61,6 +61,23 @@ Here are some considerations to think about:
   Can you use globally unique identifiers ?
 - Does the data need to be consistent across different cells ?
 - Do not use database tables to store [static data](#static-data).
+
+## Creating a new schema
+
+Schemas should default to require a sharding key, as features should be scoped to an Organization by default.
+
+```yaml
+# db/gitlab_schemas/gitlab_ci.yaml
+require_sharding_key: true
+sharding_root_tables:
+  - projects
+  - namespaces
+  - organizations
+```
+
+Setting `require_sharding_key` to `true` means that tables assigned to that
+schema will require a `sharding_key` to be set.
+You will also need to configure the list of allowed `sharding_root_tables` that can be used as sharding keys for tables in this schema.
 
 ## Static data
 

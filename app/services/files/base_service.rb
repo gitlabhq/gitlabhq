@@ -42,6 +42,12 @@ module Files
 
     private
 
+    def validate!
+      super
+
+      raise_error(_('You must provide a commit message')) if @commit_message.to_s.empty?
+    end
+
     def get_last_commit_for_path(ref:, path:)
       Gitlab::Git::Commit.last_for_path(@start_project.repository, ref, path, literal_pathspec: true)
     end

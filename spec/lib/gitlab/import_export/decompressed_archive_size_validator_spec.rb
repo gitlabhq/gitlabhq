@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
 
     context 'when file exceeds allowed decompressed size' do
       before do
-        stub_application_setting(max_decompressed_archive_size: 0.000001)
+        stub_application_setting(max_decompressed_archive_size: 1.0 / 1048576) # 1 B
       end
 
       it 'logs error message returns false' do
@@ -45,6 +45,8 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
           .with(
             import_upload_archive_path: filepath,
             import_upload_archive_size: File.size(filepath),
+            import_upload_decompressed_size: 12,
+            decompressed_size_limit: 1,
             message: 'Decompressed archive size limit reached'
           )
         expect(subject.valid?).to eq(false)
@@ -61,11 +63,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       it 'is valid and does not log error message' do
         expect(::Import::Framework::Logger)
           .not_to receive(:info)
-          .with(
-            import_upload_archive_path: filepath,
-            import_upload_archive_size: File.size(filepath),
-            message: 'Decompressed archive size limit reached'
-          )
+          .with(hash_including(message: 'Decompressed archive size limit reached'))
         expect(subject.valid?).to eq(true)
       end
     end

@@ -4,6 +4,7 @@ import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 import { __, sprintf } from '~/locale';
 
@@ -14,6 +15,7 @@ export default {
     GlButton,
     GlCollapsibleListbox,
     GlSprintf,
+    SettingsSection,
   },
   props: {
     graphEndpoint: {
@@ -142,52 +144,58 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-border-t gl-mb-3 gl-flex gl-items-center gl-justify-between gl-pt-4">
-      <h4 class="gl-m-0" sub-header>
-        <gl-sprintf
-          :message="__('Code coverage statistics for %{ref} %{start_date} - %{end_date}')"
+  <settings-section>
+    <template #heading>
+      <gl-sprintf :message="__('Code coverage statistics for %{ref} %{start_date} - %{end_date}')">
+        <template #ref>
+          <strong> {{ graphRef }} </strong>
+        </template>
+        <template #start_date>
+          <strong> {{ graphStartDate }} </strong>
+        </template>
+        <template #end_date>
+          <strong> {{ graphEndDate }} </strong>
+        </template>
+      </gl-sprintf>
+    </template>
+    <template #description>
+      <div class="gl-flex gl-items-center gl-justify-between">
+        <gl-button
+          v-if="canShowData"
+          size="small"
+          data-testid="download-button"
+          :href="graphCsvPath"
         >
-          <template #ref>
-            <strong> {{ graphRef }} </strong>
-          </template>
-          <template #start_date>
-            <strong> {{ graphStartDate }} </strong>
-          </template>
-          <template #end_date>
-            <strong> {{ graphEndDate }} </strong>
-          </template>
-        </gl-sprintf>
-      </h4>
-      <gl-button v-if="canShowData" size="small" data-testid="download-button" :href="graphCsvPath">
-        {{ __('Download raw data (.csv)') }}
-      </gl-button>
-    </div>
-    <div class="gl-mb-3 gl-mt-3">
-      <gl-alert
-        v-if="hasFetchError"
-        variant="danger"
-        :title="s__('Code Coverage|Couldn\'t fetch the code coverage data')"
-        :dismissible="false"
-      />
-      <gl-alert
-        v-if="noDataAvailable"
-        variant="info"
-        :title="s__('Code Coverage|No code coverage data')"
-        :dismissible="false"
-      >
-        <span>
-          {{ __('Code coverage results are not yet available. Try again later.') }}
-        </span>
-      </gl-alert>
-      <gl-collapsible-listbox
-        v-if="canShowData"
-        :items="mappedCoverages"
-        :selected="selectedCoverageIndex.toString()"
-        :toggle-text="selectedDailyCoverageName"
-        @select="setSelectedCoverage"
-      />
-    </div>
+          {{ __('Download raw data (.csv)') }}
+        </gl-button>
+      </div>
+      <div class="gl-mb-3 gl-mt-3">
+        <gl-alert
+          v-if="hasFetchError"
+          variant="danger"
+          :title="s__('Code Coverage|Couldn\'t fetch the code coverage data')"
+          :dismissible="false"
+        />
+        <gl-alert
+          v-if="noDataAvailable"
+          variant="info"
+          :title="s__('Code Coverage|No code coverage data')"
+          :dismissible="false"
+        >
+          <span>
+            {{ __('Code coverage results are not yet available. Try again later.') }}
+          </span>
+        </gl-alert>
+        <gl-collapsible-listbox
+          v-if="canShowData"
+          :items="mappedCoverages"
+          :selected="selectedCoverageIndex.toString()"
+          :toggle-text="selectedDailyCoverageName"
+          @select="setSelectedCoverage"
+        />
+      </div>
+    </template>
+
     <gl-area-chart
       v-if="!isLoading"
       :height="$options.height"
@@ -208,5 +216,5 @@ export default {
         </gl-sprintf>
       </template>
     </gl-area-chart>
-  </div>
+  </settings-section>
 </template>

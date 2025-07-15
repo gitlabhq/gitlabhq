@@ -17,7 +17,7 @@ GitLab stores [repositories](../user/project/repository/_index.md) on repository
 storage is either:
 
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
-- [Virtual storage](gitaly/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
+- [Virtual storage](gitaly/praefect/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
 
 {{< alert type="warning" >}}
 
@@ -30,7 +30,7 @@ access repositories through a physical or virtual storage.
 For more information on:
 
 - Configuring Gitaly, see [Configure Gitaly](gitaly/configure_gitaly.md).
-- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](gitaly/praefect.md).
+- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](gitaly/praefect/_index.md).
 
 ## Hashed storage
 
@@ -182,7 +182,7 @@ For example:
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
-[Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](gitaly/praefect/_index.md#praefect-generated-replica-paths).
 
 ### Repository file archive cache
 
@@ -325,4 +325,4 @@ See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) fo
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/_index.md#migrate-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/praefect/_index.md#migrate-to-gitaly-cluster).

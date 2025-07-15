@@ -360,6 +360,33 @@ job:
       - .yarn-cache/
 ```
 
+### Cache C/C++ compilation using Ccache
+
+If you are compiling C/C++ projects, you can use [Ccache](https://ccache.dev/) to
+speed up your build times. Ccache speeds up recompilation by caching previous compilations
+and detecting when the same compilation is being done again. When building big projects like the Linux kernel,
+you can expect significantly faster compilations.
+
+Use `cache` to reuse the created cache between jobs, for example:
+
+```yaml
+job:
+  cache:
+    paths:
+      - ccache
+  before_script:
+    - export PATH="/usr/lib/ccache:$PATH"  # Override compiler path with ccache (this example is for Debian)
+    - export CCACHE_DIR="${CI_PROJECT_DIR}/ccache"
+    - export CCACHE_BASEDIR="${CI_PROJECT_DIR}"
+    - export CCACHE_COMPILERCHECK=content  # Compiler mtime might change in the container, use checksums instead
+  script:
+    - ccache --zero-stats || true
+    - time make                            # Actually build your code while measuring time and cache efficiency.
+    - ccache --show-stats || true
+```
+
+If you have multiple projects in a single repository you do not need a separate `CCACHE_BASEDIR` for each of them.
+
 ### Cache PHP dependencies
 
 If your project uses [Composer](https://getcomposer.org/) to install

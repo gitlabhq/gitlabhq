@@ -10,7 +10,7 @@ import InviteGroupNotification from '~/invite_members/components/invite_group_no
 import { stubComponent } from 'helpers/stub_component';
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnGroupInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 import {
   GROUP_MODAL_TO_GROUP_ALERT_BODY,
@@ -211,17 +211,20 @@ describe('InviteGroupsModal', () => {
       });
 
       it('displays the successful toastMessage', () => {
-        expect(mockToastShow).toHaveBeenCalledWith('Members were successfully added.', {
-          onComplete: expect.any(Function),
-        });
+        expect(mockToastShow).toHaveBeenCalledWith(
+          'Group was successfully invited. It might take a few minutes for the changes to user access levels to take effect.',
+          {
+            onComplete: expect.any(Function),
+          },
+        );
       });
 
       it('does not call displaySuccessfulInvitationAlert on mount', () => {
         expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
       });
 
-      it('does not call reloadOnInvitationSuccess', () => {
-        expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+      it('does not call reloadOnGroupInvitationSuccess', () => {
+        expect(reloadOnGroupInvitationSuccess).not.toHaveBeenCalled();
       });
     });
 
@@ -277,8 +280,8 @@ describe('InviteGroupsModal', () => {
         expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
       });
 
-      it('calls reloadOnInvitationSuccess', () => {
-        expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+      it('calls reloadOnGroupInvitationSuccess', () => {
+        expect(reloadOnGroupInvitationSuccess).toHaveBeenCalled();
       });
 
       it('does not show the toast message on failure', () => {

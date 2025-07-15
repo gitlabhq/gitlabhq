@@ -14,7 +14,7 @@ title: Debian project distributions API
 
 {{< history >}}
 
-- [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+- [Deployed behind a feature flag](../../administration/feature_flags/_index.md), disabled by default.
 
 {{< /history >}}
 
@@ -33,7 +33,7 @@ For more information about working with Debian packages, see the
 ## Enable the Debian API
 
 The Debian API is behind a feature flag that is disabled by default.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags/_index.md)
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian API](../../user/packages/debian_repository/_index.md#enable-the-debian-api).
 

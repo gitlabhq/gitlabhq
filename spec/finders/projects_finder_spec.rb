@@ -9,7 +9,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
 
   describe '#execute' do
     let_it_be(:group) { create(:group, :public) }
-    let_it_be(:user) { create(:user, organizations: [group.organization]) }
+    let_it_be(:user) { create(:user, :with_namespace, organizations: [group.organization]) }
 
     let_it_be(:private_project) do
       create(:project, :private, name: 'A', path: 'A')
@@ -559,6 +559,41 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         end
 
         it { is_expected.to match_array([organization_project]) }
+      end
+
+      context 'filter by namespace_path' do
+        context 'when project is in group' do
+          let_it_be(:group) { create(:group, owners: [user]) }
+          let_it_be(:project) { create(:project, group: group, owners: [user]) }
+
+          context 'when `namespace_path` matches group path' do
+            let(:params) { { namespace_path: group.full_path } }
+
+            it { is_expected.to contain_exactly(project) }
+          end
+
+          context 'when `namespace_path` does not match' do
+            let(:params) { { namespace_path: 'non_existent_path' } }
+
+            it { is_expected.to be_empty }
+          end
+        end
+
+        context 'when project is owned by user' do
+          let_it_be(:project) { create(:project, namespace: user.namespace, owners: [user]) }
+
+          context 'when `namespace_path` matches user namespace' do
+            let(:params) { { namespace_path: user.namespace.full_path } }
+
+            it { is_expected.to contain_exactly(project) }
+          end
+
+          context 'when `namespace_path` does not match' do
+            let(:params) { { namespace_path: 'non_existent_path' } }
+
+            it { is_expected.to be_empty }
+          end
+        end
       end
 
       describe 'when with_issues_enabled is true' do

@@ -51,7 +51,11 @@
 
   = universal_stylesheet_link_tag "fonts"
 
-  = universal_stylesheet_link_tag "highlight/themes/#{user_color_scheme}"
+  - if user_application_system_mode?
+    = universal_stylesheet_link_tag "highlight/themes/#{user_light_color_scheme}", media: "(prefers-color-scheme: light)"
+    = universal_stylesheet_link_tag "highlight/themes/#{user_dark_color_scheme}", media: "(prefers-color-scheme: dark)"
+  - else
+    = universal_stylesheet_link_tag "highlight/themes/#{user_color_scheme}"
 
   = universal_stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 

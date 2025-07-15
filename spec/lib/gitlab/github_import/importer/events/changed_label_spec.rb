@@ -81,7 +81,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedLabel, feature_cat
         placeholder_user_id: user.id,
         source_user_identifier: user.id,
         source_username: user.username,
-        source_hostname: project.import_url,
+        source_hostname: project.safe_import_url,
         namespace_id: project.root_ancestor.id
       )
     end

@@ -32,6 +32,7 @@ module TriggerableHooks
         job_hooks: :job_events,
         member_hooks: :member_events,
         merge_request_hooks: :merge_requests_events,
+        milestone_hooks: :milestone_events,
         note_hooks: :note_events,
         pipeline_hooks: :pipeline_events,
         project_hooks: :project_events,

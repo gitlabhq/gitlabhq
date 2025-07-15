@@ -49,13 +49,13 @@ Example response:
 
 ```json
 {
-  "version": "15.2-pre",
-  "revision": "c401a659d0c",
+  "version": "18.1.1-ee",
+  "revision": "ceb07b24cb0",
   "kas": {
     "enabled": true,
     "externalUrl": "grpc://gitlab.example.com:8150",
     "externalK8sProxyUrl": "https://gitlab.example.com:8150/k8s-proxy",
-    "version": "15.0.0"
+    "version": "18.1.1"
   },
   "enterprise": true
 }

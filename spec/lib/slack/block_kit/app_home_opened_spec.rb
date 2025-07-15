@@ -26,7 +26,7 @@ RSpec.describe Slack::BlockKit::AppHomeOpened, feature_category: :integrations d
                 {
                   type: 'button',
                   text: include({ text: 'Connect your GitLab account' }),
-                  url: include(Gitlab::Routing.url_helpers.new_profile_chat_name_url)
+                  url: include(Gitlab::Routing.url_helpers.new_user_settings_integration_account_url)
                 }
               )
             ]

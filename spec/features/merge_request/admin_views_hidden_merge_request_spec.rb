@@ -19,8 +19,7 @@ RSpec.describe 'Admin views hidden merge request', feature_category: :insider_th
 
       find('svg[data-testid="spam-icon"]').hover
 
-      expect(page).to have_text format(_('This %{issuable} is hidden because its author has been banned.'),
-        issuable: _('merge request'))
+      expect(page).to have_text 'This item is hidden because its author has been banned.'
     end
   end
 end

@@ -23,3 +23,19 @@ ISO3166::Data.register(
                .deep_symbolize_keys
                .merge({ name: 'Taiwan' })
 )
+
+if Gitlab::Utils.to_boolean(ENV['DISPLAY_KOSOVO_COUNTRY'].to_s)
+  # Register Kosovo as a country when the feature flag is enabled
+  # Kosovo uses 'XK' as its ISO 3166-1 user-assigned code
+  ISO3166::Data.register(
+    alpha2: 'XK',
+    alpha3: 'XKX',
+    name: 'Kosovo',
+    translations: {
+      'en' => 'Kosovo'
+    },
+    country_code: '383',
+    continent: 'EU',
+    region: 'Southern Europe'
+  )
+end

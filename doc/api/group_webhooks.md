@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group webhooks API
 ---
@@ -74,6 +74,7 @@ Example response:
     "emoji_events": false,
     "resource_access_token_events": false,
     "member_events": false,
+    "project_events": false,
     "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
     "custom_headers": [
       {
@@ -131,6 +132,7 @@ Example response:
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,
+  "project_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
   "alert_status": "executable",
@@ -439,7 +441,7 @@ Resends a specific hook event.
 
 This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
@@ -500,6 +502,7 @@ Supported attributes:
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
+| `project_events`             | boolean        | no       | Trigger hook on project events. |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response. |
 | `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
@@ -542,6 +545,7 @@ Example response:
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,
+  "project_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
   "alert_status": "executable",
@@ -587,6 +591,7 @@ Supported attributes:
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
+| `project_events`             | boolean        | no       | Trigger hook on project events. |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
 | `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
@@ -630,6 +635,7 @@ Example response:
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,
+  "project_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
   "alert_status": "executable",
@@ -675,7 +681,7 @@ On success, no message is returned.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
-- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
 
 {{< /history >}}
 
@@ -683,7 +689,7 @@ Trigger a test hook for a specified group.
 
 This endpoint has a rate limit of five requests per minute for each group and authenticated user.
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/test/:trigger

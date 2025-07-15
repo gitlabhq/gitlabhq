@@ -7,6 +7,8 @@ identifiers:
 - namespace
 - user
 product_group: runner
+product_categories:
+- fleet_visibility
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158957
 tiers:

@@ -48,6 +48,7 @@ exports[`Design management list item component with notes renders item with mult
         <timeago-stub
           cssclass=""
           datetimeformat="asDateTime"
+          href=""
           showdatewhenoverayear="true"
           time="01-01-2019"
           tooltipplacement="bottom"
@@ -112,6 +113,7 @@ exports[`Design management list item component with notes renders item with sing
         <timeago-stub
           cssclass=""
           datetimeformat="asDateTime"
+          href=""
           showdatewhenoverayear="true"
           time="01-01-2019"
           tooltipplacement="bottom"

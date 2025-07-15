@@ -36,15 +36,15 @@ export default {
 </script>
 
 <template>
-  <gl-badge
+  <button
     v-if="approvalCount"
     v-gl-tooltip.viewport.top="tooltipTitle"
     :aria-label="tooltipTitle"
-    icon="check-circle"
-    variant="success"
-    icon-optically-aligned
-    data-testid="mr-appovals"
+    class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
+    data-testid="mr-approvals"
   >
-    {{ approvalCount }}
-  </gl-badge>
+    <gl-badge icon="check-circle" variant="success" icon-optically-aligned>
+      {{ approvalCount }}
+    </gl-badge>
+  </button>
 </template>

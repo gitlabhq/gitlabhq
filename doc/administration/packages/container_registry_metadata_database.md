@@ -415,6 +415,8 @@ to see how to monitor the progress and health of the online garbage collector.
 
 ## Database migrations
 
+You must manually execute database migrations after each GitLab upgrade. Support to automate database migrations after upgrades is proposed in [issue 8670](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8670).
+
 The container registry supports two types of migrations:
 
 - **Regular schema migrations**: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.

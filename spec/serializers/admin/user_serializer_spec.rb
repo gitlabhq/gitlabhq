@@ -19,7 +19,6 @@ RSpec.describe Admin::UserSerializer do
         :avatar_url,
         :note,
         :badges,
-        :projects_count,
         :actions
       )
     end

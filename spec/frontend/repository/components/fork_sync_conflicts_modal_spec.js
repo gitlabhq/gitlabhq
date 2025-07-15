@@ -29,7 +29,7 @@ describe('ConflictsModal', () => {
   });
 
   it('renders a selection of markdown fields', () => {
-    expect(findInstructions().length).toBe(3);
+    expect(findInstructions()).toHaveLength(3);
   });
 
   it('renders a source url in a first intruction', () => {

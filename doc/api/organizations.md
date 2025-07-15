@@ -19,7 +19,7 @@ Use this API to interact with GitLab organizations. For more information, see [o
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../administration/feature_flags.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../administration/feature_flags/_index.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
 
 {{< /history >}}
 

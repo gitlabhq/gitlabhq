@@ -11,7 +11,7 @@ import RunnerBulkActions from '~/ci/runner/components/runner_bulk_actions.vue';
 import RunnerBulkActionsCheckbox from '~/ci/runner/components/runner_bulk_actions_checkbox.vue';
 import RunnerConfigurationPopover from '~/ci/runner/components/runner_configuration_popover.vue';
 
-import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
+import { I18N_PROJECT_TYPE } from '~/ci/runner/constants';
 import { allRunnersData } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
@@ -99,9 +99,7 @@ describe('RunnerList', () => {
     const numericId = getIdFromGraphQLId(id);
 
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
-      I18N_STATUS_NEVER_CONTACTED,
-    );
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('Never contacted Idle');
 
     // Runner summary
     const summary = findCell({ fieldKey: 'summary' }).text();
@@ -198,21 +196,6 @@ describe('RunnerList', () => {
   });
 
   describe('Scoped cell slots', () => {
-    it('Render #runner-job-status-badge slot in "status" cell', () => {
-      createComponent(
-        {
-          scopedSlots: {
-            'runner-job-status-badge': ({ runner }) => `Job status ${runner.jobExecutionStatus}`,
-          },
-        },
-        mountExtended,
-      );
-
-      expect(findCell({ fieldKey: 'status' }).text()).toContain(
-        `Job status ${mockRunners[0].jobExecutionStatus}`,
-      );
-    });
-
     it('Render #runner-name slot in "summary" cell', () => {
       createComponent(
         {

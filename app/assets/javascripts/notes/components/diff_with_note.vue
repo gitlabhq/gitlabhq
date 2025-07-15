@@ -1,8 +1,7 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
@@ -12,6 +11,7 @@ import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { isCollapsed } from '~/diffs/utils/diff_file';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
@@ -78,6 +78,12 @@ export default {
 
       return this.positionType === FILE_DIFF_POSITION_TYPE;
     },
+    linkedFileDiscussionPath() {
+      const { discussion_path: discussionPath } = this.discussion;
+      const file = this.discussion.diff_file?.file_hash;
+
+      return discussionPath && file ? mergeUrlParams({ file }, discussionPath) : discussionPath;
+    },
     showHeader() {
       if (this.discussion.diff_file) return true;
 
@@ -110,7 +116,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchDiscussionDiffLines']),
+    ...mapActions(useNotes, ['fetchDiscussionDiffLines']),
     fetchDiff() {
       this.error = false;
       this.fetchDiscussionDiffLines(this.discussion)
@@ -123,7 +129,6 @@ export default {
       return line.replace(FIRST_CHAR_REGEX, '');
     },
   },
-  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 
@@ -131,14 +136,14 @@ export default {
   <div :class="{ 'text-file': isTextFile }" class="diff-file file-holder">
     <diff-file-header
       v-if="showHeader"
-      :discussion-path="discussion.discussion_path"
+      :discussion-path="linkedFileDiscussionPath"
       :diff-file="backfilledDiffFile"
       :can-current-user-fork="false"
       class="gl-border gl-border-section"
       :expanded="!isCollapsed"
     />
     <div v-if="isTextFile" class="diff-content">
-      <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">
+      <table class="code js-syntax-highlight code-syntax-highlight-theme">
         <template v-if="!isFileDiscussion">
           <template v-if="hasTruncatedDiffLines">
             <tr

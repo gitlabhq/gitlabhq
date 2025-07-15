@@ -519,4 +519,81 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
     end
   end
+
+  describe '#warn_about_potential_pii_tracking' do
+    let(:file_diff) do
+      [
+        "+additional_properties: {",
+        "+  property: 'user_email'}",
+        "+  additional_properties = {",
+        "+  property: 'user_email'",
+        "+}"
+      ]
+    end
+
+    before do
+      allow(fake_helper).to receive(:added_files).and_return([])
+      allow(fake_helper).to receive(:modified_files).and_return([])
+      allow(fake_helper).to receive(:changed_lines).with(anything).and_return(file_diff)
+      allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
+      allow(analytics_instrumentation.project_helper).to receive(:file_lines).and_return(file_diff.map { |line| line.delete_prefix('+') })
+    end
+
+    subject(:warn_about_potential_pii_tracking) { analytics_instrumentation.warn_about_potential_pii_tracking }
+
+    shared_examples 'correct pii warning' do
+      it 'adds suggestions to files with new additional properties' do
+        expect(analytics_instrumentation).to receive(:markdown).twice
+
+        warn_about_potential_pii_tracking
+      end
+
+      context 'when no new additional properties are added' do
+        let(:file_diff) { [] }
+
+        it 'does not add suggestions' do
+          expect(analytics_instrumentation).not_to receive(:markdown)
+
+          warn_about_potential_pii_tracking
+        end
+      end
+    end
+
+    context 'with added file' do
+      let(:added_file) { 'lib/new.rb' }
+
+      before do
+        allow(fake_helper).to receive(:added_files).and_return([added_file])
+      end
+
+      it_behaves_like 'correct pii warning'
+    end
+
+    context 'with changed file' do
+      let(:changed_file) { 'lib/changed.rb' }
+
+      before do
+        allow(fake_helper).to receive(:modified_files).and_return([changed_file])
+        allow(fake_helper).to receive(:changed_lines).with(changed_file).and_return(file_diff)
+      end
+
+      it_behaves_like 'correct pii warning'
+    end
+
+    context 'with spec files' do
+      let(:added_spec) { 'spec/lib/new_spec.rb' }
+      let(:changed_spec) { 'spec/lib/changed_spec.rb' }
+
+      before do
+        allow(fake_helper).to receive(:added_files).and_return([added_spec])
+        allow(fake_helper).to receive(:modified_files).and_return([changed_spec])
+      end
+
+      it 'does not add suggestions' do
+        expect(analytics_instrumentation).not_to receive(:markdown)
+
+        warn_about_potential_pii_tracking
+      end
+    end
+  end
 end

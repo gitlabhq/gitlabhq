@@ -405,16 +405,27 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           expect(subject).to be_success
         end
 
-        context 'when bridge uses "depend" strategy' do
+        context 'when bridge has strategy: depend' do
           let(:trigger) do
             {
               trigger: { include: 'child-pipeline.yml', strategy: 'depend' }
             }
           end
 
-          it 'update the bridge job to running status' do
+          it 'updates the bridge status to `running`' do
             expect { subject }.to change { bridge.status }.from('pending').to('running')
-            expect(subject).to be_success
+          end
+        end
+
+        context 'when bridge has strategy: mirror' do
+          let(:trigger) do
+            {
+              trigger: { include: 'child-pipeline.yml', strategy: 'mirror' }
+            }
+          end
+
+          it 'updates the bridge status to `running`' do
+            expect { subject }.to change { bridge.status }.from('pending').to('running')
           end
         end
 
@@ -1009,6 +1020,100 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
       end
     end
+
+    context 'when trigger:include:artifact is used' do
+      let(:stub_config) { false }
+
+      let!(:build_job) { create(:ci_build, pipeline: upstream_pipeline, name: 'build') }
+
+      let!(:deploy_artifact) do
+        create(:ci_job_artifact, :public, :archive, job: build_job, expire_at: build_job.artifacts_expire_at)
+      end
+
+      let(:trigger) do
+        { trigger: { include: [{ job: 'build', artifact: 'deploy.yml' }] } }
+      end
+
+      before do
+        # We need to create a metadata artifact, otherwise we can't extract the deploy.yml artifact.
+        create(:ci_job_artifact, :metadata, :public, job: build_job, expire_at: build_job.artifacts_expire_at)
+        build_job.reload
+
+        allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
+          allow(reader).to receive(:read).with('deploy.yml', max_size: anything).and_return(artifact_content)
+        end
+      end
+
+      context 'when the artifact is a job definition' do
+        let(:artifact_content) do
+          <<~YAML
+            deploy:
+              script: run deploy
+          YAML
+        end
+
+        it 'creates the downstream pipeline successfully' do
+          expect { subject }.to change(Ci::Pipeline, :count).by(1)
+          expect(subject).to be_success
+
+          pipeline = subject.payload
+
+          expect(pipeline.builds.map(&:name)).to contain_exactly('deploy')
+        end
+      end
+
+      context 'when the artifact is an include definition' do
+        let(:artifact_content) do
+          <<~YAML
+            include: 'test.yml'
+          YAML
+        end
+
+        let(:test_content) do
+          <<~YAML
+            test:
+              script: run tests
+          YAML
+        end
+
+        before do
+          upstream_project.repository.create_file(
+            user, 'test.yml', test_content, message: 'message', branch_name: upstream_project.default_branch
+          )
+          upstream_pipeline.update!(sha: upstream_project.commit.id)
+        end
+
+        it 'creates the downstream pipeline successfully' do
+          expect { subject }.to change(Ci::Pipeline, :count).by(1)
+          expect(subject).to be_success
+
+          pipeline = subject.payload
+
+          expect(pipeline.builds.map(&:name)).to contain_exactly('test')
+        end
+
+        context 'when the include definition contains a variable' do
+          let(:artifact_content) do
+            <<~YAML
+              include: "$FILE_PATH.yml"
+            YAML
+          end
+
+          before do
+            upstream_project.variables.create!(key: 'FILE_PATH', value: 'test')
+          end
+
+          it 'creates the downstream pipeline successfully' do
+            expect { subject }.to change(Ci::Pipeline, :count).by(1)
+            expect(subject).to be_success
+
+            pipeline = subject.payload
+
+            expect(pipeline.builds.map(&:name)).to contain_exactly('test')
+          end
+        end
+      end
+    end
   end
 
   context 'when downstream pipeline creation fails with unexpected errors', :aggregate_failures do
@@ -1022,7 +1127,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     it 'drops the bridge without creating a pipeline' do
       expect { subject }
         .to raise_error(RuntimeError, /undefined failure/)
-        .and change { Ci::Pipeline.count }.by(0)
+        .and not_change { Ci::Pipeline.count }
 
       expect(bridge.reload).to be_failed
       expect(bridge.failure_reason).to eq('data_integrity_failure')

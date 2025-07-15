@@ -99,11 +99,19 @@ the immediate parent group.
 
 ## View groups
 
-To explore all public groups you are a member of:
+To explore all public or internal groups:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
 1. In the upper right, select **Explore groups**.
+
+## View groups you are a member of
+
+{{< history >}}
+
+- **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+
+{{< /history >}}
 
 To view groups where you have direct or indirect membership:
 
@@ -114,6 +122,8 @@ This page shows groups that you are a member of through:
 
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
+
+If the `your_work_groups_vue` feature flag is enabled, groups that you are a member of appear in the **Member** tab.
 
 ## View a group
 
@@ -228,7 +238,7 @@ When you leave a group:
 To leave a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
+1. On the group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave group**, then **Leave group** again.
 
 ## Delete a group
@@ -270,12 +280,20 @@ the deletion job will instead restore and unarchive the group, so the group will
 
 ### View groups pending deletion
 
+{{< history >}}
+
+- **Inactive** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+
+{{< /history >}}
+
 To view a list of the subgroups that are pending deletion in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Subgroups and projects**.
 
 Groups that are marked for deletion are labeled **Pending deletion**.
+
+If the `your_work_groups_vue` feature flag is enabled, groups marked for deletion appear in the **Inactive** tab.
 
 ## Delete a group immediately
 

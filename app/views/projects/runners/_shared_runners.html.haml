@@ -3,7 +3,7 @@
   count: @shared_runners_count,
   options: { data: { testid: 'available-shared-runners' } }) do |c|
   - c.with_actions do
-    #toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
+    #instance-runners-toggle-container{ data: toggle_shared_runners_settings_data(@project) }
   - c.with_description do
     %span{ data: { testid: 'shared-runners-description' } }
       - shared_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('ci/runners/runners_scope.md', anchor: 'instance-runners') }

@@ -1,0 +1,34 @@
+query MergeRequestsWidgetMetadata($duoCodeReviewBotUsername: String) {
+  currentUser {
+    id
+    reviewRequestedMergeRequests(
+      first: 1
+      sort: UPDATED_DESC
+      state: opened
+      reviewStates: [UNAPPROVED, UNREVIEWED, REVIEW_STARTED]
+    ) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+    assignedMergeRequests: authoredMergeRequests(
+      first: 1
+      sort: UPDATED_DESC
+      state: opened
+      includeAssigned: true
+      or: {
+        reviewerWildcard: NONE
+        onlyReviewerUsername: $duoCodeReviewBotUsername
+        reviewStates: [REVIEWED, REQUESTED_CHANGES]
+      }
+    ) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+  }
+}

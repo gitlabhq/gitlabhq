@@ -1,44 +1,30 @@
 # frozen_string_literal: true
 
+# Deprecated:
+#   Remove from MutationType during any major release.
 module Mutations
   module AlertManagement
     module PrometheusIntegration
-      class Create < PrometheusIntegrationBase
+      class Create < HttpIntegration::Create
         graphql_name 'PrometheusIntegrationCreate'
 
-        include FindsProject
+        field :integration,
+          Types::AlertManagement::PrometheusIntegrationType,
+          null: true,
+          description: "Newly created integration."
 
-        argument :project_path, GraphQL::Types::ID,
-          required: true,
-          description: 'Project to create the integration in.'
-
-        argument :active, GraphQL::Types::Boolean,
-          required: true,
-          description: 'Whether the integration is receiving alerts.'
+        argument :name, GraphQL::Types::String,
+          required: false,
+          description: 'Name of the integration.',
+          default_value: 'Prometheus'
 
         argument :api_url, GraphQL::Types::String,
           required: false,
-          description: 'Endpoint at which Prometheus can be queried.'
+          description: 'Endpoint at which Prometheus can be queried.',
+          deprecated: { reason: 'Feature removed in 16.0', milestone: '18.2' }
 
         def resolve(args)
-          project = authorized_find!(args[:project_path])
-
-          return integration_exists if project.prometheus_integration
-
-          result = ::Projects::Operations::UpdateService.new(
-            project,
-            current_user,
-            **integration_attributes(args),
-            **token_attributes
-          ).execute
-
-          response(project.prometheus_integration, result)
-        end
-
-        private
-
-        def integration_exists
-          response(nil, message: _('Multiple Prometheus integrations are not supported'))
+          super(args.merge(name: 'Prometheus', type_identifier: :prometheus))
         end
       end
     end

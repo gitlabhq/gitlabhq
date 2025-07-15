@@ -68,14 +68,14 @@ describe('Deploy freeze table', () => {
 
       it('displays data', () => {
         const tableRows = findDeployFreezeTable().findAll('tbody tr');
-        expect(tableRows.length).toBe(freezePeriodsFixture.length);
+        expect(tableRows).toHaveLength(freezePeriodsFixture.length);
         expect(findEmptyFreezePeriods().exists()).toBe(false);
         expect(findEditDeployFreezeButton().exists()).toBe(true);
       });
 
       it('displays correct count', () => {
         const tableRows = findDeployFreezeTable().findAll('tbody tr');
-        expect(tableRows.length).toBe(freezePeriodsFixture.length);
+        expect(tableRows).toHaveLength(freezePeriodsFixture.length);
         expect(findCount().text()).toBe('3');
       });
 

@@ -120,7 +120,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          within_testid("group-overview-item-#{public_project.id}") do
+          within_testid("groups-list-item-#{public_project.id}") do
             click_button _('Less restrictive visibility')
           end
 
@@ -171,6 +171,40 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
 
         expect(page).to have_content(s_('GroupsEmptyState|There are no subgroups or projects in this group'))
         expect(page).to have_content(content)
+      end
+    end
+
+    describe 'tab frontend routing' do
+      context 'when route is not prefixed with group' do
+        before do
+          group.add_developer(user)
+          sign_in(user)
+          visit group_path(group)
+        end
+
+        it 'still allows for tab navigation and reloading', :js do
+          click_link _('Shared projects')
+          wait_for_requests
+          page.refresh
+
+          expect(page).to have_link('Shared projects')
+        end
+      end
+
+      context 'when route is prefixed with group' do
+        before do
+          group.add_developer(user)
+          sign_in(user)
+          visit group_canonical_path(group)
+        end
+
+        it 'still allows for tab navigation and reloading', :js do
+          click_link _('Shared projects')
+          wait_for_requests
+          page.refresh
+
+          expect(page).to have_link('Shared projects')
+        end
       end
     end
   end

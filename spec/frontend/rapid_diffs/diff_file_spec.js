@@ -12,6 +12,7 @@ describe('DiffFile Web Component', () => {
   `;
   let app;
   let adapter;
+  let adapterMountedCleanup;
 
   const getDiffElement = () => document.querySelector('[id=foo]');
   const getWebComponentElement = () => document.querySelector('diff-file');
@@ -29,7 +30,10 @@ describe('DiffFile Web Component', () => {
     },
     visible: jest.fn(),
     invisible: jest.fn(),
-    mounted: jest.fn(),
+    mounted: jest.fn((onUnmounted) => {
+      adapterMountedCleanup = jest.fn();
+      onUnmounted(adapterMountedCleanup);
+    }),
   });
 
   const initRapidDiffsApp = (currentAdapter = createDefaultAdapter(), appData = {}) => {
@@ -77,6 +81,10 @@ describe('DiffFile Web Component', () => {
     customElements.define('diff-file', DiffFile);
   });
 
+  beforeEach(() => {
+    adapterMountedCleanup = undefined;
+  });
+
   it('observes diff element', () => {
     mount();
     expect(app.observe).toHaveBeenCalledWith(getWebComponentElement());
@@ -98,6 +106,7 @@ describe('DiffFile Web Component', () => {
     const element = getWebComponentElement();
     document.body.innerHTML = '';
     expect(app.unobserve).toHaveBeenCalledWith(element);
+    expect(adapterMountedCleanup).toHaveBeenCalled();
   });
 
   it('can self replace', () => {
@@ -162,7 +171,7 @@ describe('DiffFile Web Component', () => {
         <diff-file data-file-data="{}"><div></div></diff-file>
       `;
       const instances = DiffFile.getAll();
-      expect(instances.length).toBe(2);
+      expect(instances).toHaveLength(2);
       instances.forEach((instance) => expect(instance).toBeInstanceOf(DiffFile));
       // properly run destruction callbacks
       instances.forEach((instance) => instance.mount(app));

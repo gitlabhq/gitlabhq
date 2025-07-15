@@ -25,6 +25,7 @@ const createComponent = ({
   isActive = false,
   preventRedirect = false,
   fullPath = 'gitlab-org/issuable-project-path',
+  hiddenMetadataKeys = [],
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -37,6 +38,7 @@ const createComponent = ({
       isActive,
       preventRedirect,
       fullPath,
+      hiddenMetadataKeys,
     },
     slots,
     stubs: {
@@ -377,7 +379,6 @@ describe('IssuableItem', () => {
       const confidentialContainer = wrapper.findByTestId('confidential-icon-container');
 
       expect(confidentialContainer.attributes('title')).toBe('Confidential');
-      expect(confidentialContainer.attributes('aria-label')).toBe('Confidential');
     });
 
     it('renders spam icon when issuable is hidden', () => {
@@ -579,9 +580,10 @@ describe('IssuableItem', () => {
         });
         const statusEl = findStatusEl();
         const statusBadge = statusEl.findComponent(GlBadge);
+        const statusBadgeWrapper = statusEl.find('button');
 
         expect(statusBadge.exists()).toBe(true);
-        expect(statusBadge.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
+        expect(statusBadgeWrapper.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
       });
 
       it('does not render a tooltip if the issuable doesn\t have a mergedAt value', () => {
@@ -598,9 +600,10 @@ describe('IssuableItem', () => {
         });
         const statusEl = findStatusEl();
         const statusBadge = statusEl.findComponent(GlBadge);
+        const statusBadgeWrapper = statusEl.find('button');
 
         expect(statusBadge.exists()).toBe(true);
-        expect(statusBadge.attributes('title')).toBe('');
+        expect(statusBadgeWrapper.attributes('title')).toBe('');
       });
 
       it('renders issuable status without badge if open', () => {
@@ -718,6 +721,82 @@ describe('IssuableItem', () => {
       expect(findIssuableTitleLink().attributes().id).toBe(
         `listItem-${'gitlab-org/test-project-path'}/${getIdFromGraphQLId(mockIssuable.id)}`,
       );
+    });
+
+    describe('when passed hiddenMetadataKeys', () => {
+      describe('labels visibility with hiddenMetadataKeys', () => {
+        it('shows labels when not in hiddenMetadataKeys', () => {
+          wrapper = createComponent({
+            hiddenMetadataKeys: [],
+          });
+
+          const labelsEl = wrapper.findAllComponents(GlLabel);
+          expect(labelsEl).toHaveLength(mockLabels.length);
+        });
+
+        it('hides labels when "labels" is in hiddenMetadataKeys', () => {
+          wrapper = createComponent({
+            hiddenMetadataKeys: ['labels'],
+          });
+
+          const labelsEl = wrapper.findAllComponents(GlLabel);
+          expect(labelsEl).toHaveLength(0);
+        });
+      });
+
+      describe('assignees visibility with hiddenMetadataKeys', () => {
+        it('shows assignees when not in hiddenMetadataKeys', () => {
+          wrapper = createComponent({
+            hiddenMetadataKeys: [],
+          });
+
+          const assigneesEl = wrapper.findComponent(IssuableAssignees);
+          expect(assigneesEl.exists()).toBe(true);
+        });
+
+        it('hides assignees when "assignee" is in hiddenMetadataKeys', () => {
+          wrapper = createComponent({
+            hiddenMetadataKeys: ['assignee'],
+          });
+
+          const assigneesEl = wrapper.findComponent(IssuableAssignees);
+          expect(assigneesEl.exists()).toBe(false);
+        });
+      });
+
+      describe('blocking relationships visibility with hiddenMetadataKeys', () => {
+        it('shows relationship icons when not in hiddenMetadataKeys and conditions are met', async () => {
+          const issuableWithLinkedItems = {
+            ...mockIssuable,
+            widgets: [mockLinkedItems],
+            isOpen: true,
+            hasBlockingRelationships: true,
+          };
+          wrapper = createComponent({
+            issuable: issuableWithLinkedItems,
+            hiddenMetadataKeys: [],
+          });
+          await waitForPromises();
+
+          expect(findRelationshipIcons().exists()).toBe(true);
+        });
+
+        it('hides relationship icons when "blocked" is in hiddenMetadataKeys', async () => {
+          const issuableWithLinkedItems = {
+            ...mockIssuable,
+            widgets: [mockLinkedItems],
+            isOpen: true,
+            hasBlockingRelationships: true,
+          };
+          wrapper = createComponent({
+            issuable: issuableWithLinkedItems,
+            hiddenMetadataKeys: ['blocked'],
+          });
+          await waitForPromises();
+
+          expect(findRelationshipIcons().exists()).toBe(false);
+        });
+      });
     });
   });
 

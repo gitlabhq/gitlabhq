@@ -211,7 +211,7 @@ To configure the actions:
 1. Optional. To customize the incident, from the **Incident template**, select a template to be
    appended to the [incident summary](incidents.md#summary).
    If the dropdown list is empty,
-   [create an issue template](../../user/project/description_templates.md#create-an-issue-template) first.
+   [create an issue template](../../user/project/description_templates.md#create-a-description-template) first.
 1. Optional. To send [an email notification](paging.md#email-notifications-for-alerts), select the
    **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
 1. Select **Save changes**.

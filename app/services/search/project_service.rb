@@ -9,9 +9,9 @@ module Search
 
     attr_accessor :project, :current_user, :params
 
-    def initialize(user, project_or_projects, params)
+    def initialize(user, project, params)
       @current_user = user
-      @project = project_or_projects
+      @project = project
       @params = params.dup
     end
 
@@ -22,7 +22,8 @@ module Search
         repository_ref: params[:repository_ref],
         order_by: params[:order_by],
         sort: params[:sort],
-        filters: filters
+        filters: filters,
+        source: params[:source]
       )
     end
 

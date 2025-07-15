@@ -299,7 +299,7 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(global.window.location.href).not.toContain('?group_by=epic');
-      expect(wrapper.emitted('updateBoard').length).toBe(1);
+      expect(wrapper.emitted('updateBoard')).toHaveLength(1);
       expect(wrapper.emitted('updateBoard')).toEqual([
         [
           {

@@ -39,7 +39,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
         placeholder_user_id: placeholder_user.id,
         source_user_identifier: 1,
         source_username: 'User A',
-        source_hostname: project.import_url,
+        source_hostname: project.safe_import_url,
         namespace_id: project.root_ancestor.id
       )
     end
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       it 'is idempotent' do
         allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
-        expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+        expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
 
       context 'when the body has user mentions' do
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       it 'is idempotent' do
         allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
-        expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+        expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
 
       context 'when the body has user mentions' do

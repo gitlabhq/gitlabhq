@@ -19,7 +19,9 @@ exports[`FileSha renders 1`] = `
         icon="copy-to-clipboard"
         id="reference-0"
         size="small"
+        tag="button"
         title="Copy SHA"
+        type="button"
         variant="default"
       />
     </div>

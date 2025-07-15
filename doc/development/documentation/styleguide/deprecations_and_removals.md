@@ -13,9 +13,11 @@ If a feature is not generally available, you can delete the content outright ins
 
 {{< alert type="note" >}}
 
-REST API docs [have a separate deprecation style](../restful_api_styleguide.md#deprecations).
-The GraphQL API [has a separate deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process),
-and [style for the deprecation reason](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
+In the following cases, a separate process applies:
+
+- [Documentation redirects](../redirects.md) to move, rename, or delete pages not related to feature deprecation.
+- [REST API deprecations](../restful_api_styleguide.md#deprecations).
+- [GraphQL API deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process) and [deprecation reasons](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
 
 {{< /alert >}}
 
@@ -115,7 +117,7 @@ To remove a page:
 
    ```markdown
    ---
-   stage: Foundations
+   stage: AI-powered
    group: Global Search
    info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
    remove_date: '2022-08-02'

@@ -120,7 +120,7 @@ GEM
       unparser
     public_suffix (5.0.1)
     racc (1.8.1)
-    rack (2.2.10)
+    rack (2.2.17)
     rack-test (2.1.0)
       rack (>= 1.3)
     rails-dom-testing (2.0.3)
@@ -285,7 +285,7 @@ CHECKSUMS
   proc_to_ast (0.2.0) sha256=4bb446419c3878c21d8792f8a129616690168f636b9e460b5a0ed26dd6680bbe
   public_suffix (5.0.1) sha256=65603917ff4ecb32f499f42c14951aeed2380054fa7fc51758fc0a8d455fe043
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
-  rack (2.2.10) sha256=e4a5ee3f8f2ba45614a4498114d6dc7da1c51a0f0dd810d891906ea71d3aa72b
+  rack (2.2.17) sha256=5fe02a1ca80d6fb2271dba00985ee2962d6f5620b6f46dfed89f5301ac4699dd
   rack-test (2.1.0) sha256=0c61fc61904049d691922ea4bb99e28004ed3f43aa5cfd495024cc345f125dfb
   rails-dom-testing (2.0.3) sha256=b140c4f39f6e609c8113137b9a60dfc2ecb89864e496f87f23a68b3b8f12d8d1
   rails-html-sanitizer (1.6.1) sha256=e3d2fb10339f03b802e39c7f6cac28c54fd404d3f65ae39c31cca9d150c5cbf0

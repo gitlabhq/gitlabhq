@@ -14,6 +14,7 @@ module Types
 
         field :milestone,
           ::Types::MilestoneType,
+          skip_type_authorization: [:read_milestone],
           null: true,
           description: 'Milestone of the work item.'
       end

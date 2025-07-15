@@ -10,7 +10,7 @@ title: Introduction to ClickHouse use and table design
 The [intro](https://clickhouse.com/docs/en/intro) page is quite good to give an overview of ClickHouse.
 
 ClickHouse has a lot of differences from traditional OLTP (online transaction processing) databases like PostgreSQL. The underlying architecture is a bit different, and the processing is a lot more CPU-bound than in traditional databases.
-ClickHouse is a log-centric database where immutability is a key component. The advantages of such approaches are well documented [[1]](https://www.odbms.org/2015/10/the-rise-of-immutable-data-stores/) however it also makes updates much harder. See ClickHouse [documentation](https://clickhouse.com/docs/en/guides/developer/mutations) for operations that provide UPDATE/DELETE support. It is noticeable that these operations are supposed to be non-frequent.
+ClickHouse is a log-centric database where immutability is a key component. The advantages of such approaches are well documented; for more information, see [The rise of immutable data stores](https://www.odbms.org/2015/10/the-rise-of-immutable-data-stores/). However, this also makes updates much harder. See ClickHouse [documentation](https://clickhouse.com/docs/en/guides/developer/mutations) for operations that provide UPDATE/DELETE support. It is noticeable that these operations are supposed to be non-frequent.
 
 This distinction is important while designing tables. Either:
 

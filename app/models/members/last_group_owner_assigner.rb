@@ -30,6 +30,6 @@ class LastGroupOwnerAssigner
   end
 
   def owners
-    @owners ||= group.member_owners_excluding_project_bots
+    @owners ||= group.member_owners_excluding_project_bots_and_service_accounts
   end
 end

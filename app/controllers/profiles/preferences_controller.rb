@@ -64,6 +64,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :keyboard_shortcuts_enabled,
       :markdown_surround_selection,
       :markdown_automatic_lists,
+      :markdown_maintain_indentation,
       :use_new_navigation,
       :enabled_following,
       :use_work_items_view,

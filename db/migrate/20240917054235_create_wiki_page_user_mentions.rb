@@ -4,8 +4,6 @@
 # for more information on how to write migrations for GitLab.
 
 class CreateWikiPageUserMentions < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
-
   milestone '17.5'
 
   def up

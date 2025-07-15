@@ -7,9 +7,13 @@ RSpec.describe Gitlab::PDF::Header, feature_category: :vulnerability_management 
 
   let(:page_number) { '12345' }
   let(:logo) { Rails.root.join('app/assets/images/gitlab_logo.png') }
+  let_it_be(:project) { create(:project) }
 
   describe '.render' do
-    subject(:render) { described_class.render(pdf, page: page_number, height: 123) }
+    subject(:render) do
+      described_class.render(pdf, project.name, page: page_number,
+        height: 123)
+    end
 
     let(:mock_instance) { instance_double(described_class) }
 
@@ -21,13 +25,15 @@ RSpec.describe Gitlab::PDF::Header, feature_category: :vulnerability_management 
     it 'creates a new instance and calls render on it' do
       render
 
-      expect(described_class).to have_received(:new).with(pdf, page_number, 123).once
+      expect(described_class).to have_received(:new).with(pdf, page_number, 123, project.name).once
       expect(mock_instance).to have_received(:render).exactly(:once)
     end
   end
 
   describe '#render' do
-    subject(:render_header) { described_class.render(pdf, page: page_number) }
+    subject(:render_header) do
+      described_class.render(pdf, project.name, page: page_number, height: 123)
+    end
 
     before do
       allow(pdf).to receive(:image).and_call_original

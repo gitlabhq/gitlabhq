@@ -1,5 +1,5 @@
 ---
-description: Agents send the register request to KAS periodically (default every 5 min). KAS registers the agent to keep track of connected agents.
+description: Gitlab Agent for Kubernetes (agentk) registered at KAS
 internal_events: true
 action: register_agent_at_kas
 identifiers:

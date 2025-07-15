@@ -8,11 +8,13 @@ product_categories:
 value_type: number
 status: active
 time_frame: 7d
-data_source: redis_hll
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-  - p_ci_templates_implicit_auto_devops
+data_source: internal_events
+events:
+  - name: ci_template_included
+    unique: project.id
+    filter:
+      label: auto_devops
+      property: 'true'
 tiers:
 - free
 - premium

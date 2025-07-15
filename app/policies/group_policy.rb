@@ -134,7 +134,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { (admin | owner) & archive_group_enabled }.enable :archive_group
 
-  condition(:archived?, scope: :subject) { @subject.self_or_ancestor_archived? }
+  condition(:archived?, scope: :subject) { @subject.self_or_ancestors_archived? }
   condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
   rule { archived? & archive_group_enabled }.policy do
@@ -183,6 +183,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :guest_access
     enable :read_release
     enable :award_emoji
+  end
+
+  rule { guest | can?(:admin_issue) }.policy do
+    enable :set_new_issue_metadata
+    enable :set_new_work_item_metadata
   end
 
   rule { planner }.policy do

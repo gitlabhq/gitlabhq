@@ -7,7 +7,6 @@ import Tracking from '~/tracking';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 import { findCrmContactsWidget, newWorkItemFullPath, newWorkItemId } from '../utils';
 
@@ -113,7 +112,9 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.group?.contacts?.nodes;
+        return data.group?.contacts?.nodes.filter(
+          (contact) => contact.active || this.selectedItemIds.includes(contact.id),
+        );
       },
       error() {
         this.$emit(
@@ -209,17 +210,11 @@ export default {
       }
 
       if (this.createFlow) {
-        this.$apollo.mutate({
-          mutation: updateNewWorkItemMutation,
-          variables: {
-            input: {
-              workItemType: this.workItemType,
-              fullPath: this.fullPath,
-              crmContacts: newSelectedItems,
-            },
-          },
+        this.$emit('updateWidgetDraft', {
+          workItemType: this.workItemType,
+          fullPath: this.fullPath,
+          crmContacts: newSelectedItems,
         });
-
         this.updateInProgress = false;
         return;
       }

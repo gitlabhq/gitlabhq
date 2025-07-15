@@ -95,9 +95,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_blob_path(items)
     items = by_no_review_requested_or_only_user(items)
     items = by_review_states_or_no_reviewer(items)
-    items = by_valid_or_no_reviewers(items)
-
-    by_approved(items)
+    by_valid_or_no_reviewers(items)
   end
 
   def filter_negated_items(items)
@@ -124,6 +122,7 @@ class MergeRequestsFinder < IssuableFinder
 
   def by_author(items)
     MergeRequests::AuthorFilter.new(
+      current_user: current_user,
       params: params
     ).filter(items)
   end
@@ -224,17 +223,6 @@ class MergeRequestsFinder < IssuableFinder
       .execute(items)
   end
   # rubocop: enable CodeReuse/Finder
-
-  def by_approved(items)
-    approved_param = Gitlab::Utils.to_boolean(params.fetch(:approved, nil))
-    return items if approved_param.nil? || Feature.disabled?(:mr_approved_filter, type: :ops)
-
-    if approved_param
-      items.with_approvals
-    else
-      items.without_approvals
-    end
-  end
 
   def by_deployments(items)
     env = params[:environment]

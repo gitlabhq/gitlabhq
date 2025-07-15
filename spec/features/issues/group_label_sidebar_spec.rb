@@ -8,17 +8,16 @@ RSpec.describe 'Group label on issue', :with_license, feature_category: :team_pl
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     group = create(:group)
     project = create(:project, :public, namespace: group)
     feature = create(:group_label, group: group, title: 'feature')
     issue = create(:labeled_issue, project: project, labels: [feature])
-    label_link = project_issues_path(project, label_name: [feature.name])
 
     visit project_issue_path(project, issue)
 
-    link = find('.issuable-show-labels a')
-
-    expect(CGI.unescape(link[:href])).to include(CGI.unescape(label_link))
+    expect(page).to have_link(feature.title,
+      href: CGI.unescape(project_issues_path(project, label_name: [feature.name])))
   end
 end

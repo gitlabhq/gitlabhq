@@ -12,8 +12,10 @@ class MergeRequests::DeleteSourceBranchWorker
   idempotent!
 
   def perform(merge_request_id, source_branch_sha, user_id)
-    merge_request = MergeRequest.find(merge_request_id)
-    user = User.find(user_id)
+    merge_request = MergeRequest.find_by_id(merge_request_id)
+    user = User.find_by_id(user_id)
+
+    return unless merge_request && user
 
     # Source branch changed while it's being removed
     return if merge_request.source_branch_sha != source_branch_sha
@@ -22,6 +24,5 @@ class MergeRequests::DeleteSourceBranchWorker
             .execute(merge_request)
 
     ::Projects::DeleteBranchWorker.new.perform(merge_request.source_project.id, user_id, merge_request.source_branch)
-  rescue ActiveRecord::RecordNotFound
   end
 end

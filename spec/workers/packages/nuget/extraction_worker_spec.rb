@@ -95,14 +95,6 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
         it_behaves_like 'handling error',
           error_class: ::Packages::Nuget::UpdatePackageFromMetadataService::ProtectedPackageError,
           error_message: "Package 'DummyProject.DummyPackage' with version '1.0.0' is protected"
-
-        context 'when feature flag :packages_protected_packages_nuget is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_nuget: false)
-          end
-
-          it_behaves_like 'updates package and package file'
-        end
       end
 
       where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :params, :shared_examples_name) do

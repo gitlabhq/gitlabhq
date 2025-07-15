@@ -11,7 +11,6 @@
 
 - if repository_file_tree_browser_enabled
   .gl-flex.navigation-root
-    #js-file-browser
     .gl-w-full.gl-min-w-0
       #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
         = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type

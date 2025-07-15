@@ -226,7 +226,7 @@ you use to provision and register new values.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags/_index.md) named `enforce_runner_token_expires_at`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
 {{< /history >}}
@@ -1067,13 +1067,14 @@ The artifact provenance metadata is generated in the
 [in-toto v0.1 Statement](https://github.com/in-toto/attestation/tree/v0.1.0/spec#statement) format.
 It contains a provenance predicate generated in the [SLSA 1.0 Provenance](https://slsa.dev/spec/v1.0/provenance) format.
 
-The following fields are populated by default:
+These fields are populated by default:
 
 | Field                                                             | Value |
 |-------------------------------------------------------------------|-------|
 | `_type`                                                           | `https://in-toto.io/Statement/v0.1` |
-| `subject.name`                                                    | The filename of the artifact. |
-| `subject.digest.sha256`                                           | The artifact's `sha256` checksum. |
+| `subject`                                                         | Set of software artifacts the metadata applies to |
+| `subject[].name`                                                  | The filename of the artifact. |
+| `subject[].sha256`                                                | The artifact's `sha256` checksum. |
 | `predicateType`                                                   | `https://slsa.dev/provenance/v1` |
 | `predicate.buildDefinition.buildType`                             | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v15.0.0 |
 | `predicate.runDetails.builder.id`                                 | A URI pointing to the runner details page, for example, `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
@@ -1089,6 +1090,74 @@ The following fields are populated by default:
 | `predicate.runDetails.metadata.invocationID`                      | The ID of the CI/CD job that triggered the build. |
 | `predicate.runDetails.metadata.startedOn`                         | The time when the build was started. This field is `RFC3339` formatted. |
 | `predicate.runDetails.metadata.finishedOn`                        | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
+
+A provenance statement should look similar to this example:
+
+```json
+{
+ "_type": "https://in-toto.io/Statement/v0.1",
+ "predicateType": "https://slsa.dev/provenance/v1",
+ "subject": [
+  {
+   "name": "x.txt",
+   "digest": {
+    "sha256": "ac097997b6ec7de591d4f11315e4aa112e515bb5d3c52160d0c571298196ea8b"
+   }
+  },
+  {
+   "name": "y.txt",
+   "digest": {
+    "sha256": "9eb634f80da849d828fcf42740d823568c49e8d7b532886134f9086246b1fdf3"
+   }
+  }
+ ],
+ "predicate": {
+  "buildDefinition": {
+   "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/2147fb44/PROVENANCE.md",
+   "externalParameters": {
+    "CI": "",
+    "CI_API_GRAPHQL_URL": "",
+    "CI_API_V4_URL": "",
+    "CI_COMMIT_AUTHOR": "",
+    "CI_COMMIT_BEFORE_SHA": "",
+    "CI_COMMIT_BRANCH": "",
+    "CI_COMMIT_DESCRIPTION": "",
+    "CI_COMMIT_MESSAGE": "",
+    [... additional environmental variables ...]
+    "entryPoint": "build-job",
+    "source": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement"
+   },
+   "internalParameters": {
+    "architecture": "amd64",
+    "executor": "docker+machine",
+    "job": "10340684631",
+    "name": "green-4.saas-linux-small-amd64.runners-manager.gitlab.com/default"
+   },
+   "resolvedDependencies": [
+    {
+     "uri": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement",
+     "digest": {
+      "sha256": "bdd2ecda9ef57b129c88617a0215afc9fb223521"
+     }
+    }
+   ]
+  },
+  "runDetails": {
+   "builder": {
+    "id": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement/-/runners/12270857",
+    "version": {
+     "gitlab-runner": "2147fb44"
+    }
+   },
+   "metadata": {
+    "invocationID": "10340684631",
+    "startedOn": "2025-06-13T07:25:13Z",
+    "finishedOn": "2025-06-13T07:25:40Z"
+   }
+  }
+ }
+}
+```
 
 ## Staging directory
 

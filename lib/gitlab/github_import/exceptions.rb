@@ -8,6 +8,8 @@ module Gitlab
       NotImplementedError = Class.new(StandardError)
 
       NoteableNotFound = Class.new(StandardError)
+
+      InvalidURLError = Class.new(StandardError)
     end
   end
 end

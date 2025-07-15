@@ -130,7 +130,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
         pronouns: 'they/them',
         pronunciation: 'test-user',
         job_title: 'Developer',
-        organization: 'GitLab',
+        user_detail_organization: 'GitLab',
         location: 'Remote',
         website_url: 'https://example.com',
         bio: 'Test bio')
@@ -176,6 +176,24 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
       expect(data[:include_private_contributions]).to eq(user.include_private_contributions?.to_s)
       expect(data[:achievements_enabled]).to eq(user.achievements_enabled.to_s)
       expect(data[:private_profile]).to eq(user.private_profile?.to_s)
+    end
+  end
+
+  describe '#delete_account_modal_data' do
+    it 'returns the correct data hash for the delete account modal' do
+      user = build_stubbed(:user, username: 'johndoe')
+      allow(user).to receive(:confirm_deletion_with_password?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, user_registration_path: '/users')
+      allow(Gitlab::CurrentSettings).to receive(:delay_user_account_self_deletion).and_return(true)
+
+      result = helper.delete_account_modal_data
+
+      expect(result).to eq(
+        action_url: '/users',
+        confirm_with_password: 'true',
+        username: 'johndoe',
+        delay_user_account_self_deletion: 'true'
+      )
     end
   end
 

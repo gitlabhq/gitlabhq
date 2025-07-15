@@ -38,7 +38,7 @@ RSpec.describe "Admin manages runner in admin section", :js, feature_category: :
       end
     end
 
-    it_behaves_like 'shows runner jobs tab' do
+    it_behaves_like 'shows runner jobs' do
       let(:job_count) { '1' }
       let(:job) { runner_job }
     end

@@ -178,7 +178,7 @@ If the import is successful, the new compliance framework appears in the list. A
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186525) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `enable_standards_adherence_dashboard_v2`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186525) in GitLab 17.11 [with a flag](../../../administration/feature_flags/_index.md) named `enable_standards_adherence_dashboard_v2`. Enabled by default.
 
 {{< /history >}}
 

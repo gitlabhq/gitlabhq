@@ -17,8 +17,9 @@ errors and delayed updates. Your team needs to create a web application that can
 - Prevent common data entry errors, like negative prices or quantities.
 - Provide a foundation for future customer-facing features.
 
-This tutorial guides you through creating and debugging a [Python](https://www.python.org/)
-web application with a database backend that meets these requirements.
+This tutorial is part one in a series, and guides you through creating and debugging
+a [Python](https://www.python.org/) web application with a database backend
+that meets these requirements.
 
 You'll use [GitLab Duo Chat](../../gitlab_duo_chat/_index.md)
 and [GitLab Duo Code Suggestions](../../project/repository/code_suggestions/_index.md)

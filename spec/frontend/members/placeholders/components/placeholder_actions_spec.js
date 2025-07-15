@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 
 import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
+import BypassConfirmationMessage from '~/members/placeholders/components/bypass_confirmation_message.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import importSourceUserReassignMutation from '~/members/placeholders/graphql/mutations/reassign.mutation.graphql';
@@ -320,7 +321,7 @@ describe('PlaceholderActions', () => {
     });
   });
 
-  describe('when status is PENDING_REASSIGNMENT and allowBypassPlaceholderConfirmation is true', () => {
+  describe('when status is PENDING_REASSIGNMENT and allowBypassPlaceholderConfirmation is passed', () => {
     beforeEach(async () => {
       createComponent({
         props: {
@@ -330,15 +331,16 @@ describe('PlaceholderActions', () => {
           },
         },
         provide: {
-          allowBypassPlaceholderConfirmation: true,
+          allowBypassPlaceholderConfirmation: 'admin',
         },
       });
       await waitForPromises();
     });
 
-    it('renders confirm modal', () => {
+    it('renders confirm modal with message', () => {
       expect(findConfirmModal().exists()).toBe(true);
       expect(findConfirmModal().props('title')).toBe('Confirm reassignment');
+      expect(findConfirmModal().findComponent(BypassConfirmationMessage).exists()).toBe(true);
     });
 
     describe('when "Do not reassign" is selected', () => {

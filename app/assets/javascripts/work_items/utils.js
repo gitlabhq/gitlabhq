@@ -3,6 +3,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
@@ -35,6 +36,7 @@ import {
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from './constants';
 
@@ -283,7 +285,12 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
 export const newWorkItemPath = ({ fullPath, isGroup = false, workItemType, query = '' }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  const type = NAME_TO_ROUTE_MAP[workItemType] || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
+  // We have a special case to redirect to /groups/my-group/-/work_items/new
+  // instead of /groups/my-group/-/issues/new
+  const type =
+    isGroup && workItemType === WORK_ITEM_TYPE_NAME_ISSUE
+      ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
+      : NAME_TO_ROUTE_MAP[workItemType] || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
   return `${domain}/${basePath}/-/${type}/new${query}`;
 };
 
@@ -399,10 +406,13 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
   );
 };
 
-export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
-  if (!workItemType || !fullPath) return '';
-
-  const allowedKeysInQueryParamString = ['vulnerability_id', 'discussion_to_resolve'];
+export const getAutosaveKeyQueryParamString = () => {
+  const allowedKeysInQueryParamString = [
+    'vulnerability_id',
+    'discussion_to_resolve',
+    'issue[issue_type]',
+    'issuable_template',
+  ];
   const queryParams = new URLSearchParams(window.location.search);
   // Remove extra params from queryParams
   const allKeys = Array.from(queryParams.keys());
@@ -411,12 +421,79 @@ export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
       queryParams.delete(key);
     }
   }
-  const queryParamString = queryParams.toString();
+
+  return queryParams.toString();
+};
+
+export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType, relatedItemId }) => {
+  if (!workItemType || !fullPath) return '';
+
+  const relatedId = getIdFromGraphQLId(relatedItemId);
+  const queryParamString = getAutosaveKeyQueryParamString();
+  let initialKey = `new-${fullPath}-${workItemType.toLowerCase()}`;
+
+  if (relatedId) {
+    initialKey = `${initialKey}-related-${relatedId}`;
+  }
 
   if (queryParamString) {
-    return `new-${fullPath}-${workItemType.toLowerCase()}-${queryParamString}-draft`;
+    initialKey = `${initialKey}-${queryParamString}`;
   }
-  return `new-${fullPath}-${workItemType.toLowerCase()}-draft`;
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `${initialKey}-draft`;
+};
+
+export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, relatedItemId }) => {
+  if (!fullPath) return '';
+
+  const relatedId = getIdFromGraphQLId(relatedItemId);
+  const queryParamString = getAutosaveKeyQueryParamString();
+  let initialKey = `new-${fullPath}`;
+
+  if (relatedId) {
+    initialKey = `${initialKey}-related-${relatedId}`;
+  }
+
+  if (queryParamString) {
+    initialKey = `${initialKey}-${queryParamString}`;
+  }
+
+  return `${initialKey}-widgets-draft`;
+};
+
+export const getWorkItemWidgets = (draftData) => {
+  if (!draftData?.workspace?.workItem) return {};
+
+  const widgets = {};
+  for (const widget of draftData.workspace.workItem.widgets || []) {
+    if (widget.type) {
+      widgets[widget.type] = widget;
+    }
+  }
+  widgets.TITLE = draftData.workspace.workItem.title;
+  widgets.TYPE = draftData.workspace.workItem.workItemType;
+
+  return widgets;
+};
+
+export const updateDraftWorkItemType = ({ fullPath, workItemType, relatedItemId }) => {
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+    fullPath,
+    relatedItemId,
+  });
+  const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
+  sharedCacheWidgets.TYPE = workItemType;
+  updateDraft(widgetsAutosaveKey, JSON.stringify(sharedCacheWidgets));
+};
+
+export const getDraftWorkItemType = ({ fullPath, relatedItemId }) => {
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+    fullPath,
+    relatedItemId,
+  });
+  const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
+  return sharedCacheWidgets.TYPE;
 };
 
 export const isItemDisplayable = (item, showClosed) => {

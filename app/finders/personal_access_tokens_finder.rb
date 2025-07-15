@@ -151,3 +151,5 @@ class PersonalAccessTokensFinder
     tokens.for_organization(params[:organization])
   end
 end
+
+PersonalAccessTokensFinder.prepend_mod_with('PersonalAccessTokensFinder')

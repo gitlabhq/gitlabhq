@@ -30,6 +30,7 @@ module RuboCop
           values: 'each_value'
         }.freeze
 
+        # @!method keys_or_values_first(node)
         def_node_matcher :keys_or_values_first, <<~PATTERN
           (send (send ({send const hash lvar} ...) ${:keys :values}) :first)
         PATTERN

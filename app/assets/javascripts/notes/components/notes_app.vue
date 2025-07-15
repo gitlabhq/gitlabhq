@@ -1,6 +1,5 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
 import { InternalEvents } from '~/tracking';
@@ -20,6 +19,7 @@ import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import { useNotes } from '~/notes/store/legacy_notes';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import noteQuery from '../graphql/note.query.graphql';
@@ -145,9 +145,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useNotes, [
       'isNotesFetched',
-      'discussions',
       'convertedDisscussionIds',
       'getNotesDataByProp',
       'isLoading',
@@ -159,6 +158,7 @@ export default {
       'timelineEnabled',
       'targetNoteHash',
     ]),
+    ...mapState(useNotes, { discussions: 'filteredDiscussions' }),
     sortDirDesc() {
       return this.sortDirection === constants.DESC;
     },
@@ -239,10 +239,7 @@ export default {
   mounted() {
     const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
-      parentElement.addEventListener('toggleAward', (event) => {
-        const { awardName, noteId } = event.detail;
-        this.toggleAward({ awardName, noteId });
-      });
+      parentElement.addEventListener('toggleAward', this.handleAward);
     }
 
     eventHub.$on('noteFormAddToReview', this.handleReviewTracking);
@@ -268,9 +265,13 @@ export default {
     eventHub.$off('noteFormStartReview', this.handleReviewTracking);
     eventHub.$off('noteFormAddToReview', this.handleReviewTracking);
     Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
+    const { parentElement } = this.$el;
+    if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
+      parentElement.removeEventListener('toggleAward', this.handleAward);
+    }
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useNotes, [
       'toggleAward',
       'setLastFetchedAt',
       'setTargetNoteHash',
@@ -281,6 +282,10 @@ export default {
       'setConfidentiality',
       'fetchNotes',
     ]),
+    handleAward(event) {
+      const { awardName, noteId } = event.detail;
+      this.toggleAward({ awardName, noteId });
+    },
     getDiscussionInSelection() {
       const selection = window.getSelection();
       if (selection.rangeCount <= 0) return null;
@@ -339,10 +344,10 @@ export default {
 
       return noteId;
     },
-    startReplying(discussionId) {
-      return this.convertToDiscussion(discussionId)
-        .then(this.$nextTick)
-        .then(() => eventHub.$emit('startReplying', discussionId));
+    async startReplying(discussionId) {
+      this.convertToDiscussion(discussionId);
+      await this.$nextTick();
+      eventHub.$emit('startReplying', discussionId);
     },
     setAiLoading(loading) {
       this.aiLoading = loading;

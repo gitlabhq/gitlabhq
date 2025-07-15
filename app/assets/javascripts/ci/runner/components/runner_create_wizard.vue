@@ -2,12 +2,14 @@
 import { RUNNER_TYPES } from '../constants';
 import RequiredFields from './runner_create_wizard_required_fields.vue';
 import OptionalFields from './runner_create_wizard_optional_fields.vue';
+import RunnerRegistration from './runner_create_wizard_registration.vue';
 
 export default {
   name: 'RunnerCreateWizard',
   components: {
     RequiredFields,
     OptionalFields,
+    RunnerRegistration,
   },
   props: {
     runnerType: {
@@ -15,12 +17,17 @@ export default {
       required: true,
       validator: (t) => RUNNER_TYPES.includes(t),
     },
+    runnersPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       currentStep: 1,
       tags: '',
       runUntagged: false,
+      newRunnerId: null,
     };
   },
   methods: {
@@ -33,6 +40,9 @@ export default {
     onRequiredFieldsUpdate(requiredFields) {
       this.tags = requiredFields.tags;
       this.runUntagged = requiredFields.runUntagged;
+    },
+    onGetNewRunnerId(runnerId) {
+      this.newRunnerId = runnerId;
     },
   },
   stepsTotal: 3,
@@ -57,5 +67,13 @@ export default {
     :runner-type="runnerType"
     @next="onNext"
     @back="onBack"
+    @onGetNewRunnerId="onGetNewRunnerId"
+  />
+  <runner-registration
+    v-else-if="currentStep === 3"
+    :current-step="currentStep"
+    :steps-total="$options.stepsTotal"
+    :runner-id="newRunnerId"
+    :runners-path="runnersPath"
   />
 </template>

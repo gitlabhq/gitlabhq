@@ -70,7 +70,11 @@ module Gitlab
 
         def exact_matches?(paths, exact_globs)
           exact_globs.any? do |glob|
-            paths.bsearch { |path| glob <=> path }
+            if glob.end_with?("/")
+              paths.bsearch { |path| path.start_with?(glob) }
+            else
+              paths.bsearch { |path| glob <=> path }
+            end
           end
         end
 

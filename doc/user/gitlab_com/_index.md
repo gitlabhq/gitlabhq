@@ -342,7 +342,7 @@ Merge requests enforce these maximums:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
 
 {{< /history >}}
@@ -362,7 +362,7 @@ close the affected merge request and create a new merge request.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `merge_requests_diff_commits_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diff_commits_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -457,8 +457,9 @@ documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
-are also informational headers with this response detailed in
-[rate limiting responses](#rate-limiting-responses).
+may also be informational headers with this response detailed in
+[rate limiting responses](#rate-limiting-responses). Rate limiting responses
+for the Projects, Groups, and Users APIs do not include informational headers.
 
 The following table describes the rate limits for GitLab.com:
 

@@ -227,7 +227,7 @@ describe('Dropdown Utils', () => {
 
       DropdownUtils.setDataValueIfSelected(null, '=', selected);
 
-      expect(FilteredSearchDropdownManager.addWordToInput.mock.calls.length).toEqual(1);
+      expect(FilteredSearchDropdownManager.addWordToInput.mock.calls).toHaveLength(1);
     });
 
     it('returns true when dataValue exists', () => {

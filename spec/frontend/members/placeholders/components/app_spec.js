@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
+import BypassConfirmationMessage from '~/members/placeholders/components/bypass_confirmation_message.vue';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import KeepAllAsPlaceholderModal from '~/members/placeholders/components/keep_all_as_placeholder_modal.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -232,17 +233,27 @@ describe('PlaceholdersTabApp', () => {
     );
   });
 
-  describe('when allowBypassPlaceholderConfirmation is true', () => {
+  describe('when allowBypassPlaceholderConfirmation is passed', () => {
     beforeEach(() => {
       createComponent({
-        provide: { allowBypassPlaceholderConfirmation: true },
+        provide: { allowBypassPlaceholderConfirmation: 'group_owner' },
       });
     });
 
-    it('renders alert with extra text', () => {
-      expect(findAlert().text()).toContain(
-        'Skip confirmation when administrators reassign placeholder users',
-      );
+    it('renders alert with message', () => {
+      expect(findAlert().findComponent(BypassConfirmationMessage).exists()).toBe(true);
+    });
+  });
+
+  describe('when allowBypassPlaceholderConfirmation is null', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: { allowBypassPlaceholderConfirmation: null },
+      });
+    });
+
+    it('renders alert with message', () => {
+      expect(findAlert().findComponent(BypassConfirmationMessage).exists()).toBe(false);
     });
   });
 

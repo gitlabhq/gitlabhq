@@ -249,18 +249,21 @@ export default {
           />
         </div>
         <div class="gl-p-2">
-          <help-center ref="helpCenter" :sidebar-data="sidebarData" />
-          <gl-button
-            v-if="isAdmin"
-            ref="adminAreaLink"
-            class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
-            data-testid="sidebar-admin-link"
-            :href="sidebarData.admin_url"
-            icon="admin"
-            size="small"
-          >
-            {{ $options.i18n.adminArea }}
-          </gl-button>
+          <div class="gl-flex gl-flex-col gl-justify-end">
+            <help-center ref="helpCenter" :sidebar-data="sidebarData" />
+
+            <gl-button
+              v-if="isAdmin"
+              ref="adminAreaLink"
+              class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
+              data-testid="sidebar-admin-link"
+              :href="sidebarData.admin_url"
+              icon="admin"
+              size="small"
+            >
+              {{ $options.i18n.adminArea }}
+            </gl-button>
+          </div>
           <extra-info />
         </div>
       </div>

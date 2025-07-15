@@ -59,7 +59,7 @@ describe('commits service', () => {
   it('calls axios get once per batch', async () => {
     await Promise.all([requestCommits(0), requestCommits(1), requestCommits(23)]);
 
-    expect(axios.get.mock.calls.length).toEqual(1);
+    expect(axios.get.mock.calls).toHaveLength(1);
   });
 
   it('updates the list of requested offsets', async () => {

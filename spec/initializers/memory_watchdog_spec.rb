@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe 'memory watchdog', feature_category: :cloud_connector do
+RSpec.describe 'memory watchdog', feature_category: :durability_metrics do
   shared_examples 'starts configured watchdog' do |configure_monitor_method|
     shared_examples 'configures and starts watchdog' do
       it "correctly configures and starts watchdog", :aggregate_failures do

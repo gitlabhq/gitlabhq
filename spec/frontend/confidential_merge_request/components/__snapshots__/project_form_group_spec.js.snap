@@ -14,13 +14,11 @@ exports[`Confidential merge request project form group component renders empty s
       No forks are available to you.
       <br />
       To protect this issue's confidentiality,
-      <a
-        class="help-link"
+      <gl-link-stub
         href="https://test.com"
-        target="_blank"
       >
         fork this project
-      </a>
+      </gl-link-stub>
       and set the fork's visibility to private.
       <gl-link-stub
         class="gl-bg-transparent gl-inline-block gl-p-0 gl-w-auto"

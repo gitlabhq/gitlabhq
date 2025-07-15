@@ -16,7 +16,7 @@ gitlab_dedicated: no
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
 To use GitLab Duo on a GitLab Self-Managed instance, you can do either of the following:
 
-- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by
+- Use the GitLab AI vendor models and the cloud-based AI gateway that's hosted by
   GitLab. This is the default option.
 - [Use GitLab Duo Self-Hosted to self-host the AI gateway, with a supported self-hosted LLM](../../administration/gitlab_duo_self_hosted/_index.md#set-up-a-gitlab-duo-self-hosted-infrastructure).
   This option provides full control over your data and security.
@@ -36,7 +36,14 @@ This page focuses on how to configure a GitLab Self-Managed instance if you're u
   Network firewalls can cause lag or delay.
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
-- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+
+  {{< alert type="note" >}}
+
+  You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
+
+  {{< /alert >}}
+
+- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
 
 GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](turn_on_off.md#turn-on-beta-and-experimental-features).
@@ -115,7 +122,6 @@ These tests are performed:
 | Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
-If you are experiencing any issues with the health check for:
+For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check for:
 
 - GitLab-hosted Duo, see the [troubleshooting page](troubleshooting.md).
-- GitLab Duo Self-Hosted, see the [troubleshooting section](../../administration/gitlab_duo_self_hosted/troubleshooting.md#gitlab-duo-health-check-is-not-working).

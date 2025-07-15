@@ -41,11 +41,12 @@ describe('WorkItemProjectsListbox', () => {
   const findAllDropdownItemsFor = (fullPath) => wrapper.findAllByTestId(`listbox-item-${fullPath}`);
   const findDropdownToggle = () => wrapper.findByTestId('base-dropdown-toggle');
 
-  const createComponent = async (
+  const createComponent = async ({
     isGroup = true,
     fullPath = 'group-a',
     selectedProjectFullPath = null,
-  ) => {
+    projectNamespaceFullPath = '',
+  } = {}) => {
     wrapper = mountExtended(WorkItemProjectsListbox, {
       apolloProvider: createMockApollo([
         [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
@@ -54,6 +55,7 @@ describe('WorkItemProjectsListbox', () => {
         fullPath,
         isGroup,
         selectedProjectFullPath,
+        projectNamespaceFullPath,
       },
     });
 
@@ -143,7 +145,11 @@ describe('WorkItemProjectsListbox', () => {
 
   describe('project level work items', () => {
     beforeEach(async () => {
-      await createComponent(false, 'group-a/example-project-a', 'group-a/example-project-a');
+      await createComponent({
+        isGroup: false,
+        fullPath: 'group-a/example-project-a',
+        selectedProjectFullPath: 'group-a/example-project-a',
+      });
       gon.current_username = 'root';
     });
 
@@ -161,6 +167,24 @@ describe('WorkItemProjectsListbox', () => {
     it('auto-selects the current project', async () => {
       await nextTick();
 
+      expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
+    });
+
+    it('auto-selects the current project for user-namespace when projectNamespaceFullPath is present', async () => {
+      const projectNamespaceFullPath = 'root';
+      await createComponent({
+        isGroup: false,
+        fullPath: 'root/example-project-a',
+        projectNamespaceFullPath,
+      });
+      await nextTick();
+
+      // Since `beforeEach` is already running the query once, we need to look
+      // for second call with expected variables.
+      expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenNthCalledWith(2, {
+        fullPath: projectNamespaceFullPath,
+        projectSearch: '',
+      });
       expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
     });
 

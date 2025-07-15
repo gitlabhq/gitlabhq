@@ -118,7 +118,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -207,7 +207,7 @@ For more information on the changes introduced between version 2.1.0 and version
 ### Geo installations
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -243,7 +243,7 @@ planned for release in 16.9.1.
   | All                     |  All                    | 16.10.2  |
 
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
-  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+  See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
   **Affected releases**:
 
@@ -265,7 +265,7 @@ planned for release in 16.9.1.
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -321,7 +321,7 @@ planned for release in 16.9.1.
     - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
 
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
-  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+  See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
   **Affected releases**:
 
@@ -343,7 +343,7 @@ planned for release in 16.9.1.
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -420,7 +420,7 @@ Specific information applies to Linux package installations:
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
-  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+  See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
   **Affected releases**:
 
@@ -433,7 +433,7 @@ Specific information applies to Linux package installations:
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -509,7 +509,7 @@ Specific information applies to Linux package installations:
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
-  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+  See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
   **Affected releases**:
 
@@ -522,7 +522,7 @@ Specific information applies to Linux package installations:
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -642,7 +642,7 @@ Specific information applies to installations using Geo:
 
 - After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
 
-  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+  See details of the problem and workaround in [issue 426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
 
   **Affected releases**:
 
@@ -665,7 +665,7 @@ Specific information applies to installations using Geo:
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
-  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+  See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
   **Affected releases**:
 
@@ -678,7 +678,7 @@ Specific information applies to installations using Geo:
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
-  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+  See details of the problem and workaround in [issue 457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
 
@@ -838,7 +838,7 @@ Specific information applies to installations using Geo:
 
 - After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
 
-  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+  See details of the problem and workaround in [issue 426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
 
   **Affected releases**:
 
@@ -864,7 +864,7 @@ Specific information applies to installations using Geo:
 
 - **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
 
-- A unique index was added to ensure that there’s no duplicate NPM packages in the database. If you have duplicate NPM packages, you need to upgrade to 16.1 first, or you are likely to run into the following error: `PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`.
+- A unique index was added to ensure that there's no duplicate NPM packages in the database. If you have duplicate NPM packages, you need to upgrade to 16.1 first, or you are likely to run into the following error: `PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`.
 
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
@@ -987,7 +987,7 @@ Specific information applies to installations using Geo:
 
 - After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
 
-  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+  See details of the problem and workaround in [issue 426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
 
   **Affected releases**:
 
@@ -1313,7 +1313,7 @@ Migrate by moving your existing configuration under the new structure. `git_data
 
 If you are running Gitaly cluster, [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
 Once this change is tested, proceed with your Gitaly nodes.
-If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
+If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 
@@ -1331,7 +1331,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
-1. Recommended, if you're running Gitaly Cluster. Reinstate Praefect [repository verification](../../administration/gitaly/praefect.md#repository-verification)
+1. Recommended, if you're running Gitaly Cluster. Reinstate Praefect [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
    by removing `verification_interval: 0`.
 
 The new structure is documented in the following script with the old keys described in a comment above the new keys.
@@ -1505,7 +1505,7 @@ Migrate by moving your existing configuration under the new structure. The new s
 
 Migrate Praefect to the new configuration structure **first**.
 Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
-If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
+If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 

@@ -13,8 +13,8 @@ class FailedTests
     format: :oneline,
     rspec_pg_regex: /rspec .+ pg16( .+)?/,
     rspec_ee_pg_regex: /rspec-ee .+ pg16( .+)?/,
-    rspec_regex: /rspec/,
-    single_output: false
+    jest_regex: /jest/,
+    rspec_regex: /rspec/
   }.freeze
 
   def self.parse_cli_options(args = ARGV)
@@ -51,10 +51,6 @@ class FailedTests
         options[:rspec_ee_pg_regex] = value
       end
 
-      opts.on("--single-output", "Output all rspec failed tests to a single file instead of categorizing by suite") do
-        options[:single_output] = true
-      end
-
       opts.on("-h", "--help", "Prints this help") do
         puts opts
         exit
@@ -71,7 +67,6 @@ class FailedTests
     @format = options.delete(:format).to_sym
     @rspec_pg_regex = options.delete(:rspec_pg_regex)
     @rspec_ee_pg_regex = options.delete(:rspec_ee_pg_regex)
-    @single_output = options.delete(:single_output)
   end
 
   def output_all_failed_rspec_tests
@@ -91,15 +86,15 @@ class FailedTests
 
     puts "[FailedTests] Detected #{all_failed_tests.size} total RSpec failed tests across all suites..."
 
-    write_failed_tests_to_file("rspec_all_failed_tests", all_failed_tests)
+    write_failed_tests_to_file("rspec_all_failed_tests", all_failed_tests) if all_failed_tests.any?
+
     puts "[FailedTests] All RSpec failed tests written to #{File.join(output_directory,
       "rspec_all_failed_tests.#{output_file_format}")}"
   end
 
   def output_failed_tests
-    return output_all_failed_rspec_tests if single_output
-
     create_output_dir
+    output_all_failed_rspec_tests
 
     failed_cases_for_suite_collection.each do |suite_name, suite_tests|
       puts "[FailedTests] Detected #{suite_tests.size} failed tests in suite #{suite_name}..."
@@ -137,13 +132,13 @@ class FailedTests
     @suite_map ||= {
       rspec: rspec_pg_regex,
       rspec_ee: rspec_ee_pg_regex,
-      jest: /jest/
+      jest: FailedTests::DEFAULT_OPTIONS[:jest_regex]
     }
   end
 
   private
 
-  attr_reader :filename, :output_directory, :format, :rspec_pg_regex, :rspec_ee_pg_regex, :single_output
+  attr_reader :filename, :output_directory, :format, :rspec_pg_regex, :rspec_ee_pg_regex
 
   def file_contents
     @file_contents ||= begin

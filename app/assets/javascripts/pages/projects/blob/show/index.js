@@ -14,17 +14,13 @@ import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
+import App from '~/repository/components/app.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
-import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import { generateHistoryUrl } from '~/repository/utils/url_utility';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
-import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
@@ -51,34 +47,6 @@ const apolloProvider = new VueApollo({
 
 const viewBlobEl = document.querySelector('#js-view-blob-app');
 
-const initRefSwitcher = () => {
-  const refSwitcherEl = document.getElementById('js-tree-ref-switcher');
-
-  if (!refSwitcherEl) return false;
-
-  const { projectId, projectRootPath, ref, refType } = refSwitcherEl.dataset;
-
-  return new Vue({
-    el: refSwitcherEl,
-    render(createElement) {
-      return createElement(RefSelector, {
-        props: {
-          projectId,
-          value: refType ? joinPaths('refs', refType, ref) : ref,
-          useSymbolicRefNames: true,
-          queryParams: { sort: 'updated_desc' },
-        },
-        on: {
-          input(selectedRef) {
-            InternalEvents.trackEvent('click_ref_selector_on_blob_page');
-            visitUrl(generateRefDestinationPath(projectRootPath, ref, selectedRef));
-          },
-        },
-      });
-    },
-  });
-};
-
 const initLastCommitApp = (router) => {
   const lastCommitEl = document.getElementById('js-last-commit');
   if (!lastCommitEl) return null;
@@ -104,7 +72,6 @@ const initLastCommitApp = (router) => {
   });
 };
 
-initRefSwitcher();
 initAmbiguousRefModal();
 initFindFileShortcut();
 
@@ -120,6 +87,7 @@ if (viewBlobEl) {
     refType,
     escapedRef,
     canDownloadCode,
+    fullName,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -135,7 +103,7 @@ if (viewBlobEl) {
     data: { ref: originalBranch, escapedRef },
   });
 
-  const router = createRouter(projectPath, originalBranch);
+  const router = createRouter(projectPath, originalBranch, fullName);
   initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType }, apolloProvider);
   initLastCommitApp(router);
 
@@ -158,7 +126,7 @@ if (viewBlobEl) {
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {
-      return createElement(BlobContentViewer, {
+      return createElement(App, {
         props: {
           path: blobPath,
           projectPath,

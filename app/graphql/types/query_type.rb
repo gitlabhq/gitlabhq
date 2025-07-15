@@ -7,6 +7,10 @@ module Types
     # The design management context object needs to implement #issue
     DesignManagementObject = Struct.new(:issue)
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     field :board_list, ::Types::BoardListType,
       null: true,
       resolver: Resolvers::BoardListResolver
@@ -111,6 +115,7 @@ module Types
     end
     field :namespace, Types::NamespaceType,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::NamespaceResolver,
       description: "Find a namespace."
     field :note,
@@ -139,7 +144,8 @@ module Types
     field :project, Types::ProjectType,
       null: true,
       resolver: Resolvers::ProjectResolver,
-      description: "Find a project."
+      description: "Find a project.",
+      scopes: [:api, :read_api, :ai_workflows]
     field :projects,
       null: true,
       resolver: Resolvers::ProjectsResolver,
@@ -150,7 +156,6 @@ module Types
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
-      extras: [:lookahead],
       description: "Find a runner."
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
       deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }

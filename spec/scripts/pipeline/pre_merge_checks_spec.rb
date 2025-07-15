@@ -257,6 +257,19 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
             )
             expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
           end
+
+          context 'when also matching the required tier identifier' do
+            let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [predictive,tier:3]" }
+
+            it 'returns a failed PreMergeChecksStatus' do
+              expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+              expect(instance.execute).not_to be_success
+              expect(instance.execute.message).to include(
+                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) not to be a predictive pipeline!"
+              )
+              expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
+            end
+          end
         end
 
         context 'and it is not a tier-3 pipeline' do

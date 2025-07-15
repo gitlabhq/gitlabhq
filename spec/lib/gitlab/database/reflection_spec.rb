@@ -76,79 +76,79 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
     end
   end
 
-  describe '#db_read_only?' do
+  describe '#recovery?' do
     it 'detects a read-only database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => "t" }])
+        .and_return("t")
 
-      expect(database.db_read_only?).to be_truthy
+      expect(database.recovery?).to be_truthy
     end
 
     it 'detects a read-only database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => true }])
+        .and_return(true)
 
-      expect(database.db_read_only?).to be_truthy
+      expect(database.recovery?).to be_truthy
     end
 
     it 'detects a read-write database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => "f" }])
+        .and_return("f")
 
-      expect(database.db_read_only?).to be_falsey
+      expect(database.recovery?).to be_falsey
     end
 
     it 'detects a read-write database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => false }])
+        .and_return(false)
 
-      expect(database.db_read_only?).to be_falsey
+      expect(database.recovery?).to be_falsey
     end
   end
 
-  describe '#db_read_write?' do
+  describe '#primary?' do
     it 'detects a read-only database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => "t" }])
+        .and_return("t")
 
-      expect(database.db_read_write?).to eq(false)
+      expect(database.primary?).to eq(false)
     end
 
     it 'detects a read-only database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => true }])
+        .and_return(true)
 
-      expect(database.db_read_write?).to eq(false)
+      expect(database.primary?).to eq(false)
     end
 
     it 'detects a read-write database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => "f" }])
+        .and_return("f")
 
-      expect(database.db_read_write?).to eq(true)
+      expect(database.primary?).to eq(true)
     end
 
     it 'detects a read-write database' do
       allow(database.model.connection)
-        .to receive(:execute)
+        .to receive(:select_value)
         .with('SELECT pg_is_in_recovery()')
-        .and_return([{ "pg_is_in_recovery" => false }])
+        .and_return(false)
 
-      expect(database.db_read_write?).to eq(true)
+      expect(database.primary?).to eq(true)
     end
   end
 

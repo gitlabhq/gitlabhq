@@ -125,7 +125,9 @@ export default {
           {{ $options.i18n.noForks }}<br />
           <gl-sprintf :message="$options.i18n.forkTheProject">
             <template #link="{ content }">
-              <a :href="newForkPath" target="_blank" class="help-link">{{ content }}</a>
+              <gl-link :href="newForkPath">
+                {{ content }}
+              </gl-link>
             </template>
           </gl-sprintf>
         </template>

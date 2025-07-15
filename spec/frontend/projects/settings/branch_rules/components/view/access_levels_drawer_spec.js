@@ -72,7 +72,7 @@ describe('Edit Access Levels Drawer', () => {
   });
 
   it('renders checkboxes with expected text', () => {
-    expect(findCheckboxes().length).toBe(4);
+    expect(findCheckboxes()).toHaveLength(4);
     expect(findAdministratorsCheckbox().text()).toBe('Administrators');
     expect(findMaintainersCheckbox().text()).toBe('Maintainers');
     expect(findDevelopersAndMaintainersCheckbox().text()).toBe('Developers and Maintainers');
@@ -138,7 +138,7 @@ describe('Edit Access Levels Drawer', () => {
     });
 
     it('does not render a checkbox for Administrators', () => {
-      expect(findCheckboxes().length).toBe(3);
+      expect(findCheckboxes()).toHaveLength(3);
       expect(findAdministratorsCheckbox().exists()).toBe(false);
     });
   });

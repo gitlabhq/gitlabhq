@@ -467,6 +467,14 @@ when the leader was upgraded:
 
 Repeat this procedure on the other replica if required.
 
+## PostgreSQL replicas stuck in loop while being created 
+
+If PostgreSQL replicas appear to migrate but then restart in a loop, check the
+`/opt/gitlab-data/postgresql/` folder permissions on your replicas and primary server.
+
+You can also see this error message in the logs:
+`could not get COPY data stream: ERROR: could not open file "<file>" Permission denied`.
+
 ## Issues with other components
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page:

@@ -293,9 +293,9 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
 
    helm upgrade --install ai-gateway \
      ai-gateway/ai-gateway \
-     --version 0.2.0 \
+     --version 0.5.0 \
      --namespace=ai-gateway \
-     --set="image.tag=<ai-gateway-image>" \
+     --set="image.tag=<ai-gateway-image-version>" \
      --set="gitlab.url=https://<your_gitlab_domain>" \
      --set="gitlab.apiUrl=https://<your_gitlab_domain>/api/v4/" \
      --set "ingress.enabled=true" \
@@ -307,6 +307,8 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set="ingress.className=nginx" \
      --timeout=300s --wait --wait-for-jobs
    ```
+
+You can find the list of AI gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 
 This step can take will take a few seconds in order for all resources to be allocated
 and the AI gateway to start.
@@ -381,11 +383,11 @@ These tests are performed for offline environments:
 
 ## Does the AI gateway need to autoscale?
 
-Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In GitLab’s production environment:
+Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In the GitLab production environment:
 
 - Baseline setup: A single AI gateway instance with 2 CPU cores and 8 GB RAM can handle approximately 40 concurrent requests.
 - Scaling guidelines: For larger setups, such as an AWS t3.2xlarge instance (8 vCPUs, 32 GB RAM), the gateway can handle up to 160 concurrent requests, equivalent to 4x the baseline setup.
-- Request throughput: GitLab.com’s observed usage suggests that 7 RPS (requests per second) per 1000 active users is a reasonable metric for planning.
+- Request throughput: GitLab.com's observed usage suggests that 7 RPS (requests per second) per 1000 active users is a reasonable metric for planning.
 - Autoscaling options: Use Kubernetes Horizontal Pod Autoscalers (HPA) or similar mechanisms to dynamically adjust the number of instances based on metrics like CPU, memory utilization, or request latency thresholds.
 
 ## Configuration examples by deployment size

@@ -67,7 +67,7 @@ export default {
       this.isLoading = true;
       this.namespaceOptions = [];
 
-      return Api.namespaces(this.searchTerm, (namespaces) => {
+      return Api.namespaces(this.searchTerm, {}, (namespaces) => {
         this.namespaceOptions = this.formatNamespaceOptions(namespaces);
         this.isLoading = false;
       });

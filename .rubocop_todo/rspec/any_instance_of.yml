@@ -285,7 +285,6 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/requests/snippet_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/issues_list_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/issues_move_service_shared_examples.rb'
-    - 'spec/support/shared_examples/services/issuable_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'
     - 'spec/support/shared_examples/workers/reactive_cacheable_shared_examples.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'

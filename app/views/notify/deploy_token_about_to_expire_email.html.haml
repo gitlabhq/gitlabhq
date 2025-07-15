@@ -1,0 +1,10 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  - code_tag_pair = tag_pair(tag.code, :codeOpen, :codeClose)
+  = safe_format(_('Your project deploy token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{project_path}%{codeClose} will expire in %{days_to_expire} or less.'), code_tag_pair, days_to_expire: pluralize(@days_to_expire, _('day')), token_name: @token_name, project_path: @project.full_path)
+%p
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
+  = html_escape(_('You can create a new one or check them in your %{link_start}deploy tokens%{link_end} settings.')) % { link_start: link_start, link_end: '</a>'.html_safe }
+%p
+  = _('You are receiving this email because you are %{role} of the project.') % { role: @user_role }

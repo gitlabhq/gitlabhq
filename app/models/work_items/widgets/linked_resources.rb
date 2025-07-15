@@ -3,7 +3,9 @@
 module WorkItems
   module Widgets
     class LinkedResources < Base
-      delegate :zoom_meetings, to: :work_item
+      def zoom_meetings
+        work_item.zoom_meetings.added_to_issue
+      end
     end
   end
 end

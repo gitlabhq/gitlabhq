@@ -1,0 +1,17 @@
+query RecentlyViewedItems {
+  currentUser {
+    id
+    recentlyViewedIssues {
+      id
+      title
+      webUrl
+      updatedAt
+    }
+    recentlyViewedMergeRequests {
+      id
+      title
+      webUrl
+      updatedAt
+    }
+  }
+}

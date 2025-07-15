@@ -30,11 +30,6 @@ import (
 // that have been rewritten by GitLab Workhorse.
 const RewrittenFieldsHeader = "Gitlab-Workhorse-Multipart-Fields"
 
-// PreAuthorizer provides methods for pre-authorizing multipart requests.
-type PreAuthorizer interface {
-	PreAuthorizeHandler(next api.HandleFunc, suffix string) http.Handler
-}
-
 // MultipartClaims represents the claims included in a JWT token used for multipart requests.
 type MultipartClaims struct {
 	RewrittenFields map[string]string `json:"rewritten_fields"`

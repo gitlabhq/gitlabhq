@@ -61,7 +61,7 @@ This project provides you with:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags/_index.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
 
 {{< /history >}}
 
@@ -130,7 +130,7 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_cluster_description`: Set a description for the cluster. We recommend setting this to `$CI_PROJECT_URL` to create a reference to your GitLab project on your GCP cluster detail page. This way you know which project was responsible for provisioning the cluster you see on the GCP dashboard.
 - `TF_VAR_machine_type`: Set the machine type for the Kubernetes nodes.
 - `TF_VAR_node_count`: Set the number of Kubernetes nodes.
-- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
+- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent for Kubernetes.
 
 Refer to the [Google Terraform provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.
 

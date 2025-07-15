@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GithubImport::SingleEndpointNotesImporting, feature_categ
     it { expect { importer_instance.parent_imported_cache_key }.to raise_error(NotImplementedError) }
   end
 
-  describe '#page_counter_id' do
-    it { expect { importer_instance.page_counter_id(build(:merge_request)) }.to raise_error(NotImplementedError) }
+  describe '#page_keyset_id' do
+    it { expect { importer_instance.page_keyset_id(build(:merge_request)) }.to raise_error(NotImplementedError) }
   end
 end

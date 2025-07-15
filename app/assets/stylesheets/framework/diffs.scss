@@ -456,6 +456,7 @@ table.code {
         transition: none;
         float: left;
         width: 100%;
+        height: 100%;
         font-weight: $gl-font-weight-normal;
 
         &[disabled] {
@@ -470,6 +471,16 @@ table.code {
 
       &:not(.js-unfold-bottom) a::before {
         content: attr(data-linenumber);
+        height: 24px;
+        min-width: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        padding-inline: 10px;
+        transform: translateY(-50%);
       }
     }
 

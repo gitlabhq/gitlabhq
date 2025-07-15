@@ -29,7 +29,9 @@ describe('NamespaceSelect', () => {
 
     jest
       .spyOn(Api, 'namespaces')
-      .mockImplementation((_, callback) => callback([TEST_USER_NAMESPACE, TEST_GROUP_NAMESPACE]));
+      .mockImplementation((searchTerm, options, callback) =>
+        callback([TEST_USER_NAMESPACE, TEST_GROUP_NAMESPACE]),
+      );
   });
 
   afterEach(() => {
@@ -104,7 +106,7 @@ describe('NamespaceSelect', () => {
       // Add space to assert that `?.trim` is called
       await search('test ');
 
-      expect(Api.namespaces).toHaveBeenCalledWith('test', expect.anything());
+      expect(Api.namespaces).toHaveBeenCalledWith('test', {}, expect.anything());
     });
 
     it('when not found, does not change the placeholder text', async () => {

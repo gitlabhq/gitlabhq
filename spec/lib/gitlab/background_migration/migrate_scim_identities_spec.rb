@@ -29,7 +29,9 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateScimIdentities, feature_categ
     namespaces.create!(name: 'test-group', path: 'test-group', type: 'Group', organization_id: organization.id)
   end
 
-  let(:user) { users.create!(email: 'test@example.com', username: 'test_user', projects_limit: 0) }
+  let(:user) do
+    users.create!(email: 'test@example.com', username: 'test_user', projects_limit: 0, organization_id: organization.id)
+  end
 
   let(:identity_with_group) do
     identities.create!(

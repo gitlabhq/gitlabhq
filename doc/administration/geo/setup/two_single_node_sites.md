@@ -12,7 +12,7 @@ title: Set up Geo for two single-node sites
 
 {{< /details >}}
 
-The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up.
+The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up. This guide is also applicable to installations based on [Docker](../../../install/docker/_index.md).
 
 Prerequisites:
 
@@ -32,6 +32,16 @@ Prerequisites:
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
 
 ### Configure the primary site
+
+{{< alert type="note" >}}
+
+For Docker-based installations:
+
+Either apply the settings mentioned below directly to the GitLab container's `/etc/gitlab/gitlab.rb` file, or add them to the `GITLAB_OMNIBUS_CONFIG` environment variable in its [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose) file.
+
+When using [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose), use `docker-compose -f <docker-compose-file-name>.yml up` instead of `gitlab-ctl reconfigure` to apply configuration changes.
+
+{{< /alert >}}
 
 1. SSH into your GitLab primary site and sign in as root:
 
@@ -298,15 +308,36 @@ Prerequisites:
 1. Test that the `gitlab-psql` user can connect to the primary site database.
    The default Linux package name is `gitlabhq_production`:
 
-   ```shell
-   sudo \
-      -u gitlab-psql /opt/gitlab/embedded/bin/psql \
-      --list \
-      -U gitlab_replicator \
-      -d "dbname=gitlabhq_production sslmode=verify-ca" \
-      -W \
-      -h <primary_site_ip>
-   ```
+    {{< tabs >}}
+
+    {{< tab title="Linux package" >}}
+
+    ```shell
+    sudo \
+        -u gitlab-psql /opt/gitlab/embedded/bin/psql \
+        --list \
+        -U gitlab_replicator \
+        -d "dbname=gitlabhq_production sslmode=verify-ca" \
+        -W \
+        -h <primary_site_ip>
+    ```
+
+    {{< /tab >}}
+
+    {{< tab title="Docker" >}}
+
+    ```shell
+    docker exec -it <container_name> su - gitlab-psql -c '/opt/gitlab/embedded/bin/psql \
+        --list \
+        -U gitlab_replicator \
+        -d "dbname=gitlabhq_production sslmode=verify-ca" \
+        -W \
+        -h <primary_site_ip>'
+    ```
+
+    {{< /tab >}}
+
+    {{< /tabs >}}
 
    When prompted, enter the plaintext password you set for the `gitlab_replicator` user.
    If all worked correctly, you should see the list of the primary site databases.

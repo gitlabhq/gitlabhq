@@ -1,4 +1,4 @@
-= cache([ActionController::Base.asset_host, user_application_color_mode, user_color_scheme, Gitlab::Tracking.enabled?, Gitlab::Tracking.collector_hostname], expires_in: 1.minute) do
+= cache([ActionController::Base.asset_host, user_application_color_mode, user_color_scheme, Gitlab::Tracking.collector_hostname], expires_in: 1.minute) do
   - css_crossorigin = ActionController::Base.asset_host ? 'anonymous' : nil
 
   - if ActionController::Base.asset_host
@@ -11,7 +11,7 @@
     = preload_link_tag(universal_path_to_stylesheet('application_utilities'), as: 'style', crossorigin: css_crossorigin)
     = preload_link_tag(universal_path_to_stylesheet('application'), as: 'style', crossorigin: css_crossorigin)
   = preload_link_tag(universal_path_to_stylesheet("highlight/themes/#{user_color_scheme}"), as: 'style', crossorigin: css_crossorigin)
-  - if Gitlab::Tracking.enabled? && Gitlab::Tracking.collector_hostname
+  - if Gitlab::Tracking.frontend_connect_directly_to_snowplow_collector?
     - unless Rails.env.development?
       %link{ rel: 'preconnect', href: "https://#{Gitlab::Tracking.collector_hostname}", crossorigin: '' }
     -# Do not use preload_link_tag for fonts, to work around Firefox double-fetch bug.

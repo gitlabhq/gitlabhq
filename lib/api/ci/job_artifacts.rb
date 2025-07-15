@@ -47,6 +47,9 @@ module API
 
           latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
           authorize_read_job_artifacts!(latest_build)
+
+          not_found! unless latest_build.artifacts_file&.exists?
+
           audit_download(latest_build, latest_build.artifacts_file.filename)
           present_artifacts_file!(latest_build.artifacts_file)
         end
@@ -110,7 +113,7 @@ module API
 
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
-          audit_download(build, build.artifacts_file&.filename) if build.artifacts_file
+          audit_download(build, build.artifacts_file.filename) if build.artifacts_file
           present_artifacts_file!(build.artifacts_file)
         end
 

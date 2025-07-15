@@ -4,12 +4,6 @@ module RapidDiffs
   module Resource
     extend ActiveSupport::Concern
 
-    def diffs_stream_url(resource, offset = nil, diff_view = nil)
-      return if offset && offset > resource.diffs_for_streaming.diff_files.count
-
-      diffs_stream_resource_url(resource, offset, diff_view)
-    end
-
     def diff_files_metadata
       return render_404 unless rapid_diffs_enabled?
       return render_404 unless diffs_resource.present?
@@ -59,7 +53,7 @@ module RapidDiffs
     private
 
     def rapid_diffs_enabled?
-      ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+      ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
     end
 
     def diffs_resource(options = {})
@@ -75,10 +69,6 @@ module RapidDiffs
         options[:paths] = [old_path, new_path].compact
         diffs_resource(**options.merge(extra_options)).diff_files.first
       end
-    end
-
-    def diffs_stream_resource_url(resource, offset, diff_view)
-      raise NotImplementedError
     end
 
     # When overridden this mthod should return a path to view diffs in an email-friendly format.

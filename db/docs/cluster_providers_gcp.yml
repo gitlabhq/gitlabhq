@@ -11,3 +11,4 @@ gitlab_schema: gitlab_main
 exempt_from_sharding: true
 notes: Exempted because Table is scheduled for removal
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553451

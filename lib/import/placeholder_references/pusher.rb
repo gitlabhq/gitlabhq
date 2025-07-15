@@ -30,7 +30,7 @@ module Import
       def source_user_mapper(project)
         @user_mapper ||= ::Gitlab::Import::SourceUserMapper.new(
           namespace: project.root_ancestor,
-          source_hostname: project.import_url,
+          source_hostname: project.safe_import_url,
           import_type: ::Import::SOURCE_BITBUCKET_SERVER
         )
       end

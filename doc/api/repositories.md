@@ -360,6 +360,12 @@ POST /projects/:id/repository/changelog
 
 ### Supported attributes
 
+{{< history >}}
+
+- `config_file_ref` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426108) in GitLab 18.2.
+
+{{< /history >}}
+
 Changelogs support these attributes:
 
 | Attribute | Type     | Required   | Description |
@@ -367,6 +373,7 @@ Changelogs support these attributes:
 | `version` | string   | yes | The version to generate the changelog for. The format must follow [semantic versioning](https://semver.org/). |
 | `branch`  | string   | no | The branch to commit the changelog changes to. Defaults to the project's default branch. |
 | `config_file` | string   | no | Path to the changelog configuration file in the project's Git repository. Defaults to `.gitlab/changelog_config.yml`. |
+| `config_file_ref` | string   | no | The Git reference (for example, branch) where the changelog configuration file is defined. Defaults to the default repository branch. |
 | `date`    | datetime | no | The date and time of the release. Defaults to the current time. |
 | `file`    | string   | no | The file to commit the changes to. Defaults to `CHANGELOG.md`. |
 | `from`    | string   | no | The SHA of the commit that marks the beginning of the range of commits to include in the changelog. This commit isn't included in the changelog. |
@@ -482,6 +489,7 @@ curl --request GET \
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentication through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
+- `config_file_ref` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426108) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -501,6 +509,7 @@ Supported attributes:
 | :-------- | :------- | :--------- | :---------- |
 | `version` | string   | yes | The version to generate the changelog for. The format must follow [semantic versioning](https://semver.org/). |
 | `config_file` | string   | no | The path of changelog configuration file in the project's Git repository. Defaults to `.gitlab/changelog_config.yml`. |
+| `config_file_ref` | string   | no | The Git reference (for example, branch) where the changelog configuration file is defined. Defaults to the default repository branch. |
 | `date`    | datetime | no | The date and time of the release. Uses ISO 8601 format. Example: `2016-03-11T03:45:40Z`. Defaults to the current time. |
 | `from`    | string   | no | The start of the range of commits (as a SHA) to use for generating the changelog. This commit itself isn't included in the list. |
 | `to`      | string   | no | The end of the range of commits (as a SHA) to use for the changelog. This commit is included in the list. Defaults to the HEAD of the default project branch. |

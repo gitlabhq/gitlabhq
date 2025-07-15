@@ -1,15 +1,54 @@
 <script>
 import { computed } from 'vue';
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { TABS_INDICES } from '~/todos/constants';
+import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
+import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
+import { s__ } from '~/locale';
+import {
+  TABS_INDICES,
+  TODO_ACTION_TYPE_BUILD_FAILED,
+  TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
+  TODO_ACTION_TYPE_ASSIGNED,
+  TODO_ACTION_TYPE_MENTIONED,
+  TODO_ACTION_TYPE_REVIEW_REQUESTED,
+  TODO_ACTION_TYPE_UNMERGEABLE,
+} from '~/todos/constants';
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const N_TODOS = 5;
 
+const FILTER_OPTIONS = [
+  {
+    value: null,
+    text: s__('Todos|All'),
+  },
+  {
+    value: TODO_ACTION_TYPE_ASSIGNED,
+    text: s__('Todos|Assigned'),
+  },
+  {
+    value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
+    text: s__('Todos|Mentioned'),
+  },
+  {
+    value: TODO_ACTION_TYPE_BUILD_FAILED,
+    text: s__('Todos|Build failed'),
+  },
+  {
+    value: TODO_ACTION_TYPE_UNMERGEABLE,
+    text: s__('Todos|Unmergeable'),
+  },
+  {
+    value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
+    text: s__('Todos|Review requested'),
+  },
+];
+
 export default {
-  components: { TodoItem, GlButton },
+  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, VisibilityChangeDetector },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -23,7 +62,9 @@ export default {
   data() {
     return {
       currentUserId: null,
+      filter: null,
       todos: [],
+      showLoading: true,
     };
   },
   apollo: {
@@ -33,46 +74,78 @@ export default {
         return {
           first: N_TODOS,
           state: ['pending'],
+          action: this.filter ? this.filter.split(';') : null,
         };
       },
       update({ currentUser: { id, todos: { nodes = [] } } = {} }) {
         this.currentUserId = id;
+        this.showLoading = false;
 
         return nodes;
       },
       error(error) {
         Sentry.captureException(error);
+        this.showLoading = false;
       },
     },
   },
+  methods: {
+    reload() {
+      this.showLoading = true;
+      this.$apollo.queries.todos.refetch();
+    },
+  },
+
+  emptyTodosAllDoneSvg,
+  emptyTodosFilteredSvg,
+  FILTER_OPTIONS,
 };
 </script>
 
 <template>
-  <div>
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h4>{{ __('Latest to-do items') }}</h4>
+  <visibility-change-detector class="gl-border gl-rounded-lg gl-bg-subtle" @visible="reload">
+    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2 gl-px-5">
+      <h4 class="gl-grow">{{ __('To-do items') }}</h4>
 
-      <gl-button
-        v-gl-tooltip.hover
-        icon="retry"
-        :aria-label="__('Refresh')"
-        :title="__('Refresh')"
-        :loading="$apollo.queries.todos.loading"
-        category="tertiary"
-        size="small"
-        @click="$apollo.queries.todos.refetch()"
+      <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
+    </div>
+
+    <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
+      <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
+        <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
+        <rect x="24" y="0" width="174" height="8" rx="2" ry="2" />
+        <rect x="182" y="0" width="16" height="8" rx="2" ry="2" />
+      </gl-skeleton-loader>
+    </div>
+
+    <div
+      v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
+      class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+    >
+      <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
+      <span>
+        <strong>{{ __('Good job!') }}</strong>
+        {{ __('All your to-do items are done.') }}
+      </span>
+    </div>
+    <div
+      v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
+      class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+    >
+      <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
+      <span>{{ __('Sorry, your filter produced no results') }}</span>
+    </div>
+    <div v-else>
+      <todo-item
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        @change="$apollo.queries.todos.refetch()"
       />
     </div>
 
-    <todo-item
-      v-for="todo in todos"
-      :key="todo.id"
-      :todo="todo"
-      @change="$apollo.queries.todos.refetch()"
-    />
-    <div class="gl-p-3">
+    <div class="gl-px-5 gl-py-3">
       <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
     </div>
-  </div>
+  </visibility-change-detector>
 </template>

@@ -157,9 +157,10 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
         it "registers an offense when prepare_partitioned_async_index is used", :aggregate_failures do
           expect_offense(<<~RUBY)
             TABLE_NAME = :p_ci_builds
+            COLUMNS = [:project_id, :name, :ref, :id]
 
-            def change
-              prepare_partitioned_async_index TABLE_NAME, :protected
+            def up
+              prepare_partitioned_async_index(TABLE_NAME, COLUMNS, order: { id: :desc })
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
             end
           RUBY

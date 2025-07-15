@@ -34,10 +34,12 @@
 #     language: int
 #     language_name: string
 #     active: boolean - Whether to include projects that are not archived.
+#     namespace_path: string - Full path of the project's namespace (group or user).
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
   include UpdatedAtFilter
   include Projects::SearchFilter
+  include Gitlab::Utils::StrongMemoize
 
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
@@ -51,6 +53,8 @@ class ProjectsFinder < UnionFinder
   end
 
   def execute
+    return Project.none if params[:namespace_path].present? && namespace_id.nil?
+
     user = params.delete(:user)
     collection =
       if user
@@ -78,6 +82,7 @@ class ProjectsFinder < UnionFinder
 
   # EE would override this to add more filters
   def filter_projects(collection)
+    collection = by_namespace_path(collection)
     collection = by_deleted_status(collection)
     collection = by_ids(collection)
     collection = by_full_paths(collection)
@@ -179,6 +184,10 @@ class ProjectsFinder < UnionFinder
     params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], preload_routes: false) : items
   end
 
+  def by_namespace_path(items)
+    params[:namespace_path].present? ? items.in_namespace(namespace_id) : items
+  end
+
   def union(items)
     find_union(items, Project).with_route
   end
@@ -270,10 +279,14 @@ class ProjectsFinder < UnionFinder
     items
   end
 
-  def sort(items)
-    return items.projects_order_id_desc unless params[:sort]
+  def should_sort_by_similarity?
+    params[:search].present? && (params[:sort].nil? || params[:sort].to_s == 'similarity')
+  end
 
-    return items.sorted_by_similarity_desc(params[:search]) if params[:sort] == 'similarity' && params[:search].present?
+  def sort(items)
+    return items.sorted_by_similarity_desc(params[:search]) if should_sort_by_similarity?
+
+    return items.projects_order_id_desc unless params[:sort]
 
     items.sort_by_attribute(params[:sort])
   end
@@ -329,6 +342,11 @@ class ProjectsFinder < UnionFinder
       organization_ids.flatten.uniq.compact
     end
   end
+
+  def namespace_id
+    Namespace.find_by_full_path(params[:namespace_path])&.id
+  end
+  strong_memoize_attr :namespace_id
 end
 
 ProjectsFinder.prepend_mod_with('ProjectsFinder')

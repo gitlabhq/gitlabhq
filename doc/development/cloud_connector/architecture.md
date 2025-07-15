@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Cloud Connector
+stage: none
+group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: 'Cloud Connector: Architecture'
 ---
@@ -18,31 +18,31 @@ resource to the main developer documentation.
 When talking about Cloud Connector's constituents and mechanics, we use the following
 terms:
 
-- **GitLab Rails:** The main GitLab application.
-- **GitLab.com:** The multi-tenant GitLab SaaS deployment operated by GitLab Inc.
-- **GitLab Dedicated:** A single-tenant GitLab SaaS deployment operated by GitLab Inc.
-- **GitLab Self-Managed:** Any GitLab instance operated by a customer, potentially deployed to a private cloud.
-- **GitLab instance:** Any of the above.
-- **Backend service:** A GitLab-operated web service invoked by a GitLab instance to deliver functionality
+- **GitLab Rails**: The main GitLab application.
+- **GitLab.com**: The multi-tenant GitLab SaaS deployment operated by GitLab Inc.
+- **GitLab Dedicated**: A single-tenant GitLab SaaS deployment operated by GitLab Inc.
+- **GitLab Self-Managed**: Any GitLab instance operated by a customer, potentially deployed to a private cloud.
+- **GitLab instance**: Any of the above.
+- **Backend service**: A GitLab-operated web service invoked by a GitLab instance to deliver functionality
   that's part of the Cloud Connector set of features. The AI gateway is one example.
-- **CustomersDot:** The [GitLab Customers Portal](https://gitlab.com/gitlab-org/customers-gitlab-com),
+- **CustomersDot**: The [GitLab Customers Portal](https://gitlab.com/gitlab-org/customers-gitlab-com),
   used by customers to manage their GitLab subscriptions.
-- **OIDC:** [OpenID Connect](https://auth0.com/docs/authenticate/protocols/openid-connect-protocol),
+- **OIDC**: [OpenID Connect](https://auth0.com/docs/authenticate/protocols/openid-connect-protocol),
   an open standard for implementing identity providers and authN/authZ. JWT
   issuers provide OIDC compliant discovery endpoints to publish keys for JWT validators.
-- **JWT:** [JSON Web Token](https://auth0.com/docs/secure/tokens/json-web-tokens), an open standard to encode and transmit identity data in the form of a
+- **JWT**: [JSON Web Token](https://auth0.com/docs/secure/tokens/json-web-tokens), an open standard to encode and transmit identity data in the form of a
   cryptographically signed token. This token is used to authorize requests between a GitLab instance or user and a
   backend service. It can be scoped to either a GitLab instance or a user.
-- **JWT issuer:** A GitLab-operated web service providing endpoints to issue JWTs. The OAuth specification refers to this as an `Authorization Server`.
+- **JWT issuer**: A GitLab-operated web service providing endpoints to issue JWTs. The OAuth specification refers to this as an `Authorization Server`.
   and/or endpoints to provide the public keys necessary to validate such a token.
   GitLab.com, CustomersDot and AI gateway are all JWT issuers.
-- **JWT validator:** A backend service that validates GitLab instance requests carrying a JWT. The OAuth specification refers to this as a `Resource Server`.
+- **JWT validator**: A backend service that validates GitLab instance requests carrying a JWT. The OAuth specification refers to this as a `Resource Server`.
   using public keys obtained from a JWT issuer. The AI gateway is one example of a JWT validator.
-- **IJWT:** An Instance JSON Web Token, a JWT created for a GitLab instance.
-- **UJWT:** A User JSON Web Token, a JWT created for a GitLab user with a shorter lifespan and less permissions than a IJWT.
-- **JWKS:** [JSON Web Key Set](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets),
+- **IJWT**: An Instance JSON Web Token, a JWT created for a GitLab instance.
+- **UJWT**: A User JSON Web Token, a JWT created for a GitLab user with a shorter lifespan and less permissions than a IJWT.
+- **JWKS**: [JSON Web Key Set](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets),
   an open standard to encode cryptographic keys to validate JWTs.
-- **Unit primitives:** The logical feature that a permission/access scope can govern.
+- **Unit primitives**: The logical feature that a permission/access scope can govern.
 - **Add-On** The group of unit primitives that are bundled and sold together.
   Example: `code_suggestions` and `duo_chat` are 2 UPs sold together under the `DUO_PRO` add-on.
 

@@ -77,7 +77,8 @@ describe('GlobalSearchStatusBar', () => {
       });
 
       it('renders the status bar', () => {
-        expect(wrapper.text()).toContain('Showing 3000 code results for test');
+        expect(wrapper.text()).toContain('Showing 3000 code results for test.');
+        expect(wrapper.text()).toContain('Showing 1–20 out of 1074 files');
       });
     });
 
@@ -95,7 +96,8 @@ describe('GlobalSearchStatusBar', () => {
       });
 
       it('renders the status bar', () => {
-        expect(wrapper.text()).toContain('Showing 1 code result for test');
+        expect(wrapper.text()).toContain('Showing 1 code result for test.');
+        expect(wrapper.text()).toContain('Showing file 1 from 1');
       });
     });
   });
@@ -117,8 +119,9 @@ describe('GlobalSearchStatusBar', () => {
 
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain(
-          'Showing 3000 code results for test in group Group Full Name',
+          'Showing 3000 code results for test in group Group Full Name.',
         );
+        expect(wrapper.text()).toContain('Showing 1–20 out of 1074 files');
       });
 
       it('renders link with proper url', () => {
@@ -148,7 +151,10 @@ describe('GlobalSearchStatusBar', () => {
       });
 
       it('renders the status bar', () => {
-        expect(wrapper.text()).toContain('Showing 1 code result for test in group Group Full Name');
+        expect(wrapper.text()).toContain(
+          'Showing 1 code result for test in group Group Full Name.',
+        );
+        expect(wrapper.text()).toContain('Showing file 1 from 1');
       });
 
       it('renders link with proper url', () => {
@@ -175,8 +181,9 @@ describe('GlobalSearchStatusBar', () => {
 
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain(
-          'Showing 3000 code results for test in  of Project with Namespace',
+          'Showing 3000 code results for test in  of Project with Namespace.',
         );
+        expect(wrapper.text()).toContain('Showing 1–20 out of 1074 files');
       });
 
       it('renders link with proper url', () => {
@@ -210,8 +217,9 @@ describe('GlobalSearchStatusBar', () => {
 
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain(
-          'Showing 1 code result for test in  of Project with Namespace',
+          'Showing 1 code result for test in  of Project with Namespace.',
         );
+        expect(wrapper.text()).toContain('Showing file 1 from 1');
       });
 
       it('renders link with proper url', () => {
@@ -246,7 +254,8 @@ describe('GlobalSearchStatusBar', () => {
     });
 
     it('does not render the status bar', () => {
-      expect(wrapper.text()).toBe('Showing 0 code results for test in group Group Full Name');
+      expect(wrapper.text()).toContain('Showing 0 code results for test in group Group Full Name.');
+      expect(wrapper.text()).toContain('Showing 1–0 out of 0 files');
     });
   });
 });

@@ -75,7 +75,7 @@ describe('Persisted radio group', () => {
       it('has one item for each option', () => {
         createComponent();
 
-        expect(findGlFormRadios().length).toEqual(defaultProps.options.length);
+        expect(findGlFormRadios()).toHaveLength(defaultProps.options.length);
       });
 
       it('on click updates the data and emits event', async () => {

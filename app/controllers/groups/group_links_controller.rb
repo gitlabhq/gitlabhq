@@ -24,7 +24,12 @@ class Groups::GroupLinksController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_group_members_path(group), status: :found
+        redirect_to(
+          group_group_members_path(group),
+          status: :found,
+          notice: s_('InviteMembersModal|Group invite removed. ' \
+            'It might take a few minutes for the changes to user access levels to take effect.')
+        )
       end
       format.js { head :ok }
     end

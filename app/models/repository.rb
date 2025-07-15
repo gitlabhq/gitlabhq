@@ -962,8 +962,8 @@ class Repository
 
   def revert(
     user, commit, branch_name, message,
-    start_branch_name: nil, start_project: project, dry_run: false)
-
+    start_branch_name: nil, start_project: project, dry_run: false
+  )
     with_cache_hooks do
       raw_repository.revert(
         user: user,
@@ -980,8 +980,8 @@ class Repository
   def cherry_pick(
     user, commit, branch_name, message,
     start_branch_name: nil, start_project: project,
-    author_name: nil, author_email: nil, dry_run: false)
-
+    author_name: nil, author_email: nil, dry_run: false
+  )
     target_sha = find_branch(branch_name)&.dereferenced_target&.id if branch_name.present?
 
     with_cache_hooks do

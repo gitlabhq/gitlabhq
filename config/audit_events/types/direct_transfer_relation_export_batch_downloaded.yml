@@ -1,0 +1,10 @@
+---
+name: direct_transfer_relation_export_batch_downloaded
+description: Direct Transfer relation export batch downloaded
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441977
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194872
+feature_category: importers
+milestone: '18.2'
+saved_to_database: true
+scope: [Group, Project]
+streamed: true

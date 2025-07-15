@@ -46,12 +46,24 @@ describe('EnvironmentActions Component', () => {
 
   it('should render a dropdown button with 2 icons', () => {
     createComponent();
-    expect(wrapper.findComponent(GlDisclosureDropdown).findAllComponents(GlIcon).length).toBe(2);
+    expect(wrapper.findComponent(GlDisclosureDropdown).findAllComponents(GlIcon)).toHaveLength(2);
   });
 
   it('should render a dropdown button with aria-label description', () => {
     createComponent();
     expect(wrapper.findComponent(GlDisclosureDropdown).attributes('aria-label')).toBe('Deploy to…');
+  });
+
+  describe('size prop', () => {
+    it('should default to "medium" size', () => {
+      createComponent();
+      expect(wrapper.findComponent(GlDisclosureDropdown).props('size')).toBe('medium');
+    });
+
+    it('should use "small" size when passed as a prop', () => {
+      createComponent({ size: 'small' });
+      expect(wrapper.findComponent(GlDisclosureDropdown).props('size')).toBe('small');
+    });
   });
 
   describe('manual actions', () => {

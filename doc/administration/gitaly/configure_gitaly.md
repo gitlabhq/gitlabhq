@@ -1101,7 +1101,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
-- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags/_index.md) named `gitaly_gpg_signing`. Disabled by default.
 - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on GitLab Self-Managed and GitLab Dedicated in GitLab 17.0.
 
@@ -1110,7 +1110,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
+an administrator can [disable the feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 {{< /alert >}}

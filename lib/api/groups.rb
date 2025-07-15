@@ -38,7 +38,6 @@ module API
         use :pagination
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
         find_params = params.slice(*allowable_find_params)
 
@@ -52,11 +51,10 @@ module API
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
-        groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
+        groups = groups.id_not_in(params[:skip_groups]) if params[:skip_groups].present?
 
         order_groups(groups).with_api_scopes
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def allowable_find_params
         [:all_available,
@@ -174,7 +172,7 @@ module API
       def immediately_delete_subgroup_error(group)
         if !group.subgroup?
           '`permanently_remove` option is only available for subgroups.'
-        elsif !group.marked_for_deletion_on.present?
+        elsif !group.self_deletion_scheduled?
           'Group must be marked for deletion first.'
         elsif group.full_path != params[:full_path]
           '`full_path` is incorrect. You must enter the complete path for the subgroup.'

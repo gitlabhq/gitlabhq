@@ -22,7 +22,6 @@ module Gitlab
         target_branch:,
         target_project_id:
       )
-
         existing_merge_request = get_existing_merge_request(
           source_project_id: source_project_id,
           source_branch: source_branch,
@@ -95,6 +94,19 @@ module Gitlab
             target_project_id: target_project_id
           )
         end
+      end
+
+      def closed_merge_request_exists?(source_project_id:, source_branch:, target_branch:, target_project_id:)
+        data = request(:get, "/projects/#{target_project_id}/merge_requests", query: {
+          state: :closed,
+          source_branch: source_branch,
+          target_branch: target_branch,
+          source_project_id: source_project_id
+        })
+
+        return false if data.empty?
+
+        true
       end
 
       def get_existing_merge_request(source_project_id:, source_branch:, target_branch:, target_project_id:)

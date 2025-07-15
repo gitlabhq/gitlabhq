@@ -23,7 +23,6 @@ Style/GuardClause:
     - 'app/controllers/projects/design_management/designs/resized_image_controller.rb'
     - 'app/controllers/projects/error_tracking_controller.rb'
     - 'app/controllers/projects/google_cloud/base_controller.rb'
-    - 'app/controllers/projects/imports_controller.rb'
     - 'app/controllers/projects/repositories_controller.rb'
     - 'app/controllers/projects/settings/operations_controller.rb'
     - 'app/controllers/projects/tree_controller.rb'

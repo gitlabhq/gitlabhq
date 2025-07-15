@@ -1,0 +1,24 @@
+query WorkItemsWidgetMetadata($username: String!) {
+  currentUser {
+    id
+    assigned: workItems(
+      assigneeUsernames: [$username]
+      state: opened
+      sort: UPDATED_DESC
+      first: 1
+    ) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+    authored: workItems(authorUsername: $username, state: opened, sort: UPDATED_DESC, first: 1) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ module MergeRequests
     CreateRefError = Class.new(StandardError)
 
     def initialize(
-      current_user:, merge_request:, target_ref:, first_parent_ref:, source_sha: nil
+      current_user:, merge_request:, target_ref:, first_parent_ref:, source_sha: nil, merge_params: {}
     )
       @current_user = current_user
       @merge_request = merge_request
@@ -17,6 +17,7 @@ module MergeRequests
       @target_ref = target_ref
       @first_parent_ref = first_parent_ref
       @first_parent_sha = target_project.commit(first_parent_ref)&.sha
+      @merge_params = merge_params
     end
 
     def execute
@@ -45,7 +46,8 @@ module MergeRequests
 
     private
 
-    attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :source_sha
+    attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :source_sha,
+      :merge_params
 
     delegate :target_project, to: :merge_request
     delegate :repository, to: :target_project
@@ -126,13 +128,17 @@ module MergeRequests
     end
 
     def squash_commit_message
-      merge_request.merge_params['squash_commit_message'].presence ||
+      # We priotize the merge params passed in take presendence
+      merge_params['squash_commit_message'].presence ||
+        merge_request.merge_params['squash_commit_message'].presence ||
         merge_request.default_squash_commit_message(user: current_user)
     end
     strong_memoize_attr :squash_commit_message
 
     def merge_commit_message
-      merge_request.merge_params['commit_message'].presence ||
+      # We priotize the merge params passed in take presendence
+      merge_params['commit_message'].presence ||
+        merge_request.merge_params['commit_message'].presence ||
         merge_request.default_merge_commit_message(user: current_user)
     end
   end

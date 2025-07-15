@@ -190,7 +190,7 @@ You can also change the severity using the `/severity` [quick action](../../user
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags/_index.md) named `incident_escalations`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
 - [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
 
@@ -312,7 +312,7 @@ they have the following actions in common:
 
 - [Add a to-do item](../../user/todos.md#create-a-to-do-item)
 - [Add labels](../../user/project/labels.md#assign-and-unassign-labels)
-- [Assign a milestone](../../user/project/milestones/_index.md#assign-a-milestone-to-an-issue-or-merge-request)
+- [Assign a milestone](../../user/project/milestones/_index.md#assign-a-milestone-to-an-item)
 - [Make an incident confidential](../../user/project/issues/confidential_issues.md)
 - [Set a due date](../../user/project/issues/due_dates.md)
 - [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)

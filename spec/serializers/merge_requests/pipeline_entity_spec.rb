@@ -50,5 +50,33 @@ RSpec.describe MergeRequests::PipelineEntity do
 
       expect(entity.as_json).not_to include(:coverage)
     end
+
+    describe 'artifacts' do
+      let_it_be(:build_with_artifact) { create(:ci_build, :codequality_report, pipeline: pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build_with_artifact) { create(:ci_build, :test_reports, pipeline: child_pipeline) }
+
+      context 'when show_child_reports_in_mr_page feature is disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+        end
+
+        it 'gets artifacts from itself' do
+          expect(entity.as_json[:details][:artifacts].pluck(:name)).to match_array(["test:codequality"])
+        end
+      end
+
+      it 'gets artifacts from itself and child pipelines' do
+        expect(entity.as_json[:details][:artifacts].pluck(:name)).to match_array(["test:codequality", "test:junit"])
+      end
+
+      context 'when the user does not have permission to view artifact' do
+        let_it_be(:build_with_private_artifact) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
+
+        it 'does not return unauthorized artifacts' do
+          expect(entity.as_json[:details][:artifacts].pluck(:name)).to match_array(["test:codequality", "test:junit"])
+        end
+      end
+    end
   end
 end

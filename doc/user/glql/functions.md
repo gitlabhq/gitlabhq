@@ -15,7 +15,7 @@ title: GLQL functions
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.

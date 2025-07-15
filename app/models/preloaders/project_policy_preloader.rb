@@ -12,7 +12,13 @@ module Preloaders
 
       ActiveRecord::Associations::Preloader.new(
         records: projects,
-        associations: { creator: [], organization: [], group: :route, namespace: :owner }
+        associations: {
+          creator: [],
+          organization: [],
+          project_namespace: :namespace_settings_with_ancestors_inherited_settings,
+          group: :route,
+          namespace: :owner
+        }
       ).call
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
     end

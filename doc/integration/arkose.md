@@ -122,7 +122,7 @@ This job is performed by the `Arkose::BlockedUsersReportWorker` class.
 
 {{< history >}}
 
-- Requesting specific behaviors with Data Exchange [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435275) in GitLab 16.8 [with a flag](../administration/feature_flags.md) named `arkose_labs_signup_data_exchange`. Disabled by default.
+- Requesting specific behaviors with Data Exchange [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435275) in GitLab 16.8 [with a flag](../administration/feature_flags/_index.md) named `arkose_labs_signup_data_exchange`. Disabled by default.
 
 {{< /history >}}
 

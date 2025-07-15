@@ -139,6 +139,52 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     end
   end
 
+  describe '.current_limit' do
+    subject(:current_limit) { described_class.current_limit(worker_class_name) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:current_limit)
+      end
+
+      current_limit
+    end
+  end
+
+  describe '.set_current_limit!' do
+    subject(:set_current_limit!) { described_class.set_current_limit!(worker_class_name, limit: 10) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:set_current_limit!)
+      end
+
+      set_current_limit!
+    end
+  end
+
+  describe '.over_the_limit?' do
+    subject(:over_the_limit?) { described_class.over_the_limit?(worker_class_name) }
+
+    it 'returns true if over the limit' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:concurrent_worker_count).and_return(10)
+        expect(instance).to receive(:current_limit).and_return(10)
+      end
+
+      expect(over_the_limit?).to be(true)
+    end
+
+    it 'return false if under the limit' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:concurrent_worker_count).and_return(9)
+        expect(instance).to receive(:current_limit).and_return(10)
+      end
+
+      expect(over_the_limit?).to be(false)
+    end
+  end
+
   context 'with concurrent changes to different queues' do
     let(:second_worker_class) do
       Class.new do

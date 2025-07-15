@@ -27,6 +27,29 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  shared_examples 'topology service unavailable' do |multiple_databases|
+    it 'skips loading the schema, seeding the database and altering cell sequences range' do
+      if multiple_databases
+        expect(Rake::Task['db:schema:load:main']).not_to receive(:invoke)
+        expect(Rake::Task['db:schema:load:ci']).not_to receive(:invoke)
+
+        expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
+        expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
+      else
+        expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+        expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+      end
+
+      expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
+      expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+      expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+      expect { run_rake_task('gitlab:db:configure') }.to(
+        raise_error('Error: Topology Service is `UNAVAILABLE`. Exiting DB configuration.')
+      )
+    end
+  end
+
   describe 'gitlab:db:sos task' do
     before do
       Rake::Task['gitlab:db:sos'].reenable
@@ -176,6 +199,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:configured_cell) { true }
     let(:skip_sequence_alteration) { false }
     let(:sequence_ranges) { [Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)] }
+    let(:topology_service_healthy) { true }
 
     before do
       stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
@@ -187,6 +211,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       before do
         skip_if_database_exists(:ci)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
           allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
@@ -316,6 +344,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             run_rake_task('gitlab:db:configure')
           end
         end
+
+        context 'when has cell configuration but topology service is unavailable' do
+          let(:topology_service_healthy) { false }
+
+          it_behaves_like 'topology service unavailable', false
+        end
       end
 
       context 'when geo is configured' do
@@ -357,6 +391,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
           allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
@@ -439,6 +477,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
             allow(ci_model.connection).to receive(:tables).and_return([])
 
+            allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+              allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+            end
+
             allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
               allow(instance).to receive(:cell_sequence_ranges).and_return(nil)
             end
@@ -483,6 +525,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             run_rake_task('gitlab:db:configure')
           end
         end
+
+        context 'when has cell configuration but topology service is unavailable' do
+          let(:topology_service_healthy) { false }
+
+          before do
+            allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
+            allow(ci_model.connection).to receive(:tables).and_return([])
+          end
+
+          it_behaves_like 'topology service unavailable', true
+        end
       end
 
       context 'when geo is configured' do
@@ -519,6 +572,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
         allow(connection).to receive(:tables).and_return(%w[table1 table2])
         allow(Rake::Task['db:migrate']).to receive(:invoke)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
       end
 
       it 'migrates clickhouse database' do
@@ -572,6 +629,149 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(output).to include(message)
           end
         }.to_stdout
+    end
+  end
+
+  describe 'collation_checker' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::CollationChecker).to receive(:run)
+          .with(logger: logger_double)
+
+        run_rake_task('gitlab:db:collation_checker')
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
+
+      before do
+        skip_if_multiple_databases_not_setup(:ci)
+
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      end
+
+      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
+        expect(Gitlab::Database::CollationChecker).to receive(:run)
+          .with(logger: logger_double)
+
+        run_rake_task('gitlab:db:collation_checker')
+      end
+
+      context 'when the single database task is used' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'calls Gitlab::Database::CollationChecker with the main database' do
+          expect(Gitlab::Database::CollationChecker).to receive(:run)
+            .with(database_name: 'main', logger: logger_double)
+
+          run_rake_task('gitlab:db:collation_checker:main')
+        end
+
+        it 'calls Gitlab::Database::CollationChecker with the ci database' do
+          expect(Gitlab::Database::CollationChecker).to receive(:run)
+            .with(database_name: 'ci', logger: logger_double)
+
+          run_rake_task('gitlab:db:collation_checker:ci')
+        end
+      end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:collation_checker:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:collation_checker:geo'/)
+        end
+      end
+    end
+  end
+
+  describe 'repair_index' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: false)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+
+      it 'respects DRY_RUN environment variable' do
+        stub_env('DRY_RUN', true)
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: true)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
+
+      before do
+        skip_if_multiple_databases_not_setup(:ci)
+
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      end
+
+      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: false)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+
+      context 'when the single database task is used' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'calls Gitlab::Database::RepairIndex with the main database' do
+          expect(Gitlab::Database::RepairIndex).to receive(:run)
+            .with(database_name: 'main', logger: logger_double, dry_run: false)
+
+          run_rake_task('gitlab:db:repair_index:main')
+        end
+
+        it 'calls Gitlab::Database::RepairIndex with the ci database' do
+          expect(Gitlab::Database::RepairIndex).to receive(:run)
+            .with(database_name: 'ci', logger: logger_double, dry_run: false)
+
+          run_rake_task('gitlab:db:repair_index:ci')
+        end
+      end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:repair_index:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:repair_index:geo'/)
+        end
+      end
     end
   end
 
@@ -1432,6 +1632,15 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     before do
       allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
 
+      acsr = Gitlab::Database::AlterCellSequencesRange.new(
+        1,
+        100000,
+        connection
+      )
+
+      connection.execute(acsr.alter_new_sequences_range_function)
+      connection.execute(acsr.alter_new_sequences_range_trigger)
+
       connection.execute(<<~SQL)
         CREATE SEQUENCE test_sequence_range_0_90000 START 1 MINVALUE 1 MAXVALUE 90000;
         CREATE SEQUENCE test_sequence_range_300000_390000 START 300000 MINVALUE 300000 MAXVALUE 390000;
@@ -1440,6 +1649,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         SELECT nextval('test_sequence_range_0_90000');
         SELECT nextval('test_sequence_range_300000_390000');
         SELECT nextval('test_sequence_range_700000_790000');
+      SQL
+    end
+
+    after do
+      connection.execute(<<~SQL)
+        DROP EVENT TRIGGER IF EXISTS alter_new_sequences_range;
+        DROP FUNCTION IF EXISTS alter_new_sequences_range;
       SQL
     end
 

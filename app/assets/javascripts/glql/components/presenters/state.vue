@@ -3,23 +3,30 @@ import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const badgeVariants = {
-  issues: { opened: 'success', closed: 'info' },
-  workItems: { OPEN: 'success', CLOSED: 'info' },
   mergeRequests: { opened: 'success', closed: 'danger', merged: 'info' },
+  default: { opened: 'success', closed: 'info' },
 };
 const badgeLabels = {
-  issues: { opened: __('Open'), closed: __('Closed') },
-  workItems: { OPEN: __('Open'), CLOSED: __('Closed') },
   mergeRequests: { opened: __('Open'), closed: __('Closed'), merged: __('Merged') },
+  default: { opened: __('Open'), closed: __('Closed') },
 };
 const badgeIcons = {
-  issues: { opened: 'issue-open-m', closed: 'issue-close' },
-  workItems: { OPEN: 'issue-open-m', CLOSED: 'issue-close' },
   mergeRequests: {
     opened: 'merge-request-open',
     closed: 'merge-request-close',
     merged: 'merge',
   },
+  default: { opened: 'issue-open-m', closed: 'issue-close' },
+};
+
+const normalizeState = (state) => {
+  if (state.toLowerCase() === 'open') return 'opened';
+  return state.toLowerCase();
+};
+
+const normalizeSource = (source) => {
+  if (source in badgeVariants) return source;
+  return 'default';
 };
 
 export default {
@@ -35,19 +42,17 @@ export default {
     source: {
       required: false,
       type: String,
-      default: 'issues',
+      default: '',
     },
   },
-  computed: {
-    badgeVariant() {
-      return badgeVariants[this.source][this.data];
-    },
-    badgeLabel() {
-      return badgeLabels[this.source][this.data];
-    },
-    badgeIcon() {
-      return badgeIcons[this.source][this.data];
-    },
+  data() {
+    const state = normalizeState(this.data);
+    const source = normalizeSource(this.source);
+    const badgeVariant = badgeVariants[source][state];
+    const badgeLabel = badgeLabels[source][state];
+    const badgeIcon = badgeIcons[source][state];
+
+    return { badgeVariant, badgeLabel, badgeIcon };
   },
 };
 </script>

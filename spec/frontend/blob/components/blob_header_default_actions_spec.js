@@ -44,7 +44,7 @@ describe('Blob Header Default Actions', () => {
     });
 
     it('exactly 3 buttons with predefined actions', () => {
-      expect(buttons.length).toBe(3);
+      expect(buttons).toHaveLength(3);
       [BTN_COPY_CONTENTS_TITLE, BTN_RAW_TITLE, BTN_DOWNLOAD_TITLE].forEach((title, i) => {
         expect(buttons.at(i).attributes('title')).toBe(title);
       });

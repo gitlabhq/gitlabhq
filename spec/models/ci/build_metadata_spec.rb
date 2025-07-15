@@ -29,120 +29,36 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   describe '#update_timeout_state' do
     subject { metadata }
 
-    shared_examples 'sets timeout' do |source, timeout|
-      it 'sets project_timeout_source' do
-        expect { subject.update_timeout_state }.to change { subject.reload.timeout_source }.to(source)
-      end
+    let(:calculator) { instance_double(::Ci::Builds::TimeoutCalculator) }
 
-      it 'sets project timeout' do
-        expect { subject.update_timeout_state }.to change { subject.reload.timeout }.to(timeout)
-      end
+    before do
+      allow(::Ci::Builds::TimeoutCalculator).to receive(:new).with(job).and_return(calculator)
     end
 
-    context 'when job, project and runner timeouts are set' do
-      context 'when job timeout is lower then runner timeout' do
-        before do
-          runner.update!(maximum_timeout: 4000)
-          job.update!(options: { job_timeout: 3000 })
-        end
-
-        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
-      end
-
-      context 'when runner timeout is lower then job timeout' do
-        before do
-          runner.update!(maximum_timeout: 2000)
-          job.update!(options: { job_timeout: 3000 })
-        end
-
-        it_behaves_like 'sets timeout', 'runner_timeout_source', 2000
-      end
-    end
-
-    context 'when job, project timeout values are set and runner is assigned' do
-      context 'when runner has no timeout set' do
-        before do
-          runner.update!(maximum_timeout: nil)
-          job.update!(options: { job_timeout: 3000 })
-        end
-
-        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
-      end
-    end
-
-    context 'when only job and project timeouts are defined' do
-      context 'when job timeout is lower then project timeout' do
-        before do
-          job.update!(options: { job_timeout: 1000 })
-        end
-
-        it_behaves_like 'sets timeout', 'job_timeout_source', 1000
-      end
-
-      context 'when project timeout is lower then job timeout' do
-        before do
-          job.update!(options: { job_timeout: 3000 })
-        end
-
-        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
-      end
-    end
-
-    context 'when only project and runner timeouts are defined' do
+    context 'when no timeouts defined anywhere' do
       before do
-        runner.update!(maximum_timeout: 1900)
+        allow(calculator).to receive(:applicable_timeout).and_return(nil)
       end
 
-      context 'when runner timeout is lower then project timeout' do
-        it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
-      end
-
-      context 'when project timeout is lower then runner timeout' do
-        before do
-          runner.update!(maximum_timeout: 2100)
-        end
-
-        it_behaves_like 'sets timeout', 'project_timeout_source', 2000
+      it 'does not change anything' do
+        expect { subject.update_timeout_state }
+          .to not_change { subject.reload.timeout_source }
+          .and not_change { subject.reload.timeout }
       end
     end
 
-    context 'when only job and runner timeouts are defined' do
-      context 'when runner timeout is lower them job timeout' do
-        before do
-          job.update!(options: { job_timeout: 2000 })
-          runner.update!(maximum_timeout: 1900)
-        end
-
-        it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
-      end
-
-      context 'when job timeout is lower them runner timeout' do
-        before do
-          job.update!(options: { job_timeout: 1000 })
-          runner.update!(maximum_timeout: 1900)
-        end
-
-        it_behaves_like 'sets timeout', 'job_timeout_source', 1000
-      end
-    end
-
-    context 'when only job timeout is defined and runner is assigned, but has no timeout set' do
+    context 'when at least a timeout is defined' do
       before do
-        job.update!(options: { job_timeout: 1000 })
-        runner.update!(maximum_timeout: nil)
+        allow(calculator)
+          .to receive(:applicable_timeout)
+          .and_return(
+            ::Ci::Builds::Timeout.new(25, ::Ci::BuildMetadata.timeout_sources.fetch(:job_timeout_source)))
       end
 
-      it_behaves_like 'sets timeout', 'job_timeout_source', 1000
-    end
-
-    context 'when only one timeout value is defined' do
-      context 'when only project timeout value is defined' do
-        before do
-          job.update!(options: { job_timeout: nil })
-          runner.update!(maximum_timeout: nil)
-        end
-
-        it_behaves_like 'sets timeout', 'project_timeout_source', 2000
+      it 'sets the timeout' do
+        expect { subject.update_timeout_state }
+          .to change { subject.reload.timeout_source }.to('job_timeout_source')
+          .and change { subject.reload.timeout }.to(25)
       end
     end
   end

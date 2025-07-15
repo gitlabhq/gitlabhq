@@ -10,7 +10,6 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   before_action do
     push_force_frontend_feature_flag(:glql_integration, !!project&.glql_integration_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:continue_indented_text, !!project&.continue_indented_text_feature_flag_enabled?)
   end
 
   private

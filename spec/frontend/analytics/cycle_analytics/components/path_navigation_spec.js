@@ -78,7 +78,7 @@ describe('Project PathNavigation', () => {
 
         it('renders each stage', () => {
           const result = findPathNavigationTitles();
-          expect(result.length).toBe(transformedProjectStagePathData.length);
+          expect(result).toHaveLength(transformedProjectStagePathData.length);
         });
 
         it('renders each stage with its median', () => {

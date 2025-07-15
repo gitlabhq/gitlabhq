@@ -472,6 +472,13 @@ Only one namespace can be linked to a subscription.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
 
+## Add or change subscription contacts
+
+Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
+
+You can [change profile owner information](customers_portal.md#change-profile-owner-information)
+and [add another billing account manager](customers_portal.md#add-a-billing-account-manager).
+
 ### Transfer restrictions
 
 You can change the linked namespace, however this is not supported for all subscription types.

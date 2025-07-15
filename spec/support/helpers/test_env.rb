@@ -13,12 +13,13 @@ module TestEnv
     result = yield
     duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
 
-    duration = duration.round(3)
-    @durations_mutex.synchronize { @component_durations[name] ||= duration }
-
-    name = name.to_s
-    display_name = name.start_with?('setup_') ? name.delete_prefix('setup_').tr('_', ' ').capitalize : name
-    puts "==> #{display_name} set up in #{duration} seconds...\n"
+    if duration > 0.5
+      duration = duration.round(3)
+      @durations_mutex.synchronize { @component_durations[name] ||= duration }
+      name = name.to_s
+      display_name = name.start_with?('setup_') ? name.delete_prefix('setup_').tr('_', ' ').capitalize : name
+      puts "==> #{display_name} set up in #{duration} seconds..."
+    end
 
     result
   end
@@ -286,7 +287,6 @@ module TestEnv
     measure_setup_duration('GitLab Workhorse') do
       # Always rebuild the config file
       if skip_compile_workhorse?
-        puts "==> GitLab Workhorse up to date, skipping rebuild..."
         Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil, force: true)
       else
         FileUtils.rm_rf(workhorse_dir)
@@ -506,13 +506,13 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])
-    measure_setup_duration(component) do
-      ensure_component_dir_name_is_correct!(component, install_dir)
+    ensure_component_dir_name_is_correct!(component, install_dir)
 
-      # On CI, once installed, components never need update
-      next if File.exist?(install_dir) && ci?
+    # On CI, once installed, components never need update
+    return if File.exist?(install_dir) && ci?
 
-      if component_needs_update?(install_dir, version)
+    if component_needs_update?(install_dir, version)
+      measure_setup_duration(component) do
         puts "==> Starting #{component} (#{version}) set up...\n"
 
         # Cleanup the component entirely to ensure we start fresh

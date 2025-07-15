@@ -67,7 +67,8 @@ module Glql
     def check_rate_limit
       return unless Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)
 
-      raise GlqlQueryLockedError, 'Query execution is locked due to repeated failures.'
+      raise GlqlQueryLockedError,
+        'Query temporarily blocked due to repeated timeouts. Please try again later or narrow your search scope.'
     end
 
     def increment_rate_limit_counter

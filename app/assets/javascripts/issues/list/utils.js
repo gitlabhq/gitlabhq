@@ -76,6 +76,8 @@ import {
   WEIGHT_DESC,
   MERGED_AT_ASC,
   MERGED_AT_DESC,
+  START_DATE_ASC,
+  START_DATE_DESC,
 } from './constants';
 
 /**
@@ -127,12 +129,17 @@ export const getSortOptions = ({
   hasBlockedIssuesFeature,
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
-  hasManualSort = true,
-  hasMergedDate = false,
+  hasPriority = true,
+  hasMilestoneDueDate = true,
   hasDueDate = true,
+  hasLabelPriority = true,
+  hasManualSort = true,
+  hasStartDate = false,
+  hasMergedDate = false,
+  hasWeight = true,
 } = {}) => {
   const sortOptions = [
-    {
+    hasPriority && {
       id: 1,
       title: __('Priority'),
       sortDirection: {
@@ -164,7 +171,7 @@ export const getSortOptions = ({
         descending: CLOSED_AT_DESC,
       },
     },
-    {
+    hasMilestoneDueDate && {
       id: 5,
       title: __('Milestone due date'),
       sortDirection: {
@@ -188,7 +195,7 @@ export const getSortOptions = ({
         descending: POPULARITY_DESC,
       },
     },
-    {
+    hasLabelPriority && {
       id: 8,
       title: __('Label priority'),
       sortDirection: {
@@ -210,6 +217,14 @@ export const getSortOptions = ({
       sortDirection: {
         ascending: TITLE_ASC,
         descending: TITLE_DESC,
+      },
+    },
+    hasStartDate && {
+      id: 11,
+      title: __('Start date'),
+      sortDirection: {
+        ascending: START_DATE_ASC,
+        descending: START_DATE_DESC,
       },
     },
   ];
@@ -236,7 +251,7 @@ export const getSortOptions = ({
     });
   }
 
-  if (hasIssueWeightsFeature) {
+  if (hasIssueWeightsFeature && hasWeight) {
     sortOptions.push({
       id: sortOptions.length + 1,
       title: __('Weight'),

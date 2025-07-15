@@ -220,7 +220,7 @@ export default {
       };
     },
     resolveDiscussionTitle() {
-      return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
+      return this.isDiscussionResolved ? __('Reopen thread') : __('Resolve thread');
     },
     hasEmailParticipantsWidget() {
       return Boolean(findEmailParticipantsWidget(this.workItem));

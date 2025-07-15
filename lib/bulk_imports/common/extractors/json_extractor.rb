@@ -11,7 +11,7 @@ module BulkImports
 
         def extract(context)
           download_service(context).execute
-          decompression_service.execute
+          decompression_service(context).execute
 
           attributes = ndjson_reader.consume_attributes(relation)
 
@@ -32,15 +32,17 @@ module BulkImports
 
         def download_service(context)
           @download_service ||= BulkImports::FileDownloadService.new(
-            configuration: context.configuration,
+            context: context,
             relative_url: context.entity.relation_download_url_path(relation),
             tmpdir: tmpdir,
             filename: filename
           )
         end
 
-        def decompression_service
-          @decompression_service ||= BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: filename)
+        def decompression_service(context)
+          @decompression_service ||= BulkImports::FileDecompressionService.new(
+            tmpdir: tmpdir, filename: filename, context: context
+          )
         end
 
         def ndjson_reader

@@ -556,7 +556,7 @@ cron job where the schedule depends on the configuration of the GitLab instance.
 To avoid lock contention and the processing of the same database rows, the worker does not run
 parallel. This behavior is ensured with a Redis lock.
 
-**Record cleanup procedure:**
+**Record cleanup procedure**:
 
 1. Acquire the Redis lock.
 1. Determine which database to clean up.

@@ -11,7 +11,7 @@ import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnGroupInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
 import GroupSelect from './group_select.vue';
 import InviteGroupNotification from './invite_group_notification.vue';
@@ -171,7 +171,7 @@ export default {
     },
     onInviteSuccess() {
       if (this.reloadPageOnSubmit) {
-        reloadOnInvitationSuccess();
+        reloadOnGroupInvitationSuccess();
       } else {
         this.showSuccessMessage();
       }

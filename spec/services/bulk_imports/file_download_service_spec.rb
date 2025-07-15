@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
   describe '#execute' do
+    let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
+    let_it_be(:entity) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
+    let_it_be(:context) { BulkImports::Pipeline::Context.new(build_stubbed(:bulk_import_tracker, entity: entity)) }
     let_it_be(:allowed_content_types) { %w[application/gzip application/octet-stream] }
-    let_it_be(:file_size_limit) { 5.gigabytes }
-    let_it_be(:config) { build(:bulk_import_configuration) }
     let_it_be(:content_type) { 'application/octet-stream' }
     let_it_be(:content_disposition) { nil }
     let_it_be(:filename) { 'file_download_service_spec' }
@@ -22,17 +23,19 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
     let(:chunk_code) { 200 }
     let(:chunk_content) { 'some chunk context' }
+    let(:chunk_size) { 100 }
     let(:chunk_double) do
-      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: chunk_content)
+      double('chunk', size: chunk_size, code: chunk_code, http_response: double(to_hash: headers), to_s: chunk_content)
     end
+
+    let(:import_logger) { instance_double(BulkImports::Logger) }
 
     subject(:service) do
       described_class.new(
-        configuration: config,
+        context: context,
         relative_url: '/test',
         tmpdir: tmpdir,
         filename: filename,
-        file_size_limit: file_size_limit,
         allowed_content_types: allowed_content_types
       )
     end
@@ -42,7 +45,14 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
         allow(client).to receive(:stream).and_yield(chunk_double)
       end
 
-      allow(service).to receive(:response_headers).and_return(headers)
+      allow_next_instance_of(described_class) do |service|
+        allow(service).to receive(:response_headers).and_return(headers)
+      end
+
+      allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
+      allow(import_logger).to receive_messages(info: nil, warn: nil)
+
+      stub_application_setting(bulk_import_max_download_file_size: 5120) # 5 GiB
     end
 
     shared_examples 'downloads file' do
@@ -66,14 +76,8 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       it 'raises an error' do
         stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
 
-        double = instance_double(BulkImports::Configuration, url: 'https://localhost', access_token: 'token')
-        service = described_class.new(
-          configuration: double,
-          relative_url: '/test',
-          tmpdir: tmpdir,
-          filename: filename,
-          file_size_limit: file_size_limit,
-          allowed_content_types: allowed_content_types
+        allow(context).to receive(:configuration).and_return(
+          instance_double(BulkImports::Configuration, url: 'https://localhost', access_token: 'token')
         )
 
         expect { service.execute }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
@@ -82,12 +86,6 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
     context 'when content-type is not valid' do
       let(:content_type) { 'invalid' }
-      let(:import_logger) { instance_double(BulkImports::Logger) }
-
-      before do
-        allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
-        allow(import_logger).to receive(:warn)
-      end
 
       it 'logs and raises an error' do
         expect(import_logger).to receive(:warn).once.with(
@@ -101,24 +99,76 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       end
     end
 
-    context 'when file size is not valid' do
-      context 'when size exceeds limit' do
-        let(:file_size_limit) { 1 }
+    context 'when size exceeds limit' do
+      let(:chunk_size) { 40.gigabytes }
 
-        it 'raises an error' do
-          expect { subject.execute }.to raise_error(
-            described_class::ServiceError,
-            'File size 100 B exceeds limit of 1 B'
+      it 'raises an error' do
+        expect { subject.execute }.to raise_error(
+          described_class::ServiceError,
+          'File size 40 GiB exceeds limit of 5 GiB'
+        )
+      end
+
+      context 'when file size limit is overridden' do
+        before do
+          allow(context).to receive(:override_file_size_limit?).and_return(true)
+        end
+
+        it 'does not raise an error' do
+          expect { subject.execute }.not_to raise_error
+        end
+
+        it 'logs download exceeding file size limit' do
+          expect(import_logger).to receive(:info).with(
+            a_hash_including(message: 'File size allowed to exceed download file size limit')
           )
+
+          service.execute
         end
       end
     end
 
     context 'when size is equals the file size limit' do
-      let(:file_size_limit) { 100 }
+      let(:chunk_size) { 5.gigabytes }
 
       it 'does not raise an error' do
         expect { subject.execute }.not_to raise_error
+      end
+
+      context 'when file size limit is overridden' do
+        before do
+          allow(context).to receive(:override_file_size_limit?).and_return(true)
+        end
+
+        it 'does not log downloads not exceeding default file size limits' do
+          expect(import_logger).not_to receive(:info)
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when the instance does not have a file size limit' do
+      let(:chunk_size) { 40.gigabytes }
+
+      before do
+        stub_application_setting(bulk_import_max_download_file_size: 0)
+      end
+
+      it 'does not raise an error' do
+        expect { subject.execute }.not_to raise_error
+      end
+
+      context 'when file size limit is overridden' do
+        before do
+          allow(context).to receive(:override_file_size_limit?).and_return(true)
+        end
+
+        it 'does not log download file size' do
+          expect(import_logger).not_to receive(:info)
+
+          service.execute
+        end
       end
     end
 
@@ -225,11 +275,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
       subject do
         described_class.new(
-          configuration: config,
+          context: context,
           relative_url: '/test',
           tmpdir: tmpdir,
           filename: 'symlink',
-          file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
         )
       end
@@ -255,11 +304,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
       subject do
         described_class.new(
-          configuration: config,
+          context: context,
           relative_url: '/test',
           tmpdir: tmpdir,
           filename: 'hard_link',
-          file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
         )
       end
@@ -277,11 +325,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     context 'when dir is not in tmpdir' do
       subject do
         described_class.new(
-          configuration: config,
+          context: context,
           relative_url: '/test',
           tmpdir: '/etc',
           filename: filename,
-          file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
         )
       end
@@ -297,11 +344,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     context 'when dir path is being traversed' do
       subject do
         described_class.new(
-          configuration: config,
+          context: context,
           relative_url: '/test',
           tmpdir: File.join(Dir.mktmpdir('bulk_imports'), 'test', '..'),
           filename: filename,
-          file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
         )
       end
@@ -358,13 +404,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     context 'when logging a chunk context' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:file_size_limit) { 1 }
-      let(:import_logger) { instance_double(BulkImports::Logger) }
-
-      before do
-        allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
-        allow(import_logger).to receive(:warn)
-      end
+      let(:chunk_size) { 40.gigabytes }
 
       where(:input, :output) do
         String.new("\x8d\x21\x3f\xad\x76", encoding: 'UTF-8') | "�!?�v"
@@ -381,7 +421,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
           expect { service.execute }.to raise_error(
             described_class::ServiceError,
-            'File size 100 B exceeds limit of 1 B'
+            'File size 40 GiB exceeds limit of 5 GiB'
           )
         end
       end

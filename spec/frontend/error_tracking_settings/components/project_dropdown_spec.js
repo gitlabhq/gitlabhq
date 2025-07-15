@@ -22,7 +22,6 @@ describe('error tracking settings project dropdown', () => {
           'projects',
           'projectSelectionLabel',
           'selectedProject',
-          'token',
         ),
         hasProjects: false,
         isProjectInvalid: false,
@@ -73,7 +72,7 @@ describe('error tracking settings project dropdown', () => {
 
     it('contains a number of dropdown items', () => {
       expect(wrapper.findComponent(GlCollapsibleListbox).exists()).toBe(true);
-      expect(wrapper.findComponent(GlCollapsibleListbox).props('items').length).toBe(2);
+      expect(wrapper.findComponent(GlCollapsibleListbox).props('items')).toHaveLength(2);
     });
   });
 

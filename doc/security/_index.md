@@ -68,6 +68,7 @@ You can find all those directories listed in the [Linux package configuration do
 - [Review Runner security considerations and recommendations](https://docs.gitlab.com/runner/security/).
 - [Review CI/CD variables security considerations](../ci/variables/_index.md#cicd-variable-security).
 - [Review pipeline security for usage and protection of secrets in CI/CD Pipelines](../ci/pipelines/pipeline_security.md).
+- [Instance-wide compliance and security policy management](compliance_security_policy_management.md).
 
 ### Patching
 

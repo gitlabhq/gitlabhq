@@ -16,10 +16,10 @@ query getProjectCounts(
       count
     }
   }
-  personal: projects(personal: true) @skip(if: $skipPersonal) {
+  personal: projects(personal: true, archived: EXCLUDE) @skip(if: $skipPersonal) {
     count
   }
-  member: projects(membership: true) @skip(if: $skipMember) {
+  member: projects(membership: true, archived: EXCLUDE) @skip(if: $skipMember) {
     count
   }
   inactive: projects(archived: ONLY, membership: true) @skip(if: $skipInactive) {

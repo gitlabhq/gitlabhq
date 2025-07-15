@@ -50,11 +50,11 @@ describe('IssueAssigneesComponent', () => {
 
       if (expectedShown) {
         it('shows assignee avatars', () => {
-          expect(findAvatars().length).toEqual(expectedShown);
+          expect(findAvatars()).toHaveLength(expectedShown);
         });
       } else {
         it('does not show assignee avatars', () => {
-          expect(findAvatars().length).toEqual(0);
+          expect(findAvatars()).toHaveLength(0);
         });
       }
 

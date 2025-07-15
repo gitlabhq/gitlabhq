@@ -338,6 +338,30 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
+  describe 'update pages access control' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :pages_published, namespace: group, pages_access_level: ProjectFeature::PUBLIC) }
+
+    before do
+      stub_pages_setting(access_control: true, enabled: true)
+      allow(::Gitlab::Pages).to receive(:access_control_is_forced?).and_return(false)
+    end
+
+    context 'when group owner changes forced access control settings' do
+      context 'when group access control is being enabled' do
+        it 'project access control should be enforced' do
+          visit edit_group_path(group)
+
+          check 'group_force_pages_access_control'
+
+          expect { save_permissions_group }.to change {
+            project.private_pages?
+          }.from(false).to(true)
+        end
+      end
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 

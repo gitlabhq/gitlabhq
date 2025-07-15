@@ -20,6 +20,7 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
   end
 
   let(:create_branch) { false }
+  let(:source_branch) { nil }
 
   describe '#execute' do
     subject(:execute) do
@@ -29,7 +30,8 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
           current_user: user,
           source: source,
           workload_definition: workload_definition,
-          create_branch: create_branch
+          create_branch: create_branch,
+          source_branch: source_branch
         ).execute
     end
 
@@ -90,6 +92,56 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
           workload = result.payload
           expect(workload.branch_name).to match(%r{workloads/\w+})
+        end
+
+        context 'when source_branch exists' do
+          let(:source_branch) { 'feature-branch' }
+
+          before do
+            project.repository.create_branch(source_branch, project.default_branch)
+          end
+
+          it 'creates a new branch from the specified source_branch' do
+            result = execute
+
+            expect(result).to be_success
+
+            workload = result.payload
+            expect(workload.branch_name).to match(%r{workloads/\w+})
+
+            new_branch = project.repository.find_branch(workload.branch_name)
+            source_commit = project.repository.find_branch(source_branch).dereferenced_target.sha
+
+            expect(new_branch.dereferenced_target.sha).to eq(source_commit)
+          end
+        end
+
+        context 'when source_branch does not exist' do
+          let(:source_branch) { 'non-existent-branch' }
+
+          it 'creates a new branch from the default branch' do
+            expect(project.repository).to receive(:add_branch)
+                                            .with(user, match(%r{^workloads/\w+}),
+                                              project.default_branch_or_main, skip_ci: true)
+                                            .and_call_original
+
+            result = execute
+            expect(result).to be_success
+
+            workload = result.payload
+            expect(workload.branch_name).to match(%r{workloads/\w+})
+          end
+        end
+
+        context 'when source_branch is nil' do
+          it 'creates a new branch from the default branch' do
+            expect(project.repository).to receive(:add_branch)
+              .with(user, match(%r{^workloads/\w+}), project.default_branch_or_main, skip_ci: true)
+              .and_call_original
+
+            result = execute
+            expect(result).to be_success
+          end
         end
       end
     end

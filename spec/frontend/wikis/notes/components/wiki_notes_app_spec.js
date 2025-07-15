@@ -9,8 +9,6 @@ import PlaceholderNote from '~/wikis/wiki_notes/components/placeholder_note.vue'
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
 import WikiDiscussion from '~/wikis/wiki_notes/components/wiki_discussion.vue';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
-import WikiNotesActivityHeader from '~/wikis/wiki_notes/components/wiki_notes_activity_header.vue';
-import eventHub, { EVENT_EDIT_WIKI_DONE, EVENT_EDIT_WIKI_START } from '~/wikis/event_hub';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { noteableId, queryVariables } from '../mock_data';
 
@@ -38,6 +36,7 @@ const mockDiscussion = (...children) => {
         lastEditedBy: null,
         url: 'https://path/to/2/',
         awardEmoji: null,
+        internal: false,
         userPermissions: {
           adminNote: true,
           awardEmoji: true,
@@ -71,6 +70,9 @@ describe('WikiNotesApp', () => {
             wikiPage: {
               id: 'gid://gitlab/WikiPage/1',
               title: 'home',
+              userPermissions: {
+                markNoteAsInternal: true,
+              },
               discussions: {
                 nodes: [mockDiscussion('Discussion 1')],
               },
@@ -96,6 +98,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions: {
               nodes: [mockDiscussion('Discussion 1')],
             },
@@ -133,31 +138,11 @@ describe('WikiNotesApp', () => {
     wrapper.vm.$options.apollo.wikiPage.result.call(wrapper.vm, { data: {} });
   });
 
-  describe('when editing a wiki page', () => {
-    beforeEach(async () => {
-      eventHub.$emit(EVENT_EDIT_WIKI_START);
-
-      await nextTick();
-    });
-
-    it('should hide notes when editing a wiki page', () => {
-      expect(wrapper.findComponent(WikiNotesActivityHeader).exists()).toBe(false);
-    });
-
-    it('should show notes when editing a wiki page is done', async () => {
-      eventHub.$emit(EVENT_EDIT_WIKI_DONE);
-
-      await nextTick();
-
-      expect(wrapper.findComponent(WikiNotesActivityHeader).exists()).toBe(true);
-    });
-  });
-
   it('should render skeleton notes before content loads', () => {
     createWrapper();
     const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
 
-    expect(skeletonNotes.length).toBe(5);
+    expect(skeletonNotes).toHaveLength(5);
   });
 
   it('should render Comment Form correctly', () => {
@@ -202,12 +187,12 @@ describe('WikiNotesApp', () => {
 
     it('should not render any discussions', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
-      expect(wikiDiscussions.length).toBe(0);
+      expect(wikiDiscussions).toHaveLength(0);
     });
 
     it('should not render any skeleton notes', () => {
       const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
-      expect(skeletonNotes.length).toBe(0);
+      expect(skeletonNotes).toHaveLength(0);
     });
 
     it('should attempt to fetch Discussions when retry button is clicked', async () => {
@@ -235,6 +220,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions,
           },
         },
@@ -244,7 +232,7 @@ describe('WikiNotesApp', () => {
     it('should render discussions correctly', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
-      expect(wikiDiscussions.length).toBe(3);
+      expect(wikiDiscussions).toHaveLength(3);
       expect(wikiDiscussions.at(0).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
       expect(wikiDiscussions.at(1).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
       expect(wikiDiscussions.at(2).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
@@ -282,6 +270,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions,
           },
         },

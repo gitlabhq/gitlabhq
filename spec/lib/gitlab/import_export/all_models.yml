@@ -929,6 +929,7 @@ project:
 - approval_policies
 - project_requirement_compliance_statuses
 - analyzer_statuses
+- configured_ai_catalog_items
 award_emoji:
 - awardable
 - user
@@ -1146,6 +1147,7 @@ resource_state_events:
   - merge_request
   - source_merge_request
   - epic
+  - namespace
 iteration:
   - group
   - iterations_cadence

@@ -119,7 +119,11 @@ export default {
 <template>
   <component :is="itemComponent" v-bind="itemProps" @refetch="onRefetch">
     <template v-if="item.hasChildren" #children-toggle>
-      <gl-button v-bind="expandButtonProps" @click="onNestedItemsToggleClick" />
+      <gl-button
+        v-bind="expandButtonProps"
+        data-testid="nested-groups-project-list-item-toggle-button"
+        @click="onNestedItemsToggleClick"
+      />
     </template>
     <template v-if="item.hasChildren" #children>
       <!-- eslint-disable-next-line vue/no-undef-components -->

@@ -5,7 +5,7 @@ module Gitlab
     module ParallelScheduling
       include JobDelayCalculator
 
-      attr_reader :project, :client, :page_counter, :already_imported_cache_key,
+      attr_reader :project, :client, :page_keyset, :already_imported_cache_key,
         :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
       attr_accessor :job_started_at, :enqueued_job_counter
@@ -27,7 +27,7 @@ module Gitlab
         @project = project
         @client = client
         @parallel = parallel
-        @page_counter = Gitlab::Import::PageCounter.new(project, collection_method)
+        @page_keyset = Gitlab::Import::PageKeyset.new(project, collection_method, ::Import::SOURCE_GITHUB)
         @already_imported_cache_key = format(ALREADY_IMPORTED_CACHE_KEY, project: project.id,
           collection: collection_method)
         @job_waiter_cache_key = format(JOB_WAITER_CACHE_KEY, project: project.id, collection: collection_method)
@@ -114,21 +114,10 @@ module Gitlab
       def each_object_to_import
         repo = project.import_source
 
-        # We inject the page number here to make sure that all importers always
-        # start where they left off. Simply starting over wouldn't work for
-        # repositories with a lot of data (e.g. tens of thousands of comments).
-        options = collection_options.merge(page: page_counter.current)
+        # URL to resume the pagination from in case the job is interrupted.
+        resume_url = page_keyset.current
 
-        client.each_page(collection_method, repo, options) do |page|
-          # Technically it's possible that the same work is performed multiple
-          # times, as Sidekiq doesn't guarantee there will ever only be one
-          # instance of a job. In such a scenario it's possible for one job to
-          # have a lower page number (e.g. 5) compared to another (e.g. 10). In
-          # this case we skip over all the objects until we have caught up,
-          # reducing the number of duplicate jobs scheduled by the provided
-          # block.
-          next unless page_counter.set(page.number)
-
+        client.each_page(collection_method, resume_url, repo, collection_options) do |page|
           page.objects.each do |object|
             object = object.to_h
 
@@ -144,6 +133,8 @@ module Gitlab
             # scheduling it multiple times.
             mark_as_imported(object)
           end
+
+          page_keyset.set(page.url)
         end
       end
 

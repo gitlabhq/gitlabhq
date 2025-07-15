@@ -6,13 +6,14 @@ description: Project visibility, search, badges, layout.
 title: Organize work with projects
 ---
 
-Create projects to host your codebase in GitLab.
-You can also use projects to:
+In GitLab, a project is a broad container for all aspects of your development work. Projects
+contain a code repository, collaborative tools, project management features, and CI/CD capabilities.
+Use your project to organize all the data for your development project:
 
 - Track issues
 - Plan work
 - Collaborate on code
-- Use CI/CD tools to continuously build, test, and deploy your app
+- Use CI/CD tools to continuously build, test, and deploy your application
 
 Projects can be available [publicly, internally, or privately](../public_access.md).
 GitLab does not limit the number of private projects you can create.
@@ -35,7 +36,7 @@ GitLab does not limit the number of private projects you can create.
 - [Code intelligence](code_intelligence.md)
 - [Import and migrate](import/_index.md)
 - [System notes](system_notes.md)
-- [Transfer a project to another namespace](import/_index.md)
+- [Transfer projects](settings/migrate_projects.md)
 - [Use a project as a Go package](use_project_as_go_package.md)
 - [Tutorial: Build a protected workflow for your project](../../tutorials/protected_workflow/_index.md)
 - [Troubleshooting](troubleshooting.md)

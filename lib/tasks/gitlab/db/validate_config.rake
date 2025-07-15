@@ -97,6 +97,11 @@ namespace :gitlab do
         end
       end
 
+      # Ensure when Sec is enabled that CI is, as well.
+      if named_connections['sec'] && named_connections['ci'].nil?
+        warnings << "- The 'sec' connection is expecting 'ci' to be enabled"
+      end
+
       if warnings.any?
         warnings.unshift("Database config validation failure:")
 

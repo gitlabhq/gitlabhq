@@ -6,6 +6,8 @@ module Gitlab
       class ImportUsersWorker
         include StageMethods
 
+        resumes_work_when_interrupted!
+
         idempotent!
 
         private

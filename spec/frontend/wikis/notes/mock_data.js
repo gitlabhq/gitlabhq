@@ -14,6 +14,9 @@ export const pageInfo = {
   markdownHelpPath: '/help/user/markdown.md',
   markdownPreviewPath: '/flightjs/Flight/-/wikis/home/preview_markdown',
   createPath: '/flightjs/Flight/-/wikis',
+  userPermissions: {
+    markNoteAsInternal: true,
+  },
 };
 const registerPath = '/users/sign_up?redirect_to_referer=yes';
 const signInPath = '/users/sign_in?redirect_to_referer=yes';
@@ -64,6 +67,7 @@ export const note = {
   createdAt: '2024-11-10T14:19:58Z',
   lastEditedAt: '2024-11-10T14:19:58Z',
   url: 'http://127.0.0.1:3000/flightjs/Flight/-/wikis/home#note_1524',
+  internal: false,
   userPermissions: {
     __typename: 'NotePermissions',
     adminNote: false,

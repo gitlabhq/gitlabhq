@@ -9,6 +9,7 @@ import {
   GlDisclosureDropdownGroup,
   GlFormCheckbox,
   GlLoadingIcon,
+  GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapState } from 'pinia';
@@ -44,6 +45,7 @@ export default {
     GlButtonGroup,
     GlFormCheckbox,
     GlLoadingIcon,
+    GlAnimatedChevronRightDownIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -150,9 +152,6 @@ export default {
     },
     isCollapsed() {
       return isCollapsed(this.diffFile, { fileByFile: this.viewDiffsFileByFile });
-    },
-    collapseIcon() {
-      return this.expanded ? 'chevron-down' : 'chevron-right';
     },
     viewFileButtonText() {
       const truncatedContentSha = escape(truncateSha(this.diffFile.content_sha));
@@ -348,13 +347,14 @@ export default {
       <gl-button
         v-if="collapsible"
         ref="collapseButton"
-        class="gl-mr-2"
+        class="btn-icon gl-mr-2"
         category="tertiary"
         size="small"
-        :icon="collapseIcon"
         :aria-label="labelToggleFile"
         @click.stop="handleToggleFile"
-      />
+      >
+        <gl-animated-chevron-right-down-icon :is-on="expanded" />
+      </gl-button>
       <a
         :v-once="!viewDiffsFileByFile"
         class="gl-mr-2 gl-break-all !gl-no-underline"

@@ -1,6 +1,6 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
+stage: GitLab Dedicated
+group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how storage is allocated and managed in GitLab Dedicated, including repository storage and object storage.
 title: GitLab Dedicated storage types

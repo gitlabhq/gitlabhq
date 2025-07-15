@@ -71,20 +71,6 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
 
     context 'when issues on milestone are over DISPLAY_ISSUES_LIMIT' do
       it "limits issues to display and shows warning" do
-        stub_feature_flags(work_item_epic_milestones: false)
-        stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 3)
-
-        visit(project_milestone_path(project, milestone))
-
-        expect(page).to have_selector('#tab-issues li', count: 3)
-        expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 issues. View all issues')
-        expect(page).to have_link('View all issues', href: project_issues_path(project, { milestone_title: milestone.title }))
-      end
-    end
-
-    context 'when issues on milestone are over DISPLAY_ISSUES_LIMIT and work_item_epic_milestones FF is on' do
-      it "limits issues to display and shows warning" do
-        stub_feature_flags(work_item_epic_milestones: true)
         stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 3)
 
         visit(project_milestone_path(project, milestone))

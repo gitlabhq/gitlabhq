@@ -9,7 +9,7 @@ module Organizations
 
     DEFAULT_ORGANIZATION_ID = 1
 
-    scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }
+    scope :without_default, -> { id_not_in(DEFAULT_ORGANIZATION_ID) }
     scope :with_namespace_path, ->(path) {
       joins(namespaces: :route).where(route: { path: path.to_s })
     }

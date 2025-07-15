@@ -262,6 +262,7 @@ module MergeRequestsHelper
     merge_project = merge_request_source_project_for_project(project)
 
     common_merge_request_list_data(current_user).merge({
+      namespace_id: project.id,
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
@@ -277,7 +278,7 @@ module MergeRequestsHelper
 
   def group_merge_requests_list_data(group, current_user)
     common_merge_request_list_data(current_user).merge({
-      group_id: group.id,
+      namespace_id: group.id,
       full_path: group.full_path,
       show_new_resource_dropdown: (current_user.presence && any_projects?(@projects)).to_s,
       has_any_merge_requests: group_merge_requests(group).exists?.to_s,
@@ -306,6 +307,7 @@ module MergeRequestsHelper
       isFluidLayout: fluid_layout.to_s,
       blocksMerge: project.only_allow_merge_if_all_discussions_are_resolved?.to_s,
       imported: merge_request.imported?.to_s,
+      isDraft: merge_request.draft.to_s,
       tabs: [
         [
           'show',
@@ -388,12 +390,12 @@ module MergeRequestsHelper
     link_to branch,
       branch_path,
       title: branch_title,
-      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2'
+      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2 gl-shrink-0'
   end
 
   def merge_request_header(merge_request)
     link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
-    target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26"
+    target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26 gl-shrink-0"
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' " \
@@ -431,7 +433,9 @@ module MergeRequestsHelper
       copy_button: copy_button.html_safe,
       target_branch: target_branch.html_safe,
       target_copy_button: " ",
-      created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe
+      created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe,
+      author_container_start: '<div class="merge-request-author-container">'.html_safe,
+      author_container_end: '</div>'.html_safe
     }
 
     if @project.default_branch != merge_request.target_branch
@@ -439,7 +443,7 @@ module MergeRequestsHelper
     end
 
     safe_format(_(
-      '%{author} requested to merge %{source_branch} %{copy_button} ' \
+      '%{author_container_start}%{author}requested to merge %{author_container_end}%{source_branch} %{copy_button} ' \
         'into %{target_branch} %{target_copy_button} %{created_at}'
     ), copy_button_data)
   end
@@ -459,9 +463,6 @@ module MergeRequestsHelper
   end
 
   def merge_request_dashboard_role_based_data
-    is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
-      type: :gitlab_com_derisk)
-
     {
       tabs: [
         {
@@ -497,11 +498,11 @@ module MergeRequestsHelper
                   "Your merge requests that need reviewers assigned, " \
                     "or has feedback to address."
                 ),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   or: {
                     reviewerWildcard: "NONE",
-                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                    onlyReviewerUsername: duo_code_review_bot.username,
                     reviewStates: %w[REVIEWED REQUESTED_CHANGES]
                   },
                   perPage: 10
@@ -515,13 +516,13 @@ module MergeRequestsHelper
                   "Your merge requests awaiting approvals, " \
                     "or has been approved by all assigned reviewers."
                 ),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED]
                   },
-                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                  ignoredReviewerUsername: duo_code_review_bot.username,
                   perPage: 10
                 }
               }
@@ -548,7 +549,7 @@ module MergeRequestsHelper
                 id: 'merged_recently_assigned',
                 title: _('Assigned'),
                 helpContent: _('Your merge requests that have been merged.'),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   state: 'merged',
                   mergedAfter: 2.weeks.ago.to_time.iso8601,
@@ -563,9 +564,6 @@ module MergeRequestsHelper
   end
 
   def merge_request_dashboard_data
-    is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
-      type: :gitlab_com_derisk)
-
     return merge_request_dashboard_role_based_data if current_user.user_preference.role_based?
 
     {
@@ -579,10 +577,10 @@ module MergeRequestsHelper
                 id: 'returned_to_you',
                 title: _('Returned to you'),
                 helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   reviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username
+                  ignoredReviewerUsername: duo_code_review_bot.username
                 }
               },
               {
@@ -596,20 +594,13 @@ module MergeRequestsHelper
               },
               {
                 id: 'assigned_to_you',
-                title: is_author_or_assignee ? _('Your merge requests') : _('Assigned to you'),
-
-                helpContent: if is_author_or_assignee
-                               _("Merge requests you authored or are assigned to, " \
-                                 "without reviewers.")
-                             else
-                               _("You're assigned to these merge requests, but they don't have reviewers yet.")
-                             end,
-
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                title: _('Your merge requests'),
+                helpContent: _("Merge requests you authored or are assigned to, without reviewers."),
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   or: {
                     reviewerWildcard: 'NONE',
-                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username
+                    onlyReviewerUsername: duo_code_review_bot.username
                   }
                 }
               }
@@ -617,7 +608,7 @@ module MergeRequestsHelper
             [
               {
                 id: 'waiting_for_assignee',
-                title: is_author_or_assignee ? _('Waiting for author or assignee') : _('Waiting for assignee'),
+                title: _('Waiting for author or assignee'),
                 hideCount: true,
                 helpContent: _(
                   "Your reviews you've requested changes for " \
@@ -633,9 +624,9 @@ module MergeRequestsHelper
                 title: _('Waiting for approvals'),
                 hideCount: true,
                 helpContent: _('Your merge requests that are waiting for approvals.'),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
-                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                  ignoredReviewerUsername: duo_code_review_bot.username,
                   reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED]
@@ -657,9 +648,9 @@ module MergeRequestsHelper
                 title: _('Approved by others'),
                 hideCount: true,
                 helpContent: _('Your merge requests with approvals by all assigned reviewers.'),
-                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                query: 'authorOrAssigneeMergeRequests',
                 variables: {
-                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                  ignoredReviewerUsername: duo_code_review_bot.username,
                   reviewState: 'APPROVED',
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]
@@ -691,6 +682,11 @@ module MergeRequestsHelper
       ]
     }
   end
+
+  def duo_code_review_bot
+    ::Users::Internal.duo_code_review_bot
+  end
+  strong_memoize_attr :duo_code_review_bot
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

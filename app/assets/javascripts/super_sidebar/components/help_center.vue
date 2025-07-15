@@ -30,6 +30,7 @@ export default {
     whatsnew: __("What's new"),
     terms: __('Terms and privacy'),
     privacy: __('Privacy statement'),
+    whatsnewToast: __("What's new moved to Help."),
   },
   inject: ['isSaas'],
   props: {
@@ -72,7 +73,7 @@ export default {
             },
             {
               text: this.$options.i18n.plans,
-              href: `${PROMO_URL}/pricing`,
+              href: this.sidebarData.compare_plans_url,
               extraAttrs: {
                 ...this.trackingAttrs('compare_gitlab_plans'),
               },
@@ -128,18 +129,16 @@ export default {
               },
               shortcut: '?',
             },
-            this.sidebarData.display_whats_new && {
-              text: this.$options.i18n.whatsnew,
-              action: this.showWhatsNew,
-              count:
-                this.showWhatsNewNotification &&
-                this.sidebarData.whats_new_most_recent_release_items_count,
-              extraAttrs: {
-                'data-track-action': 'click_button',
-                'data-track-label': 'whats_new',
-                'data-track-property': HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
+            this.sidebarData.display_whats_new &&
+              !this.showWhatsNewNotification && {
+                text: this.$options.i18n.whatsnew,
+                action: this.showWhatsNew,
+                extraAttrs: {
+                  'data-track-action': 'click_button',
+                  'data-track-label': 'whats_new',
+                  'data-track-property': HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
+                },
               },
-            },
           ].filter(Boolean),
         },
       };
@@ -177,16 +176,25 @@ export default {
     },
 
     async showWhatsNew() {
-      this.showWhatsNewNotification = false;
-
       if (!this.toggleWhatsNewDrawer) {
         const { default: toggleWhatsNewDrawer } = await import(
           /* webpackChunkName: 'whatsNewApp' */ '~/whats_new'
         );
         this.toggleWhatsNewDrawer = toggleWhatsNewDrawer;
-        this.toggleWhatsNewDrawer(this.sidebarData.whats_new_version_digest);
+
+        this.toggleWhatsNewDrawer(
+          this.sidebarData.whats_new_version_digest,
+          this.hideWhatsNewNotification,
+        );
       } else {
         this.toggleWhatsNewDrawer();
+      }
+    },
+
+    hideWhatsNewNotification() {
+      if (this.showWhatsNewNotification) {
+        this.showWhatsNewNotification = false;
+        this.$toast.show(this.$options.i18n.whatsnewToast);
       }
     },
 
@@ -208,60 +216,75 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown
-    :dropdown-offset="$options.dropdownOffset"
-    @shown="trackDropdownToggle(true)"
-    @hidden="trackDropdownToggle(false)"
-  >
-    <template #toggle>
-      <gl-button
-        category="tertiary"
-        icon="question-o"
-        class="super-sidebar-help-center-toggle btn-with-notification"
-        data-testid="sidebar-help-button"
-      >
-        <span
-          v-if="showWhatsNewNotification"
-          data-testid="notification-dot"
-          class="notification-dot-info"
-        ></span>
-        {{ $options.i18n.help }}
-      </gl-button>
-    </template>
-
-    <gl-disclosure-dropdown-group
-      v-if="sidebarData.show_version_check"
-      :group="itemGroups.versionCheck"
+  <div>
+    <gl-button
+      v-if="showWhatsNewNotification"
+      class="gl-w-full !gl-justify-start"
+      category="tertiary"
+      icon="compass"
+      data-testid="sidebar-whatsnew-button"
+      data-track-action="click_button"
+      data-track-label="whats_new"
+      data-track-property="nav_whats_new"
+      button-text-classes="gl-w-full gl-flex gl-items-center gl-justify-between"
+      @click="showWhatsNew"
     >
-      <template #list-item="{ item }">
-        <span class="gl-flex gl-flex-col gl-leading-24">
-          <span class="gl-text-sm gl-font-bold">
+      {{ $options.i18n.whatsnew }}
+
+      <gl-badge aria-hidden="true" data-testid="notification-count">
+        <span class="gl-m-1 gl-min-w-3">
+          {{ sidebarData.whats_new_most_recent_release_items_count }}
+        </span>
+      </gl-badge>
+    </gl-button>
+
+    <gl-disclosure-dropdown
+      :dropdown-offset="$options.dropdownOffset"
+      @shown="trackDropdownToggle(true)"
+      @hidden="trackDropdownToggle(false)"
+    >
+      <template #toggle>
+        <gl-button
+          category="tertiary"
+          icon="question-o"
+          class="super-sidebar-help-center-toggle"
+          data-testid="sidebar-help-button"
+        >
+          {{ $options.i18n.help }}
+        </gl-button>
+      </template>
+
+      <gl-disclosure-dropdown-group
+        v-if="sidebarData.show_version_check"
+        :group="itemGroups.versionCheck"
+      >
+        <template #list-item="{ item }">
+          <span class="gl-flex gl-flex-col gl-leading-24">
+            <span class="gl-text-sm gl-font-bold">
+              {{ item.text }}
+              <gl-emoji data-name="rocket" aria-hidden="true" />
+            </span>
+            <span>
+              <span class="gl-mr-2">{{ item.version }}</span>
+              <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" />
+            </span>
+          </span>
+        </template>
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group
+        :group="itemGroups.helpLinks"
+        :bordered="sidebarData.show_version_check"
+      />
+
+      <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
+        <template #list-item="{ item }">
+          <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
             {{ item.text }}
-            <gl-emoji data-name="rocket" aria-hidden="true" />
+            <kbd v-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
           </span>
-          <span>
-            <span class="gl-mr-2">{{ item.version }}</span>
-            <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" />
-          </span>
-        </span>
-      </template>
-    </gl-disclosure-dropdown-group>
-
-    <gl-disclosure-dropdown-group
-      :group="itemGroups.helpLinks"
-      :bordered="sidebarData.show_version_check"
-    />
-
-    <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
-      <template #list-item="{ item }">
-        <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
-          {{ item.text }}
-          <gl-badge v-if="item.count" pill variant="info" aria-hidden="true">{{
-            item.count
-          }}</gl-badge>
-          <kbd v-else-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
-        </span>
-      </template>
-    </gl-disclosure-dropdown-group>
-  </gl-disclosure-dropdown>
+        </template>
+      </gl-disclosure-dropdown-group>
+    </gl-disclosure-dropdown>
+  </div>
 </template>

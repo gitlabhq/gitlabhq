@@ -2,11 +2,6 @@
 import { s__ } from '~/locale';
 
 export default {
-  computed: {
-    themeClass() {
-      return window.gon?.user_color_scheme;
-    },
-  },
   i18n: {
     previewLabel: s__('Preferences|Preview'),
   },
@@ -16,7 +11,7 @@ export default {
   <div class="form-group">
     <label>{{ $options.i18n.previewLabel }}</label>
     <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-    <table :class="themeClass" class="code">
+    <table class="code code-syntax-highlight-theme">
       <tbody>
         <tr class="line_holder parallel">
           <td class="old_line diff-line-num old">

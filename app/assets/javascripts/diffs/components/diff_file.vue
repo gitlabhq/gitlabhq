@@ -244,6 +244,12 @@ export default {
         (f) => f.position?.position_type === FILE_DIFF_POSITION_TYPE,
       );
     },
+    expandedFileDiscussions() {
+      return this.fileDiscussions.filter((d) => d.expandedOnDiff);
+    },
+    collapsedFileDiscussions() {
+      return this.fileDiscussions.filter((d) => !d.expandedOnDiff);
+    },
     showFileDiscussions() {
       return (
         !this.file.viewer?.manuallyCollapsed &&
@@ -255,9 +261,6 @@ export default {
     },
     fileId() {
       return fileContentsId(this.file);
-    },
-    isFileDiscussionsExpanded() {
-      return this.fileDiscussions.every((d) => d.expandedOnDiff);
     },
   },
   watch: {
@@ -441,7 +444,7 @@ export default {
       this.addToReview(note, this.$options.FILE_DIFF_POSITION_TYPE, parentElement, errorCallback);
     },
     toggleFileDiscussionVisibility() {
-      this.fileDiscussions.forEach((d) => this.toggleFileDiscussion(d));
+      this.collapsedFileDiscussions.forEach((d) => this.toggleFileDiscussion(d));
     },
   },
   warningClasses: [
@@ -574,25 +577,23 @@ export default {
       >
         <div v-if="showFileDiscussions" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
-            <template v-if="isFileDiscussionsExpanded">
-              <diff-discussions
-                v-if="fileDiscussions.length"
-                class="diff-file-discussions"
-                data-testid="diff-file-discussions"
-                :discussions="fileDiscussions"
-              />
-              <diff-file-drafts
-                :file-hash="file.file_hash"
-                :show-pin="false"
-                :position-type="$options.FILE_DIFF_POSITION_TYPE"
-                :autosave-key="autosaveKey"
-                class="diff-file-discussions"
-              />
-            </template>
             <diff-file-discussion-expansion
-              v-else
-              :discussions="fileDiscussions"
+              v-if="collapsedFileDiscussions.length"
+              :discussions="collapsedFileDiscussions"
               @toggle="toggleFileDiscussionVisibility"
+            />
+            <diff-discussions
+              v-if="expandedFileDiscussions.length"
+              class="diff-file-discussions"
+              data-testid="diff-file-discussions"
+              :discussions="expandedFileDiscussions"
+            />
+            <diff-file-drafts
+              :file-hash="file.file_hash"
+              :show-pin="false"
+              :position-type="$options.FILE_DIFF_POSITION_TYPE"
+              :autosave-key="autosaveKey"
+              class="diff-file-discussions"
             />
             <note-form
               v-if="file.hasCommentForm"

@@ -9,7 +9,7 @@ import eventHub from '../event_hub';
 
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
 
 import {
@@ -207,7 +207,7 @@ export default {
       this.track('invite_successful');
 
       if (this.reloadPageOnSubmit) {
-        reloadOnInvitationSuccess();
+        reloadOnMemberInvitationSuccess();
       } else {
         this.showToastMessage();
       }

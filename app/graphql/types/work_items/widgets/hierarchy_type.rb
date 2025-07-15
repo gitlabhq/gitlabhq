@@ -49,7 +49,7 @@ module Types
             links_for_parents = ::WorkItems::ParentLink.for_parents(ids)
                                            .select(:work_item_parent_id)
                                            .group(:work_item_parent_id)
-                                           .reorder(nil)
+                                           .without_order
 
             links_for_parents.each { |link| loader.call(link.work_item_parent_id, true) }
           end

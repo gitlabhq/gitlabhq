@@ -57,7 +57,11 @@ We will install GitLab, GitLab AI Gateway and Ollama each in their own separate 
 For more information about the component and its purpose, see [AI Gateway](../../user/gitlab_duo/gateway.md).
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: GitLab Duo Self-Hosted architecture
+    accDescr: Shows the flow from GitLab Ultimate to the AI gateway, which connects to Ollama running Mistral.
+
     A[GitLab<br/>Ultimate] --> C
     C[GitLab<br/>AI Gateway] --> B[Ollama<br/>Mistral]
 ```

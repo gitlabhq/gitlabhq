@@ -165,4 +165,5 @@
 - :without_license
 - :yaml_processor_feature_flag_corectness
 - :zoekt
+- :zoekt_cache_disabled
 - :zoekt_settings_enabled

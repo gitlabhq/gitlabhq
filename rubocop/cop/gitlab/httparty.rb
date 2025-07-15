@@ -18,10 +18,12 @@ module RuboCop
           the option :allow_local_requests in the request call.
         EOL
 
+        # @!method includes_httparty?(node)
         def_node_matcher :includes_httparty?, <<~PATTERN
           (send nil? :include (const nil? :HTTParty))
         PATTERN
 
+        # @!method httparty_node?(node)
         def_node_matcher :httparty_node?, <<~PATTERN
           (send (const nil? :HTTParty)...)
         PATTERN
@@ -33,11 +35,11 @@ module RuboCop
 
               replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
 
-              corrector.replace(node.source_range, replacement)
+              corrector.replace(node, replacement)
             end
           elsif includes_httparty?(node)
             add_offense(node, message: MSG_INCLUDE) do |corrector|
-              corrector.remove(node.source_range)
+              corrector.remove(node)
             end
           end
         end

@@ -114,7 +114,7 @@ describe('GlobalAlerts', () => {
         wrapper.findComponent(GlAlert).vm.$emit('dismiss');
         await nextTick();
 
-        expect(findAllAlerts().length).toBe(1);
+        expect(findAllAlerts()).toHaveLength(1);
         expect(removeGlobalAlertById).toHaveBeenCalledWith(alert1.id);
       });
     });

@@ -103,4 +103,25 @@ RSpec.describe Packages::Debian::ExtractMetadataService, feature_category: :pack
       expect { subject }.to raise_error(described_class::ExtractionError, 'invalid package file')
     end
   end
+
+  context 'with large files' do
+    before do
+      stub_const("#{described_class}::MAX_METADATA_FILE_SIZE", 1.byte)
+    end
+
+    where(:ext, :error) do
+      :dsc | true
+      :deb | false
+    end
+
+    with_them do
+      let(:package_file) { build(:debian_package_file, ext) }
+
+      if params[:error]
+        it { expect { subject }.to raise_error(described_class::ExtractionError, 'invalid package file') }
+      else
+        it { expect { subject }.not_to raise_error }
+      end
+    end
+  end
 end

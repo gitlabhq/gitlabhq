@@ -126,7 +126,7 @@ describe('List Selector Utils', () => {
     it('calls axios.get with correct parameters', async () => {
       await fetchGroupsWithProjectAccess(mockProjectId, mockGroupSearch);
 
-      expect(axiosMock.history.get.length).toBe(1);
+      expect(axiosMock.history.get).toHaveLength(1);
       expect(axiosMock.history.get[0].params).toStrictEqual({
         project_id: mockProjectId,
         with_project_access: true,

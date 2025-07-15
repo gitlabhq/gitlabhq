@@ -91,7 +91,7 @@ this information to help analyze a vulnerability.
 
 The following tips may also help you analyze a vulnerability:
 
-- Use [GitLab Duo Vulnerability Explanation](../vulnerabilities/_index.md#explaining-a-vulnerability)
+- Use [GitLab Duo Vulnerability Explanation](../vulnerabilities/_index.md#vulnerability-explanation)
   to help explain the vulnerability and suggest a remediation. Available only for vulnerabilities
   detected by SAST.
 - Use [security training](../vulnerabilities/_index.md#view-security-training-for-a-vulnerability)

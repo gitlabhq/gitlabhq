@@ -1,6 +1,6 @@
 @import '../mixins_and_variables_and_functions';
 
-.geo-replicable-item-grid {
+.geo-list-item-grid {
   grid-template-columns: max-content 1fr auto;
   grid-gap: 0.5rem;
 }

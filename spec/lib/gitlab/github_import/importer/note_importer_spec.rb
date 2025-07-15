@@ -12,7 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
       placeholder_user_id: user.id,
       namespace_id: project.root_ancestor.id,
       source_user_identifier: '4',
-      source_hostname: project.import_url
+      source_hostname: project.safe_import_url
     )
   end
 

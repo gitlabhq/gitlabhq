@@ -30,7 +30,7 @@ For more in depth details on the dashboard layout framework, see the [architectu
 Try it in your browser using our interactive examples:
 
 - [dashboard_layout](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-dashboard-layout--docs)
-- [panels_base](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-panels-base--docs)
+- [extended_dashboard_panel](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-extended-dashboard-panel--docs)
 
 ## When to use this component
 
@@ -59,7 +59,8 @@ customizable dashboard layout as part of GitLab issue [#546201](https://gitlab.c
 
 The `dashboard_layout.vue` component takes a dashboard configuration object as input
 and renders a dashboard layout with title, description, actions, and panels in a
-cross-browser 12-column grid system.
+cross-browser 12-column grid system. The grid is responsive and collapses down
+to a single column at the [medium breakpoint](https://design.gitlab.com/product-foundations/layout/#breakpoints).
 
 ### Dashboard panels
 
@@ -69,7 +70,7 @@ with our design patterns, it's strongly recommended that you use one of the
 following components:
 
 - [GlDashboardPanel](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/dashboards-dashboards-panel--docs): The official Pajamas dashboard panel
-- [`panels_base.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-panels-base--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
+- [`extended_dashboard_panel.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-extended-dashboard-panel--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
 
 ### Filters
 
@@ -94,7 +95,7 @@ For a full list of supported slots see the [interactive examples](#interactive-e
 <script>
 // app/assets/javascripts/feature/components/dashboard.vue
 import DashboardLayout from '~/vue_shared/components/customizable_dashboard/dashboard_layout.vue';
-import PanelsBase from '~/vue_shared/components/customizable_dashboard/panels_base.vue';
+import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
 
 import UsersVisualization from './my_users_visualization.vue';
 import EventsVisualization from './my_events_visualization.vue';
@@ -102,7 +103,7 @@ import EventsVisualization from './my_events_visualization.vue';
 export default {
   components: {
     DashboardLayout,
-    PanelsBase,
+    ExtendedDashboardPanel,
     UsersVisualization,
     EventsVisualization,
   },
@@ -114,9 +115,9 @@ export default {
         panels: [
           {
             id: '1',
-            panelsBaseProps: {
+            extendedDashboardPanelProps: {
               title: __('Active users over time'),
-              // Any additional PanelsBase props go here
+              // Any additional ExtendedDashboardPanel props go here
             },
             component: UsersVisualization,
             componentProps: {
@@ -132,9 +133,9 @@ export default {
           },
           {
             id: '2',
-            panelsBaseProps: {
-              title:__('Events over time'),
-              // Any additional PanelsBase props go here
+            extendedDashboardPanelProps: {
+              title: __('Events over time'),
+              // Any additional ExtendedDashboardPanel props go here
             },
             component: EventsVisualization,
             componentProps: {
@@ -158,7 +159,7 @@ export default {
 <template>
   <dashboard-layout :config="dashboard">
     <template #panel="{ panel }">
-      <panels-base v-bind="panel.panelsBaseProps">
+      <extended-dashboard-panel v-bind="panel.extendedDashboardPanelProps">
         <template #body>
           <component
             :is="panel.component"
@@ -166,7 +167,7 @@ export default {
             v-bind="panel.componentProps"
           />
         </template>
-      </panels-base>
+      </extended-dashboard-panel>
     </template>
   </dashboard-layout>
 </template>
@@ -179,7 +180,7 @@ straightforward. In most cases because you only need to replace the dashboard sh
 and can keep existing visualizations. A typical migration path could look like this:
 
 1. Create a feature flag to conditionally render your new dashboard.
-1. Create a new dashboard using `dashboard_layout.vue` and `panels_base.vue`.
+1. Create a new dashboard using `dashboard_layout.vue` and `extended_dashboard_panel.vue`.
 1. Create a dashboard config object that mimics your old dashboard layout.
 1. Optionally, use `dashboard_layout.vue`'s slots to render your dashboard's
 filters, actions, or custom title or description.

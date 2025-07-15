@@ -1,11 +1,11 @@
 ---
-redirect_to: '../_index.md'
+redirect_to: '_index.md#epics-as-work-items'
 remove_date: '2025-09-13'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](../_index.md).
+This document was moved to [another location](_index.md#epics-as-work-items).
 
 <!-- This redirect file can be deleted after <2025-09-13>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

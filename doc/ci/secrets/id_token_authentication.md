@@ -78,7 +78,7 @@ The token also includes custom claims provided by GitLab:
 | `ref_type`              | Always                                     | Git ref type, either `branch` or `tag`. |
 | `ref_path`              | Always                                     | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
 | `ref_protected`         | Always                                     | `true` if the Git ref is protected, `false` otherwise. |
-| `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11 and put behind the `ci_jwt_groups_direct` [feature flag](../../administration/feature_flags.md) in GitLab 17.3. |
+| `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11 and put behind the `ci_jwt_groups_direct` [feature flag](../../administration/feature_flags/_index.md) in GitLab 17.3. |
 | `environment`           | Job specifies an environment               | Environment this job deploys to. |
 | `environment_protected` | Job specifies an environment               | `true` if deployed environment is protected, `false` otherwise. |
 | `deployment_tier`       | Job specifies an environment               | [Deployment tier](../environments/_index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2. |
@@ -190,6 +190,6 @@ echo $OIDC_TOKEN | cut -d '.' -f2 | base64 -d | jq .
 
 Make sure that:
 
-- `aud` (audience) matches the expected audience (for example, the external service’s URL).
-- `sub` (subject) is mapped in the service’s Identity Provider settings.
+- `aud` (audience) matches the expected audience (for example, the external service's URL).
+- `sub` (subject) is mapped in the service's Identity Provider settings.
 - `preferred_username` is not present by default in GitLab ID tokens.

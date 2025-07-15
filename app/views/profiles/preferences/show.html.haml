@@ -2,7 +2,8 @@
 - add_page_specific_style 'page_bundles/profiles/preferences'
 - user_theme_id = Gitlab::Themes.for_user(@user).id
 - user_color_mode_id = Gitlab::ColorModes.for_user(@user).id
-- user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
+- user_light_color_schema_id = Gitlab::ColorSchemes.light_for_user(@user).id
+- user_dark_color_scheme_id = Gitlab::ColorSchemes.dark_for_user(@user).id
 - marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: @user)
 - extensions_marketplace_enabled = ::WebIde::ExtensionMarketplaceOptIn.enabled?(user: @user, marketplace_home_url: marketplace_home_url)
 - user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: extensions_marketplace_enabled }.to_json
@@ -30,19 +31,32 @@
           mode.name,
           radio_options: { checked: user_color_mode_id == mode.id }
 
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlights'),
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlighting'),
     id: 'syntax-highlighting-theme',
     options: { class: 'js-preferences-form' }) do |c|
     - c.with_description do
       = s_('Preferences|Choose a highlight color scheme for viewing and editing code.')
     - c.with_body do
-      .syntax-theme.row
-        - Gitlab::ColorSchemes.each do |scheme|
-          %label.col-6.col-sm-3.col-md-2.col-lg-auto.gl-mb-5
-            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview"
-            = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
-              scheme.name,
-              radio_options: { checked: user_color_schema_id == scheme.id }
+      - if user_application_light_mode? || user_application_system_mode?
+        = f.label class: 'label-bold' do
+          = s_('Preferences|Light color scheme')
+        .gl-grid.gl-gap-5.gl-grid-cols-2.sm:gl-grid-cols-3.md:gl-grid-cols-4.lg:gl-grid-cols-6.gl-mb-5{ data: { testid: 'syntax-highlighting-light-color-scheme' } }
+          - Gitlab::ColorSchemes.each do |scheme|
+            %label
+              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'
+              = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
+                scheme.name,
+                radio_options: { checked: user_light_color_schema_id == scheme.id }
+      - if user_application_dark_mode? || user_application_system_mode?
+        = f.label class: 'label-bold' do
+          = s_('Preferences|Dark color scheme')
+        .gl-grid.gl-gap-5.gl-grid-cols-2.sm:gl-grid-cols-3.md:gl-grid-cols-4.lg:gl-grid-cols-6.gl-mb-5{ data: { testid: 'syntax-highlighting-dark-color-scheme' } }
+          - Gitlab::ColorSchemes.each do |scheme|
+            %label
+              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'
+              = f.gitlab_ui_radio_component :dark_color_scheme_id, scheme.id,
+                scheme.name,
+                radio_options: { checked: user_dark_color_scheme_id == scheme.id }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Diffs'),
     id: 'diffs-colors',
@@ -72,7 +86,7 @@
     - c.with_description do
       = s_('Preferences|Customize the behavior of the system layout and default views.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.label :keyboard_shortcuts_enabled, class: 'label-bold' do
@@ -130,7 +144,10 @@
         = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
           s_('Preferences|Automatically add new list items'),
           help_text: html_escape(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below.')) % { kbdOpen: '<kbd>'.html_safe, kbdClose: '</kbd>'.html_safe }
-
+      .form-group
+        = f.gitlab_ui_checkbox_component :markdown_maintain_indentation,
+          s_('Preferences|Maintain indentation'),
+          help_text: safe_format(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line.'), tag_pair(tag.kbd, :kbdOpen, :kbdClose))
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
         = f.number_field :tab_width,
@@ -147,11 +164,11 @@
     - c.with_description do
       = _('Customize language and region related settings.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
       %p.-gl-mt-5
-        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
+        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap gl-link-inline', target: '_blank', rel: 'noopener noreferrer' do
           = _("Help translate GitLab into your language")
           %span{ aria: { label: _('Open new window') } }
             = sprite_icon('external-link')
@@ -166,7 +183,7 @@
     - c.with_description do
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :time_display_relative,
@@ -185,7 +202,7 @@
     - c.with_description do
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :enabled_following,

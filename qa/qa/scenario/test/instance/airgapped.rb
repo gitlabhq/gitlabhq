@@ -10,7 +10,8 @@ module QA
 
           tags "~github", "~external_api_calls", "~skip_live_env", *Specs::Runner::DEFAULT_SKIPPED_TAGS
 
-          pipeline_mappings test_on_omnibus_nightly: ["airgapped"]
+          pipeline_mappings test_on_omnibus: %w[airgapped],
+            test_on_omnibus_nightly: %w[airgapped]
 
           def perform(address, *rspec_options)
             Runtime::Scenario.define(:network, 'airgapped')

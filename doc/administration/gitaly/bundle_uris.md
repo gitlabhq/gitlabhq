@@ -15,7 +15,7 @@ Offering: GitLab Self-Managed
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../feature_flags/_index.md) named `gitaly_bundle_uri`. Disabled by default.
 
 {{< /history >}}
 
@@ -330,7 +330,7 @@ You can schedule this command with a tool like `cron(8)`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16007) in GitLab 18.0 [with a flag](../feature_flags.md) named `gitaly_bundle_generation`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16007) in GitLab 18.0 [with a flag](../feature_flags/_index.md) named `gitaly_bundle_generation`. Disabled by default.
 
 {{< /history >}}
 

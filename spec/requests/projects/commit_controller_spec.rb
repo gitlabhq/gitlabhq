@@ -70,28 +70,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       expect(assigns(:environment)).to be_nil
       expect(response).to render_template(:rapid_diffs)
     end
-
-    context 'for stream_url' do
-      it 'returns stream_url with offset' do
-        send_request
-
-        url = "/#{project.full_path}/-/commit/#{commit.id}/diffs_stream?offset=5&view=inline"
-
-        expect(assigns(:stream_url)).to eq(url)
-      end
-
-      context 'when view is set to parallel' do
-        let_it_be(:diff_view) { :parallel }
-
-        it 'returns stream_url with parallel view' do
-          send_request
-
-          url = "/#{project.full_path}/-/commit/#{commit.id}/diffs_stream?offset=5&view=parallel"
-
-          expect(assigns(:stream_url)).to eq(url)
-        end
-      end
-    end
   end
 
   describe 'GET #diff_files_metadata' do

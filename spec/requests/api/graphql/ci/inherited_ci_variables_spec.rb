@@ -44,7 +44,7 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
       'key' => 'SUBGROUP_VAR_B',
       'environmentScope' => '*',
       'groupName' => subgroup.name,
-      'groupCiCdSettingsPath' => subgroup_var.group_ci_cd_settings_path,
+      'groupCiCdSettingsPath' => nil,
       'masked' => true,
       'protected' => false,
       'raw' => false,
@@ -58,7 +58,7 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
       'key' => 'GROUP_VAR_A',
       'environmentScope' => 'production',
       'groupName' => group.name,
-      'groupCiCdSettingsPath' => group_var.group_ci_cd_settings_path,
+      'groupCiCdSettingsPath' => nil,
       'masked' => false,
       'protected' => true,
       'raw' => true,
@@ -96,6 +96,43 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
 
     before do
       project.add_maintainer(user)
+    end
+
+    context 'when user has admin_cicd_variables permission for all groups' do
+      before do
+        group.add_owner(user)
+        subgroup.add_owner(user)
+      end
+
+      it "returns the project's CI variables inherited from its parent group and ancestors with settings paths" do
+        post_graphql(query, current_user: user)
+
+        expected_vars = [
+          expected_var_b.merge(
+            'groupCiCdSettingsPath' => Gitlab::Routing.url_helpers.group_settings_ci_cd_path(subgroup)
+          ),
+          expected_var_a.merge(
+            'groupCiCdSettingsPath' => Gitlab::Routing.url_helpers.group_settings_ci_cd_path(group)
+          )
+        ]
+
+        expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to match_array(expected_vars)
+      end
+    end
+
+    context 'when user lacks admin_cicd_variables permission for groups' do
+      it "returns the project's CI variables with null settings paths for groups without permission" do
+        post_graphql(query, current_user: user)
+
+        variables = graphql_data.dig('project', 'inheritedCiVariables', 'nodes')
+        expect(variables).to have_attributes(size: 2)
+
+        variables.each do |var|
+          expect(var['groupCiCdSettingsPath']).to be_nil
+        end
+
+        expect(variables.pluck('groupName')).to contain_exactly(group.name, subgroup.name)
+      end
     end
 
     it "returns the project's CI variables inherited from its parent group and ancestors" do

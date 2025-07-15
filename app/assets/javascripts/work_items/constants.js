@@ -371,3 +371,79 @@ export const newWorkItemOptimisticUserPermissions = {
   updateWorkItem: true,
   __typename: 'WorkItemPermissions',
 };
+
+export const METADATA_KEYS = {
+  ASSIGNEE: 'assignee',
+  LABELS: 'labels',
+  WEIGHT: 'weight',
+  MILESTONE: 'milestone',
+  ITERATION: 'iteration',
+  DATES: 'dates',
+  HEALTH: 'health',
+  BLOCKED: 'blocked',
+  COMMENTS: 'comments',
+  POPULARITY: 'popularity',
+};
+
+export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
+  {
+    key: 'assignee',
+    label: __('Assignee'),
+    icon: 'profile',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'labels',
+    label: __('Labels'),
+    icon: 'labels',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'weight',
+    label: __('Weight'),
+    icon: 'weight',
+    isPresentInGroup: false,
+  },
+  {
+    key: 'milestone',
+    label: __('Milestone'),
+    icon: 'milestone',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'iteration',
+    label: __('Iteration'),
+    icon: 'iteration',
+    isPresentInGroup: false,
+  },
+  {
+    key: 'dates',
+    label: __('Dates'),
+    icon: 'calendar',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'health',
+    label: __('Health'),
+    icon: 'status-health',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'blocked',
+    label: s__('WorkItems|Blocked/Blocking'),
+    icon: 'entity-blocked',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'comments',
+    label: __('Comments'),
+    icon: 'comments',
+    isPresentInGroup: true,
+  },
+  {
+    key: 'popularity',
+    label: __('Popularity'),
+    icon: 'thumb-up',
+    isPresentInGroup: true,
+  },
+];

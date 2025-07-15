@@ -52,6 +52,11 @@ module BulkImports
     end
 
     def expire_cache!
+      Gitlab::Cache::Import::Caching.expire(
+        BulkImports::BatchedRelationExportService.batch_size_cache_key(export.id),
+        0
+      )
+
       export.batches.each do |batch|
         key = BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id)
 

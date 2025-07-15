@@ -98,7 +98,8 @@ $monokai-gh: #75715e;
   --diff-deletion-color: #{$monokai-old-bg};
 }
 
-.code.monokai {
+.code.monokai,
+.code.code-syntax-highlight-theme {
   --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{$gl-color-neutral-600};

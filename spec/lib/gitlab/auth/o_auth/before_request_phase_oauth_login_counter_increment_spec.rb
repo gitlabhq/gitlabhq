@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement, feature_category: :system_access do
+RSpec.describe Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement, :prometheus, feature_category: :system_access do
   describe '.call' do
     let(:env) { { 'omniauth.strategy' => omniauth_strategy } }
     let(:omniauth_strategy) { instance_double(OmniAuth::Strategies::GoogleOauth2, name: 'google_oauth2') }
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement
     end
 
     def gitlab_metric_omniauth_login_total_for(omniauth_provider, status)
-      Gitlab::Metrics.registry.get(:gitlab_omniauth_login_total)
+      Gitlab::Metrics.client.get(:gitlab_omniauth_login_total)
                               &.get(omniauth_provider: omniauth_provider, status: status)
                               .to_f
     end

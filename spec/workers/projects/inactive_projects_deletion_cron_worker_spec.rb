@@ -156,7 +156,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
 
         worker.perform
 
-        expect(inactive_large_project).to be_marked_for_deletion
+        expect(inactive_large_project).to be_self_deletion_scheduled
 
         Gitlab::Redis::SharedState.with do |redis|
           expect(

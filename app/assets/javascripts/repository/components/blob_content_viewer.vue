@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { computed } from 'vue';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
@@ -98,7 +99,7 @@ export default {
         if (this.isTooLarge) {
           this.trackEvent(EVENT_FILE_SIZE_LIMIT_EXCEEDED, {
             label: this.blobInfo.language,
-            property: this.blobInfo.size,
+            property: String(this.blobInfo.size),
           });
         }
 
@@ -118,7 +119,7 @@ export default {
     },
   },
   provide() {
-    return { blobHash: uniqueId() };
+    return { blobHash: uniqueId(), currentRef: computed(() => this.currentRef) };
   },
   props: {
     path: {
@@ -401,6 +402,7 @@ export default {
         :project-path="projectPath"
         :project-id="projectId"
         :is-using-lfs="isUsingLfs"
+        :current-ref="currentRef"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
         @edit="editBlob"

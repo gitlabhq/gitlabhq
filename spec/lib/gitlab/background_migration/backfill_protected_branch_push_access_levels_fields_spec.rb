@@ -65,7 +65,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProtectedBranchPushAccessLev
       users.create!(
         email: 'test@example.com',
         username: 'test_user',
-        projects_limit: 10
+        projects_limit: 10,
+        organization_id: organization.id
       )
     end
 

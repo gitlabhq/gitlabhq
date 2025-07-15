@@ -9,7 +9,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default (selector = '.js-commit-box-pipeline-summary') => {
+export default (selector = '#js-commit-box-pipeline-summary') => {
   const el = document.querySelector(selector);
 
   if (!el) {

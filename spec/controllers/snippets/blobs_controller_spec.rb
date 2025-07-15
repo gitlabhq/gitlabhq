@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::BlobsController do
+RSpec.describe Snippets::BlobsController, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
   include SnippetHelpers
 

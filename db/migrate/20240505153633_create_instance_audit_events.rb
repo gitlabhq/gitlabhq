@@ -2,7 +2,6 @@
 
 class CreateInstanceAuditEvents < Gitlab::Database::Migration[2.2]
   milestone '17.1'
-  enable_lock_retries!
 
   AUTHOR_ID_CREATED_AT_ID_INDEX = 'idx_instance_audit_events_on_author_id_created_at_id'
 

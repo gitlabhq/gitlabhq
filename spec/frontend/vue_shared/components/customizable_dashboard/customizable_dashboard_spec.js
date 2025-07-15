@@ -155,14 +155,14 @@ describe('CustomizableDashboard', () => {
     });
 
     it('body container', () => {
-      expect(document.querySelectorAll('.container-fluid.not-container-limited').length).toBe(1);
+      expect(document.querySelectorAll('.container-fluid.not-container-limited')).toHaveLength(1);
     });
 
     it('body container after destroy', () => {
       wrapper.destroy();
 
-      expect(document.querySelectorAll('.container-fluid.not-container-limited').length).toBe(0);
-      expect(document.querySelectorAll('.container-fluid.container-limited').length).toBe(1);
+      expect(document.querySelectorAll('.container-fluid.not-container-limited')).toHaveLength(0);
+      expect(document.querySelectorAll('.container-fluid.container-limited')).toHaveLength(1);
     });
   });
 

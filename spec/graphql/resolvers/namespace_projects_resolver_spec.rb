@@ -101,8 +101,9 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         context 'when only search term is given' do
           let(:args) { default_args.merge(sort: nil, search: 'test') }
 
-          it 'filters out result that do not match the search input, but does not sort them' do
-            expect(project_names).to contain_exactly('Test', 'Test Project')
+          it 'filters out result that do not match the search input, and applies default similarity sort' do
+            expect(project_names.first).to eq('Test')
+            expect(project_names.second).to eq('Test Project')
           end
         end
       end

@@ -160,7 +160,33 @@ describe('UpdateUsername component', () => {
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'Invalid username',
+        renderMessageHTML: true,
       });
+    });
+
+    it('decodes HTML entities in error messages', async () => {
+      const encodedMessage =
+        'Username change failed - &#39;-&#39; is a reserved name &amp; cannot contain &lt;special&gt; characters or &quot;quotes&quot;';
+      axiosMock.onPut(actionUrl).replyOnce(() => {
+        return [HTTP_STATUS_BAD_REQUEST, { message: encodedMessage }];
+      });
+
+      await clickModalWithErrorResponse();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: encodedMessage,
+        renderMessageHTML: true,
+      });
+
+      // Test what the user actually sees when HTML is rendered
+      const alertCall = createAlert.mock.calls[0][0];
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = alertCall.message;
+
+      // This simulates what happens when renderMessageHTML: true
+      expect(tempDiv.textContent).toBe(
+        'Username change failed - \'-\' is a reserved name & cannot contain <special> characters or "quotes"',
+      );
     });
 
     it("shows a fallback error message if the error response doesn't have a `message` property", async () => {
@@ -172,6 +198,7 @@ describe('UpdateUsername component', () => {
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating your username, please try again.',
+        renderMessageHTML: true,
       });
     });
   });

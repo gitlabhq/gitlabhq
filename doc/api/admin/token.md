@@ -28,7 +28,7 @@ Prerequisites:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags/_index.md) named `admin_agnostic_token_finder`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490572) in GitLab 17.8. Feature flag `admin_agnostic_token_finder` removed.
 - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
 - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
@@ -116,13 +116,13 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `api_admin_token_revoke`. Disabled by default.
 - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211) in GitLab 17.9.
 - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066) in GitLab 17.9.
 - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
 - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
-- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10  [with a flag](../../administration/feature_flags.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
+- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10  [with a flag](../../administration/feature_flags/_index.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
 - [GitLab sessions added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047) in GitLab 17.11.
 
 {{< /history >}}

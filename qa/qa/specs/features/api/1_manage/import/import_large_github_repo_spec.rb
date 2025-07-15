@@ -18,7 +18,7 @@ module QA
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
     } do
-    describe 'Project import', product_group: :import_and_integrate do
+    describe 'Project import', product_group: :import do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:user) { create(:user) }
       let!(:user_api_client) do

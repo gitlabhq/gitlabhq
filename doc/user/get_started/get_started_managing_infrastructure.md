@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Overview of how features fit together.
+description: Learn how to employ best practices for managing your infrastructure.
 title: Get started managing your infrastructure
 ---
 
@@ -38,7 +38,7 @@ For more information, see:
 ## Step 2: Interact with Kubernetes clusters
 
 The GitLab integration with Kubernetes helps you to install, configure, manage, deploy, and troubleshoot
-cluster applications. With the GitLab agent, you can connect clusters behind a firewall,
+cluster applications. With the GitLab agent for Kubernetes, you can connect clusters behind a firewall,
 have real-time access to API endpoints, perform pull-based or push-based deployments for production
 and non-production environments, and much more.
 

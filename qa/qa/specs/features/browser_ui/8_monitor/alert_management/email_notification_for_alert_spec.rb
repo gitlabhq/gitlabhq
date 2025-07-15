@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :respond, feature_flag: {
+  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :platform_insights, feature_flag: {
     name: :hide_incident_management_features
   } do
     describe 'Alert' do

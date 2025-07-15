@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import and migrate groups and projects
 description: Repository migration, third-party repositories, and user contribution mapping.
@@ -102,9 +102,9 @@ difficult, but several tools exist including:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
-- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) in GitLab 17.7 for direct transfer.
 - Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
@@ -334,10 +334,6 @@ If importing to GitLab.com, placeholder users are limited per top-level group on
 | Ultimate and open source | 501 - 1000      | 6000                                      |
 | Ultimate and open source | > 1000          | 8000                                      |
 
-Customers on legacy Bronze, Silver, or Gold plans have the corresponding Free, Premium, or Ultimate limits.
-For Premium customers trying out Ultimate (Ultimate trial paid customer plan), Premium limits apply.
-If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
-
 For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
 A GitLab administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
 
@@ -484,7 +480,7 @@ For more information, see [skip confirmation when administrators reassign placeh
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}

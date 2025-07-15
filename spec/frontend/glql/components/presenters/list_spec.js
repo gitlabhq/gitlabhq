@@ -1,6 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import GlqlActions from '~/glql/components/common/actions.vue';
+// import GlqlActions from '~/glql/components/common/actions.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -65,39 +65,19 @@ describe('ListPresenter', () => {
     expect(wrapper.find('ul')).toBeDefined();
   });
 
-  it('renders skeleton loader if isPreview is true', () => {
+  it('renders skeleton loader if showPreview is true', () => {
     createWrapper(
-      { data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, isPreview: true },
+      { data: { nodes: [] }, config: { fields: MOCK_FIELDS }, showPreview: true },
       mountExtended,
     );
 
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(5);
   });
 
-  it('renders actions', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
-    expect(wrapper.findComponent(GlqlActions).props()).toEqual({
-      modalTitle: 'GLQL list',
-      showCopyContents: true,
-    });
-  });
-
-  it('renders a footer text', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
-
-    expect(wrapper.findByTestId('footer').text()).toEqual('View powered by GLQL');
-  });
-
   it('renders a ol if passed as a prop', () => {
     createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, listType: 'ol' });
 
     expect(wrapper.find('ol')).toBeDefined();
-  });
-
-  it('shows a "No data" message if the list of items provided is empty', () => {
-    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } }, mountExtended);
-
-    expect(wrapper.text()).toContain('No data found for this query');
   });
 
   it.each`

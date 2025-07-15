@@ -1,12 +1,14 @@
-- page_title _('Chat')
+- page_title s_('Integrations|Integration accounts')
 - @hide_search_settings = true
 - @force_desktop_expanded_sidebar = true
 
 = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_description do
+    = s_('Integrations|Manage your integration accounts in GitLab. Use these connected integrations to perform actions in GitLab.')
   - c.with_body do
-    = render ::Layouts::CrudComponent.new(_('Active chat names'),
+    = render ::Layouts::CrudComponent.new(s_('Integrations|Connected integration accounts'),
       count: @chat_names.size,
-      icon: 'comment') do |c|
+      icon: 'connected') do |c|
       - c.with_body do
         - if @chat_names.present?
           .table-responsive
@@ -20,4 +22,4 @@
               %tbody
                 = render @chat_names
         - else
-          .gl-text-subtle= _("You don't have any active chat names.")
+          .gl-text-subtle= s_('Integrations|You do not have any connected integration accounts.')

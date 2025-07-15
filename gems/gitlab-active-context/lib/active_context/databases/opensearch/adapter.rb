@@ -6,6 +6,10 @@ module ActiveContext
       class Adapter
         include ActiveContext::Databases::Concerns::Adapter
 
+        def name
+          'opensearch'
+        end
+
         def client_klass
           ActiveContext::Databases::Opensearch::Client
         end

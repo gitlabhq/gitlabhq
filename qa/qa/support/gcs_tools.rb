@@ -7,9 +7,9 @@ module QA
     module GcsTools
       # GCS Client
       #
-      # @return [Fog::Storage::Google]
+      # @return [Fog::Google::StorageJSON]
       def gcs_client
-        Fog::Storage::Google.new(
+        Fog::Google::Storage.new(
           google_project: ENV['QA_METRICS_GCS_PROJECT_ID'] || raise('Missing QA_METRICS_GCS_PROJECT_ID env variable'),
           **gcs_credentials)
       end

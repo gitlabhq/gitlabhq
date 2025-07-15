@@ -48,10 +48,10 @@ export default {
       data-testid="signature-badge"
       role="button"
       variant="link"
-      class="gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none"
+      class="gl-flex gl-h-full gl-items-center gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none"
       :aria-label="statusConfig.label"
     >
-      <gl-badge :icon="statusConfig.icon" :variant="statusConfig.variant">
+      <gl-badge :icon="statusConfig.icon" :variant="statusConfig.variant" class="gl-h-full">
         {{ statusConfig.label }}
       </gl-badge>
     </button>

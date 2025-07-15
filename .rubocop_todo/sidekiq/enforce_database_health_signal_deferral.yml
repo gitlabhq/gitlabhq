@@ -188,7 +188,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'ee/app/workers/onboarding/progress_tracking_worker.rb'
     - 'ee/app/workers/package_metadata/advisories_sync_worker.rb'
     - 'ee/app/workers/package_metadata/cve_enrichment_sync_worker.rb'
-    - 'ee/app/workers/package_metadata/global_advisory_scan_worker.rb'
     - 'ee/app/workers/package_metadata/licenses_sync_worker.rb'
     - 'ee/app/workers/projects/deregister_suggested_reviewers_project_worker.rb'
     - 'ee/app/workers/projects/disable_legacy_open_source_license_for_inactive_projects_worker.rb'

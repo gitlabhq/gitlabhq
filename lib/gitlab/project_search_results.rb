@@ -4,12 +4,12 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {})
+    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {}, source: nil)
       @project = project
       @repository_ref = repository_ref.presence
 
       # use the default filter for project searches since we are already limiting by a single project
-      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true)
+      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true, source: source)
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
@@ -44,21 +44,9 @@ module Gitlab
       end
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord
     def users
-      results = super
-
-      if @project.is_a?(Array)
-        team_members_for_projects = User.joins(:project_authorizations).where(project_authorizations: { project_id: @project })
-          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
-        results = results.where(id: team_members_for_projects)
-      else
-        results = results.where(id: @project.team.members)
-      end
-
-      results
+      super.id_in(@project.team.members)
     end
-    # rubocop:enable CodeReuse/ActiveRecord
 
     def limited_blobs_count
       @limited_blobs_count ||= blobs(limit: count_limit).count
@@ -167,11 +155,9 @@ module Gitlab
       project.repository.commit(key) if Commit.valid_hash?(key)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
-      Project.where(id: project).select(:id).reorder(nil)
+      Project.id_in(project).select(:id).without_order
     end
-    # rubocop: enabled CodeReuse/ActiveRecord
 
     def filter_milestones_by_project(milestones)
       return Milestone.none unless Ability.allowed?(@current_user, :read_milestone, @project)

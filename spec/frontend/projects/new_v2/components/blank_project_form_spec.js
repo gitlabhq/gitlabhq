@@ -17,11 +17,14 @@ describe('Blank Project Form', () => {
     },
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(BlankProjectForm, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        ...provide,
       },
     });
   };
@@ -46,6 +49,25 @@ describe('Blank Project Form', () => {
   describe('form', () => {
     it('renders the SharedProjectCreationFields component', () => {
       expect(findSharedProjectCreationFields().exists()).toBe(true);
+    });
+  });
+
+  describe('configuraqtion block', () => {
+    it('renders the block', () => {
+      expect(wrapper.findByTestId('configuration-form-group').exists()).toBe(true);
+    });
+
+    it('does not render SHA-256 option by default', () => {
+      expect(wrapper.findByTestId('initialize-with-sha-256-checkbox').exists()).toBe(false);
+    });
+
+    it('renders SHA-256 option when it is available', () => {
+      createComponent({ provide: { displaySha256Repository: true } });
+      expect(wrapper.findByTestId('initialize-with-sha-256-checkbox').exists()).toBe(true);
+    });
+
+    it('check readme option by default', () => {
+      expect(wrapper.findByTestId('configuration-selector').attributes('checked')).toBe('readme');
     });
   });
 

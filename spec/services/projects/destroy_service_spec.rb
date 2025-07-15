@@ -519,36 +519,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       subject { destroy_project(project, user) }
 
-      context 'when there are immutable tag protection rules' do
-        before_all do
-          create(:container_registry_protection_tag_rule,
-            :immutable,
-            project: project,
-            tag_name_pattern: 'immutable'
-          )
-
-          project.add_owner(user)
-          project.container_repositories << create(:container_repository)
-        end
-
-        context 'when there are registry tags' do
-          before do
-            stub_container_registry_tags(repository: project.full_path, tags: ['tag'])
-            allow_any_instance_of(described_class)
-              .to receive(:remove_legacy_registry_tags).and_return(true)
-          end
-
-          it 'ignores the immutable tag protection rules' do
-            is_expected.to be(true)
-          end
-        end
-
-        context 'when there are no registry tags' do
-          it { is_expected.to be true }
-        end
-      end
-
-      context 'when there are mutable tag protection rules only' do
+      context 'when there are tag protection rules' do
         before_all do
           create(:container_registry_protection_tag_rule,
             project: project,

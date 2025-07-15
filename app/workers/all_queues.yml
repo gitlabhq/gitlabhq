@@ -58,7 +58,7 @@
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -78,7 +78,7 @@
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent: true
   :tags: []
@@ -2950,7 +2950,7 @@
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent: true
   :tags: []
@@ -3500,6 +3500,16 @@
 - :name: ci_safe_disable_pipeline_variables
   :worker_name: Ci::SafeDisablePipelineVariablesWorker
   :feature_category: :ci_variables
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: ci_slsa_publish_statement
+  :worker_name: Ci::Slsa::PublishStatementWorker
+  :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

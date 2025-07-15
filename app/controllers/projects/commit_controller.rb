@@ -67,6 +67,8 @@ class Projects::CommitController < Projects::ApplicationController
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
+    # Capture total count before pagination to ensure accurate count regardless of current page
+    @pipelines_count = @pipelines.count
     @pipelines = @pipelines.page(params[:page])
 
     respond_to do |format|
@@ -80,7 +82,7 @@ class Projects::CommitController < Projects::ApplicationController
             .with_pagination(request, response)
             .represent(@pipelines),
           count: {
-            all: @pipelines.count
+            all: @pipelines_count
           }
         }
       end
@@ -102,20 +104,6 @@ class Projects::CommitController < Projects::ApplicationController
         render json: Gitlab::Json.dump(@merge_requests)
       end
     end
-  end
-
-  def branches
-    return git_not_found! unless commit
-
-    # branch_names_contains/tag_names_contains can take a long time when there are thousands of
-    # branches/tags - each `git branch --contains xxx` request can consume a cpu core.
-    # so only do the query when there are a manageable number of branches/tags
-    @branches_limit_exceeded = @project.repository.branch_count > BRANCH_SEARCH_LIMIT
-    @branches = @branches_limit_exceeded ? [] : @project.repository.branch_names_contains(commit.id)
-
-    @tags_limit_exceeded = @project.repository.tag_count > BRANCH_SEARCH_LIMIT
-    @tags = @tags_limit_exceeded ? [] : @project.repository.tag_names_contains(commit.id)
-    render layout: false
   end
 
   def revert
@@ -159,17 +147,14 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
       ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
 
-    streaming_offset = 5
-    @reload_stream_url = diffs_stream_url(@commit)
-    @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
-    @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
-    @diff_files_endpoint = diff_files_metadata_namespace_project_commit_path
-    @diff_file_endpoint = diff_file_namespace_project_commit_path
-    @diffs_stats_endpoint = diffs_stats_namespace_project_commit_path
-    @update_current_user_path = expose_path(api_v4_user_preferences_path)
+    @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
+      @commit,
+      diff_view,
+      commit_diff_options
+    )
 
     show
   end
@@ -287,16 +272,6 @@ class Projects::CommitController < Projects::ApplicationController
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size
-  end
-
-  def diffs_stream_resource_url(commit, offset, diff_view)
-    diffs_stream_namespace_project_commit_path(
-      namespace_id: commit.project.namespace.to_param,
-      project_id: commit.project.to_param,
-      id: commit.id,
-      offset: offset,
-      view: diff_view
-    )
   end
 
   def rate_limit_for_expanded_diff_files

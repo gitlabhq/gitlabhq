@@ -211,6 +211,10 @@ module GraphqlHelpers
       prepared_args = kwarg_arguments
     end
 
+    if prepared_args.respond_to?(:merge_extras)
+      prepared_args = prepared_args.merge_extras(extras.reject { |k, v| v == :not_given })
+    end
+
     prepared_args.respond_to?(:keyword_arguments) ? prepared_args.keyword_arguments : prepared_args
   end
 

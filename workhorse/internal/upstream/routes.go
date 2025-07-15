@@ -1,6 +1,7 @@
 package upstream
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -11,10 +12,13 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/ai_assist/duoworkflow"
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/artifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/bodylimit"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/circuitbreaker"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
@@ -54,6 +58,7 @@ type routeOptions struct {
 	isGeoProxyRoute bool
 	matchers        []matcherFunc
 	allowOrigins    *regexp.Regexp
+	bodyLimit       int64
 }
 
 const (
@@ -119,17 +124,29 @@ func withAllowOrigins(pattern string) func(*routeOptions) {
 	}
 }
 
+func withBodyLimit(bodyLimit int64) func(*routeOptions) {
+	return func(options *routeOptions) {
+		options.bodyLimit = bodyLimit
+	}
+}
+
 func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, metadata routeMetadata, opts *routeOptions) http.Handler {
 	handler = log.AccessLogger(
 		handler,
 		log.WithAccessLogger(u.accessLogger),
 		log.WithTrustedProxies(u.TrustedCIDRsForXForwardedFor),
 		log.WithExtraFields(func(_ *http.Request) log.Fields {
-			return log.Fields{
+			fields := log.Fields{
 				"route":      metadata.regexpStr, // This field matches the `route` label in Prometheus metrics
 				"route_id":   metadata.routeID,
 				"backend_id": metadata.backendID,
 			}
+
+			if opts != nil {
+				fields["body_limit"] = opts.bodyLimit
+			}
+
+			return fields
 		}),
 	)
 
@@ -155,7 +172,8 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 func (u *upstream) route(method string, metadata routeMetadata, handler http.Handler, opts ...func(*routeOptions)) routeEntry {
 	// Instantiate a route with the defaults
 	options := routeOptions{
-		tracing: true,
+		tracing:   true,
+		bodyLimit: 100 * 1024 * 1024, // 100MB
 	}
 
 	for _, f := range opts {
@@ -170,6 +188,10 @@ func (u *upstream) route(method string, metadata routeMetadata, handler http.Han
 	}
 	if options.allowOrigins != nil {
 		handler = corsMiddleware(handler, options.allowOrigins)
+	}
+
+	if options.bodyLimit > 0 {
+		handler = withBodyLimitContext(options.bodyLimit, handler)
 	}
 
 	return routeEntry{
@@ -323,6 +345,11 @@ func configureRoutes(u *upstream) {
 			newRoute(projectPattern+`-/jobs/[0-9]+/proxy.ws\z`, "project_jobs_proxy_ws", railsBackend),
 			channel.Handler(api)),
 
+		// Duo Workflow websocket
+		u.wsRoute(
+			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
+			duoworkflow.Handler(api)),
+
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",
 			newRoute(apiPattern+`v4/jobs/request\z`, "api_jobs_request", railsBackend), ciAPILongPolling),
@@ -392,7 +419,7 @@ func configureRoutes(u *upstream) {
 		u.route("POST",
 			newRoute(apiGroupPattern+`/wikis/attachments\z`, "api_groups_wikis_attachments", railsBackend), tempfileMultipartProxy),
 		u.route("POST",
-			newRoute(apiPattern+`graphql\z`, "api_graphql", railsBackend), tempfileMultipartProxy),
+			newRoute(apiPattern+`graphql\z`, "api_graphql", railsBackend), tempfileMultipartProxy, withBodyLimit(20*1024*1024)), // 20 Mb
 		u.route("POST",
 			newRoute(apiTopicPattern, "api_topics", railsBackend), tempfileMultipartProxy),
 		u.route("PUT",
@@ -473,6 +500,8 @@ func configureRoutes(u *upstream) {
 		u.route("GET", newRoute(apiProjectPattern+`/observability/v1/services`, "api_observability_services", railsBackend), gob.WithProjectAuth("/read/services")),
 
 		// Explicitly proxy API requests
+		u.route("POST", newRoute(apiPattern+`v4/internal/allowed`, "api_internal_allowed", railsBackend), allowedProxy(proxy, dependencyProxyInjector, u)),
+
 		u.route("",
 			newRoute(apiPattern, "api", railsBackend), proxy),
 
@@ -609,6 +638,25 @@ func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Han
 			w.Header().Set("Vary", "Origin")
 		}
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
+	if u.Config.CircuitBreakerConfig.Enabled {
+		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.Config.Redis)
+
+		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
+	}
+
+	return proxy
+}
+
+// Define a context key with a body limit value for route
+func withBodyLimitContext(bodyLimit int64, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), bodylimit.BodyLimitKey, bodyLimit)
+		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
 }

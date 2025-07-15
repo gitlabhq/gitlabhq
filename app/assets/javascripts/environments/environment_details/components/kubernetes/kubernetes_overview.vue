@@ -1,13 +1,5 @@
 <script>
-import {
-  GlEmptyState,
-  GlSprintf,
-  GlLink,
-  GlAlert,
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { isEmpty } from 'lodash';
 import { s__, __ } from '~/locale';
@@ -31,9 +23,7 @@ import {
   FLUX_SUSPEND_ACTION,
   FLUX_RESUME_ACTION,
 } from '~/environments/constants';
-import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import WorkloadDetailsDrawer from '~/kubernetes_dashboard/components/workload_details_drawer.vue';
-import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import updateFluxResourceMutation from '~/environments/graphql/mutations/update_flux_resource.mutation.graphql';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
@@ -52,13 +42,7 @@ export default {
     GlSprintf,
     GlLink,
     GlAlert,
-    GlDisclosureDropdown,
-    GlDisclosureDropdownItem,
     DeletePodModal,
-    ConnectToAgentModal,
-  },
-  directives: {
-    GlModalDirective,
   },
   mixins: [trackingMixin],
   inject: ['kasTunnelUrl'],
@@ -160,9 +144,6 @@ export default {
       return (
         this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
       );
-    },
-    agentProjectPath() {
-      return this.clusterAgent.project?.fullPath || '';
     },
   },
   methods: {
@@ -276,12 +257,11 @@ export default {
   learnMoreLink: helpPagePath('user/clusters/agent/_index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
   CLUSTER_EMPTY_SVG,
-  CONNECT_MODAL_ID,
 };
 </script>
 <template>
   <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-subtle gl-p-5">
-    <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
+    <div class="gl-flex gl-flex-wrap gl-items-start gl-justify-between">
       <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5 gl-grow" />
       <kubernetes-status-bar
         ref="status_bar"
@@ -296,26 +276,6 @@ export default {
         :flux-api-error="fluxApiError"
         @error="handleError"
         @show-flux-resource-details="showFluxResourceDetails"
-      />
-
-      <gl-disclosure-dropdown
-        :title="$options.i18n.actions"
-        category="tertiary"
-        icon="ellipsis_v"
-        text-sr-only
-        no-caret
-      >
-        <gl-disclosure-dropdown-item v-gl-modal-directive="$options.CONNECT_MODAL_ID">
-          <template #list-item>
-            {{ $options.i18n.connectButtonText }}
-          </template>
-        </gl-disclosure-dropdown-item>
-      </gl-disclosure-dropdown>
-
-      <connect-to-agent-modal
-        :agent-id="clusterAgent.id"
-        :project-path="agentProjectPath"
-        :is-configured="true"
       />
     </div>
 

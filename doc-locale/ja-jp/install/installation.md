@@ -170,7 +170,7 @@ sudo apt-get install -y graphicsmagick
 sudo apt-get install -y postfix
 ```
 
-次に、\[Internet Site（インターネットサイト）]を選択し、<kbd>Enter</kbd>キーを押してホスト名を確認します。
+次に、Internet Site（インターネットサイト）を選択し、<kbd>Enter</kbd>キーを押してホスト名を確認します。
 
 ### ExifTool
 

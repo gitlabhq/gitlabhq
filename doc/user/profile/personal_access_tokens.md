@@ -107,7 +107,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 {{< history >}}
 
 - Ability to use the UI to rotate a personal access token [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.7.
-- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.2.
+- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -178,7 +178,7 @@ In GitLab 17.3 and later, you can use the Admin UI to disable personal access to
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 17.2
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 17.3 . Feature flag `enterprise_disable_personal_access_tokens` removed.
 
@@ -216,7 +216,7 @@ When you delete or block an enterprise user account, their personal access token
 
 - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
-- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags.md) named `pat_ip`. Enabled by default in 17.9.
+- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
 - Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
 
 {{< /history >}}
@@ -239,7 +239,7 @@ To view the last time a token was used, and the IP addresses from where the toke
 {{< history >}}
 
 - Personal access tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
-- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../administration/feature_flags/_index.md) named `k8s_proxy_pat`. Enabled by default.
 - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
 - `read_service_ping` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42692#note_1222832412) in GitLab 17.1.
 - `manage_runner` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460721) in GitLab 17.1.
@@ -337,7 +337,7 @@ automatically applied:
 
 {{< history >}}
 
-- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../administration/feature_flags/_index.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
 - 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
 
 {{< /history >}}
@@ -353,7 +353,7 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 ### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
+You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
 {{< alert type="note" >}}
 
@@ -397,7 +397,7 @@ You can now create personal access tokens for a service account user with no exp
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `dpop_authentication`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `dpop_authentication`. Disabled by default.
 
 {{< /history >}}
 

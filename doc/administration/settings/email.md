@@ -123,7 +123,7 @@ To disable these notifications:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags/_index.md) named `deactivation_email_additional_text`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392761) in GitLab 16.5. Feature flag `deactivation_email_additional_text` removed.
 
@@ -145,7 +145,7 @@ To add additional text to deactivation emails:
 
 {{< history >}}
 
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 

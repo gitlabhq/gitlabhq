@@ -33,10 +33,10 @@ describe('Merge request list app empty state component', () => {
       createComponent({ hasMergeRequests: false });
 
       expect(findEmptyState().attributes('title')).toBe(
-        "Merge requests are a place to propose changes you've made to a project and discuss those changes with others",
+        'Make a merge request to propose changes to this project.',
       );
       expect(findEmptyState().attributes('description')).toBe(
-        'Interested parties can even contribute by pushing commits if they want to.',
+        'Others can contribute by pushing commits to the same branch.',
       );
     });
   });

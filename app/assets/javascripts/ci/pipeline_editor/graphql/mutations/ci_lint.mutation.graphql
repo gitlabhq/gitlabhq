@@ -1,0 +1,44 @@
+mutation CiLint($projectPath: ID!, $content: String!, $ref: String, $dryRun: Boolean) {
+  ciLint(input: { projectPath: $projectPath, content: $content, ref: $ref, dryRun: $dryRun }) {
+    config {
+      errors
+      warnings
+      includes {
+        location
+        type
+        blob
+        raw
+      }
+      mergedYaml
+      status
+      stages {
+        name
+        groups {
+          name
+          size
+          jobs {
+            name
+            script
+            stage
+            beforeScript
+            afterScript
+            environment
+            allowFailure
+            tags
+            when
+            only {
+              refs
+            }
+            except {
+              refs
+            }
+            needs {
+              name
+            }
+          }
+        }
+      }
+    }
+    errors
+  }
+}

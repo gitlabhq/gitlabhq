@@ -486,9 +486,9 @@ EC2ダッシュボードから:
 1. **Key pair(キーペア)**セクションで、**Create new key pair(新しいキーペアを作成)**を選択します。
    1. キーペアに名前(ここでは`gitlab`を使用)を付け、後で使用するために`gitlab.pem`ファイルを保存します。
 1. **Network settings(ネットワーク設定)**セクションで:
-   1. **VPC: **先ほど作成したVPCである`gitlab-vpc`を選択します。
+   1. **VPC**: 先ほど作成したVPCである`gitlab-vpc`を選択します。
    1. **Submet(サブネット)**: 先ほど作成したサブネットのリストから`gitlab-private-10.0.1.0`を選択します。
-   1. **Auto-assign Public IP(パブリックIPの自動割り当て): **`Disable`を選択します。
+   1. **Auto-assign Public IP(パブリックIPの自動割り当て)**: `Disable`を選択します。
    1. **Firewall(ファイアウォール): ****Select existing security group(既存のセキュリティグループを選択)**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
 1. ストレージの場合、ルートボリュームはデフォルトで8 GiBであり、そこにデータを保存しないことを考えると十分なはずです。
 1. すべての設定を確認し、問題なければ、**Launch Instance(インスタンスを起動)**を選択します。

@@ -55,7 +55,7 @@ describe('wikis/components/wiki_header', () => {
     });
 
     it('renders last version information', () => {
-      expect(findLastVersion().text()).toBe('Last edited by Test author in 3 years');
+      expect(findLastVersion().text()).toBe('Last edited by Test author Jun 3, 2024');
 
       buildWrapper({ lastVersion: false });
 

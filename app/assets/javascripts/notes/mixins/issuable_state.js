@@ -1,10 +1,10 @@
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   computed: {
-    ...mapGetters(['getNoteableDataByProp']),
+    ...mapState(useNotes, ['getNoteableDataByProp']),
     isProjectArchived() {
       return this.getNoteableDataByProp('is_project_archived');
     },

@@ -253,8 +253,8 @@ module Gitlab
         end
 
         def add_multi_column_not_null_constraint(
-          table, *columns, limit: 1, operator: '=', constraint_name: nil, validate: true)
-
+          table, *columns, limit: 1, operator: '=', constraint_name: nil, validate: true
+        )
           raise 'Expected multiple columns, use add_not_null_constraint for a single column' unless columns.size > 1
 
           add_check_constraint(

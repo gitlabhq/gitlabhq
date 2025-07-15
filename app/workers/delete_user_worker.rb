@@ -30,7 +30,7 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
   private
 
   def skip_own_account_deletion?(user)
-    return false unless ::Feature.enabled?(:delay_delete_own_user)
+    return false unless ::Gitlab::CurrentSettings.delay_user_account_self_deletion
 
     skip =
       if user.banned?

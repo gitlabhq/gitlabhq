@@ -6,7 +6,6 @@ module Import
       CACHE_EXPIRATION = 3.days.to_i
 
       def with_progress_tracking(scope:, data:)
-        return yield if Feature.disabled?(:restartable_project_import, :instance)
         return true if processed_entry?(scope: scope, data: data)
 
         result = yield

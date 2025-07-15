@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :durability_metrics do
   let(:settings) { double('settings') }
   let(:log_enabled) { false }
   let(:exporter) { described_class.new(settings, log_enabled: log_enabled, log_file: 'test_exporter.log') }

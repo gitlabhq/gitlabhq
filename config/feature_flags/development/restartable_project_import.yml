@@ -1,9 +1,0 @@
----
-name: restartable_project_import
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382391
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182101
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523209
-milestone: '17.10'
-group: group::import and integrate
-type: development
-default_enabled: false

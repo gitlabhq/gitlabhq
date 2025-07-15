@@ -29125,6 +29125,7 @@ paths:
         - issues_events
         - job_events
         - merge_requests_events
+        - milestone_events
         - note_events
         - pipeline_events
         - push_events
@@ -29713,6 +29714,11 @@ paths:
         type: string
         required: false
       - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -29757,6 +29763,12 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[spp_repository_pipeline_access]
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
         type: boolean
         required: false
       - in: formData
@@ -30368,6 +30380,11 @@ paths:
         type: string
         required: false
       - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -30412,6 +30429,12 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[spp_repository_pipeline_access]
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
         type: boolean
         required: false
       responses:
@@ -31102,6 +31125,11 @@ paths:
         type: string
         required: false
       - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -31146,6 +31174,12 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[spp_repository_pipeline_access]
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
         type: boolean
         required: false
       responses:
@@ -35400,6 +35434,13 @@ paths:
         type: string
         required: false
         example: ".gitlab/changelog_config.yml"
+      - in: query
+        name: config_file_ref
+        description: The git reference (for example, branch) where the changelog configuration
+          file is defined. Defaults to the default repository branch.
+        type: string
+        required: false
+        example: main
       responses:
         '200':
           description: Generates a changelog section for a release and returns it
@@ -37916,7 +37957,7 @@ paths:
       - runners
       operationId: deleteApiV4Runners
     get:
-      summary: List owned runners
+      summary: List available runners
       description: Get runners available for user
       produces:
       - application/json
@@ -41957,6 +41998,13 @@ paths:
         default: false
         required: false
       - in: query
+        name: full_path_search
+        description: If `true`, the `search` parameter is matched against the full
+          path of the namespaces
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: page
         description: Current page number
         type: integer
@@ -44474,6 +44522,9 @@ definitions:
         type: integer
         format: int32
         example: 12
+      provider:
+        type: string
+        example: saml
   postApiV4Groups:
     type: object
     properties:
@@ -45170,6 +45221,9 @@ definitions:
         type: string
         format: date-time
         example: '2013-09-30T13:46:02Z'
+      visibility:
+        type: string
+        example: public
       namespace:
         "$ref": "#/definitions/API_Entities_NamespaceBasic"
       custom_attributes:
@@ -45219,9 +45273,6 @@ definitions:
         type: boolean
       archived:
         type: boolean
-      visibility:
-        type: string
-        example: public
       owner:
         "$ref": "#/definitions/API_Entities_UserBasic"
       resolve_outdated_diff_discussions:
@@ -45421,6 +45472,9 @@ definitions:
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -45493,6 +45547,12 @@ definitions:
         type: string
       auto_duo_code_review_enabled:
         type: string
+      web_based_commit_signing_enabled:
+        type: string
+      spp_repository_pipeline_access:
+        type: boolean
+        description: The spp_repository_pipeline_access setting is only visible if
+          the security_orchestration_policies feature is available.
     description: API_Entities_Project model
   API_Entities_LicenseBasic:
     type: object
@@ -45611,6 +45671,9 @@ definitions:
         type: string
         format: date-time
         example: '2013-09-30T13:46:02Z'
+      visibility:
+        type: string
+        example: public
       namespace:
         "$ref": "#/definitions/API_Entities_NamespaceBasic"
       custom_attributes:
@@ -45768,8 +45831,6 @@ definitions:
         type: string
       location:
         type: string
-      skype:
-        type: string
       linkedin:
         type: string
       twitter:
@@ -45780,11 +45841,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string
@@ -45946,6 +46007,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
     description: API_Entities_Ci_Runner model
   API_Entities_Ci_ResetTokenResult:
     type: object
@@ -48878,6 +48945,8 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
+      admin_security_labels:
+        type: boolean
       manage_security_policy_link:
         type: boolean
       admin_compliance_framework:
@@ -50167,8 +50236,6 @@ definitions:
         type: string
       location:
         type: string
-      skype:
-        type: string
       linkedin:
         type: string
       twitter:
@@ -50179,11 +50246,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string
@@ -50333,6 +50400,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
     description: API_Entities_Ci_RunnerManager model
   postApiV4ProjectsIdJobsJobIdCancel:
     type: object
@@ -59204,6 +59277,8 @@ definitions:
         type: boolean
       releases_events:
         type: boolean
+      milestone_events:
+        type: boolean
       emoji_events:
         type: boolean
       resource_access_token_events:
@@ -59262,6 +59337,9 @@ definitions:
       releases_events:
         type: boolean
         description: Trigger hook on release events
+      milestone_events:
+        type: boolean
+        description: Trigger hook on milestone events
       emoji_events:
         type: boolean
         description: Trigger hook on emoji events
@@ -59379,6 +59457,9 @@ definitions:
       releases_events:
         type: boolean
         description: Trigger hook on release events
+      milestone_events:
+        type: boolean
+        description: Trigger hook on milestone events
       emoji_events:
         type: boolean
         description: Trigger hook on emoji events
@@ -60284,6 +60365,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -60315,6 +60399,10 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      spp_repository_pipeline_access:
+        type: boolean
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -60693,6 +60781,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -60724,6 +60815,10 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      spp_repository_pipeline_access:
+        type: boolean
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -60829,6 +60924,9 @@ definitions:
         type: string
         format: date-time
         example: '2013-09-30T13:46:02Z'
+      visibility:
+        type: string
+        example: public
       namespace:
         "$ref": "#/definitions/API_Entities_NamespaceBasic"
       custom_attributes:
@@ -60878,9 +60976,6 @@ definitions:
         type: boolean
       archived:
         type: boolean
-      visibility:
-        type: string
-        example: public
       owner:
         "$ref": "#/definitions/API_Entities_UserBasic"
       resolve_outdated_diff_discussions:
@@ -61080,6 +61175,9 @@ definitions:
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -61152,6 +61250,12 @@ definitions:
         type: string
       auto_duo_code_review_enabled:
         type: string
+      web_based_commit_signing_enabled:
+        type: string
+      spp_repository_pipeline_access:
+        type: boolean
+        description: The spp_repository_pipeline_access setting is only visible if
+          the security_orchestration_policies feature is available.
       permissions:
         type: object
         properties:
@@ -61564,6 +61668,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -61595,6 +61702,10 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      spp_repository_pipeline_access:
+        type: boolean
+        description: Grant read-only access to security policy configurations for
+          enforcement in linked CI/CD projects
       ci_default_git_depth:
         type: integer
         format: int32
@@ -61688,6 +61799,9 @@ definitions:
       ci_restrict_pipeline_cancellation_role:
         type: string
         description: Roles allowed to cancel pipelines and jobs.
+      web_based_commit_signing_enabled:
+        type: boolean
+        description: Enable web based commit signing for this project
     description: Update an existing project
   postApiV4ProjectsIdShare:
     type: object
@@ -62661,15 +62775,20 @@ definitions:
           in the changelog
         default: Changelog
         example: Changelog
-      branch:
-        type: string
-        description: The branch to commit the changelog changes to
-        example: main
       config_file:
         type: string
         description: The file path to the configuration file as stored in the project's
           Git repository. Defaults to '.gitlab/changelog_config.yml'
         example: ".gitlab/changelog_config.yml"
+      config_file_ref:
+        type: string
+        description: The git reference (for example, branch) where the changelog configuration
+          file is defined. Defaults to the default repository branch.
+        example: main
+      branch:
+        type: string
+        description: The branch to commit the changelog changes to
+        example: main
       file:
         type: string
         description: The file to commit the changelog changes to
@@ -63664,6 +63783,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
       tag_list:
         type: string
       run_untagged:
@@ -65438,8 +65563,6 @@ definitions:
         type: string
       location:
         type: string
-      skype:
-        type: string
       linkedin:
         type: string
       twitter:
@@ -65450,11 +65573,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string

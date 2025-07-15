@@ -21,11 +21,12 @@ module QA
         end
       end
 
-      def setup_prometheus_integration
+      def setup_prometheus_integration(integration_name: random_word)
         Page::Project::Settings::Monitor.perform do |setting|
           setting.expand_alerts do |alert|
             alert.add_new_integration
             alert.select_prometheus
+            alert.enter_integration_name(integration_name)
             alert.activate_integration
             alert.save_and_create_alert
           end

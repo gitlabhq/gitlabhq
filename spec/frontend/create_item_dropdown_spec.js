@@ -70,7 +70,7 @@ describe('CreateItemDropdown', () => {
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+      expect($itemEls).toHaveLength(DROPDOWN_ITEM_DATA.length);
 
       DROPDOWN_ITEM_DATA.forEach((dataItem, i) => {
         expect($($itemEls[i]).text()).toEqual(dataItem.text);
@@ -116,7 +116,7 @@ describe('CreateItemDropdown', () => {
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
+      expect($itemEls).toHaveLength(1 + DROPDOWN_ITEM_DATA.length);
       expect($($itemEls.get(DROPDOWN_ITEM_DATA.length)).text()).toEqual(NEW_ITEM_TEXT);
     });
 
@@ -125,7 +125,7 @@ describe('CreateItemDropdown', () => {
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+      expect($itemEls).toHaveLength(DROPDOWN_ITEM_DATA.length);
     });
   });
 
@@ -152,13 +152,13 @@ describe('CreateItemDropdown', () => {
 
       const $itemElsAfterFilter = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemElsAfterFilter.length).toEqual(1);
+      expect($itemElsAfterFilter).toHaveLength(1);
 
       createItemDropdown.clearDropdown();
 
       const $itemElsAfterClear = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemElsAfterClear.length).toEqual(0);
+      expect($itemElsAfterClear).toHaveLength(0);
       expect(filterInput.val()).toEqual('');
     });
   });
@@ -188,7 +188,7 @@ describe('CreateItemDropdown', () => {
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
-      expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
+      expect($itemEls).toHaveLength(1 + DROPDOWN_ITEM_DATA.length);
       expect($($itemEls[DROPDOWN_ITEM_DATA.length]).text()).toEqual('new-item-text');
       expect($wrapperEl.find('.dropdown-toggle-text').text()).toEqual('new-item-title');
     });

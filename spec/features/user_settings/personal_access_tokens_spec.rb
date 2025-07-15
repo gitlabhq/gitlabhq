@@ -93,30 +93,29 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/547507
-      # context 'when token has no Last Used IPs' do
-      #   it 'shows "Never" as the value' do
-      #     visit user_settings_personal_access_tokens_path
+      context 'when token has no Last Used IPs' do
+        it 'shows "Never" as the value' do
+          visit user_settings_personal_access_tokens_path
 
-      #     expect(last_used_ip).to have_text('Never')
-      #   end
-      # end
+          expect(last_used_ip).to have_text('Last used: Never')
+        end
+      end
 
-      # context 'when token has Last Used IPs' do
-      #   let(:current_ip_address) { '127.0.0.1' }
+      context 'when token has Last Used IPs' do
+        let(:current_ip_address) { '127.0.0.1' }
 
-      #   before do
-      #     personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
-      #       organization: personal_access_token.organization,
-      #       ip_address: current_ip_address)
-      #   end
+        before do
+          personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+            organization: personal_access_token.organization,
+            ip_address: current_ip_address)
+        end
 
-      #   it 'shows the current_ip_address in last_used_ips' do
-      #     visit user_settings_personal_access_tokens_path
+        it 'shows the current_ip_address in last_used_ips' do
+          visit user_settings_personal_access_tokens_path
 
-      #     expect(last_used_ip).to have_text(current_ip_address)
-      #   end
-      # end
+          expect(last_used_ips).to have_text("IP: #{current_ip_address}")
+        end
+      end
     end
 
     describe "inactive tokens" do

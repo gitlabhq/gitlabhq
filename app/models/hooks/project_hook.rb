@@ -15,6 +15,7 @@ class ProjectHook < WebHook
     :issue_hooks,
     :job_hooks,
     :merge_request_hooks,
+    :milestone_hooks,
     :note_hooks,
     :pipeline_hooks,
     :push_hooks,

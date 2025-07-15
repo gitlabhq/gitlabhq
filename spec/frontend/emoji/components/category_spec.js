@@ -24,7 +24,7 @@ describe('Emoji category component', () => {
   });
 
   it('renders emoji groups', () => {
-    expect(wrapper.findAllComponents(EmojiGroup).length).toBe(2);
+    expect(wrapper.findAllComponents(EmojiGroup)).toHaveLength(2);
   });
 
   it('renders group', async () => {

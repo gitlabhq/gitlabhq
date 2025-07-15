@@ -22,3 +22,13 @@
     width: $gl-max-dropdown-max-height;
   }
 }
+
+.commit-list-item {
+  position: relative;
+
+  &::before {
+    // stylelint-disable length-zero-no-unit
+    @include vertical-line(0px, 7px);
+    @apply gl-bg-strong;
+  }
+}

@@ -126,7 +126,7 @@ When transferring groups, note:
 - Transfers fail if the group is a top-level group and [npm packages](../packages/npm_registry/_index.md) following the [naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
 - `container_registry` images in the archived projects must be deleted before the transfer. For more information, see the [troubleshooting section](troubleshooting.md#missing-or-insufficient-permission-delete-button-disabled).
 - Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group-level endpoint.
-- Existing package names need to be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/_index.md#naming-convention), [npm](../packages/npm_registry/_index.md#naming-convention), [Conan](../packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
+- Existing package names must be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/_index.md#naming-convention), [npm](../packages/npm_registry/_index.md#naming-convention), [Conan 1](../packages/conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 Prerequisites:
@@ -157,7 +157,7 @@ To disable email notifications:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `diff_preview_in_email`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
 
 {{< /history >}}
@@ -184,7 +184,7 @@ To disable diff previews for all projects in a group:
 
 {{< history >}}
 
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
@@ -217,7 +217,7 @@ For more information, see:
 
 {{< history >}}
 
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
 {{< /history >}}
@@ -509,7 +509,7 @@ To enable group file templates:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
 {{< /history >}}
@@ -561,7 +561,7 @@ To change this behavior:
 
 ### Prevent merge unless all threads are resolved
 
-You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, child projects in your group display unresolved thread counts in orange on merge requests with at least one unresolved thread.
+You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, child projects in your group display open thread counts in orange on merge requests with at least one open thread.
 
 Prerequisites:
 

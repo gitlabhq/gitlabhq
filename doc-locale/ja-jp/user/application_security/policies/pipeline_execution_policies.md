@@ -23,7 +23,7 @@ title: パイプライン実行ポリシー
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> ビデオチュートリアルについては、[Security Policies: Pipeline Execution Policy Type（セキュリティポリシー: パイプライン実行ポリシーの種類（英語））](https://www.youtube.com/watch?v=QQAOpkZ__pA)をご覧ください。
 
-## パイプライン実行ポリシーのスキーマ
+## パイプライン実行ポリシー（複数）のスキーマ 
 
 {{< history >}}
 

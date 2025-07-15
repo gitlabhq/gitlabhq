@@ -24,6 +24,7 @@ export const sidebarState = Vue.observable({
 export const duoChatGlobalState = Vue.observable({
   commands: [],
   isShown: false,
+  isAgenticChatShown: false,
 });
 
 export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;

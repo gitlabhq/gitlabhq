@@ -1265,19 +1265,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     it_behaves_like 'checking mutable tag rules on a container repository'
 
-    context 'when the project has immutable tag protection rules' do
-      before_all do
-        create(
-          :container_registry_protection_tag_rule,
-          :immutable,
-          tag_name_pattern: 'i',
-          project: project
-        )
-      end
-
-      it_behaves_like 'checking mutable tag rules on a container repository'
-    end
-
     context 'when the user is nil' do
       let(:current_user) { nil }
 

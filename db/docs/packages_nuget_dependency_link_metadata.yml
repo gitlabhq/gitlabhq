@@ -8,14 +8,6 @@ description: Join table between nuget target frameworks and packages_dependency_
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30618
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: dependency_link_id
-        table: packages_dependency_links
-        sharding_key: project_id
-        belongs_to: dependency_link
+sharding_key:
+  project_id: projects
 table_size: small
-desired_sharding_key_migration_job_name: BackfillPackagesNugetDependencyLinkMetadataProjectId

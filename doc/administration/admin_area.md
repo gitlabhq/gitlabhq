@@ -372,14 +372,14 @@ The page includes this information about each Gitaly server:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+can [enable the feature flag](feature_flags/_index.md) named `ui_for_organizations`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 

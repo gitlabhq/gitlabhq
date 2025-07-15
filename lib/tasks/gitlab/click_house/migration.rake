@@ -4,8 +4,8 @@ click_house_database_names = %i[main]
 
 namespace :gitlab do
   namespace :clickhouse do
-    namespace :drop do
-      click_house_database_names.each do |database|
+    click_house_database_names.each do |database|
+      namespace :drop do
         desc "GitLab | ClickHouse | Drop the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
         task database, [:skip_unless_configured] => :environment do |_t, args|
           if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
@@ -16,19 +16,23 @@ namespace :gitlab do
           drop_db(database)
         end
       end
-    end
 
-    namespace :create do
-      click_house_database_names.each do |database|
+      namespace :setup do
+        desc "GitLab | ClickHouse | Setup the #{database} database"
+        task database do
+          create_db(database)
+          migrate(:up, database)
+        end
+      end
+
+      namespace :create do
         desc "GitLab | ClickHouse | Create the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
         task database, :environment do
           create_db(database)
         end
       end
-    end
 
-    namespace :migrate do
-      click_house_database_names.each do |database|
+      namespace :migrate do
         desc "GitLab | ClickHouse | Migrate the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
         task database, [:skip_unless_configured] => :environment do |_t, args|
           if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
@@ -39,10 +43,8 @@ namespace :gitlab do
           migrate(:up, database)
         end
       end
-    end
 
-    namespace :rollback do
-      click_house_database_names.each do |database|
+      namespace :rollback do
         desc "GitLab | ClickHouse | Rolls the #{database} database back to the previous version " \
                "(specify steps w/ STEP=n)"
         task database => :environment do
@@ -72,6 +74,14 @@ namespace :gitlab do
       click_house_database_names.each do |database|
         puts "Running gitlab:clickhouse:create:#{database} rake task"
         Rake::Task["gitlab:clickhouse:create:#{database}"].invoke
+      end
+    end
+
+    desc 'GitLab | ClickHouse | Setup (create & migrate) the databases'
+    task :setup, [:skip_unless_configured] => :environment do
+      click_house_database_names.each do |database|
+        puts "Running gitlab:clickhouse:setup:#{database} rake task"
+        Rake::Task["gitlab:clickhouse:setup:#{database}"].invoke
       end
     end
 

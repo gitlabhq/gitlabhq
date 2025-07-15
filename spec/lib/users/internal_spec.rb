@@ -7,6 +7,14 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   let_it_be(:organization) { create(:organization) }
 
   shared_examples 'bot users' do |bot_type, username, email|
+    subject(:bot_user) { described_class.for_organization(organization).public_send(bot_type) }
+
+    let(:bot_username) do
+      described_class.for_organization(organization).send(
+        :username_with_organization_suffix, username
+      )
+    end
+
     it 'creates the user if it does not exist' do
       expect do
         described_class.for_organization(organization).public_send(bot_type)
@@ -14,16 +22,26 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     end
 
     it 'creates a route for the namespace of the created user' do
-      bot_user = described_class.for_organization(organization).public_send(bot_type)
-
       expect(bot_user.namespace.route).to be_present
       expect(bot_user.namespace.organization).to eq(organization)
     end
 
-    it 'assigns the organization to the created user' do
-      bot_user = described_class.for_organization(organization).public_send(bot_type)
+    it 'creates a user with a global username suffixed with the organization name' do
+      expect(bot_user.username).to include(username)
+      expect(bot_user.username).to include(organization.path)
+      expect(bot_user.name).not_to include("(#{organization.name})")
+    end
 
+    it 'assigns the organization to the created user' do
       expect(bot_user.organizations).to eq([organization])
+    end
+
+    it 'creates an organization_user_detail with a per-organization username' do
+      expect(bot_user.organization_user_details.count).to eq(1)
+
+      detail = bot_user.organization_user_details.first
+      expect(detail.username).to eq(username)
+      expect(detail.display_name).to include("(#{organization.name})")
     end
 
     it 'does not create a new user if it already exists' do
@@ -35,12 +53,36 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     end
 
     context 'when a regular user exists with the bot username' do
-      it 'creates a user with a non-conflicting username' do
-        create(:user, username: username)
+      let!(:user) { create(:user, :with_namespace, username: bot_username) }
 
+      it 'creates a user with a non-conflicting username' do
         expect do
-          described_class.for_organization(organization).public_send(bot_type)
+          bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+
+      it 'creates organization_user_detail with non-conflicting username' do
+        expect(bot_user.organization_user_details.count).to eq(1)
+
+        detail = bot_user.organization_user_details.first
+        expect(detail.username).not_to eq(user.username)
+      end
+
+      context 'when user belongs to another organization' do
+        let!(:user) { create(:user, :with_namespace, username: bot_username, in_organization: first_organization) }
+
+        it 'creates a non-conflicting global username and simple per-org username' do
+          expect do
+            bot_user
+          end.to change { User.where(user_type: bot_type).count }.by(1)
+
+          expect(bot_user.username).not_to eq(user.username)
+
+          expect(bot_user.organization_user_details.count).to eq(1)
+
+          detail = bot_user.organization_user_details.first
+          expect(detail.username).to eq(username)
+        end
       end
     end
 
@@ -49,18 +91,42 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
         create(:user, email: email)
 
         expect do
-          described_class.for_organization(organization).public_send(bot_type)
+          bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
       end
     end
 
     context 'when a group namespace exists with path that is equal to the bot username' do
-      it 'creates a user with a non-conflicting username' do
-        create(:group, path: username)
+      let!(:group) { create(:group, path: bot_username) }
 
+      it 'creates a user with a non-conflicting username' do
         expect do
-          described_class.for_organization(organization).public_send(bot_type)
+          bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+
+      it 'creates organization_user_detail with non-conflicting username' do
+        expect(bot_user.organization_user_details.count).to eq(1)
+
+        detail = bot_user.organization_user_details.first
+        expect(detail.username).not_to eq(group.path)
+      end
+
+      context 'when the group namespace is in another organization' do
+        let!(:group) { create(:group, path: bot_username, organization: first_organization) }
+
+        it 'creates a non-conflicting global username and simple per-org username' do
+          expect do
+            bot_user
+          end.to change { User.where(user_type: bot_type).count }.by(1)
+
+          expect(bot_user.username).not_to eq(bot_username)
+
+          expect(bot_user.organization_user_details.count).to eq(1)
+
+          detail = bot_user.organization_user_details.first
+          expect(detail.username).to eq(username)
+        end
       end
     end
 
@@ -71,8 +137,48 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
 
       it 'creates the bot user' do
         expect do
-          described_class.for_organization(organization).public_send(bot_type)
+          bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+    end
+
+    context 'when no organization is passed' do
+      subject(:bot_user) { described_class.public_send(bot_type) }
+
+      it 'sets username without suffix' do
+        expect(bot_user.username).to eq(username)
+      end
+
+      it 'sets display name without suffix' do
+        expect(bot_user.name).not_to include(organization.name)
+      end
+    end
+
+    context 'when organization_users_internal FF is disabled' do
+      before do
+        stub_feature_flags(organization_users_internal: false)
+      end
+
+      it 'assigns the default organization to the created user' do
+        expect(bot_user.organizations).to eq([first_organization])
+      end
+
+      it 'does not create a new user if one already exists for the first organization' do
+        described_class.for_organization(first_organization).public_send(bot_type)
+
+        expect do
+          described_class.for_organization(organization).public_send(bot_type)
+        end.not_to change { User.count }
+      end
+
+      it 'creates a user with no username or display name suffix' do
+        expect(bot_user.username).to include(username)
+        expect(bot_user.username).not_to include(organization.path)
+        expect(bot_user.name).not_to include("(#{organization.name})")
+      end
+
+      it 'does not create an organization_user_detail' do
+        expect(bot_user.organization_user_details).to be_empty
       end
     end
   end

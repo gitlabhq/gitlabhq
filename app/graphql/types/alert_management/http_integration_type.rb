@@ -9,14 +9,6 @@ module Types
       implements Types::AlertManagement::IntegrationType
 
       authorize :admin_operations
-
-      def type
-        object.type_identifier.to_sym
-      end
-
-      def api_url
-        nil
-      end
     end
   end
 end

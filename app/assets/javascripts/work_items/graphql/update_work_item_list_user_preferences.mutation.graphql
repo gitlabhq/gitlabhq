@@ -1,0 +1,10 @@
+mutation updateWorkItemListUserPreference($namespace: ID!, $displaySettings: JSON) {
+  workItemUserPreferenceUpdate(
+    input: { namespacePath: $namespace, displaySettings: $displaySettings }
+  ) {
+    errors
+    userPreferences {
+      displaySettings
+    }
+  }
+}

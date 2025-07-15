@@ -253,7 +253,7 @@ describe('Global Search Results Utils', () => {
       expect(result.length).toBeLessThan(html.length);
 
       expect(result).toContain('HIGHLIGHTED-');
-      expect(result.length).toBe(3045);
+      expect(result).toHaveLength(3045);
 
       expect(result).toMatch(/…/);
     });
@@ -274,7 +274,7 @@ describe('Global Search Results Utils', () => {
       expect(result).toContain('FIRST');
       expect(result).toContain('SECOND');
       expect(result).not.toContain('THIRD');
-      expect(result.length).toBe(3014);
+      expect(result).toHaveLength(3014);
     });
 
     it('properly handles string with many highlights with no apparent clusters', () => {
@@ -348,7 +348,7 @@ describe('Global Search Results Utils', () => {
       // to measure the trim correctly we have
       // to strip away the html tags
       const cleanText = result.replace(/<[^>]*>/g, '');
-      expect(cleanText.length).toBe(3001);
+      expect(cleanText).toHaveLength(3001);
     });
 
     it('properly handles string with NO highlights', () => {

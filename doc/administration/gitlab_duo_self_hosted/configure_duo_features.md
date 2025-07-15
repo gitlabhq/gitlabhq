@@ -16,7 +16,7 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
@@ -103,7 +103,7 @@ To configure a self-hosted model:
 
 For more information about:
 
-- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
+- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#find-the-model-name).
 - Configuring Amazon Bedrock models with cross-region inferencing, see the
   [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 

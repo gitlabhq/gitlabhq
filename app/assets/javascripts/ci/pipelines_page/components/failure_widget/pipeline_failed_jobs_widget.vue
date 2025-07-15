@@ -140,7 +140,6 @@ export default {
         <span class="gl-font-bold gl-text-subtle">
           {{ __('Failed jobs') }}
         </span>
-        <span class="gl-absolute gl-inset-0" aria-hidden="true"></span>
       </gl-button>
     </template>
     <template #count>
@@ -152,7 +151,6 @@ export default {
       <gl-button
         v-if="isExpanded"
         href="https://gitlab.com/gitlab-org/gitlab/-/issues/502436"
-        class="gl-z-1"
         data-testid="feedback-button"
         size="small"
       >

@@ -103,7 +103,7 @@ export default {
     <gl-button
       v-for="(btn, index) in tertiaryButtons"
       :id="btn.id"
-      :key="index"
+      :key="btn.id || index"
       v-gl-tooltip.hover
       :title="setTooltip(btn)"
       :href="btn.href"

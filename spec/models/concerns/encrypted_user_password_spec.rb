@@ -124,8 +124,25 @@ RSpec.describe User, feature_category: :system_access do
   end
 
   describe '#password=' do
-    let(:user) { create(:user) }
+    let(:user) { build(:user) }
     let(:password) { described_class.random_password }
+
+    it 'reuses cached password hash when the same password is set again', :request_store do
+      user.password = password
+      original_result = user.encrypted_password
+      expect(user).not_to receive(:hash_this_password)
+      user.password = password
+      expect(user.encrypted_password).to eq(original_result)
+    end
+
+    it 'computes a new hash when a different password is set', :request_store do
+      user.password = 's3cret'
+      original_result = user.encrypted_password
+      expect(user).to receive(:hash_this_password).with(password).and_call_original
+      user.password = password
+      expect(user.encrypted_password).to be_present
+      expect(user.encrypted_password).not_to eq(original_result)
+    end
 
     def compare_bcrypt_password(user, password)
       Devise::Encryptor.compare(described_class, user.encrypted_password, password)

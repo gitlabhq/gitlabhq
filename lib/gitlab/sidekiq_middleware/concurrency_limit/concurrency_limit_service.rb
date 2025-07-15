@@ -12,10 +12,13 @@ module Gitlab
         delegate :track_execution_start, :track_execution_end, :cleanup_stale_trackers,
           :concurrent_worker_count, to: :@worker_execution_tracker
 
+        delegate :current_limit, :set_current_limit!, to: :@limit_manager
+
         def initialize(worker_name)
           @worker_name = worker_name
           @queue_manager = QueueManager.new(worker_name: worker_name, prefix: REDIS_KEY_PREFIX)
           @worker_execution_tracker = WorkerExecutionTracker.new(worker_name: worker_name, prefix: REDIS_KEY_PREFIX)
+          @limit_manager = LimitManager.new(worker_name: worker_name, prefix: REDIS_KEY_PREFIX)
         end
 
         class << self
@@ -53,6 +56,23 @@ module Gitlab
 
           def concurrent_worker_count(worker_name)
             new(worker_name).concurrent_worker_count
+          end
+
+          def current_limit(worker_name)
+            new(worker_name).current_limit
+          end
+
+          def set_current_limit!(worker_name, limit:)
+            new(worker_name).set_current_limit!(limit)
+          end
+
+          def over_the_limit?(worker_name)
+            service = new(worker_name)
+            limit = service.current_limit
+
+            return false if limit == 0
+
+            service.concurrent_worker_count >= limit
           end
         end
       end

@@ -15,12 +15,12 @@ title: GitLab Dedicated users and notifications
 
 ## Add Switchboard users
 
-Administrators can add two types of Switchboard users to their GitLab Dedicated instance:
+Administrators can add two types of Switchboard users to manage and view their GitLab Dedicated instance:
 
 - **Read only**: Users can only view instance data.
 - **Admin**: Users can edit the instance configuration and manage users.
 
-To add a new user to your GitLab Dedicated instance:
+To add a new user to Switchboard for your GitLab Dedicated instance:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. From the top of the page, select **Users**.
@@ -30,20 +30,39 @@ To add a new user to your GitLab Dedicated instance:
 
 An invitation to use Switchboard is sent to the user.
 
+There is no direct link between the users in Switchboard and the users in the GitLab Dedicated instance.
+
+## Email notifications
+
+Switchboard sends email notifications about instance incidents, maintenance, performance issues, and security updates.
+
+Notifications are sent to:
+
+- Switchboard users: Receive notifications based on their notification settings.
+- Operational email addresses: Receive notifications for important instance events and service updates,
+  regardless of their notification settings.
+
+Operational email addresses receive customer notifications, even if recipients:
+
+- Are not Switchboard users.
+- Have not signed in to Switchboard.
+- Turn off email notifications.
+
+To stop receiving operational email notifications, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+
 ### Manage notification preferences
 
-You can specify whether you want to receive email notifications from Switchboard. You will only receive notifications after you:
+To receive email notifications, you must first:
 
-- Receive an email invitation and first sign in to Switchboard.
-- Set up a password and two-factor authentication (2FA) for your user account.
+- Receive an email invitation and sign in to Switchboard.
+- Set up a password and two-factor authentication (2FA).
 
-To manage your own email notification preferences:
+To turn your personal notifications on or off:
 
-1. From any page, open the dropdown next to your user name.
-1. To stop receiving email notifications, select **Toggle email notifications off**.
-1. To resume receiving email notifications, select **Toggle email notifications on**.
+1. Select the dropdown list next to your user name.
+1. Select **Toggle email notifications off** or **Toggle email notifications on**.
 
-You will see an alert confirming that your notification preferences have been updated.
+An alert confirms that your notification preferences have been updated.
 
 ## Reset a Switchboard user password
 

@@ -5,8 +5,8 @@ module WorkhorseLfsHelpers
 
   def put_finalize(
     lfs_tmp = nil, with_tempfile: false, verified: true, remote_object: nil,
-    args: {}, to_project: nil, size: nil, sha256: nil)
-
+    args: {}, to_project: nil, size: nil, sha256: nil
+  )
     lfs_tmp ||= "#{sample_oid}012345678"
     to_project ||= project
     uploaded_file =

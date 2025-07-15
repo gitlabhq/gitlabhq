@@ -8,6 +8,7 @@ module RuboCop
         'Please ensure that you are not using it on its own and that the amount ' \
         'of rows being filtered is reasonable.'
 
+      # @!method public_or_visible_to_user?(node)
       def_node_matcher :public_or_visible_to_user?, <<~PATTERN
         (send (const nil? :Group) :public_or_visible_to_user ...)
       PATTERN

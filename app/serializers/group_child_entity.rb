@@ -6,7 +6,7 @@ class GroupChildEntity < Grape::Entity
   include MarkupHelper
   include Namespaces::DeletableHelper
 
-  expose :id, :name, :description, :visibility, :full_name,
+  expose :id, :name, :description, :visibility, :full_name, :full_path,
     :created_at, :updated_at, :avatar_url
 
   expose :type do |instance|
@@ -33,6 +33,10 @@ class GroupChildEntity < Grape::Entity
 
   expose :permission do |instance|
     membership&.human_access
+  end
+
+  expose :permission_integer do |instance|
+    membership&.access_level
   end
 
   expose :marked_for_deletion_on
@@ -90,6 +94,12 @@ class GroupChildEntity < Grape::Entity
   expose :marked_for_deletion do |instance| # rubocop:disable Style/SymbolProc -- Avoid a `ArgumentError: wrong number of arguments (given 1, expected 0)` error
     instance.scheduled_for_deletion_in_hierarchy_chain?
   end
+
+  # For both group and project
+  expose :self_deletion_in_progress?, as: :is_self_deletion_in_progress
+
+  # For both group and project
+  expose :self_deletion_scheduled?, as: :is_self_deletion_scheduled
 
   private
 

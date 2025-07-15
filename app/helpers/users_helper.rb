@@ -148,7 +148,7 @@ module UsersHelper
   def work_information(user, with_schema_markup: false)
     return unless user
 
-    organization = user.organization
+    organization = user.user_detail_organization
     job_title = user.job_title
 
     if organization.present? && job_title.present?
@@ -212,7 +212,7 @@ module UsersHelper
   end
 
   def has_contact_info?(user)
-    contact_fields = %i[bluesky discord linkedin mastodon orcid skype twitter website_url github]
+    contact_fields = %i[bluesky discord linkedin mastodon orcid twitter website_url github]
     has_contact = contact_fields.any? { |field| user.public_send(field).present? }  # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
     has_contact || display_public_email?(user)
   end

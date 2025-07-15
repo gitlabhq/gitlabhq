@@ -29,9 +29,9 @@ is, there typically only exist a few relevant records. This information is kept 
 
 We consider this *read-mostly* data, because it follows above outlined characteristics:
 
-- **Rare writes:** license data very rarely sees any writes after having inserted the license.
-- **Frequent reads:** license data is read extremely often to check if enterprise features can be used.
-- **Small size:** this dataset is very small. On GitLab.com we have 5 records at < 50 kB total relation size.
+- **Rare writes**: license data very rarely sees any writes after having inserted the license.
+- **Frequent reads**: license data is read extremely often to check if enterprise features can be used.
+- **Small size**: this dataset is very small. On GitLab.com we have 5 records at < 50 kB total relation size.
 
 ### Effects of *read-mostly* data at scale
 

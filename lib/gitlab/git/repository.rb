@@ -464,17 +464,14 @@ module Gitlab
       def raw_changes_between(old_rev, new_rev)
         @raw_changes_between ||= {}
 
-        @raw_changes_between[[old_rev, new_rev]] ||=
-          begin
-            return [] if new_rev.blank? || Gitlab::Git.blank_ref?(new_rev)
+        return [] if new_rev.blank? || Gitlab::Git.blank_ref?(new_rev)
 
-            wrapped_gitaly_errors do
-              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
-                .each_with_object([]) do |msg, arr|
-                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
-              end
-            end
+        @raw_changes_between[[old_rev, new_rev]] ||= wrapped_gitaly_errors do
+          gitaly_repository_client.raw_changes_between(old_rev, new_rev)
+            .each_with_object([]) do |msg, arr|
+            msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
           end
+        end
       rescue ArgumentError => e
         raise Gitlab::Git::Repository::GitError, e
       end
@@ -1022,8 +1019,8 @@ module Gitlab
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_sha: nil, start_repository: nil,
-        force: false, sign: true, target_sha: nil)
-
+        force: false, sign: true, target_sha: nil
+      )
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
             message, actions, author_email, author_name, start_branch_name,

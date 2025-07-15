@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { getActivePinia } from 'pinia';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ACTIVITY, TYPE_COMMENT } from '~/import/constants';
 import { s__ } from '~/locale';
@@ -129,11 +128,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setTargetNoteHash']),
-    updateTargetNoteHash() {
-      if (this.$store) {
-        this.setTargetNoteHash(this.noteTimestampLink);
-      }
+    async updateTargetNoteHash() {
+      if (!getActivePinia()) return;
+      const { useNotes } = await import('~/notes/store/legacy_notes');
+      useNotes().setTargetNoteHash(this.noteTimestampLink);
     },
     handleUsernameMouseEnter() {
       this.$refs.authorNameLink.dispatchEvent(new Event('mouseenter'));
@@ -202,21 +200,21 @@ export default {
         <span ref="actionText" class="system-note-separator">
           <template v-if="actionText">{{ actionText }}</template>
         </span>
-        <a
+        <time-ago-tooltip
           v-if="noteTimestampLink"
           ref="noteTimestampLink"
           :href="noteTimestampLink"
           class="note-timestamp system-note-separator"
+          :time="createdAt"
+          tooltip-placement="bottom"
           @click="updateTargetNoteHash"
-        >
-          <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
-        </a>
+        />
         <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
 
       <template v-if="isImported">
         <span v-if="isSystemNote">&middot;</span>
-        <imported-badge :text-only="isSystemNote" :importable-type="importableType" />
+        <imported-badge :text-only="isSystemNote" />
       </template>
 
       <gl-badge

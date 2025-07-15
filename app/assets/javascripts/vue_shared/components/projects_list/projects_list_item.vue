@@ -57,31 +57,6 @@ export default {
     ProjectListItemDelayedDeletionModalFooter,
   },
   props: {
-    /**
-     * Expected format:
-     *
-     * {
-     *   id: number | string;
-     *   name: string;
-     *   webUrl: string;
-     *   topics: string[];
-     *   forksCount?: number;
-     *   avatarUrl: string | null;
-     *   starCount: number;
-     *   visibility: string;
-     *   issuesAccessLevel: string;
-     *   forkingAccessLevel: string;
-     *   openIssuesCount: number;
-     *   maxAccessLevel: {
-     *     integerValue: number;
-     *   };
-     *   descriptionHtml: string;
-     *   updatedAt: string;
-     *   isForked: boolean;
-     *   actions?: ('edit' | 'delete')[];
-     *   editPath?: string;
-     * }
-     */
     project: {
       type: Object,
       required: true,
@@ -134,16 +109,16 @@ export default {
       return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     starsHref() {
-      return `${this.project.webUrl}/-/starrers`;
+      return `${this.project.relativeWebUrl}/-/starrers`;
     },
     mergeRequestsHref() {
-      return `${this.project.webUrl}/-/merge_requests`;
+      return `${this.project.relativeWebUrl}/-/merge_requests`;
     },
     forksHref() {
-      return `${this.project.webUrl}/-/forks`;
+      return `${this.project.relativeWebUrl}/-/forks`;
     },
     issuesHref() {
-      return `${this.project.webUrl}/-/issues`;
+      return `${this.project.relativeWebUrl}/-/issues`;
     },
     isMergeRequestsEnabled() {
       return (

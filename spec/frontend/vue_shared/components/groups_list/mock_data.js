@@ -10,6 +10,7 @@ export const groups = [
     id: 1,
     fullName: 'Gitlab Org',
     fullPath: 'gitlab-org',
+    relativeWebUrl: '/gitlab-org',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/gitlab-org',
     descriptionHtml:
@@ -29,11 +30,15 @@ export const groups = [
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',
     isLinkedToSubscription: false,
+    markedForDeletion: false,
+    isSelfDeletionInProgress: false,
+    isSelfDeletionScheduled: false,
   },
   {
     id: 2,
     fullName: 'Gitlab Org / test subgroup',
     fullPath: 'gitlab-org/test-subgroup',
+    relativeWebUrl: '/gitlab-org/test-subgroup',
     parent: {
       id: 1,
     },
@@ -54,5 +59,8 @@ export const groups = [
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',
     isLinkedToSubscription: false,
+    markedForDeletion: false,
+    isSelfDeletionInProgress: false,
+    isSelfDeletionScheduled: false,
   },
 ];

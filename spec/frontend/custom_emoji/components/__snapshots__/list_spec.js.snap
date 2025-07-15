@@ -5,46 +5,47 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
   <div
     class="gl-tabs tabs"
   >
-    <div>
+    <div
+      class="gl-tabs-wrapper"
+    >
+      <div
+        class="gl-actions-tabs-start"
+        data-testid="actions-tabs-start"
+        role="toolbar"
+      >
+        <a
+          class="btn btn-confirm btn-md gl-button"
+          data-testid="action-primary"
+          href="/new"
+        >
+          <span
+            class="gl-button-text"
+          >
+            New custom emoji
+          </span>
+        </a>
+      </div>
       <ul
         class="gl-tabs-nav nav"
         role="tablist"
+      />
+      <div
+        class="gl-actions-tabs-end"
+        data-testid="actions-tabs-end"
+        role="toolbar"
       >
-        <div
-          class="gl-actions-tabs-start"
-          data-testid="actions-tabs-start"
+        <a
+          class="btn btn-confirm btn-md gl-button"
+          data-testid="action-primary"
+          href="/new"
         >
-          <a
-            class="btn btn-confirm btn-md gl-button"
-            data-testid="action-primary"
-            href="/new"
-            to="/new"
+          <span
+            class="gl-button-text"
           >
-            <span
-              class="gl-button-text"
-            >
-              New custom emoji
-            </span>
-          </a>
-        </div>
-        <div
-          class="gl-actions-tabs-end"
-          data-testid="actions-tabs-end"
-        >
-          <a
-            class="btn btn-confirm btn-md gl-button"
-            data-testid="action-primary"
-            href="/new"
-            to="/new"
-          >
-            <span
-              class="gl-button-text"
-            >
-              New custom emoji
-            </span>
-          </a>
-        </div>
-      </ul>
+            New custom emoji
+          </span>
+        </a>
+      </div>
     </div>
     <div
       class="gl-pt-0 gl-tab-content tab-content"

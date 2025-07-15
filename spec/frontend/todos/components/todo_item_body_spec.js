@@ -1,5 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import TodoItemTitle from '~/todos/components/todo_item_title.vue';
+import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
+
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import {
   TODO_ACTION_TYPE_ADDED_APPROVER,
@@ -50,6 +53,16 @@ describe('TodoItemBody', () => {
       },
     });
   };
+
+  it('renders TodoItemTitle component for normal todos', () => {
+    createComponent();
+    expect(wrapper.findComponent(TodoItemTitle).exists()).toBe(true);
+  });
+
+  it('renders TodoItemTitleHiddenBySaml component for hidden todos', () => {
+    createComponent({}, { isHiddenBySaml: true });
+    expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).exists()).toBe(true);
+  });
 
   it('renders author avatar', () => {
     createComponent();

@@ -35,6 +35,17 @@ module Namespaces
         )
       end
 
+      override :all_unarchived_project_ids
+      def all_unarchived_project_ids
+        return super unless attempt_to_use_cached_data?
+
+        scope_with_cached_ids(
+          all_projects.self_and_ancestors_non_archived.select(:id),
+          Project,
+          Namespaces::Descendants.arel_table[:all_unarchived_project_ids]
+        )
+      end
+
       private
 
       # This method implements an OR based cache lookup using COALESCE, similar what you would do in Ruby:

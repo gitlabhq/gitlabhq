@@ -13,7 +13,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
     )
   end
 
-  # rubocop:disable RSpec/VerifiedDoubles
+  # rubocop:disable RSpec/VerifiedDoubles -- verified double complains about missing dynamically added methods
   let(:rspec_example) do
     double(
       RSpec::Core::Example,
@@ -52,7 +52,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       expect(rspec_example).to have_received(:add_link).with(name: "Job(#{ci_job})", url: ci_job_url)
       expect(rspec_example).to have_received(:issue).with(
         'Failure issues',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues?sort=updated_desc&scope=all&state=opened&' \
+        'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&state=opened&' \
           'search=spec.rb&search=Some%20failure%0Amessage'
       )
     end
@@ -71,7 +71,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
 
         expect(rspec_example).to have_received(:issue).with(
           'Failure issues',
-          'https://gitlab.com/gitlab-org/gitlab/-/issues?sort=updated_desc&scope=all&state=opened&' \
+          'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&state=opened&' \
             'search=spec.rb&search=Some%20failure%20message'
         )
       end

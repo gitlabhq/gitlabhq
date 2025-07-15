@@ -27,6 +27,8 @@ import {
   SORT_DIRECTION_ASC,
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+  FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -50,6 +52,8 @@ import {
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { VISIBILITY_LEVEL_PRIVATE_STRING } from '~/visibility_level/constants';
+import Api from '~/api';
 import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
@@ -67,6 +71,8 @@ const defaultPropsData = {
   filteredSearchSupportedTokens: [
     FILTERED_SEARCH_TOKEN_LANGUAGE,
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+    FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+    FILTERED_SEARCH_TOKEN_NAMESPACE,
   ],
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -150,6 +156,10 @@ describe('TabsWithList', () => {
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
   const findTabView = () => wrapper.findComponent(TabView);
   const findBadge = () => wrapper.findComponent(GlBadge);
+
+  beforeEach(() => {
+    jest.spyOn(Api, 'namespaces').mockResolvedValue([]);
+  });
 
   afterEach(() => {
     router = null;
@@ -271,6 +281,8 @@ describe('TabsWithList', () => {
             [defaultPropsData.filteredSearchTermKey]: searchTerm,
             [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
+            [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
+            [FILTERED_SEARCH_TOKEN_NAMESPACE]: ['namespace'],
           });
           await waitForPromises();
         });
@@ -279,6 +291,8 @@ describe('TabsWithList', () => {
           expect(successHandler).toHaveBeenCalledWith({
             minAccessLevel: 'OWNER',
             programmingLanguageName: 'CSS',
+            visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
+            namespacePath: 'namespace',
             search: searchTerm,
             skipContributed: false,
             skipStarred: true,
@@ -385,7 +399,7 @@ describe('TabsWithList', () => {
     describe('when sort is changed', () => {
       let trackEventSpy;
 
-      beforeEach(async () => {
+      const setup = async (propsData = {}) => {
         await createComponent({
           route: {
             ...defaultRoute,
@@ -394,32 +408,51 @@ describe('TabsWithList', () => {
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
+          propsData,
         });
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
         await waitForPromises();
-      });
+      };
 
-      it('updates query string', () => {
+      it('updates query string', async () => {
+        await setup();
+
         expect(router.currentRoute.query).toEqual({
           [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
         });
       });
 
-      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
-        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
-          input: { projectsSort: 'LATEST_ACTIVITY_DESC' },
+      describe('when `userPreferencesSortKey` prop is passed', () => {
+        it('calls `userPreferencesUpdate` mutation with correct variables', async () => {
+          await setup({ userPreferencesSortKey: 'projectsSort' });
+
+          expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+            input: { projectsSort: 'LATEST_ACTIVITY_DESC' },
+          });
         });
       });
 
-      it('does not call Sentry.captureException', () => {
+      describe('when `userPreferencesSortKey` prop is not passed', () => {
+        it('does not call `userPreferencesUpdate` mutation', async () => {
+          await setup();
+
+          expect(userPreferencesUpdateSuccessHandler).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not call Sentry.captureException', async () => {
+        await setup();
+
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
 
-      it('tracks event', () => {
+      it('tracks event', async () => {
+        await setup();
+
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
           {
@@ -434,7 +467,7 @@ describe('TabsWithList', () => {
     describe('when sort direction is changed', () => {
       let trackEventSpy;
 
-      beforeEach(async () => {
+      const setup = async (propsData = {}) => {
         await createComponent({
           route: {
             ...defaultRoute,
@@ -443,32 +476,51 @@ describe('TabsWithList', () => {
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
+          propsData,
         });
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-direction-change', true);
         await waitForPromises();
-      });
+      };
 
-      it('updates query string', () => {
+      it('updates query string', async () => {
+        await setup();
+
         expect(router.currentRoute.query).toEqual({
           [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
         });
       });
 
-      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
-        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
-          input: { projectsSort: 'CREATED_ASC' },
+      describe('when `userPreferencesSortKey` prop is passed', () => {
+        it('calls `userPreferencesUpdate` mutation with correct variables', async () => {
+          await setup({ userPreferencesSortKey: 'projectsSort' });
+
+          expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+            input: { projectsSort: 'CREATED_ASC' },
+          });
         });
       });
 
-      it('does not call Sentry.captureException', () => {
+      describe('when `userPreferencesSortKey` prop is not passed', () => {
+        it('does not call `userPreferencesUpdate` mutation', async () => {
+          await setup();
+
+          expect(userPreferencesUpdateSuccessHandler).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not call Sentry.captureException', async () => {
+        await setup();
+
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
 
-      it('tracks event', () => {
+      it('tracks event', async () => {
+        await setup();
+
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
           {
@@ -485,7 +537,10 @@ describe('TabsWithList', () => {
     const error = new Error();
 
     beforeEach(async () => {
-      await createComponent({ userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error) });
+      await createComponent({
+        userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error),
+        propsData: { userPreferencesSortKey: 'projectsSort' },
+      });
 
       findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
       await waitForPromises();
@@ -512,6 +567,8 @@ describe('TabsWithList', () => {
       [defaultPropsData.filteredSearchTermKey]: 'foo',
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
+      [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
+      [FILTERED_SEARCH_TOKEN_NAMESPACE]: 'namespace',
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
@@ -537,6 +594,8 @@ describe('TabsWithList', () => {
           [defaultPropsData.filteredSearchTermKey]: query[defaultPropsData.filteredSearchTermKey],
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
+          [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: query[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL],
+          [FILTERED_SEARCH_TOKEN_NAMESPACE]: query[FILTERED_SEARCH_TOKEN_NAMESPACE],
         },
         filtersAsQueryVariables: {
           programmingLanguageName: 'CoffeeScript',

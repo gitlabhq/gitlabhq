@@ -68,9 +68,9 @@ describe('CE IssueCardTimeInfo component', () => {
   const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
   const findDueDateIcon = () => wrapper.findByTestId('issuable-due-date').findComponent(GlIcon);
 
-  const mountComponent = ({ issue = issueObject() } = {}) =>
+  const mountComponent = ({ issue = issueObject(), hiddenMetadataKeys = [] } = {}) =>
     shallowMountExtended(IssueCardTimeInfo, {
-      propsData: { issue },
+      propsData: { issue, hiddenMetadataKeys },
       stubs: {
         WorkItemAttribute,
       },
@@ -89,6 +89,15 @@ describe('CE IssueCardTimeInfo component', () => {
 
         expect(milestone.exists()).toBe(true);
       });
+
+      it('hides milestone when included in hiddenMetadataKeys', () => {
+        wrapper = mountComponent({
+          issue: object(),
+          hiddenMetadataKeys: ['milestone'],
+        });
+
+        expect(findMilestone().exists()).toBe(false);
+      });
     });
 
     describe('due date', () => {
@@ -101,6 +110,15 @@ describe('CE IssueCardTimeInfo component', () => {
             variant: 'current',
             name: 'calendar',
           });
+        });
+
+        it('hides dates when included in hiddenMetadataKeys', () => {
+          wrapper = mountComponent({
+            issue: object({ dueDate: '2020-12-12' }),
+            hiddenMetadataKeys: ['dates'],
+          });
+
+          expect(findWorkItemAttribute().exists()).toBe(false);
         });
       });
 
@@ -161,6 +179,28 @@ describe('CE IssueCardTimeInfo component', () => {
         expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');
         expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
       });
+    });
+  });
+
+  describe('hiddenMetadataKeys', () => {
+    it('hides multiple metadata fields', () => {
+      wrapper = mountComponent({
+        issue: issueObject({ dueDate: '2020-12-12' }),
+        hiddenMetadataKeys: ['milestone', 'dates'],
+      });
+
+      expect(findMilestone().exists()).toBe(false);
+      expect(findWorkItemAttribute().exists()).toBe(false);
+    });
+
+    it('handles undefined hiddenMetadataKeys', () => {
+      wrapper = mountComponent({
+        issue: issueObject({ dueDate: '2020-12-12' }),
+        hiddenMetadataKeys: undefined,
+      });
+
+      expect(findMilestone().exists()).toBe(true);
+      expect(findWorkItemAttribute().exists()).toBe(true);
     });
   });
 });

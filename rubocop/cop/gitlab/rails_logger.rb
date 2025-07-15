@@ -28,6 +28,7 @@ module RuboCop
         LOG_METHODS = %i[debug error fatal info warn].freeze
         LOG_METHODS_PATTERN = LOG_METHODS.map(&:inspect).join(' ').freeze
 
+        # @!method rails_logger_log?(node)
         def_node_matcher :rails_logger_log?, <<~PATTERN
           (send
             (send (const nil? :Rails) :logger)

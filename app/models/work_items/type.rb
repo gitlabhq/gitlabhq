@@ -90,6 +90,7 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
+    scope :with_widget_definition_preload, -> { preload(:enabled_widget_definitions) }
 
     def self.default_by_type(type)
       found_type = find_by(base_type: type)

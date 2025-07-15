@@ -141,23 +141,24 @@ describe('Sidebar assignees widget', () => {
     });
 
     it('renders assignees list from API response when resolved', async () => {
+      const user = {
+        __typename: 'UserCore',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80&d=identicon',
+        id: 'gid://gitlab/User/2',
+        name: 'Jacki Kub',
+        status: null,
+        type: 'HUMAN',
+        username: 'francina.skiles',
+        webPath: '/franc',
+        webUrl: '/franc',
+      };
+
       createComponent();
       await waitForPromises();
 
-      expect(findAssignees().props('users')).toEqual([
-        {
-          __typename: 'UserCore',
-          id: 'gid://gitlab/User/2',
-          avatarUrl:
-            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
-          name: 'Jacki Kub',
-          username: 'francina.skiles',
-          type: 'HUMAN',
-          webUrl: '/franc',
-          webPath: '/franc',
-          status: null,
-        },
-      ]);
+      expect(findUserSelect().props('value')).toEqual([{ ...user, canMerge: false }]);
+      expect(findAssignees().props('users')).toEqual([user]);
     });
 
     it('renders an error when issuable query is rejected', async () => {
@@ -166,6 +167,7 @@ describe('Sidebar assignees widget', () => {
       });
       await waitForPromises();
 
+      expect(findUserSelect().props('value')).toEqual([]);
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while fetching participants.',
       });
@@ -283,13 +285,13 @@ describe('Sidebar assignees widget', () => {
       it('closes a dropdown after User Select input event', async () => {
         findUserSelect().vm.$emit('input', [{ username: 'root' }]);
 
+        await waitForPromises();
+
         expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
           assigneeUsernames: ['root'],
           fullPath: '/mygroup/myProject',
           iid: '1',
         });
-
-        await waitForPromises();
 
         expect(findUserSelect().isVisible()).toBe(false);
       });

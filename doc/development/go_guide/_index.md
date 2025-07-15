@@ -482,7 +482,7 @@ go: downloading gitlab.com/gitlab-org/security-products/analyzers/report/v3 v3.1
 If initializing a slice, provide a capacity where possible to avoid extra
 allocations.
 
-**Don't:**
+**Don't**:
 
 ```go
 var s2 []string
@@ -491,7 +491,7 @@ for _, val := range s1 {
 }
 ```
 
-**Do:**
+**Do**:
 
 ```go
 s2 := make([]string, 0, len(s1))

@@ -15,7 +15,7 @@ module Gitlab
               return if Feature.disabled?(:forbid_composite_identities_to_run_pipelines, :instance)
 
               if !@pipeline.project.allow_composite_identities_to_run_pipelines &&
-                  current_user.has_composite_identity?
+                  current_user.composite_identity_enforced?
 
                 error(ERROR_MESSAGE, failure_reason: :composite_identity_forbidden)
               end

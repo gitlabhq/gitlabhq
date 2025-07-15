@@ -52,49 +52,6 @@ job1:
 
 The script in this example outputs `The job's stage is 'test'`.
 
-## CI/CD configuration variables
-
-GitLab CI/CD also makes configuration CI/CD variables available for use in pipeline configuration and job scripts.
-You can use GitLab CI/CD configuration variables in pipeline configuration and job scripts to configure runner
-and the job execution environment.
-
-You cannot directly define configuration variables in a `.gitlab-ci.yml` file.
-Runner administrators can define these variables indirectly as settings in a
-[`.config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/) file.
-
-For example, when you configure TLS certificate settings for HTTPS communication:
-
-```toml
-[[runners]]
-  name = "gl-docker-runner"
-  url = "https://gitlab.com/example/url"
-  token = "user-token"
-  executor = "docker"
-
-  tls-ca-file = "/example/gl-runner/certs/ca.crt"
-  tls-cert-file = "/example/gl-runner/certs/cert.crt"
-  tls-key-file = "/example/gl-runner/certs/key.key"
-```
-
-The primary purpose of the `tls-ca-file` setting is to specify the certificate authority file for HTTPS verification.
-As a byproduct of this configuration, GitLab Runner automatically creates the `CI_SERVER_TLS_CA_FILE` configuration variable,
-which becomes available to your CI/CD jobs.
-
-Configuration variables are only available under certain conditions.
-For example, the configuration variable `CI_SERVER_TLS_CA_FILE` (which configures the custom
-Certificate Authority file) is only available when:
-
-- You configure it in the `config.toml` file by using the `tls-ca-file` setting.
-- The job instance uses HTTPS, which prompts the runner to automatically build a CA verification chain.
-
-To summarize, the following are the differences between predefined and configuration variables:
-
-|                | Predefined variables      | Configuration variables                            |
-|----------------|---------------------------|----------------------------------------------------|
-| Purpose        | Supports script logic     | Configure runner and the job execution environment |
-| Availability   | Always available          | Available only under specific conditions           |
-| Defined by     | Users in `.gitlab-ci.yml` | Administrators in `config.toml`                    |
-
 ## Define a CI/CD variable in the `.gitlab-ci.yml` file
 
 To create a CI/CD variable in the `.gitlab-ci.yml` file, define the variable and
@@ -178,14 +135,7 @@ all variables become available to the pipeline.
 
 ### For a project
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can have a maximum of 200 CI/CD variables.
-- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can have a maximum of 8000 CI/CD variables.
-
-{{< /history >}}
-
-You can add CI/CD variables to a project's settings.
+You can add CI/CD variables to a project's settings. Projects can have a maximum of 8000 CI/CD variables.
 
 Prerequisites:
 
@@ -213,14 +163,7 @@ or in [job scripts](job_scripts.md).
 
 ### For a group
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can have a maximum of 200 CI/CD variables.
-- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can have a maximum of 30000 CI/CD variables.
-
-{{< /history >}}
-
-You can make a CI/CD variable available to all projects in a group.
+You can make a CI/CD variable available to all projects in a group. Groups can have a maximum of 30000 CI/CD variables.
 
 Prerequisites:
 
@@ -386,19 +329,13 @@ variable has the same value, that value is also masked, including when a variabl
 references a masked variable. The string `[MASKED]` is shown instead of the value,
 possibly with some trailing `x` characters.
 
-Different versions of [GitLab Runner](../runners/_index.md) have different masking limitations:
-
-| Version             | Limitations |
-| ------------------- | ----------- |
-| v14.1.0 and earlier | Masking of large secrets (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
-| v14.2.0 to v15.3.0  | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
-| v15.7.0 and later   | Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs). |
+Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs).
 
 ### Hide a CI/CD variable
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `ci_hidden_variables`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
 
 {{< /history >}}
@@ -476,14 +413,6 @@ as a `--certificate-authority` option, which accepts a path to a file:
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
 
-{{< alert type="warning" >}}
-
-Be careful when assigning the value of a file variable to another variable in GitLab 15.6 or older.
-The other variable takes the content of the file as its value, **not** the path to the file.
-In GitLab 15.7 and later, this behavior [was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) and the other variable now takes the path to the file as the value.
-
-{{< /alert >}}
-
 #### Use a `.gitlab-ci.yml` variable as a file type variable
 
 You cannot set a CI/CD variable [defined in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -507,12 +436,6 @@ job:
 
 ## Prevent CI/CD variable expansion
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
-
-{{< /history >}}
-
 Expanded variables treat values with the `$` character as a reference to another variable.
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
 disable variable expansion for the variable
@@ -533,7 +456,7 @@ To disable variable expansion for the variable:
 
 {{< history >}}
 
-- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
 
 {{< /history >}}
 
@@ -596,7 +519,6 @@ You can specify a pipeline variable when you:
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
   [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
-- Specify variables when [running a manual job](../pipelines/_index.md#run-a-pipeline-manually).
 
 These variables have [higher precedence](#cicd-variable-precedence) and can override
 other defined variables, including [predefined variables](predefined_variables.md).

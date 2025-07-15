@@ -3,24 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportSources, feature_category: :importers do
-  describe '.options' do
-    it 'returns a hash' do
-      expected =
-        {
-          'GitHub' => 'github',
-          'Bitbucket Cloud' => 'bitbucket',
-          'Bitbucket Server' => 'bitbucket_server',
-          'FogBugz' => 'fogbugz',
-          'Repository by URL' => 'git',
-          'GitLab export' => 'gitlab_project',
-          'Gitea' => 'gitea',
-          'Manifest file' => 'manifest'
-        }
-
-      expect(described_class.options).to eq(expected)
-    end
-  end
-
   describe '.values' do
     it 'returns an array' do
       expected =
@@ -33,6 +15,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           gitlab_project
           gitea
           manifest
+          gitlab_built_in_project_template
         ]
 
       expect(described_class.values).to eq(expected)
@@ -49,9 +32,10 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           fogbugz
           gitlab_project
           gitea
+          gitlab_built_in_project_template
         ]
 
-      without_importer = %w[git manifest]
+      without_importer = %w[git manifest doesnotexist]
 
       with_importer.each do |import_source|
         expect(described_class.has_importer?(import_source)).to be(true)
@@ -72,7 +56,10 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
       'gitea' => Gitlab::LegacyGithubImport::Importer,
-      'manifest' => nil
+      'manifest' => nil,
+      'gitlab_built_in_project_template' => Gitlab::ImportExport::Importer,
+      'doesnotexist' => nil,
+      nil => nil
     }
 
     import_sources.each do |name, klass|
@@ -91,7 +78,10 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
       'git' => 'Repository by URL',
       'gitlab_project' => 'GitLab export',
       'gitea' => 'Gitea',
-      'manifest' => 'Manifest file'
+      'manifest' => 'Manifest file',
+      'gitlab_built_in_project_template' => 'GitLab built-in project template',
+      'doesnotexist' => nil,
+      nil => nil
     }
 
     import_sources.each do |name, title|
@@ -102,7 +92,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   end
 
   describe 'imports_repository? checker' do
-    let(:allowed_importers) { %w[github gitlab_project bitbucket bitbucket_server] }
+    let(:allowed_importers) { %w[github gitlab_project bitbucket bitbucket_server gitlab_built_in_project_template] }
 
     it 'fails if any importer other than the allowed ones implements this method' do
       current_importers = described_class.values.select { |kind| described_class.importer(kind).try(:imports_repository?) }
@@ -117,6 +107,65 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
         That means that the lfs object download must be handled for each of them. You can use 'LfsImportService' and
         'LfsDownloadService' to implement it. After that, add the importer name to the list of allowed importers in this spec.
       MSG
+    end
+  end
+
+  describe '.import_source' do
+    subject { described_class.import_source(source) }
+
+    context 'when import source exists' do
+      let(:source) { 'github' }
+
+      it { is_expected.to have_attributes(name: 'github') }
+    end
+
+    context 'when import source does not exist' do
+      let(:source) { 'doesnotexist' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.template?' do
+    subject { described_class.template?(template) }
+
+    context 'when importer is project template importer' do
+      let(:template) { 'gitlab_built_in_project_template' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when importer is not project template importer' do
+      let(:template) { 'github' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when template is nil' do
+      let(:template) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when template does not exist' do
+      let(:template) { 'doesnotexist' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.project_template_importers' do
+    it 'returns names of project template importers' do
+      expect(described_class.project_template_importers).to include('gitlab_built_in_project_template')
+      expect(described_class.project_template_importers).not_to include('github')
+    end
+  end
+
+  describe 'gitlab_built_in_project_template' do
+    subject(:importer) { described_class.import_source('gitlab_built_in_project_template') }
+
+    it 'uses Gitlab::ImportExport::Importer' do
+      expect(importer.importer).to eq(Gitlab::ImportExport::Importer)
     end
   end
 end

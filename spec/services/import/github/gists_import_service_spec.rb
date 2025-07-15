@@ -7,7 +7,7 @@ RSpec.describe Import::Github::GistsImportService, feature_category: :importers 
 
   let_it_be(:user) { create(:user) }
   let(:params) { { github_access_token: 'token' } }
-  let(:import_status) { instance_double('Gitlab::GithubGistsImport::Status') }
+  let(:import_status) { instance_double(Gitlab::GithubGistsImport::Status) }
   let(:client) { Gitlab::GithubImport::Client.new(params[:github_access_token]) }
   let(:octokit_user) { { login: 'user_login' } }
 
@@ -56,12 +56,31 @@ RSpec.describe Import::Github::GistsImportService, feature_category: :importers 
       let(:expected_result) do
         {
           http_status: 401,
-          message: 'Access denied to the GitHub account.',
+          message: 'Access denied to the GitHub account',
           status: :error
         }
       end
 
       it 'returns 401 error' do
+        expect(import.execute).to eq(expected_result)
+      end
+    end
+
+    context 'when the rate limit is exceeded' do
+      before do
+        allow(client.octokit).to receive(:user).and_raise(Octokit::TooManyRequests)
+        allow(import_status).to receive(:started?).and_return(false)
+      end
+
+      let(:expected_result) do
+        {
+          http_status: 429,
+          message: 'GitHub API rate limit exceeded',
+          status: :error
+        }
+      end
+
+      it 'returns 429 error' do
         expect(import.execute).to eq(expected_result)
       end
     end

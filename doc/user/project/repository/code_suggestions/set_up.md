@@ -22,7 +22,7 @@ To use Code Suggestions, you need:
 - A GitLab Duo Core, Pro, or Enterprise add-on.
 - A Premium or Ultimate subscription.
 - If you have GitLab Duo Pro or Enterprise, an assigned seat.
-- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability).
+- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.
 
@@ -40,6 +40,7 @@ Follow these steps for your IDE:
 - [Visual Studio](../../../../editor_extensions/visual_studio/setup.md)
 - [GitLab Duo plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/setup.md)
 - [`gitlab.vim` plugin for Neovim](../../../../editor_extensions/neovim/setup.md)
+- [GitLab for Eclipse](../../../../editor_extensions/eclipse/setup.md)
 
 ## Turn on Code Suggestions
 
@@ -108,6 +109,21 @@ To review certificates you've already accepted:
 1. Select [**Server Certificates**](https://www.jetbrains.com/help/idea/settings-tools-server-certificates.html).
 1. Select a certificate to view it.
 
+### Eclipse
+
+{{< alert type="note" >}}
+
+To enable GitLab Duo Code Suggestions, open an Eclipse project. If you open a single file, Code Suggestions is disabled for all file types.
+
+{{< /alert >}}
+
+To verify that Code Suggestions is turned on in Eclipse:
+
+1. In Eclipse, open your GitLab project.
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+
+**Code Suggestions** displays as "Enabled".
+
 ### Neovim
 
 Code Suggestions provides a LSP (Language Server Protocol) server, to support the built-in
@@ -170,6 +186,19 @@ regardless of which JetBrains IDE you use.
 1. Disable the plugin.
 
 For more information, see the [JetBrains product documentation](https://www.jetbrains.com/help/).
+
+### Eclipse
+
+To disable Eclipse Code Suggestions for a project:
+
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+1. Select **Disable Code Suggestions** to disable Code Suggestions for the current project.
+
+To disable Eclipse Code Suggestions for a specific language:
+
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+1. Select **Show Settings**.
+1. Scroll down to the **Code Suggestions Enabled Languages** section and clear the checkbox for the language you wish to disable.
 
 ### Neovim
 

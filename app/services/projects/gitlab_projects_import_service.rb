@@ -10,10 +10,13 @@ module Projects
 
     attr_reader :current_user, :params
 
-    def initialize(user, import_params, override_params = nil)
+    def initialize(user, import_params, override_params = nil, import_type:)
       @current_user = user
       @params = import_params.dup
       @override_params = override_params
+      @import_type = import_type.to_s
+
+      raise ArgumentError, 'Invalid import_type provided' unless valid_import_type?
     end
 
     def execute
@@ -25,6 +28,12 @@ module Projects
     end
 
     private
+
+    attr_reader :import_type
+
+    def valid_import_type?
+      import_type == 'gitlab_project' || Gitlab::ImportSources.template?(import_type)
+    end
 
     def overwrite_project?
       overwrite? && project_with_same_full_path?
@@ -67,13 +76,10 @@ module Projects
         params[:path] += "-#{tmp_filename}"
       end
 
-      if template_file
-        data[:sample_data] = params.delete(:sample_data) if params.key?(:sample_data)
-        params[:import_type] = 'gitlab_project'
-      end
+      data[:sample_data] = params.delete(:sample_data) if template_file && params.key?(:sample_data)
 
+      params[:import_type] = import_type
       params[:organization_id] = current_namespace.organization_id
-
       params[:import_data] = { data: data } if data.present?
     end
   end

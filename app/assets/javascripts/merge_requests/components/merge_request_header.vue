@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     if (!this.iid) {
@@ -94,6 +99,7 @@ export default {
       class="gl-mr-2 gl-self-center"
       :issuable-type="$options.TYPE_MERGE_REQUEST"
       :state="state"
+      :is-draft="isDraft"
     />
     <confidentiality-badge
       v-if="isConfidential"
@@ -106,15 +112,7 @@ export default {
       class="gl-mr-2 gl-self-center"
       :issuable-type="$options.TYPE_MERGE_REQUEST"
     />
-    <hidden-badge
-      v-if="hidden"
-      class="gl-mr-2 gl-self-center"
-      :issuable-type="$options.TYPE_MERGE_REQUEST"
-    />
-    <imported-badge
-      v-if="isImported"
-      class="gl-mr-2 gl-self-center"
-      :importable-type="$options.TYPE_MERGE_REQUEST"
-    />
+    <hidden-badge v-if="hidden" class="gl-mr-2 gl-self-center" />
+    <imported-badge v-if="isImported" class="gl-mr-2 gl-self-center" />
   </span>
 </template>

@@ -9,8 +9,9 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
 
   let(:project_to_unassign) { other_project }
   let(:runner_project) { runner.runner_projects.find_by(project_id: project_to_unassign.id) }
+  let(:service) { described_class.new(runner_project, user) }
 
-  subject(:execute) { described_class.new(runner_project, user).execute }
+  subject(:execute) { service.execute }
 
   context 'without user' do
     let(:user) { nil }
@@ -20,7 +21,7 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
       expect { execute }.not_to change { runner.runner_projects.count }.from(2)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('User not allowed to assign runner')
+      expect(execute.message).to eq('User not allowed to unassign runner')
     end
   end
 
@@ -31,7 +32,7 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
       expect(runner_project).not_to receive(:destroy)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('User not allowed to assign runner')
+      expect(execute.message).to eq('User not allowed to unassign runner')
     end
   end
 

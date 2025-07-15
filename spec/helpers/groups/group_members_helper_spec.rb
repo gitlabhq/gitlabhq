@@ -67,7 +67,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
         can_approve_access_requests: true,
         available_roles: available_roles,
         allow_inactive_placeholder_reassignment: 'false',
-        allow_bypass_placeholder_confirmation: 'false'
+        allow_bypass_placeholder_confirmation: nil
       }
 
       expect(subject).to include(expected)
@@ -186,7 +186,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
       end
     end
 
-    context 'when allow_bypass_placeholder_confirmation for current_user is false' do
+    context 'when allow_admin_bypass for current_user is false' do
       before do
         expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, current_user) do |authorizer|
           allow(authorizer).to receive(:allowed?).and_return(false)
@@ -198,11 +198,11 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
       end
 
       it 'returns "allow_bypass_placeholder_confirmation" as "false"' do
-        expect(subject[:allow_bypass_placeholder_confirmation]).to eq('false')
+        expect(subject[:allow_bypass_placeholder_confirmation]).to be_nil
       end
     end
 
-    context 'when allow_bypass_placeholder_confirmation for current_user is true' do
+    context 'when allow_admin_bypass for current_user is true' do
       before do
         expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, current_user) do |authorizer|
           allow(authorizer).to receive(:allowed?).and_return(true)
@@ -213,8 +213,18 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
         expect(subject[:allow_inactive_placeholder_reassignment]).to eq('true')
       end
 
-      it 'returns "allow_bypass_placeholder_confirmation" as "true"' do
-        expect(subject[:allow_bypass_placeholder_confirmation]).to eq('true')
+      it 'returns "allow_bypass_placeholder_confirmation" as "admin"' do
+        expect(subject[:allow_bypass_placeholder_confirmation]).to eq('admin')
+      end
+    end
+
+    context 'when allow_group_owner_enterprise_bypass is true' do
+      before do
+        allow(helper).to receive(:allow_group_owner_enterprise_bypass?).and_return(true)
+      end
+
+      it 'returns "allow_bypass_placeholder_confirmation" as "group_owner"' do
+        expect(subject[:allow_bypass_placeholder_confirmation]).to eq('group_owner')
       end
     end
   end
@@ -229,6 +239,12 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
 
     it 'contains expected text with group name' do
       expect(helper.group_member_header_subtext(group)).to match("You're viewing members of .*#{group.name}")
+    end
+  end
+
+  describe '#allow_group_owner_enterprise_bypass?' do
+    it 'returns false' do
+      expect(helper.allow_group_owner_enterprise_bypass?(group)).to be(false)
     end
   end
 end

@@ -10,16 +10,24 @@
         = gl_badge_tag topic[:title], { href: explore_project_topic_path }, { itemprop: 'keywords' }
 
     - if project.has_extra_topics?
-      - popover_target_id = "more-topics-popover-#{project.id}"
-      - title = _('More topics')
-      - content = capture do
-        %span.gl-inline-flex.gl-flex-wrap.gl-gap-2
-          - project.topics_not_shown.each do |topic|
-            - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
-            - if topic[:title].length > max_project_topic_length
-              = gl_badge_tag truncate(topic[:title], length: max_project_topic_length), { href: explore_project_topic_path }, { class: 'has-tooltip', data: { container: "body" }, title: topic[:title], itemprop: 'keywords' }
-            - else
-              = gl_badge_tag topic[:title], { href: explore_project_topic_path, itemprop: 'keywords' }
-      %span.js-vue-popover{ data: { container: "body", toggle: 'popover', triggers: 'click', html: 'true', title: title, content: content } }
-        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { id: popover_target_id, class: 'text-nowrap !gl-text-subtle' }) do
-          = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }
+      - hidden_topics = project.topics_not_shown
+      - hidden_topics_count = project.count_of_extra_topics_not_shown
+
+      %span.gl-inline-flex.gl-flex-wrap.gl-items-center.gl-gap-2.js-toggle-container
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'text-nowrap !gl-text-subtle js-toggle-button js-toggle-content', title: nil, 'aria-label': _("Show %{count} more") % { count: hidden_topics_count } }) do
+          %span.js-toggle-text.gl-text-sm
+            = _("+ %{count} more") % { count: hidden_topics_count }
+
+        - hidden_topics.each do |topic|
+          - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
+          - if topic[:title].length > max_project_topic_length
+            = gl_badge_tag truncate(topic[:title], length: max_project_topic_length),
+                { href: explore_project_topic_path },
+                { class: "has-tooltip js-toggle-content gl-hidden",
+                  data: { container: "body" },
+                  title: topic[:title],
+                  itemprop: 'keywords' }
+          - else
+            = gl_badge_tag topic[:title],
+                { href: explore_project_topic_path, itemprop: 'keywords' },
+                { class: "js-toggle-content gl-hidden" }

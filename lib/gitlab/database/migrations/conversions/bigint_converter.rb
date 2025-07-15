@@ -19,7 +19,7 @@ module Gitlab
             # -- DON'T MANUALLY EDIT --
             # Contains the list of integer IDs which were converted to bigint for new installations in
             # https://gitlab.com/gitlab-org/gitlab/-/issues/438124, but they are still integers for existing instances.
-            # On initialize_conversion_of_integer_to_bigint those integer IDs will be removed automatically from here.
+            # On cleanup_conversion_of_integer_to_bigint those integer IDs will be removed automatically from here.
           MESSAGE
 
           def initialize(migration, table, columns)

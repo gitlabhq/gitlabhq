@@ -10,12 +10,13 @@ module BulkImports
 
     ServiceError = Class.new(StandardError)
 
-    def initialize(tmpdir:, filename:)
+    def initialize(tmpdir:, filename:, context:)
       @tmpdir = tmpdir
       @filename = filename
       @filepath = File.join(@tmpdir, @filename)
       @decompressed_filename = File.basename(@filename, '.gz')
       @decompressed_filepath = File.join(@tmpdir, @decompressed_filename)
+      @context = context
     end
 
     def execute
@@ -38,7 +39,7 @@ module BulkImports
 
     private
 
-    attr_reader :tmpdir, :filename, :filepath, :decompressed_filename, :decompressed_filepath
+    attr_reader :tmpdir, :filename, :filepath, :decompressed_filename, :decompressed_filepath, :context
 
     def validate_filepath
       Gitlab::PathTraversal.check_path_traversal!(filepath)
@@ -49,7 +50,9 @@ module BulkImports
     end
 
     def validate_decompressed_file_size
-      raise(ServiceError, 'File decompression error') unless size_validator.valid?
+      return if size_validator.valid? || context.override_file_size_limit?
+
+      raise(ServiceError, 'File decompression error')
     end
 
     def validate_symlink(filepath)

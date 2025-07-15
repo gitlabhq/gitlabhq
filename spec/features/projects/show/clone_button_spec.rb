@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Show > Code button', feature_category: :groups_and_pr
       it 'sees code button', :js do
         find_by_testid('code-dropdown').click
         expect(page).to have_content _('Code')
-        expect(page).to be_axe_clean.within('[data-testid="code-dropdown"]') # rubocop: disable Capybara/TestidFinders -- within_testid does not work here
+        expect(page).to be_axe_clean.within_testid('code-dropdown')
       end
     end
 

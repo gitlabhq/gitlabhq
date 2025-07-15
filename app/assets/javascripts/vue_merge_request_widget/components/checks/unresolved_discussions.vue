@@ -20,7 +20,7 @@ export default {
     tertiaryActionsButtons() {
       return [
         {
-          text: s__('mrWidget|Go to first unresolved thread'),
+          text: s__('mrWidget|Go to first open thread'),
           category: 'default',
           onClick: () => notesEventHub.$emit('jumpToFirstUnresolvedDiscussion'),
         },

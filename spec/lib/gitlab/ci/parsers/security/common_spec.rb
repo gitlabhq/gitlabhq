@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
       end
 
       describe 'schema validation' do
-        let(:validator_class) { Gitlab::Ci::Parsers::Security::Validators::SchemaValidator }
+        let(:validator_class) { Gitlab::SecurityReportSchemas::Validator }
         let(:data) { {}.merge(scanner_data) }
         let(:json_data) { data.to_json }
         let(:parser) { described_class.new(json_data, report, signatures_enabled: signatures_enabled, validate: validate) }
@@ -63,11 +63,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             parse_report
 
             expect(validator_class).not_to have_received(:new).with(
-              report.type,
               data.deep_stringify_keys,
-              report.version,
-              project: pipeline.project,
-              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+              report.type,
+              report.version
             )
           end
 
@@ -105,11 +103,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             parse_report
 
             expect(validator_class).to have_received(:new).with(
-              report.type,
               data.deep_stringify_keys,
-              report.version,
-              project: pipeline.project,
-              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+              report.type,
+              report.version
             )
           end
 
@@ -253,17 +249,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
         describe 'top-level scanner' do
           it 'is the primary scanner' do
-            expect(report.primary_scanner.external_id).to eq('gemnasium')
-            expect(report.primary_scanner.name).to eq('Gemnasium top-level')
-            expect(report.primary_scanner.vendor).to eq('GitLab')
-            expect(report.primary_scanner.version).to eq('2.18.0')
+            expect(report.scanner.external_id).to eq('gemnasium')
+            expect(report.scanner.name).to eq('Gemnasium top-level')
+            expect(report.scanner.vendor).to eq('GitLab')
+            expect(report.scanner.version).to eq('2.18.0')
           end
 
           it 'returns nil report has no scanner' do
             empty_report = Gitlab::Ci::Reports::Security::Report.new(artifact.file_type, pipeline, 2.weeks.ago)
             described_class.parse!({}.to_json, empty_report)
 
-            expect(empty_report.primary_scanner).to be_nil
+            expect(empty_report.scanner).to be_nil
           end
         end
 

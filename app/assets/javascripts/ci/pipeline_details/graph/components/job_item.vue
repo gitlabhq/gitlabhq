@@ -37,7 +37,7 @@ import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } fro
 export default {
   confirmationModalDocLink: helpPagePath('/ci/pipelines/downstream_pipelines'),
   i18n: {
-    bridgeBadgeText: __('Trigger job'),
+    bridgeBadgeText: __('trigger job'),
     bridgeRetryText: s__(
       'PipelineGraph|Downstream pipeline might not display in the graph while the new downstream pipeline is being created.',
     ),
@@ -335,7 +335,7 @@ export default {
       :title="tooltipText"
       :href="detailsPath"
       :class="jobClasses"
-      class="gl-w-full !gl-no-underline"
+      class="gl-w-full gl-pr-7 !gl-no-underline"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"

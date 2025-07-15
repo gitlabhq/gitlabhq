@@ -68,12 +68,40 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
           stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
         end
 
-        it 'updates project authorization once per group' do
+        it 'updates project authorization once per group with medium priority' do
           expect(GroupGroupLink).to receive(:delete).and_call_original
-          expect(group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true).once
-          expect(another_group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true).once
+          expect(group)
+            .to receive(:refresh_members_authorized_projects)
+            .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+            .once
+
+          expect(another_group)
+            .to receive(:refresh_members_authorized_projects)
+            .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+            .once
 
           subject.execute(links)
+        end
+
+        context 'when feature-flag `change_priority_for_user_access_refresh_for_group_links` is disabled' do
+          before do
+            stub_feature_flags(change_priority_for_user_access_refresh_for_group_links: false)
+          end
+
+          it 'updates project authorizations with high priority' do
+            expect(GroupGroupLink).to receive(:delete).and_call_original
+            expect(group)
+              .to receive(:refresh_members_authorized_projects)
+              .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+              .once
+
+            expect(another_group)
+              .to receive(:refresh_members_authorized_projects)
+              .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+              .once
+
+            subject.execute(links)
+          end
         end
       end
 

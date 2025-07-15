@@ -47,7 +47,6 @@ module API
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
       expose :archived?, as: :archived, documentation: { type: 'boolean' }
-      expose :visibility, documentation: { type: 'string', example: 'public' }
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions, documentation: { type: 'boolean' }
       expose :container_expiration_policy,
@@ -162,6 +161,7 @@ module API
       expose :printing_merge_request_link_enabled, documentation: { type: 'boolean' }
       expose :merge_method, documentation: { type: 'string', example: 'merge' }
       expose :merge_request_title_regex, documentation: { type: 'string', example: '/Title of merge request/' }
+      expose :merge_request_title_regex_description, documentation: { type: 'string', example: 'This requires the title to include a Jira label' }
       expose :squash_option, documentation: { type: 'string', example: 'default_off' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'boolean' }
       expose :suggestion_commit_message, documentation: { type: 'string', example: 'Suggestion message' }

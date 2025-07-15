@@ -126,7 +126,7 @@ describe('Contributors', () => {
     });
 
     it('renders the individual charts', () => {
-      expect(findIndividualCharts().length).toBe(1);
+      expect(findIndividualCharts()).toHaveLength(1);
       expect(findIndividualCharts().at(0).props()).toMatchObject({
         contributor: {
           name: 'John',

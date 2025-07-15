@@ -175,6 +175,56 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'deploy token is about to expire' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_refind(:project) { create(:project) }
+
+    let(:token_name) { 'my-token' }
+
+    subject(:mail) do
+      Notify.deploy_token_about_to_expire_email(user, token_name, project)
+    end
+
+    it { is_expected.to deliver_to(user) }
+
+    it 'has subject containing deploy token expiry notice' do
+      expect(mail.subject).to include("Your deploy token will expire in 7 days or less")
+    end
+
+    it { is_expected.to have_body_text(/#{project_settings_repository_path(project)}/) }
+    it { is_expected.to have_body_text(/#{token_name}/) }
+    it { is_expected.to have_body_text(/#{project.full_path}/) }
+    it { is_expected.to have_body_text(/You are receiving this email because you are/) }
+
+    context 'when user is project owner' do
+      before_all do
+        project.add_owner(user)
+      end
+
+      it { is_expected.to have_body_text(/you are an Owner of the project/) }
+    end
+
+    context 'when user is project maintainer' do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it { is_expected.to have_body_text(/you are a Maintainer of the project/) }
+    end
+
+    context 'when passed days_to_expire parameter' do
+      subject(:mail) do
+        Notify.deploy_token_about_to_expire_email(user, token_name, project, days_to_expire: 30)
+      end
+
+      it 'has subject containing deploy token expiry notice' do
+        expect(mail.subject).to include("#{project.name} | Your deploy token will expire in 30 days or less")
+      end
+
+      it { is_expected.to have_body_text('30') }
+    end
+  end
+
   describe 'resource access token is about to expire' do
     let_it_be(:user) { create(:user) }
 

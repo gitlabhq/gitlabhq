@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import CollapsibleSection from '~/merge_request_dashboard/components/collapsible_section.vue';
 
@@ -9,6 +10,7 @@ describe('Merge request dashboard collapsible section', () => {
   const collapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const sectionContent = () => wrapper.findByTestId('crud-body');
   const emptyState = () => wrapper.findByTestId('crud-empty');
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   function createComponent({ count = 3, hasMergeRequests = count > 0, loading = false } = {}) {
     wrapper = shallowMountExtended(CollapsibleSection, {
@@ -16,6 +18,7 @@ describe('Merge request dashboard collapsible section', () => {
         default: 'content',
       },
       propsData: {
+        id: 'list',
         title: 'Approved',
         count,
         hasMergeRequests,
@@ -73,5 +76,17 @@ describe('Merge request dashboard collapsible section', () => {
     createComponent({ hasMergeRequests: false, loading: true, count: null });
 
     expect(sectionContent().exists()).toBe(true);
+  });
+
+  describe('collapsed state sync', () => {
+    it('collapses content when local storage value is set to false', async () => {
+      createComponent({ count: 1 });
+
+      findLocalStorageSync().vm.$emit('input', false);
+
+      await nextTick();
+
+      expect(sectionContent().exists()).toBe(false);
+    });
   });
 });

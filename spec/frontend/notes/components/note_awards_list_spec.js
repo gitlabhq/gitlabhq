@@ -1,7 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { userDataMock } from 'jest/notes/mock_data';
@@ -9,12 +9,15 @@ import EmojiPicker from '~/emoji/components/picker.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import awardsNote from '~/notes/components/note_awards_list.vue';
-import createStore from '~/notes/stores';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Note Awards List', () => {
   let wrapper;
+  let pinia;
   let mock;
 
   const awardsMock = [
@@ -42,42 +45,34 @@ describe('Note Awards List', () => {
   const findAllEmojiAwards = () => wrapper.findAll('gl-emoji');
   const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
 
-  const createComponent = (props = defaultProps, store = createStore()) => {
+  const createComponent = (props = defaultProps) => {
     wrapper = mountExtended(awardsNote, {
-      store,
+      pinia,
       propsData: {
         ...props,
       },
     });
   };
 
-  describe('Note Awards functionality', () => {
-    const toggleAwardRequestSpy = jest.fn();
-    const fakeStore = () => {
-      return new Vuex.Store({
-        getters: {
-          getUserData: () => userDataMock,
-        },
-        actions: {
-          toggleAwardRequest: toggleAwardRequestSpy,
-        },
-      });
-    };
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes().setUserData(userDataMock);
+    useNotes().toggleAwardRequest.mockResolvedValue();
+  });
 
+  describe('Note Awards functionality', () => {
     beforeEach(() => {
       mock = new AxiosMockAdapter(axios);
       mock.onPost(toggleAwardPathMock).reply(HTTP_STATUS_OK, '');
 
-      createComponent(
-        {
-          awards: awardsMock,
-          noteAuthorId: 2,
-          noteId: '545',
-          canAwardEmoji: true,
-          toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
-        },
-        fakeStore(),
-      );
+      createComponent({
+        awards: awardsMock,
+        noteAuthorId: 2,
+        noteId: '545',
+        canAwardEmoji: true,
+        toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
+      });
     });
 
     afterEach(() => {
@@ -100,7 +95,7 @@ describe('Note Awards List', () => {
       await findAwardButton().vm.$emit('click');
 
       const { toggleAwardPath, noteId } = defaultProps;
-      expect(toggleAwardRequestSpy).toHaveBeenCalledWith(expect.anything(), {
+      expect(useNotes().toggleAwardRequest).toHaveBeenCalledWith({
         awardName: awardsMock[0].name,
         endpoint: toggleAwardPath,
         noteId,

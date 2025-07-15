@@ -13,6 +13,8 @@ module QA
       class AllureMetadataFormatter < ::RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
+        ISSUE_PROJECT = "gitlab-org/quality/e2e-test-issues"
+
         ::RSpec::Core::Formatters.register(self, :example_finished)
 
         # Finished example
@@ -66,7 +68,7 @@ module QA
             exception_message: exception_message_lines.empty? ? exception_message : exception_message_lines.join("\n")
           }.map { |_, value| "search=#{ERB::Util.url_encode(value)}" }.join('&')
 
-          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?#{search_parameters}&#{search_terms}"
+          search_url = "https://gitlab.com/#{ISSUE_PROJECT}/-/issues?#{search_parameters}&#{search_terms}"
           example.issue('Failure issues', search_url)
         rescue StandardError => e
           log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")

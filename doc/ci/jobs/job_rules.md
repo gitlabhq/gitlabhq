@@ -350,7 +350,7 @@ job-with-rules:
 For every change pushed to the branch, duplicate pipelines run. One
 branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
 runs the other job (`job-with-rules`). Jobs with no rules default
-to [`except: merge_requests`](../yaml/_index.md#only--except), so `job-with-no-rules`
+to [`except: merge_requests`](../yaml/deprecated_keywords.md#only--except), so `job-with-no-rules`
 runs in all cases except merge requests.
 
 ## Reuse rules in different jobs
@@ -450,7 +450,7 @@ Additionally:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35438) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `ci_fix_rules_if_comparison_with_regexp_variable`, disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35438) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `ci_fix_rules_if_comparison_with_regexp_variable`, disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/359740) and feature flag `ci_fix_rules_if_comparison_with_regexp_variable` removed in GitLab 15.1.
 
 {{< /history >}}

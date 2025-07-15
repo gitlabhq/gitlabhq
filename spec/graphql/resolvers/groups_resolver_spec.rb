@@ -14,7 +14,7 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
 
     let(:params) { {} }
 
-    subject { resolve(described_class, args: params, ctx: { current_user: user }) }
+    subject { resolve(described_class, args: params, lookahead: positive_lookahead, ctx: { current_user: user }) }
 
     it 'includes public groups' do
       expect(subject).to contain_exactly(public_group)
@@ -126,7 +126,7 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
           expect(GroupsFinder).to receive(:new)
             .with(user, hash_including(**expected_param)).and_call_original
 
-          resolve(described_class, args: args, ctx: { current_user: user })
+          resolve(described_class, args: args, lookahead: positive_lookahead, ctx: { current_user: user })
         end
       end
     end

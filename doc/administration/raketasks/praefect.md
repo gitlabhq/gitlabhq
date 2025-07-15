@@ -13,7 +13,7 @@ title: Praefect Rake tasks
 {{< /details >}}
 
 Rake tasks are available for projects that have been created on Praefect storage. See the
-[Praefect documentation](../gitaly/praefect.md) for information on configuring Praefect.
+[Praefect documentation](../gitaly/praefect/_index.md) for information on configuring Praefect.
 
 ## Replica checksums
 

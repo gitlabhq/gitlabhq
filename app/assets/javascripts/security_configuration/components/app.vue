@@ -26,6 +26,10 @@ import TrainingProviderList from './training_provider_list.vue';
 export default {
   i18n,
   components: {
+    ApplySecurityLabels: () =>
+      import(
+        'ee_component/security_configuration/security_labels/components/apply_security_labels.vue'
+      ),
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
     FeatureCard,
@@ -112,6 +116,11 @@ export default {
     },
     shouldShowVulnerabilityArchives() {
       return this.glFeatures?.vulnerabilityArchival;
+    },
+    shouldShowSecurityLabels() {
+      return (
+        window.gon?.licensed_features?.securityLabels && this.glFeatures?.securityContextLabels
+      );
     },
   },
   methods: {
@@ -259,6 +268,13 @@ export default {
           </template>
         </section-layout>
         <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
+      </gl-tab>
+      <gl-tab
+        v-if="shouldShowSecurityLabels"
+        :title="s__('SecurityLabels|Security labels')"
+        query-param-value="security-labels"
+      >
+        <apply-security-labels />
       </gl-tab>
     </gl-tabs>
   </article>

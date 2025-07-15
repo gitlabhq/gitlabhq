@@ -77,18 +77,13 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
 
     it 'shows an Active status badge that links to jobs tab' do
       runner = create(:ci_runner, :project, projects: [project])
-      job = create(:ci_build, :running, runner: runner)
+      create(:ci_build, :running, runner: runner)
 
       visit admin_runners_path
 
       within_runner_row(runner.id) do
-        click_on('Active')
+        expect(page).to have_content('Active')
       end
-
-      expect(current_url).to match(admin_runner_path(runner))
-
-      expect(find_by_testid('td-status')).to have_content "Running"
-      expect(find_by_testid('td-job')).to have_content "##{job.id}"
     end
 
     describe 'searches for a runner' do
@@ -346,6 +341,8 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
 
         within_testid('runner-type-tabs') do
           click_on('Project')
+
+          wait_for_requests
 
           expect(page).to have_link('Project', class: 'active')
         end

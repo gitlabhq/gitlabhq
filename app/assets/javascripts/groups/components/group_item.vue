@@ -6,6 +6,7 @@ import {
   GlPopover,
   GlLink,
   GlTooltipDirective,
+  GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -34,6 +35,7 @@ export default {
     GlLoadingIcon,
     GlPopover,
     GlLink,
+    GlAnimatedChevronRightDownIcon,
     UserAccessRoleBadge,
     ItemTypeIcon,
     ItemActions,
@@ -67,7 +69,7 @@ export default {
       return `group-${this.group.id}`;
     },
     itemTestId() {
-      return `group-overview-item-${this.group.id}`;
+      return `groups-list-item-${this.group.id}`;
     },
     rowClass() {
       return {
@@ -107,9 +109,6 @@ export default {
     },
     toggleAriaLabel() {
       return this.group.isOpen ? this.$options.i18n.collapse : this.$options.i18n.expand;
-    },
-    toggleIconName() {
-      return this.group.isOpen ? 'chevron-down' : 'chevron-right';
     },
   },
   methods: {
@@ -160,10 +159,12 @@ export default {
           :aria-label="toggleAriaLabel"
           :aria-expanded="String(group.isOpen)"
           category="tertiary"
-          data-testid="group-item-toggle-button"
-          :icon="toggleIconName"
+          data-testid="nested-groups-project-list-item-toggle-button"
+          class="btn-icon"
           @click.stop="onClickRowGroup"
-        />
+        >
+          <gl-animated-chevron-right-down-icon :is-on="group.isOpen" />
+        </gl-button>
         <div v-else class="gl-h-7 gl-w-7"></div>
         <item-type-icon :item-type="group.type" />
       </div>
@@ -246,7 +247,10 @@ export default {
             </span>
           </div>
         </div>
-        <div v-if="group.pendingRemoval">
+        <div v-if="group.isSelfDeletionInProgress">
+          <gl-badge variant="warning">{{ __('Deletion in progress') }}</gl-badge>
+        </div>
+        <div v-else-if="group.markedForDeletion">
           <gl-badge variant="warning">{{ __('Pending deletion') }}</gl-badge>
         </div>
         <div v-else-if="group.archived">

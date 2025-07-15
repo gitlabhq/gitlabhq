@@ -36,7 +36,7 @@ release_job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/524346) in GitLab 18.0, [with a flag](../../../administration/feature_flags.md) named `ci_glab_for_release`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/524346) in GitLab 18.0, [with a flag](../../../administration/feature_flags/_index.md) named `ci_glab_for_release`. Enabled by default.
 
 {{< /history >}}
 

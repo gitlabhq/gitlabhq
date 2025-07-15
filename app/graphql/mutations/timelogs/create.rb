@@ -28,6 +28,8 @@ module Mutations
       authorize :create_timelog
 
       def resolve(issuable_id:, time_spent:, summary:, **args)
+        return { timelog: nil, errors: [_('Time spent must start with a number.')] } unless time_spent.match?(/\A\d/)
+
         parsed_time_spent = Gitlab::TimeTrackingFormatter.parse(time_spent)
         if parsed_time_spent.nil?
           return { timelog: nil, errors: [_('Time spent must be formatted correctly. For example: 1h 30m.')] }

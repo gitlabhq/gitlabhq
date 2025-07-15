@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-6'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-7'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(
@@ -61,6 +61,7 @@ module Gitlab
           extra: extra,
           user_id: tracked_user_id,
           global_user_id: global_user_id,
+          user_type: tracked_user_type,
           is_gitlab_team_member: gitlab_team_member?(user&.id),
           namespace_id: namespace&.id,
           ultimate_parent_namespace_id: namespace&.root_ancestor&.id,
@@ -79,6 +80,12 @@ module Gitlab
         return unless user.is_a? User
 
         Gitlab::CryptoHelper.sha256(user.id)
+      end
+
+      def tracked_user_type
+        return unless user.is_a? User
+
+        user.user_type
       end
 
       def check_argument_type(argument_name, argument_value, allowed_classes)

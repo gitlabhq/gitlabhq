@@ -20,6 +20,16 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 9.0](https://docs.gitlab.com/charts/releases/9_0/).
 
+## Issues to be aware of when upgrading from 16.11
+
+- [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
+
+## 18.1.0
+
+### Geo installations 18.1.0
+
+- GitLab version 18.1.0 has a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.1.1 or later.
+
 ## 18.0.0
 
 ### Geo installations 18.0.0
@@ -44,6 +54,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 18.0                    |  18.0.0 - 18.0.1        | 18.0.2   |
+
+- GitLab versions 18.0 through 18.0.2 have a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
 
 ### PRNG is not seeded error on Docker installations
 

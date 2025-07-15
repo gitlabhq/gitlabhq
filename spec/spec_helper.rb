@@ -223,6 +223,8 @@ RSpec.configure do |config|
 
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model
+  # Validate JSONB columns only in EE to avoid false positives in FOSS.
+  config.include_context 'with JSONB validated columns', type: :model if Gitlab.ee?
 
   include StubCurrentOrganization
   include StubFeatureFlags
@@ -286,9 +288,6 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
-      # The survey popover can block the diffs causing specs to fail
-      stub_feature_flags(mr_experience_survey: false)
-
       # Using FortiAuthenticator as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_authenticator: false)
@@ -337,13 +336,13 @@ RSpec.configure do |config|
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
 
-      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
-      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
-      stub_feature_flags(your_work_groups_vue: false)
-
       # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
       # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
       stub_feature_flags(repository_file_tree_browser: false)
+
+      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
+      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17482 for tracking the progress.
+      stub_feature_flags(project_commits_refactor: false)
 
       # New issue page can cause tests to fail if they link to issue or issue list page
       # Default false while we make it compatible
@@ -355,6 +354,7 @@ RSpec.configure do |config|
 
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
+
     else
       unstub_all_feature_flags
     end

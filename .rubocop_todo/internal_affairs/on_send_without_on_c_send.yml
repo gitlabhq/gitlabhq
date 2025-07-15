@@ -117,7 +117,6 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'rubocop/cop/scalability/bulk_perform_with_context.rb'
     - 'rubocop/cop/scalability/cron_worker_context.rb'
     - 'rubocop/cop/scalability/file_uploads.rb'
-    - 'rubocop/cop/search/avoid_checking_finished_on_deprecated_migrations.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'
     - 'rubocop/cop/sidekiq_options_queue.rb'
     - 'rubocop/cop/sidekiq_redis_call.rb'

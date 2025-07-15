@@ -7,13 +7,25 @@ RSpec.shared_examples 'api merge with auto merge' do
     expect(json_response).to eq('status' => status)
   end
 
-  it 'sets the MR to merge when the pipeline succeeds' do
+  it 'sets the MR to merge when checks pass' do
     expect_next_instance_of(service_class) do |service|
       expect(service).to receive(:execute).with(merge_request)
       allow(service).to receive(:available_for?).and_return(true)
     end
 
     set_auto_merge
+  end
+
+  context 'when the merge request is not mergable' do
+    before do
+      merge_request.update!(title: "Draft: #{merge_request.title}")
+    end
+
+    it 'returns the correct auto merge strategy' do
+      set_auto_merge
+
+      expect(json_response).to eq('status' => status)
+    end
   end
 
   context 'for logging' do

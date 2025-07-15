@@ -19,9 +19,10 @@ export function isExpanded(sectionArg) {
 export function expandSection(sectionArg) {
   const $section = $(sectionArg);
   const title = $section.find('.js-settings-toggle-trigger-only').text();
+  const chevron = $section.find('.js-settings-icon');
 
   $section
-    .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only) .gl-button-text')
+    .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only) .gl-sr-only')
     .text(__('Collapse'));
   $section
     .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)')
@@ -32,6 +33,7 @@ export function expandSection(sectionArg) {
       .addClass('animating')
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
+  chevron.addClass('gl-animated-icon-on').removeClass('gl-animated-icon-off');
 
   InternalEvents.trackEvent('click_expand_panel_on_settings', {
     label: $section.find('[data-settings-block-title]').text(),
@@ -41,9 +43,10 @@ export function expandSection(sectionArg) {
 export function closeSection(sectionArg) {
   const $section = $(sectionArg);
   const title = $section.find('.js-settings-toggle-trigger-only').text();
+  const chevron = $section.find('.js-settings-icon');
 
   $section
-    .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only) .gl-button-text')
+    .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only) .gl-sr-only')
     .text(__('Expand'));
   $section
     .find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)')
@@ -55,6 +58,7 @@ export function closeSection(sectionArg) {
       .addClass('animating')
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
+  chevron.addClass('gl-animated-icon-off').removeClass('gl-animated-icon-on');
 }
 
 export function toggleSection($section) {

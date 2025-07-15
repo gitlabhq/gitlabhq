@@ -127,7 +127,7 @@ describe('Test reports suite table', () => {
     });
 
     it('renders one page of test cases', () => {
-      expect(allCaseRows().length).toBe(perPage);
+      expect(allCaseRows()).toHaveLength(perPage);
     });
 
     it('renders a pagination component', () => {

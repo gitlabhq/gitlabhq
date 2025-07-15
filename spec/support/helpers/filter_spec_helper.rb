@@ -52,7 +52,7 @@ module FilterSpecHelper
   def pipeline_result(body, context = {})
     context.reverse_merge!(project: project) if defined?(project)
 
-    pipeline = HTML::Pipeline.new([described_class], context)
+    pipeline = Banzai::PipelineBase.new([described_class], context)
     pipeline.call(body)
   end
 

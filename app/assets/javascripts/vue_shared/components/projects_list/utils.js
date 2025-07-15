@@ -2,7 +2,6 @@ import {
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_RESTORE,
-  BASE_ACTIONS,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
@@ -14,15 +13,15 @@ export const availableGraphQLProjectActions = ({ userPermissions, markedForDelet
     availableActions.push(ACTION_EDIT);
   }
 
-  if (userPermissions.removeProject) {
-    availableActions.push(ACTION_DELETE);
-  }
-
   if (userPermissions.removeProject && markedForDeletionOn) {
     availableActions.push(ACTION_RESTORE);
   }
 
-  return availableActions.sort((a, b) => BASE_ACTIONS[a].order - BASE_ACTIONS[b].order);
+  if (userPermissions.removeProject) {
+    availableActions.push(ACTION_DELETE);
+  }
+
+  return availableActions;
 };
 
 export const renderRestoreSuccessToast = (project) => {

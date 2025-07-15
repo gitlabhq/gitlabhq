@@ -1,7 +1,7 @@
 <script>
 import produce from 'immer';
 import { debounce, isEmpty, isNull } from 'lodash';
-import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal } from '@gitlab/ui';
 import {
   getFirstPropertyValue,
   normalizeHeaders,
@@ -21,6 +21,7 @@ import importSourceUserReassignMutation from '../graphql/mutations/reassign.muta
 import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
 import importSourceUserCancelReassignmentMutation from '../graphql/mutations/cancel_reassignment.mutation.graphql';
+import BypassConfirmationMessage from './bypass_confirmation_message.vue';
 
 const USERS_PER_PAGE = 20;
 
@@ -33,11 +34,11 @@ const createUserObject = (user) => ({
 export default {
   name: 'PlaceholderActions',
   components: {
+    BypassConfirmationMessage,
     GlAvatarLabeled,
     GlButton,
     GlCollapsibleListbox,
     GlModal,
-    GlSprintf,
   },
   inject: {
     group: {
@@ -50,7 +51,7 @@ export default {
       default: false,
     },
     allowBypassPlaceholderConfirmation: {
-      default: false,
+      default: null,
     },
   },
   props: {
@@ -177,7 +178,7 @@ export default {
       return this.selectedUserToReassign?.value;
     },
 
-    confirmText() {
+    confirmOrReassignButtonText() {
       return this.dontReassignSelected ? __('Confirm') : s__('UserMapping|Reassign');
     },
 
@@ -388,7 +389,7 @@ export default {
           this.isConfirmLoading = false;
         });
     },
-    onConfirm() {
+    onConfirmOrReassign() {
       this.isValidated = true;
 
       if (this.userSelectInvalid) {
@@ -419,13 +420,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-start gl-gap-3">
-    <div class="gl-w-28">
+  <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3">
+    <div class="gl-w-full xl:gl-w-28">
       <gl-collapsible-listbox
         ref="userSelect"
         block
         is-check-centered
-        toggle-class="!gl-w-28"
+        toggle-class="!gl-w-full !xl:gl-w-28"
         :class="{ 'is-invalid': userSelectInvalid || sourceUser.reassignmentError }"
         :header-text="s__('UserMapping|Reassign to')"
         :toggle-text="toggleText"
@@ -497,8 +498,8 @@ export default {
         variant="confirm"
         :loading="isConfirmLoading"
         data-testid="confirm-button"
-        @click="onConfirm"
-        >{{ confirmText }}</gl-button
+        @click="onConfirmOrReassign"
+        >{{ confirmOrReassignButtonText }}</gl-button
       >
       <gl-modal
         v-if="allowBypassPlaceholderConfirmation"
@@ -510,17 +511,7 @@ export default {
         :action-secondary="$options.confirmModal.actionSecondary"
         @primary="confirmUser"
       >
-        <gl-sprintf
-          :message="
-            s__(
-              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
-            )
-          "
-        >
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
+        <bypass-confirmation-message />
       </gl-modal>
     </template>
   </div>

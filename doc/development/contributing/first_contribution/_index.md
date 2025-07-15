@@ -56,7 +56,7 @@ To get started, select the development option that works best for you:
 
   - [**GDK-in-a-box**](configure-dev-env-gdk-in-a-box.md): Recommended for local development.
 
-    Download and run a pre-configured virtual machine image that contains the GDK, then connect to it with VS Code.
+    Download and run a pre-configured container image that contains the GDK, then connect to it with VS Code.
 
     - Minimal configuration required.
     - After the 10 GB image has downloaded, GDK-in-a-box is ready in a few minutes.
@@ -67,3 +67,4 @@ To get started, select the development option that works best for you:
 
     - Some configuration required.
     - May take up to two hours to install and configure.
+    - This is the route used by development teams at GitLab.

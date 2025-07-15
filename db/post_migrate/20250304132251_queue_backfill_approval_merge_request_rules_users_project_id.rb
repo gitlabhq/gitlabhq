@@ -10,31 +10,10 @@ class QueueBackfillApprovalMergeRequestRulesUsersProjectId < Gitlab::Database::M
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :approval_merge_request_rules_users,
-      :id,
-      :project_id,
-      :approval_merge_request_rules,
-      :project_id,
-      :approval_merge_request_rule_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because the original migration failed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354#note_2425371444)
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :approval_merge_request_rules_users,
-      :id,
-      [
-        :project_id,
-        :approval_merge_request_rules,
-        :project_id,
-        :approval_merge_request_rule_id
-      ]
-    )
+    # no-op because the original migration failed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354#note_2425371444)
   end
 end

@@ -15,6 +15,7 @@ module Types
         field :labels, ::Types::LabelType.connection_type,
           null: true,
           description: 'Labels assigned to the work item.',
+          skip_type_authorization: [:read_label],
           resolver: Resolvers::BulkLabelsResolver
 
         field :allows_scoped_labels, GraphQL::Types::Boolean,

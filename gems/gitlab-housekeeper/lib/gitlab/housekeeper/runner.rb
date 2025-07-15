@@ -54,48 +54,19 @@ module Gitlab
               end
 
               change.keep_class ||= keep_class
-
               branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
-              if change.aborted? || !@filter_identifiers.matches_filters?(change.identifiers)
-                # At this point the keep has already run and edited files so we need to
-                # restore the local working copy. We could simply checkout all
-                # changed_files but this is very risky as it could mean losing work that
-                # cannot be recovered. Instead we commit all the work to the branch and
-                # move on without pushing the branch.
-                git.in_branch(branch_name) do
-                  git.create_commit(change)
-                end
+              next if skip_change_if_necessary(change, branch_name)
 
-                if change.aborted?
-                  @logger.puts "Skipping change as it is marked aborted."
-                else
-                  @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
-                end
-
-                @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}," \
-                             "but will not be pushed."
-                @logger.puts
-
-                next
-              end
-
-              # If no merge request exists yet, create an empty one to allow keeps to use the web URL.
-              unless @dry_run
-                merge_request = get_existing_merge_request(branch_name) || create(change, branch_name)
-
-                change.mr_web_url = merge_request['web_url']
-              end
+              setup_merge_request(change, branch_name) unless @dry_run
 
               git.in_branch(branch_name) do
                 Gitlab::Housekeeper::Substitutor.perform(change)
-
                 git.create_commit(change)
               end
 
               print_change_details(change, branch_name)
-
               create(change, branch_name) unless @dry_run
 
               mrs_created_count += 1
@@ -126,6 +97,35 @@ module Gitlab
         change.labels << 'automation:gitlab-housekeeper-authored'
       end
 
+      def skip_change_if_necessary(change, branch_name)
+        if change.aborted? || !@filter_identifiers.matches_filters?(change.identifiers) ||
+            (!@dry_run && has_closed_merge_request?(branch_name))
+          git.in_branch(branch_name) do
+            git.create_commit(change)
+          end
+
+          if change.aborted?
+            @logger.puts "Skipping change as it is marked aborted."
+          elsif !@filter_identifiers.matches_filters?(change.identifiers)
+            @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+          else
+            @logger.puts "Skipping change as we have closed an MR for this branch #{branch_name}"
+          end
+
+          @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}, " \
+                       "but will not be pushed."
+          @logger.puts
+          return true
+        end
+
+        false
+      end
+
+      def setup_merge_request(change, branch_name)
+        merge_request = get_existing_merge_request(branch_name) || create(change, branch_name)
+        change.mr_web_url = merge_request['web_url']
+      end
+
       def git
         @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger, branch_from: @target_branch)
       end
@@ -149,7 +149,7 @@ module Gitlab
         @logger.puts
 
         @logger.puts '=> Description:'
-        @logger.puts change.description
+        @logger.puts change.mr_description
         @logger.puts
 
         if change.labels.present? || change.assignees.present? || change.reviewers.present?
@@ -187,6 +187,15 @@ module Gitlab
 
       def get_existing_merge_request(branch_name)
         gitlab_client.get_existing_merge_request(
+          source_project_id: housekeeper_fork_project_id,
+          source_branch: branch_name,
+          target_branch: @target_branch,
+          target_project_id: housekeeper_target_project_id
+        )
+      end
+
+      def has_closed_merge_request?(branch_name)
+        gitlab_client.closed_merge_request_exists?(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
           target_branch: @target_branch,

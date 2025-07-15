@@ -4,11 +4,13 @@
       %h2.gl-text-base.gl-font-bold.gl-leading-normal.gl-inline-flex.gl-gap-3.gl-m-0{ data: { testid: 'crud-title' } }
         = @title
         - if @count
-          %span.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle{ data: { testid: 'crud-count' } }
+          %span.crud-count.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle{ data: { testid: 'crud-count' } }
             - if @icon
               = sprite_icon(@icon, css_class: icon_classes)
-            %span{ @count_options }
-              = @count
+              %span{ @count_options }
+                = @count
+            - else
+              = render Pajamas::BadgeComponent.new(@count, **@count_options.merge(class: 'gl-self-baseline'))
       - if description? || @description
         .gl-text-sm.gl-text-subtle.gl-leading-normal.gl-mt-2.gl-mb-0{ data: { testid: 'crud-description' } }
           = description || @description

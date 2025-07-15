@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gon'
-require 'fogbugz'
 
 class ApplicationController < BaseActionController
   use Gitlab::Middleware::ActionControllerStaticContext

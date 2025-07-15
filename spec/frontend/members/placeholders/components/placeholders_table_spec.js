@@ -3,14 +3,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { mount, shallowMount } from '@vue/test-utils';
-import {
-  GlAvatarLabeled,
-  GlBadge,
-  GlEmptyState,
-  GlKeysetPagination,
-  GlLoadingIcon,
-  GlTable,
-} from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -30,6 +23,7 @@ import {
 } from '~/import_entities/import_groups/constants';
 
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 
@@ -93,7 +87,7 @@ describe('PlaceholdersTable', () => {
     });
   };
 
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyState = () => wrapper.findComponent(EmptyResult);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findTable = () => wrapper.findComponent(GlTable);
@@ -363,9 +357,8 @@ describe('PlaceholdersTable', () => {
       });
 
       it('renders empty state with short query description', () => {
-        expect(findEmptyState().props('description')).toBe(
-          'Enter at least three characters to search.',
-        );
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props('searchMinimumLength')).toBe(3);
       });
     });
 
@@ -382,7 +375,8 @@ describe('PlaceholdersTable', () => {
       });
 
       it('renders empty state with no results message', () => {
-        expect(findEmptyState().props('description')).toBe('Edit your search and try again');
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props('searchMinimumLength')).toBe(null);
       });
     });
 

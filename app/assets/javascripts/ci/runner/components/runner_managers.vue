@@ -1,9 +1,12 @@
 <script>
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
+
+import { GlLink, GlSprintf, GlEmptyState } from '@gitlab/ui';
 import { s__, formatNumber } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { tableField } from '../utils';
+import { RUNNER_MANAGERS_HELP_URL } from '../constants';
 import RunnerManagersTable from './runner_managers_table.vue';
 
 export default {
@@ -11,6 +14,7 @@ export default {
   components: {
     GlLink,
     GlSprintf,
+    GlEmptyState,
     RunnerManagersTable,
     CrudComponent,
     HelpPopover,
@@ -44,12 +48,13 @@ export default {
       thClasses: ['gl-text-right'],
     }),
   ],
+  RUNNER_MANAGERS_HELP_URL,
+  EMPTY_STATE_SVG_URL,
 };
 </script>
 
 <template>
   <crud-component
-    v-if="count > 0"
     :title="s__('Runners|Runners')"
     icon="container-image"
     :count="formattedCount"
@@ -78,6 +83,22 @@ export default {
       </help-popover>
     </template>
 
-    <runner-managers-table :items="items" />
+    <runner-managers-table v-if="count > 0" :items="items" />
+    <gl-empty-state
+      v-else
+      :svg-path="$options.EMPTY_STATE_SVG_URL"
+      :svg-height="96"
+      :title="s__('Runners|No runners managers found')"
+    >
+      <template #description>
+        <p>
+          {{
+            s__(
+              'Runners|Runner managers registered under this configuration are listed here. Register and start at least one runner manager.',
+            )
+          }}
+        </p>
+      </template>
+    </gl-empty-state>
   </crud-component>
 </template>

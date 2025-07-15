@@ -13,9 +13,6 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
-  ignore_columns %i[
-    security_policy_scheduled_scans_max_concurrency
-  ], remove_with: '17.11', remove_after: '2025-04-17'
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -454,7 +451,12 @@ class ApplicationSetting < ApplicationRecord
 
   validates_each :import_sources, on: :update do |record, attr, value|
     value&.each do |source|
-      unless Gitlab::ImportSources.options.value?(source)
+      # Temporary allow "gitlab_custom_project_template" to avoid validation errors
+      # "gitlab_custom_project_template" can be excluded after incorrect values are removed from the database
+      # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/550410
+      allowed_import_sources = Gitlab::ImportSources.values - ['gitlab_built_in_project_template']
+
+      unless allowed_import_sources.include?(source)
         record.errors.add(attr, format(_("'%{source}' is not a import source"), source: source))
       end
     end
@@ -598,6 +600,7 @@ class ApplicationSetting < ApplicationRecord
       :max_yaml_size_bytes,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
       :project_jobs_api_rate_limit,
+      :relation_export_batch_size,
       :session_expire_delay,
       :snippet_size_limit,
       :throttle_authenticated_api_period_in_seconds,
@@ -725,7 +728,8 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :importers,
     silent_admin_exports_enabled: [:boolean, { default: false }],
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
-    allow_bypass_placeholder_confirmation: [:boolean, { default: false }]
+    allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
+    relation_export_batch_size: [:integer, { default: 50 }]
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
@@ -872,7 +876,8 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :anti_abuse_settings,
     enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }],
-    require_email_verification_on_account_locked: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
+    require_email_verification_on_account_locked: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }],
+    delay_user_account_self_deletion: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
 
   validates :anti_abuse_settings, json_schema: { filename: "anti_abuse_settings", detail_errors: true }
 
@@ -966,7 +971,17 @@ class ApplicationSetting < ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  jsonb_accessor :default_profile_preferences,
+    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }]
+
+  validates :default_profile_preferences, json_schema: { filename: "application_setting_default_profile_preferences" }
+
   validates :default_syntax_highlighting_theme,
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than: 0 },
+    inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
+
+  validates :default_dark_syntax_highlighting_theme,
     allow_nil: false,
     numericality: { only_integer: true, greater_than: 0 },
     inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }

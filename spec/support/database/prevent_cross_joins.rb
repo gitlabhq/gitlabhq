@@ -10,7 +10,7 @@
 # not a test using the cross-join.
 #
 # class User
-#   def ci_owned_runners
+#   def ci_available_runners
 #     ::Gitlab::Database.allow_cross_joins_across_databases(url: link-to-issue-url)
 #
 #     ...

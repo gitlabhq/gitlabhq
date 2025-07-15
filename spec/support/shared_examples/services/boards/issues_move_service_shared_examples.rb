@@ -38,7 +38,7 @@ RSpec.shared_examples 'issues move service' do |group|
     it_behaves_like 'updating timestamps'
 
     it 'delegates the close proceedings to Issues::CloseService' do
-      expect_any_instance_of(Issues::CloseService).to receive(:execute).with(issue).once
+      expect_any_instance_of(Issues::CloseService).to receive(:execute).with(issue).and_call_original
 
       described_class.new(parent, user, params).execute(issue)
     end

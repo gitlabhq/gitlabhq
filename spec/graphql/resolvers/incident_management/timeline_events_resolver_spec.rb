@@ -26,36 +26,50 @@ RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
     expect(resolver).to have_nullable_graphql_type(Types::IncidentManagement::TimelineEventType.connection_type)
   end
 
-  it 'returns timeline events', :aggregate_failures do
-    expect(resolved_timeline_events.length).to eq(2)
-    expect(resolved_timeline_events.first).to be_a(::IncidentManagement::TimelineEvent)
-  end
-
-  context 'when user does not have permissions' do
-    let(:non_member) { create(:user) }
-
-    subject(:resolved_timeline_events) { sync(resolve_timeline_events(args, current_user: non_member).to_a) }
-
+  describe 'when feature flag `hide_incident_management_features` is disabled' do
     before do
-      project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+      stub_feature_flags(hide_incident_management_features: false)
     end
 
-    it 'returns no timeline events' do
-      expect(resolved_timeline_events.length).to eq(0)
+    it 'returns timeline events', :aggregate_failures do
+      expect(resolved_timeline_events.length).to eq(2)
+      expect(resolved_timeline_events.first).to be_a(::IncidentManagement::TimelineEvent)
+    end
+
+    context 'when user does not have permissions' do
+      let(:non_member) { create(:user) }
+
+      subject(:resolved_timeline_events) { sync(resolve_timeline_events(args, current_user: non_member).to_a) }
+
+      before do
+        project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'returns no timeline events' do
+        expect(resolved_timeline_events.length).to eq(0)
+      end
+    end
+
+    context 'when resolving a single item' do
+      let(:resolver) { described_class.single }
+
+      subject(:resolved_timeline_event) { sync(resolve_timeline_events(args, current_user: current_user)) }
+
+      context 'when id given' do
+        let(:args) { { incident_id: incident.to_global_id, id: first_timeline_event.to_global_id } }
+
+        it 'returns the timeline event' do
+          expect(resolved_timeline_event).to eq(first_timeline_event)
+        end
+      end
     end
   end
 
-  context 'when resolving a single item' do
-    let(:resolver) { described_class.single }
-
-    subject(:resolved_timeline_event) { sync(resolve_timeline_events(args, current_user: current_user)) }
-
-    context 'when id given' do
-      let(:args) { { incident_id: incident.to_global_id, id: first_timeline_event.to_global_id } }
-
-      it 'returns the timeline event' do
-        expect(resolved_timeline_event).to eq(first_timeline_event)
-      end
+  describe 'when feature flag `hide_incident_management_features` is enabled' do
+    it 'raises error' do
+      result = resolve_timeline_events(args, current_user: current_user)
+      expect(result).to be_a(GraphQL::ExecutionError)
+      expect(result.message).to eq("Field 'incidentManagementTimelineEvents' doesn't exist on type 'Project'.")
     end
   end
 

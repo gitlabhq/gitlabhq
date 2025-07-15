@@ -143,18 +143,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
 
         2.times { command.merge_request_ref_exists? }
       end
-
-      context 'when pull_ref_directly_from_gitaly feature flag is disabled' do
-        before do
-          stub_feature_flags(pull_ref_directly_from_gitaly: false)
-        end
-
-        it 'memoizes the result' do
-          expect(command).to receive(:check_merge_request_ref).once
-
-          2.times { command.merge_request_ref_exists? }
-        end
-      end
     end
 
     describe '#ref' do

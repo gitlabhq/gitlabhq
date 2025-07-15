@@ -21,7 +21,7 @@ module RuboCop
         private
 
         def predicate_method?(node)
-          node.method_name.to_s.end_with?('?')
+          node.predicate_method?
         end
 
         def or_ivar_assignment?(or_assignment)

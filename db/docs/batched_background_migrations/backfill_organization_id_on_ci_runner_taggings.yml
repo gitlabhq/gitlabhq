@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillOrganizationIdOnCiRunnerTaggings
+description: >
+  Backfill organization_id column in taggings associated with non-instance type runners with default organization id
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193195
+milestone: '18.2'
+queued_migration_version: 20250602183875
+finalized_by: # version of the migration that finalized this BBM

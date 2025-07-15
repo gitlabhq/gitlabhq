@@ -19,6 +19,11 @@ describe('Ci variable table', () => {
 
   const mockMaxVariableLimit = defaultProps.variables.length;
 
+  const variablesWithoutSettingsPath = mockInheritedVariables.map((variable) => ({
+    ...variable,
+    groupCiCdSettingsPath: null,
+  }));
+
   const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = mountExtended(CiVariableTable, {
       attachTo: document.body,
@@ -50,11 +55,14 @@ describe('Ci variable table', () => {
   const findTableColumnText = (index) => wrapper.findAll('th > div > span').at(index).text();
   const findVariableRow = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-variable').at(rowIndex);
-  const findGroupCiCdSettingsLink = (rowIndex) =>
-    wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
   const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findCrud = () => wrapper.findComponent(CrudComponent);
-
+  const findAllGroupCiCdSettingsLinks = () =>
+    wrapper.findAllByTestId('ci-variable-table-row-cicd-path');
+  const findGroupCiCdSettingsLink = (rowIndex) =>
+    findAllGroupCiCdSettingsLinks().at(rowIndex).attributes('href');
+  const findGroupNameSpan = (rowIndex) =>
+    wrapper.findAllByTestId('ci-variable-table-row-group-name').at(rowIndex);
   const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
     return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
   };
@@ -197,9 +205,35 @@ describe('Ci variable table', () => {
         expect(findVariableRow(1).text()).toContain('This inherited variable has a description.');
       });
 
-      it('displays link to the group settings', () => {
+      it('displays link to the group settings when groupCiCdSettingsPath is present', () => {
         expect(findGroupCiCdSettingsLink(0)).toBe(mockInheritedVariables[0].groupCiCdSettingsPath);
         expect(findGroupCiCdSettingsLink(1)).toBe(mockInheritedVariables[1].groupCiCdSettingsPath);
+      });
+
+      it('displays static text when groupCiCdSettingsPath is null', () => {
+        createComponent({
+          props: { variables: variablesWithoutSettingsPath },
+          provide: { isInheritedGroupVars: true, ...provide },
+        });
+
+        expect(findAllGroupCiCdSettingsLinks()).toHaveLength(0);
+
+        expect(findGroupNameSpan(0).text()).toBe(variablesWithoutSettingsPath[0].groupName);
+        expect(findGroupNameSpan(0).attributes('href')).toBeUndefined();
+
+        expect(findGroupNameSpan(1).text()).toBe(variablesWithoutSettingsPath[1].groupName);
+        expect(findGroupNameSpan(1).attributes('href')).toBeUndefined();
+      });
+
+      it('displays a tooltip for the insufficient permissions when groupCiCdSettingsPath is null', () => {
+        createComponent({
+          props: { variables: variablesWithoutSettingsPath },
+          provide: { isInheritedGroupVars: true, ...provide },
+        });
+
+        expect(findGroupNameSpan(0).attributes('title')).toBe(
+          'Insufficient permissions to view Group CI/CD variable.',
+        );
       });
     });
 
@@ -226,7 +260,7 @@ describe('Ci variable table', () => {
         });
 
         it('hides alert', () => {
-          expect(findLimitReachedAlerts().length).toBe(0);
+          expect(findLimitReachedAlerts()).toHaveLength(0);
         });
       });
 
@@ -234,7 +268,7 @@ describe('Ci variable table', () => {
         it('hides alert when limit has not been reached', () => {
           createComponent({ provide });
 
-          expect(findLimitReachedAlerts().length).toBe(0);
+          expect(findLimitReachedAlerts()).toHaveLength(0);
         });
 
         it('shows alert when limit has been reached', () => {
@@ -248,7 +282,7 @@ describe('Ci variable table', () => {
             props: { maxVariableLimit: mockMaxVariableLimit },
           });
 
-          expect(findLimitReachedAlerts().length).toBe(2);
+          expect(findLimitReachedAlerts()).toHaveLength(2);
 
           expect(findLimitReachedAlerts().at(0).props('dismissible')).toBe(false);
           expect(findLimitReachedAlerts().at(0).text()).toContain(exceedsVariableLimitText);

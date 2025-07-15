@@ -49,6 +49,16 @@ RSpec.describe Integrations::HarborSerializers::ArtifactEntity, feature_category
     })
   end
 
+  context 'when artifact has no tags' do
+    before do
+      artifact['tags'] = nil
+    end
+
+    it 'returns an empty array for tags' do
+      expect(subject[:tags]).to eq([])
+    end
+  end
+
   context 'with data that may contain path traversal attacks' do
     before do
       artifact['digest'] = './../../../../../etc/hosts'

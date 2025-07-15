@@ -28,6 +28,12 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
     registrationToken,
     newProjectRunnerPath,
     projectFullPath,
+
+    instanceRunnersEnabled,
+    instanceRunnersDisabledAndUnoverridable,
+    instanceRunnersUpdatePath,
+    instanceRunnersGroupSettingsPath,
+    groupName,
   } = el.dataset;
 
   return new Vue({
@@ -45,6 +51,14 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
           registrationToken,
           newProjectRunnerPath,
           projectFullPath,
+
+          instanceRunnersEnabled: parseBoolean(instanceRunnersEnabled),
+          instanceRunnersDisabledAndUnoverridable: parseBoolean(
+            instanceRunnersDisabledAndUnoverridable,
+          ),
+          instanceRunnersUpdatePath,
+          instanceRunnersGroupSettingsPath,
+          groupName,
         },
       });
     },

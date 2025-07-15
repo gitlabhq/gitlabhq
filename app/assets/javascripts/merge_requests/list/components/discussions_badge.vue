@@ -51,16 +51,25 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-gl-tooltip :title="tooltipTitle" icon="comments" :variant="badgeVariant">
-    <template v-if="isResolved">
-      {{ __('Resolved') }}
-    </template>
-    <gl-sprintf
-      v-else
-      :message="__('%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount}')"
-    >
-      <template #resolvedDiscussionsCount>{{ mergeRequest.resolvedDiscussionsCount }}</template>
-      <template #resolvableDiscussionsCount>{{ mergeRequest.resolvableDiscussionsCount }}</template>
-    </gl-sprintf>
-  </gl-badge>
+  <button
+    v-gl-tooltip
+    :title="tooltipTitle"
+    :aria-label="tooltipTitle"
+    class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
+  >
+    <gl-badge icon="comments" :variant="badgeVariant">
+      <template v-if="isResolved">
+        {{ __('Resolved') }}
+      </template>
+      <gl-sprintf
+        v-else
+        :message="__('%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount}')"
+      >
+        <template #resolvedDiscussionsCount>{{ mergeRequest.resolvedDiscussionsCount }}</template>
+        <template #resolvableDiscussionsCount>{{
+          mergeRequest.resolvableDiscussionsCount
+        }}</template>
+      </gl-sprintf>
+    </gl-badge>
+  </button>
 </template>

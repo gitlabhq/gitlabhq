@@ -15,9 +15,10 @@ title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `merge_request_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `merge_request_dashboard`. Disabled by default.
 - Feature flag `merge_request_dashboard` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480854) on GitLab.com in GitLab 17.9.
-- Feature flag `mr_dashboard_list_type_toggle` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/535244) for GitLab team members in GitLab 18.1.
+- Feature flag `mr_dashboard_list_type_toggle` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/535244) on GitLab.com in GitLab 18.1.
+- Feature flag `merge_request_dashboard` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194999) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -76,7 +77,7 @@ Each table row groups related information about a merge request together into co
 - **Author** - The author's avatar.
 - **Reviewers** - The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks** - A compact assessment of mergeability.
-  - Number of unresolved threads, for example `0 of 3`.
+  - Number of open threads, for example `0 of 3`.
   - Current required [approval status](../../user/project/merge_requests/approvals/_index.md#in-the-list-of-merge-requests).
   - Most recent pipeline's status.
   - Date of last update.

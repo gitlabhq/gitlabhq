@@ -1,6 +1,8 @@
 ---
 asdf:
   opt_out: true
+mise:
+  enabled: true
 hostname: gdk.test
 sshd:
   additional_config: 'AcceptEnv GIT_PROTOCOL'
@@ -29,7 +31,6 @@ gitlab:
       - ["*", "default"]
   sidekiq_cron:
     enabled: true
-
   rails:
     bootsnap: false
     hostname: gdk.test
@@ -49,5 +50,9 @@ tracer:
     enabled: false
 gitlab_http_router:
   enabled: true
-mise:
+  auto_update: false
+gitlab_topology_service:
   enabled: true
+  auto_update: false
+workhorse:
+  skip_compile: false

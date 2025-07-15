@@ -41,6 +41,24 @@ RSpec.describe Integrations::Test::ProjectService, feature_category: :integratio
         end
       end
 
+      context 'milestone' do
+        let(:event) { 'milestone' }
+
+        before do
+          # Mock the integration to support milestone events for testing
+          allow(integration).to receive(:supported_events).and_return(integration.supported_events + ['milestone'])
+        end
+
+        it 'executes integration' do
+          milestone = create(:milestone, project: project)
+          allow(Gitlab::DataBuilder::Milestone).to receive(:build).and_return(sample_data)
+          allow_next(MilestonesFinder).to receive(:execute).and_return([milestone])
+
+          expect(integration).to receive(:test).with(sample_data).and_return(success_result)
+          expect(subject).to eq(success_result)
+        end
+      end
+
       context 'push' do
         let(:event) { 'push' }
 

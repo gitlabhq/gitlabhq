@@ -3,8 +3,6 @@
 class UpdateSeatControlInApplicationSettings < Gitlab::Database::Migration[2.2]
   milestone '17.7'
 
-  enable_lock_retries!
-
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up

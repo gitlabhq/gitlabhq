@@ -1,23 +1,21 @@
 import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import * as timeago from 'timeago.js';
 import { nextTick } from 'vue';
-import { timeagoLanguageCode } from '~/lib/utils/datetime/timeago_utility';
+import { getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime/timeago_utility';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
 import { userList } from 'jest/feature_flags/mock_data';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 
-jest.mock('timeago.js', () => ({
-  format: jest.fn().mockReturnValue('2 weeks ago'),
-  register: jest.fn(),
-}));
-
 describe('User Lists Table', () => {
   let wrapper;
   let userLists;
+  let timeagoSpy;
 
   beforeEach(() => {
+    timeagoSpy = jest.spyOn(getTimeago(), 'format');
+    timeagoSpy.mockImplementation(() => '2 weeks ago');
+
     userLists = new Array(5).fill(userList).map((x, i) => ({ ...x, id: i }));
     wrapper = mount(UserListsTable, {
       propsData: { userLists },
@@ -30,7 +28,7 @@ describe('User Lists Table', () => {
       userList.user_xids.replace(/,/g, ', '),
     );
     expect(wrapper.find('[data-testid="ffUserListTimestamp"]').text()).toBe('created 2 weeks ago');
-    expect(timeago.format).toHaveBeenCalledWith(newDate(userList.created_at), timeagoLanguageCode);
+    expect(timeagoSpy).toHaveBeenCalledWith(newDate(userList.created_at), timeagoLanguageCode);
   });
 
   it('should set the title for a tooltip on the created stamp', () => {

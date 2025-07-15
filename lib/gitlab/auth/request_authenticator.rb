@@ -47,7 +47,8 @@ module Gitlab
       end
 
       def can_sign_in_bot?(user)
-        (user&.project_bot? || user&.service_account?) && api_request?
+        # Allow bots and service accounts to access both API and archive endpoints
+        (user&.project_bot? || user&.service_account?) && (api_request? || archive_request?)
       end
 
       def valid_access_token?(scopes: [])

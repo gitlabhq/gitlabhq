@@ -4,6 +4,8 @@ module API
   module Entities
     module Ci
       class Runner < Grape::Entity
+        include ::API::Ci::Helpers::RunnerJobExecutionStatusHelper
+
         expose :id, documentation: { type: 'integer', example: 8 }
         expose :description, documentation: { type: 'string', example: 'test-1-20150125' }
         # TODO: remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/415159
@@ -24,6 +26,19 @@ module API
         # DEPRECATED
         # TODO Remove in v5 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/375709
         expose :deprecated_rest_status, as: :status, documentation: { type: 'string', example: 'online' }
+        expose :job_execution_status,
+          documentation: { type: 'string', example: 'idle', values: [:active, :idle] }
+
+        def presented
+          job_execution_status #  to avoid N+1 query
+          super
+        end
+
+        def job_execution_status
+          return if object.nil?
+
+          lazy_job_execution_status(object: object, key: :runner_running_builds_exist)
+        end
       end
     end
   end

@@ -26,6 +26,12 @@ export default {
 
   k8sDashboardDeployments(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'apps',
+      resource: 'deployments',
+      namespace,
+    };
 
     const appsV1api = new AppsV1Api(config);
     const deploymentsApi = namespace
@@ -45,6 +51,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sDeployments',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -62,6 +69,12 @@ export default {
 
   k8sStatefulSets(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'apps',
+      resource: 'statefulsets',
+      namespace,
+    };
 
     const appsV1api = new AppsV1Api(config);
     const statefulSetsApi = namespace
@@ -81,6 +94,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sStatefulSets',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -98,6 +112,12 @@ export default {
 
   k8sReplicaSets(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'apps',
+      resource: 'replicasets',
+      namespace,
+    };
 
     const appsV1api = new AppsV1Api(config);
     const replicaSetsApi = namespace
@@ -117,6 +137,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sReplicaSets',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -134,6 +155,12 @@ export default {
 
   k8sDaemonSets(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'apps',
+      resource: 'daemonsets',
+      namespace,
+    };
 
     const appsV1api = new AppsV1Api(config);
     const daemonSetsApi = namespace
@@ -153,6 +180,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sDaemonSets',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -170,6 +198,12 @@ export default {
 
   k8sJobs(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'batch',
+      resource: 'jobs',
+      namespace,
+    };
 
     const batchV1api = new BatchV1Api(config);
     const jobsApi = namespace
@@ -189,6 +223,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sJobs',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -206,6 +241,12 @@ export default {
 
   k8sCronJobs(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      group: 'batch',
+      resource: 'cronjobs',
+      namespace,
+    };
 
     const batchV1api = new BatchV1Api(config);
     const cronJobsApi = namespace
@@ -225,6 +266,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sCronJobs',
+          watchParams,
         });
 
         const data = res?.items || [];
@@ -242,6 +284,11 @@ export default {
 
   k8sDashboardServices(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
+    const watchParams = {
+      version: 'v1',
+      resource: 'services',
+      namespace,
+    };
 
     const coreV1Api = new CoreV1Api(config);
     const servicesApi = namespace
@@ -260,6 +307,7 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sDashboardServices',
+          watchParams,
         });
 
         const data = res?.items || [];

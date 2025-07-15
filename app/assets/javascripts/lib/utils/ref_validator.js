@@ -1,6 +1,6 @@
 import { __, sprintf } from '~/locale';
 
-// this service validates tagName against git ref format.
+// this service validates tagName agains git ref format.
 // the git spec can be found here: https://git-scm.com/docs/git-check-ref-format#_description
 
 // the ruby counterpart of the validator is here:

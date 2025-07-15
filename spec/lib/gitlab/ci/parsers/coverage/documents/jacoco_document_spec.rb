@@ -47,10 +47,12 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::JacocoDocument,
     context 'when the merge request paths do not exist' do
       let(:modified_files) { %w[src/test/org/acme/ExampleResource.java] }
 
-      it 'returns an error' do
-        expect(Gitlab::AppLogger).to receive(:info).twice
-
+      it 'only adds data for the existing files' do
         parse_report
+
+        expect(coverage_report.files).to match({
+          "src/test/org/acme/ExampleResource.java" => { 9 => 3, 14 => 2 }
+        })
       end
     end
   end

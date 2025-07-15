@@ -51,11 +51,13 @@ module Gitlab
         errors.add(:base, "artifacts for pages are too large: #{total_size}")
       end
 
+      def publish_path
+        build.pages[:publish] || PUBLIC_DIR
+      end
+
       # Calculate page size after extract
       def total_size
-        root_dir = build.pages[:publish] || PUBLIC_DIR
-
-        build.artifacts_metadata_entry("#{root_dir}/", recursive: true).total_size
+        build.artifacts_metadata_entry("#{publish_path.delete_suffix('/')}/", recursive: true).total_size
       end
 
       def max_size

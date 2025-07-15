@@ -11,17 +11,18 @@ module Ci
     # In the future it's likely that this class will persist additional models and the concept of a `Workload` may
     # become first class. For that reason we abstract users from the underlying `Ci::Pipeline` semantics.
     class RunWorkloadService
-      def initialize(project:, current_user:, source:, workload_definition:, create_branch: false)
+      def initialize(project:, current_user:, source:, workload_definition:, create_branch: false, source_branch: nil)
         @project = project
         @current_user = current_user
         @source = source
         @workload_definition = workload_definition
         @create_branch = create_branch
+        @source_branch = source_branch
       end
 
       def execute
         validate_source!
-        @ref = @create_branch ? create_repository_branch : default_branch
+        @ref = @create_branch ? create_repository_branch(@source_branch) : default_branch
 
         @workload_definition.add_variable(:CI_WORKLOAD_REF, @ref)
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: @ref)
@@ -49,11 +50,13 @@ module Ci
 
       private
 
-      def create_repository_branch
+      def create_repository_branch(source_branch)
         branch_name = "workloads/#{SecureRandom.hex[0..10]}"
         raise "Branch already exists" if @project.repository.branch_exists?(branch_name)
 
-        repo_branch = @project.repository.add_branch(@current_user, branch_name, default_branch, skip_ci: true)
+        branch = @project.repository.branch_exists?(source_branch) ? source_branch : default_branch
+
+        repo_branch = @project.repository.add_branch(@current_user, branch_name, branch, skip_ci: true)
         raise "Error in git branch creation" unless repo_branch
 
         branch_name

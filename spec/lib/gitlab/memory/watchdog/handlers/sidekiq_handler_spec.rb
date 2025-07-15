@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'sidekiq'
 
-RSpec.describe Gitlab::Memory::Watchdog::Handlers::SidekiqHandler, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Watchdog::Handlers::SidekiqHandler, feature_category: :durability_metrics do
   let(:sleep_time) { 3 }
   let(:shutdown_timeout_seconds) { 30 }
   let(:handler_iterations) { 0 }

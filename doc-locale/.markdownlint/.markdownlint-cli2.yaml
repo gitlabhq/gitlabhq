@@ -1,0 +1,35 @@
+---
+# Base Markdownlint configuration
+# Extended Markdownlint configuration in doc/.markdownlint/
+# See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
+config:
+  # First, set the default
+  default: true
+
+  # Per-rule settings in alphabetical order
+  code-block-style:                 # MD046
+    style: "fenced"
+  emphasis-style: false             # MD049
+  header-style:                     # MD003
+    style: "atx"
+  hr-style:                         # MD035
+    style: "---"
+  line-length:                      # MD013
+    code_blocks: false
+    tables: false
+    headings: true
+    heading_line_length: 300
+    line_length: 1800
+  no-duplicate-heading:             # MD024
+    siblings_only: true
+  no-emphasis-as-heading: false     # MD036
+  no-inline-html: false             # MD033
+  no-trailing-punctuation:          # MD026
+    punctuation: ".,;:!。，；：！"
+  no-trailing-spaces: false         # MD009
+  ol-prefix:                        # MD029
+    style: "one"
+  reference-links-images: false     # MD052
+  ul-style:                         # MD004
+    style: "dash"
+  link-fragments: false            # MD051 - English anchor links in translated text fail

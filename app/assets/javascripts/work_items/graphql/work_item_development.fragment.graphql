@@ -15,6 +15,7 @@ fragment WorkItemDevelopmentFragment on WorkItemWidgetDevelopment {
     }
   }
   closingMergeRequests {
+    count
     nodes {
       id
       fromMrDescription

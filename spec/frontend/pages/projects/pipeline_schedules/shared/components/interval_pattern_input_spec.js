@@ -239,7 +239,10 @@ describe('Interval Pattern Input Component', () => {
 
   describe('cronValue event', () => {
     it('emits cronValue event with cron value', async () => {
-      createWrapper();
+      // Provide initial value to prevent immediate watch trigger
+      createWrapper({
+        initialCronInterval: '0 * * * *',
+      });
 
       findCustomInput().element.value = '0 16 * * *';
       findCustomInput().trigger('input');

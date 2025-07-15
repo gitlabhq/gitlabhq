@@ -72,7 +72,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
       expect(BulkImports::FileDownloadService)
         .to receive(:new)
         .with(
-          configuration: context.configuration,
+          context: context,
           relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}" \
                         '/export_relations/download?relation=repository',
           tmpdir: tmpdir,
@@ -80,7 +80,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
         .and_return(download_service)
       expect(BulkImports::FileDecompressionService)
         .to receive(:new)
-        .with(tmpdir: tmpdir, filename: 'repository.tar.gz')
+        .with(tmpdir: tmpdir, filename: 'repository.tar.gz', context: context)
         .and_return(decompression_service)
       expect(BulkImports::ArchiveExtractionService)
         .to receive(:new)

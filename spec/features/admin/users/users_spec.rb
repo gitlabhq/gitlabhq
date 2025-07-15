@@ -436,7 +436,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       let_it_be(:user_username) { 'Bing bang' }
 
       it "doesn't create the user and shows an error message" do
-        expect { click_button 'Create user' }.to change { User.count }.by(0)
+        expect { click_button 'Create user' }.not_to change { User.count }
 
         expect(page).to have_content('The form contains the following error')
         expect(page).to have_content('Username can contain only letters, digits')

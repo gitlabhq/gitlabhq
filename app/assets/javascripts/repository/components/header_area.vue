@@ -215,7 +215,12 @@ export default {
 </script>
 
 <template>
-  <section :class="{ 'gl-items-center gl-justify-between sm:gl-flex': isProjectOverview }">
+  <section
+    class="gl-items-center gl-justify-between"
+    :class="{
+      [glFeatures.repositoryFileTreeBrowser ? 'md:gl-flex' : 'sm:gl-flex']: isProjectOverview,
+    }"
+  >
     <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-5">
       <ref-selector
         v-if="!isReadmeView"
@@ -223,6 +228,7 @@ export default {
         data-testid="ref-dropdown-container"
         :project-id="projectId"
         :value="refSelectorValue"
+        :default-branch="rootRef"
         use-symbolic-ref-names
         :query-params="refSelectorQueryParams"
         @input="onInput"
@@ -250,12 +256,20 @@ export default {
     </div>
 
     <div
-      class="gl-flex gl-flex-col gl-items-stretch gl-justify-end sm:gl-flex-row sm:gl-items-center sm:gl-gap-5"
-      :class="{ 'gl-my-5': !isProjectOverview }"
+      :class="[
+        'gl-flex gl-flex-col gl-items-stretch gl-justify-end',
+        glFeatures.repositoryFileTreeBrowser
+          ? 'md:gl-flex-row md:gl-items-center md:gl-gap-5'
+          : 'sm:gl-flex-row sm:gl-items-center sm:gl-gap-5',
+        { 'gl-my-5': !isProjectOverview },
+      ]"
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 sm:gl-my-0"
+        :class="[
+          'gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1',
+          glFeatures.repositoryFileTreeBrowser ? 'md:gl-my-0' : 'sm:gl-my-0',
+        ]"
         data-testid="repository-heading"
       >
         <file-icon
@@ -277,12 +291,18 @@ export default {
       <!-- Tree controls -->
       <div
         v-if="!showBlobControls"
-        class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0"
+        :class="[
+          'tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3',
+          glFeatures.repositoryFileTreeBrowser ? 'md:gl-mb-0' : 'sm:gl-mb-0',
+        ]"
         data-testid="tree-controls-container"
       >
         <add-to-tree
           v-if="!isReadmeView && showCompactCodeDropdown"
-          class="gl-hidden sm:gl-block"
+          :class="[
+            'gl-hidden',
+            glFeatures.repositoryFileTreeBrowser ? 'md:gl-block' : 'sm:gl-block',
+          ]"
           :current-path="currentPath"
           :can-collaborate="canCollaborate"
           :can-edit-tree="canEditTree"
@@ -310,14 +330,20 @@ export default {
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
           data-testid="tree-find-file-control"
-          class="gl-w-full sm:gl-w-auto"
+          :class="[
+            'gl-w-full',
+            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+          ]"
           @click="handleFindFile"
         >
           {{ $options.i18n.findFile }}
         </gl-button>
         <!-- web ide -->
         <web-ide-link
-          class="gl-w-full sm:!gl-ml-0 sm:gl-w-auto"
+          :class="[
+            'gl-w-full sm:!gl-ml-0',
+            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+          ]"
           data-testid="js-tree-web-ide-link"
           :project-id="projectIdAsNumber"
           :project-path="projectPath"
@@ -340,11 +366,16 @@ export default {
           v-on="$listeners"
         />
         <!-- code + mobile panel -->
-        <div class="project-code-holder gl-w-full sm:gl-w-auto">
+        <div
+          :class="[
+            'project-code-holder gl-w-full',
+            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+          ]"
+        >
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
-              class="sm:gl-hidden"
+              :class="glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden'"
               :current-path="currentPath"
               :can-collaborate="canCollaborate"
               :can-edit-tree="canEditTree"
@@ -385,7 +416,10 @@ export default {
           </div>
           <template v-else-if="!isReadmeView">
             <code-dropdown
-              class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
+              :class="[
+                'git-clone-holder js-git-clone-holder gl-hidden',
+                glFeatures.repositoryFileTreeBrowser ? 'md:gl-inline-block' : 'sm:gl-inline-block',
+              ]"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
@@ -393,8 +427,20 @@ export default {
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
             />
-            <div class="gl-flex gl-w-full gl-gap-3 sm:gl-inline-block sm:gl-w-auto">
-              <div class="gl-flex gl-w-full gl-items-stretch gl-gap-3 sm:gl-hidden">
+            <div
+              :class="[
+                'gl-flex gl-w-full gl-gap-3',
+                glFeatures.repositoryFileTreeBrowser
+                  ? 'md:gl-inline-block md:gl-w-auto'
+                  : 'sm:gl-inline-block sm:gl-w-auto',
+              ]"
+            >
+              <div
+                :class="[
+                  'gl-flex gl-w-full gl-items-stretch gl-gap-3',
+                  glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden',
+                ]"
+              >
                 <source-code-download-dropdown
                   :download-links="downloadLinks"
                   :download-artifacts="downloadArtifacts"

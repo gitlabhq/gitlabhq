@@ -102,7 +102,8 @@ export default class GroupsStore {
       memberCount: rawGroupItem.number_users_with_delimiter,
       starCount: rawGroupItem.star_count,
       updatedAt: rawGroupItem.updated_at,
-      pendingRemoval: rawGroupItem.marked_for_deletion,
+      markedForDeletion: rawGroupItem.marked_for_deletion,
+      isSelfDeletionInProgress: rawGroupItem.is_self_deletion_in_progress,
       microdata: this.showSchemaMarkup ? getGroupItemMicrodata(rawGroupItem) : {},
       lastActivityAt: rawGroupItem.last_activity_at
         ? rawGroupItem.last_activity_at

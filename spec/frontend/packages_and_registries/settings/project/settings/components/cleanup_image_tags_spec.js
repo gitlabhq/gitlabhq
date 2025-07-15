@@ -135,11 +135,9 @@ describe('Cleanup image tags project settings', () => {
         });
         await waitForPromises();
 
-        const sprintf = findAlert().findComponent(GlSprintf);
-        expect(sprintf.text()).toBe('administration settings');
-        expect(sprintf.findComponent(GlLink).attributes('href')).toBe(
-          defaultProvidedValues.adminSettingsPath,
-        );
+        const alertLink = findAlert().findComponent(GlLink);
+        expect(alertLink.text()).toBe('administration settings');
+        expect(alertLink.attributes('href')).toBe(defaultProvidedValues.adminSettingsPath);
       });
     });
   });

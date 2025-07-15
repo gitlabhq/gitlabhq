@@ -47,12 +47,12 @@ Prerequisites:
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags/_index.md)
 can opt to enable it.
 
 {{< alert type="warning" >}}
 
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 {{< /alert >}}
 
@@ -74,7 +74,7 @@ The Debian group repository is also behind a second feature flag that is disable
 
 {{< alert type="warning" >}}
 
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 {{< /alert >}}
 

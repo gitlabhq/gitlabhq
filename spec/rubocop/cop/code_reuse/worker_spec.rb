@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_controller?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooController
         def index
           FooWorker.perform_async
           ^^^^^^^^^^^^^^^^^^^^^^^ Workers can not be used in a controller.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in an API' do
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_api?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class Foo < Grape::API::Instance
         resource :projects do
           get '/' do
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
           end
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in GraphQL' do
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_graphql?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       module Mutations
         class Foo < BaseMutation
           def resolve
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
           end
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in a Finder' do
@@ -58,14 +58,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_finder?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooFinder
         def execute
           FooWorker.perform_async
           ^^^^^^^^^^^^^^^^^^^^^^^ Workers can not be used in a Finder.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in a Presenter' do
@@ -73,14 +73,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_presenter?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooPresenter
         def execute
           FooWorker.perform_async
           ^^^^^^^^^^^^^^^^^^^^^^^ Workers can not be used in a Presenter.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in a Serializer' do
@@ -88,14 +88,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_serializer?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooSerializer
         def execute
           FooWorker.perform_async
           ^^^^^^^^^^^^^^^^^^^^^^^ Workers can not be used in a Serializer.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a worker in a model class method' do
@@ -103,13 +103,13 @@ RSpec.describe RuboCop::Cop::CodeReuse::Worker do
       .to receive(:in_model?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class User < ActiveRecord::Base
         def self.execute
           FooWorker.perform_async
           ^^^^^^^^^^^^^^^^^^^^^^^ Workers can not be used in model class methods.
         end
       end
-    SOURCE
+    RUBY
   end
 end

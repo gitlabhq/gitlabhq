@@ -8,12 +8,14 @@ RSpec.describe Files::CreateService, feature_category: :source_code_management d
   let(:user) { create(:user, :commit_email) }
   let(:file_content) { 'Test file content' }
   let(:branch_name) { project.default_branch }
+  let(:commit_message) { 'Update File' }
   let(:start_branch) { branch_name }
+  let(:file_path) { 'some.file' }
 
   let(:commit_params) do
     {
       file_path: file_path,
-      commit_message: "Update File",
+      commit_message: commit_message,
       file_content: file_content,
       file_content_encoding: "text",
       start_project: project,
@@ -31,6 +33,17 @@ RSpec.describe Files::CreateService, feature_category: :source_code_management d
   end
 
   describe "#execute" do
+    context 'when commit message is missing' do
+      let(:commit_message) { nil }
+
+      it 'returns an error' do
+        result = subject.execute
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('You must provide a commit message')
+      end
+    end
+
     context 'when file matches LFS filter' do
       let(:file_path) { 'test_file.lfs' }
       let(:branch_name) { 'lfs' }

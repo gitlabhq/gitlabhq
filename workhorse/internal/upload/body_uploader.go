@@ -23,7 +23,7 @@ type BodyUploadHandler interface {
 // RequestBody is a request middleware. It will store the request body to
 // a location by determined an api.Response value. It then forwards the
 // request to gitlab-rails without the original request body.
-func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) BodyUploadHandler {
+func RequestBody(rails api.PreAuthorizer, h http.Handler, p Preparer) BodyUploadHandler {
 	preAuthorizeHandler := rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		processRequestBody(h, p, w, r, a)
 	}, "/authorize")

@@ -19,6 +19,28 @@ class NamespaceSetting < ApplicationRecord
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
+  scope :with_ancestors_inherited_settings, -> {
+    # Get all columns except 'archived' since we're overriding it
+    other_columns = column_names.reject { |col| col == 'archived' }.map { |col| "#{table_name}.#{col}" }.join(', ')
+
+    select(<<-SQL)
+    #{other_columns},
+    CASE WHEN EXISTS (
+      SELECT 1 FROM #{table_name} ns2
+      JOIN namespaces n ON n.id = ns2.namespace_id
+      WHERE ns2.archived = true
+      AND n.id = ANY(
+        SELECT unnest(namespaces.traversal_ids)
+        FROM namespaces
+        WHERE namespaces.id = #{table_name}.namespace_id
+      )
+    ) THEN true
+    ELSE #{table_name}.archived
+    END AS archived
+    SQL
+      .joins(:namespace)
+  }
+
   belongs_to :namespace, inverse_of: :namespace_settings
 
   enum :jobs_to_be_done, { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, suffix: true
@@ -30,12 +52,16 @@ class NamespaceSetting < ApplicationRecord
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
-
+  validate :validate_enterprise_bypass_expires_at, if: ->(record) {
+    record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
+  }
   sanitizes! :default_branch_name
 
   before_validation :set_pipeline_variables_default_role, on: :create
 
   before_validation :normalize_default_branch_name
+
+  after_update :invalidate_namespace_descendants_cache, if: -> { saved_change_to_archived? }
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
@@ -126,16 +152,30 @@ class NamespaceSetting < ApplicationRecord
     super
   end
 
+  def enterprise_placeholder_bypass_enabled?
+    allow_enterprise_bypass_placeholder_confirmation? && enterprise_bypass_expires_at.present? && enterprise_bypass_expires_at.future?
+  end
+
   private
 
+  def validate_enterprise_bypass_expires_at
+    if enterprise_bypass_expires_at.blank?
+      errors.add(:enterprise_bypass_expires_at, 'An expiry date is required when bypass is enabled.')
+      return
+    end
+
+    min_date = Date.current.tomorrow.beginning_of_day
+    max_date = Date.current.advance(years: 1, days: -1).end_of_day
+
+    if enterprise_bypass_expires_at < min_date
+      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be a future date.')
+    elsif enterprise_bypass_expires_at > max_date
+      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be within one year from today.')
+    end
+  end
+
   def set_pipeline_variables_default_role
-    # After FF  `change_namespace_default_role_for_pipeline_variables` rollout - we have to remove both FF and pipeline_variables_default_role = NO_ONE_ALLOWED_ROLE
-    # As any self-managed and Dedicated instance should opt-in by changing their namespace settings explicitly.
-    # NO_ONE_ALLOWED will be set as the default value for namespace_settings through a database migration.
-
-    # WARNING: Removing this FF could cause breaking changes for self-hosted and dedicated instances.
-
-    return if Feature.disabled?(:change_namespace_default_role_for_pipeline_variables, namespace)
+    return if Gitlab::CurrentSettings.pipeline_variables_default_allowed
 
     self.pipeline_variables_default_role = ProjectCiCdSetting::NO_ONE_ALLOWED_ROLE
   end
@@ -154,6 +194,12 @@ class NamespaceSetting < ApplicationRecord
 
   def subgroup?
     !!namespace&.subgroup?
+  end
+
+  def invalidate_namespace_descendants_cache
+    return if namespace.is_a?(Namespaces::UserNamespace)
+
+    Namespaces::Descendants.expire_recursive_for(namespace)
   end
 end
 

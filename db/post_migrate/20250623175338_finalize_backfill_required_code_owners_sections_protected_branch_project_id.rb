@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+class FinalizeBackfillRequiredCodeOwnersSectionsProtectedBranchProjectId < Gitlab::Database::Migration[2.3]
+  milestone '18.2'
+  disable_ddl_transaction!
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+
+  def up
+    ensure_batched_background_migration_is_finished(
+      job_class_name: 'BackfillRequiredCodeOwnersSectionsProtectedBranchProjectId',
+      table_name: :required_code_owners_sections,
+      column_name: :id,
+      job_arguments: [:protected_branch_project_id, :protected_branches, :project_id, :protected_branch_id],
+      finalize: true
+    )
+  end
+
+  def down; end
+end

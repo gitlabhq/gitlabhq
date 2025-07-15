@@ -4,7 +4,7 @@
 
 RSpec.describe QA::Support::KnapsackReport do
   let(:logger) { instance_double(Logger, info: nil, debug: nil) }
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real") }
+  let(:gcs_client) { double("Fog::Google::StorageJSON::Real") }
 
   let(:test_pattern) { "#{QA::Specs::Runner::DEFAULT_TEST_PATH}/**/*_spec.rb" }
   let(:report_enabled) { true }
@@ -23,7 +23,7 @@ RSpec.describe QA::Support::KnapsackReport do
 
   before do
     allow(QA::Runtime::Env).to receive(:knapsack?).and_return(report_enabled)
-    allow(Fog::Storage::Google).to receive(:new)
+    allow(Fog::Google::Storage).to receive(:new)
       .with(google_project: "gitlab-qa-resources", google_json_key_string: json_key)
       .and_return(gcs_client)
 

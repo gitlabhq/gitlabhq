@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :database do
   let_it_be(:siphon_table_prefix) { 'siphon_' }
   let_it_be(:skip_tables) { [] } # insert table name in the array to be skipped on specs
-  let_it_be(:skip_fields) { [] } # insert field name in the array to be skipped on specs
+  let_it_be(:skip_fields) { %(title_html description_html) } # insert field name in the array to be skipped on specs
   let_it_be(:ch_database_name) { ClickHouse::Client.configuration.databases[:main].database }
   let_it_be(:pg_type_map) { Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP }
 
@@ -36,7 +36,10 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       ch_field_type = ch_table_fields[field_name]
 
       unless ch_field_type.present?
-        raise "Postgres field '#{field_name}' of table '#{pg_table}' is not present in ClickHouse"
+        raise "This table is synchronised to ClickHouse and you've added a new column! " \
+          "Missing ClickHouse field '#{field_name}' for table '#{pg_table}'. " \
+          "Create a ClickHouse migration to add this field. " \
+          "See: https://docs.gitlab.com/development/database/clickhouse/clickhouse_within_gitlab/#handling-siphon-errors-in-tests"
       end
 
       next if ch_field_type.include?(pg_type_map[type_id])

@@ -990,6 +990,25 @@ and will be moved to the JiHu GitLab codebase.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### `bin_path` and `use_bundled_binaries` configuration options in Gitaly
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181).
+
+</div>
+
+Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
+removed in GitLab 19.0.
+
+The Git binaries provided by Gitaly will be the only supported way to execute Git.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">
@@ -1089,6 +1108,62 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.9">
+
+## GitLab 18.9
+
+<div class="deprecation breaking-change" data-milestone="18.9">
+
+### Linux packages for Ubuntu 20.04
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.9</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8915).
+
+</div>
+
+Ubuntu standard support for Ubuntu 20.04 [ends in May 2025](https://wiki.ubuntu.com/Releases).
+
+Therefore, from GitLab 18.9, we will no longer provide packages for the Ubuntu 20.04 distribution for Linux package installs.
+GitLab 18.8 will be the last GitLab version with Linux packages for Ubuntu 20.04.
+You should upgrade to Ubuntu 22.04 for continued support.
+
+</div>
+</div>
+
+<div class="milestone-wrapper" data-milestone="18.8">
+
+## GitLab 18.8
+
+<div class="deprecation breaking-change" data-milestone="18.8">
+
+### Static compliance violations report
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">18.8</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/12774).
+
+</div>
+
+The existing static compliance violations report is deprecated in GitLab 18.2 and will be removed in GitLab 18.8.
+
+To replace the static compliance violations report:
+
+- In GitLab 17.11, we released [custom compliance frameworks](https://docs.gitlab.com/user/compliance/compliance_frameworks/).
+- In GitLab 18.2, we released the new [dynamic compliance violations report](https://docs.gitlab.com/user/compliance/compliance_center/compliance_violations_report/).
+
+These features give all of the same functionality as the static violations report, but you can configure the violations that you require.
+
+In GitLab 18.8, we'll replace the static compliance violations report with the dynamic report using compliance frameworks for more accurate reporting on requirements
+and controls.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.6">
 
 ## GitLab 18.6
@@ -1137,29 +1212,32 @@ In GitLab 18.6, we'll replace the compliance standards adherence dashboard with 
 </div>
 </div>
 
-<div class="milestone-wrapper" data-milestone="18.3">
+<div class="milestone-wrapper" data-milestone="18.5">
 
-## GitLab 18.3
+## GitLab 18.5
 
-<div class="deprecation breaking-change" data-milestone="18.3">
+<div class="deprecation " data-milestone="18.5">
 
-### Linux packages for Ubuntu 20.04
+### Support for OpenSearch 1.x in advanced search
 
 <div class="deprecation-notes">
 
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.3</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8915).
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">18.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/554530).
 
 </div>
 
-Ubuntu standard support for Ubuntu 20.04 [ends in May 2025](https://wiki.ubuntu.com/Releases).
-
-Therefore, from GitLab 18.3, we will no longer provide packages for the Ubuntu 20.04 distribution for Linux package installs.
-GitLab 18.2 will be the last GitLab version with Linux packages for Ubuntu 20.04.
-You should upgrade to Ubuntu 22.04 for continued support.
+The [maintenance window for OpenSearch 1.x](https://opensearch.org/releases/#maintenance-policy) has ended.
+For GitLab Self-Managed and GitLab Dedicated, administrators must upgrade their OpenSearch instance
+to use advanced search.
 
 </div>
+</div>
+
+<div class="milestone-wrapper" data-milestone="18.3">
+
+## GitLab 18.3
 
 <div class="deprecation breaking-change" data-milestone="18.3">
 

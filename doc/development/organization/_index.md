@@ -216,6 +216,10 @@ As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/46
 
 For more information about development with organizations, see [Organization](../organization)
 
+#### Add a sharding key to a pre-existing table
+
+See the following [guidance](sharding/_index.md).
+
 #### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
@@ -299,7 +303,11 @@ exempt_from_sharding: true
 to the table's database dictionary file. This can be used for:
 
 - JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
-- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
+- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541).
+  These tables should be dropped as soon as practical.
+
+Do not use `exempt_from_sharding` for any other purposes.
+Tables which are exempt breaks our efforts at isolation and will introduce issues later in the Organizations and Cells projects.
 
 When tables are exempted from sharding key requirements, they also do not show up in our
 [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
@@ -331,10 +339,6 @@ and [RSpec matcher examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/
 
 The application needs to know how to map incoming requests to an organization. The mapping logic is encapsulated in [`Gitlab::Current::Organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/current/organization.rb). The outcome of this mapping is stored in a [`ActiveSupport::CurrentAttributes`](https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html) instance called `Current`. You can then access the current organization using the `Current.organization` method.
 
-Since this mapping depends on HTTP requests, `Current.organization` is only available in the request layer (Rails controllers,
-Grape API, and GraphQL). It cannot be used in Rake tasks, cron jobs or Sidekiq workers. This is enforced by a RuboCop rule. In
-those cases, the organization ID should be derived from something else (related data) or passed as an argument.
-
 ### Availability of `Current.organization`
 
 Since this mapping depends on HTTP requests, `Current.organization` is available only in the request layer. You can use it in:
@@ -343,6 +347,8 @@ Since this mapping depends on HTTP requests, `Current.organization` is available
 - GraphQL queries and mutations
 - Grape API endpoints (requires [usage of a helper](#usage-in-grape-api)
 
+In these request layers, it is safe to assume that `Current.organization` is not `nil`.
+
 You cannot use `Current.organization` in:
 
 - Rake tasks
@@ -350,6 +356,23 @@ You cannot use `Current.organization` in:
 - Sidekiq workers
 
 This restriction is enforced by a RuboCop rule. For these cases, derive the organization ID from related data or pass it as an argument.
+
+### Writing tests for code that depends on `Current.organization`
+
+If you need a `current_organization` for RSpec, you can use the [`with_current_organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_contexts/current_organization_context.rb) shared context. This will create a `current_organization` method that will be returned by `Gitlab::Current::Organization` class
+
+```ruby
+# frozen_string_literal: true
+require 'spec_helper'
+
+RSpec.describe MyController, :with_current_organization do
+  let(:project) { create(:project, organization: current_organization) }
+
+  subject { project.organization }
+
+  it {is_expected.to eq(current_organization) }
+end
+```
 
 ### Usage in Grape API
 

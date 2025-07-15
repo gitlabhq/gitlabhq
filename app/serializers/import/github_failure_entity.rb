@@ -102,7 +102,7 @@ module Import
       gh_identifiers = failure.external_identifiers
       github_repo = project.import_source
 
-      host = host(project.import_url)
+      host = host(project.safe_import_url)
       return '' unless host
 
       case gh_identifiers['object_type']

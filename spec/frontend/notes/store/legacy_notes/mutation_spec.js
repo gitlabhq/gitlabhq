@@ -42,14 +42,14 @@ describe('Notes Store mutations', () => {
     it('should add a new note to an array of notes', () => {
       store[types.ADD_NEW_NOTE](note);
       expect(store.discussions).toStrictEqual([noteData]);
-      expect(store.discussions.length).toBe(1);
+      expect(store.discussions).toHaveLength(1);
     });
 
     it('should not add the same note to the notes array', () => {
       store[types.ADD_NEW_NOTE](note);
       store[types.ADD_NEW_NOTE](note);
 
-      expect(store.discussions.length).toBe(1);
+      expect(store.discussions).toHaveLength(1);
     });
 
     it('trims first character from truncated_diff_lines', () => {
@@ -74,14 +74,14 @@ describe('Notes Store mutations', () => {
     it('should add a reply to a specific discussion', () => {
       store[types.ADD_NEW_REPLY_TO_DISCUSSION](newReply);
 
-      expect(store.discussions[0].notes.length).toEqual(4);
+      expect(store.discussions[0].notes).toHaveLength(4);
     });
 
     it('should not add the note if it already exists in the discussion', () => {
       store[types.ADD_NEW_REPLY_TO_DISCUSSION](newReply);
       store[types.ADD_NEW_REPLY_TO_DISCUSSION](newReply);
 
-      expect(store.discussions[0].notes.length).toEqual(4);
+      expect(store.discussions[0].notes).toHaveLength(4);
     });
   });
 
@@ -93,7 +93,7 @@ describe('Notes Store mutations', () => {
 
       store[types.DELETE_NOTE](toDelete);
 
-      expect(store.discussions[0].notes.length).toEqual(lengthBefore - 1);
+      expect(store.discussions[0].notes).toHaveLength(lengthBefore - 1);
     });
   });
 
@@ -151,7 +151,7 @@ describe('Notes Store mutations', () => {
 
       store[types.REMOVE_PLACEHOLDER_NOTES]();
 
-      expect(store.discussions[0].notes.length).toEqual(lengthBefore);
+      expect(store.discussions[0].notes).toHaveLength(lengthBefore);
     });
   });
 
@@ -228,7 +228,7 @@ describe('Notes Store mutations', () => {
       expect(store.discussions[0].id).toEqual(note.id);
       expect(store.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
       expect(store.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
-      expect(store.discussions.length).toEqual(3);
+      expect(store.discussions).toHaveLength(3);
     });
 
     it('adds truncated_diff_lines if discussion is a diffFile', () => {
@@ -339,7 +339,7 @@ describe('Notes Store mutations', () => {
       };
       store[types.TOGGLE_AWARD](data);
 
-      expect(store.discussions[0].award_emoji.length).toEqual(2);
+      expect(store.discussions[0].award_emoji).toHaveLength(2);
     });
   });
 
@@ -854,7 +854,7 @@ describe('Notes Store mutations', () => {
     it('removes info for all suggestions from a batch', () => {
       store[types.CLEAR_SUGGESTION_BATCH]();
 
-      expect(store.batchSuggestionsInfo.length).toEqual(0);
+      expect(store.batchSuggestionsInfo).toHaveLength(0);
     });
   });
 

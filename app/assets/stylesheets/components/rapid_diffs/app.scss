@@ -41,7 +41,11 @@
 }
 
 .rd-app-diffs-list {
+  --rd-diff-file-bottom-margin: #{$gl-padding};
   position: relative;
+  // remove bottom margin for the last diff element
+  // we can't just use :last-child and other pseudo classes on diff files because they can be in different containers
+  margin-bottom: calc(var(--rd-diff-file-bottom-margin) * -1);
 }
 
 .rd-app-diffs-list-loading-overlay {

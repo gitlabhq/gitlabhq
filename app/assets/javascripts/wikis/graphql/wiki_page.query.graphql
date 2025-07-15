@@ -4,6 +4,9 @@ query wikiPageQuery($slug: String, $projectId: ProjectID, $namespaceId: Namespac
   wikiPage(slug: $slug, projectId: $projectId, namespaceId: $namespaceId) {
     id
     title
+    userPermissions {
+      markNoteAsInternal
+    }
     discussions {
       nodes {
         id

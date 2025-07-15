@@ -1,19 +1,27 @@
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
-import store from '~/mr_notes/stores';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { createDraft } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
+Vue.use(PiniaVuePlugin);
+
 describe('Batch comments draft preview item component', () => {
   let wrapper;
+  let pinia;
   let draft;
 
   beforeEach(() => {
-    store.reset();
-
-    store.getters.getDiscussion = jest.fn(() => null);
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
   });
 
   function createComponent(extra = {}, improvedReviewExperience = false) {
@@ -23,9 +31,7 @@ describe('Batch comments draft preview item component', () => {
     };
 
     wrapper = mountExtended(PreviewItem, {
-      mocks: {
-        $store: store,
-      },
+      pinia,
       propsData: { draft },
       provide: {
         glFeatures: { improvedReviewExperience },
@@ -93,17 +99,18 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for thread', () => {
     beforeEach(() => {
-      store.getters.getDiscussion.mockReturnValue({
-        id: '1',
-        notes: [
-          {
-            author: {
-              name: "Author 'Nick' Name",
+      useNotes().discussions = [
+        {
+          id: '1',
+          notes: [
+            {
+              author: {
+                name: "Author 'Nick' Name",
+              },
             },
-          },
-        ],
-      });
-      store.getters.isDiscussionResolved = jest.fn().mockReturnValue(false);
+          ],
+        },
+      ];
 
       createComponent({ discussion_id: '1', resolve_discussion: true });
     });
@@ -126,17 +133,4 @@ describe('Batch comments draft preview item component', () => {
       expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
     });
   });
-
-  it.each`
-    improvedReviewExperience | component
-    ${true}                  | ${'button'}
-    ${false}                 | ${'span'}
-  `(
-    'renders as $component when improvedReviewExperience is $improvedReviewExperience',
-    ({ improvedReviewExperience }) => {
-      createComponent({}, improvedReviewExperience);
-
-      expect(wrapper.findByTestId('preview-item-header').element).toMatchSnapshot();
-    },
-  );
 });

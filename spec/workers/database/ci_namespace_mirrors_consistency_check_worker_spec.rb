@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker, feature_category: :cell do
+RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker, feature_category: :continuous_integration do
   let(:worker) { described_class.new }
 
   describe '#perform' do

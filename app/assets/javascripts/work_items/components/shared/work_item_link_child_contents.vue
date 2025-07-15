@@ -18,7 +18,12 @@ import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/w
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
-import { canRouterNav, findLinkedItemsWidget, getDisplayReference } from '../../utils';
+import {
+  canRouterNav,
+  findLinkedItemsWidget,
+  findStatusWidget,
+  getDisplayReference,
+} from '../../utils';
 import {
   STATE_OPEN,
   WIDGET_TYPE_ASSIGNEES,
@@ -143,6 +148,14 @@ export default {
     displayLabels() {
       return this.showLabels && this.labels.length;
     },
+    workItemStatus() {
+      return findStatusWidget(this.childItem)?.status?.name;
+    },
+    showState() {
+      return this.glFeatures.workItemStatusFeatureFlag
+        ? !this.workItemStatus || !this.isChildItemOpen
+        : true;
+    },
     displayReference() {
       return getDisplayReference(this.workItemFullPath, this.childItem.reference);
     },
@@ -159,10 +172,7 @@ export default {
       return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
-      );
+      return !this.isGroup && this.glFeatures.workItemViewForIssues;
     },
     childItemUniqueId() {
       return `listItem-${this.childItemFullPath}/${getIdFromGraphQLId(this.childItem.id)}`;
@@ -282,6 +292,7 @@ export default {
           />
           <slot name="child-contents"></slot>
           <span
+            v-if="showState"
             :id="`statusIcon-${childItem.id}`"
             class="gl-cursor-help"
             data-testid="item-status-icon"

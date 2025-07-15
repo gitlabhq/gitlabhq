@@ -9,7 +9,9 @@ exports[`Design management upload button component renders inverted upload desig
     category="secondary"
     icon=""
     size="small"
+    tag="button"
     title="Adding a design with the same filename replaces the file in a new version."
+    type="button"
     variant="confirm"
   >
     Upload designs
@@ -31,7 +33,9 @@ exports[`Design management upload button component renders upload design button 
     category="secondary"
     icon=""
     size="small"
+    tag="button"
     title="Adding a design with the same filename replaces the file in a new version."
+    type="button"
     variant="confirm"
   >
     Upload designs

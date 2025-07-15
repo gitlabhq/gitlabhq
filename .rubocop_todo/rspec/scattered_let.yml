@@ -65,7 +65,7 @@ RSpec/ScatteredLet:
     - 'spec/controllers/projects/jobs_controller_spec.rb'
     - 'spec/features/boards/user_visits_board_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'
-    - 'spec/features/issues/user_filters_issues_spec.rb'
+    - 'spec/features/issues/list/user_filters_issues_spec.rb'
     - 'spec/finders/concerns/finder_with_cross_project_access_spec.rb'
     - 'spec/finders/group_projects_finder_spec.rb'
     - 'spec/finders/groups/user_groups_finder_spec.rb'

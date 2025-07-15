@@ -11,6 +11,7 @@ module Gitlab
              [Status::Bridge::Manual],
              [Status::Bridge::WaitingForApproval],
              [Status::Bridge::WaitingForResource],
+             [Status::Bridge::SuccessWarning],
              [Status::Bridge::Play],
              [Status::Bridge::Action],
              [Status::Bridge::Retried]]

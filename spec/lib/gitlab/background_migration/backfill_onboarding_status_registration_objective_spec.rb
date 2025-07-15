@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusRegistrationObjective, feature_category: :onboarding do
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
-  let(:first_user) { users.create!(projects_limit: 0, email: 'user1@example.com') }
+  let(:first_user) { users.create!(projects_limit: 0, email: 'user1@example.com', organization_id: organization.id) }
   let!(:user_detail) do
     user_details.create!(
       user_id: first_user.id,
@@ -14,7 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusRegistration
     )
   end
 
-  let(:second_user) { users.create!(projects_limit: 0, email: 'user2@example.com') }
+  let(:second_user) { users.create!(projects_limit: 0, email: 'user2@example.com', organization_id: organization.id) }
   let!(:user_detail_to_change) do
     user_details.create!(
       user_id: second_user.id,
@@ -23,7 +24,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOnboardingStatusRegistration
     )
   end
 
-  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com') }
+  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com', organization_id: organization.id) }
   let!(:user_detail_not_to_be_set) do
     user_details.create!(
       user_id: last_user.id,

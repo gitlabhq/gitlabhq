@@ -89,7 +89,7 @@ describe('Configure Feature Flags Modal', () => {
 
     it('should display one and only one danger alert', () => {
       const dangerGlAlert = findDangerGlAlert();
-      expect(dangerGlAlert.length).toBe(1);
+      expect(dangerGlAlert).toHaveLength(1);
       expect(dangerGlAlert.at(0).text()).toMatch(/Regenerating the instance ID/);
     });
 

@@ -2,8 +2,6 @@
 import {
   GlAvatarLabeled,
   GlBadge,
-  GlEmptyState,
-  GlIcon,
   GlKeysetPagination,
   GlLoadingIcon,
   GlTable,
@@ -18,6 +16,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_PAGE_SIZE } from '~/members/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import {
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
   PLACEHOLDER_STATUS_COMPLETED,
@@ -34,8 +33,6 @@ export default {
   components: {
     GlAvatarLabeled,
     GlBadge,
-    GlEmptyState,
-    GlIcon,
     GlKeysetPagination,
     GlLoadingIcon,
     GlTable,
@@ -43,6 +40,7 @@ export default {
     GlLink,
     PlaceholderActions,
     HelpPopover,
+    EmptyResult,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -150,11 +148,6 @@ export default {
     isSearchQueryTooShort() {
       return this.querySearch && this.querySearch.trim().length < MINIMUM_QUERY_LENGTH;
     },
-    emptyText() {
-      return this.isSearchQueryTooShort
-        ? __('Enter at least three characters to search.')
-        : __('Edit your search and try again');
-    },
   },
 
   methods: {
@@ -211,13 +204,15 @@ export default {
 
 <template>
   <div>
-    <gl-table :items="nodes" :fields="fields" :busy="isLoading" show-empty>
+    <gl-table :items="nodes" :fields="fields" :busy="isLoading" show-empty stacked="md">
       <template #table-busy>
         <gl-loading-icon size="lg" class="gl-my-5" />
       </template>
 
       <template #empty>
-        <gl-empty-state :title="__('No results found')" :description="emptyText" />
+        <!-- EmptyResult shows minimum length message when searchMinimumLength is set,
+             otherwise shows generic search message -->
+        <empty-result type="search" :search-minimum-length="isSearchQueryTooShort ? 3 : null" />
       </template>
 
       <template #cell(user)="{ item }">
@@ -234,40 +229,35 @@ export default {
       </template>
 
       <template #cell(source)="{ item }">
-        <div class="gl-flex gl-gap-1">
-          <gl-icon name="location" />
-          <span>{{ item.sourceHostname }}</span>
-        </div>
-        <div class="gl-mt-2">{{ item.sourceName }}</div>
-        <div class="gl-mt-2 gl-flex gl-gap-1">
-          <span v-if="item.sourceUsername">@{{ item.sourceUsername }}</span>
-          <template v-else>
-            <help-popover
-              :aria-label="s__('UserMapping|Full user details missing')"
-              class="gl-inline-flex"
+        <p class="gl-mb-2">{{ item.sourceHostname }}</p>
+        <p class="gl-mb-2">{{ item.sourceName }}</p>
+        <p v-if="item.sourceUsername" class="gl-mb-2">@{{ item.sourceUsername }}</p>
+        <template v-else>
+          <help-popover
+            :aria-label="s__('UserMapping|Full user details missing')"
+            class="gl-relative gl-top-[-2px]"
+          >
+            <gl-sprintf
+              :message="
+                s__(
+                  'UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?',
+                )
+              "
             >
-              <gl-sprintf
-                :message="
-                  s__(
-                    'UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?',
-                  )
-                "
-              >
-                <template #link="{ content }">
-                  <gl-link
-                    class="gl-text-sm"
-                    :href="$options.placeholderUsersHelpPath"
-                    target="_blank"
-                    >{{ content }}</gl-link
-                  >
-                </template>
-              </gl-sprintf>
-            </help-popover>
-            <span class="gl-font-subtle gl-italic"
-              >{{ s__('UserMapping|User ID') }}: {{ item.sourceUserIdentifier }}</span
-            >
-          </template>
-        </div>
+              <template #link="{ content }">
+                <gl-link
+                  class="gl-text-sm"
+                  :href="$options.placeholderUsersHelpPath"
+                  target="_blank"
+                  >{{ content }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+          </help-popover>
+          <span class="gl-font-subtle gl-italic"
+            >{{ s__('UserMapping|User ID') }}: {{ item.sourceUserIdentifier }}</span
+          >
+        </template>
       </template>
 
       <template #head(createdAt)="{ label }">

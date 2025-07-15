@@ -537,7 +537,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
 
       let(:ancestor_notice_regex) do
-        /The parent group of this project is pending deletion, so this project will also be deleted on .*./
+        /This project will be deleted on .* because its parent group is scheduled for deletion\./
       end
 
       context 'when the parent group has not been scheduled for deletion' do
@@ -1039,7 +1039,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           id: project.path,
           project: {
             project_setting_attributes: {
-              merge_request_title_regex: 'aaa'
+              merge_request_title_regex: 'aaa',
+              merge_request_title_regex_description: 'Test description'
             }
           }
         }
@@ -1047,6 +1048,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         project.reload
 
         expect(project.merge_request_title_regex).to eq('aaa')
+        expect(project.merge_request_title_regex_description).to eq('Test description')
       end
     end
 
@@ -1228,7 +1230,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect(project.marked_for_deletion?).to be_falsey
+        expect(project.self_deletion_scheduled?).to be_falsey
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(dashboard_projects_path)
       end
@@ -1238,7 +1240,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect(project.reload.marked_for_deletion?).to be_truthy
+        expect(project.reload.self_deletion_scheduled?).to be_truthy
         expect(project.reload.hidden?).to be_falsey
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(project_path(project))
@@ -1299,7 +1301,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         specify :aggregate_failures do
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.marked_for_deletion?).to be_falsey
+          expect(project.self_deletion_scheduled?).to be_falsey
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(dashboard_projects_path)
         end
@@ -1309,7 +1311,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         specify :aggregate_failures do
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.reload.marked_for_deletion?).to be_truthy
+          expect(project.reload.self_deletion_scheduled?).to be_truthy
           expect(project.reload.hidden?).to be_falsey
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(project_path(project))

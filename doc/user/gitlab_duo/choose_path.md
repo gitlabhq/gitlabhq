@@ -64,7 +64,7 @@ Follow this path to learn how to:
 - Automatically generate fix suggestions
 - Create merge requests to address security issues
 
-[Start here: Vulnerability explanation and resolution →](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)
+[Start here: Vulnerability explanation and resolution →](../application_security/vulnerabilities/_index.md#vulnerability-explanation)
 
 {{< /tab >}}
 
@@ -128,7 +128,7 @@ After you're comfortable with the basics, try these more advanced features:
 When you're ready to maximize your productivity with GitLab Duo:
 
 - **[GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)** - Host LLMs on your own infrastructure
-- **[GitLab Duo Workflow](../duo_workflow/_index.md)** - Automate tasks in your development workflow
+- **[GitLab Duo Agent Platform](../duo_agent_platform/_index.md)** - Automate tasks in your development workflow
 - **[Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution)** - Automatically generate merge requests to fix security issues
 
 ## Best practices

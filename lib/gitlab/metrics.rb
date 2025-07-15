@@ -2,19 +2,9 @@
 
 module Gitlab
   module Metrics
-    include Gitlab::Metrics::Prometheus
+    include ::Gitlab::Metrics::Labkit
 
     EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
-
-    @error = false
-
-    def self.enabled?
-      prometheus_metrics_enabled?
-    end
-
-    def self.error?
-      @error
-    end
 
     def self.record_duration_for_status?(status)
       status.to_i.between?(200, 499)

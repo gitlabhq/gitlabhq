@@ -3,10 +3,6 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', () => {
-  const stubUserColorScheme = (value) => {
-    window.gon.user_color_scheme = value;
-  };
-
   // We have to bind `document.querySelectorAll` to `document` to not mess up the fn's context
   describe.each`
     desc                | fn
@@ -24,10 +20,9 @@ describe('Syntax Highlighter', () => {
       });
 
       it('applies syntax highlighting', () => {
-        stubUserColorScheme('monokai');
         syntaxHighlight(fn('.js-syntax-highlight'));
 
-        expect(fn('.js-syntax-highlight')).toHaveClass('monokai');
+        expect(fn('.js-syntax-highlight')).toHaveClass('code-syntax-highlight-theme');
       });
     });
 
@@ -43,13 +38,12 @@ describe('Syntax Highlighter', () => {
       });
 
       it('applies highlighting to all applicable children', () => {
-        stubUserColorScheme('monokai');
         syntaxHighlight(fn('.parent'));
 
-        expect(fn('.parent')).not.toHaveClass('monokai');
-        expect(fn('.foo')).not.toHaveClass('monokai');
+        expect(fn('.parent')).not.toHaveClass('code-syntax-highlight-theme');
+        expect(fn('.foo')).not.toHaveClass('code-syntax-highlight-theme');
 
-        expect(document.querySelectorAll('.monokai').length).toBe(2);
+        expect(document.querySelectorAll('.code-syntax-highlight-theme')).toHaveLength(2);
       });
 
       it('prevents an infinite loop when no matches exist', () => {

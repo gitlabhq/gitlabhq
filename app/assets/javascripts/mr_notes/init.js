@@ -2,7 +2,6 @@ import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import { getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
-import { initReviewBar } from '~/batch_comments';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
 import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
@@ -66,7 +65,6 @@ export function initMrStateLazyLoad() {
       eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
 
       requestIdleCallback(() => {
-        initReviewBar();
         initOverviewTabCounter();
         initDiscussionCounter();
       });

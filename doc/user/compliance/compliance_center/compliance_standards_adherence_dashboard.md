@@ -23,8 +23,8 @@ and is planned for removal in 18.6. Use the [compliance status report](complianc
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) compliance standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_adherence_report`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) compliance standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `adherence_report_ui`. Disabled by default.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/414495) in GitLab 16.5.
 - [Feature flag `compliance_adherence_report` and `adherence_report_ui`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137398) removed in GitLab 16.7.
 - Standards adherence filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413734) in GitLab 16.7.
@@ -140,7 +140,7 @@ for these projects, you must update the group-level or project-level setting. Fo
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) in GitLab 16.9. Feature flag `compliance_standards_adherence_csv_export` removed.
 
 {{< /history >}}

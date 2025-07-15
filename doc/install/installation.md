@@ -51,7 +51,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 | Software                | Minimum version | Notes                                                                                                                                                                                                                                                                                  |
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Ruby](#2-ruby)         | `3.2.x`         | In GitLab 17.5 and later, Ruby 3.2 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
+| [Ruby](#2-ruby)         | `3.2.x`         | From GitLab 16.7 to 17.4, Ruby 3.1 is required. In GitLab 17.5 and later, Ruby 3.2 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [RubyGems](#3-rubygems) | `3.5.x`         | A specific RubyGems version is not required, but you should update to benefit from some known performance improvements. |
 | [Go](#4-go)             | `1.22.x`        | In GitLab 17.1 and later, Go 1.22 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.47.x`        | In GitLab 17.7 and later, Git 2.47.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
@@ -203,7 +203,7 @@ can install it with:
 sudo apt-get install -y postfix
 ```
 
-Then select 'Internet Site' and press <kbd>Enter</kbd> to confirm the hostname.
+Then select `Internet Site` and press <kbd>Enter</kbd> to confirm the hostname.
 
 ### ExifTool
 
@@ -1226,7 +1226,7 @@ sudo -u git -H gem install google-protobuf --version 3.2.0 --platform ruby
 ```
 
 Finally, you can test whether `google-protobuf` loads correctly. The
-following should print 'OK'.
+following should print `OK`.
 
 ```shell
 sudo -u git -H bundle exec ruby -rgoogle/protobuf -e 'puts :OK'

@@ -118,7 +118,7 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `disable_preferred_language_cookie`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags/_index.md) named `disable_preferred_language_cookie`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}

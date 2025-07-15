@@ -414,8 +414,8 @@ class MergeRequest < ApplicationRecord
     preload_routables.preload(
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
-      :merge_schedule,
-      target_project: [:project_feature, :project_setting],
+      :merge_schedule, :merge_user,
+      target_project: [:project_feature, :project_setting, { project_namespace: :namespace_settings_with_ancestors_inherited_settings }],
       metrics: [:latest_closed_by, :merged_by]
     )
   }
@@ -1415,7 +1415,7 @@ class MergeRequest < ApplicationRecord
     merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
 
     {
-      skip_ci_check: options.fetch(:auto_merge_requested, false),
+      skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
       skip_draft_check: merge_when_checks_pass_strat,
       skip_blocked_check: merge_when_checks_pass_strat,
@@ -1679,7 +1679,7 @@ class MergeRequest < ApplicationRecord
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       messages = [title, description]
-      messages.concat(commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).map(&:safe_message)) if merge_request_diff.persisted?
+      messages.concat(commits(load_from_gitaly: true).map(&:safe_message)) if merge_request_diff.persisted?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -1701,7 +1701,7 @@ class MergeRequest < ApplicationRecord
     visible_notes = user.can?(:read_internal_note, project) ? notes : notes.not_internal
 
     messages = [title, description, *visible_notes.pluck(:note)]
-    messages += commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).map(&:safe_message) if merge_request_diff.persisted?
+    messages += commits(load_from_gitaly: true).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))
@@ -1786,7 +1786,7 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit
   def first_multiline_commit
     strong_memoize(:first_multiline_commit) do
-      recent_commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).without_merge_commits.reverse_each.find(&:description?)
+      recent_commits(load_from_gitaly: true).without_merge_commits.reverse_each.find(&:description?)
     end
   end
 
@@ -2121,7 +2121,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.complete_or_manual? &&
+        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:sast))&.exists?
+    else
+      !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    end
   end
 
   def has_secret_detection_reports?
@@ -2169,12 +2174,11 @@ class MergeRequest < ApplicationRecord
   # Note that this could also return SHA from now dangling commits
   #
   def all_commit_shas
-    @all_commit_shas ||= begin
-      return commit_shas unless persisted?
+    return commit_shas unless persisted?
 
-      all_commits.pluck(:sha).uniq
-    end
+    all_commits.pluck(:sha).uniq
   end
+  strong_memoize_attr :all_commit_shas
 
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
@@ -2316,15 +2320,11 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # Overridden in EE
-  def use_merge_base_pipeline_for_comparison?(_)
-    false
-  end
-
   def comparison_base_pipeline(service_class)
     target_shas = [
-      (diff_head_pipeline&.target_sha if use_merge_base_pipeline_for_comparison?(service_class)),
-      diff_base_sha
+      diff_head_pipeline&.target_sha,
+      diff_base_sha,
+      diff_start_sha
     ]
 
     target_shas
@@ -2662,6 +2662,8 @@ class MergeRequest < ApplicationRecord
   def report_type_enabled?(report_type)
     if report_type == :license_scanning
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
+    elsif report_type == :sast && Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))&.exists?
     else
       !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
     end

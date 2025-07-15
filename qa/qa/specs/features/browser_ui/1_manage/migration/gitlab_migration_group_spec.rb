@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  describe 'Manage', product_group: :import_and_integrate do
+  describe 'Manage', product_group: :import do
     describe 'Gitlab migration', :import, :orchestrated, requires_admin: 'creates a user via API' do
       include_context "with gitlab group migration"
 

@@ -204,7 +204,7 @@ RSpec.describe MergeRequests::CreateFromIssueService, feature_category: :code_re
         end
 
         it 'does not create merge request' do
-          expect { service.execute }.to change(target_project.merge_requests, :count).by(0)
+          expect { service.execute }.to not_change(target_project.merge_requests, :count)
         end
       end
 

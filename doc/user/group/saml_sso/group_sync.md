@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Provision
+group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: SAML Group Sync
 ---
@@ -291,8 +291,8 @@ To link the SAML groups:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512141) for Self-Managed in GitLab 17.11.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512141) for Self-Managed in GitLab 18.0.
 {{< /history >}}
 
 Prerequisites:

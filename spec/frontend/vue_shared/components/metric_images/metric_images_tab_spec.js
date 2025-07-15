@@ -77,7 +77,7 @@ describe('Metric images tab', () => {
 
       await waitForPromises();
 
-      expect(findImages().length).toBe(1);
+      expect(findImages()).toHaveLength(1);
     });
   });
 

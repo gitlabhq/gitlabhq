@@ -40,12 +40,28 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
     expect { subject }.to change { group_member_user.can?(:create_release, project) }.from(true).to(false)
   end
 
-  it 'executes UserProjectAccessChangedService' do
-    expect_next_instance_of(UserProjectAccessChangedService, [group_member_user.id]) do |service|
-      expect(service).to receive(:execute)
-    end
+  it 'executes UserProjectAccessChangedService with medium priority' do
+    expect(group)
+      .to receive(:refresh_members_authorized_projects)
+      .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+      .once
 
     subject
+  end
+
+  context 'when feature-flag `change_priority_for_user_access_refresh_for_group_links` is disabled' do
+    before do
+      stub_feature_flags(change_priority_for_user_access_refresh_for_group_links: false)
+    end
+
+    it 'executes UserProjectAccessChangedService with high priority' do
+      expect(group)
+        .to receive(:refresh_members_authorized_projects)
+        .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+        .once
+
+      subject
+    end
   end
 
   context 'with only param not requiring authorization refresh' do

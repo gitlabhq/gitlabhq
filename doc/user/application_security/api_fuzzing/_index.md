@@ -25,7 +25,160 @@ you can run fuzz tests as part your CI/CD workflow.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Web API Fuzzing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
 
-## When Web API fuzzing runs
+## Getting started
+
+Get started with API fuzzing by editing your CI/CD configuration.
+
+Prerequisites:
+
+- A web API using one of the supported API types:
+  - REST API
+  - SOAP
+  - GraphQL
+  - Form bodies, JSON, or XML
+- An API specification in one of the following formats:
+  - [OpenAPI v2 or v3 Specification](configuration/enabling_the_analyzer.md#openapi-specification)
+  - [GraphQL Schema](configuration/enabling_the_analyzer.md#graphql-schema)
+  - [HTTP Archive (HAR)](configuration/enabling_the_analyzer.md#http-archive-har)
+  - [Postman Collection v2.0 or v2.1](configuration/enabling_the_analyzer.md#postman-collection)
+- An available [GitLab Runner](../../../ci/runners/_index.md) with the
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+- A deployed target application. For more details, see the [deployment options](#application-deployment-options).
+- The `fuzz` stage is added to your CI/CD pipeline definition, after the `deploy` stage:
+
+  ```yaml
+  stages:
+    - build
+    - test
+    - deploy
+    - fuzz
+  ```
+
+To enable API fuzzing:
+
+- Use the [Web API fuzzing configuration form](configuration/enabling_the_analyzer.md#web-api-fuzzing-configuration-form).
+
+  The form lets you choose values for the most common API fuzzing options, and builds
+  a YAML snippet that you can paste in your GitLab CI/CD configuration.
+
+## Understanding the results
+
+To view the output of a security scan:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Severity: Categorized into six levels based on impact.
+     For more information, see [severity levels](../vulnerabilities/severities.md).
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Method: Establishes the vulnerable server interaction type.
+   - URL: Shows the location of the vulnerability.
+   - Evidence: Describes test case to prove the presence of a given vulnerability
+   - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers.
+
+You can also download the security scan results:
+
+- In the pipeline's **Security** tab, select **Download results**.
+
+For more details, see the [pipeline security report](../vulnerability_report/pipeline.md).
+
+{{< alert type="note" >}}
+
+Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
+
+{{< /alert >}}
+
+## Optimization
+
+To get the most out of API fuzzing, follow these recommendations:
+
+- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
+- By default, API fuzzing downloads all artifacts defined by previous jobs in the pipeline. If your
+  API fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other
+  files created in previous jobs, you should not download artifacts.
+ 
+  To avoid downloading artifacts, extend the analyzer CI/CD job to specify no dependencies.
+  For example, for the API fuzzing analyzer, add the following to your `.gitlab-ci.yml` file:
+
+  ```yaml
+  apifuzzer_fuzz:
+    dependencies: []
+  ```
+
+### Application deployment options
+
+API fuzzing requires a deployed application to be available to scan.
+
+Depending on the complexity of the target application, there are a few options as to how to deploy and configure
+the API fuzzing template.
+
+#### Review apps
+
+Review apps are the most involved method of deploying your API Fuzzing target application. To assist in the process,
+GitLab created a review app deployment using Google Kubernetes Engine (GKE). This example can be found in the
+[Review apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, plus detailed
+instructions to configure review apps in DAST in the [README](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md).
+
+#### Docker Services
+
+If your application uses Docker containers, you have another option for deploying and scanning with API fuzzing.
+After your Docker build job completes and your image is added to your container registry, you can use the image as a
+[service](../../../ci/services/_index.md).
+
+By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
+
+When adding a `services` section to the job, the `alias` is used to define the hostname that can be used to access the service. In the following example, the `alias: yourapp` portion of the `dast` job definition means that the URL to the deployed application uses `yourapp` as the hostname (`https://yourapp/`).
+
+```yaml
+stages:
+  - build
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+# Deploys the container to the GitLab container registry
+deploy:
+  services:
+  - name: docker:dind
+    alias: dind
+  image: docker:20.10.16
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+apifuzzer_fuzz:
+  services: # use services to link your app container to the dast job
+    - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      alias: yourapp
+
+variables:
+  FUZZAPI_TARGET_URL: https://yourapp
+```
+
+Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+
+```yaml
+variables:
+  FF_NETWORK_PER_BUILD: "true" # enable network per build so all services can communicate on the same network
+
+services: # use services to link the container to the dast job
+  - name: mongo:latest
+    alias: mongo
+  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    alias: yourapp
+```
+
+## Roll out
 
 Web API fuzzing runs in the `fuzz` stage of the CI/CD pipeline. To ensure API fuzzing scans the
 latest code, your CI/CD pipeline should deploy changes to a test environment in one of the stages
@@ -45,7 +198,7 @@ You can run a Web API fuzzing scan using the following methods:
 - [HTTP Archive](configuration/enabling_the_analyzer.md#http-archive-har) (HAR)
 - [Postman Collection](configuration/enabling_the_analyzer.md#postman-collection) - version 2.0 or 2.1
 
-Example projects using these methods are available:
+### Example API fuzzing projects
 
 - [Example OpenAPI v2 Specification project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/openapi)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/har)

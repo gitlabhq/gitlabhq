@@ -180,20 +180,28 @@ describe('Number Utils', () => {
 
   describe('isNumeric', () => {
     it.each`
-      value        | outcome
-      ${0}         | ${true}
-      ${12345}     | ${true}
-      ${'0'}       | ${true}
-      ${'12345'}   | ${true}
-      ${1.0}       | ${true}
-      ${'1.0'}     | ${true}
-      ${'abcd'}    | ${false}
-      ${'abcd100'} | ${false}
-      ${''}        | ${false}
-      ${false}     | ${false}
-      ${true}      | ${false}
-      ${undefined} | ${false}
-      ${null}      | ${false}
+      value         | outcome
+      ${0}          | ${true}
+      ${12345}      | ${true}
+      ${'0'}        | ${true}
+      ${'12345'}    | ${true}
+      ${1.0}        | ${true}
+      ${'1.0'}      | ${true}
+      ${'  100  '}  | ${true}
+      ${'abcd'}     | ${false}
+      ${'abcd100'}  | ${false}
+      ${'abcd 100'} | ${false}
+      ${'100abcd'}  | ${false}
+      ${'100 abcd'} | ${false}
+      ${''}         | ${false}
+      ${false}      | ${false}
+      ${true}       | ${false}
+      ${undefined}  | ${false}
+      ${null}       | ${false}
+      ${'    '}     | ${false}
+      ${Infinity}   | ${false}
+      ${-Infinity}  | ${false}
+      ${NaN}        | ${false}
     `('when called with $value it returns $outcome', ({ value, outcome }) => {
       expect(isNumeric(value)).toBe(outcome);
     });

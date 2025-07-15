@@ -15,7 +15,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   describe 'has_contact_info?' do
     subject { helper.has_contact_info?(user) }
 
-    context 'when user has skype profile' do
+    context 'when user has bluesky profile' do
       let_it_be(:user) { create(:user, bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz') }
 
       it { is_expected.to be true }
@@ -412,7 +412,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     context 'without schema markup' do
       context 'when both job_title and organization are present' do
-        let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
+        let(:user) { build(:user, user_detail_organization: 'GitLab', job_title: 'Frontend Engineer') }
 
         it 'returns job title concatenated with organization' do
           is_expected.to eq('Frontend Engineer at GitLab')
@@ -420,7 +420,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       context 'when only organization is present' do
-        let(:user) { build(:user, organization: 'GitLab') }
+        let(:user) { build(:user, user_detail_organization: 'GitLab') }
 
         it "returns organization" do
           is_expected.to eq('GitLab')
@@ -440,7 +440,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       let(:with_schema_markup) { true }
 
       context 'when both job_title and organization are present' do
-        let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
+        let(:user) { build(:user, user_detail_organization: 'GitLab', job_title: 'Frontend Engineer') }
 
         it 'returns job title concatenated with organization' do
           is_expected.to eq('<span itemprop="jobTitle">Frontend Engineer</span> at <span itemprop="worksFor">GitLab</span>')
@@ -448,7 +448,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       context 'when only organization is present' do
-        let(:user) { build(:user, organization: 'GitLab') }
+        let(:user) { build(:user, user_detail_organization: 'GitLab') }
 
         it "returns organization" do
           is_expected.to eq('<span itemprop="worksFor">GitLab</span>')

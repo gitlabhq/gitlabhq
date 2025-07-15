@@ -98,7 +98,7 @@ describe('Sidebar store', () => {
   it('removes all assignees', () => {
     testContext.store.removeAllAssignees();
 
-    expect(testContext.store.assignees.length).toEqual(0);
+    expect(testContext.store.assignees).toHaveLength(0);
     expect(testContext.store.changing).toBe(true);
   });
 
@@ -110,7 +110,7 @@ describe('Sidebar store', () => {
     testContext.store.setAssigneeData(users);
 
     expect(testContext.store.isFetching.assignees).toBe(false);
-    expect(testContext.store.assignees.length).toEqual(3);
+    expect(testContext.store.assignees).toHaveLength(3);
   });
 
   it('sets fetching state', () => {

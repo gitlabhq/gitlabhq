@@ -57,7 +57,11 @@ namespace :admin do
     put 'renew', on: :member
   end
 
-  resources :groups, only: [:index, :new, :create]
+  resources :groups, only: [:index, :new, :create] do
+    collection do
+      get :active, :inactive, to: 'groups#index'
+    end
+  end
 
   resources :organizations, only: [:index]
 
@@ -119,7 +123,11 @@ namespace :admin do
 
   resource :system_info, controller: 'system_info', only: [:show]
 
-  resources :projects, only: [:index]
+  resources :projects, only: [:index] do
+    collection do
+      get :active, :inactive, to: 'projects#index'
+    end
+  end
 
   resources :usage_trends, only: :index
   resource :dev_ops_reports, controller: 'dev_ops_report', only: :show

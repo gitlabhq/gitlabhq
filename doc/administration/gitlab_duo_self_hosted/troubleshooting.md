@@ -16,7 +16,7 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
@@ -73,15 +73,15 @@ We provide two debugging scripts to help administrators verify their self-hosted
      poetry run troubleshoot [options]
      ```
 
-      The `troubleshoot` command supports the following options:
+     The `troubleshoot` command supports the following options:
 
-      | Option | Description | Default | Example |
-      |--------|-------------|---------|---------|
-      | `--endpoint` | AI Gateway endpoint | `localhost:5052` | `--endpoint=localhost:5052` |
-      | `--model-family` | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` | - | `--model-family=mistral` |
-      | `--model-endpoint` | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. | - | `--model-endpoint=http://localhost:4000/v1` |
-      | `--model-identifier` | Model identifier. | - | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` |
-      | `--api-key` | Model API key. | - | `--api-key=your-api-key` |
+     | Option               | Default          | Example                                                       | Description |
+     |----------------------|------------------|---------------------------------------------------------------|-------------|
+     | `--endpoint`         | `localhost:5052` | `--endpoint=localhost:5052`                                   | AI Gateway endpoint |
+     | `--model-family`     | -                | `--model-family=mistral`                                      | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` |
+     | `--model-endpoint`   | -                | `--model-endpoint=http://localhost:4000/v1`                   | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. |
+     | `--model-identifier` | -                | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` | Model identifier. |
+     | `--api-key`          | -                | `--api-key=your-api-key`                                      | Model API key. |
 
      **Examples**:
 
@@ -515,3 +515,4 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 ## Related topics
 
 - [GitLab Duo troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md)
+- [Support Engineer Playbook and Common Issues](support_engineer_playbook.md)

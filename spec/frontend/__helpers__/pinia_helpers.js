@@ -36,7 +36,7 @@ export const createTestPiniaAction =
       });
     } else {
       // eslint-disable-next-line jest/no-standalone-expect
-      expect(actionCalls.length).toBe(0);
+      expect(actionCalls).toHaveLength(0);
     }
 
     return result;

@@ -1,10 +1,10 @@
 <script>
-import PanelsBase from '~/vue_shared/components/customizable_dashboard/panels_base.vue';
+import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
 
 export default {
   name: 'GridstackPanel',
   components: {
-    PanelsBase,
+    ExtendedDashboardPanel,
   },
   props: {
     title: {
@@ -15,9 +15,9 @@ export default {
 };
 </script>
 <template>
-  <panels-base :title="title">
+  <extended-dashboard-panel :title="title">
     <template #body>
       <slot></slot>
     </template>
-  </panels-base>
+  </extended-dashboard-panel>
 </template>

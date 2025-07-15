@@ -37,11 +37,7 @@ module Projects
       update_project!
       after_update
 
-      if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
-          project.previous_changes[:archived] == [false, true]
-
-        UnlinkForkService.new(project, current_user).execute
-      end
+      UnlinkForkService.new(project, current_user).execute if archiving_project?
 
       success
     rescue ActiveRecord::ActiveRecordError
@@ -59,6 +55,10 @@ module Projects
     end
 
     private
+
+    def archiving_project?
+      project.previous_changes[:archived] == [false, true]
+    end
 
     def update_project!
       if Feature.disabled?(:replicate_deletion_schedule_operations, project)

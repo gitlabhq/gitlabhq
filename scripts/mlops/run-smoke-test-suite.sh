@@ -58,6 +58,9 @@ function run_rspec {
 function run_jest {
   trap onexit_err ERR
 
+  printf "\n\n${BBlue}Running 'yarn check --integrity' and 'yarn install' if needed${Color_Off}\n\n"
+  yarn check --integrity || yarn install
+
   printf "\n\n${BBlue}Running MLOps frontend Jest specs${Color_Off}\n\n"
   git ls-files -- '**/ml/**/*_spec.js'  | xargs yarn jest
 }
@@ -84,7 +87,7 @@ function main {
 
   # Convenience ENV vars to run focused sections, copy and paste as a prefix to script command, and remove the one(s) you want to run focused
   # SKIP_RUBOCOP=1 SKIP_RSPEC=1 SKIP_JEST=1
- 
+
   print_success_message
 }
 

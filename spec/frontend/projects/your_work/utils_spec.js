@@ -15,7 +15,7 @@ describe('formatProjects', () => {
     expect(formatProjects(projects)).toEqual(
       formatGraphQLProjects(projects).map((project) => ({
         ...project,
-        editPath: `${project.webUrl}/edit`,
+        editPath: `${project.relativeWebUrl}/edit`,
       })),
     );
   });

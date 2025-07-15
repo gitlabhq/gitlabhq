@@ -240,7 +240,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         it 'create detached merge request pipeline with commits' do
           expect { subject }
             .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-            .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+            .and not_change { @another_merge_request.pipelines_for_merge_request.count }
 
           expect(@merge_request.has_commits?).to be_truthy
           expect(@another_merge_request.has_commits?).to be_falsy
@@ -266,7 +266,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           it 'creates a detached merge request pipeline with commits' do
             expect { subject }
               .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-              .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+              .and not_change { @another_merge_request.pipelines_for_merge_request.count }
 
             expect(@merge_request.has_commits?).to be_truthy
             expect(@another_merge_request.has_commits?).to be_falsy
@@ -282,7 +282,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           it 'creates a skipped detached merge request pipeline with commits' do
             expect { subject }
               .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-              .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+              .and not_change { @another_merge_request.pipelines_for_merge_request.count }
 
             expect(@merge_request.has_commits?).to be_truthy
             expect(@another_merge_request.has_commits?).to be_falsy

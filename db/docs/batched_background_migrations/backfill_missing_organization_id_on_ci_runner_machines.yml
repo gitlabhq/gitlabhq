@@ -1,0 +1,11 @@
+---
+migration_job_name: BackfillMissingOrganizationIdOnCiRunnerMachines
+description: >
+  Backfill organization_id column for machines associated with non-instance type runners with default organization id.
+  This is the second attempt to initialize the values that were missed in a time window just after
+  BackfillOrganizationIdOnCiRunnerMachines was started.
+feature_category: fleet_visibility
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195123
+milestone: '18.2'
+queued_migration_version: 20250620094653
+finalized_by: # version of the migration that finalized this BBM

@@ -74,7 +74,7 @@ simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_editor_file_tree`. Disabled by default.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
 
 {{< /history >}}
@@ -212,25 +212,18 @@ including:
 
 ## Troubleshooting
 
-### `Configuration validation currently not available` message
+### `Unable to validate CI/CD configuration.` message
 
 This message is caused by a problem validating the syntax in the pipeline editor.
-It can happen when:
+It can happen when GitLab is unable to communicate with the service that validates the syntax.
 
-- GitLab is unable to communicate with the service that validates the syntax, so the
-  information in these sections may not display properly:
+The information in these sections may not display properly:
 
-  - The syntax status on the **Edit** tab (valid or invalid).
-  - The **Visualize** tab.
-  - The **Lint** tab.
-  - The **Full configuration** tab.
+- The syntax status on the **Edit** tab (valid or invalid).
+- The **Visualize** tab.
+- The **Lint** tab.
+- The **Full configuration** tab.
 
-  You can still work on your CI/CD configuration and commit the changes you made without
-  any issues. As soon as the service becomes available again, the syntax validation
-  should display immediately.
-
-- Using [`include`](../yaml/_index.md#include), but the included configuration files create a loop.
-  For example, `.gitlab-ci.yml` includes `file1.yml`, which includes `file2.yml`,
-  which includes `file1.yml`, creating a loop between `file1.yml` and `file2.yml`.
-
-  Remove one of the `include` lines to eliminate the loop and resolve the issue.
+You can still work on your CI/CD configuration and commit the changes you made without
+any issues. As soon as the service becomes available again, the syntax validation
+should display immediately.

@@ -6,6 +6,8 @@ fragment WorkItem on WorkItem {
   id
   iid
   archived
+  hidden
+  imported
   title
   titleHtml
   state
@@ -38,6 +40,10 @@ fragment WorkItem on WorkItem {
   }
   userPermissions {
     ...WorkItemPermissions
+  }
+  commentTemplatesPaths {
+    text
+    href
   }
   widgets {
     ...WorkItemWidgets

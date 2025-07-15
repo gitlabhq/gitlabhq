@@ -17,16 +17,16 @@ eventually.
 
 #### State leak
 
-**Label:** `flaky-test::state leak`
+**Label**: `flaky-test::state leak`
 
-**Description:** Data state has leaked from a previous test. The actual cause is probably not the flaky test here.
+**Description**: Data state has leaked from a previous test. The actual cause is probably not the flaky test here.
 
-**Difficulty to reproduce:** Moderate. Usually, running the same spec files until the one that's failing reproduces the problem.
+**Difficulty to reproduce**: Moderate. Usually, running the same spec files until the one that's failing reproduces the problem.
 
-**Resolution:** Fix the previous tests and/or places where the test data or environment is modified, so that
+**Resolution**: Fix the previous tests and/or places where the test data or environment is modified, so that
 it's reset to a pristine test after each test.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/402915): State leakage can result from
   data records created with `let_it_be` shared between test examples, while some test modifies the model
@@ -56,22 +56,22 @@ it's reset to a pristine test after each test.
 
 #### Dataset-specific
 
-**Label:** `flaky-test::dataset-specific`
+**Label**: `flaky-test::dataset-specific`
 
-**Description:** The test assumes the dataset is in a particular (usually limited) state or order, which
+**Description**: The test assumes the dataset is in a particular (usually limited) state or order, which
 might not be true depending on when the test run during the test suite.
 
-**Difficulty to reproduce:** Moderate, as the amount of data needed to reproduce the issue might be
+**Difficulty to reproduce**: Moderate, as the amount of data needed to reproduce the issue might be
 difficult to achieve locally. Ordering issues are easier to reproduce by repeatedly running the tests several times.
 
-**Resolution:**
+**Resolution**:
 
 - Fix the test to not assume that the dataset is in a particular state, don't hardcode IDs.
 - Loosen the assertion if the test shouldn't care about ordering but only on the elements.
 - Fix the test by specifying a deterministic ordering.
 - Fix the app code by specifying a deterministic ordering.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/378381): The database is recreated when
   any table has more than 500 columns. It could pass in the merge request, but fail later in
@@ -89,42 +89,42 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
 
 #### Too Many SQL queries
 
-**Label:** `flaky-test::too-many-sql-queries`
+**Label**: `flaky-test::too-many-sql-queries`
 
-**Description:** SQL Query limit has reached triggering `Gitlab::QueryLimiting::Transaction::ThresholdExceededError`.
+**Description**: SQL Query limit has reached triggering `Gitlab::QueryLimiting::Transaction::ThresholdExceededError`.
 
-**Difficulty to reproduce:** Moderate, this failure may depend on the state of query cache which can be impacted by order of specs.
+**Difficulty to reproduce**: Moderate, this failure may depend on the state of query cache which can be impacted by order of specs.
 
-**Resolution:** See [query count limits docs](../database/query_count_limits.md#solving-failing-tests).
+**Resolution**: See [query count limits docs](../database/query_count_limits.md#solving-failing-tests).
 
 #### Random input
 
-**Label:** `flaky-test::random input`
+**Label**: `flaky-test::random input`
 
-**Description:** The test use random values, that sometimes match the expectations, and sometimes not.
+**Description**: The test use random values, that sometimes match the expectations, and sometimes not.
 
-**Difficulty to reproduce:** Easy, as the test can be modified locally to use the "random value"
+**Difficulty to reproduce**: Easy, as the test can be modified locally to use the "random value"
 used at the time the test failed
 
-**Resolution:** Once the problem is reproduced, it should be easy to debug and fix either the test
+**Resolution**: Once the problem is reproduced, it should be easy to debug and fix either the test
 or the app.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20121): The test isn't robust enough to handle a specific data, that only appears sporadically since the data input is random.
 
 #### Unreliable DOM Selector
 
-**Label:** `flaky-test::unreliable dom selector`
+**Label**: `flaky-test::unreliable dom selector`
 
-**Description:** The DOM selector used in the test is unreliable.
+**Description**: The DOM selector used in the test is unreliable.
 
-**Difficulty to reproduce:** Moderate to difficult. Depending on whether the DOM selector is duplicated, or appears after a delay etc.
+**Difficulty to reproduce**: Moderate to difficult. Depending on whether the DOM selector is duplicated, or appears after a delay etc.
 Adding a delay in API or controller could help reproducing the issue.
 
-**Resolution:** It really depends on the problem here. It could be to wait for requests to finish, to scroll down the page etc.
+**Resolution**: It really depends on the problem here. It could be to wait for requests to finish, to scroll down the page etc.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/338341): A non-unique CSS selector
   matching more than one element, or a non-waiting selector method that does not allow rendering
@@ -136,50 +136,50 @@ Adding a delay in API or controller could help reproducing the issue.
 
 #### Datetime-sensitive
 
-**Label:** `flaky-test::datetime-sensitive`
+**Label**: `flaky-test::datetime-sensitive`
 
-**Description:** The test is assuming a specific date or time.
+**Description**: The test is assuming a specific date or time.
 
-**Difficulty to reproduce:** Easy to moderate, depending on whether the test consistently fails after a certain date, or only fails at a given time or date.
+**Difficulty to reproduce**: Easy to moderate, depending on whether the test consistently fails after a certain date, or only fails at a given time or date.
 
-**Resolution:** Freezing the time is usually a good solution.
+**Resolution**: Freezing the time is usually a good solution.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/118612): A test that breaks after some time passed.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/403332): A test that breaks in the last day of the month.
 
 #### Unstable infrastructure
 
-**Label:** `flaky-test::unstable infrastructure`
+**Label**: `flaky-test::unstable infrastructure`
 
-**Description:** The test fails from time to time due to infrastructure issues.
+**Description**: The test fails from time to time due to infrastructure issues.
 
-**Difficulty to reproduce:** Hard. It's really hard to reproduce CI infrastructure issues. It might
+**Difficulty to reproduce**: Hard. It's really hard to reproduce CI infrastructure issues. It might
 be possible by using containers locally.
 
-**Resolution:** Starting a conversation with the Infrastructure department in a dedicated issue is
+**Resolution**: Starting a conversation with the Infrastructure department in a dedicated issue is
 usually a good idea.
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
 
 #### Improper Synchronization
 
-**Label:** `flaky-test::improper synchronization`
+**Label**: `flaky-test::improper synchronization`
 
-**Description:** A flaky test issue arising from timing-related factors, such as delays, eventual consistency, asynchronous operations, or race conditions.
+**Description**: A flaky test issue arising from timing-related factors, such as delays, eventual consistency, asynchronous operations, or race conditions.
 These issues may stem from shortcomings in the test logic, the system under test, or their interaction.
 While tests can sometimes address these issues through improved synchronization, they may also reveal underlying system bugs that require resolution.
 
-**Difficulty to reproduce:** Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
+**Difficulty to reproduce**: Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
 element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.
 
-**Resolution:** In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+**Resolution**: In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
 
-**Examples:**
+**Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/502844): Text was not appearing on a page in time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/496393): Text was not appearing on a page in time.
@@ -490,10 +490,10 @@ For tests that are above the thresholds, we automatically report slowness occurr
 
 For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
 
-| Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
-| :-: | :-: | :-: | :-: | :-: | :-: |
-| 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
-| 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
+|    Date    | Feature tests | Controllers and Requests tests | Unit  |     Other     | Method |
+|:----------:|:-------------:|:------------------------------:|:-----:|:-------------:|:------:|
+| 2023-02-15 | 67.42 seconds |         44.66 seconds          |   -   | 76.86 seconds | Top slow test eliminating the maximum |
+| 2023-06-15 | 50.13 seconds |         19.20 seconds          | 27.12 | 45.40 seconds | Avg for top 100 slow tests |
 
 ## Handling issues for flaky or slow tests
 

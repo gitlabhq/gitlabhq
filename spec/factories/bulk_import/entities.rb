@@ -34,6 +34,11 @@ FactoryBot.define do
       sequence(:source_full_path) { |n| "root/source-path-#{n}" }
     end
 
+    trait(:with_portable) do
+      group { |instance| association(:group) if instance.source_type == :group_entity }
+      project { |instance| association(:project) if instance.source_type == :project_entity }
+    end
+
     trait :without_organization do
       transient { uses_without_organization_trait? { true } }
 

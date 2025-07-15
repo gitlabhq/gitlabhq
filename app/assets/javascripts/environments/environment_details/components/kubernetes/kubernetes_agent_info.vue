@@ -1,10 +1,10 @@
 <script>
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSprintf, GlButton, GlModalDirective } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getAgentLastContact, getAgentStatus } from '~/clusters_list/clusters_util';
-import { AGENT_STATUSES } from '~/clusters_list/constants';
-import { s__ } from '~/locale';
+import { AGENT_STATUSES, CONNECT_MODAL_ID } from '~/clusters_list/constants';
 
 export default {
   components: {
@@ -12,6 +12,11 @@ export default {
     GlLink,
     GlSprintf,
     TimeAgoTooltip,
+    GlButton,
+    ConnectToAgentModal,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     clusterAgent: {
@@ -29,32 +34,48 @@ export default {
     agentId() {
       return getIdFromGraphQLId(this.clusterAgent.id);
     },
-  },
-  methods: {},
-  i18n: {
-    agentId: s__('ClusterAgents|Agent ID #%{agentId}'),
+    agentProjectPath() {
+      return this.clusterAgent.project?.fullPath || '';
+    },
   },
   AGENT_STATUSES,
+  CONNECT_MODAL_ID,
 };
 </script>
 <template>
-  <div class="gl-text-default">
-    <gl-icon name="kubernetes-agent" variant="subtle" />
-    <gl-link :href="clusterAgent.webPath" class="gl-mr-3">
-      <gl-sprintf :message="$options.i18n.agentId"
-        ><template #agentId>{{ agentId }}</template></gl-sprintf
-      >
-    </gl-link>
-    <span data-testid="agent-status">
-      <gl-icon
-        :name="$options.AGENT_STATUSES[agentStatus].icon"
-        :class="$options.AGENT_STATUSES[agentStatus].class"
-      />
-      {{ $options.AGENT_STATUSES[agentStatus].name }}
-    </span>
+  <div>
+    <div class="gl-mb-4 gl-mt-2 gl-text-default">
+      <gl-icon name="kubernetes-agent" variant="subtle" />
+      <gl-link :href="clusterAgent.webPath" class="gl-mr-3">
+        <gl-sprintf :message="s__('ClusterAgents|Agent ID #%{agentId}')"
+          ><template #agentId>{{ agentId }}</template></gl-sprintf
+        >
+      </gl-link>
+      <span data-testid="agent-status">
+        <gl-icon
+          :name="$options.AGENT_STATUSES[agentStatus].icon"
+          :class="$options.AGENT_STATUSES[agentStatus].class"
+        />
+        {{ $options.AGENT_STATUSES[agentStatus].name }}
+      </span>
 
-    <span data-testid="agent-last-used-date">
-      <time-ago-tooltip v-if="agentLastContact" :time="agentLastContact" />
-    </span>
+      <span data-testid="agent-last-used-date">
+        <time-ago-tooltip v-if="agentLastContact" :time="agentLastContact" />
+      </span>
+    </div>
+
+    <gl-button
+      v-gl-modal-directive="$options.CONNECT_MODAL_ID"
+      category="secondary"
+      variant="confirm"
+      class="gl-mb-2"
+      >{{ s__('ClusterAgents|Connect to agent') }}</gl-button
+    >
+
+    <connect-to-agent-modal
+      :agent-id="clusterAgent.id"
+      :project-path="agentProjectPath"
+      :is-configured="true"
+    />
   </div>
 </template>

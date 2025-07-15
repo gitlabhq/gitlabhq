@@ -20,7 +20,7 @@ export default function syntaxHighlight($els = null) {
 
     if (el.classList.contains('js-syntax-highlight')) {
       // Given the element itself, apply highlighting
-      return el.classList.add(gon.user_color_scheme);
+      return el.classList.add('code-syntax-highlight-theme');
     }
     // Given a parent element, recurse to any of its applicable children
     const children = el.querySelectorAll('.js-syntax-highlight');

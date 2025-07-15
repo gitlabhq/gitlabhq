@@ -13,9 +13,7 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
-- rapid_diffs_enabled = ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) && params[:rapid_diffs] == 'true'
-
-- unless rapid_diffs_enabled
+- unless rapid_diffs_page_enabled?
   - add_page_startup_api_call @endpoint_metadata_url
   - add_page_startup_api_call @linked_file_url if @linked_file_url
   - if mr_action == 'diffs' && !@file_by_file_default
@@ -26,10 +24,10 @@
   #js-review-drawer{ data: review_bar_data(@merge_request, current_user) }
   #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
-    = render "projects/merge_requests/mr_box"
-    .gl-static.merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
-      .merge-request-tabs-container.gl-flex.gl-justify-between{ class: "#{'is-merge-request' if !fluid_layout}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.lg:gl-w-auto
+    .merge-request-sticky-header.gl-border-b{ class: "!gl-h-auto" }
+      = render "projects/merge_requests/mr_box"
+      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative.md:gl-z-1{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.lg:gl-w-auto.gl-border-0.gl-h-9
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -49,7 +47,7 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
-        .gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
+        .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if !!@issuable_sidebar.dig(:current_user, :id)
             .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
@@ -94,7 +92,10 @@
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       = render_if_exists "projects/merge_requests/reports_tab_pane"
-      - unless rapid_diffs_enabled
+      - if rapid_diffs_page_enabled?
+        = render "projects/merge_requests/tabs/pane", name: "diffs", class: "diffs", id: 'diffs' do
+          = render 'projects/merge_requests/rapid_diffs_app'
+      - else
         - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
         = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
@@ -108,11 +109,6 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.commit_to_cherry_pick
 
-#js-review-bar{ data: review_bar_data(@merge_request, current_user) }
-
 #js-reviewer-drawer-portal
-
-- if current_user && Feature.enabled?(:mr_experience_survey, current_user)
-  #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 
 = render 'shared/web_ide_path'

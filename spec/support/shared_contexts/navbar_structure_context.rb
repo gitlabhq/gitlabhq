@@ -32,6 +32,16 @@ RSpec.shared_context 'project navbar structure' do
           _('Wiki')
         ]
       },
+
+      if Gitlab.ee?
+        {
+          nav_item: _('Automate'),
+          nav_sub_items: [
+            _('Agent sessions')
+          ]
+        }
+      end,
+
       {
         nav_item: _('Code'),
         nav_sub_items: [
@@ -86,16 +96,6 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Analyze'),
         nav_sub_items: project_analytics_sub_nav_item
       },
-
-      if Gitlab.ee?
-        {
-          nav_item: _('Agents'),
-          nav_sub_items: [
-            _('Runs')
-          ]
-        }
-      end,
-
       {
         nav_item: _('Settings'),
         nav_sub_items: [
@@ -302,10 +302,14 @@ RSpec.shared_context '"Explore" navbar structure' do
         nav_item: _("CI/CD Catalog"),
         nav_sub_items: []
       },
-      {
-        nav_item: s_("AI|AI Catalog"),
-        nav_sub_items: []
-      },
+
+      if Gitlab.ee?
+        {
+          nav_item: s_("AICatalog|AI Catalog"),
+          nav_sub_items: []
+        }
+      end,
+
       {
         nav_item: _("Topics"),
         nav_sub_items: []

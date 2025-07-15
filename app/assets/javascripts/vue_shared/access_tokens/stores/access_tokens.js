@@ -10,7 +10,7 @@ import {
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { SORT_OPTIONS, DEFAULT_SORT } from '~/access_tokens/constants';
-import { serializeParams, update2WeekFromNow, updateUrlWithQueryParams } from '../utils';
+import { serializeParams, update15DaysFromNow } from '../utils';
 
 /**
  * @typedef {{type: string, value: {data: string, operator: string}}} Filter
@@ -97,7 +97,7 @@ export const useAccessTokens = defineStore('accessTokens', {
     },
     async fetchStatistics() {
       try {
-        const updatedFilters = update2WeekFromNow();
+        const updatedFilters = update15DaysFromNow();
         this.statistics = await Promise.all(
           updatedFilters.map(async (stat) => {
             const params = serializeParams(stat.filters);
@@ -131,7 +131,6 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.busy = true;
       try {
         const url = this.urlShow.replace(':id', this.id);
-        updateUrlWithQueryParams({ params: this.params, sort: this.sort });
         const { data, perPage, total } = await fetchTokens({
           url,
           params: this.params,
@@ -269,6 +268,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.page = page;
       this.showCreateForm = showCreateForm;
       this.sorting = sorting;
+      this.token = null;
       this.urlCreate = urlCreate;
       this.urlRevoke = urlRevoke;
       this.urlRotate = urlRotate;
@@ -284,6 +284,12 @@ export const useAccessTokens = defineStore('accessTokens', {
       const sortOption = SORT_OPTIONS.find((option) => option.value === value);
 
       return isAsc ? sortOption.sort.asc : sortOption.sort.desc;
+    },
+    urlParams() {
+      return {
+        ...this.params,
+        sort: this.sort,
+      };
     },
   },
 });

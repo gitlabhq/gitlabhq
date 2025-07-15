@@ -114,7 +114,8 @@ To edit multiple issues at the same time:
 
 When bulk editing issues in a project, you can edit the following attributes:
 
-- Status (open or closed)
+- [Status](../../work_items/status.md)
+- State (open or closed)
 - [Assignees](managing_issues.md#assignees)
 - [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/_index.md)
@@ -156,6 +157,7 @@ To edit multiple issues at the same time:
 
 When bulk editing issues in a group, you can edit the following attributes:
 
+- [Status](../../work_items/status.md)
 - [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/_index.md)
 - [Iteration](../../group/iterations/_index.md)
@@ -194,7 +196,7 @@ You can also use the `/move` [quick action](../quick_actions.md) in a comment or
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags/_index.md) named `move_issue_children`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 17.3. Feature flag `move_issue_children` removed.
 
@@ -728,7 +730,7 @@ The following sections describe how to work with the issue list.
 
 {{< history >}}
 
-- Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+- Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags/_index.md) named `vue_issues_list`. Disabled by default.
 - Filtering by type was [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
 - Filtering by health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218711) in GitLab 15.5.
@@ -774,8 +776,8 @@ It's a limitation of PostgreSQL full text search.
 
 {{< history >}}
 
-- OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
-- OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 
@@ -808,7 +810,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.
 - In GitLab 17.11 and later, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
 
 {{< /history >}}
@@ -958,6 +960,62 @@ until the issue is reopened.
 
 You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
 [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
+
+## Status
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+<!-- Turn off the future tense test because of "won't do". -->
+<!-- vale gitlab_base.FutureTense = NO -->
+
+You can assign a status to issues to track their progress through your workflow.
+Status provides more granular tracking than the basic open/closed states, so you can use specific
+stages like **In progress**, **Done**, or **Won't do**.
+
+For more information about status, including how to configure custom statuses, see [Status](../../work_items/status.md).
+
+<!-- vale gitlab_base.FutureTense = YES -->
+
+### Change status
+
+Prerequisites:
+
+- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+
+To change the status of an issue:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. On the right sidebar, in the **Status** section, select **Edit**.
+1. From the dropdown list, select the status.
+
+The issue's status updates immediately.
+
+You can view the issue's status in:
+
+- The **Issues** page
+- An epic's **Child items** section
+- Cards on issue boards
+
+You can also set the status by using the `/status` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
 ## Publish an issue
 

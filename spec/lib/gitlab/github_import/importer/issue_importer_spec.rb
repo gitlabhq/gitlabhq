@@ -41,7 +41,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
     create(
       :import_source_user,
       source_user_identifier: '4',
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       namespace_id: group.id
     )
   end
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
     create(
       :import_source_user,
       source_user_identifier: '5',
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       namespace_id: group.id
     )
   end

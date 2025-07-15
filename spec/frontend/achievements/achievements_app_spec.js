@@ -55,7 +55,7 @@ describe('Achievements app', () => {
 
       const achievements = wrapper.findAllComponents(CrudComponent);
 
-      expect(achievements.length).toBe(3);
+      expect(achievements).toHaveLength(3);
     });
 
     it('should render the correct achievement name and avatar (when present)', async () => {

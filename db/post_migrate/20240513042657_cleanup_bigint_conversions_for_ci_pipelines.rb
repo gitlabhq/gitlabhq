@@ -2,7 +2,6 @@
 
 class CleanupBigintConversionsForCiPipelines < Gitlab::Database::Migration[2.2]
   milestone '17.1'
-  enable_lock_retries!
 
   TABLE = :ci_pipelines
   COLUMNS = %i[id]

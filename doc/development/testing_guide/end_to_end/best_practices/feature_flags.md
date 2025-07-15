@@ -17,7 +17,7 @@ and `GITLAB_ADMIN_PASSWORD`.
 
 Be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
 
-**Required metadata:**
+**Required metadata**:
 
 `name`
 
@@ -25,7 +25,7 @@ Be sure to include the `feature_flag` tag so that the test can be skipped on the
 - Used for informational purposes. It shall be included to determine which
   feature flag is under test.
 
-**Optional metadata:**
+**Optional metadata**:
 
 `scope`
 
@@ -46,7 +46,7 @@ or [feature group](../../../feature_flags/_index.md#feature-groups).
     In such a scenario, it would be riskier to skip running the test. For cases like this, `scope` can be left out of the metadata so that it can still run in live environments
     with administrator access, such as staging.
 
-**Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
+**Note on `requires_admin`**: This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
 feature flag (like creating a user via the API).
 
 The code below would enable a feature flag named `:feature_flag_name` for the project
@@ -198,7 +198,7 @@ End-to-end tests should pass with a feature flag enabled before it is enabled on
 There are two ways to confirm that end-to-end tests pass:
 
 - If a merge request adds or edits a [feature flag definition file](../../../feature_flags/_index.md#feature-flag-definition-and-validation),
-  two `e2e:test-on-omnibus-ee` jobs (`ee:instance-parallel` and `ee:instance-parallel-ff-inverse`) are included automatically in the merge request pipeline.
+  two `e2e:test-on-gdk` jobs (`gdk-instance` and `gdk-instance-ff-inverse`) are included automatically in the merge request pipeline.
   One job runs the application with default feature flag state and another sets it to inverse value. The jobs execute the same suite of tests to confirm that they pass with the feature flag either enabled or disabled.
 - In some cases, if end-to-end test jobs didn't trigger automatically, or if it has run the tests with the default feature flag values (which might not be desired),
   you can create a Draft MR that enables the feature flag to ensure that all E2E tests pass with the feature flag enabled and disabled.

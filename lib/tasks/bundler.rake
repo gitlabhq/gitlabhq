@@ -5,11 +5,8 @@ return if Rails.env.production?
 desc "GitLab | bundler tasks"
 namespace :bundler do
   namespace :gemfile do
-    desc "GitLab | bundler tasks | sync Gemfilex"
+    desc "GitLab | bundler tasks | sync Gemfiles"
     task :sync do
-      require 'rainbow/refinement'
-      using Rainbow
-
       Bundler.with_original_env do
         [
           ['bundle install', 'installing Gemfile failed'],
@@ -26,9 +23,6 @@ namespace :bundler do
 
     desc "GitLab | bundler tasks | check Gemfiles"
     task :check do
-      require 'rainbow/refinement'
-      using Rainbow
-
       Bundler.with_original_env do
         [
           ['bundle lock --print | diff Gemfile.lock -',
@@ -50,13 +44,13 @@ namespace :bundler do
     end
 
     def run_bundler(command, error)
-      puts "Running `#{command}`:".underline unless from_lefthook?
+      puts Rainbow("Running `#{command}`:").underline unless from_lefthook?
       out, err, status = Open3.capture3(command)
       if status.success?
-        puts "ok".green, "" unless from_lefthook?
+        puts Rainbow("ok").green, "" unless from_lefthook?
       else
         puts out unless from_lefthook?
-        puts err.to_s.red unless from_lefthook?
+        puts Rainbow(err.to_s).red unless from_lefthook?
         abort(error)
       end
     end

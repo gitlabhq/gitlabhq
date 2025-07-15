@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
     end
 
     context 'with standard properties' do
-      let(:user) { build_stubbed(:user) }
+      let(:user) { build_stubbed(:user, user_type: 'human') }
       let(:top_level_group) { create(:group) }
       let(:subgroup1) { create(:group, parent: top_level_group) }
       let(:subgroup2) { create(:group, parent: subgroup1) }
@@ -95,6 +95,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:correlation_id]).to eq(Labkit::Correlation::CorrelationId.current_or_new_id)
         expect(json_data[:global_user_id]).to eq(Gitlab::GlobalAnonymousId.user_id(user))
         expect(json_data[:unique_instance_id]).to eq(Gitlab::GlobalAnonymousId.instance_uuid)
+        expect(json_data[:user_type]).to eq(user.user_type)
       end
 
       describe 'user_id' do

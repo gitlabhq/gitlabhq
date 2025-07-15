@@ -89,7 +89,6 @@
             = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
         = render_if_exists 'profiles/extra_settings', form: f
         = render_if_exists 'user_settings/profiles/email_settings', form: f
-
         .form-group.gl-form-group
           = f.label :website_url, s_('Profiles|Website URL')
           = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
@@ -108,10 +107,10 @@
             .form-text.gl-text-subtle
               = s_("Profiles|Your job title was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:job_title) }
         .form-group.gl-form-group
-          = f.label :organization, s_('Profiles|Organization')
-          = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: @user.read_only_attribute?(:organization)
+          = f.label :user_detail_organization, s_('Profiles|Organization')
+          = f.text_field :user_detail_organization, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: @user.read_only_attribute?(:user_detail_organization)
           .form-text.gl-text-subtle
-            - if @user.read_only_attribute?(:organization)
+            - if @user.read_only_attribute?(:user_detail_organization)
               = s_("Profiles|Your organization was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:organization) }
             - else
               = s_("Profiles|Who you represent or work for.")
@@ -123,9 +122,6 @@
         = render ::Layouts::CrudComponent.new(s_('Profiles|Social accounts')) do |c|
           - c.with_body do
             %ul.content-list
-              %li.form-group.gl-form-group
-                = f.label :skype
-                = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
               %li.form-group.gl-form-group
                 = f.label :linkedin
                 = f.text_field :linkedin,
@@ -158,7 +154,7 @@
                 = f.label :mastodon
                 = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@username@server_name"
               %li.form-group.gl-form-group
-                = f.label :github
+                = f.label :github, s_('Profiles|GitHub')
                 = f.text_field :github, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
               %li.form-group.gl-form-group
                 = f.label :orcid, s_('Profiles|ORCID')

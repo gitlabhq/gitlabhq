@@ -275,7 +275,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           limit: 10
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 10 elements' do
@@ -294,7 +294,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           limit: 10
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 10 elements' do
@@ -314,7 +314,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           offset: 1
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 3 elements' do
@@ -335,7 +335,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           offset: 1
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 3 elements' do
@@ -683,18 +683,18 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
 
   describe '#gitaly_commit?' do
     context 'when the commit data comes from gitaly' do
-      it { expect(commit.gitaly_commit?).to eq(true) }
+      it { expect(commit.gitaly_commit?).to be(true) }
     end
 
     context 'when the commit data comes from a Hash' do
       let(:commit) { described_class.new(repository, sample_commit_hash) }
 
-      it { expect(commit.gitaly_commit?).to eq(false) }
+      it { expect(commit.gitaly_commit?).to be(false) }
     end
   end
 
   describe '#has_zero_stats?' do
-    it { expect(commit.has_zero_stats?).to eq(false) }
+    it { expect(commit.has_zero_stats?).to be(false) }
   end
 
   describe '#to_hash' do

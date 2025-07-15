@@ -266,8 +266,8 @@ Other examples of review apps:
 Route maps let you navigate directly from source files to their corresponding public pages in the review app environment.
 This feature makes it easier to preview specific changes in your merge requests.
 
-When configured, route maps enhance the review app experience by adding links to review app versions
-of the changed files in:
+When configured, route maps add contextual links that let you view the review app version of files
+that match your mapping patterns. These links appear in:
 
 - The merge request widget.
 - Commit and file views.
@@ -290,8 +290,8 @@ Each mapping in the route map follows this format:
 
 You can use two types of mapping:
 
-- **Exact match**: String literals enclosed in single quotes
-- **Pattern match**: Regular expressions enclosed in forward slashes
+- Exact match: String literals enclosed in single quotes
+- Pattern match: Regular expressions enclosed in forward slashes
 
 For pattern matching with regular expressions:
 
@@ -332,25 +332,41 @@ In this example:
 
 ### View mapped pages
 
-After you configure route maps, you can find links to the mapped pages after the next
-review app deployment.
+Use route maps to navigate directly from source files to their corresponding pages in your review app.
 
-To view mapped pages:
+Prerequisites:
 
-- In the merge request widget, select **View app** to go to the environment URL set in the
-  `.gitlab-ci.yml` file. The list shows up to 5 matched items from the route map (with
-  filtering if more are available).
+- You must have configured route maps in `.gitlab/route-map.yml`.
+- A review app must be deployed for your branch or merge request.
 
-  ![Merge request widget with route maps showing matched items and filter bar](img/mr_widget_route_maps_v17_11.png)
+To view mapped pages from the merge request widget:
 
-For files in your route map:
+1. In the merge request widget, select **View app**.
+   The dropdown list shows up to 5 mapped pages (with filtering if more are available).
 
-1. In the **Changes** tab of your merge request, select **View file @ [commit]** next to a file.
-1. On the file's page, look for **View on [deployment-URL]** ({{< icon name="external-link" >}}) in the upper-right corner.
+![Merge request widget with route maps showing matched items and filter bar.](img/mr_widget_route_maps_v17_11.png)
 
-For merge requests using merged results pipelines:
+To view a mapped page from a file:
 
-1. Go to the **Pipelines** tab in your merge request.
-1. Select the commit for the latest pipeline.
-1. Select **View file @ [commit]** next to a file.
-1. On the file's page, select **View on [deployment-URL]** ({{< icon name="external-link" >}}) in the upper-right corner.
+1. Go to a file that matches your route map using one of these methods:
+   - From a merge request: In the **Changes** tab, select **View file @ [commit]**.
+   - From a commit page: Select the filename.
+   - From a comparison: When comparing revisions, select the filename.
+1. On the file's page, select **View on [environment-name]** ({{< icon name="external-link" >}}) in the upper-right corner.
+
+To view mapped pages from a commit:
+
+1. Go to a commit that has a review app deployment:
+   - For branch pipelines: Select **Code > Commits** and select a commit with a pipeline badge.
+   - For merge request pipelines: In your merge request, select the **Commits** tab and select a commit.
+   - For merged results pipelines: In your merge request, select the **Pipelines** tab and select the pipeline commit.
+1. Select the review app icon ({{< icon name="external-link" >}}) next to a filename that matches your route map.
+   The icon opens the corresponding page in your review app.
+
+{{< alert type="note" >}}
+
+Merged results pipelines create an internal commit that merges your branch with the target branch.
+To access review app links for these pipelines, use the commit from the **Pipelines** tab,
+not the **Commits** tab.
+
+{{< /alert >}}

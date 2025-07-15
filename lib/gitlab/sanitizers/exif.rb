@@ -169,7 +169,7 @@ module Gitlab
       end
 
       def check_for_allowed_types(contents, raise_error: true)
-        mime_type = Gitlab::Utils::MimeType.from_string(contents)
+        mime_type = ::Gitlab::Utils::MimeType.from_string(contents)
 
         allowed = ALLOWED_MIME_TYPES.include?(mime_type)
         if !allowed && raise_error

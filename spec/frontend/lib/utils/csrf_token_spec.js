@@ -51,7 +51,7 @@ describe('csrf', () => {
 
     it('returns empty object for headers', () => {
       expect(typeof csrf.headers).toBe('object');
-      expect(Object.keys(csrf.headers).length).toBe(0);
+      expect(Object.keys(csrf.headers)).toHaveLength(0);
     });
   });
 });

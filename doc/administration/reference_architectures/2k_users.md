@@ -303,9 +303,9 @@ If you use a third party external service:
 ### Standalone PostgreSQL using the Linux package
 
 1. SSH in to the PostgreSQL server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -393,9 +393,9 @@ The steps below are the minimum necessary to configure a Redis server with
 the Linux package:
 
 1. SSH in to the Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -449,12 +449,7 @@ If you believe this applies to you, contact us for additional guidance as requir
 
 {{< /alert >}}
 
-Due to Gitaly having notable input and output requirements, we strongly
-recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
-should have a throughput of at least 8,000
-input/output operations per second (IOPS) for read operations and 2,000 IOPS
-for write operations. If you're running the environment on a Cloud provider,
-refer to their documentation about how to configure IOPS correctly.
+Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 
 Be sure to note the following items:
 
@@ -483,9 +478,10 @@ installation has two repository storages: `default` and `storage1`.
 
 To configure the Gitaly server, on the server node you want to use for Gitaly:
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and do not provide the `EXTERNAL_URL` value.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux package
+of your choice. Be sure to only add the GitLab
+package repository and install GitLab for your chosen operating system,
+but do **not** provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
@@ -674,9 +670,9 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    telnet <GitLab host> 6379 # Redis
    ```
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
    ```ruby
@@ -800,9 +796,9 @@ but this is dependent on workload.
 
 On each node perform the following:
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
@@ -975,9 +971,9 @@ The Linux package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/_index.md):
 
 1. SSH in to the Monitoring node.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby

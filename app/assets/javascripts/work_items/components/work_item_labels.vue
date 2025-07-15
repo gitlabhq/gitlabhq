@@ -13,8 +13,7 @@ import Tracking from '~/tracking';
 import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import {
   findLabelsWidget,
   formatLabelForListbox,
@@ -32,7 +31,12 @@ export default {
     WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canAdminLabel', 'issuesListPath', 'labelsManagePath'],
+  inject: {
+    canAdminLabel: 'canAdminLabel',
+    issuesListPath: 'issuesListPath',
+    labelsManagePath: 'labelsManagePath',
+    epicsListPath: { default: '' },
+  },
   props: {
     fullPath: {
       type: String,
@@ -82,6 +86,9 @@ export default {
       return this.isCreateFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
         : this.fullPath;
+    },
+    isEpic() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     // eslint-disable-next-line vue/no-unused-properties
     tracking() {
@@ -249,44 +256,48 @@ export default {
         await this.updateLabels({ addLabelIds, removeLabelIds });
       }
     },
-    async updateDraftCache() {
-      await this.$apollo.mutate({
-        mutation: updateNewWorkItemMutation,
-        variables: {
-          input: {
-            workItemType: this.workItemType,
-            fullPath: this.fullPath,
-            labels: this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id)),
-          },
-        },
+    updateDraftCache(removeLabelIds = []) {
+      let labels = this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id));
+      if (removeLabelIds.length) {
+        labels = labels.filter(({ id }) => !removeLabelIds.includes(id));
+      }
+
+      this.$emit('updateWidgetDraft', {
+        workItemType: this.workItemType,
+        fullPath: this.fullPath,
+        labels,
       });
     },
     async updateLabels({ addLabelIds = [], removeLabelIds = [] }) {
       try {
         this.updateInProgress = true;
 
-        const {
-          data: {
-            workItemUpdate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItemId,
-              labelsWidget: {
-                addLabelIds,
-                removeLabelIds,
+        if (this.isCreateFlow) {
+          this.updateDraftCache(removeLabelIds);
+        } else {
+          const {
+            data: {
+              workItemUpdate: { errors },
+            },
+          } = await this.$apollo.mutate({
+            mutation: updateWorkItemMutation,
+            variables: {
+              input: {
+                id: this.workItemId,
+                labelsWidget: {
+                  addLabelIds,
+                  removeLabelIds,
+                },
               },
             },
-          },
-        });
+          });
 
-        if (errors.length > 0) {
-          throw new Error();
+          if (errors.length > 0) {
+            throw new Error();
+          }
+
+          this.track('updated_labels');
         }
-
-        this.track('updated_labels');
         this.$emit('labelsUpdated', [...addLabelIds, ...removeLabelIds]);
       } catch {
         this.$emit('error', i18n.updateError);
@@ -299,7 +310,7 @@ export default {
       return this.allowsScopedLabels && isScopedLabel(label);
     },
     labelFilterUrl(label) {
-      return `${this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
+      return `${this.isEpic ? this.epicsListPath : this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
     },
     handleLabelCreated(label) {
       this.showLabelForm = false;

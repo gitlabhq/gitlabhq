@@ -192,13 +192,13 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   def goto_next_thread
-    click_button 'Next unresolved thread', obscured: false
+    click_button 'Next open thread', obscured: false
     # Wait for scroll
     sleep(1)
   end
 
   def goto_previous_thread
-    click_button 'Previous unresolved thread', obscured: false
+    click_button 'Previous open thread', obscured: false
     # Wait for scroll
     sleep(1)
   end

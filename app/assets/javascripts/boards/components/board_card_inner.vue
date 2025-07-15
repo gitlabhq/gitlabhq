@@ -181,7 +181,7 @@ export default {
       return this.isEpicBoard ? WORK_ITEM_TYPE_NAME_EPIC : this.item.type;
     },
     workItemDrawerEnabled() {
-      if (gon.current_user_use_work_items_view || this.glFeatures.workItemViewForIssues) {
+      if (this.glFeatures.workItemViewForIssues) {
         return true;
       }
       return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
@@ -201,8 +201,11 @@ export default {
     targetId() {
       return uniqueId(`${this.item.iid}`);
     },
+    isNotListStatus() {
+      return this.item?.status?.id !== this.list?.status?.id;
+    },
     showStatus() {
-      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag;
+      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag && this.isNotListStatus;
     },
     hasStatus() {
       return Boolean(this.item.status);
@@ -423,13 +426,7 @@ export default {
           :target-id="targetId"
         />
         <div class="gl-max-w-20">
-          <work-item-status-badge
-            v-if="showStatus"
-            class="gl-isolate"
-            :name="item.status.name"
-            :icon-name="item.status.iconName"
-            :color="item.status.color"
-          />
+          <work-item-status-badge v-if="showStatus" class="gl-isolate" :item="item.status" />
         </div>
       </div>
     </div>

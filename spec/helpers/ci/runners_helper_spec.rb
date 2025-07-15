@@ -238,6 +238,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
         allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(true)
         allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(true)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(true)
+        allow(helper).to receive(:can?).with(user, :admin_group, project.group).and_return(true)
         allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(true)
       end
 
@@ -249,7 +250,12 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
           project_full_path: project.full_path,
           new_project_runner_path: new_project_runner_path(project),
           can_create_runner_for_group: 'true',
-          group_runners_path: group_runners_path(project.group)
+          group_runners_path: group_runners_path(project.group),
+          instance_runners_enabled: 'true',
+          instance_runners_disabled_and_unoverridable: 'false',
+          instance_runners_update_path: toggle_shared_runners_project_runners_path(project),
+          instance_runners_group_settings_path: group_settings_ci_cd_path(project.group, anchor: 'runners-settings'),
+          group_name: project.group.name
         )
       end
     end
@@ -260,6 +266,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
         allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :admin_group, project.group).and_return(false)
         allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(false)
       end
 
@@ -271,7 +278,12 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
           project_full_path: project.full_path,
           new_project_runner_path: new_project_runner_path(project),
           can_create_runner_for_group: 'false',
-          group_runners_path: group_runners_path(project.group)
+          group_runners_path: group_runners_path(project.group),
+          instance_runners_enabled: 'true',
+          instance_runners_disabled_and_unoverridable: 'false',
+          instance_runners_update_path: toggle_shared_runners_project_runners_path(project),
+          instance_runners_group_settings_path: nil,
+          group_name: nil
         )
       end
     end

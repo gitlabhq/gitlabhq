@@ -10,8 +10,7 @@ title: GitLab Duo Chat
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4), 
-Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
+- LLMs: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4), Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
@@ -78,6 +77,7 @@ In addition, Chat is aware of different information, depending on where you use 
 | Merge requests (MRs) and MR details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
 | Commits and commit details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
 | Pipeline jobs and job details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
+| Work items and work item details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the work item, ask about `this work item`, `this`, or the URL. From any UI area, ask about the URL. |
 
 ### In IDEs
 
@@ -87,6 +87,7 @@ In addition, Chat is aware of different information, depending on where you use 
 | Files and file content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
 | Epics and epic details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
 | Issues and issue details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
+| Work items and work item details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
@@ -134,7 +135,7 @@ The **GitLab Duo Chat** button is **not available** on:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `duo_chat_multi_thread`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187443) in GitLab 17.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190042) in GitLab 18.1. Feature flag `duo_chat_multi_thread` removed.
 
@@ -367,9 +368,9 @@ After Quick Chat opens:
 
 Prerequisites:
 
-- You've [installed and configured the GitLab Eclipse Plugin](../../editor_extensions/eclipse/setup.md).
+- You've [installed and configured the GitLab for Eclipse plugin](../../editor_extensions/eclipse/setup.md).
 
-To use GitLab Duo Chat in the GitLab Eclipse Plugin:
+To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 
 1. Open a project in Eclipse.
 1. To open the chat window, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:

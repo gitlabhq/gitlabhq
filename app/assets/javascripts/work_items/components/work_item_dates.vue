@@ -12,7 +12,6 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import WorkItemSidebarWidget from './shared/work_item_sidebar_widget.vue';
 
 const nullObjectDate = new Date(0);
@@ -175,19 +174,14 @@ export default {
       this.rollupType = ROLLUP_TYPE_FIXED;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$apollo.mutate({
-          mutation: updateNewWorkItemMutation,
-          variables: {
-            input: {
-              workItemType: this.workItemType,
-              fullPath: this.fullPath,
-              rolledUpDates: {
-                isFixed: true,
-                dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
-                startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
-                rollUp: this.shouldRollUp,
-              },
-            },
+        this.$emit('updateWidgetDraft', {
+          workItemType: this.workItemType,
+          fullPath: this.fullPath,
+          rolledUpDates: {
+            isFixed: true,
+            dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
+            startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
+            rollUp: this.shouldRollUp,
           },
         });
 

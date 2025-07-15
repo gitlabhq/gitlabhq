@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/before_all'
 
-RSpec.describe Rubocop::Cop::RSpec::BeforeAll, feature_category: :tooling do
+RSpec.describe RuboCop::Cop::RSpec::BeforeAll, feature_category: :tooling do
   context 'when using before(:all)' do
     let(:source) do
       <<~SRC

@@ -22,7 +22,6 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
 
   before do
     sign_in(user)
-    stub_feature_flags(work_item_epic_milestones: false)
   end
 
   context 'when project has enabled issues' do
@@ -30,17 +29,16 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
       visit project_milestone_path(project, milestone)
     end
 
-    it 'shows issues tab' do
+    it 'shows work items tab' do
       within('#content-body') do
-        expect(page).to have_link 'Issues', href: '#tab-issues'
+        expect(page).to have_link 'Work items', href: '#tab-issues'
         expect(page).to have_selector active_tab_selector, count: 1
-        expect(find(active_tab_selector)).to have_content 'Issues'
-        expect(page).to have_text('Unstarted Issues')
+        expect(find(active_tab_selector)).to have_content 'Work items'
       end
     end
 
-    it 'shows issues stats' do
-      expect(find('.milestone-sidebar')).to have_content 'Issues 0'
+    it 'shows Work item stats' do
+      expect(find('.milestone-sidebar')).to have_content 'Work items 0'
     end
 
     it 'shows link to browse and add issues' do
@@ -89,15 +87,15 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
       visit project_milestone_path(project, milestone)
     end
 
-    it 'does not show any issues under the issues tab' do
+    it 'does not show any work items under the work items tab' do
       within('#content-body') do
-        expect(find(active_tab_selector)).to have_content 'Issues'
+        expect(find(active_tab_selector)).to have_content 'Work items'
         expect(page).not_to have_selector '.issuable-row'
       end
     end
 
-    it 'hides issues stats' do
-      expect(find('.milestone-sidebar')).not_to have_content 'Issues 0'
+    it 'hides work items stats' do
+      expect(find('.milestone-sidebar')).not_to have_content 'Work items 0'
     end
 
     it 'hides new issue button' do

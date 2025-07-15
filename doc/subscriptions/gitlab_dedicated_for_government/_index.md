@@ -62,9 +62,9 @@ GitLab Dedicated regularly backs up all datastores, including databases and Git 
 
 {{< /details >}}
 
-GitLab Dedicated for Government supports instance-level [SAML OmniAuth](../../integration/saml.md). Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) for GitLab to communicate with your IdP.
+GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/openid_connect.md) providers for single sign-on (SSO).
 
-SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported. For more information on how to configure SAML for your instance, see [SAML](../../administration/dedicated/configure_instance/saml.md).
+You can configure single sign-on (SSO) using the supported providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs).
 
 #### Encryption
 
@@ -160,7 +160,7 @@ The following operational features are not available:
 
 ### Feature flags
 
-GitLab uses [feature flags](../../administration/feature_flags.md) to support the development and rollout of new or experimental features.
+GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the development and rollout of new or experimental features.
 In GitLab Dedicated for Government:
 
 - Features behind feature flags that are **enabled by default** are available.

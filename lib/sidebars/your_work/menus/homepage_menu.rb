@@ -6,7 +6,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
       class HomepageMenu < ::Sidebars::Menu
         override :link
         def link
-          root_path
+          home_dashboard_path
         end
 
         override :title
@@ -26,7 +26,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
 
         override :active_routes
         def active_routes
-          { controller: ['root'] }
+          { controller: ['root'], path: 'dashboard#home' }
         end
       end
     end

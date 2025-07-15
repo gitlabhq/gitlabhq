@@ -20,7 +20,7 @@ If you [turn GitLab Duo on or off](../gitlab_duo/turn_on_off.md), you turn on or
 
 To use GitLab Duo Chat on a GitLab Self-Managed instance, do one of the following:
 
-- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by GitLab (default option).
+- Use the GitLab AI vendor models and the cloud-based AI gateway that's hosted by GitLab (default option).
 - [Use GitLab Duo Self-Hosted to self-host the AI gateway, with a supported self-hosted LLM](../../administration/gitlab_duo_self_hosted/_index.md#set-up-a-gitlab-duo-self-hosted-infrastructure).
 
 Prerequisites:

@@ -787,6 +787,78 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
+    describe '#deploy_token_about_to_expire' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:regular_user) { create(:user) }
+      let_it_be(:project_owner) { create(:user) }
+      let_it_be(:project_maintainer) { create(:user) }
+      let_it_be(:deploy_token) { create(:deploy_token, expires_at: 5.days.from_now.iso8601) }
+      let_it_be(:project_deploy_token) { create(:project_deploy_token, project: project, deploy_token: deploy_token) }
+
+      before do
+        project.add_owner(project_owner)
+        project.add_maintainer(project_maintainer)
+      end
+
+      it 'sends emails to project owner and maintainer' do
+        expect do
+          notification.deploy_token_about_to_expire(project_owner, deploy_token.name, project)
+        end.to have_enqueued_email(project_owner, deploy_token.name, project, {}, mail: "deploy_token_about_to_expire_email")
+
+        expect do
+          notification.deploy_token_about_to_expire(project_maintainer, deploy_token.name, project)
+        end.to have_enqueued_email(project_maintainer, deploy_token.name, project, {}, mail: "deploy_token_about_to_expire_email")
+      end
+
+      it 'logs notification sent message for both users' do
+        expect(Gitlab::AppLogger).to receive(:info).with({
+          message: "Notifying user about expiring deploy tokens",
+          class: described_class,
+          user_id: project_owner.id
+        })
+
+        expect(Gitlab::AppLogger).to receive(:info).with({
+          message: "Notifying user about expiring deploy tokens",
+          class: described_class,
+          user_id: project_maintainer.id
+        })
+
+        notification.deploy_token_about_to_expire(project_owner, deploy_token.name, project)
+        notification.deploy_token_about_to_expire(project_maintainer, deploy_token.name, project)
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        before do
+          project_owner.block!
+        end
+
+        it 'does not send email to blocked user' do
+          expect do
+            notification.deploy_token_about_to_expire(project_owner, deploy_token.name, project)
+          end.not_to have_enqueued_email(project_owner, deploy_token.name, project, {}, mail: "deploy_token_about_to_expire_email")
+
+          expect do
+            notification.deploy_token_about_to_expire(project_maintainer, deploy_token.name, project)
+          end.to have_enqueued_email(project_maintainer, deploy_token.name, project, {}, mail: "deploy_token_about_to_expire_email")
+        end
+      end
+
+      context 'when user is neither owner nor maintainer' do
+        let(:regular_user) { create(:user) }
+
+        it 'does not send email to users without proper permissions' do
+          expect do
+            notification.deploy_token_about_to_expire(regular_user, deploy_token.name, project)
+          end.not_to have_enqueued_email(regular_user, deploy_token.name, project, {}, mail: "deploy_token_about_to_expire_email")
+        end
+
+        it 'does not log notification message for unauthorized users' do
+          expect(Gitlab::AppLogger).not_to receive(:info)
+          notification.deploy_token_about_to_expire(regular_user, deploy_token.name, project)
+        end
+      end
+    end
+
     describe '#access_token_expired' do
       let_it_be(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user) }

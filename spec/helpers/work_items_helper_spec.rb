@@ -31,6 +31,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             group_path: nil,
             issues_list_path: project_issues_path(project),
             labels_manage_path: project_labels_path(project),
+            project_namespace_full_path: project.namespace.full_path,
             register_path: new_user_registration_path(redirect_to_referer: 'yes'),
             sign_in_path: user_session_path(redirect_to_referer: 'yes'),
             new_comment_template_paths: include({ text: "Your comment templates",
@@ -68,6 +69,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           {
             issues_list_path: issues_group_path(group),
             labels_manage_path: group_labels_path(group),
+            project_namespace_full_path: group.full_path,
             default_branch: nil
           }
         )

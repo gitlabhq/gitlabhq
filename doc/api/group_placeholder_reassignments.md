@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group placeholder reassignments API
 ---
@@ -13,7 +13,7 @@ title: Group placeholder reassignments API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513794) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513794) in GitLab 17.10 [with a flag](../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}

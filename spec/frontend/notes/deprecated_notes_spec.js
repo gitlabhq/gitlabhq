@@ -598,7 +598,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
       await waitForPromises();
 
-      expect($notesContainer.find('.note.being-posted').length).toEqual(0);
+      expect($notesContainer.find('.note.being-posted')).toHaveLength(0);
     });
 
     describe('postComment', () => {
@@ -694,11 +694,11 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       jest.spyOn(gl.awardsHandler, 'addAwardToEmojiBar');
       $('.js-comment-button').click();
 
-      expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
+      expect($notesContainer.find('.note.being-posted')).toHaveLength(1); // Placeholder shown
 
       await waitForPromises();
 
-      expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
+      expect($notesContainer.find('.note.being-posted')).toHaveLength(0); // Placeholder removed
     });
   });
 
@@ -727,12 +727,12 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     it('should show message placeholder including lines starting with slash', async () => {
       $('.js-comment-button').click();
 
-      expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
+      expect($notesContainer.find('.note.being-posted')).toHaveLength(1); // Placeholder shown
       expect($notesContainer.find('.note-body p').text()).toEqual(sampleComment); // No quick action processing
 
       await waitForPromises();
 
-      expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
+      expect($notesContainer.find('.note.being-posted')).toHaveLength(0); // Placeholder removed
     });
   });
 

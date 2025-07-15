@@ -2,6 +2,8 @@
 key_path: counts.count_total_set_runner_maintenance_note_monthly
 description: Monthly count of assignments of maintenance notes to runners
 product_group: runner
+product_categories:
+- fleet_visibility
 performance_indicator_type: []
 value_type: number
 status: active

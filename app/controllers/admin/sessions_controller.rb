@@ -35,6 +35,10 @@ class Admin::SessionsController < ApplicationController
   def destroy
     current_user_mode.disable_admin_mode!
 
+    if Feature.enabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+      ::Gitlab::Auth::Oidc::StepUpAuthentication.disable_step_up_authentication!(session: session, scope: :admin_mode)
+    end
+
     redirect_to root_path, status: :found, notice: _('Admin mode disabled')
   end
 

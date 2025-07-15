@@ -25,7 +25,7 @@ title: カスタムロール
 
 カスタムロールを使用すると、組織は、組織のニーズに必要な正確な権限と許可を持つユーザーロールを作成できます。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> カスタムロール機能のデモについては、[\[デモ] Ultimateゲストは、カスタムロールを介してプライベートリポジトリ上のコードを表示できます](https://www.youtube.com/watch?v=46cp_-Rtxps)を参照してください。
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> カスタムロール機能のデモについては、[[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps)（デモ: Ultimate Guestがカスタムロールを使用してプライベートリポジトリのコードを表示）を参照してください。
 
 個々のカスタムロールと権限のリクエストについては、[イシュー391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760)で議論できます。
 

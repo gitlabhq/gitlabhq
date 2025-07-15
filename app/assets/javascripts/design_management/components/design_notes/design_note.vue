@@ -19,7 +19,6 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
-import { TYPE_COMMENT } from '~/import/constants';
 import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import designNoteAwardEmojiToggleMutation from '../../graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
@@ -264,7 +263,6 @@ export default {
     },
   },
   updateNoteMutation,
-  TYPE_COMMENT,
 };
 </script>
 
@@ -303,7 +301,7 @@ export default {
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" />
+          <imported-badge v-if="isImported" />
         </span>
       </div>
       <div class="-gl-mr-2 -gl-mt-2 gl-flex gl-items-start">

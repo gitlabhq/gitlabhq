@@ -8,6 +8,13 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
 
   let(:commit) { project.commit }
 
+  def find_notes(action)
+    commit
+      .notes
+      .joins(:system_note_metadata)
+      .where(system_note_metadata: { action: action })
+  end
+
   before do
     project.add_maintainer(user)
   end
@@ -31,26 +38,12 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
       end
     end
 
-    def find_notes(action)
-      commit
-        .notes
-        .joins(:system_note_metadata)
-        .where(system_note_metadata: { action: action })
-    end
-
-    context 'valid params' do
+    context 'with valid params' do
       let(:opts) do
         {
           tag_name: 'v1.2.3',
           tag_message: 'Release'
         }
-      end
-
-      def find_notes(action)
-        commit
-          .notes
-          .joins(:system_note_metadata)
-          .where(system_note_metadata: { action: action })
       end
 
       context 'when tagging succeeds' do
@@ -89,7 +82,7 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
       end
     end
 
-    context 'invalid params' do
+    context 'with invalid params' do
       let(:opts) do
         {}
       end

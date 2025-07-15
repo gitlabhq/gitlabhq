@@ -29,14 +29,13 @@
 - else
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
     empty_state_options: { data: { testid: 'issuable-empty-state' } },
-    title: _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")) do |c|
+    title: _("Make a merge request to propose changes to this project.")) do |c|
 
     - c.with_description do
-      = _("Interested parties can even contribute by pushing commits if they want to.")
+      = _("Others can contribute by pushing commits to the same branch.")
       - if button_path
         .gl-mt-5= link_button_to button_text, button_path,
           title: button_text,
           id: 'new_merge_request_link',
           variant: :confirm,
           data: { testid: "new-merge-request-button", **tracking_data }
-

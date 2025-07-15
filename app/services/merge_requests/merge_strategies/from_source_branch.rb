@@ -42,7 +42,8 @@ module MergeRequests
             merge_request: merge_request,
             source_sha: merge_request.diff_head_sha,
             target_ref: merge_request.rebase_on_merge_path,
-            first_parent_ref: merge_request.target_branch_ref
+            first_parent_ref: merge_request.target_branch_ref,
+            merge_params: merge_params
           ).execute
 
           payload = create_ref_result.payload

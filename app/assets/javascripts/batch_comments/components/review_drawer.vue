@@ -14,6 +14,7 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { useBatchComments } from '~/batch_comments/store';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
@@ -50,9 +51,6 @@ export default {
         };
       },
       update: (data) => data.project?.mergeRequest?.userPermissions,
-      skip() {
-        return !this.drawerOpened;
-      },
     },
   },
   components: {
@@ -71,6 +69,7 @@ export default {
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
   directives: { GlTooltip },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -150,6 +149,7 @@ export default {
       'scrollToDraft',
       'setDrawerOpened',
       'publishReview',
+      'publishReviewInBatches',
       'discardDrafts',
       'clearDrafts',
     ]),
@@ -183,7 +183,11 @@ export default {
       try {
         const { note, reviewer_state: reviewerState } = this.noteData;
 
-        await this.publishReview({ ...this.noteData });
+        if (this.draftsCount > 0 && this.glFeatures.mrReviewBatchSubmit) {
+          await this.publishReviewInBatches(this.noteData);
+        } else {
+          await this.publishReview({ ...this.noteData });
+        }
 
         markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
 
@@ -353,6 +357,7 @@ export default {
             type="submit"
             variant="confirm"
             :loading="isSubmitting"
+            class="js-no-auto-disable"
             data-testid="submit-review-button"
           >
             {{ __('Submit review') }}

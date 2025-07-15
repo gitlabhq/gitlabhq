@@ -1,6 +1,6 @@
 ---
-stage: Software Supply Chain Security
-group: Authentication
+stage: none
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rate limits
 ---
@@ -140,7 +140,7 @@ The **rate limit** is 20 calls per minute per IP address.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a flag](../administration/feature_flags/_index.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384186) in GitLab 16.0. Feature flag `ci_enforce_rate_limits_jobs_api` removed.
 
 {{< /history >}}
@@ -194,7 +194,7 @@ the API.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limit_notification_emails`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags/_index.md) named `rate_limit_notification_emails`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
 
 {{< /history >}}

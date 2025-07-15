@@ -1,0 +1,11 @@
+---
+migration_job_name: EncryptMissedCiRunnerTokens
+description: >
+  We've encrypted plain tokens and migrated to token_encrypted (in milestone 11.6), so we need to remove the runner token column
+  and make encryption required (currently optional). However, plain tokens remain unencrypted in gitlab_com and likely in self-managed instances.
+  We must encrypt these remaining tokens and nullify them before removing the column completely.
+feature_category: fleet_visibility
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196265
+milestone: '18.2'
+queued_migration_version: 20250630163722
+finalized_by: # to be updated

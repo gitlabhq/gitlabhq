@@ -63,6 +63,8 @@ module Issues
 
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
 
+      GraphqlTriggers.work_item_updated(issue)
+
       issue
     end
 

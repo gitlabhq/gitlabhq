@@ -26,7 +26,7 @@ module Banzai
           # by the WorkItemReferenceFilter
           return Issue.none if parent.is_a?(Group)
 
-          parent.issues.where(iid: ids.to_a)
+          parent.issues.iid_in(ids.to_a)
                 .includes(:project, :namespace, :work_item_type)
         end
 

@@ -870,6 +870,12 @@ Example response:
 
 ## List merge requests associated with a commit
 
+{{< history >}}
+
+- `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191169) in GitLab 18.2.
+
+{{< /history >}}
+
 Returns information about the merge request that originally introduced a specific commit.
 
 ```plaintext

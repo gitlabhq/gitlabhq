@@ -82,6 +82,10 @@ module Integrations
       release.to_hook_data('create')
     end
 
+    def milestone_events_data
+      Gitlab::DataBuilder::Milestone.build_sample(project)
+    end
+
     def emoji_events_data
       no_data_error(s_('TestHooks|Ensure the project has notes.')) unless project.notes.any?
 

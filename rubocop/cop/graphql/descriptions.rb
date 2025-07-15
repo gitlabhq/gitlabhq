@@ -57,22 +57,27 @@ module RuboCop
         MSG_CONTAINS_THIS = "`description` strings should not contain the demonstrative \"this\". "\
           "#{MSG_STYLE_GUIDE_LINK}".freeze
 
+        # @!method graphql_describable?(node)
         def_node_matcher :graphql_describable?, <<~PATTERN
           (send nil? {:field :argument :value} ...)
         PATTERN
 
+        # @!method enum?(node)
         def_node_matcher :enum?, <<~PATTERN
           (send nil? :value ...)
         PATTERN
 
+        # @!method resolver_kwarg(node)
         def_node_matcher :resolver_kwarg, <<~PATTERN
           (... (hash <(pair (sym :resolver) $_) ...>))
         PATTERN
 
+        # @!method description_kwarg(node)
         def_node_matcher :description_kwarg, <<~PATTERN
           (... (hash <(pair (sym :description) $_) ...>))
         PATTERN
 
+        # @!method enum_style_description(node)
         def_node_matcher :enum_style_description, <<~PATTERN
           (send nil? :value _ $str ...)
         PATTERN

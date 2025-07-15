@@ -23,7 +23,7 @@ RSpec.describe "Group owner manages runners", :freeze_time, :js, feature_categor
       expect(page).to have_content 'Description runner-foo'
     end
 
-    it_behaves_like 'shows runner jobs tab' do
+    it_behaves_like 'shows runner jobs' do
       let(:job_count) { '1' }
       let(:job) { group_runner_job }
     end

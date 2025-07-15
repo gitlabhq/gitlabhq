@@ -88,6 +88,7 @@ describe('WorkItemNotes component', () => {
   const findWorkItemDiscussionAtIndex = (index) => findAllWorkItemDiscussions().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
+  const findCommentsSection = () => wrapper.find('.issuable-discussion');
 
   const workItemNoteQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNoteResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
@@ -179,6 +180,14 @@ describe('WorkItemNotes component', () => {
       expect(findNotesLoading().exists()).toBe(true);
     });
 
+    it('renders the main discussion container even when notes are loading', () => {
+      expect(findCommentsSection().exists()).toBe(true);
+    });
+
+    it('renders the comment form even when notes are loading', () => {
+      expect(findWorkItemAddNote().exists()).toBe(true);
+    });
+
     it('does not render system notes', () => {
       expect(findAllSystemNotes().exists()).toBe(false);
     });
@@ -225,7 +234,7 @@ describe('WorkItemNotes component', () => {
 
       // Preview note should not be rendered when modal is open
       const discussions = wrapper.findAllComponents(WorkItemDiscussion);
-      expect(discussions.length).toBe(0);
+      expect(discussions).toHaveLength(0);
 
       // Should still show loading state
       expect(findNotesLoading().exists()).toBe(true);
@@ -250,7 +259,7 @@ describe('WorkItemNotes component', () => {
 
       // Preview note should not be rendered when modal is open
       const discussions = wrapper.findAllComponents(WorkItemDiscussion);
-      expect(discussions.length).toBe(0);
+      expect(discussions).toHaveLength(0);
 
       // Should still show loading state
       expect(findNotesLoading().exists()).toBe(true);
@@ -298,6 +307,16 @@ describe('WorkItemNotes component', () => {
         pageSize: 20,
       });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
+    });
+
+    it('renders the main discussion container when notes are loaded', async () => {
+      await waitForPromises();
+      expect(findCommentsSection().exists()).toBe(true);
+    });
+
+    it('renders the comment form even when notes are loaded', async () => {
+      await waitForPromises();
+      expect(findWorkItemAddNote().exists()).toBe(true);
     });
   });
 

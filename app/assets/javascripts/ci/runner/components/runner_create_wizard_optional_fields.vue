@@ -1,12 +1,19 @@
 <script>
 import { GlForm, GlButton, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
+import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
+import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
+import { captureException } from '../sentry_utils';
 import {
   DEFAULT_ACCESS_LEVEL,
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_CREATE_ERROR,
 } from '../constants';
 
 export default {
@@ -53,9 +60,29 @@ export default {
         runUntagged: this.runUntagged,
         locked: false,
         tagList: this.tags,
-        maximumTimeout: '',
+        maximumTimeout: null,
       },
+      saving: false,
     };
+  },
+  computed: {
+    mutationInput() {
+      const { input } = modelToUpdateMutationVariables(this.runner);
+
+      if (this.runnerType === GROUP_TYPE) {
+        return {
+          ...input,
+          groupId: this.groupId,
+        };
+      }
+      if (this.runnerType === PROJECT_TYPE) {
+        return {
+          ...input,
+          projectId: this.projectId,
+        };
+      }
+      return input;
+    },
   },
   methods: {
     onCheckboxesInput(checked) {
@@ -65,12 +92,56 @@ export default {
 
       this.runner.paused = checked.includes('paused');
     },
+    async onSubmit() {
+      this.saving = true;
+      this.runner.maximumTimeout = parseInt(this.runner.maximumTimeout, 10);
+
+      try {
+        const {
+          data: {
+            runnerCreate: { errors, runner },
+          },
+        } = await this.$apollo.mutate({
+          mutation: runnerCreateMutation,
+          variables: {
+            input: this.mutationInput,
+          },
+        });
+
+        if (errors?.length) {
+          this.onError(new Error(errors.join(' ')), true);
+          return;
+        }
+
+        if (!runner?.ephemeralRegisterUrl) {
+          // runner is missing information, report issue and
+          // fail navigation to register page.
+          this.onError(new Error(I18N_CREATE_ERROR));
+          return;
+        }
+
+        this.$emit('onGetNewRunnerId', runner.id);
+        this.$emit('next');
+        // destroy the alert
+        createAlert({ message: null }).dismiss();
+      } catch (error) {
+        this.onError(error);
+      }
+    },
+    onError(error, isValidationError = false) {
+      if (!isValidationError) {
+        captureException({ error, component: this.$options.name });
+      }
+
+      createAlert({ message: error.message });
+      this.saving = false;
+    },
   },
   ACCESS_LEVEL_REF_PROTECTED,
 };
 </script>
 <template>
-  <gl-form>
+  <gl-form @submit.prevent="onSubmit">
     <multi-step-form-template
       :title="s__('Runners|Optional configuration details')"
       :current-step="currentStep"
@@ -79,7 +150,7 @@ export default {
       <template #form>
         <multiple-choice-selector class="gl-mb-5" @input="onCheckboxesInput">
           <multiple-choice-selector-item
-            :value="ACCESS_LEVEL_REF_PROTECTED"
+            :value="$options.ACCESS_LEVEL_REF_PROTECTED"
             :title="s__('Runners|Protected')"
             :description="s__('Runners|Use the runner on pipelines for protected branches only.')"
           />
@@ -143,12 +214,12 @@ export default {
         </gl-form-group>
       </template>
       <template #next>
-        <!-- [Next step] button will be un-disabled in https://gitlab.com/gitlab-org/gitlab/-/issues/396544 -->
         <gl-button
           category="primary"
           variant="confirm"
-          :disabled="true"
           type="submit"
+          class="js-no-auto-disable"
+          :loading="saving"
           data-testid="next-button"
         >
           {{ __('Next step') }}

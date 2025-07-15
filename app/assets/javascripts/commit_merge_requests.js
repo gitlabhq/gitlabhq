@@ -61,7 +61,7 @@ export function createContent(mergeRequests) {
 }
 
 export function fetchCommitMergeRequests() {
-  const $container = $('.merge-requests');
+  const $container = $('#js-commit-merge-requests');
 
   axios
     .get($container.data('projectCommitPath'))

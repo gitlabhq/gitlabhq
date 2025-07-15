@@ -168,4 +168,59 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
       it { is_expected.to eq expected_result }
     end
   end
+
+  describe '.disable_step_up_authentication!' do
+    let(:required_id_token_claims) { { claim_1: 'gold' } }
+    let(:scope) { :admin_mode }
+    let(:session) do
+      {
+        'omniauth_step_up_auth' => {
+          'openid_connect' => {
+            'admin_mode' => { 'state' => 'succeeded' },
+            'other_scope' => { 'state' => 'succeeded' }
+          },
+          'other_provider' => {
+            'admin_mode' => { 'state' => 'failed' }
+          }
+        }
+      }
+    end
+
+    subject(:disable_step_up_authentication!) do
+      described_class.disable_step_up_authentication!(session: session, scope: scope)
+      session
+    end
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+    end
+
+    it 'removes the step-up auth data for the given scope from all providers' do
+      disable_step_up_authentication!
+
+      expect(session['omniauth_step_up_auth']['openid_connect']).not_to have_key('admin_mode')
+      expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('other_scope')
+      expect(session['omniauth_step_up_auth']['other_provider']).not_to have_key('admin_mode')
+
+      expect(described_class.succeeded?(session)).to be_falsey
+    end
+
+    context 'when session is empty' do
+      let(:session) { {} }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when scope does not exist' do
+      let(:scope) { :nonexistent_scope }
+
+      it 'does not change the session' do
+        disable_step_up_authentication!
+
+        expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('admin_mode')
+        expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('other_scope')
+        expect(session['omniauth_step_up_auth']['other_provider']).to have_key('admin_mode')
+      end
+    end
+  end
 end

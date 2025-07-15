@@ -478,31 +478,31 @@ describe('Filtered Search Manager', () => {
     });
 
     it('removes selected token when the backspace key is pressed', () => {
-      expect(getVisualTokens().length).toEqual(1);
+      expect(getVisualTokens()).toHaveLength(1);
 
       dispatchBackspaceEvent(document, 'keydown');
 
-      expect(getVisualTokens().length).toEqual(0);
+      expect(getVisualTokens()).toHaveLength(0);
     });
 
     it('removes selected token when the delete key is pressed', () => {
-      expect(getVisualTokens().length).toEqual(1);
+      expect(getVisualTokens()).toHaveLength(1);
 
       dispatchDeleteEvent(document, 'keydown');
 
-      expect(getVisualTokens().length).toEqual(0);
+      expect(getVisualTokens()).toHaveLength(0);
     });
 
     it('updates the input placeholder after removal', () => {
       manager.handleInputPlaceholder();
 
       expect(input.placeholder).toEqual('');
-      expect(getVisualTokens().length).toEqual(1);
+      expect(getVisualTokens()).toHaveLength(1);
 
       dispatchBackspaceEvent(document, 'keydown');
 
       expect(input.placeholder).not.toEqual('');
-      expect(getVisualTokens().length).toEqual(0);
+      expect(getVisualTokens()).toHaveLength(0);
     });
 
     it('updates the clear button after removal', () => {
@@ -511,12 +511,12 @@ describe('Filtered Search Manager', () => {
       const clearButton = document.querySelector('.clear-search');
 
       expect(clearButton.classList.contains('hidden')).toEqual(false);
-      expect(getVisualTokens().length).toEqual(1);
+      expect(getVisualTokens()).toHaveLength(1);
 
       dispatchBackspaceEvent(document, 'keydown');
 
       expect(clearButton.classList.contains('hidden')).toEqual(true);
-      expect(getVisualTokens().length).toEqual(0);
+      expect(getVisualTokens()).toHaveLength(0);
     });
   });
 

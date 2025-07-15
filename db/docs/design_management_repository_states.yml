@@ -8,14 +8,6 @@ description: Separate table for Design Repository verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113958
 milestone: '16.0'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: design_management_repository_id
-        table: design_management_repositories
-        sharding_key: namespace_id
-        belongs_to: design_management_repository
+sharding_key:
+  namespace_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name: BackfillDesignManagementRepositoryStatesNamespaceId

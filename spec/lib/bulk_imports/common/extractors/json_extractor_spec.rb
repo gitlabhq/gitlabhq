@@ -9,7 +9,8 @@ RSpec.describe BulkImports::Common::Extractors::JsonExtractor do
   let_it_be(:tmpdir) { Dir.mktmpdir }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import) }
+  let_it_be(:entity) { create(:bulk_import_entity, :with_portable, bulk_import: import) }
+
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
@@ -31,7 +32,7 @@ RSpec.describe BulkImports::Common::Extractors::JsonExtractor do
 
       expect(BulkImports::FileDownloadService).to receive(:new)
         .with(
-          configuration: context.configuration,
+          context: context,
           relative_url: entity.relation_download_url_path('self'),
           tmpdir: tmpdir,
           filename: 'self.json.gz')

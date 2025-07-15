@@ -336,7 +336,7 @@ module QA
 end
 ```
 
-**Notes on attributes precedence:**
+**Notes on attributes precedence**:
 
 - resource instance variables have the highest precedence
 - attributes from the API response take precedence over attributes from the

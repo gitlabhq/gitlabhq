@@ -347,7 +347,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< alert type="note" >}}
 
-If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#returning-users-automatic-identity-relinking). This allows GitLab to link the SAML account to the existing account.
+If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
 
 {{< /alert >}}
 
@@ -448,6 +448,7 @@ user is an [enterprise user](../../enterprise_user/_index.md) of the group.
 - **projects_limit** - The total number of personal projects an enterprise user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `100000`.
+- **SessionNotOnOrAfter** - An ISO 8601 timestamp value that indicates when to end the user SAML session.
 
 #### Example SAML response
 
@@ -476,6 +477,33 @@ convert the information to XML. An example SAML response is shown here.
          <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">10</saml2:AttributeValue>
       </saml2:Attribute>
    </saml2:AttributeStatement>
+```
+
+### Customize SAML session timeout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+
+{{< /history >}}
+
+By default, GitLab ends SAML sessions after 24 hours. You can customize this duration with
+the `SessionNotOnOrAfter` attribute in the SAML2 AuthnStatement. This attribute contains an
+ISO 8601 timestamp value that indicates when to end the user session. When specified this
+value overrides the default SAML session timeout of 24 hours.
+
+If the instance has a custom [session duration](../../../administration/settings/account_and_limit_settings.md#session-duration) configured
+that is earlier than the `SessionNotOnOrAfter` timestamp, users must re-authenticate
+when their GitLab user session ends.
+
+#### Example response
+
+```xml
+   <saml:AuthnStatement SessionIndex="WDE5aBYjNEj_9IjCFiK0E1YelZT" SessionNotOnOrAfter="2025-08-25T01:23:45.067Z" AuthnInstant="2025-08-24T13:23:45.067Z">
+      <saml:AuthnContext>
+         <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+   </saml:AuthnStatement>
 ```
 
 ### Bypass user email confirmation with verified domains
@@ -507,7 +535,7 @@ Prerequisites:
 - You must have the Owner role for the group that the enterprise user belongs to.
 - Group SSO must be enabled.
 
-You can disable password authentication for all [enterprise users](../../enterprise_user/_index.md) in a group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
+You can disable password authentication for all [enterprise users](../../enterprise_user/_index.md) of the group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
 
 - The group SAML IdP for the GitLab web UI.
 - A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
@@ -519,10 +547,12 @@ To disable password authentication for enterprise users:
 1. Under **Configuration**, select **Disable password authentication for enterprise users**.
 1. Select **Save changes**.
 
-#### Returning users (Automatic Identity Relinking)
+#### Automatic Identity Linking for enterprise users
 
 If an enterprise user is removed from the group and then returns, they can sign in with their enterprise SSO account.
 As long as the user's email address in the identity provider remains the same as the email address on the existing GitLab account, the SSO identity is automatically linked to the account and the user can sign in without any issues.
+
+This functionality also applies to existing users that have been claimed as an enterprise user but who may not have yet signed into the group.
 
 ### Block user access
 
@@ -566,7 +596,7 @@ For example, to unlink the `MyOrg` account:
 
 {{< history >}}
 
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
+- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags/_index.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
 - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.
 

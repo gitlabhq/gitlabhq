@@ -361,19 +361,11 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_commit
-    if Feature.enabled?(:commits_from_gitaly, project)
-      commits(load_from_gitaly: true).last
-    else
-      commits.last
-    end
+    commits(load_from_gitaly: true).last
   end
 
   def last_commit
-    if Feature.enabled?(:commits_from_gitaly, project)
-      commits(load_from_gitaly: true).first
-    else
-      commits.first
-    end
+    commits(load_from_gitaly: true).first
   end
 
   def base_commit

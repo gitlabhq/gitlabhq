@@ -15,7 +15,7 @@ title: Dependency proxy for packages
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags/_index.md) named `packages_dependency_proxy_maven`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
 
 {{< /history >}}

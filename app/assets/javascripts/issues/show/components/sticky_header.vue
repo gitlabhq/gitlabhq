@@ -139,8 +139,8 @@ export default {
             :workspace-type="$options.WORKSPACE_PROJECT"
           />
           <locked-badge v-if="isLocked" :issuable-type="issuableType" />
-          <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
-          <imported-badge v-if="isImported" :importable-type="issuableType" />
+          <hidden-badge v-if="isHidden" />
+          <imported-badge v-if="isImported" />
 
           <gl-link class="gl-truncate gl-font-bold gl-text-default" href="#top" :title="title">
             {{ title }}

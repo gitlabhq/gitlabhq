@@ -26,9 +26,13 @@ module ProjectSearchArguments
 
     argument :sort, GraphQL::Types::String,
       required: false,
-      default_value: 'id_desc',
+      default_value: nil,
       description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
-        "for example: `id_desc` or `name_asc`"
+        "for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used."
+
+    argument :namespace_path, GraphQL::Types::ID,
+      required: false,
+      description: "Filter projects by their namespace's full path (group or user)."
   end
 
   private
@@ -40,7 +44,8 @@ module ProjectSearchArguments
       search_namespaces: params[:search_namespaces],
       sort: params[:sort],
       topic: params[:topics],
-      personal: params[:personal]
+      personal: params[:personal],
+      namespace_path: params[:namespace_path]
     }.compact
   end
 end

@@ -6,11 +6,6 @@
 # Don't use format parameter as file extension (old 3.0.x behavior)
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do
-  get '/compare/:from...:to/', to: 'compare#rapid_diffs', as: 'rapid_diffs_compare',
-    constraints: ->(params) { params[:rapid_diffs] == 'true' && params[:from] =~ /.+/ && params[:to] =~ /.+/ }
-  get '/compare/:from..:to/', to: 'compare#rapid_diffs', as: 'rapid_diffs_compare_with_two_dots',
-    constraints: ->(params) { params[:rapid_diffs] == 'true' && params[:from] =~ /.+/ && params[:to] =~ /.+/ }, defaults: { straight: "true" }
-
   get '/compare/:from...:to/', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
   get '/compare/:from..:to/', to: 'compare#show', as: 'compare_with_two_dots', constraints: { from: /.+/, to: /.+/ }, defaults: { straight: "true" }
 
@@ -91,7 +86,12 @@ scope format: false do
     get '/blame/*id', to: 'blame#show', as: :blame
 
     get '/commits', to: 'commits#commits_root', as: :commits_root
-    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
+    # this route conflicts with branch names that end with /signatures
+    # to avoid this issue we ensure that #signatures only responds to json requests
+    # and also is not a commit pagination request, based on the 'offset' param presence
+    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures, constraints: ->(request) do
+      request.format == :json && !request.params[:offset]
+    end
     get '/commits/*id', to: 'commits#show', as: :commits
 
     post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir
@@ -108,7 +108,6 @@ resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PA
     get :show, to: 'commit#rapid_diffs',
       constraints: ->(params) { params[:rapid_diffs] == 'true' }
     get :diffs_stream, to: 'commit_diffs_stream#diffs'
-    get :branches
     get :pipelines
     post :revert
     post :cherry_pick

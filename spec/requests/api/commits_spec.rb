@@ -1443,6 +1443,46 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
+
+      it 'applies per_page limit to Gitaly calls' do
+        expect_next_instance_of(Gitlab::Repositories::ContainingCommitFinder, project.repository, commit_id, limit: 51, type: 'all') do |finder|
+          expect(finder).to receive(:execute).and_call_original
+        end
+
+        get api(route, current_user), params: { type: 'all', per_page: 50 }
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(response).to include_limited_pagination_headers
+        expect(response.headers).not_to include('X-Total', 'X-Total-Pages')
+        expected_page_number = 2
+        expect(response).to include_offset_url_params_in_next_link(expected_page_number)
+      end
+
+      context 'when second page is requested' do
+        it 'fetches enough records to display the second page' do
+          expect_next_instance_of(Gitlab::Repositories::ContainingCommitFinder, project.repository, commit_id, limit: 101, type: 'all') do |finder|
+            expect(finder).to receive(:execute).and_call_original
+          end
+
+          get api(route, current_user), params: { type: 'all', per_page: 50, page: 2 }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'returns correct response headers for last page' do
+          expect_next_instance_of(Gitlab::Repositories::ContainingCommitFinder, project.repository, commit_id, limit: 101, type: 'all') do |finder|
+            expect(finder).to receive(:execute).and_call_original
+          end
+
+          get api(route, current_user), params: { type: 'all', per_page: 50, page: 2 }
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(response.headers).not_to include('X-Total', 'X-Total-Pages')
+          expect(response.headers['Link']).not_to include('rel="next"')
+          expect(response.headers['Link']).to include('rel="prev"')
+          expect(response.headers['x-next-page']).to eq('')
+          expect(response.headers['x-prev-page']).to include('1')
+        end
+      end
     end
   end
 

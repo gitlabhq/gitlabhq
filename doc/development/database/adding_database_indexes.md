@@ -74,6 +74,60 @@ In short:
 1. Run the query using `EXPLAIN ANALYZE` and study the output to find the most
    ideal query.
 
+## Partial Indexes
+
+Partial indexes are indexes with a `WHERE` clause that limits them to a subset of matching rows.
+They can offer several advantages over full indexes, including:
+
+- Reduced index size and memory usage
+- Less write and vacuum overhead
+- Improved query performance for selective conditions
+
+Partial indexes work best for queries that always filter on known conditions and target a specific subset of data.
+Common use cases include:
+
+- Nullable columns: `WHERE column IS NOT NULL`
+- Boolean flags: `WHERE feature_enabled = true`
+- Soft deletes: `WHERE deleted_at IS NULL`
+- Status filters: `WHERE status IN ('queued', 'running')`
+
+Before creating any new partial index, first examine existing indexes for potential reuse or modification.
+Since each index incurs maintenance overhead, prioritize adapting current indexes over adding new ones.
+
+### Example
+
+Consider the following application code which introduces a new count query:
+
+```ruby
+def namespace_count
+  NamespaceSetting.where(duo_features_enabled: duo_settings_value).count
+end
+
+def duo_settings_value
+  params['duo_settings_value'] == 'default_on'
+end
+```
+
+where `namespace_settings` is a table with 1 million records,
+and `duo_features_enabled` is a nullable Boolean column.
+
+Let's assume that we recently introduced this column and it was not backfilled.
+This means we know that the majority of the records in the `namespace_settings` table have a `NULL`
+value for `duo_features_enabled`. We can also see that `duo_settings_value` will only either yield
+`true` or `false`.
+
+Indexing all rows would be inefficient as we mostly have `NULL` values. Instead,
+we can introduce a partial index that targets only the data of interest:
+
+```sql
+CREATE INDEX index_namespace_settings_on_duo_features_enabled_not_null
+ON namespace_settings (duo_features_enabled) 
+WHERE duo_features_enabled IS NOT NULL;
+```
+
+Now we have an index that is just a small fraction of the full index size and the
+query planner can effectively skip over hundreds of thousands of irrelevant records.
+
 ## Data Size
 
 A database may not use an index even when a regular sequence scan

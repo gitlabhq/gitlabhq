@@ -1,8 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
@@ -19,13 +18,12 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
-
 import { badgeState } from '~/merge_requests/badge_state';
+import { useNotes } from '~/notes/store/legacy_notes';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
 import { createNoteErrorMessages, isSlashCommand } from '../utils';
-
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
 import CommentTypeDropdown from './comment_type_dropdown.vue';
@@ -80,16 +78,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useNotes, [
+      'isToggleStateButtonLoading',
       'getCurrentUserLastNote',
-      'getUserData',
       'getNoteableData',
-      'getNoteableDataByProp',
       'getNotesData',
+      'getUserData',
       'openState',
       'hasDrafts',
     ]),
-    ...mapState(['isToggleStateButtonLoading']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
@@ -220,7 +217,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useNotes, [
       'saveNote',
       'removePlaceholderNotes',
       'closeIssuable',

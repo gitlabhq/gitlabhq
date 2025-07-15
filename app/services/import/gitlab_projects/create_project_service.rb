@@ -63,7 +63,8 @@ module Import
         @project ||= ::Projects::GitlabProjectsImportService.new(
           current_user,
           project_params,
-          params[:override]
+          params[:override],
+          import_type: 'gitlab_project'
         ).execute
       end
 
@@ -72,8 +73,7 @@ module Import
           name: params[:name],
           path: params[:path],
           namespace_id: params[:namespace].id,
-          overwrite: params[:overwrite],
-          import_type: 'gitlab_project'
+          overwrite: params[:overwrite]
         }.merge(strategy.project_params)
       end
     end

@@ -1271,7 +1271,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       it 'does not destroy given project' do
         expect(project).not_to receive(:destroy)
 
-        expect { helper.destroy_conditionally!(project) }.to throw_symbol(:error).and change { Project.count }.by(0)
+        expect { helper.destroy_conditionally!(project) }.to throw_symbol(:error).and not_change { Project.count }
       end
     end
   end
@@ -1653,45 +1653,57 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
-  describe '#unauthorized!' do
-    it 'renders 401' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(401, '401 Unauthorized', nil)
-
-      helper.unauthorized!
+  describe 'error helper methods with reason' do
+    where(:method_name, :expected_code, :expected_message) do
+      [
+        [:forbidden!, 403, '403 Forbidden'],
+        [:bad_request!, 400, '400 Bad request'],
+        [:unauthorized!, 401, '401 Unauthorized']
+      ]
     end
 
-    it 'renders 401 with a reason' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(401, '401 Unauthorized', 'custom reason')
+    with_them do
+      it "renders #{params[:expected_code]}" do
+        expect(helper).to receive(:render_api_error_with_reason!).with(expected_code, expected_message, nil)
 
-      helper.unauthorized!('custom reason')
-    end
-  end
+        helper.send(method_name)
+      end
 
-  describe '#forbidden!' do
-    it 'renders 401' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(403, '403 Forbidden', nil)
+      it "renders #{params[:expected_code]} with a reason" do
+        expect(helper).to receive(:render_api_error_with_reason!).with(expected_code, expected_message, 'custom reason')
 
-      helper.forbidden!
-    end
-
-    it 'renders 401 with a reason' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(403, '403 Forbidden', 'custom reason')
-
-      helper.forbidden!('custom reason')
+        helper.send(method_name, 'custom reason')
+      end
     end
   end
 
-  describe '#bad_request!' do
-    it 'renders 400' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(400, '400 Bad request', nil)
-
-      helper.bad_request!
+  describe 'error helper methods with message' do
+    where(:method_name, :expected_code, :expected_message) do
+      [
+        [:not_allowed!, :method_not_allowed, '405 Method Not Allowed'],
+        [:not_acceptable!, 406, '406 Not Acceptable'],
+        [:service_unavailable!, 503, '503 Service Unavailable'],
+        [:conflict!, 409, '409 Conflict'],
+        [:unprocessable_entity!, :unprocessable_entity, '422 Unprocessable Entity'],
+        [:file_too_large!, 413, '413 Request Entity Too Large'],
+        [:not_modified!, 304, '304 Not Modified'],
+        [:no_content!, 204, '204 No Content'],
+        [:created!, 201, '201 Created']
+      ]
     end
 
-    it 'renders 401 with a reason' do
-      expect(helper).to receive(:render_api_error_with_reason!).with(400, '400 Bad request', 'custom reason')
+    with_them do
+      it "renders #{params[:expected_code]}" do
+        expect(helper).to receive(:render_api_error!).with(expected_message, expected_code)
 
-      helper.bad_request!('custom reason')
+        helper.send(method_name)
+      end
+
+      it "renders #{params[:expected_code]} with a custom message" do
+        expect(helper).to receive(:render_api_error!).with('custom message', expected_code)
+
+        helper.send(method_name, 'custom message')
+      end
     end
   end
 

@@ -1,5 +1,5 @@
 ---
-stage: Foundations
+stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Exact code search
@@ -15,7 +15,7 @@ title: Exact code search
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
 
@@ -36,13 +36,24 @@ to search for code in all GitLab or in a specific project.
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
 and is used by default in groups where the feature is enabled.
 
-## Enable exact code search
+## Use exact code search
 
-- For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
-  exact code search is enabled in paid subscriptions.
-- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
-  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+Prerequisites:
+
+- Exact code search must be enabled:
+  - For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
+    exact code search is enabled by default in paid subscriptions.
+  - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
+    [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
+    [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+
+To use exact code search:
+
+1. On the left sidebar, select **Search or go to**.
+1. In the search box, enter your search term.
+1. On the left sidebar, select **Code**.
+
+You can also use exact code search in a project or group.
 
 In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
 to use [advanced search](advanced_search.md) instead.
@@ -52,7 +63,7 @@ to use [advanced search](advanced_search.md) instead.
 Scopes describe the type of data you're searching.
 The following scopes are available for exact code search:
 
-| Scope | Global <sup>1</sup>                | Group                                       | Project |
+| Scope | Global <sup>1</sup> <sup>2</sup>   | Group                                       | Project |
 |-------|:----------------------------------:|:-------------------------------------------:|:-------:|
 | Code  | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 
@@ -61,12 +72,13 @@ The following scopes are available for exact code search:
 1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
    On GitLab Self-Managed, an administrator can enable global search
    with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag.
+1. On GitLab.com, global search is not enabled.
 
 ## Zoekt search API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143666) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `zoekt_search_api`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143666) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_search_api`. Enabled by default.
 
 {{< /history >}}
 
@@ -89,7 +101,7 @@ To request access to this feature, contact GitLab.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `zoekt_cross_namespace_search`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 
 {{< /history >}}
 
@@ -110,7 +122,7 @@ When this feature is enabled for instances with more than 20,000 projects, your 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434417) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `zoekt_exact_search`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434417) in GitLab 16.8 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_exact_search`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/436457) in GitLab 17.3. Feature flag `zoekt_exact_search` removed.
 
 {{< /history >}}

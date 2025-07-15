@@ -99,6 +99,27 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
     expect(first('[data-testid*="projects-list-item"]')).to have_content(personal_project_with_stars.title)
   end
 
+  context 'when a project is archived' do
+    let_it_be(:archived_project) { create(:project, :archived, namespace: user.namespace) }
+    let(:personal_tab) { find(".nav-item:nth-child(3)") }
+    let(:member_tab) { find(".nav-item:nth-child(4)") }
+
+    it 'is not included in the personal projects or member count' do
+      visit dashboard_projects_path
+      wait_for_requests
+      within "ul.gl-tabs-nav" do
+        expect(personal_tab).to have_text("Personal 2")
+        expect(member_tab).to have_text("Member 3")
+        personal_tab.click
+        expect(personal_tab).to have_text("Personal 2")
+        expect(page).not_to have_content(archived_project.name)
+        member_tab.click
+        expect(member_tab).to have_text("Member 3")
+        expect(page).not_to have_content(archived_project.name)
+      end
+    end
+  end
+
   context 'when on Member projects tab' do
     it 'shows all projects you are a member of' do
       visit member_dashboard_projects_path

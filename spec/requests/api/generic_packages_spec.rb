@@ -250,14 +250,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
         end
-
-        context 'when feature flag :packages_protected_packages_generic is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_generic: false)
-          end
-
-          it_behaves_like 'authorized package'
-        end
       end
 
       where(:package_name_pattern, :minimum_access_level_for_push, :auth_header, :shared_examples_name) do
@@ -385,13 +377,13 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           headers = workhorse_headers.merge(auth_header)
 
           expect { upload_file(params, headers) }
-            .to change { project.packages.generic.count }.by(1)
+            .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
 
           aggregate_failures do
             expect(response).to have_gitlab_http_status(:created)
 
-            package = project.packages.generic.last
+            package = ::Packages::Generic::Package.for_projects(project).last
             expect(package.name).to eq('mypackage')
             expect(package.status).to eq('default')
             expect(package.version).to eq('0.0.1')
@@ -491,7 +483,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               subject { upload_file(params, headers, package_version: version) }
 
               it "returns the #{params[:expected_status]}", :aggregate_failures do
-                expect { subject }.to change { project.packages.generic.count }.by(expected_package_diff_count)
+                expect { subject }
+                  .to change { ::Packages::Generic::Package.for_projects(project).count }
+                  .by(expected_package_diff_count)
 
                 expect(response).to have_gitlab_http_status(expected_status)
               end
@@ -508,24 +502,55 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             upload_file(params, headers)
 
             aggregate_failures do
-              package = project.packages.generic.last
+              package = ::Packages::Generic::Package.for_projects(project).last
               expect(response).to have_gitlab_http_status(:created)
               expect(package.package_files.last.file_name).to eq('path%2Fto%2Fmyfile.tar.gz')
             end
           end
         end
 
-        context 'when there is + sign is in filename' do
-          it 'creates a package and package file with filename' do
-            headers = workhorse_headers.merge(auth_header)
+        context 'with special characters in filename' do
+          where(:symbol, :file_name) do
+            [
+              ['+', 'my+file.tar.gz'],
+              ['~', 'my~file.tar.gz'],
+              ['@', 'myfile@1.1.tar.gz']
+            ]
+          end
 
-            upload_file(params, headers, file_name: 'my+file.tar.gz')
+          with_them do
+            it "creates package with #{params[:symbol]} in the filename", :aggregate_failures do
+              headers = workhorse_headers.merge(auth_header)
 
-            aggregate_failures do
-              package = project.packages.generic.last
+              expect do
+                upload_file(params, headers, file_name:)
+              end.to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
+
               expect(response).to have_gitlab_http_status(:created)
-              expect(package.package_files.last.file_name).to eq('my+file.tar.gz')
+              expect(project.package_files.find_by(file_name:)).not_to be_nil
             end
+          end
+        end
+      end
+
+      context 'when filename contains @ or ~ symbol at beginning or end' do
+        where(:symbol, :file_name, :description) do
+          [
+            ['@', 'myfile1.1.tar.gz@', 'at the end'],
+            ['@', '@myfile1.1.tar.gz', 'at the beginning'],
+            ['~', 'myfile.tar.gz~', 'at the end'],
+            ['~', '~myfile.tar.gz', 'at the beginning']
+          ]
+        end
+
+        with_them do
+          it "returns a bad request when #{params[:symbol]} is #{params[:description]} of filename",
+            :aggregate_failures do
+            headers = workhorse_headers.merge(personal_access_token_header)
+
+            upload_file(params, headers, file_name: file_name)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -601,7 +626,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'does not create a new package' do
           expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
-            .to not_change { project.packages.generic.count }
+            .to not_change { ::Packages::Generic::Package.for_projects(project).count }
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
@@ -687,7 +712,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           it 'does create a new package' do
             existing_package.pending_destruction!
             expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
-              .to change { project.packages.generic.count }.by(1)
+              .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:created)
@@ -789,7 +814,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'creates a package and package file' do
           expect { send_upload_file }
-            .to change { project.packages.generic.count }.by(1)
+            .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
         end
       end
@@ -800,14 +825,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
-        end
-
-        context 'when feature flag :packages_protected_packages_generic is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_generic: false)
-          end
-
-          it_behaves_like 'uploaded package'
         end
       end
 
@@ -1104,6 +1121,28 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    shared_examples 'log content type determination' do
+      it 'logs content type determination' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          determined_content_type: 'application/gzip'
+        )
+
+        subject
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(packages_generic_package_content_type: false)
+        end
+
+        it 'does not log content type determination' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          subject
+        end
+      end
+    end
+
     context 'when object storage is enabled' do
       let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
 
@@ -1122,6 +1161,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           stub_package_file_object_storage
         end
 
+        it_behaves_like 'log content type determination'
+
         it 'includes response-content-disposition and filename in the redirect file URL' do
           download
 
@@ -1131,23 +1172,38 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       context 'when direct download is disabled' do
-        let(:dispositon_header) do
+        let(:disposition_header) do
           "attachment; filename=\"#{package_file.file_name}\"; filename*=UTF-8\'\'#{package_file.file_name}"
+        end
+
+        let(:expected_headers) do
+          {
+            allow_localhost: true,
+            allowed_endpoints: [],
+            response_headers: {
+              'Content-Disposition' => disposition_header
+            },
+            ssrf_filter: true
+          }
         end
 
         before do
           stub_package_file_object_storage(proxy_download: true)
         end
 
+        it_behaves_like 'log content type determination'
+
         it 'sends a file with response-content-disposition and filename' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
-            .with(instance_of(String), { response_headers: { 'Content-Disposition' => dispositon_header } })
+            .with(instance_of(String), expected_headers)
             .and_call_original
 
           download
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        it_behaves_like 'package registry SSRF protection'
       end
     end
 

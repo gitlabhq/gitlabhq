@@ -29,6 +29,7 @@ import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  METADATA_KEYS,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -115,6 +116,14 @@ export default {
       required: false,
       default: false,
     },
+    hiddenMetadataKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+  constants: {
+    METADATA_KEYS,
   },
   computed: {
     issuableId() {
@@ -285,7 +294,7 @@ export default {
         !this.isIncident &&
         !this.isServiceDeskIssue &&
         !this.isTestCase &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
+        this.glFeatures.workItemViewForIssues
       );
     },
     hiddenIssuableTitle() {
@@ -387,8 +396,10 @@ export default {
   >
     <a
       v-if="isClickableLink && issuableLinkHref"
+      tabindex="-1"
       :href="issuableLinkHref"
       class="!gl-absolute gl-left-0 gl-top-0 !gl-z-1 !gl-flex gl-h-full gl-w-full"
+      aria-hidden="true"
       data-testid="issuable-card-link-overlay"
     ></a>
 
@@ -411,16 +422,15 @@ export default {
           :work-item-type="type"
           show-tooltip-on-hover
         />
-        <span
+        <button
           v-if="issuable.confidential"
           v-gl-tooltip
           :title="__('Confidential')"
-          class="gl-mr-2 gl-inline-block gl-w-5"
+          class="button-reset gl-mr-2 gl-inline-block gl-w-5"
           data-testid="confidential-icon-container"
-          :aria-label="__('Confidential')"
         >
           <gl-icon name="eye-slash" />
-        </span>
+        </button>
         <span
           v-if="issuable.hidden"
           v-gl-tooltip
@@ -486,14 +496,16 @@ export default {
           <span class="issuable-authored gl-mr-3">
             <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
               <template #timeAgo>
-                <span
+                <button
                   v-if="issuable.createdAt"
                   v-gl-tooltip.bottom
                   :title="tooltipTitle(issuable.createdAt)"
+                  :aria-label="tooltipTitle(issuable.createdAt)"
                   data-testid="issuable-created-at"
+                  class="button-reset gl-text-subtle"
                 >
                   {{ createdAt }}
-                </span>
+                </button>
               </template>
               <template #author>
                 <span v-if="externalAuthor" data-testid="external-author"
@@ -532,7 +544,9 @@ export default {
           <slot name="target-branch"></slot>
         </span>
         <p
-          v-if="labels.length"
+          v-if="
+            labels.length && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.LABELS)
+          "
           role="group"
           :aria-label="__('Labels')"
           class="gl-mb-0 gl-mt-1 gl-flex gl-flex-wrap gl-gap-2"
@@ -550,22 +564,34 @@ export default {
         </p>
       </div>
     </div>
-    <div class="issuable-meta">
-      <ul v-if="showIssuableMeta" class="controls gl-gap-3">
+    <div class="issuable-meta gl-max-w-2/8 md:gl-max-w-3/8">
+      <ul
+        v-if="showIssuableMeta"
+        class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"
+      >
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge
+          <button
             v-if="!isOpen"
             v-gl-tooltip.top
-            :variant="statusBadgeVariant"
             :title="statusTooltip"
+            :aria-label="statusTooltip"
+            class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
           >
-            <slot name="status"></slot>
-          </gl-badge>
+            <gl-badge :variant="statusBadgeVariant">
+              <slot name="status"></slot>
+            </gl-badge>
+          </button>
           <slot v-else name="status"></slot>
         </li>
         <slot name="pipeline-status"></slot>
-        <li v-if="assignees.length" class="!gl-mr-0">
+        <li
+          v-if="
+            assignees.length &&
+            !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.ASSIGNEE)
+          "
+          class="!gl-mr-0"
+        >
           <issuable-assignees
             :assignees="assignees"
             :icon-size="16"
@@ -573,58 +599,80 @@ export default {
             class="gl-flex gl-items-center"
           />
         </li>
-        <div v-else-if="detailLoading">
+        <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="20" :lines="1" equal-width-lines />
-        </div>
-        <slot name="reviewers"></slot>
-        <slot name="approval-status"></slot>
+        </li>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="reviewers"></slot>
+        </li>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="approval-status"></slot>
+        </li>
         <slot name="discussions">
           <li
-            v-if="showDiscussions && notesCount"
+            v-if="
+              showDiscussions &&
+              notesCount &&
+              !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.COMMENTS)
+            "
             class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
             data-testid="issuable-comments"
           >
-            <span
+            <button
               v-gl-tooltip
               :title="__('Comments')"
-              class="gl-flex gl-items-center !gl-text-inherit"
+              class="button-reset gl-flex gl-items-center !gl-text-inherit"
             >
               <gl-icon name="comments" class="gl-mr-2" />
               {{ notesCount }}
-            </span>
+            </button>
           </li>
-          <div v-else-if="detailLoading">
+          <li v-else-if="detailLoading" class="!gl-mr-0">
             <gl-skeleton-loader :width="30" :lines="1" equal-width-lines />
-          </div>
+          </li>
         </slot>
-        <slot name="statistics"></slot>
-        <work-item-relationship-icons
-          v-if="isOpen && hasBlockingRelationships"
-          :work-item-type="type"
-          :work-item-full-path="workItemFullPath"
-          :work-item-iid="issuableIid"
-          :work-item-web-url="issuableLinkHref"
-          :blocking-count="blockingCount"
-          :blocked-by-count="blockedByCount"
-        />
-        <div v-else-if="detailLoading">
+        <li
+          v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.POPULARITY)"
+          class="!gl-mr-0 [&:not(:has(li))]:gl-hidden"
+        >
+          <slot name="statistics"></slot>
+        </li>
+        <li
+          v-if="
+            isOpen &&
+            hasBlockingRelationships &&
+            !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.BLOCKED)
+          "
+          class="!gl-mr-0 empty:gl-hidden"
+        >
+          <work-item-relationship-icons
+            :work-item-type="type"
+            :work-item-full-path="workItemFullPath"
+            :work-item-iid="issuableIid"
+            :work-item-web-url="issuableLinkHref"
+            :blocking-count="blockingCount"
+            :blocked-by-count="blockedByCount"
+          />
+        </li>
+        <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />
-        </div>
+        </li>
         <slot name="custom-status"></slot>
       </ul>
       <div
         class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"
       >
         <slot name="health-status"></slot>
-        <span
+        <button
           v-if="timestamp"
           v-gl-tooltip.bottom
-          class="gl-text-subtle sm:gl-inline-block"
           :title="tooltipTitle(timestamp)"
+          :aria-label="tooltipTitle(timestamp)"
+          class="button-reset gl-text-subtle sm:gl-inline-block"
           data-testid="issuable-timestamp"
         >
           {{ formattedTimestamp }}
-        </span>
+        </button>
       </div>
     </div>
   </li>

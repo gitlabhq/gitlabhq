@@ -217,6 +217,7 @@ describe('Test report extension', () => {
       });
 
       await findCopyFailedSpecsBtn().trigger('click');
+      await nextTick();
 
       // tooltip text is replaced for 1 second
       expect(findCopyFailedSpecsBtn().attributes()).toMatchObject({

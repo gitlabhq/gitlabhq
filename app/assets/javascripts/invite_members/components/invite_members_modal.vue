@@ -7,7 +7,11 @@ import Api from '~/api';
 import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, sprintf } from '~/locale';
-import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
+import {
+  memberName,
+  triggerExternalAlert,
+  baseBindingAttributes,
+} from 'ee_else_ce/invite_members/utils/member_utils';
 import { responseFromSuccess } from 'ee_else_ce/invite_members/utils/response_message_parser';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -23,7 +27,7 @@ import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
   markLocalStorageForQueuedAlert,
 } from '../utils/trigger_successful_invite_alert';
 import ModalConfetti from './confetti.vue';
@@ -201,6 +205,9 @@ export default {
     primaryButtonText() {
       return this.hasBsoEnabled ? BLOCKED_SEAT_OVERAGES_CTA_DOCS : BLOCKED_SEAT_OVERAGES_CTA;
     },
+    baseBindingAttributes() {
+      return baseBindingAttributes(this.hasInvalidMembers);
+    },
   },
   watch: {
     isEmptyInvites: {
@@ -333,7 +340,7 @@ export default {
       this.track('invite_successful', { label: this.source });
 
       if (this.reloadPageOnSubmit) {
-        reloadOnInvitationSuccess();
+        reloadOnMemberInvitationSuccess();
       } else {
         this.showSuccessMessage();
       }
@@ -389,6 +396,7 @@ export default {
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
     :full-path="fullPath"
+    v-bind="baseBindingAttributes"
     @close="onClose"
     @cancel="onCancel"
     @reset="resetFields"

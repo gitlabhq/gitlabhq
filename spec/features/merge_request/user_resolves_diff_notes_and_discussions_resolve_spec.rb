@@ -37,7 +37,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
     context 'single thread' do
       it 'shows text with how many threads' do
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -51,7 +51,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve thread')
+          expect(page).to have_selector('.btn', text: 'Reopen thread')
         end
 
         page.within(first('.discussions-counter')) do
@@ -74,11 +74,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
-          click_button 'Unresolve thread'
+          click_button 'Reopen thread'
         end
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -155,13 +155,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
           it 'allows user to unresolve from reply form without a comment' do
             page.within '.diff-content' do
-              click_button 'Unresolve thread'
+              click_button 'Reopen thread'
 
               wait_for_requests
             end
 
             page.within(first('.discussions-counter')) do
-              expect(page).to have_content('1 unresolved thread')
+              expect(page).to have_content('1 open thread')
             end
           end
 
@@ -177,7 +177,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
             end
 
             page.within(first('.discussions-counter')) do
-              expect(page).to have_content('1 unresolved thread')
+              expect(page).to have_content('1 open thread')
             end
           end
         end
@@ -211,7 +211,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'allows user to quickly scroll to next unresolved thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410109' do
         page.within(first('.discussions-counter')) do
-          click_button _('Next unresolved thread')
+          click_button _('Next open thread')
         end
 
         expect(page).to have_button('Resolve thread', visible: true)
@@ -291,7 +291,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'shows text with how many threads' do
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('2 unresolved threads')
+          expect(page).to have_content('2 open threads')
         end
       end
 
@@ -299,7 +299,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         click_button('Resolve thread', match: :first)
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -325,7 +325,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
       end
 
-      it 'allows user to quickly scroll to next unresolved thread' do
+      it 'allows user to quickly scroll to next open thread' do
         page.within('.discussion-reply-holder', match: :first) do
           find('button[data-testid="resolve-discussion-button"]').click
         end
@@ -376,7 +376,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
     context 'changes tab' do
       it 'shows text with how many threads' do
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -386,7 +386,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve thread')
+          expect(page).to have_selector('.btn', text: 'Reopen thread')
         end
 
         page.within(first('.discussions-counter')) do
@@ -407,11 +407,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
-          click_button 'Unresolve thread'
+          click_button 'Reopen thread'
         end
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -446,7 +446,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
     end
@@ -469,7 +469,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
 
@@ -493,7 +493,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve thread')
+          expect(page).to have_selector('.btn', text: 'Reopen thread')
         end
 
         page.within(first('.discussions-counter')) do
@@ -515,7 +515,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         page.within(first('.discussions-counter')) do
-          expect(page).to have_content('1 unresolved thread')
+          expect(page).to have_content('1 open thread')
         end
       end
     end

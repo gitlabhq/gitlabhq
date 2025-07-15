@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'an endpoint with keyset pagination' do |invalid_order: 'name', invalid_sort: 'asc'|
-  include KeysetPaginationHelpers
+  include PaginationHelpers
 
   let(:keyset_params) { { pagination: 'keyset', per_page: 1 } }
   let(:additional_params) { {} }

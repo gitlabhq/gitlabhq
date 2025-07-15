@@ -14,7 +14,7 @@ title: Signed commits from the GitLab UI
 
 {{< history >}}
 
-- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../../../../administration/feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../../../../administration/feature_flags/_index.md) named `gitaly_gpg_signing`. Disabled by default.
 - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
 - `gitaly_gpg_signing` feature flag [enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on GitLab Self-Managed and GitLab Dedicated in GitLab 17.0.
 

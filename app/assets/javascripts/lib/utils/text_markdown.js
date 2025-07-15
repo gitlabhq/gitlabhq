@@ -876,7 +876,7 @@ function handleContinueList(e, textArea) {
 }
 
 function handleContinueIndentedText(e, textArea) {
-  if (!gon.features?.continueIndentedText) return;
+  if (!gon.markdown_maintain_indentation) return;
 
   if (!shouldHandleIndentation(e, textArea)) {
     return;

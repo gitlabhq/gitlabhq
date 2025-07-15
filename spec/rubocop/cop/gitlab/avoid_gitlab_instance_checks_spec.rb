@@ -25,10 +25,10 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidGitlabInstanceChecks, feature_category
 
     with_them do
       it 'registers an offense' do
-        expect_offense(<<~CODE, node: code)
+        expect_offense(<<~RUBY, node: code)
           return if %{node}
                     ^{node} Avoid the use of [...]
-        CODE
+        RUBY
       end
     end
   end

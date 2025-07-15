@@ -43,6 +43,10 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     describe '#event' do
       context 'when event is eligible' do
         before do
+          allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+            allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+          end
+
           expect(SnowplowTracker::AsyncEmitter)
             .to receive(:new)
                   .with(endpoint: 'gitfoo.com',
@@ -114,6 +118,10 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     it "initializes POST emitter with buffer_size 1" do
       allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
       allow(tracker).to receive(:track_struct_event).and_call_original
+
+      allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+        allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+      end
 
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
@@ -233,40 +241,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  describe '#enabled?' do
-    context 'when snowplow is enabled' do
-      before do
-        stub_application_setting(snowplow_enabled?: true)
-      end
-
-      it 'returns true' do
-        expect(subject.enabled?).to be_truthy
-      end
-    end
-
-    context 'when snowplow is disabled' do
-      before do
-        stub_application_setting(snowplow_enabled?: false)
-      end
-
-      context 'and collect_product_usage_events is enabled' do
-        it 'returns true' do
-          expect(subject.enabled?).to be_truthy
-        end
-      end
-
-      context 'and collect_product_usage_events is disabled' do
-        before do
-          stub_feature_flags(collect_product_usage_events: false)
-        end
-
-        it 'returns false' do
-          expect(subject.enabled?).to be_falsey
-        end
-      end
-    end
-  end
-
   describe '#hostname' do
     context 'when snowplow is enabled' do
       before do
@@ -281,54 +255,72 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     context 'when snowplow is disabled' do
       before do
         stub_application_setting(snowplow_enabled?: false)
-        stub_feature_flags(use_staging_endpoint_for_product_usage_events: enable_stg_events)
       end
 
-      context "with use_staging_endpoint_for_product_usage_events FF disabled" do
-        let(:enable_stg_events) { false }
+      shared_examples 'hostname with staging' do |staging_env, host, expected_endpoint|
+        context "when staging_env=#{staging_env}, host=#{host}" do
+          before do
+            allow(Gitlab).to receive(:staging?).and_return(staging_env)
+            stub_config_setting(host: host) if host
+          end
 
-        it 'returns product usage event collection hostname' do
-          expect(subject.hostname).to eq('events.gitlab.net')
+          it "returns #{expected_endpoint}" do
+            expect(subject.hostname).to eq(expected_endpoint)
+          end
         end
       end
 
-      context "with use_staging_endpoint_for_product_usage_events FF enabled" do
-        let(:enable_stg_events) { true }
+      it_behaves_like 'hostname with staging', true, nil, 'events-stg.gitlab.net'
+      it_behaves_like 'hostname with staging', false, 'gitlab-test.example.test', 'events-stg.gitlab.net'
+      it_behaves_like 'hostname with staging', false, 'example.com', 'events.gitlab.net'
+    end
+  end
 
-        it 'returns product usage event collection hostname' do
-          expect(subject.hostname).to eq('events-stg.gitlab.net')
-        end
+  describe '#app_id' do
+    subject { described_class.new.app_id }
+
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
       end
+
+      it { is_expected.to eq('_abc123_') }
     end
 
-    describe '#app_id' do
-      subject { described_class.new.app_id }
-
-      context 'when snowplow is enabled' do
-        before do
-          stub_application_setting(snowplow_enabled?: true)
-        end
-
-        it { is_expected.to eq('_abc123_') }
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false)
+        stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
       end
 
-      context 'when snowplow is disabled' do
-        before do
-          stub_application_setting(snowplow_enabled?: false)
-          stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
+      shared_examples 'app_id with staging' do |instance_type, staging_env, host, expected_app_id|
+        context "when #{instance_type}, staging_env=#{staging_env}, host=#{host}" do
+          let(:dedicated_instance) { instance_type == 'dedicated' }
+
+          before do
+            allow(Gitlab).to receive(:staging?).and_return(staging_env)
+            stub_config_setting(host: host) if host
+          end
+
+          it { is_expected.to eq(expected_app_id) }
         end
+      end
 
-        context 'when dedicated instance' do
-          let(:dedicated_instance) { true }
+      # Dedicated instance tests
+      it_behaves_like 'app_id with staging', 'dedicated', false, 'example.com', 'gitlab_dedicated'
+      it_behaves_like 'app_id with staging', 'dedicated', true, nil, 'gitlab_dedicated_staging'
+      it_behaves_like 'app_id with staging', 'dedicated', false, 'gitlab-test.example.test',
+        'gitlab_dedicated_staging'
 
-          it { is_expected.to eq('gitlab_dedicated') }
-        end
+      # Self-hosted instance tests
+      it_behaves_like 'app_id with staging', 'self-hosted', false, 'example.com', 'gitlab_sm'
+      it_behaves_like 'app_id with staging', 'self-hosted', true, nil, 'gitlab_sm_staging'
+      it_behaves_like 'app_id with staging', 'self-hosted', false, 'gitlab-test.example.test', 'gitlab_sm_staging'
 
-        context 'when self-hosted instance' do
-          let(:dedicated_instance) { false }
+      context 'when self-hosted instance' do
+        let(:dedicated_instance) { false }
 
-          it { is_expected.to eq('gitlab_sm') }
-        end
+        it { is_expected.to eq('gitlab_sm') }
       end
     end
   end

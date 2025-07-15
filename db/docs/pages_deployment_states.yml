@@ -8,5 +8,5 @@ description: Stores verification state for Geo replicated Pages deployments.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74905
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550704
 table_size: small

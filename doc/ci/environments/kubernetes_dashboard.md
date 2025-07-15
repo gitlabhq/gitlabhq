@@ -15,7 +15,7 @@ title: Dashboard for Kubernetes
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags/_index.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../policy/development_stages_support.md#beta).
 - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
 - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
@@ -32,9 +32,9 @@ with CI/CD or GitOps.
 
 {{< history >}}
 
-- Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
+- Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags/_index.md) named `kubernetes_namespace_for_environment`. Disabled by default.
 - Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
-- Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
+- Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `flux_resource_for_environment`.
 - Selecting the related Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
 
 {{< /history >}}
@@ -108,7 +108,7 @@ For more information, see the [CI/CD YAML syntax reference](../yaml/_index.md#en
 
 {{< history >}}
 
-- Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
+- Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `k8s_watch_api`. Disabled by default.
 - Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427762) in GitLab 17.1. Feature flag `k8s_watch_api` removed.
 
@@ -132,7 +132,7 @@ A list of pods is displayed. Select a pod to view its details.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
-- Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
+- Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `flux_resource_for_environment`.
 - Customizing the name of the Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
 
 {{< /history >}}
@@ -221,7 +221,7 @@ You can also delete a pod from the pod details.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a flag](../../administration/feature_flags.md) named `k8s_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a flag](../../administration/feature_flags/_index.md) named `k8s_dashboard`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424237) in GitLab 16.7 for a subset of users.
 
 {{< /history >}}

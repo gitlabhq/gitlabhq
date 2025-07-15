@@ -1,11 +1,10 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-
-import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/utils/unwrapping_utils';
-
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
@@ -22,8 +21,8 @@ import {
   DEFAULT_SUCCESS,
 } from './constants';
 import updateAppStatus from './graphql/mutations/client/update_app_status.mutation.graphql';
+import ciLintMutation from './graphql/mutations/ci_lint.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.query.graphql';
-import getCiConfigData from './graphql/queries/ci_config.query.graphql';
 import getAppStatus from './graphql/queries/client/app_status.query.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
@@ -69,7 +68,7 @@ export default {
       query: getBlobContent,
       // If it's a brand new file, we don't want to fetch the content.
       // Then when the user commits the first time, the query would run
-      // to get the initial file content, but we already have it in `lastCommitedContent`
+      // to get the initial file content, but we already have it in `lastCommittedContent`
       // so we skip the loading altogether. We also wait for the currentBranch
       // to have been fetched
       skip() {
@@ -117,51 +116,14 @@ export default {
             // start screen flag during a refetch
             // e.g. when switching branches
             this.showStartScreen = false;
+            this.$nextTick(() => {
+              this.processCiConfig();
+            });
           }
         }
       },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
-      },
-      watchLoading(isLoading) {
-        if (isLoading) {
-          this.setAppStatus(EDITOR_APP_STATUS_LOADING);
-        }
-      },
-    },
-    ciConfigData: {
-      query: getCiConfigData,
-      skip() {
-        return this.shouldSkipCiConfigQuery;
-      },
-      variables() {
-        return {
-          projectPath: this.projectFullPath,
-          sha: this.commitSha,
-          content: this.currentCiFileContent,
-        };
-      },
-      update(data) {
-        const { ciConfig } = data || {};
-        const stageNodes = ciConfig?.stages?.nodes || [];
-        const stages = unwrapStagesWithNeeds(JSON.parse(JSON.stringify(stageNodes)));
-
-        return { ...ciConfig, stages };
-      },
-      result({ data }) {
-        if (data?.ciConfig?.status) {
-          this.setAppStatus(data.ciConfig.status);
-          if (this.isLintUnavailable) {
-            this.isLintUnavailable = false;
-          }
-        }
-      },
-      error() {
-        // We are not using `reportFailure` here because we don't
-        // need to bring attention to the linter being down. We let
-        // the user work on their file and if they look at their
-        // lint status, they will notice that the service is down
-        this.isLintUnavailable = true;
       },
       watchLoading(isLoading) {
         if (isLoading) {
@@ -240,17 +202,14 @@ export default {
     isBlobContentLoading() {
       return !this.hasBranchLoaded || this.$apollo.queries.initialCiFileContent.loading;
     },
-    isCiConfigDataLoading() {
-      return this.$apollo.queries.ciConfigData.loading;
-    },
     isEmpty() {
       return this.currentCiFileContent === '';
     },
     shouldSkipBlobContentQuery() {
       return this.isNewCiConfigFile || this.lastCommittedContent || !this.hasBranchLoaded;
     },
-    shouldSkipCiConfigQuery() {
-      return !this.currentCiFileContent || !this.commitSha;
+    shouldSkipCiLintMutation() {
+      return !this.currentCiFileContent || !this.currentBranch;
     },
   },
   i18n: {
@@ -370,6 +329,10 @@ export default {
     },
     updateCiConfig(ciFileContent) {
       this.currentCiFileContent = ciFileContent;
+
+      if (ciFileContent?.length) {
+        this.processCiConfig();
+      }
     },
     updateCommitSha() {
       this.isFetchingCommitSha = true;
@@ -396,6 +359,35 @@ export default {
         this.redirectToNewMergeRequest(sourceBranch, targetBranch);
       }
     },
+    processCiConfig: debounce(async function debouncedProcessCiConfig() {
+      if (this.shouldSkipCiLintMutation) {
+        return;
+      }
+      try {
+        this.setAppStatus(EDITOR_APP_STATUS_LOADING);
+        const { data } = await this.$apollo.mutate({
+          mutation: ciLintMutation,
+          variables: {
+            projectPath: this.projectFullPath,
+            content: this.currentCiFileContent,
+            ref: this.currentBranch,
+          },
+        });
+        this.ciConfigData = data?.ciLint?.config || {};
+        if (this.ciConfigData?.status) {
+          this.setAppStatus(this.ciConfigData.status);
+          if (this.isLintUnavailable) {
+            this.isLintUnavailable = false;
+          }
+        }
+      } catch {
+        // We are not using `reportFailure` here because we don't
+        // need to bring attention to the linter being down. We let
+        // the user work on their file and if they look at their
+        // lint status, they will notice that the service is down
+        this.isLintUnavailable = true;
+      }
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   },
 };
 </script>

@@ -42,6 +42,7 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   max_version = "tls1.3"
 
 [circuit_breaker]
+  enabled = true
   timeout = 60
   interval = 180
   max_requests = 1

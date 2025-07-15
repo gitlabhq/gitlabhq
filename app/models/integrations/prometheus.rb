@@ -4,7 +4,6 @@ module Integrations
   class Prometheus < Integration
     include Base::Monitoring
     include PrometheusAdapter
-    include Gitlab::Utils::StrongMemoize
 
     field :manual_configuration,
       type: :checkbox,
@@ -16,19 +15,6 @@ module Integrations
       title: 'API URL',
       placeholder: -> { s_('PrometheusService|https://prometheus.example.com/') },
       help: -> { s_('PrometheusService|The Prometheus API base URL.') },
-      required: false
-
-    field :google_iap_audience_client_id,
-      title: 'Google IAP Audience Client ID',
-      placeholder: -> { s_('PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com') },
-      help: -> { s_('PrometheusService|The ID of the IAP-secured resource.') },
-      required: false
-
-    field :google_iap_service_account_json,
-      type: :textarea,
-      title: 'Google IAP Service Account JSON',
-      placeholder: -> { s_('PrometheusService|{ "type": "service_account", "project_id": ... }') },
-      help: -> { s_('PrometheusService|The contents of the credentials.json file of your service account.') },
       required: false
 
     # Since the internal Prometheus instance is usually a localhost URL, we need
@@ -82,11 +68,6 @@ module Integrations
         allow_local_requests: allow_local_api_url?
       )
 
-      if behind_iap? && iap_client
-        # Adds the Authorization header
-        options[:headers] = iap_client.apply({})
-      end
-
       Gitlab::PrometheusClient.new(api_url, options)
     end
 
@@ -102,22 +83,6 @@ module Integrations
 
     def configured?
       should_return_client?
-    end
-
-    alias_method :google_iap_service_account_json_raw, :google_iap_service_account_json
-    private :google_iap_service_account_json_raw
-
-    MASKED_VALUE = '*' * 8
-
-    def google_iap_service_account_json
-      json = google_iap_service_account_json_raw
-      return json unless json.present?
-
-      Gitlab::Json.parse(json)
-        .then { |hash| hash.transform_values { MASKED_VALUE } }
-        .then { |hash| Gitlab::Json.generate(hash) }
-    rescue Gitlab::Json.parser_error
-      json
     end
 
     private
@@ -159,28 +124,6 @@ module Integrations
     def disabled_manual_prometheus?
       manual_configuration_changed? && !manual_configuration?
     end
-
-    def behind_iap?
-      manual_configuration? && google_iap_audience_client_id.present? && google_iap_service_account_json.present?
-    end
-
-    def clean_google_iap_service_account
-      json = google_iap_service_account_json_raw
-      return unless json.present?
-
-      Gitlab::Json.parse(json).except('token_credential_uri')
-    rescue Gitlab::Json.parser_error
-      {}
-    end
-
-    def iap_client
-      @iap_client ||= Google::Auth::Credentials
-        .new(clean_google_iap_service_account, target_audience: google_iap_audience_client_id)
-        .client
-    rescue StandardError
-      nil
-    end
-    strong_memoize_attr :iap_client
 
     # Remove in next required stop after %16.4
     # https://gitlab.com/gitlab-org/gitlab/-/issues/338838

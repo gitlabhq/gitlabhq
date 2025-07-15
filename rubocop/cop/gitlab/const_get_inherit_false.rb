@@ -11,6 +11,7 @@ module RuboCop
 
         MSG = 'Use inherit=false when using const_get.'
 
+        # @!method const_get?(node)
         def_node_matcher :const_get?, <<~PATTERN
         (send _ :const_get ...)
         PATTERN
@@ -21,10 +22,10 @@ module RuboCop
 
           add_offense(node.loc.selector) do |corrector|
             if arg = second_argument(node)
-              corrector.replace(arg.source_range, 'false')
+              corrector.replace(arg, 'false')
             else
-              first_argument = node.arguments[0]
-              corrector.insert_after(first_argument.source_range, ', false')
+              first_argument = node.first_argument
+              corrector.insert_after(first_argument, ', false')
             end
           end
         end

@@ -148,6 +148,9 @@ export default {
     truncatedDescription() {
       return truncate(this.resource.description, this.$options.descriptionTruncateWidth);
     },
+    isArchived() {
+      return Boolean(this.resource.archived);
+    },
   },
   methods: {
     getComponent(index) {
@@ -202,15 +205,25 @@ export default {
         </gl-link>
         <project-visibility-icon v-if="isPrivate" />
         <div class="gl-flex gl-grow md:gl-justify-between">
-          <gl-badge
-            v-gl-tooltip.top
-            class="gl-h-5 gl-self-center"
-            variant="info"
-            :href="hasReleasedVersion ? latestVersion.path : undefined"
-            :title="hasReleasedVersion ? lastReleaseText : undefined"
-          >
-            {{ name }}
-          </gl-badge>
+          <div class="gl-flex gl-items-center">
+            <gl-badge
+              v-gl-tooltip.top
+              class="gl-h-5 gl-self-center"
+              variant="info"
+              :href="hasReleasedVersion ? latestVersion.path : undefined"
+              :title="hasReleasedVersion ? lastReleaseText : undefined"
+            >
+              {{ name }}
+            </gl-badge>
+            <gl-badge
+              v-if="isArchived"
+              data-testid="archive-badge"
+              class="gl-ml-2 gl-h-5 gl-self-center"
+              variant="info"
+            >
+              {{ __('Archived') }}
+            </gl-badge>
+          </div>
           <div class="gl-ml-3 gl-flex gl-items-center">
             <div v-gl-tooltip.top class="gl-mr-3 gl-flex gl-items-center" :title="usageText">
               <gl-icon name="chart" :size="16" />

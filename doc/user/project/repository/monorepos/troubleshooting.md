@@ -85,7 +85,7 @@ delete to fail when concurrent deletes happen.
 
 Engineers at GitLab have developed mitigations to try to batch reference deletions.
 
-Turn on the following [feature flags](../../../../administration/feature_flags.md) to allow GitLab to batch ref deletions.
+Turn on the following [feature flags](../../../../administration/feature_flags/_index.md) to allow GitLab to batch ref deletions.
 These feature flags do not need downtime to enable.
 
 - `merge_request_cleanup_ref_worker_async`

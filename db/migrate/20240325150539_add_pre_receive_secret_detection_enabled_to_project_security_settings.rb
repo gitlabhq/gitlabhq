@@ -3,7 +3,6 @@
 class AddPreReceiveSecretDetectionEnabledToProjectSecuritySettings < Gitlab::Database::Migration[2.2]
   milestone '16.11'
 
-  enable_lock_retries!
   TABLE_NAME = :project_security_settings
   COLUMN_NAME = :pre_receive_secret_detection_enabled
 

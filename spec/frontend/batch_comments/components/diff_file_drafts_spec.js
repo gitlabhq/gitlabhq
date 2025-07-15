@@ -40,7 +40,7 @@ describe('Batch comments diff file drafts component', () => {
   it('renders list of draft notes', () => {
     factory();
 
-    expect(wrapper.findAllComponents(DraftNote).length).toEqual(2);
+    expect(wrapper.findAllComponents(DraftNote)).toHaveLength(2);
   });
 
   it('renders index of draft note', () => {
@@ -48,7 +48,7 @@ describe('Batch comments diff file drafts component', () => {
 
     const elements = wrapper.findAllComponents(DesignNotePin);
 
-    expect(elements.length).toEqual(2);
+    expect(elements).toHaveLength(2);
 
     expect(elements.at(0).props('label')).toEqual(1);
 

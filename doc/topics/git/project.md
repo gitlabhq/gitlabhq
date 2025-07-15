@@ -59,18 +59,18 @@ To create a project with `git push`:
 
    - With HTTP, run:
 
-      ```shell
-      git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
-      ```
+     ```shell
+     git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
+     ```
 
-      Replace the following values:
+     Replace the following values:
 
-      - `gitlab.example.com` with the machine domain name hosts your Git repository.
-      - `namespace` with your [namespace](../../user/namespace/_index.md) name.
-      - `myproject` with your project name.
-      - If specifying a port, change `00` to your project's required port number.
-      - Optional. To export existing repository tags, append the `--tags` flag to
-        your `git push` command.
+     - `gitlab.example.com` with the machine domain name hosts your Git repository.
+     - `namespace` with your [namespace](../../user/namespace/_index.md) name.
+     - `myproject` with your project name.
+     - If specifying a port, change `00` to your project's required port number.
+     - Optional. To export existing repository tags, append the `--tags` flag to
+       your `git push` command.
 
 1. Optional. Configure the remote:
 

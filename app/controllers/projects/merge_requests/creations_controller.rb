@@ -12,6 +12,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
+  feature_category :continuous_integration, [:pipelines]
+
   urgency :low, [
     :new,
     :create,
@@ -33,7 +35,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     # load 'rapid_diffs' javascript entrypoint instead of 'new'
     @js_action_name = 'rapid_diffs'
-    define_rapid_diffs_vars
+    @rapid_diffs_presenter = ::RapidDiffs::MergeRequestCreationPresenter.new(
+      @merge_request,
+      project,
+      diff_view,
+      diff_options,
+      { merge_request: merge_request_params }
+    )
     render action: :rapid_diffs
   end
 
@@ -130,7 +138,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @source_project = @merge_request.source_project
 
     recent_commits = @merge_request.recent_commits(
-      load_from_gitaly: Feature.enabled?(:commits_from_gitaly, @target_project)
+      load_from_gitaly: true
     ).with_latest_pipeline(@merge_request.source_branch)
 
     @commits = set_commits_for_rendering(
@@ -150,19 +158,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def rapid_diffs?
-    params[:rapid_diffs_disabled] != 'true' &&
-      ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
-      ::Feature.enabled?(:rapid_diffs_on_mr_creation, current_user, type: :wip)
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
+      ::Feature.enabled?(:rapid_diffs_on_mr_creation, current_user, type: :beta) &&
+      !rapid_diffs_disabled?
   end
 
-  def define_rapid_diffs_vars
-    merge_request = { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }
-    @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
-    @stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
-    @reload_stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
-    @diff_files_endpoint = project_new_merge_request_diff_files_metadata_path(@project, merge_request: merge_request)
-    @diff_file_endpoint = project_new_merge_request_diff_file_path(@project, merge_request: merge_request)
-    @diffs_stats_endpoint = project_new_merge_request_diffs_stats_path(@project, merge_request: merge_request)
+  def rapid_diffs_disabled?
+    ::Feature.enabled?(:rapid_diffs_debug, current_user, type: :ops) && params[:rapid_diffs_disabled] == 'true'
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

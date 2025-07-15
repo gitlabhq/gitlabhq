@@ -34,6 +34,7 @@ import {
   TOKEN_TYPE_DEPLOYED_AFTER,
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TYPE_SEARCH_WITHIN,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -172,8 +173,8 @@ describe('Merge requests list app', () => {
     const projectId = 1;
     const fullPath = 'gitlab-org/gitlab';
     const allBranchesPath = `/api/${apiVersion}/projects/${encodeURIComponent(fullPath)}/repository/branches`;
-    const sourceBranchPath = `/-/autocomplete/merge_request_source_branches.json?project_id=${projectId}`;
-    const targetBranchPath = `/-/autocomplete/merge_request_target_branches.json?project_id=${projectId}`;
+    const sourceBranchPath = '/-/autocomplete/merge_request_source_branches.json';
+    const targetBranchPath = '/-/autocomplete/merge_request_target_branches.json';
     let axiosMock;
 
     beforeEach(() => {
@@ -185,10 +186,7 @@ describe('Merge requests list app', () => {
 
     describe('with no projectId', () => {
       it('uses the generic "all branches" endpoint', async () => {
-        const queryResponse = getQueryResponse;
-        queryResponse.data.namespace.id = null;
-
-        createComponent({ response: queryResponse });
+        createComponent({ provide: { namespaceId: null } });
 
         await waitForPromises();
         await wrapper.vm.fetchBranches();
@@ -199,17 +197,33 @@ describe('Merge requests list app', () => {
 
     describe('with projectId', () => {
       it.each`
-        branchPath          | fetchArgs
-        ${targetBranchPath} | ${['target']}
-        ${sourceBranchPath} | ${['source']}
-        ${allBranchesPath}  | ${['']}
+        branchPath                                       | fetchArgs
+        ${`${targetBranchPath}?project_id=${projectId}`} | ${['target']}
+        ${`${sourceBranchPath}?project_id=${projectId}`} | ${['source']}
+        ${allBranchesPath}                               | ${['']}
       `(
         'selects the correct path ($branchPath) given the arguments $fetchArgs',
         async ({ branchPath, fetchArgs }) => {
-          const queryResponse = getQueryResponse;
-          queryResponse.data.namespace.id = projectId;
+          createComponent({ provide: { namespaceId: projectId } });
+          await waitForPromises();
 
-          createComponent({ response: queryResponse });
+          await wrapper.vm.fetchBranches(...fetchArgs);
+
+          expect(axiosMock.history.get[0].url).toBe(branchPath);
+        },
+      );
+    });
+
+    describe('when in a group', () => {
+      it.each`
+        branchPath                                     | fetchArgs
+        ${`${targetBranchPath}?group_id=${projectId}`} | ${['target']}
+        ${`${sourceBranchPath}?group_id=${projectId}`} | ${['source']}
+        ${allBranchesPath}                             | ${['']}
+      `(
+        'selects the correct path ($branchPath) given the arguments $fetchArgs',
+        async ({ branchPath, fetchArgs }) => {
+          createComponent({ provide: { isProject: false, namespaceId: projectId } });
           await waitForPromises();
 
           await wrapper.vm.fetchBranches(...fetchArgs);
@@ -269,19 +283,20 @@ describe('Merge requests list app', () => {
       it('only requests fresh data if the cache has become stale', async () => {
         // Prime the target cache
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(1);
+
+        expect(axiosMock.history.get).toHaveLength(1);
 
         jest.advanceTimersByTime(1000);
 
         // Only load from the cache since it has not expired yet
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(1);
+        expect(axiosMock.history.get).toHaveLength(1);
 
         jest.advanceTimersByTime(BRANCH_LIST_REFRESH_INTERVAL);
 
         // Refresh the cache since the expiration date has passed
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(2);
+        expect(axiosMock.history.get).toHaveLength(2);
       });
     });
 
@@ -329,6 +344,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_SUBSCRIBED },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
     });
@@ -346,6 +362,7 @@ describe('Merge requests list app', () => {
         my_reaction_emoji: '🔥',
         'target_branches[]': 'branch-a',
         'source_branches[]': 'branch-b',
+        in: 'TITLE',
       };
 
       beforeEach(async () => {
@@ -390,6 +407,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_SUBSCRIBED },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
 
@@ -406,6 +424,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
     });

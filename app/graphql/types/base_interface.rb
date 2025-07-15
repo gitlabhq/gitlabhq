@@ -3,6 +3,7 @@
 module Types
   module BaseInterface
     include GraphQL::Schema::Interface
+    include Gitlab::Graphql::VersionFilter::FutureFieldFallback
 
     field_class ::Types::BaseField
 

@@ -32,7 +32,7 @@ module QA
             Support::Waiter.wait_until { ide.has_pending_changes? }
             ide.commit_and_push_to_new_branch(file_name)
 
-            expect(ide).to have_message('Success! Your changes have been committed.')
+            expect(ide).to have_message(Page::Project::WebIDE::VSCode::COMMIT_SUCCESS_MESSAGE)
 
             ide.create_merge_request
           end

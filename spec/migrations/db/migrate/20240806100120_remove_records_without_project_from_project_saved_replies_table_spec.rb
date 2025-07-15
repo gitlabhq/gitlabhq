@@ -22,7 +22,7 @@ RSpec.describe RemoveRecordsWithoutProjectFromProjectSavedRepliesTable, feature_
 
       migrate!
 
-      expect { migrate! }.to change { project_saved_replies.count }.by(0)
+      expect { migrate! }.not_to change { project_saved_replies.count }
     end
   end
 end

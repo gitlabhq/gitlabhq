@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/gitlab/no_find_in_workers'
 RSpec.describe RuboCop::Cop::Gitlab::NoFindInWorkers, feature_category: :shared do
   context 'when find is used' do
     it 'adds an offense' do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class SomeWorker
           include ApplicationWorker
 
@@ -15,13 +15,13 @@ RSpec.describe RuboCop::Cop::Gitlab::NoFindInWorkers, feature_category: :shared 
                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Refrain from using `find`, use `find_by` instead. See https://docs.gitlab.com/ee/development/sidekiq/#retries.[...]
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context 'when find is not used' do
     it 'adds no offense' do
-      expect_no_offenses(<<~CODE)
+      expect_no_offenses(<<~RUBY)
         class SomeWorker
           include ApplicationWorker
 
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Gitlab::NoFindInWorkers, feature_category: :shared 
             return unless namespace
           end
         end
-      CODE
+      RUBY
     end
   end
 end

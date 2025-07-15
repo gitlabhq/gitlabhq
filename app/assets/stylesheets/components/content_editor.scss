@@ -13,7 +13,6 @@
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dark & {
     width: calc(100% - 6px);
-    margin: 2px 3px;
     padding-left: calc(#{$gl-spacing-scale-5} - 3px);
   }
 
@@ -335,6 +334,11 @@
 // style in typography.scss
 .md > .ProseMirror {
   margin: 2px;
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-dark & {
+    margin: 2px 3px;
+  }
 }
 
 .table-creator-grid-item {

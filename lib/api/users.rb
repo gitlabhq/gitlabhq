@@ -54,7 +54,6 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         params :optional_attributes do
-          optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
           optional :twitter, type: String, desc: 'The Twitter username'
           optional :discord, type: String, desc: 'The Discord user ID'
@@ -192,6 +191,10 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :user_profile, urgency: :low do
+        # This error can be removed in/after 19.0 release.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/549951
+        error_for_saml_provider_id_param_ee
+
         index_params = declared_params(include_missing: false)
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
@@ -407,20 +410,18 @@ module API
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       put ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
-        user = User.find_by(id: params.delete(:id))
+        user = User.find_by_id(params.delete(:id))
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-          User.by_any_email(params[:email].downcase)
-              .where.not(id: user.id).exists?
+          User.by_any_email(params[:email].downcase).id_not_in(user.id).exists?
 
         conflict!('Username has already been taken') if params[:username] &&
-          User.by_username(params[:username])
-              .where.not(id: user.id).exists?
+          User.by_username(params[:username]).id_not_in(user.id).exists?
 
         user_params = declared_params(include_missing: false)
 
@@ -435,6 +436,8 @@ module API
           user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
         end
 
+        user_params[:user_detail_organization] = user_params.delete(:organization) if user_params[:organization]
+
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
         end
@@ -446,7 +449,6 @@ module API
           render_validation_error!(user)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc "Disable two factor authentication for a user. Available only for admins" do
         detail 'This feature was added in GitLab 15.2'

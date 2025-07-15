@@ -65,6 +65,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_DEBUG_TRACE`                                | Pipeline     | `true` if [debug logging (tracing)](variables_troubleshooting.md#enable-debug-logging) is enabled. |
 | `CI_DEBUG_SERVICES`                             | Pipeline     | `true` if [service container logging](../services/_index.md#capturing-service-container-logs) is enabled. Introduced in GitLab 15.7. Requires GitLab Runner 15.7. |
 | `CI_DEFAULT_BRANCH`                             | Pre-pipeline | The name of the project's default branch. |
+| `CI_DEFAULT_BRANCH_SLUG`                        | Pre-pipeline | `CI_DEFAULT_BRANCH` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` | Pre-pipeline | The direct group image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`        | Pre-pipeline | The top-level group image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_PASSWORD`                  | Pipeline     | The password to pull images through the Dependency Proxy. |
@@ -105,7 +106,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PIPELINE_SOURCE`                            | Pre-pipeline | How the pipeline was triggered. The value can be one of the [pipeline sources](../jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 | `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` if the job was [triggered](../triggers/_index.md). |
 | `CI_PIPELINE_URL`                               | Job-only     | The URL for the pipeline details. |
-| `CI_PIPELINE_CREATED_AT`                        | Pre-pipeline | The date and time when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
+| `CI_PIPELINE_CREATED_AT`                        | Job-only     | The date and time when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_PIPELINE_NAME`                              | Pre-pipeline | The pipeline name defined in [`workflow:name`](../yaml/_index.md#workflowname). Introduced in GitLab 16.3. |
 | `CI_PIPELINE_SCHEDULE_DESCRIPTION`              | Pre-pipeline | The description of the pipeline schedule. Only available in scheduled pipelines. Introduced in GitLab 17.8. |
 | `CI_PROJECT_DIR`                                | Job-only     | The full path the repository is cloned to, and where the job runs from. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see the [Advanced GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
@@ -162,7 +163,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `GITLAB_USER_ID`                                | Pipeline     | The numeric ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                             | Pipeline     | The unique username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
 | `GITLAB_USER_NAME`                              | Pipeline     | The display name (user-defined **Full name** in the profile settings) of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
-| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access). |
+| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent for Kubernetes is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access). |
 | `TRIGGER_PAYLOAD`                               | Pipeline     | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/_index.md#access-webhook-payload). |
 
 ## Predefined variables for merge request pipelines

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class AddOverrideChangesRequestedToMergeRequest < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
-
   milestone '16.11'
 
   def change

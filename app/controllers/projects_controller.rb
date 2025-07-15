@@ -65,7 +65,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
-  feature_category :code_review_workflow, [:unfoldered_environment_names]
+  feature_category :continuous_delivery, [:unfoldered_environment_names]
 
   urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
   urgency :low, [:preview_markdown, :new_issuable_address]
@@ -496,6 +496,7 @@ class ProjectsController < Projects::ApplicationController
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
       merge_request_title_regex
+      merge_request_title_regex_description
       emails_enabled
     ]
 
@@ -545,6 +546,7 @@ class ProjectsController < Projects::ApplicationController
       :merge_commit_template_or_default,
       :squash_commit_template_or_default,
       :merge_request_title_regex,
+      :merge_request_title_regex_description,
       { project_setting_attributes: project_setting_attributes,
         project_feature_attributes: project_feature_attributes }
     ]

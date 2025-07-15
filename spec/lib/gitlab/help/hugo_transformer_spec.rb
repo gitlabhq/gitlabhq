@@ -352,6 +352,40 @@ RSpec.describe Gitlab::Help::HugoTransformer do
       expect(transformer.transform(content).strip).to eq(expected_content.strip)
     end
 
+    it 'codeblocks are rendered as-is even after other shortcode transformations' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        Current maintained versions:
+
+        {{< maintained-versions >}}
+
+        More content here.
+
+        ```markdown
+        - example 1
+        - example 1 escaped backticks \`backticks\`
+        ```
+      MARKDOWN
+
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        Current maintained versions:
+
+        https://docs.gitlab.com/policy/maintenance/#maintained-versions
+
+        More content here.
+
+        ```markdown
+        - example 1
+        - example 1 escaped backticks \`backticks\`
+        ```
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
     describe '#find_next_heading_level' do
       it 'returns level 2 when no previous headings exist' do
         content = "Some content without headings"

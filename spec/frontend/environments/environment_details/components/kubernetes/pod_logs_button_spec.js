@@ -34,6 +34,10 @@ describe('~/environments/environment_details/components/kubernetes/pod_logs_butt
         expect(findButton().text()).toBe('View logs');
       });
 
+      it('renders a button with the correct icon', () => {
+        expect(findButton().props('icon')).toBe('log');
+      });
+
       it('provides link to the logs page', () => {
         expect(findButton().attributes('to')).toBe(
           `/k8s/namespace/${namespace}/pods/${podName}/logs?container=${container.name}`,
@@ -48,6 +52,10 @@ describe('~/environments/environment_details/components/kubernetes/pod_logs_butt
 
       it('renders a dropdown with the correct text', () => {
         expect(findDropdown().props('toggleText')).toBe('View logs');
+      });
+
+      it('renders a dropdown with the correct icon', () => {
+        expect(findDropdown().props('icon')).toBe('log');
       });
 
       it('provides correct dropdown items', () => {

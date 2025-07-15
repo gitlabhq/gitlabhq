@@ -69,7 +69,6 @@ describe('WorkItemCrmContacts component', () => {
     wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAllItems = () => wrapper.findAllByTestId('contact');
   const findAllGroups = () => wrapper.findAllByTestId('organization');
-  const findItem = () => findAllItems().at(0);
 
   const showDropdown = () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
@@ -110,18 +109,41 @@ describe('WorkItemCrmContacts component', () => {
     expect(findAllItems()).toHaveLength(0);
   });
 
-  it('renders the items when they are already present', async () => {
+  it('renders the items when they are already present, including inactive contacts', async () => {
     createComponent({ items: mockItems });
     await waitForPromises();
 
     expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toStrictEqual(
       mockItems.map(({ id }) => id),
     );
-    expect(findAllItems()).toHaveLength(3);
+    expect(findAllItems()).toHaveLength(mockItems.length);
     expect(findAllGroups()).toHaveLength(2);
-    expect(findItem().text()).toContain("Jenee O'Reilly");
-    expect(findItem().text()).toContain("Jenee.O'Reilly-12@example.org");
-    expect(findItem().text()).toContain('Anderson LLC-4');
+
+    // Contacts as they appear in the dropdown are sorted by org name,
+    // then by first name, so we need to manually check the items
+    // in the correct order instead of just looping through the mock items
+
+    const firstItemText = findAllItems().at(0).text();
+    expect(firstItemText).toContain("Jenee O'Reilly");
+    expect(firstItemText).toContain("Jenee.O'Reilly-12@example.org");
+    expect(firstItemText).toContain('Anderson LLC-4');
+
+    const secondItemText = findAllItems().at(1).text();
+    expect(secondItemText).toContain('Kassie Oberbrunner');
+    expect(secondItemText).toContain('Kassie.Oberbrunner-15@example.org');
+    expect(secondItemText).toContain('Anderson LLC-4');
+
+    const thirdItemText = findAllItems().at(2).text();
+    expect(thirdItemText).toContain('Another Inactive Contact');
+    expect(thirdItemText).toContain('second-inactive-contact@example.org');
+
+    const fourthItemText = findAllItems().at(3).text();
+    expect(fourthItemText).toContain('Inactive Contact');
+    expect(fourthItemText).toContain('inactive-contact@example.org');
+
+    const fifthItemText = findAllItems().at(4).text();
+    expect(fifthItemText).toContain('Liza Osinski');
+    expect(fifthItemText).toContain('Liza.Osinski-31@example.org');
   });
 
   it.each`
@@ -181,6 +203,60 @@ describe('WorkItemCrmContacts component', () => {
     await waitForPromises();
 
     expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(getMutationInput([]));
+  });
+
+  it('only returns active contacts or selected items when searching', async () => {
+    const activeContact = mockItems.filter(
+      (item) => item.email === "Jenee.O'Reilly-12@example.org",
+    )[0];
+    const inactiveContact = mockItems.filter(
+      (item) => item.email === 'inactive-contact@example.org',
+    )[0];
+
+    createComponent({
+      items: [activeContact, inactiveContact],
+    });
+
+    showDropdown();
+    await waitForPromises();
+
+    expect(findWorkItemSidebarDropdownWidget().props('listItems')).toEqual([
+      {
+        text: 'Selected',
+        options: [
+          // Inactive contact is selected and is shown in the "Selected" section
+          // Note that contacts are sorted by org name, then by first name,
+          // so the inactive contact is shown first
+          {
+            value: 'gid://gitlab/CustomerRelations::Contact/233',
+            text: 'Inactive Contact',
+          },
+          {
+            value: 'gid://gitlab/CustomerRelations::Contact/213',
+            text: "Jenee O'Reilly",
+          },
+        ],
+      },
+      // Only active contacts are shown outside of the "Selected" section
+      {
+        text: 'Anderson LLC-4',
+        options: [
+          {
+            value: 'gid://gitlab/CustomerRelations::Contact/216',
+            text: 'Kassie Oberbrunner',
+          },
+        ],
+      },
+      {
+        text: 'No organization',
+        options: [
+          {
+            value: 'gid://gitlab/CustomerRelations::Contact/232',
+            text: 'Liza Osinski',
+          },
+        ],
+      },
+    ]);
   });
 
   it('shows selected items, then organizations then orphans', async () => {

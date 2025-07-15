@@ -117,7 +117,7 @@ describe('ImportHistoryApp', () => {
       wrapper.findComponent(PaginationBar).vm.$emit('set-page', NEW_PAGE);
       await axios.waitForAll();
 
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       expect(mock.history.get[0].params).toStrictEqual(expect.objectContaining({ page: NEW_PAGE }));
       expect(wrapper.findComponent(GlTable).props().items).toStrictEqual(FAKE_NEXT_PAGE_REPLY);
     });
@@ -134,7 +134,7 @@ describe('ImportHistoryApp', () => {
     wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
     await axios.waitForAll();
 
-    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get).toHaveLength(1);
     expect(mock.history.get[0].params).toStrictEqual(
       expect.objectContaining({ per_page: NEW_PAGE_SIZE }),
     );
@@ -153,7 +153,7 @@ describe('ImportHistoryApp', () => {
     wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
     await axios.waitForAll();
 
-    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get).toHaveLength(1);
     expect(mock.history.get[0].params).toStrictEqual(
       expect.objectContaining({ per_page: NEW_PAGE_SIZE, page: 1 }),
     );

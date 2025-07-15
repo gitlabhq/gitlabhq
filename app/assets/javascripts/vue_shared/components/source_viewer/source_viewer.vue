@@ -136,7 +136,6 @@ export default {
       this.lineHighlighter.highlightHash(this.$route.hash);
     },
   },
-  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
@@ -145,8 +144,7 @@ export default {
     <blame v-if="showBlame && blameInfo.length" :blame-info="blameInfo" />
 
     <div
-      class="file-content code js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
-      :class="$options.userColorScheme"
+      class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
       data-type="simple"
       :data-path="blob.path"
       data-testid="blob-viewer-file-content"

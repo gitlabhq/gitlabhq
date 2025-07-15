@@ -54,7 +54,7 @@ There are a few ways to view a list of environments for a given project:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags/_index.md) named `soft_validation_on_external_url`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
 
 {{< /history >}}
@@ -405,6 +405,8 @@ deploy_review:
 Stopping an environment means its deployments are not accessible on the target server. You must stop
 an environment before it can be deleted.
 
+When using the `on_stop` action to stop an environment, the job runs if it's not [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
+
 ### Stop an environment by using the UI
 
 {{< alert type="note" >}}
@@ -442,7 +444,7 @@ In the following example, a `deploy_review` job calls a `stop_review` job to cle
 environment.
 
 - Both jobs must have the same [`rules`](../yaml/_index.md#rules)
-  or [`only/except`](../yaml/_index.md#only--except) configuration. Otherwise,
+  or [`only/except`](../yaml/deprecated_keywords.md#only--except) configuration. Otherwise,
   the `stop_review` job might not be included in all pipelines that include the
   `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
 - The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
@@ -598,7 +600,7 @@ manually.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `stop_stale_environments`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags/_index.md) named `stop_stale_environments`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
 
 {{< /history >}}

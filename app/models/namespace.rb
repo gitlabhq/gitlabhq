@@ -12,6 +12,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include Namespaces::Traversal::Cached
+  include Namespaces::Traversal::Traversable
   include Namespaces::AdjournedDeletable
   include EachBatch
   include BlocksUnsafeSerialization
@@ -61,6 +62,9 @@ class Namespace < ApplicationRecord
   has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
+  has_one :namespace_settings_with_ancestors_inherited_settings, -> { with_ancestors_inherited_settings },
+    inverse_of: :namespace, class_name: 'NamespaceSetting', primary_key: :id, foreign_key: :namespace_id
+
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
   has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
   has_one :namespace_statistics
@@ -163,6 +167,7 @@ class Namespace < ApplicationRecord
   validate :changing_shared_runners_enabled_is_allowed, unless: -> { project_namespace? }
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
   validate :parent_organization_match
+  validate :no_conflict_with_organization_user_details, if: :path_changed?
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
@@ -389,6 +394,15 @@ class Namespace < ApplicationRecord
       without_project_namespaces.top_level.find_by_path_or_name(username).present?
     end
 
+    def username_reserved_for_organization?(username, organization, excluding: [])
+      without_project_namespaces
+        .top_level
+        .in_organization(organization)
+        .where.not(id: excluding)
+        .find_by_path_or_name(username)
+        .present?
+    end
+
     def self_or_ancestors_archived_setting_subquery
       namespace_setting_reflection = reflect_on_association(:namespace_settings)
       namespace_setting_table = Arel::Table.new(namespace_setting_reflection.table_name)
@@ -420,8 +434,16 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.archived?
   end
 
-  def self_or_ancestor_archived?
-    self_and_ancestors.archived.exists?
+  def self_or_ancestors_archived?
+    if association(:namespace_settings_with_ancestors_inherited_settings).loaded?
+      return !!namespace_settings_with_ancestors_inherited_settings&.archived
+    end
+
+    self_and_ancestors(skope: Namespace).archived.exists?
+  end
+
+  def ancestors_archived?
+    ancestors.archived.exists?
   end
 
   def to_reference_base(from = nil, full: false, absolute_path: false)
@@ -838,6 +860,14 @@ class Namespace < ApplicationRecord
     return if parent.organization_id == organization_id
 
     errors.add(:organization_id, _("must match the parent organization's ID"))
+  end
+
+  # route / path global uniqueness is handled by Routeable concern
+  # here we are checking only for conflicts with per-organization username aliases
+  def no_conflict_with_organization_user_details
+    return unless Organizations::OrganizationUserDetail.for_organization(organization).with_usernames(path).any?
+
+    errors.add(:path, _('has already been taken'))
   end
 
   def cross_namespace_reference?(from)

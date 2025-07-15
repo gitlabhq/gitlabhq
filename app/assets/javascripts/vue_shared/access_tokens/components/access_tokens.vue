@@ -63,6 +63,7 @@ export default {
       'token',
       'tokens',
       'total',
+      'urlParams',
     ]),
   },
   created() {
@@ -75,7 +76,12 @@ export default {
       urlRotate: this.accessTokenRotate,
       urlShow: this.accessTokenShow,
     });
+    this.$router.replace({ query: this.urlParams });
     this.fetchTokens();
+    window.addEventListener('popstate', this.handlePopState);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.handlePopState);
   },
   methods: {
     ...mapActions(useAccessTokens, [
@@ -94,19 +100,31 @@ export default {
     search(filters) {
       this.setFilters(filters);
       this.setPage(1);
+      this.$router.push({ query: this.urlParams });
       this.fetchTokens();
     },
     async pageChanged(page) {
       this.setPage(page);
+      this.$router.push({ query: this.urlParams });
+      await this.fetchTokens();
+      window.scrollTo({ top: 0 });
+    },
+    async handlePopState() {
+      const { filters, page, sorting } = initializeValuesFromQuery();
+      this.setFilters(filters);
+      this.setPage(page);
+      this.setSorting(sorting);
       await this.fetchTokens();
       window.scrollTo({ top: 0 });
     },
     handleSortChange(value) {
       this.setSorting({ value, isAsc: this.sorting.isAsc });
+      this.$router.push({ query: this.urlParams });
       this.fetchTokens();
     },
     handleSortDirectionChange(isAsc) {
       this.setSorting({ value: this.sorting.value, isAsc });
+      this.$router.push({ query: this.urlParams });
       this.fetchTokens();
     },
   },

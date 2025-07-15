@@ -69,6 +69,12 @@
         "string",
         "null"
       ]
+    },
+    "root_namespace_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

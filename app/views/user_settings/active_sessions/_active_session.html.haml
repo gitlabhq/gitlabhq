@@ -26,6 +26,8 @@
       = l(active_session.created_at, format: :short)
       - if active_session.try(:admin_mode)
         %strong= _('with Admin Mode')
+      - if active_session.try(:step_up_authenticated)
+        %strong= s_('ActiveSessions|with Step-up Authentication')
 
   - unless is_current_session
     .gl-float-right

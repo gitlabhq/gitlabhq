@@ -29,7 +29,7 @@ module Projects
       end
 
       def uploads_sharding_key
-        { project_id: relation_export&.project_id }
+        { project_id: project_id }
       end
     end
   end

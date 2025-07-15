@@ -1,9 +1,0 @@
----
-name: merge_request_dashboard
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13448
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150661
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480854
-milestone: '17.0'
-group: group::code review
-type: wip
-default_enabled: false

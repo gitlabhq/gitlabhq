@@ -95,8 +95,8 @@ enhancement. They are responsible for:
   [assigned to the DevOps stage group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
   that is delivering the new feature or feature enhancements.
 
-The first merge request where a feature can be tested should include the
-documentation, even if the feature is behind a feature flag.
+When possible, the merge request with the code should include the
+documentation.
 For more information, see the [guidelines](feature_flags.md).
 
 The author of this MR, either a frontend or backend developer, should write the documentation.
@@ -649,12 +649,6 @@ Remember:
 
 The documentation under `/doc/solutions` is created, maintained, copy edited,
 and merged by the Solutions Architect team.
-
-## AI-generated content
-
-Community members can make AI-generated contributions to GitLab documentation, provided they follow the guidelines in our [DCO or our CLA terms](https://about.gitlab.com/community/contribute/dco-cla/).
-
-GitLab team members must follow the guidelines documented in the [internal handbook](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/legal_restrictions/).
 
 ## Related topics
 

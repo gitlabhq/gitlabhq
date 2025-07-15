@@ -3,6 +3,7 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 title: Solutions architecture
+description: Use these reference solutions to integrate GitLab with your people, process, and technology.
 ---
 
 As with all extensible platforms, GitLab has many features that can be creatively combined together with third party functionality to create solutions that address the specific people, process, and technology challenges of the organizations that use it. Reference solutions and implementations can also be crafted at a more general level so that they can be adopted and customized by customers with similar needs to the reference solution.

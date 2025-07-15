@@ -688,7 +688,7 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
+      expect(wrapper.findAllComponents(DiffFile)).toHaveLength(1);
     });
 
     describe('rechecking the url hash for scrolling', () => {

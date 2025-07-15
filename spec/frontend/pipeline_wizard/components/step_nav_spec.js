@@ -43,14 +43,14 @@ describe('Pipeline Wizard - Step Navigation Component', () => {
     createComponent();
 
     await prevButton.trigger('click');
-    expect(wrapper.emitted().back.length).toBe(1);
+    expect(wrapper.emitted().back).toHaveLength(1);
   });
 
   it('emits "next" events when clicking next button', async () => {
     createComponent();
 
     await nextButton.trigger('click');
-    expect(wrapper.emitted().next.length).toBe(1);
+    expect(wrapper.emitted().next).toHaveLength(1);
   });
 
   it('enables the next button if nextButtonEnabled ist set to true', () => {

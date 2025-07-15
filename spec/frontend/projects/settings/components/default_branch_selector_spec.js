@@ -28,6 +28,7 @@ describe('projects/settings/components/default_branch_selector', () => {
   it('displays a RefSelector component', () => {
     expect(findRefSelector().props()).toEqual({
       disabled,
+      defaultBranch: null,
       value: persistedDefaultBranch,
       enabledRefTypes: [REF_TYPE_BRANCHES],
       projectId,

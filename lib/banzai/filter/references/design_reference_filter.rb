@@ -45,7 +45,7 @@ module Banzai
           return DesignManagement::Design.none unless parent.design_management_enabled?
 
           iids        = identifiers.map(&:issue_iid).to_set
-          issues      = parent.issues.where(iid: iids).includes(:project, :namespace)
+          issues      = parent.issues.iid_in(iids).includes(:project, :namespace)
           id_for_iid  = issues.index_by(&:iid).transform_values(&:id)
           issue_by_id = issues.index_by(&:id)
 

@@ -14,7 +14,7 @@
       .gl-mb-5
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
         - c.with_body do
-          = s_('GroupSettings|Unless manually disabled, this setting will be automatically enabled in GitLab 18.0. This setting is scheduled to be removed in GitLab 18.3, and the JWT format will be used by all job tokens.')
+          = s_('GroupSettings|Unless manually disabled, this setting will be automatically enabled in GitLab 19.0. This setting is scheduled to be removed in GitLab 20.0, and the JWT format will be used by all job tokens.')
           = link_to _('Learn more.'), help_page_path('ci/jobs/ci_job_token.md', anchor: 'use-legacy-format-for-cicd-tokens'), target: '_blank', rel: 'noopener noreferrer'
       .gl-mb-5
       = gitlab_ui_form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|

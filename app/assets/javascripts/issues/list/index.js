@@ -2,23 +2,12 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
-import { resolvers, config } from '~/graphql_shared/issuable_client';
-import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
+import { getApolloProvider } from '~/issues/list/issue_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DesignDetail from '~/work_items/components/design_management/design_preview/design_details.vue';
 import { ROUTES } from '~/work_items/constants';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
-
-let issuesClient;
-
-export async function issuesListClient() {
-  if (issuesClient) return issuesClient;
-  issuesClient = gon.features?.frontendCaching
-    ? await createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list', ...config })
-    : createDefaultClient(resolvers, config);
-  return issuesClient;
-}
 
 export async function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-jira-issues-import-status-root');
@@ -107,6 +96,7 @@ export async function mountIssuesListApp() {
     releasesPath,
     resetPath,
     rssPath,
+    projectNamespaceFullPath,
     showNewIssueLink,
     signInPath,
     wiCanAdminLabel,
@@ -123,9 +113,7 @@ export async function mountIssuesListApp() {
   return new Vue({
     el,
     name: 'IssuesListRoot',
-    apolloProvider: new VueApollo({
-      defaultClient: await issuesListClient(),
-    }),
+    apolloProvider: await getApolloProvider(),
     router: new VueRouter({
       base: window.location.pathname,
       mode: 'history',
@@ -179,6 +167,7 @@ export async function mountIssuesListApp() {
       newProjectPath,
       releasesPath,
       rssPath,
+      projectNamespaceFullPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
       signInPath,
       // For CsvImportExportButtons component

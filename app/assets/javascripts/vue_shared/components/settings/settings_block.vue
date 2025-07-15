@@ -1,11 +1,11 @@
 <script>
-import { GlButton, GlCollapse } from '@gitlab/ui';
+import { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 
 import { __ } from '~/locale';
 
 export default {
-  components: { GlButton, GlCollapse },
+  components: { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon },
   props: {
     title: {
       type: String,
@@ -45,6 +45,9 @@ export default {
     collapseId() {
       return this.id || uniqueId('settings-block-');
     },
+    isChevronUp() {
+      return this.expanded;
+    },
   },
   watch: {
     expanded(newValue) {
@@ -73,16 +76,15 @@ export default {
         <gl-button
           category="tertiary"
           size="small"
-          class="settings-toggle gl-shrink-0 !gl-pl-2 !gl-pr-0"
-          icon="chevron-lg-right"
-          button-text-classes="gl-sr-only"
+          class="settings-toggle gl-shrink-0 !gl-px-0"
           :aria-label="toggleButtonAriaLabel"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           data-testid="settings-block-toggle"
           @click="toggleExpanded"
         >
-          {{ toggleButtonText }}
+          <gl-animated-chevron-lg-right-down-icon variant="default" :is-on="isChevronUp" />
+          <div class="gl-sr-only">{{ toggleButtonText }}</div>
         </gl-button>
       </div>
       <div class="gl-grow">

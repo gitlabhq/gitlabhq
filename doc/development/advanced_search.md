@@ -1,5 +1,5 @@
 ---
-stage: Foundations
+stage: AI-powered
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Advanced search development guidelines
@@ -483,7 +483,7 @@ end
 
 override :as_indexed_json
 def as_indexed_json
-   # a hash containing the document represenation for this reference
+   # a hash containing the document representation for this reference
 end
 
 override :index_name
@@ -508,6 +508,12 @@ The logs show the updates. To check the document in the index, run this command:
 ```shell
 curl "http://localhost:9200/gitlab-development-<type>/_search"
 ```
+
+##### Common gotchas
+
+- Index operations actually perform an upsert. If the document exists, it performs a partial update by merging fields sent
+  with the existing document fields. If you want to explicitly remove fields or set them to empty, the `as_indexed_json`
+  must send `nil` or an empty array.
 
 #### Data consistency
 
@@ -900,7 +906,7 @@ Query by `iid` field and document type. Requires `type` and `iid` fields.
 
 #### `by_full_text`
 
-Performs a full text search. This query will use `by_multi_match_query` or `by_simple_query_string` if Advanced search syntax is used in the query string. `by_multi_match_query` is behind the `search_uses_match_queries` feature flag.
+Performs a full text search. This query will use `by_multi_match_query` or `by_simple_query_string` if Advanced search syntax is used in the query string.
 
 #### `by_multi_match_query`
 

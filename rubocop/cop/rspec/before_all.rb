@@ -2,25 +2,31 @@
 
 require 'rubocop-rspec'
 
-module Rubocop
+module RuboCop
   module Cop
     module RSpec
-      # This cop checks for `before(:all) in RSpec tests`
+      # Forbids `before(:all)` in **regular** RSpec example groups and
+      # autocorrects it to `before_all`, the TestProf helper that wraps the group
+      # in a single DB transaction.  See:
+      # https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#common-test-setup
+      #
+      # **Exception: migration specs**
+      # Specs living under `spec/migrations/` (or tagged `:migration`)
+      # cannot run inside a transaction, so TestProf helpers are disabled.
+      # In those files you should keep using plain `before(:all)` (or `before`)
+      # as documented here:
+      # https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#testprof-in-migration-specs
       #
       # @example
       #
-      #  bad
+      #   # bad
+      #   before(:all) { project.add_tag(user, 'v1.2.3', 'main') }
       #
-      #  before(:all) do
-      #    project.repository.add_tag(user, 'v1.2.3', 'master')
-      #  end
+      #   # good
+      #   before_all   { project.add_tag(user, 'v1.2.3', 'main') }
       #
-      #  good
-      #
-      #  before_all do
-      #    project.repository.add_tag(user, 'v1.2.3', 'master')
-      #  end
-      #
+      #   # good (migration spec)
+      #   before(:all) { add_column(:foo, :bar, :string) }
       class BeforeAll < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
@@ -37,7 +43,7 @@ module Rubocop
 
           add_offense(node) do |corrector|
             replacement = 'before_all'
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node, replacement)
           end
         end
       end

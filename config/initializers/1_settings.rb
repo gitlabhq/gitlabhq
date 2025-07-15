@@ -932,6 +932,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['job_class'] = 'Users::SecurityPolicyBotCleanupCronWorker'
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
@@ -1137,10 +1140,12 @@ Settings.cell.database['skip_sequence_alteration'] ||= false
 # NOTE: `topology_service_client` is the configuration to use going forward as per https://docs.gitlab.com/administration/cells/#configuration
 #   We continue to be backwards compatible and support `topology_service` as a top-level key.
 Settings.cell['topology_service_client'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
-Settings.cell.topology_service_client['address'] ||= 'topology-service.gitlab.example.com:443'
-Settings.cell.topology_service_client['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
-Settings.cell.topology_service_client['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
-Settings.cell.topology_service_client['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+Settings.cell.topology_service_client['address'] ||= 'topology-service.example.com:443'
+Settings.cell.topology_service_client['ca_file'] ||= nil
+Settings.cell.topology_service_client['certificate_file'] ||= nil
+Settings.cell.topology_service_client['private_key_file'] ||= nil
+Settings.cell.topology_service_client['tls'] ||= {}
+Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.topology_service_client['tls']['enabled'].nil?
 
 #
 # GitLab KAS

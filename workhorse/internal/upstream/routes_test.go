@@ -2,8 +2,19 @@ package upstream
 
 import (
 	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"testing"
 
+	"github.com/alicebob/miniredis/v2"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
@@ -114,4 +125,87 @@ func TestLfsBatchSecondaryGitSSHPullWithGeoProxy(t *testing.T) {
 	}
 
 	runTestCasesWithGeoProxyEnabledPost(t, testCases)
+}
+
+func TestAllowedProxyRoute(t *testing.T) {
+	testCases := []testCasePost{
+		{testCase{"POST to /api/v4/internal/allowed", "/api/v4/internal/allowed", "Local Rails server received request to path /api/v4/internal/allowed"}, "application/json", nil},
+	}
+
+	railsServer := startRailsServer(t, nil)
+
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
+
+	runTestCasesPost(t, ws, testCases)
+}
+
+func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
+	const consecutiveFailures = 1
+	var requestCount int
+	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if requestCount <= consecutiveFailures+1 {
+			w.Header().Set("Enable-Workhorse-Circuit-Breaker", "true")
+			w.WriteHeader(http.StatusTooManyRequests)
+		} else {
+			// Subsequent requests would succeed if they reached the server
+			fmt.Fprint(w, "Local Rails server received request to path "+r.URL.Path)
+		}
+		requestCount++
+	}))
+	defer railsServer.Close()
+
+	redisConfig, cleanup := setupRedisConfig(t)
+	defer cleanup()
+
+	config := newUpstreamConfig(railsServer.URL)
+	config.CircuitBreakerConfig.Enabled = true
+	config.CircuitBreakerConfig.ConsecutiveFailures = consecutiveFailures
+	config.Redis = redisConfig
+
+	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil)
+	ws := httptest.NewServer(upstreamHandler)
+	defer ws.Close()
+
+	resp1, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
+		bytes.NewBufferString(`{"key_id":"test_key"}`))
+
+	require.NoError(t, err)
+	defer resp1.Body.Close()
+
+	assert.Equal(t, http.StatusBadGateway, resp1.StatusCode)
+
+	resp2, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
+		bytes.NewBufferString(`{"key_id":"test_key"}`))
+	require.NoError(t, err)
+	defer resp2.Body.Close()
+
+	assert.Equal(t, http.StatusBadGateway, resp2.StatusCode)
+
+	resp3, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
+		bytes.NewBufferString(`{"key_id":"test_key"}`))
+	require.NoError(t, err)
+	defer resp3.Body.Close()
+
+	body3, err := io.ReadAll(resp3.Body)
+	require.NoError(t, err)
+
+	assert.Equal(t, http.StatusTooManyRequests, resp3.StatusCode)
+	assert.Equal(t, "This endpoint has been requested too many times. Try again later.", string(body3))
+}
+
+func setupRedisConfig(t *testing.T) (*config.RedisConfig, func()) {
+	s, err := miniredis.Run()
+	require.NoError(t, err)
+
+	redisURL, err := url.Parse("redis://" + s.Addr())
+	require.NoError(t, err)
+	redisConfig := &config.RedisConfig{
+		URL: config.TomlURL{URL: *redisURL},
+	}
+
+	cleanup := func() {
+		s.Close()
+	}
+
+	return redisConfig, cleanup
 }

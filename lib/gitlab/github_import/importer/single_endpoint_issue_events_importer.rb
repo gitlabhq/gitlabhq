@@ -87,7 +87,7 @@ module Gitlab
           "github-importer/issues/#{collection_method}/already-imported/#{project.id}"
         end
 
-        def page_counter_id(issuable)
+        def page_keyset_id(issuable)
           PROCESSED_PAGE_CACHE_KEY % { issuable_iid: issuable.iid, collection: collection_method }
         end
 
@@ -96,7 +96,7 @@ module Gitlab
         end
 
         def collection_options
-          { state: 'all', sort: 'created', direction: 'asc' }
+          {}
         end
 
         # Cross-referenced events on Github doesn't have id.

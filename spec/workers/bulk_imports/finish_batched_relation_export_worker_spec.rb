@@ -10,10 +10,14 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
 
   describe '#perform' do
     it_behaves_like 'an idempotent worker' do
-      it 'marks export as finished and expires batches cache' do
-        cache_key = BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id)
+      it 'marks export as finished and expires batches cache', :aggregate_failures do
+        allow(Gitlab::Cache::Import::Caching).to receive(:expire)
 
-        expect(Gitlab::Cache::Import::Caching).to receive(:expire).with(cache_key, 0)
+        batch_cache_key = BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id)
+        expect(Gitlab::Cache::Import::Caching).to receive(:expire).with(batch_cache_key, 0)
+
+        batch_size_cache_key = BulkImports::BatchedRelationExportService.batch_size_cache_key(export.id)
+        expect(Gitlab::Cache::Import::Caching).to receive(:expire).with(batch_size_cache_key, 0)
 
         perform_multiple(job_args)
 

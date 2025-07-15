@@ -97,7 +97,7 @@ describe('RunnerProjects', () => {
     });
 
     it('Shows projects', () => {
-      expect(findRunnerAssignedItems().length).toBe(mockProjects.length);
+      expect(findRunnerAssignedItems()).toHaveLength(mockProjects.length);
     });
 
     it('Shows a project', () => {
@@ -218,7 +218,7 @@ describe('RunnerProjects', () => {
       createComponent();
 
       expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(false);
-      expect(findRunnerAssignedItems().length).toBe(0);
+      expect(findRunnerAssignedItems()).toHaveLength(0);
 
       expect(findGlSearchBoxByType().props('isLoading')).toBe(true);
     });

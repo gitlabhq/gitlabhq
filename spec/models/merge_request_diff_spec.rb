@@ -1345,31 +1345,11 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it 'returns first commit' do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
     end
-
-    context 'when "commits_from_gitaly" feature flag is disabled' do
-      before do
-        stub_feature_flags(commits_from_gitaly: false)
-      end
-
-      it 'returns first commit' do
-        expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
-      end
-    end
   end
 
   describe '#last_commit' do
     it 'returns last commit' do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
-    end
-
-    context 'when "commits_from_gitaly" feature flag is disabled' do
-      before do
-        stub_feature_flags(commits_from_gitaly: false)
-      end
-
-      it 'returns last commit' do
-        expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
-      end
     end
   end
 

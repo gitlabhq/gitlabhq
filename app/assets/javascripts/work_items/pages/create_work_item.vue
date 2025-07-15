@@ -12,6 +12,8 @@ import {
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+  WORK_ITEM_TYPE_ROUTE_ISSUE,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
 import { convertTypeEnumToName } from '../utils';
@@ -122,14 +124,15 @@ export default {
       const isWorkItemRoute = this.$route.params?.type === 'work_items';
       const isGroupWorkItemRoute = isWorkItemRoute && this.$router.history.base.includes('groups');
 
-      /*
-        If the route is epics, issues or work items on the group level
-        (because work items on the project level is not yet available)
-        we redirect to the list page when the user clicks on cancel,
-        otherwise we go back to the previous page.
-      */
-
-      if (Boolean(listPath) && (!isWorkItemRoute || isGroupWorkItemRoute)) {
+      /**
+       * If the route is epics, issues or work items on the group level
+       * (because work items on the project level is not yet available)
+       * we redirect to the list page when the user clicks on cancel,
+       * otherwise we go back to the previous page.
+       */
+      if (Boolean(listPath) && isWorkItemRoute && isGroupWorkItemRoute) {
+        visitUrl(listPath.replaceAll(WORK_ITEM_TYPE_ROUTE_WORK_ITEM, WORK_ITEM_TYPE_ROUTE_ISSUE));
+      } else if (Boolean(listPath) && (!isWorkItemRoute || isGroupWorkItemRoute)) {
         visitUrl(listPath);
       } else {
         this.$router.go(-1);

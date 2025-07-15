@@ -41,7 +41,7 @@ module Gitlab
           project.merge_requests.where.not(iid: already_imported_parents) # rubocop: disable CodeReuse/ActiveRecord
         end
 
-        def page_counter_id(merge_request)
+        def page_keyset_id(merge_request)
           "merge_request/#{merge_request.id}/#{collection_method}"
         end
 

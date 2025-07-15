@@ -12,5 +12,5 @@ description: Store any extra metadata for notes
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117149
 milestone: '16.0'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444222
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550695
 table_size: small

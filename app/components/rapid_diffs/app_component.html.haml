@@ -1,14 +1,14 @@
-- if !@lazy
-  - helpers.add_page_startup_api_call @diffs_stats_endpoint
-  - helpers.add_page_startup_api_call @diff_files_endpoint
-  - if @stream_url
+- if !lazy?
+  - helpers.add_page_startup_api_call diffs_stats_endpoint
+  - helpers.add_page_startup_api_call diff_files_endpoint
+  - if diffs_stream_url
     - helpers.content_for :startup_js do
       - javascript_tag nonce: content_security_policy_nonce do
         :plain
           var controller = new AbortController();
           window.gl.rapidDiffsPreload = {
             controller: controller,
-            streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(@stream_url)}', { signal: controller.signal })
+            streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(diffs_stream_url)}', { signal: controller.signal })
           }
 
 %article.rd-app{ aria: { label: root_label }, data: { rapid_diffs: true, app_data: app_data.to_json } }
@@ -24,25 +24,26 @@
     -# using label produces better results in VoiceOver than labelledby + hidden h2
     %section.rd-app-content{ aria: { label: content_label } }
       .rd-app-content-header{ data: { hidden_files_warning: true } }
-      - if empty_diff? && !@lazy
+      - if empty_state_visible?
         = render RapidDiffs::EmptyStateComponent.new
-      .rd-app-code-theme.code{ class: helpers.user_color_scheme }
+      .rd-app-code-theme.code.code-syntax-highlight-theme
         .rd-app-diffs-list
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
           %div{ data: { diffs_list: true } }
-            - if @lazy
+            - if lazy?
               .rd-app-diffs-loading{ data: { testid: 'rd-diffs-list-loading' } }
                 = helpers.gl_loading_icon(size: 'lg')
             - else
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
                   requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
-              - if diffs_list?
-                = diffs_list
-              - elsif !empty_diff?
-                = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: parallel_view?)
-              - if @stream_url
+              - unless empty_state_visible?
+                - if diffs_list?
+                  = diffs_list
+                - else
+                  = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
+              - if diffs_stream_url
                 %div{ data: { stream_remaining_diffs: true } }
               - else
                 = javascript_tag nonce: content_security_policy_nonce do

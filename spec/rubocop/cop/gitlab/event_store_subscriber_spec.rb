@@ -7,7 +7,7 @@ require_relative '../../../../rubocop/cop/gitlab/event_store_subscriber'
 RSpec.describe RuboCop::Cop::Gitlab::EventStoreSubscriber do
   context 'when an event store subscriber overrides #perform' do
     it 'registers an offense' do
-      expect_offense(<<~WORKER)
+      expect_offense(<<~RUBY)
         class SomeWorker
           include Gitlab::EventStore::Subscriber
 
@@ -17,64 +17,64 @@ RSpec.describe RuboCop::Cop::Gitlab::EventStoreSubscriber do
 
           def handle_event(event); end
         end
-      WORKER
+      RUBY
     end
   end
 
   context 'when an event store subscriber does not override #perform' do
     it 'does not register an offense' do
-      expect_no_offenses(<<~WORKER)
+      expect_no_offenses(<<~RUBY)
         class SomeWorker
           include Gitlab::EventStore::Subscriber
 
           def handle_event(event); end
         end
-      WORKER
+      RUBY
     end
   end
 
   context 'when an event store subscriber does not implement #handle_event' do
     it 'registers an offense' do
-      expect_offense(<<~WORKER)
+      expect_offense(<<~RUBY)
         class SomeWorker
           include Gitlab::EventStore::Subscriber
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A `Gitlab::EventStore::Subscriber` must implement `#handle_event(event)`.
         end
-      WORKER
+      RUBY
     end
   end
 
   context 'when a Sidekiq worker overrides #perform' do
     it 'does not register an offense' do
-      expect_no_offenses(<<~WORKER)
+      expect_no_offenses(<<~RUBY)
         class SomeWorker
           include ApplicationWorker
 
           def perform(*args); end
         end
-      WORKER
+      RUBY
     end
   end
 
   context 'when a Sidekiq worker implements #handle_event' do
     it 'does not register an offense' do
-      expect_no_offenses(<<~WORKER)
+      expect_no_offenses(<<~RUBY)
         class SomeWorker
           include ApplicationWorker
 
           def handle_event(event); end
         end
-      WORKER
+      RUBY
     end
   end
 
   context 'a non worker class' do
     it 'does not register an offense' do
-      expect_no_offenses(<<~MODEL)
+      expect_no_offenses(<<~RUBY)
         class Model < ApplicationRecord
           include ActiveSupport::Concern
         end
-      MODEL
+      RUBY
     end
   end
 end

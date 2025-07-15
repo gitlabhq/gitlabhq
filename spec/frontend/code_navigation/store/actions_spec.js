@@ -116,7 +116,7 @@ describe('Code navigation actions', () => {
       actions.showBlobInteractionZones({ state }, 'index.js');
 
       expect(addInteractionClass).toHaveBeenCalled();
-      expect(addInteractionClass.mock.calls.length).toBe(2);
+      expect(addInteractionClass.mock.calls).toHaveLength(2);
       expect(addInteractionClass.mock.calls[0]).toEqual([
         { path: 'index.js', d: 'test', wrapTextNodes },
       ]);

@@ -21,7 +21,7 @@ export default {
 <template>
   <gl-empty-state
     :svg-path="$options.EMPTY_STATE_SVG_URL"
-    :svg-height="150"
+    :svg-height="96"
     :title="$options.i18n.title"
   >
     <template #description>

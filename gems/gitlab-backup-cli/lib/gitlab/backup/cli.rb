@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: currently we're using a lot of legacy code from lib/backup here which
-# requires "rainbow/ext/string" to define the String#color method. We
-# want to use the Rainbow refinement in the gem code going forward, but
-# while we have this dependency, we need this external require
-require "rainbow/ext/string"
 require 'active_support/all' # Used to provide timezone support on timestamp among other things
 require 'active_record' # Used to connect to database views to help run gitaly backups
 require 'tmpdir' # Used to create temporary folders during backup

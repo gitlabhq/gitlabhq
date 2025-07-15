@@ -8,5 +8,5 @@ description: Separate table for job artifacts containing Geo verification metada
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75264
 milestone: '14.8'
 gitlab_schema: gitlab_ci_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550697
 table_size: large

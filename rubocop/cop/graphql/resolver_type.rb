@@ -26,6 +26,7 @@ module RuboCop
         MSG = 'Missing type annotation: Please add `type` DSL method call. ' \
           'e.g: type UserType.connection_type, null: true'
 
+        # @!method typed?(node)
         def_node_matcher :typed?, <<~PATTERN
           (... (begin <(send nil? :type ...) ...>))
         PATTERN

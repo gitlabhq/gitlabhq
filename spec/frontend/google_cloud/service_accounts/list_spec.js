@@ -80,7 +80,7 @@ describe('google_cloud/service_accounts/list', () => {
     });
 
     it('table must have three rows + header row', () => {
-      expect(findRows().length).toBe(4);
+      expect(findRows()).toHaveLength(4);
     });
 
     it('table row must contain link to the google cloud console', () => {

@@ -93,7 +93,7 @@ module RuboCop
         def corrector(node)
           ->(corrector) do
             replacement = replace_matcher(node) || replace_response_status(node)
-            corrector.replace(node.source_range, replacement) if node.source_range.source != replacement
+            corrector.replace(node, replacement) if node.source != replacement
           end
         end
 

@@ -13,10 +13,16 @@ describe('AccessTokenStatistics', () => {
 
   const pinia = createTestingPinia();
   const store = useAccessTokens();
+  const $router = {
+    push: jest.fn(),
+  };
 
   const createComponent = () => {
     wrapper = mountExtended(AccessTokenStatistics, {
       pinia,
+      mocks: {
+        $router,
+      },
     });
   };
 
@@ -47,6 +53,7 @@ describe('AccessTokenStatistics', () => {
       { type: 'state', value: { data: 'active', operator: '=' } },
     ]);
     expect(store.setPage).toHaveBeenCalledWith(1);
+    expect($router.push).toHaveBeenCalledWith({ query: { page: 1, sort: 'expires_asc' } });
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
   });
 });

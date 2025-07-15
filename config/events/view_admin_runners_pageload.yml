@@ -5,6 +5,8 @@ action: view_admin_runners_pageload
 identifiers:
 - user
 product_group: personal_productivity
+product_categories:
+- fleet_visibility
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156812
 tiers:

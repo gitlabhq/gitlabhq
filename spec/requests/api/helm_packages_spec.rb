@@ -52,6 +52,36 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
       it_behaves_like 'returning response status', :success
     end
+
+    context 'when helm metadata has appVersion' do
+      subject(:api_request) { get api(url) }
+
+      where(:app_version, :expected_app_version) do
+        '4852e000'  | "\"4852e000\""
+        '1.0.0'     | "\"1.0.0\""
+        'v1.0.0'    | "\"v1.0.0\""
+        'master'    | "\"master\""
+      end
+
+      with_them do
+        before do
+          Packages::Helm::FileMetadatum.where(project_id: project_id).update_all(
+            metadata: {
+              'name' => 'Package Name',
+              'version' => '1.0.0',
+              'apiVersion' => 'v2',
+              'appVersion' => app_version
+            }
+          )
+        end
+
+        it 'returns yaml content with quoted appVersion' do
+          api_request
+
+          expect(response.body).to include("appVersion: #{expected_app_version}")
+        end
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/charts/:file_name.tgz' do

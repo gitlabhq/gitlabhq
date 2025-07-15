@@ -135,6 +135,9 @@ export default {
     search(searchString) {
       this.searchString = searchString;
     },
+    handleSelect(value) {
+      this.$emit(this.$options.model.event, value);
+    },
   },
 };
 </script>
@@ -154,7 +157,11 @@ export default {
       :block="block"
       @search="search"
       @select="$emit($options.model.event, $event)"
-    />
+    >
+      <template #footer>
+        <slot name="footer" :on-select="handleSelect"></slot>
+      </template>
+    </gl-collapsible-listbox>
     <input ref="input" type="hidden" :name="name" :value="selected" />
   </component>
 </template>

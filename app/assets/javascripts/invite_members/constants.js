@@ -6,7 +6,8 @@ export const SEARCH_DELAY = 200;
 export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const WARNING_TOKEN_BACKGROUND = 'gl-bg-orange-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
-export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
+export const MEMBER_INVITE_LOCALSTORAGE_KEY = 'members_invited_successfully';
+export const GROUP_INVITE_LOCALSTORAGE_KEY = 'group_invited_successfully';
 export const MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY = 'members_queued_successfully';
 
 export const GROUP_FILTERS = {
@@ -76,7 +77,12 @@ export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to i
 
 export const ACCESS_LEVEL = s__('InviteMembersModal|Select maximum role');
 export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date (optional)');
-export const TOAST_MESSAGE_SUCCESSFUL = s__('InviteMembersModal|Members were successfully added.');
+export const MEMBER_INVITE_MESSAGE_SUCCESSFUL = s__(
+  'InviteMembersModal|Members were successfully added.',
+);
+export const GROUP_INVITE_MESSAGE_SUCCESSFUL = s__(
+  'InviteMembersModal|Group was successfully invited. It might take a few minutes for the changes to user access levels to take effect.',
+);
 export const QUEUED_MESSAGE_SUCCESSFUL = s__(
   'InviteMembersModal|Some invitations have been queued for administrator approval.',
 );
@@ -123,7 +129,7 @@ export const MEMBER_MODAL_LABELS = {
   },
   searchField: MEMBERS_SEARCH_FIELD,
   placeHolder: MEMBERS_PLACEHOLDER,
-  toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
+  toastMessageSuccessful: MEMBER_INVITE_MESSAGE_SUCCESSFUL,
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
@@ -144,7 +150,7 @@ export const GROUP_MODAL_LABELS = {
   },
   searchField: GROUP_SEARCH_FIELD,
   placeHolder: GROUP_PLACEHOLDER,
-  toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
+  toastMessageSuccessful: GROUP_INVITE_MESSAGE_SUCCESSFUL,
 };
 
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';

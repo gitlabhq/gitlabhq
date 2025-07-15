@@ -7,5 +7,6 @@ feature_categories:
 description: Stores labels for abuse reports
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168186
 milestone: '17.6'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553431

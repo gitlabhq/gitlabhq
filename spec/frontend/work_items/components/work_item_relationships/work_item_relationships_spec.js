@@ -152,7 +152,7 @@ describe('WorkItemRelationships', () => {
     await waitForPromises();
 
     // renders all 3 lists: blocking, blocked by and related to
-    expect(findAllWorkItemRelationshipListComponents().length).toBe(3);
+    expect(findAllWorkItemRelationshipListComponents()).toHaveLength(3);
     expect(findLinkedItemsCountBadge().text()).toBe('3');
   });
 

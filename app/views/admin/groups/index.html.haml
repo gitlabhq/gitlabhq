@@ -6,14 +6,17 @@
     = link_button_to new_admin_group_path, variant: :confirm do
       = _('New group')
 
-#js-admin-groups-filtered-search-and-sort
-  -# This element takes up space while Vue is rendering to avoid page jump
-  .gl-h-12
-
-- if @groups.any?
-  %ul.content-list
-    = render @groups
+- if Feature.enabled?(:admin_groups_vue, current_user)
+  #js-admin-groups-app
 - else
-  = render ::Layouts::EmptyResultComponent.new(type: :search)
+  #js-admin-groups-filtered-search-and-sort
+    -# This element takes up space while Vue is rendering to avoid page jump
+    .gl-h-12
 
-= paginate @groups, theme: "gitlab"
+  - if @groups.any?
+    %ul.content-list
+      = render @groups
+  - else
+    = render ::Layouts::EmptyResultComponent.new(type: :search)
+
+  = paginate @groups, theme: "gitlab"

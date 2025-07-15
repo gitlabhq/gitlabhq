@@ -254,7 +254,8 @@ Example response:
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members",
     "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
-  }
+  },
+  "spp_repository_pipeline_access": false // Only visible if the security_orchestration_policies feature is available
 }
 ```
 
@@ -356,8 +357,17 @@ List projects.
 {{< history >}}
 
 - The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with simple fields
@@ -411,7 +421,7 @@ When `simple=true` or the user is unauthenticated this returns something like:
 Example request:
 
 ```shell
-curl --request GET "https://gitlab.example.com/api/v4/projects"
+curl --request GET "https://gitlab.example.com/api/v4/projects?simple=true"
 ```
 
 Example response:
@@ -441,6 +451,7 @@ Example response:
     "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
     "star_count": 0,
     "last_activity_at": "2013-09-30T13:46:02Z",
+    "visibility": "public",
     "namespace": {
       "id": 2,
       "name": "Diaspora",
@@ -941,7 +952,7 @@ Example response:
 
 ### List projects a user has contributed to
 
-Returns a list of visible projects a given user has contributed to within the past year. For more information about what counts as a contribution, see [view projects you have contributed to](../user/project/working_with_projects.md#view-projects-you-have-contributed-to).
+Returns a list of visible projects a given user has contributed to within the past year. For more information about what counts as a contribution, [view projects you have contributed to](../user/project/working_with_projects.md#view-projects-you-work-with).
 
 ```plaintext
 GET /users/:user_id/contributed_projects
@@ -1745,6 +1756,7 @@ Supported general project attributes:
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean           | No       | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                            | string            | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
+| `spp_repository_pipeline_access`                   | boolean           | No       | Allow users and tokens read-only access to fetch security policy configurations from this project. Required for enforcing security policies in projects that use this project as their security policy source. Ultimate only. |
 | `squash_commit_template`                           | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. |
 | `squash_option`                                    | string            | No       | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                        | string            | No       | The commit message used to apply merge request suggestions. |
@@ -1753,6 +1765,7 @@ Supported general project attributes:
 | `visibility`                                       | string            | No       | See [project visibility level](#project-visibility-level). |
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
+| `web_based_commit_signing_enabled`                 | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only on GitLab SaaS. |
 
 For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 
@@ -2196,7 +2209,7 @@ Supported attributes:
 Transfer a project to a new namespace.
 
 For information on prerequisites for transferring a project, see
-[Transfer a project to another namespace](../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace).
+[Transfer a project to another namespace](../user/project/working_with_projects.md#transfer-a-project).
 
 ```plaintext
 PUT /projects/:id/transfer
@@ -2601,7 +2614,7 @@ Supported attributes:
 ## Get the path to repository storage
 
 Get the path to repository storage for specified project if Gitaly Cluster is not being used. If Gitaly Cluster is being used, see
-[Praefect-generated replica paths](../administration/gitaly/_index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](../administration/gitaly/praefect/_index.md#praefect-generated-replica-paths).
 
 Available for administrators only.
 

@@ -25,8 +25,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[raise].freeze
 
+        # @!method error(node)
         def_node_matcher :error, const_pattern(EXCEPTION)
 
+        # @!method raise_error(node)
         def_node_matcher :raise_error, <<~PATTERN
           (send nil? :raise #error $...)
         PATTERN

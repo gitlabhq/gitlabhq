@@ -64,8 +64,8 @@ describe('Release block', () => {
       expect(renderGFM).toHaveBeenCalledTimes(1);
     });
 
-    it('renders release date', () => {
-      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.releasedAt));
+    it('renders created date', () => {
+      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.createdAt));
     });
 
     it('renders author avatar', () => {

@@ -2084,4 +2084,48 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_allowed(:admin_package) }
     end
   end
+
+  describe 'set_new_issue_metadata and set_new_work_item_metadata abilities' do
+    %w[guest planner reporter developer maintainer owner].each do |role|
+      context "when user is #{role}" do
+        let(:current_user) { send(role) }
+
+        it 'allows setting metadata for new issues and work items' do
+          expect_allowed :set_new_issue_metadata, :set_new_work_item_metadata
+        end
+      end
+    end
+
+    context 'when user is not a group member' do
+      let(:current_user) { non_group_member }
+
+      it 'disallows setting metadata for new issues and work items' do
+        expect_disallowed :set_new_issue_metadata, :set_new_work_item_metadata
+      end
+    end
+
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it 'allows setting metadata for new issues and work items' do
+          expect_allowed :set_new_issue_metadata, :set_new_work_item_metadata
+        end
+      end
+
+      context 'when admin mode disabled' do
+        it 'disallows setting metadata for new issues and work items' do
+          expect_disallowed :set_new_issue_metadata, :set_new_work_item_metadata
+        end
+      end
+    end
+
+    context 'when current user is nil' do
+      let(:current_user) { nil }
+
+      it 'disallows setting metadata for new issues and work items' do
+        expect_disallowed :set_new_issue_metadata, :set_new_work_item_metadata
+      end
+    end
+  end
 end

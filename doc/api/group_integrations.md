@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group integrations API
 ---
@@ -693,7 +693,7 @@ GET /groups/:id/integrations/external-wiki
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
+On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 {{< /alert >}}

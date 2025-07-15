@@ -5,7 +5,6 @@ import { createTestingPinia } from '@pinia/testing';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
 import TimelineToggle from '~/notes/components/timeline_toggle.vue';
-import createStore from '~/notes/stores';
 import waitForPromises from 'helpers/wait_for_promises';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -26,8 +25,6 @@ describe('~/notes/components/notes_activity_header.vue', () => {
         notesFilters,
         ...props,
       },
-      // why: Rendering async timeline toggle requires store
-      store: createStore(),
       pinia,
       ...options,
     });

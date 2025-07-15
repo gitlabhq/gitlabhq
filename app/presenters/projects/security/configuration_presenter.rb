@@ -24,6 +24,8 @@ module Projects
           secret_push_protection_available:
             Gitlab::CurrentSettings.current_application_settings.secret_push_protection_available,
           secret_push_protection_enabled: secret_push_protection_enabled,
+          validity_checks_available: validity_checks_available,
+          validity_checks_enabled: validity_checks_enabled,
           user_is_project_admin: user_is_project_admin?,
           secret_detection_configuration_path: secret_detection_configuration_path
         }
@@ -102,6 +104,8 @@ module Projects
         project.security_setting
       end
 
+      def validity_checks_available; end
+      def validity_checks_enabled; end
       def container_scanning_for_registry_enabled; end
       def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end

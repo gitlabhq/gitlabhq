@@ -6,15 +6,21 @@ module Types
 
     authorize :read_namespace
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     implements Types::TodoableInterface
     expose_permissions Types::PermissionTypes::Namespaces::Base
 
     field :id, GraphQL::Types::ID, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'ID of the namespace.'
 
     field :full_name, GraphQL::Types::String, null: false,
       description: 'Full name of the namespace.'
     field :full_path, GraphQL::Types::ID, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Full path of the namespace.'
     field :name, GraphQL::Types::String, null: false,
       description: 'Name of the namespace.'
@@ -95,15 +101,23 @@ module Types
 
     field :work_item, Types::WorkItemType,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::Namespaces::WorkItemResolver,
       experiment: { milestone: '16.10' },
       description: 'Find a work item by IID directly associated with the namespace (project or group)'
 
     field :work_items,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Work items that belong to the namespace (project or group). Returns `null` for user namespaces.',
       experiment: { milestone: '18.1' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
+
+    field :work_items_widgets,
+      null: true,
+      description: 'List of available widgets for the given work items.',
+      experiment: { milestone: '18.2' },
+      resolver: ::Resolvers::WorkItems::WidgetsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
       resolver: Resolvers::WorkItems::TypesResolver,

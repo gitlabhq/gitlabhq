@@ -8,6 +8,7 @@ module RuboCop
       class Intersect < RuboCop::Cop::Base
         MSG = 'Use the `FromIntersect` concern, instead of using `Gitlab::SQL::Intersect` directly'
 
+        # @!method raw_intersect?(node)
         def_node_matcher :raw_intersect?, <<~PATTERN
           (send (const (const (const nil? :Gitlab) :SQL) :Intersect) :new ...)
         PATTERN

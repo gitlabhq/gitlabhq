@@ -5,14 +5,34 @@ require 'spec_helper'
 RSpec.describe 'Incident details', :js, feature_category: :incident_management do
   include MergeRequestDiffHelpers
 
+  let_it_be(:payload) do
+    {
+      'title' => 'Alert title',
+      'start_time' => '2020-04-27T10:10:22.265949279Z',
+      'custom' => {
+        'alert' => {
+          'fields' => %w[one two]
+        }
+      },
+      'yet' => {
+        'another' => 73
+      }
+    }
+  end
+
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
+
+  let_it_be(:alert) do
+    create(:alert_management_alert, project: project, payload: payload)
+  end
+
   let_it_be(:confidential_incident) do
     create(:incident, confidential: true, project: project, author: developer, description: 'Confidential')
   end
 
   let_it_be_with_reload(:incident) do
-    create(:incident, project: project, author: developer, description: 'description')
+    create(:incident, project: project, author: developer, description: 'description', alert_management_alert: alert)
   end
 
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
@@ -50,9 +70,49 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
       page.within('.issuable-details') do
         incident_tabs = find_by_testid('incident-tabs')
 
-        expect(find('h1')).to have_content(incident.title)
-        expect(incident_tabs).to have_content('Summary')
-        expect(incident_tabs).to have_content(incident.description)
+        aggregate_failures 'shows title and Summary tab' do
+          expect(find('h1')).to have_content(incident.title)
+          expect(incident_tabs).to have_content('Summary')
+          expect(incident_tabs).to have_content(incident.description)
+        end
+
+        aggregate_failures 'shows the incident highlight bar' do
+          expect(incident_tabs).to have_content('Alert events: 1')
+          expect(incident_tabs).to have_content('Original alert: #1')
+        end
+
+        aggregate_failures 'when on summary tab (default tab)' do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs + comment box + emoji block
+          expect(hidden_items.count).to eq(3)
+          expect(hidden_items).to all(be_visible)
+
+          edit_button = find_all('[aria-label="Edit title and description"]')
+          expect(edit_button).to all(be_visible)
+        end
+
+        aggregate_failures 'shows the Alert details tab' do
+          click_link 'Alert details'
+
+          expect(incident_tabs).to have_content('"title": "Alert title"')
+          expect(incident_tabs).to have_content('"yet.another": 73')
+
+          # does not show the linked issues and notes/comment components' do
+          hidden_items = find_all('.js-issue-widgets', wait: false)
+
+          # Linked Issues/MRs and comment box are hidden on page
+          expect(hidden_items.count).to eq(0)
+        end
+
+        aggregate_failures 'does not show the linked issues and notes/comment components for the Timeline tab' do
+          click_link 'Timeline'
+
+          hidden_items = find_all('.js-issue-widgets', wait: false)
+
+          # Linked Issues/MRs and comment box are hidden on page
+          expect(hidden_items.count).to eq(0)
+        end
       end
 
       # shows the right sidebar mounted with type issue

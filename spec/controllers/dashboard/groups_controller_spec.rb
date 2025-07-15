@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Dashboard::GroupsController do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -53,5 +53,7 @@ RSpec.describe Dashboard::GroupsController do
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    it_behaves_like 'groups controller with active parameter'
   end
 end

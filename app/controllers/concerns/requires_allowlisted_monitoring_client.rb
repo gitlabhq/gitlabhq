@@ -22,7 +22,7 @@ module RequiresAllowlistedMonitoringClient
   end
 
   def ip_allowlist
-    @ip_allowlist ||= Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
+    @ip_allowlist ||= compat_ip_allowlist
   end
 
   def valid_token?
@@ -36,5 +36,16 @@ module RequiresAllowlistedMonitoringClient
 
   def render_404
     render "errors/not_found", layout: "errors", status: :not_found
+  end
+
+  def compat_ip_allowlist
+    base = Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
+
+    # Add compatible addresses to match IPv4 allow list entries against IPv4 request IPs
+    # that were mapped to IPv6 addresses on the kernel level.
+    # https://docs.kernel.org/networking/ip-sysctl.html#proc-sys-net-ipv6-variables
+    compats = base.select(&:ipv4?).map(&:ipv4_mapped)
+
+    base + compats
   end
 end

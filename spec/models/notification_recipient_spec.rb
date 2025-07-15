@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe NotificationRecipient, feature_category: :team_planning do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:target) { create(:issue, project: project) }
 
@@ -16,7 +16,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
     context 'when user has a composite identity' do
       before do
-        allow(user).to receive(:composite_identity_enforced).and_return(true)
+        user.update!(composite_identity_enforced: true, user_type: :service_account)
       end
 
       it 'returns false' do

@@ -30,4 +30,9 @@ namespace :user_settings do
       delete :revoke
     end
   end
+  resources :integration_accounts, only: [:index, :new, :create, :destroy], controller: '/profiles/chat_names' do
+    collection do
+      delete :deny
+    end
+  end
 end

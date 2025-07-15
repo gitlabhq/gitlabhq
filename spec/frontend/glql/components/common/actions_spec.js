@@ -67,7 +67,7 @@ describe('GlqlActions', () => {
       findDropdown().props('items')[0].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'viewSource', {
+      expect(mockEventHub.$emit).toHaveBeenCalledWith('viewSource', {
         title: 'Test Modal',
       });
     });
@@ -76,7 +76,7 @@ describe('GlqlActions', () => {
       findDropdown().props('items')[1].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'copySource');
+      expect(mockEventHub.$emit).toHaveBeenCalledWith('copySource');
     });
 
     it('emits copyAsGFM event when copy contents is clicked', async () => {
@@ -85,14 +85,14 @@ describe('GlqlActions', () => {
       findDropdown().props('items')[2].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'copyAsGFM');
+      expect(mockEventHub.$emit).toHaveBeenCalledWith('copyAsGFM');
     });
 
     it('emits reload event when clicked', async () => {
       findDropdown().props('items')[2].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'reload');
+      expect(mockEventHub.$emit).toHaveBeenCalledWith('reload');
     });
   });
 });

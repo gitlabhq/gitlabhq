@@ -66,7 +66,7 @@ export default {
       <component
         :is="showAsLink ? 'gl-link' : 'strong'"
         v-bind="linkHref"
-        class="file-title-name js-blob-header-filepath gl-mr-1 gl-break-all gl-font-bold gl-text-strong"
+        class="file-title-name js-blob-header-filepath gl-break-all gl-font-bold gl-text-strong"
         :class="{ '!gl-text-blue-700 hover:gl-cursor-pointer': showAsLink }"
         data-testid="file-title-content"
         >{{ fileName }}</component
@@ -78,11 +78,12 @@ export default {
       :text="blob.path"
       :gfm="gfmCopyText"
       :title="__('Copy file path')"
+      size="small"
       category="tertiary"
-      css-class="gl-mr-2"
+      css-class="gl-ml-3"
     />
 
-    <small v-if="showBlobSize" class="gl-mr-3 gl-text-subtle">{{ blobSize }}</small>
+    <small v-if="showBlobSize" class="gl-mx-3 gl-text-subtle">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

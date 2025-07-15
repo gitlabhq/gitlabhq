@@ -12,6 +12,8 @@ module API
       params :optional_index_params_ee do
       end
 
+      def error_for_saml_provider_id_param_ee; end
+
       def model_errors(model)
         super.tap do |errors|
           # Remapping errors from nested associations.

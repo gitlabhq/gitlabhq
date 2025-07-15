@@ -10,6 +10,11 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
   end
 
   describe 'GET /projects' do
+    before do
+      # This endpoint will become a no-op once the `admin_projects_vue` flag has been rolled out.
+      stub_feature_flags(admin_projects_vue: false)
+    end
+
     render_views
 
     it 'retrieves the project for the given visibility level' do
@@ -63,6 +68,9 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
     render_views
 
     before do
+      # This endpoint will become a no-op once the `admin_projects_vue` flag has been rolled out.
+      stub_feature_flags(admin_projects_vue: false)
+
       get :index, format: :json
     end
 

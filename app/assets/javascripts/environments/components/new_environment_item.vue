@@ -232,6 +232,7 @@ export default {
             :actions="actions"
             data-track-action="click_dropdown"
             data-track-label="environment_actions"
+            size="small"
           />
 
           <stop-component

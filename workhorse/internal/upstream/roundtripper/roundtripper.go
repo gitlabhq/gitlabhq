@@ -13,12 +13,15 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 	"time"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/badgateway"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/bodylimit"
 )
 
 func mustParseAddress(address, scheme string) string {
@@ -73,7 +76,7 @@ func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout
 
 	return tracing.NewRoundTripper(
 		correlation.NewInstrumentedRoundTripper(
-			badgateway.NewRoundTripper(developmentMode, transport),
+			badgateway.NewRoundTripper(developmentMode, bodylimit.NewRoundTripper(transport, bodyLimitMode)),
 		),
 	)
 }
@@ -81,4 +84,21 @@ func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout
 // NewTestBackendRoundTripper sets up a RoundTripper for testing purposes
 func NewTestBackendRoundTripper(backend *url.URL) http.RoundTripper {
 	return NewBackendRoundTripper(backend, "", 0, true)
+}
+
+var bodyLimitMode = getBodyLimitMode()
+
+func getBodyLimitMode() bodylimit.Mode {
+	modeStr := strings.ToUpper(os.Getenv("WORKHORSE_REQUEST_LIMIT"))
+
+	switch modeStr {
+	case "DISABLED":
+		return bodylimit.ModeDisabled
+	case "LOGGING":
+		return bodylimit.ModeLogging
+	case "ENFORCED":
+		return bodylimit.ModeEnforced
+	default:
+		return bodylimit.ModeDisabled
+	}
 }

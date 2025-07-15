@@ -832,7 +832,7 @@ describe('Ref selector component', () => {
       selectFirstBranch();
       await nextTick();
 
-      expect(findCountBadges().length).toBe(2);
+      expect(findCountBadges()).toHaveLength(2);
       expect(findCountBadges().at(0).text()).toBe('2');
       expect(findCountBadges().at(1).text()).toBe('3');
     });
@@ -884,6 +884,25 @@ describe('Ref selector component', () => {
         expect(selectedSection.exists()).toBe(true);
         expect(selectedSection.text()).toContain(defaultRef);
       });
+    });
+  });
+
+  describe('default branch handling', () => {
+    const defaultBranchName = 'my-branch';
+
+    beforeEach(() => {
+      branchesApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, []]); // Mock branches API without the default branch
+    });
+
+    it('adds default branch to dropdown when not in initial API response', async () => {
+      createComponent({ propsData: { defaultBranch: defaultBranchName } });
+      await waitForRequests();
+
+      const defaultBranchItem = findBranchDropdownItems().filter(
+        (item) => item.text().includes(defaultBranchName) && item.text().includes('default'),
+      );
+
+      expect(defaultBranchItem).toHaveLength(1);
     });
   });
 });

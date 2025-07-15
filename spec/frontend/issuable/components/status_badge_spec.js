@@ -5,8 +5,18 @@ import StatusBadge from '~/issuable/components/status_badge.vue';
 describe('StatusBadge component', () => {
   let wrapper;
 
-  const mountComponent = (propsData) => {
-    wrapper = shallowMount(StatusBadge, { propsData });
+  const mountComponent = ({ props = {}, features = {} } = {}) => {
+    wrapper = shallowMount(StatusBadge, {
+      propsData: {
+        ...props,
+      },
+      provide: {
+        glFeatures: {
+          showMergeRequestStatusDraft: false,
+          ...features,
+        },
+      },
+    });
   };
 
   const findBadge = () => wrapper.findComponent(GlBadge);
@@ -24,7 +34,7 @@ describe('StatusBadge component', () => {
     'when issuableType=$issuableType and state=$state',
     ({ issuableType, badgeText, state, badgeVariant, badgeIcon }) => {
       beforeEach(() => {
-        mountComponent({ state, issuableType });
+        mountComponent({ props: { state, issuableType } });
       });
 
       it(`renders badge with text '${badgeText}'`, () => {
@@ -40,4 +50,20 @@ describe('StatusBadge component', () => {
       });
     },
   );
+
+  it('renders Draft badge when MR is open and is a draft', () => {
+    mountComponent({
+      props: {
+        issuableType: 'merge_request',
+        state: 'opened',
+        isDraft: true,
+      },
+      features: {
+        showMergeRequestStatusDraft: true,
+      },
+    });
+
+    expect(findBadge().props('variant')).toBe('warning');
+    expect(findBadge().text()).toBe('Draft');
+  });
 });

@@ -89,7 +89,7 @@ describe('ClustersViewAllComponent', () => {
     });
 
     it('should render 2 cards', () => {
-      expect(findCards().length).toBe(2);
+      expect(findCards()).toHaveLength(2);
     });
   });
 

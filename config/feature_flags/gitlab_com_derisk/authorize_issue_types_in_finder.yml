@@ -1,0 +1,10 @@
+---
+name: authorize_issue_types_in_finder
+description: Enabled handling work items authorization solely in IssuesFinder
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/542421
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190860
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548096
+milestone: '18.2'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

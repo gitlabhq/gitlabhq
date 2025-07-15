@@ -29,7 +29,19 @@
   - 1
 - - admin_emails
   - 1
+- - ai_active_context_code_mark_repository_as_ready_event
+  - 1
+- - ai_active_context_code_process_pending_enabled_namespace_event
+  - 1
+- - ai_active_context_code_repository_index
+  - 1
+- - ai_active_context_code_saas_initial_indexing_event
+  - 1
+- - ai_knowledge_graph_indexing_task
+  - 1
 - - ai_repository_xray_scan_dependencies
+  - 1
+- - analytics_ai_usage_events_backfill
   - 1
 - - analytics_code_review_metrics
   - 1
@@ -101,6 +113,12 @@
   - 2
 - - authorized_projects
   - 2
+- - authz_user_group_member_roles_destroy_for_group
+  - 1
+- - authz_user_group_member_roles_destroy_for_shared_group
+  - 1
+- - authz_user_group_member_roles_update_for_group
+  - 1
 - - auto_devops
   - 2
 - - auto_merge
@@ -221,6 +239,8 @@
   - 1
 - - ci_safe_disable_pipeline_variables
   - 1
+- - ci_slsa_publish_statement
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs
@@ -262,6 +282,8 @@
 - - compliance_management_compliance_framework_project_requirement_statuses_export_mailer
   - 1
 - - compliance_management_compliance_framework_projects_compliance_enqueue
+  - 1
+- - compliance_management_compliance_violation_detection
   - 1
 - - compliance_management_framework_export_mailer
   - 1
@@ -621,6 +643,10 @@
   - 1
 - - merge_requests_notify_approvers
   - 1
+- - merge_requests_policy_violations_detected_audit_event
+  - 1
+- - merge_requests_policy_violations_resolved_audit_event
+  - 1
 - - merge_requests_process_auto_merge_from_event
   - 1
 - - merge_requests_process_draft_note_published
@@ -891,6 +917,8 @@
   - 1
 - - security_analyzer_namespace_statuses_adjustment
   - 1
+- - security_analyzer_namespace_statuses_process_group_deleted_events
+  - 1
 - - security_analyzers_status_process_archived_events
   - 1
 - - security_analyzers_status_process_deleted_events
@@ -898,6 +926,12 @@
 - - security_analyzers_status_process_group_transfer_events
   - 1
 - - security_analyzers_status_process_project_transfer_events
+  - 1
+- - security_analyzers_status_schedule_setting_changed_update
+  - 1
+- - security_analyzers_status_setting_changed_update
+  - 1
+- - security_collect_policies_limit_audit_events
   - 1
 - - security_configuration_set_group_secret_push_protection
   - 1
@@ -929,7 +963,11 @@
   - 1
 - - security_policies_project_transfer
   - 1
+- - security_policies_skip_pipelines_audit
+  - 1
 - - security_process_scan_result_policy
+  - 1
+- - security_recreate_orchestration_configuration
   - 1
 - - security_refresh_compliance_framework_security_policies
   - 1
@@ -1100,6 +1138,10 @@
 - - work_items_user_preferences_destroy
   - 1
 - - work_items_validate_epic_work_item_sync
+  - 1
+- - work_items_weights_update_rolled_up_weights_event_handler
+  - 1
+- - work_items_weights_update_weights
   - 1
 - - x509_certificate_revoke
   - 1

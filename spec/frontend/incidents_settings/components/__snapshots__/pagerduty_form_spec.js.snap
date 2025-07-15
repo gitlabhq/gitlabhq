@@ -53,6 +53,8 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         role="button"
         size="medium"
         tabindex="0"
+        tag="button"
+        type="button"
         variant="default"
       >
         Reset webhook URL

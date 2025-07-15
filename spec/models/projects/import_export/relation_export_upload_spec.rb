@@ -79,8 +79,7 @@ RSpec.describe Projects::ImportExport::RelationExportUpload, type: :model, featu
   describe '#uploads_sharding_key' do
     it 'returns project_id' do
       project = build_stubbed(:project)
-      export = build_stubbed(:project_relation_export, project_id: project.id)
-      export_upload = build_stubbed(:relation_export_upload, relation_export: export)
+      export_upload = build_stubbed(:relation_export_upload, project_id: project.id)
 
       expect(export_upload.uploads_sharding_key).to eq(project_id: project.id)
     end

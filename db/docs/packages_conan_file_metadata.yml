@@ -8,14 +8,6 @@ description: Conan package file metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16418
 milestone: '12.5'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: package_file_id
-        table: packages_package_files
-        sharding_key: project_id
-        belongs_to: package_file
+sharding_key:
+  project_id: projects
 table_size: small
-desired_sharding_key_migration_job_name: BackfillPackagesConanFileMetadataProjectId

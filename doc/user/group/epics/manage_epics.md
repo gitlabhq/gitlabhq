@@ -20,6 +20,7 @@ to them.
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -52,10 +53,10 @@ If you select **Inherited**:
 
 - For the **start date**: GitLab scans all child epics and issues assigned to the epic,
   and sets the start date to match the earliest start date found in the child epics or the milestone
-  assigned to the issues.
+  assigned to the child items.
 - For the **due date**: GitLab scans all child epics and issues assigned to the epic,
   and sets the due date to match the latest due date found in the child epics or the milestone
-  assigned to the issues.
+  assigned to the child items.
 
 These dates are dynamic and recalculated if any of the following occur:
 
@@ -83,6 +84,7 @@ After you create an epic, you can edit the following details:
 - Start date
 - Due date
 - Labels
+- Milestone
 - [Color](#epic-color)
 
 Prerequisites:
@@ -95,10 +97,10 @@ To edit an epic's title or description:
 1. Make your changes.
 1. Select **Save changes**.
 
-To edit an epic's start date, due date, or labels:
+To edit an epic's start date, due date, milestone, or labels:
 
 1. Next to each section in the right sidebar, select **Edit**.
-1. Select the dates or labels for your epic.
+1. Select the dates, milestone, or labels for your epic.
 
 ### Reorder list items in the epic description
 
@@ -148,41 +150,6 @@ To update multiple epics at the same time:
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
-
-### Open epics in a drawer
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
-- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170066) from `issues_list_drawer` to `epics_list_drawer` in GitLab 17.6.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-When this feature is enabled, when you select an epic from the list or epic board, it opens in a drawer.
-You can then edit the epic or create comments.
-
-To open the epic in full view, either:
-
-- Open the epic in a new tab. From the list of epics, you can either:
-  - Right-click the epic and open it in a new browser tab.
-  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
-- From the drawer, in the top-left corner, select **Open in full view**.
-
-![Epic opened in a drawer.](img/epic_drawer_v17_4.png)
 
 ## Prevent truncating descriptions with "Read more"
 
@@ -235,17 +202,10 @@ To show the sidebar again:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 An epic can be assigned to one or more users.
 
@@ -254,10 +214,6 @@ The idea is that the assignees are people responsible for the epic.
 
 If a user is not a member of a group, an epic can only be assigned to them if another group member
 assigns them.
-
-This feature is in [beta](../../../policy/development_stages_support.md).
-If you find a bug, use the
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
 
 ### Change assignee on an epic
 
@@ -291,7 +247,7 @@ The assignee is changed without having to refresh the page.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags/_index.md) named `epic_color_highlight`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) in GitLab 16.11. Feature flag `epic_color_highlight` removed.
 - Customizable color [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394864) in GitLab 17.5.
 
@@ -438,6 +394,92 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
 
+### Configure epic display preferences
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393559) in GitLab 18.2.
+
+{{< /history >}}
+
+You can customize how epics are displayed in the epic list by showing or hiding specific metadata
+fields and configuring view preferences.
+
+GitLab saves your display preferences at different levels:
+
+- **Fields**: Saved per namespace. You can have different field visibility settings for different
+  groups and projects based on your workflow needs. For example, you can show assignee and labels
+  in one group, but hide them in another group.
+- **Your preferences**: Saved globally across all projects and groups. This ensures consistent
+  behavior for how you prefer to view work items.
+
+To configure epic display preferences:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan** > **Epics**.
+1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. Under **Fields**, turn on or turn off the metadata you want to display:
+   - **Assignee**: Who the epic is assigned to.
+   - **Labels**: Epic labels.
+   - **Milestone**: Milestone information.
+   - **Dates**: Due dates and date ranges.
+   - **Health**: Health status indicators.
+   - **Blocked/Blocking**: Blocking relationship indicators.
+   - **Comments**: Comment counts.
+   - **Popularity**: Popularity metrics.
+1. Under **Your preferences**, turn on or turn off **Open items in side panel** to choose how
+   epics open when you select them:
+   - On (default): Epics open in a drawer on the right side of the screen.
+   - Off: Epics open in a full page view.
+
+### Open epics in a drawer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
+- Ability to toggle between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When you select an epic from the Epics page or an epic board, it opens in a drawer.
+You can then view and edit its details without losing context of the epic list or board.
+
+When using the drawer:
+
+- Select an epic from the list to open it in the drawer.
+- The drawer appears on the right side of the screen.
+- You can edit the epic directly in the drawer.
+- To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
+
+#### Open an epic in full page view
+
+To open an epic in the full page view:
+
+- Open the epic in a new tab. From the list of epics, either:
+  - Right-click the epic and open it in a new browser tab.
+  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
+- Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
+
+#### Set preference whether to open epics in a drawer
+
+To configure how epics open on the Epics page:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan > Epics**.
+1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. Toggle **Open items in side panel**:
+   - **On** (default): Epics open in a drawer overlay.
+   - **Off**: Epics open in a full page view.
+
+Your preference is saved and remembered across all your sessions and devices.
+
 ### Cached epic count
 
 The total count of open epics displayed in the sidebar is cached if higher
@@ -477,7 +519,7 @@ To filter:
 
 {{< history >}}
 
-- OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 
@@ -793,13 +835,6 @@ To move an issue to another epic:
 1. Go to the **Child items** section.
 1. Drag issues into the desired parent epic in the visible hierarchy.
 
-### Use an epic template for repeating issues
-
-You can create a spreadsheet template to manage a pattern of consistently repeating issues.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](https://www.youtube.com/watch?v=D74xKFNw8vg).
-
 ## Multi-level child epics
 
 {{< details >}}
@@ -847,7 +882,7 @@ The parent epic is added.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags/_index.md) named `child_epics_from_different_hierarchies`. Disabled by default.
 - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 - Cross-group child epics [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
 - [Feature flag `child_epics_from_different_hierarchies`](https://gitlab.com/gitlab-org/gitlab/-/issues/382719) removed in GitLab 15.10.

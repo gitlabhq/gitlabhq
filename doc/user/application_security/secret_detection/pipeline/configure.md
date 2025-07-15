@@ -165,7 +165,7 @@ There are multiple kinds of customizations available:
 
 To create a ruleset configuration file:
 
-1. Create a `.gitlab` directory at the root of your project, if one doesn’t already exist.
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a file named `secret-detection-ruleset.toml` in the `.gitlab` directory.
 
 ### Modify rules from the default ruleset

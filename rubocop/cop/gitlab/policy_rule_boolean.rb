@@ -23,20 +23,23 @@ module RuboCop
       #   rule { conducts_electricity & can?(:magnetize) }.enable :motor
       #   rule { ~conducts_electricity & batteries }.enable :motor
       class PolicyRuleBoolean < RuboCop::Cop::Base
+        # @!method has_and_operator?(node)
         def_node_search :has_and_operator?, <<~PATTERN
           (and ...)
         PATTERN
 
+        # @!method has_or_operator?(node)
         def_node_search :has_or_operator?, <<~PATTERN
           (or ...)
         PATTERN
 
+        # @!method has_if?(node)
         def_node_search :has_if?, <<~PATTERN
           (if ...)
         PATTERN
 
         def on_block(node)
-          return unless node.method_name == :rule
+          return unless node.method?(:rule)
 
           if has_and_operator?(node)
             add_offense(node, message: '&& is not allowed within a rule block. Did you mean to use `&`?')

@@ -145,7 +145,9 @@ RSpec.shared_examples 'a policy allowing accessing group runner/runner manager d
     context 'with sharing of group runners disabled' do
       let(:group_runners_enabled_on_project) { false }
 
-      it { expect_disallowed ability }
+      # NOTE: The user is allowed to access the runner/runner manager because the user is a maintainer+ in
+      # `group`, and the runner is owned by a subgroup of that group
+      it { expect_allowed ability }
     end
   end
 end

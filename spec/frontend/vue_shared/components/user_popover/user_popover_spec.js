@@ -191,8 +191,8 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
-      ).toEqual(1);
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'profile'),
+      ).toHaveLength(1);
     });
 
     it('shows icon for work information', () => {
@@ -204,8 +204,8 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'work').length,
-      ).toEqual(1);
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'work'),
+      ).toHaveLength(1);
     });
   });
 
@@ -384,7 +384,7 @@ describe('User Popover Component', () => {
 
         await axios.waitForAll();
 
-        expect(wrapper.emitted().follow.length).toBe(1);
+        expect(wrapper.emitted().follow).toHaveLength(1);
         expect(wrapper.emitted().unfollow).toBeUndefined();
       });
 
@@ -456,7 +456,7 @@ describe('User Popover Component', () => {
         await axios.waitForAll();
 
         expect(wrapper.emitted().follow).toBe(undefined);
-        expect(wrapper.emitted().unfollow.length).toBe(1);
+        expect(wrapper.emitted().unfollow).toHaveLength(1);
       });
 
       itTracksToggleFollowButtonClick('unfollow_from_user_popover');

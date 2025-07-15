@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tabs: {
       type: Array,
       required: true,
@@ -177,8 +182,12 @@ export default {
         :class="{ 'container-limited': !isFluidLayout }"
       >
         <div class="gl-flex gl-w-full gl-items-center gl-gap-2">
-          <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_MERGE_REQUEST" />
+          <status-badge
+            :issuable-type="$options.TYPE_MERGE_REQUEST"
+            :state="badgeState.state"
+            :is-draft="isDraft"
+          />
+          <imported-badge v-if="isImported" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
@@ -275,7 +284,7 @@ export default {
                 issuable-type="merge_request"
               />
             </template>
-            <submit-review-button v-if="glFeatures.improvedReviewExperience" />
+            <submit-review-button />
           </div>
         </div>
       </div>

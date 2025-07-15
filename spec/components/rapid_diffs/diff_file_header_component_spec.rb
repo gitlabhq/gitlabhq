@@ -7,8 +7,13 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
   let(:header) { page.find('[data-testid="rd-diff-file-header"]') }
 
   it "renders file path" do
+    project = diff_file.repository.project
+    namespace = project.namespace
+    href = "/#{namespace.to_param}/#{project.to_param}/-/blob/#{diff_file.content_sha}/#{diff_file.new_path}"
     render_component
-    expect(header).to have_css('h2', text: diff_file.file_path)
+    link = header.find('h2 a')
+    expect(link.text).to eq(diff_file.file_path)
+    expect(link[:href]).to eq(href)
   end
 
   it "renders file toggle" do
@@ -48,7 +53,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     allow(diff_file).to receive(:old_path).and_return(old)
     allow(diff_file).to receive(:new_path).and_return(new)
     render_component
-    expect(header).to have_css("h2[aria-label=\"File moved from #{old} to #{new}\"]", text: "#{old}→#{new}")
+    expect(header).to have_css("h2[aria-label=\"File moved from #{old} to #{new}\"] a", text: "#{old}→#{new}")
   end
 
   it "renders mode change" do
@@ -76,6 +81,46 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     expect(page.find(selector)).to have_text("+#{diff_file.added_lines} −#{diff_file.removed_lines}")
   end
 
+  context "with blob diff" do
+    before do
+      allow(diff_file).to receive(:binary?).and_return(true)
+      allow(diff_file).to receive(:stored_externally?).and_return(false)
+      allow(diff_file).to receive_message_chain(:old_blob, :size).and_return(100)
+      allow(diff_file).to receive_message_chain(:new_blob, :size).and_return(1024)
+    end
+
+    it "renders added blob size" do
+      allow(diff_file).to receive(:new_file?).and_return(true)
+      render_component
+      expect(page).to have_text("+1 KiB")
+    end
+
+    it "renders deleted blob size" do
+      allow(diff_file).to receive(:new_file?).and_return(false)
+      allow(diff_file).to receive(:deleted_file?).and_return(true)
+      render_component
+      expect(page).to have_text("−100 B")
+    end
+
+    context 'with changed blob' do
+      before do
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(false)
+      end
+
+      it "renders blob size changed to more bytes" do
+        render_component
+        expect(page).to have_text("+924 B (1 KiB)")
+      end
+
+      it "renders blob size changed to less bytes changed" do
+        allow(diff_file).to receive_message_chain(:old_blob, :size).and_return(2048)
+        render_component
+        expect(page).to have_text("−1 KiB (1 KiB)")
+      end
+    end
+  end
+
   describe 'menu items' do
     let(:content_sha) { 'abc123' }
 
@@ -83,20 +128,10 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
       allow(diff_file).to receive(:content_sha).and_return(content_sha)
     end
 
-    it 'renders menu toggle' do
+    it 'does not render menu toggle without options' do
       render_component
 
-      expect(page).to have_css('button[data-click="toggleOptionsMenu"][aria-label="Show options"]')
-    end
-
-    it 'renders default menu items' do
-      render_component
-
-      options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
-
-      expect(options_menu_items.length).to eq(1)
-      expect(options_menu_items[0]['text']).to eq("View file @ #{content_sha}")
-      expect(options_menu_items[0]).not_to have_key('position')
+      expect(page).not_to have_css('button[data-click="toggleOptionsMenu"][aria-label="Show options"]')
     end
 
     it 'renders additional menu items with respective order' do
@@ -104,12 +139,12 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
         {
           text: 'First item',
           href: '/first',
-          position: -1
+          position: -100
         },
         {
           text: 'Last item',
           href: '/last',
-          position: 2
+          position: 100
         }
       ]
 
@@ -117,10 +152,9 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
       options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
-      expect(options_menu_items.length).to eq(3)
-      expect(options_menu_items[0]['text']).to eq('First item')
-      expect(options_menu_items[1]['text']).to eq("View file @ #{content_sha}")
-      expect(options_menu_items[2]['text']).to eq('Last item')
+      expect(page).to have_css('button[data-click="toggleOptionsMenu"][aria-label="Show options"]')
+      expect(options_menu_items.first['text']).to eq('First item')
+      expect(options_menu_items.last['text']).to eq('Last item')
 
       options_menu_items.each do |item|
         expect(item).not_to have_key('position')

@@ -12,6 +12,7 @@ module API
       end
 
       feature_category :mobile_devops
+      urgency :low
 
       default_format :json
 

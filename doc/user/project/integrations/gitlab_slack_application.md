@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab for Slack app
 ---
@@ -43,7 +43,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 {{< history >}}
 
-- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
@@ -229,7 +229,7 @@ The following GitLab events can trigger notifications in Slack:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 

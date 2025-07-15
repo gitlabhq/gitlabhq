@@ -1,34 +1,28 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import { TOKENS } from 'ee_else_ce/admin/users/constants';
+import { TOKEN_CONFIGS } from 'ee_else_ce/admin/users/constants';
 import { initializeValuesFromQuery } from '../utils';
 
-const TOKEN_TYPES = TOKENS.map(({ type }) => type);
-
 export default {
-  name: 'AdminUsersFilterApp',
-  components: {
-    GlFilteredSearch,
-  },
+  components: { GlFilteredSearch },
   data() {
-    const { tokens, sort } = initializeValuesFromQuery();
+    const { tokenValues, sort } = initializeValuesFromQuery();
 
     return {
-      tokens,
+      tokenValues,
       sort,
     };
   },
   computed: {
-    availableTokens() {
-      // Once a token is selected, discard the rest
-      const token = this.tokens.find(({ type }) => TOKEN_TYPES.includes(type));
-
-      if (token) {
-        return TOKENS.filter(({ type }) => type === token.type);
-      }
-
-      return TOKENS;
+    selectedTokenConfig() {
+      const selectedTypes = new Set(this.tokenValues.map(({ type }) => type));
+      return TOKEN_CONFIGS.find(({ type }) => selectedTypes.has(type));
+    },
+    availableTokenConfigs() {
+      // If there's a selected filter, return only that filter. Due to the way the search is
+      // implemented on the backend, only one filter can be used at a time.
+      return this.selectedTokenConfig ? [this.selectedTokenConfig] : TOKEN_CONFIGS;
     },
   },
   methods: {
@@ -56,9 +50,9 @@ export default {
 
 <template>
   <gl-filtered-search
-    v-model="tokens"
+    v-model="tokenValues"
     :placeholder="s__('AdminUsers|Search by name, email, or username')"
-    :available-tokens="availableTokens"
+    :available-tokens="availableTokenConfigs"
     terms-as-tokens
     @submit="search"
   />

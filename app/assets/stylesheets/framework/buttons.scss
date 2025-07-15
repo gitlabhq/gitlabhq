@@ -47,6 +47,12 @@
   }
 }
 
+// Reset button styles when wrapping a tooltip element in a button for accessibility
+.button-reset {
+  @apply gl-border-none gl-bg-transparent gl-p-0 focus-visible:gl-focus-inset;
+  cursor: default !important;
+}
+
 /**
  * Use `gl-button-theme` mixin from GitLab UI to apply same styles to
  * <button class="btn"> and <button class="btn btn-danger"> as GlButton.

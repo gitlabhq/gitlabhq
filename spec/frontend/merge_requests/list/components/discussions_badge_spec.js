@@ -6,6 +6,7 @@ describe('Merge requests list discussions badge component', () => {
   let wrapper;
 
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const findButton = () => wrapper.find('button');
 
   function createComponent(mergeRequest = {}) {
     wrapper = mount(DiscussionsBadge, {
@@ -32,7 +33,7 @@ describe('Merge requests list discussions badge component', () => {
     });
 
     it('renders resolved tooltip', () => {
-      expect(findBadge().attributes('title')).toBe('The only thread is resolved');
+      expect(findButton().attributes('title')).toBe('The only thread is resolved');
     });
   });
 
@@ -74,7 +75,7 @@ describe('Merge requests list discussions badge component', () => {
           resolvableDiscussionsCount,
         });
 
-        expect(findBadge().attributes('title')).toBe(tooltip);
+        expect(findButton().attributes('title')).toBe(tooltip);
       },
     );
   });

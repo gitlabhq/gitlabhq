@@ -51,7 +51,7 @@ This project provides you with:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags/_index.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
 
 {{< /history >}}
 
@@ -119,7 +119,7 @@ Set up your AWS credentials when you want to authenticate AWS with GitLab.
          "Resource": "*"
        }
      ]
-   } 
+   }
    ```
 
 1. [Create an access key for the user or role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html).
@@ -148,7 +148,7 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_cluster_version`: Set the version of Kubernetes.
 - `TF_VAR_instance_type`: Set the instance type for the Kubernetes nodes.
 - `TF_VAR_instance_count`: Set the number of Kubernetes nodes.
-- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
+- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent for Kubernetes.
 
 View the [AWS Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.
 

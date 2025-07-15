@@ -49,8 +49,6 @@ function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-op
 }
 
 function mountSubmitReviewButton(pinia) {
-  if (!window.gon?.features?.improvedReviewExperience) return;
-
   const el = document.querySelector('#js-submit-review-button');
 
   // eslint-disable-next-line no-new

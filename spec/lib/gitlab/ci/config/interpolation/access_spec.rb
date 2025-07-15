@@ -52,7 +52,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
 
     it 'returns an error' do
       expect(subject).not_to be_valid
-      expect(subject.errors.first).to eq('unknown input name provided: `nonexistent`')
+      expect(subject.errors.first).to eq('unknown input name provided: `nonexistent` in `inputs.nonexistent`')
+    end
+  end
+
+  context 'when an expression contains an existing key followed by a non-existent key' do
+    let(:access) { 'inputs.data.extra' }
+
+    it 'returns an error' do
+      expect(subject).not_to be_valid
+      expect(subject.errors.first).to eq('unknown input name provided: `extra` in `inputs.data.extra`')
     end
   end
 end

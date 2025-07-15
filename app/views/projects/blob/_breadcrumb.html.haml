@@ -1,8 +1,6 @@
 - blame = local_assigns.fetch(:blame, false)
 .nav-block
   .tree-ref-container
-    .tree-ref-holder.gl-max-w-26
-      #js-tree-ref-switcher{ data: { project_id: @project.id, project_root_path: project_path(@project), ref: current_ref, ref_type: @ref_type.to_s } }
 
     %ul.breadcrumb.repo-breadcrumb
       %li.breadcrumb-item

@@ -11,7 +11,7 @@ class Import::FogbugzController < Import::BaseController
   before_action :user_map, only: [:new_user_map, :create_user_map]
   before_action :verify_blocked_uri, only: :callback
 
-  rescue_from Fogbugz::AuthenticationException, with: :fogbugz_unauthorized
+  rescue_from Gitlab::FogbugzImport::Interface::AuthenticationError, with: :fogbugz_unauthorized
 
   def new; end
 

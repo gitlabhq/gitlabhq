@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import WebAuthnAuthenticate from './authenticate';
-import WebAuthnRegister from './register';
 
 export const initWebauthnAuthenticate = () => {
   if (!gon.webauthn) {
@@ -15,15 +14,4 @@ export const initWebauthnAuthenticate = () => {
     document.querySelector('.js-2fa-form'),
   );
   webauthnAuthenticate.start();
-};
-
-export const initWebauthnRegister = () => {
-  const el = $('#js-register-token-2fa');
-
-  if (!el.length) {
-    return;
-  }
-
-  const webauthnRegister = new WebAuthnRegister(el, gon.webauthn);
-  webauthnRegister.start();
 };

@@ -103,8 +103,7 @@ To prevent this from happening, you can set a hard limit for your repositories' 
 This limit can be set globally, per group, or per project, with per project limits
 taking the highest priority.
 
-The repository size limit applies to both private and public projects. It includes repository files and LFS,
-but does not include:
+The repository size limit applies to both private and public projects. It includes repository files and Git LFS objects (even when stored in external object storage), but does not include:
 
 - Artifacts
 - Containers
@@ -148,7 +147,21 @@ The first push of a new project, including LFS objects, is checked for size.
 If the sum of their sizes exceeds the maximum allowed repository size, the push
 is rejected.
 
-For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
+### Check repository size
+
+To determine if a project is nearing its configured repository size limit:
+
+1. [View your storage usage](../../user/storage_usage_quotas.md#view-storage).
+   The **Repository** size includes both Git repository files and
+   [Git LFS](../../topics/git/lfs/_index.md) objects.
+1. Compare the current usage to your configured repository size limit to estimate
+   remaining capacity.
+
+You can also use the [Projects API](../../api/projects.md) to retrieve repository
+statistics.
+
+To reduce repository size, see
+[methods to reduce repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Session duration
 
@@ -182,7 +195,7 @@ For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 18.0 with a [flag](../feature_flags.md) named `session_expire_from_init`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 18.0 with a [flag](../feature_flags/_index.md) named `session_expire_from_init`. Enabled by default.
 
 {{< /history >}}
 
@@ -238,7 +251,7 @@ number of minutes of inactivity set when you [customize your session duration](#
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9 with a [flag](../feature_flags.md) named `two_factor_for_cli`. Disabled by default. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9 with a [flag](../feature_flags/_index.md) named `two_factor_for_cli`. Disabled by default. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 {{< /history >}}
 
@@ -271,7 +284,7 @@ To set a limit on how long these sessions are valid:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags/_index.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
 
 {{< /history >}}
@@ -364,7 +377,7 @@ You can also configure the prefix by using the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags/_index.md) named `custom_prefix_for_all_token_types`. Disabled by default.
 
 {{< /history >}}
 
@@ -384,6 +397,7 @@ Custom token prefixes apply only to the following tokens:
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
+- [OAuth application secrets](../../integration/oauth_provider.md)
 
 Prerequisites:
 
@@ -423,7 +437,7 @@ Using custom token prefixes provides the following benefits:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -486,7 +500,7 @@ After a lifetime for access tokens is set, GitLab:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -622,14 +636,14 @@ When selected, GitLab administrators can still update usernames in the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
+can [enable the feature flag](../feature_flags/_index.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
 this feature is not available. This feature is not ready for production use.
 
 {{< /alert >}}
@@ -681,7 +695,7 @@ GitLab administrators can prevent this behavior:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../feature_flags.md) named `disallow_private_profiles`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `disallow_private_profiles`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 {{< /history >}}
@@ -734,7 +748,7 @@ If [**Allow users to make their profiles private**](#prevent-users-from-making-t
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../feature_flags/_index.md) named `deleting_account_disabled_for_users`. Enabled by default.
 
 {{< /history >}}
 

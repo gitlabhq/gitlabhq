@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillTerraformModulesMetadataWithSemver
+description: Backfills `terraform_modules_metadata` table with semantic version data.
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196527
+milestone: '18.2'
+queued_migration_version: 20250708101955
+finalized_by: # version of the migration that finalized this BBM

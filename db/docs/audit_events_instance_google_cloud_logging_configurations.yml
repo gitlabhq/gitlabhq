@@ -8,5 +8,6 @@ description: Stores Instance level Google Cloud Logging configurations associate
   with IAM service accounts, used for generating access tokens.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423036
 milestone: '16.4'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553444

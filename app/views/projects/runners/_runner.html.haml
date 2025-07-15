@@ -2,12 +2,12 @@
   .gl-flex.gl-justify-between
     %div
       = runner_status_icon(runner, size: 16)
-      - if @project_runners.include?(runner)
+      - if runner.in?(@project_runners)
         = link_to "##{runner.id} (#{runner.short_sha})", project_runner_path(@project, runner)
       - else
         %span
           = "##{runner.id} (#{runner.short_sha})"
-      - if runner.locked? && runner.project_type?
+      - if runner.project_type? && runner.locked?
         %span.has-tooltip{ title: s_('Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.') }
           = sprite_icon('lock')
     .gl-ml-2

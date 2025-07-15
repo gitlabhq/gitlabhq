@@ -595,18 +595,6 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
           service.execute
         end
       end
-
-      context 'and the pull_ref_directly_from_gitaly FF is disabled' do
-        before do
-          stub_feature_flags(pull_ref_directly_from_gitaly: false)
-        end
-
-        it 'does not check for refs in Gitaly' do
-          expect(project).not_to receive(:ref_exists?).with(ref_path)
-
-          service.execute
-        end
-      end
     end
 
     context 'target branch does not exist' do

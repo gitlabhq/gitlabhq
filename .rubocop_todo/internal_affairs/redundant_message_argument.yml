@@ -11,7 +11,6 @@ InternalAffairs/RedundantMessageArgument:
     - 'rubocop/cop/migration/async_post_migrate_only.rb'
     - 'rubocop/cop/migration/batch_migrations_post_only.rb'
     - 'rubocop/cop/migration/migration_with_milestone.rb'
-    - 'rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction.rb'
     - 'rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction.rb'
     - 'rubocop/cop/migration/schema_addition_methods_no_post.rb'
     - 'rubocop/cop/redis_queue_usage.rb'

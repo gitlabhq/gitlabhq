@@ -25,6 +25,10 @@ module Types
       field :expire_at, Types::TimeType, null: true,
         description: 'Expiry date of the artifact.'
 
+      field :expired, GraphQL::Types::Boolean, null: false,
+        description: 'Expired state of the artifact.',
+        method: :expired?
+
       def download_path
         ::Gitlab::Routing.url_helpers.download_project_job_artifacts_path(
           object.project,

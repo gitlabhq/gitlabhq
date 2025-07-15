@@ -28,7 +28,6 @@ Rails/TimeZone:
     - 'lib/gitlab/instrumentation_helper.rb'
     - 'lib/gitlab/lfs_token.rb'
     - 'lib/gitlab/loop_helpers.rb'
-    - 'lib/gitlab/popen.rb'
     - 'lib/gitlab/prometheus_client.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/grafana/time_window.rb'

@@ -23,7 +23,7 @@ class RootController < Dashboard::ProjectsController
   CACHE_CONTROL_HEADER = 'no-store'
 
   def index
-    @homepage_app_data = @current_user.nil? ? {} : homepage_app_data(@current_user)
+    @homepage_app_data = homepage_app_data(current_user)
     render('root/index') && return if Feature.enabled?(:personal_homepage, current_user)
 
     super

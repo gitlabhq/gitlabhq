@@ -9,7 +9,7 @@ describe('Filtered Search Tokenizer', () => {
       const results = FilteredSearchTokenizer.processTokens('searchTerm', allowedKeys);
 
       expect(results.searchToken).toBe('searchTerm');
-      expect(results.tokens.length).toBe(0);
+      expect(results.tokens).toHaveLength(0);
       expect(results.lastToken).toBe(results.searchToken);
     });
 
@@ -20,7 +20,7 @@ describe('Filtered Search Tokenizer', () => {
       );
 
       expect(results.searchToken).toBe('');
-      expect(results.tokens.length).toBe(4);
+      expect(results.tokens).toHaveLength(4);
       expect(results.tokens[3]).toBe(results.lastToken);
 
       expect(results.tokens[0].key).toBe('author');
@@ -47,7 +47,7 @@ describe('Filtered Search Tokenizer', () => {
       );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
-      expect(results.tokens.length).toBe(1);
+      expect(results.tokens).toHaveLength(1);
       expect(results.tokens[0]).toBe(results.lastToken);
       expect(results.tokens[0].key).toBe('milestone');
       expect(results.tokens[0].value).toBe('none');
@@ -61,7 +61,7 @@ describe('Filtered Search Tokenizer', () => {
       );
 
       expect(results.searchToken).toBe('searchTerm');
-      expect(results.tokens.length).toBe(1);
+      expect(results.tokens).toHaveLength(1);
       expect(results.tokens[0].key).toBe('assignee');
       expect(results.tokens[0].value).toBe('user');
       expect(results.tokens[0].symbol).toBe('@');
@@ -75,7 +75,7 @@ describe('Filtered Search Tokenizer', () => {
       );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
-      expect(results.tokens.length).toBe(3);
+      expect(results.tokens).toHaveLength(3);
       expect(results.tokens[2]).toBe(results.lastToken);
 
       expect(results.tokens[0].key).toBe('author');
@@ -98,7 +98,7 @@ describe('Filtered Search Tokenizer', () => {
       );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
-      expect(results.tokens.length).toBe(3);
+      expect(results.tokens).toHaveLength(3);
       expect(results.tokens[2]).toBe(results.lastToken);
 
       expect(results.tokens[0].key).toBe('author');
@@ -119,13 +119,13 @@ describe('Filtered Search Tokenizer', () => {
 
       expect(results.lastToken).toBe('fake:token');
       expect(results.searchToken).toBe('fake:token');
-      expect(results.tokens.length).toEqual(0);
+      expect(results.tokens).toHaveLength(0);
     });
 
     it('returns search value and token for mix of valid and invalid tokens', () => {
       const results = FilteredSearchTokenizer.processTokens('label:real fake:token', allowedKeys);
 
-      expect(results.tokens.length).toEqual(1);
+      expect(results.tokens).toHaveLength(1);
       expect(results.tokens[0].key).toBe('label');
       expect(results.tokens[0].value).toBe('real');
       expect(results.tokens[0].symbol).toBe('');
@@ -143,7 +143,7 @@ describe('Filtered Search Tokenizer', () => {
     it('removes duplicated values', () => {
       const results = FilteredSearchTokenizer.processTokens('label:~foo label:~foo', allowedKeys);
 
-      expect(results.tokens.length).toBe(1);
+      expect(results.tokens).toHaveLength(1);
       expect(results.tokens[0].key).toBe('label');
       expect(results.tokens[0].value).toBe('foo');
       expect(results.tokens[0].symbol).toBe('~');

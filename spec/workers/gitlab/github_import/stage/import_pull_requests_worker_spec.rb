@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
   subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
+  it_behaves_like Import::ResumableImportJob
 
   describe '#import' do
     context 'with pull requests' do

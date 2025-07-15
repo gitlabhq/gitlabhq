@@ -4,8 +4,15 @@ fragment WikiPageNote on Note {
   id
   author {
     ...Author
+    emails {
+      nodes {
+        id
+        email
+      }
+    }
   }
   maxAccessLevelOfAuthor
+  internal
   body
   bodyHtml
   createdAt

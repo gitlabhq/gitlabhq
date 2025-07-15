@@ -12,6 +12,7 @@ module RuboCop
           context_namespace_path parent_path
         ].freeze
 
+        # @!method iid_with_id?(node)
         def_node_matcher :iid_with_id?, <<~PATTERN
           (send nil? {:field :argument}
             (sym #iid?)
@@ -19,6 +20,7 @@ module RuboCop
             (...)?)
         PATTERN
 
+        # @!method graphql_id_allowed?(node)
         def_node_search :graphql_id_allowed?, <<~PATTERN
           (send nil? :argument (_ #does_not_match?) (const (const (const nil? :GraphQL) :Types) :ID) ...)
         PATTERN

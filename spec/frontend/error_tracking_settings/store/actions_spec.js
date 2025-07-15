@@ -43,7 +43,7 @@ describe('error tracking settings actions', () => {
           },
         ],
       );
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
     });
 
     it('should handle a server error', async () => {
@@ -60,7 +60,7 @@ describe('error tracking settings actions', () => {
           },
         ],
       );
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
     });
 
     it('should request projects correctly', () => {
@@ -121,7 +121,7 @@ describe('error tracking settings actions', () => {
     it('should save the page', async () => {
       mock.onPatch(TEST_HOST).reply(HTTP_STATUS_OK);
       await testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }]);
-      expect(mock.history.patch.length).toBe(1);
+      expect(mock.history.patch).toHaveLength(1);
       expect(refreshCurrentPage).toHaveBeenCalled();
     });
 
@@ -140,7 +140,7 @@ describe('error tracking settings actions', () => {
           },
         ],
       );
-      expect(mock.history.patch.length).toBe(1);
+      expect(mock.history.patch).toHaveLength(1);
     });
 
     it('should request to save the page', () => {

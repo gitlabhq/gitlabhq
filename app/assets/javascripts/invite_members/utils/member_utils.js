@@ -18,3 +18,7 @@ export function searchUsers(url, search) {
 export function triggerExternalAlert() {
   return false;
 }
+
+export function baseBindingAttributes() {
+  return {};
+}

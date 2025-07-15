@@ -8,7 +8,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'ee/spec/finders/ee/issuables/label_filter_spec.rb'
     - 'ee/spec/finders/ee/namespaces/projects_finder_spec.rb'
     - 'ee/spec/graphql/mutations/ai/action_spec.rb'
-    - 'ee/spec/helpers/tree_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/bridge_spec.rb'
     - 'ee/spec/lib/elastic/latest/git_class_proxy_spec.rb'
     - 'ee/spec/lib/gitlab/checks/integrations/git_guardian_check_spec.rb'

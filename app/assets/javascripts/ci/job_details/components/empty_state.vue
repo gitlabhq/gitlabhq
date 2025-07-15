@@ -1,18 +1,15 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlEmptyState } from '@gitlab/ui';
 import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
 
 export default {
   components: {
     GlButton,
+    GlEmptyState,
     ManualJobForm,
   },
   props: {
     illustrationPath: {
-      type: String,
-      required: true,
-    },
-    illustrationSizeClass: {
       type: String,
       required: true,
     },
@@ -74,21 +71,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-empty-state gl-flex gl-flex-col gl-text-center">
-    <div :class="illustrationSizeClass" class="gl-max-w-full">
-      <img
-        :alt="s__('CiVariables|Manual job empty state image')"
-        class="gl-max-w-full"
-        :src="illustrationPath"
-      />
-    </div>
-    <div class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5">
-      <h2
-        class="gl-mb-0 gl-mt-0 gl-text-size-h-display gl-leading-36"
-        data-testid="job-empty-state-title"
-      >
-        {{ title }}
-      </h2>
+  <gl-empty-state :title="title" :svg-path="illustrationPath">
+    <template #description>
       <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
       </p>
@@ -100,18 +84,16 @@ export default {
         :confirmation-message="confirmationMessage"
         @hideManualVariablesForm="$emit('hideManualVariablesForm')"
       />
-      <div
-        v-if="action && !shouldRenderManualVariables"
-        class="gl-mt-5 gl-flex gl-flex-wrap gl-justify-center"
+    </template>
+    <template v-if="action && !shouldRenderManualVariables" #actions>
+      <gl-button
+        :href="action.path"
+        :data-method="action.method"
+        variant="confirm"
+        data-testid="job-empty-state-action"
       >
-        <gl-button
-          :href="action.path"
-          :data-method="action.method"
-          variant="confirm"
-          data-testid="job-empty-state-action"
-          >{{ action.button_title }}</gl-button
-        >
-      </div>
-    </div>
-  </div>
+        {{ action.button_title }}
+      </gl-button>
+    </template>
+  </gl-empty-state>
 </template>

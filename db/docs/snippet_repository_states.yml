@@ -8,5 +8,4 @@ description: Separate table for snippet repositories containing Geo verification
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181255
 milestone: '17.10'
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464440
 table_size: small

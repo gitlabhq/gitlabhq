@@ -12,6 +12,10 @@ FactoryBot.define do
     color_scheme_id { 1 }
     color_mode_id { 1 }
 
+    transient do
+      in_organization { create(:organization) } # rubocop: disable RSpec/FactoryBot/InlineAssociation -- required since this is a transient attribute, not a factory association
+    end
+
     after(:build) do |user, evaluator|
       # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.
       assign_ns = if defined?(UserWithNamespaceShim)
@@ -27,10 +31,12 @@ FactoryBot.define do
             .order(:created_at).first ||
           # We create an organization next even though we are building here. We need to ensure
           # that an organization exists so other entities can belong to the same organization
-          create(:organization)
+          evaluator.in_organization
 
         user.assign_personal_namespace(org)
       end
+
+      user.organization ||= evaluator.in_organization
     end
 
     trait :without_default_org do
@@ -38,15 +44,12 @@ FactoryBot.define do
     end
 
     trait :with_namespace do
-      # rubocop: disable RSpec/FactoryBot/InlineAssociation -- We need to pass an Organization to this method
-      namespace { assign_personal_namespace(create(:organization)) }
-      # rubocop: enable RSpec/FactoryBot/InlineAssociation
+      namespace { assign_personal_namespace(in_organization) }
     end
 
     trait :with_organization do
-      after(:create) do |user|
-        organization = create(:organization)
-        create(:organization_user, user: user, organization: organization)
+      after(:create) do |user, evaluator|
+        create(:organization_user, user: user, organization: evaluator.in_organization)
       end
     end
 

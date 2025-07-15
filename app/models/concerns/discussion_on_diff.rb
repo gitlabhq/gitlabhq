@@ -51,20 +51,7 @@ module DiscussionOnDiff
 
     lines = lines[initial_line_index..diff_line.index]
 
-    if lines.nil?
-      Gitlab::ErrorTracking.track_exception(
-        TruncatedDiffLinesError.new(
-          "Lines is empty.
-           Highlighted lines state: #{highlight}.
-           Diff lines empty: #{diff_lines&.empty?}.
-           Highlighted diff lines empty: #{highlighted_diff_lines&.empty?}.
-           Diff lines subset empty: #{diff_lines&.[](initial_line_index..diff_line.index)&.empty?}.
-          Initial line index: #{initial_line_index}.
-          Diff line index: #{diff_line&.index}"
-        )
-      )
-      return []
-    end
+    return [] if lines.nil?
 
     lines.each do |line|
       if line.meta?

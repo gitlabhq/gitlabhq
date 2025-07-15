@@ -51,9 +51,7 @@ export default {
     },
     issueAsWorkItem() {
       return (
-        !this.isGroup &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view) &&
-        this.glFeatures.workItemsAlpha
+        !this.isGroup && this.glFeatures.workItemViewForIssues && this.glFeatures.workItemsAlpha
       );
     },
     crumbs() {
@@ -61,7 +59,7 @@ export default {
         text: this.listName,
       };
 
-      if (this.isWorkItemOnly || this.glFeatures.workItemEpicsList || this.issueAsWorkItem) {
+      if (this.isWorkItemOnly || this.isGroup || this.issueAsWorkItem) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
         indexCrumb.href = this.listPath;

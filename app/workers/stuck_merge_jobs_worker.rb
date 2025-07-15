@@ -70,7 +70,7 @@ class StuckMergeJobsWorker # rubocop:disable Scalability/IdempotentWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def stuck_merge_requests
-    MergeRequest.select('id, merge_jid').with_state(:locked).where.not(merge_jid: nil).reorder(nil)
+    MergeRequest.select('id, merge_jid').with_state(:locked).where.not(merge_jid: nil).without_order
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

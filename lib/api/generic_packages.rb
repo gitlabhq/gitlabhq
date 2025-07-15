@@ -51,9 +51,7 @@ module API
             authorize_job_token_policies!(authorized_user_project)
 
             authorize_workhorse!(**authorize_workhorse_params).tap do
-              if Feature.enabled?(:packages_protected_packages_generic, authorized_user_project)
-                protect_package!(declared_params[:package_name], :generic)
-              end
+              protect_package!(declared_params[:package_name], :generic)
             end
           end
 
@@ -149,6 +147,7 @@ module API
             package = ::Packages::Generic::PackageFinder.new(project).execute!(params[:package_name], params[:package_version])
             package_file = ::Packages::PackageFileFinder.new(package, encoded_file_name).execute!
 
+            determine_content_type(package_file)
             track_package_event('pull_package', :generic, project: project, namespace: project.namespace)
 
             present_package_file!(package_file, content_disposition: :attachment)
@@ -178,6 +177,12 @@ module API
       def encoded_file_name
         file_name = [declared_params[:path], declared_params[:file_name]].compact.join('/')
         declared_params[:path].present? ? URI.encode_uri_component(file_name) : file_name
+      end
+
+      def determine_content_type(package_file)
+        return unless Feature.enabled?(:packages_generic_package_content_type, package_file.project)
+
+        ::Gitlab::Utils::MimeType.from_filename(package_file.file_name, log_enabled: true)
       end
     end
   end

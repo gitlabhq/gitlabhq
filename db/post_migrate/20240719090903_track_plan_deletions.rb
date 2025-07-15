@@ -5,8 +5,6 @@ class TrackPlanDeletions < Gitlab::Database::Migration[2.2]
 
   milestone '17.4'
 
-  enable_lock_retries!
-
   def up
     track_record_deletions(:plans)
   end

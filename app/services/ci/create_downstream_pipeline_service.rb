@@ -57,9 +57,7 @@ module Ci
     def update_bridge_status!(bridge, pipeline)
       Gitlab::OptimisticLocking.retry_lock(bridge, name: 'create_downstream_pipeline_update_bridge_status') do |subject|
         if pipeline.created_successfully?
-          # If bridge uses `strategy:depend` we leave it running
-          # and update the status when the downstream pipeline completes.
-          subject.success! unless subject.dependent?
+          subject.success! unless subject.has_strategy?
           ServiceResponse.success(payload: pipeline)
         else
           message = pipeline.errors.full_messages

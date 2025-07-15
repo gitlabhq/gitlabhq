@@ -15,6 +15,7 @@ additional_properties:
 product_group: authorization
 product_categories:
 - permissions
+- runner
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189430
 tiers:

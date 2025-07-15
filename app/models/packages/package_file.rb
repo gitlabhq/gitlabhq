@@ -62,12 +62,12 @@ class Packages::PackageFile < ApplicationRecord
   end
 
   scope :for_rubygem_with_file_name, ->(project, file_name) do
-    joins(:package).merge(project.packages.rubygems).with_file_name(file_name)
+    joins(:package).merge(::Packages::Rubygems::Package.for_projects(project)).with_file_name(file_name)
   end
 
   scope :for_helm_with_channel, ->(project, channel) do
     joins(:package)
-      .merge(project.packages.helm.installable)
+      .merge(::Packages::Helm::Package.for_projects(project).installable)
       .joins(:helm_file_metadatum)
       .where(packages_helm_file_metadata: { channel: channel })
       .installable

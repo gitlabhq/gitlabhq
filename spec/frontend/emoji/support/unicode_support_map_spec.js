@@ -44,7 +44,7 @@ describe('Unicode Support Map', () => {
       });
 
       it('should not call .getItem or .setItem', () => {
-        expect(window.localStorage.getItem.mock.calls.length).toBe(1);
+        expect(window.localStorage.getItem.mock.calls).toHaveLength(1);
         expect(window.localStorage.setItem).not.toHaveBeenCalled();
       });
     });

@@ -40,7 +40,7 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
     it 'permits medium-priority operation' do
       expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
         receive(:bulk_perform_in).with(
-          described_class::MEDIUM_DELAY,
+          1.minute,
           [[1], [2]],
           { batch_delay: 30.seconds, batch_size: 100 }
         )

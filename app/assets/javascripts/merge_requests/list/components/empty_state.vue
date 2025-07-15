@@ -38,9 +38,7 @@ export default {
       }
 
       if (!this.hasMergeRequests) {
-        return __(
-          "Merge requests are a place to propose changes you've made to a project and discuss those changes with others",
-        );
+        return __('Make a merge request to propose changes to this project.');
       }
 
       if (this.isOpenTab) {
@@ -55,7 +53,7 @@ export default {
       }
 
       if (!this.hasMergeRequests) {
-        return __('Interested parties can even contribute by pushing commits if they want to.');
+        return __('Others can contribute by pushing commits to the same branch.');
       }
 
       return null;

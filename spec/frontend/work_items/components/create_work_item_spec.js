@@ -1,13 +1,14 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { clearDraft, updateDraft } from '~/lib/utils/autosave';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -32,8 +33,10 @@ import {
 } from '~/work_items/constants';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
+import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
+import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -48,11 +51,24 @@ jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
 }));
+jest.mock('~/work_items/utils', () => {
+  return {
+    ...jest.requireActual('~/work_items/utils'),
+    updateDraftWorkItemType: jest.fn(),
+  };
+});
+jest.mock('~/lib/utils/autosave', () => {
+  return {
+    ...jest.requireActual('~/lib/utils/autosave'),
+    clearDraft: jest.fn(),
+  };
+});
 
 Vue.use(VueApollo);
 
 describe('Create work item component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
+  const originalFeatures = gon.features;
   let wrapper;
   let mockApollo;
 
@@ -65,6 +81,12 @@ describe('Create work item component', () => {
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
   const { webUrl: namespaceWebUrl } = namespaceWorkItemTypesQueryResponse.data.workspace;
+  const mockRelatedItem = {
+    id: 'gid://gitlab/WorkItem/22',
+    type: 'Issue',
+    reference: 'full-path#22',
+    webUrl: '/full-path/-/issues/22',
+  };
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -79,23 +101,21 @@ describe('Create work item component', () => {
   const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
-  const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
-  const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
-  const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
-  const findFormButtons = () => wrapper.find('[data-testid="form-buttons"]');
-  const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findResolveDiscussionSection = () =>
-    wrapper.find('[data-testid="work-item-resolve-discussion"]');
+  const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
+  const findRelatesToCheckbox = () => wrapper.findByTestId('relates-to-checkbox');
+  const findCreateWorkItemView = () => wrapper.findByTestId('create-work-item-view');
+  const findFormButtons = () => wrapper.findByTestId('form-buttons');
+  const findCreateButton = () => wrapper.findByTestId('create-button');
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findResolveDiscussionSection = () => wrapper.findByTestId('work-item-resolve-discussion');
   const findResolveDiscussionLink = () =>
-    wrapper.find('[data-testid="work-item-resolve-discussion"]').findComponent(GlLink);
+    wrapper.findByTestId('work-item-resolve-discussion').findComponent(GlLink);
 
   const createComponent = ({
     props = {},
+    provide = {},
     mutationHandler = createWorkItemSuccessHandler,
-    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
-    workItemPlanningViewEnabled = false,
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
@@ -114,11 +134,12 @@ describe('Create work item component', () => {
       resolvers,
     );
 
-    wrapper = shallowMount(CreateWorkItem, {
+    wrapper = shallowMountExtended(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
         fullPath: 'full-path',
-        preselectedWorkItemType,
+        projectNamespaceFullPath: 'full-path',
+        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         ...props,
       },
       provide: {
@@ -126,7 +147,7 @@ describe('Create work item component', () => {
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
-        workItemPlanningViewEnabled,
+        ...provide,
       },
       stubs: {
         PageHeading,
@@ -158,17 +179,55 @@ describe('Create work item component', () => {
     gon.current_user_fullname = mockCurrentUser.name;
     gon.current_username = mockCurrentUser.username;
     gon.current_user_avatar_url = mockCurrentUser.avatar_url;
+    gon.features = {};
+  });
+
+  afterAll(() => {
+    gon.features = originalFeatures;
   });
 
   describe('Default', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
       await waitForPromises();
     });
 
     it('does not render error by default', () => {
       expect(findTitleInput().props('isValid')).toBe(true);
       expect(findAlert().exists()).toBe(false);
+    });
+
+    it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
+      jest.spyOn(mockApollo.defaultClient, 'mutate');
+      const mockInput = {
+        workItemType: 'Issue',
+        fullPath: 'full-path',
+        assignees: [
+          {
+            __typename: 'CurrentUser',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            username: 'root',
+            webUrl: 'http://127.0.0.1:3000/root',
+            webPath: '/root',
+          },
+        ],
+      };
+
+      findAssigneesWidget().vm.$emit('updateWidgetDraft', mockInput);
+      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: updateNewWorkItemMutation,
+        variables: {
+          input: {
+            ...mockInput,
+            relatedItemId: mockRelatedItem.id,
+          },
+        },
+      });
     });
 
     it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
@@ -189,12 +248,15 @@ describe('Create work item component', () => {
     it('Default', async () => {
       createComponent();
       await waitForPromises();
-      const AUTO_SAVE_KEY = 'autosave/new-full-path-epic-draft';
+      const typeSpecificAutosaveKey = `new-full-path-epic-draft`;
+      const sharedWidgetsAutosaveKey = 'new-full-path-widgets-draft';
 
       findCancelButton().vm.$emit('click');
       await nextTick();
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith(AUTO_SAVE_KEY);
+      expect(clearDraft).toHaveBeenCalledTimes(2);
+      expect(clearDraft).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
+      expect(clearDraft).toHaveBeenNthCalledWith(2, sharedWidgetsAutosaveKey);
       expect(setNewWorkItemCache).toHaveBeenCalled();
     });
 
@@ -215,7 +277,12 @@ describe('Create work item component', () => {
         const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
           ({ name }) => name === workItemType,
         );
-        createComponent({ preselectedWorkItemType: workItemType });
+        createComponent({
+          props: {
+            preselectedWorkItemType: workItemType,
+            relatedItem: mockRelatedItem,
+          },
+        });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');
@@ -227,6 +294,7 @@ describe('Create work item component', () => {
           workItemType: expectedWorkItemTypeData.name,
           workItemTypeId: expectedWorkItemTypeData.id,
           workItemTypeIconName: expectedWorkItemTypeData.iconName,
+          relatedItemId: mockRelatedItem.id,
         });
       },
     );
@@ -234,7 +302,7 @@ describe('Create work item component', () => {
 
   describe('When there is no work item type', () => {
     beforeEach(() => {
-      createComponent({ preselectedWorkItemType: null });
+      createComponent({ props: { preselectedWorkItemType: null } });
       return waitForPromises();
     });
 
@@ -272,7 +340,7 @@ describe('Create work item component', () => {
 
   describe('Group/project selector', () => {
     it('renders with the current namespace selected by default', async () => {
-      createComponent({ workItemPlanningViewEnabled: true });
+      createComponent({ provide: { workItemPlanningViewEnabled: true } });
       await waitForPromises();
 
       expect(findGroupProjectSelector().exists()).toBe(true);
@@ -348,6 +416,45 @@ describe('Create work item component', () => {
       expect(findSelect().attributes('value')).toBe(mockId);
     });
 
+    it('sets new work item cache and emits changeType on select', async () => {
+      createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
+      await waitForPromises();
+      const mockId = 'Issue';
+
+      findSelect().vm.$emit('change', mockId);
+      await nextTick();
+
+      expect(setNewWorkItemCache).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        widgetDefinitions: expect.any(Array),
+        workItemType: mockId,
+        workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+        workItemTypeIconName: 'issue-type-issue',
+        relatedItemId: mockRelatedItem.id,
+      });
+
+      expect(wrapper.emitted('changeType')).toBeDefined();
+    });
+
+    it('sets selected work item type in localStorage draft', async () => {
+      createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
+      await waitForPromises();
+      const mockId = 'Issue';
+
+      findSelect().vm.$emit('change', mockId);
+      await nextTick();
+
+      expect(updateDraftWorkItemType).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        relatedItemId: mockRelatedItem.id,
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: mockId,
+          iconName: 'issue-type-issue',
+        },
+      });
+    });
+
     it('hides title if set', async () => {
       createComponent({ props: { hideFormTitle: true } });
       await waitForPromises();
@@ -389,6 +496,27 @@ describe('Create work item component', () => {
           },
         ],
       ]);
+    });
+
+    it('clears autosave draft on successful mutation', async () => {
+      const typeSpecificAutosaveKey = 'new-full-path-epic-related-22-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-related-22-widgets-draft';
+      updateDraft(typeSpecificAutosaveKey, JSON.stringify({ foo: 'bar' }));
+      updateDraft(sharedWidgetsAutosaveKey, JSON.stringify({ foo: 'bar' }));
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
+      await waitForPromises();
+
+      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      await waitForPromises();
+      await submitCreateForm();
+
+      expect(clearDraft).toHaveBeenCalledTimes(2);
+      expect(clearDraft).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
+      expect(clearDraft).toHaveBeenNthCalledWith(2, sharedWidgetsAutosaveKey);
     });
 
     it('emits workItemCreated for confidential work item', async () => {
@@ -573,7 +701,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for Issue work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
         await waitForPromises();
       });
 
@@ -606,7 +734,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for Incident work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT } });
         await waitForPromises();
       });
 
@@ -655,6 +783,34 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
+    });
+
+    it('renders confidentiality checkbox for a group', async () => {
+      createComponent({
+        props: {
+          isGroup: true,
+        },
+      });
+
+      await waitForPromises();
+
+      const confidentialCheckbox = findConfidentialCheckbox();
+
+      expect(confidentialCheckbox.text()).toBe(
+        'Turn on confidentiality: Limit visibility to group members with at least the Planner role.',
+      );
+    });
+
+    it('renders confidentiality checkbox for a project', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      const confidentialCheckbox = findConfidentialCheckbox();
+
+      expect(confidentialCheckbox.text()).toBe(
+        'Turn on confidentiality: Limit visibility to project members with at least the Planner role.',
+      );
     });
   });
 
@@ -730,7 +886,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
-      expect(findFormButtons().classes('gl-justify-end')).toBe(true);
+      expect(findFormButtons().classes('gl-items-end')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
@@ -740,9 +896,26 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-justify-end')).toBe(false);
+      expect(findFormButtons().classes('gl-items-end')).toBe(false);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
+    });
+
+    it('shows contribution guidelines link when contributing.md exists', async () => {
+      createComponent({ provide: { contributionGuidePath: 'contribution/guide/path' } });
+      await waitForPromises();
+
+      expect(findFormButtons().findComponent(GlLink).text()).toBe('contribution guidelines');
+      expect(findFormButtons().findComponent(GlLink).attributes('href')).toBe(
+        'contribution/guide/path',
+      );
+    });
+
+    it('does not show contribution guidelines link when contributing.md does not exist', async () => {
+      createComponent({ provide: { contributionGuidePath: undefined } });
+      await waitForPromises();
+
+      expect(findFormButtons().findComponent(GlLink).exists()).toBe(false);
     });
   });
 
@@ -802,7 +975,11 @@ describe('Create work item component', () => {
 
           </div>
         </div>`);
-      createComponent();
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
       await waitForPromises();
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
@@ -816,16 +993,15 @@ describe('Create work item component', () => {
             am
             a
             description!`,
+        confidential: false,
+        relatedItemId: mockRelatedItem.id,
       });
     });
   });
 
   describe('New work item to resolve threads', () => {
     it('when not resolving any thread, does not pass resolve params to mutation', async () => {
-      createComponent({
-        singleWorkItemType: true,
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      });
+      createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -843,10 +1019,7 @@ describe('Create work item component', () => {
         '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
       );
 
-      createComponent({
-        singleWorkItemType: true,
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      });
+      createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -886,10 +1059,7 @@ describe('Create work item component', () => {
         setWindowLocation(
           '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
         );
-        createComponent({
-          singleWorkItemType: true,
-          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
         await waitForPromises();
       });
 

@@ -100,7 +100,7 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
-- [Deployed behind a feature flag](../user/feature_flags.md) named `usage_data_queries_api`, disabled by default.
+- [Deployed behind a feature flag](../administration/feature_flags/_index.md) named `usage_data_queries_api`, disabled by default.
 
 {{< /history >}}
 
@@ -170,7 +170,7 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
-- [Deployed behind a feature flag](../user/feature_flags.md), named `usage_data_non_sql_metrics`, disabled by default.
+- [Deployed behind a feature flag](../administration/feature_flags/_index.md), named `usage_data_non_sql_metrics`, disabled by default.
 
 {{< /history >}}
 

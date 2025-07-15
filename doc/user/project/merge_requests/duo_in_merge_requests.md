@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Code Review
+group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use AI-assisted features for relevant information about a merge request.
 title: GitLab Duo in merge requests
@@ -123,6 +123,98 @@ To enable `@GitLabDuo` to automatically review merge requests:
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
+## Customize instructions for GitLab Duo Code Review
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com
+- Status: Beta
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4?inv=1&invt=Ab0dPw&project=ai-enablement-dev-69497ba7)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GitLab Duo Code Review can help ensure consistent code review standards in your project.
+Define a glob pattern for files, and create custom instructions for files matching that
+pattern. For example, enforce Ruby style conventions only on Ruby files, and Go style
+conventions on Go files. GitLab Duo appends your custom instructions to its standard review
+criteria.
+
+To configure custom instructions:
+
+1. In the root of your repository, create a `.gitlab/duo` directory if it doesn't already exist.
+1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
+1. Add your custom instructions using this format:
+
+```yaml
+instructions:
+  - name: <instruction_group_name>
+    fileFilters:
+      - <glob_pattern_1>
+      - <glob_pattern_2>
+      - !<exclude_pattern>  # Exclude files matching this pattern
+    instructions: |
+      <your_custom_review_instructions>
+```
+
+For example:
+
+```yaml
+instructions:
+  - name: Ruby Style Guide
+    fileFilters:
+      - "*.rb"
+      - "lib/**/*.rb"
+      - "!spec/**/*.rb"  # Exclude test files
+    instructions: |
+      1. Ensure all methods have proper documentation
+      2. Follow Ruby style guide conventions
+      3. Prefer symbols over strings for hash keys
+
+  - name: TypeScript Source Files
+    fileFilters:
+      - "**/*.ts"
+      - "!**/*.test.ts"  # Exclude test files
+      - "!**/*.spec.ts"  # Exclude spec files
+    instructions: |
+      1. Ensure proper TypeScript types (avoid 'any')
+      2. Follow naming conventions
+      3. Document complex functions
+
+  - name: All Files Except Tests
+    fileFilters:
+      - "!**/*.test.*"   # Exclude all test files
+      - "!**/*.spec.*"   # Exclude all spec files
+      - "!test/**/*"     # Exclude test directories
+      - "!spec/**/*"     # Exclude spec directories
+    instructions: |
+      1. Follow consistent code style
+      2. Add meaningful comments for complex logic
+      3. Ensure proper error handling
+
+  - name: Test Coverage
+    fileFilters:
+      - "spec/**/*_spec.rb"
+    instructions: |
+      1. Test both happy paths and edge cases
+      2. Include error scenarios
+      3. Use shared examples to reduce duplication
+```
+
 ## Summarize a code review
 
 {{< details >}}
@@ -174,7 +266,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a flag](../../../administration/feature_flags/_index.md) named `generate_commit_message_flag`. Disabled by default.
 - Feature flag `generate_commit_message_flag` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) in GitLab 17.2.
 - Feature flag `generate_commit_message_flag` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262) in GitLab 17.7.
 - Changed to include Premium in GitLab 18.0.

@@ -147,19 +147,19 @@ describe('Markdown field header component', () => {
   it('hides divider in preview mode', () => {
     createWrapper({ props: { previewMarkdown: true } });
 
-    expect(findDividers().length).toBe(0);
+    expect(findDividers()).toHaveLength(0);
   });
 
   it('emits toggle markdown event when clicking preview toggle', async () => {
     findPreviewToggle().vm.$emit('click', true);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview').length).toEqual(1);
+    expect(wrapper.emitted('showPreview')).toHaveLength(1);
 
     findPreviewToggle().vm.$emit('click', false);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview').length).toEqual(2);
+    expect(wrapper.emitted('showPreview')).toHaveLength(2);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
@@ -259,11 +259,11 @@ describe('Markdown field header component', () => {
         },
       });
 
-      expect(findToolbarButtons().length).toBe(defaultCount - 1);
+      expect(findToolbarButtons()).toHaveLength(defaultCount - 1);
     });
 
     it('shows all items by default', () => {
-      expect(findToolbarButtons().length).toBe(defaultCount);
+      expect(findToolbarButtons()).toHaveLength(defaultCount);
     });
 
     it("doesn't render dividers when toolbar buttons past them are restricted", () => {
@@ -286,7 +286,7 @@ describe('Markdown field header component', () => {
           ],
         },
       });
-      expect(findDividers().length).toBe(1);
+      expect(findDividers()).toHaveLength(1);
     });
   });
 
@@ -380,6 +380,7 @@ describe('Markdown field header component', () => {
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
     const findNextButton = () => wrapper.findByTestId('find-next');
     const findPrevButton = () => wrapper.findByTestId('find-prev');
+    const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -466,7 +467,7 @@ describe('Markdown field header component', () => {
       await nextTick();
 
       expect(findCloneDiv().element.innerHTML).toBe(
-        'lorem ipsum dolor sit amet lorem &lt;img src="<span class="js-highlight js-highlight-active" style="background-color: rgb(230, 228, 242); display: inline-block;">prompt</span>"&gt;',
+        'lorem ipsum dolor sit amet lorem &lt;img src="<span class="js-highlight js-highlight-active" style="background-color: rgb(233, 190, 116); display: inline-block;">prompt</span>"&gt;',
       );
     });
 
@@ -493,7 +494,7 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
       await nextTick();
 
-      expect(findCloneDiv().element.querySelectorAll('.js-highlight-active').length).toBe(1);
+      expect(findCloneDiv().element.querySelectorAll('.js-highlight-active')).toHaveLength(1);
     });
 
     it('allows navigating between matches through next and prev buttons', async () => {
@@ -505,7 +506,7 @@ describe('Markdown field header component', () => {
 
       const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
 
-      expect(matches.length).toBe(2);
+      expect(matches).toHaveLength(2);
       expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
       expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
 
@@ -534,6 +535,25 @@ describe('Markdown field header component', () => {
 
       expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
       expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
+    });
+
+    it('is case insensitive', async () => {
+      await showFindAndReplace();
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'LoReM' } });
+      await nextTick();
+
+      const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
+      expect(matches).toHaveLength(2);
+    });
+
+    it('should have a close button', async () => {
+      await showFindAndReplace();
+      expect(findFindInput().exists()).toBe(true);
+      findCloseButton().vm.$emit('click', true);
+      await nextTick();
+      expect(findFindInput().exists()).toBe(false);
     });
   });
 });

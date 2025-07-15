@@ -59,7 +59,10 @@ export default {
     :toggle-text="$options.i18n.buttonText"
     :items="containersList"
     size="small"
+    icon="log"
   />
 
-  <gl-button v-else :to="getLogsLink()" size="small">{{ $options.i18n.buttonText }}</gl-button>
+  <gl-button v-else :to="getLogsLink()" size="small" icon="log">{{
+    $options.i18n.buttonText
+  }}</gl-button>
 </template>

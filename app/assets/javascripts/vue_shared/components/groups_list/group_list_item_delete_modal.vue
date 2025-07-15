@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     isMarkedForDeletion() {
-      return Boolean(this.group.markedForDeletionOn);
+      return Boolean(this.group.markedForDeletion);
     },
     groupWillBeImmediatelyDeleted() {
       return this.isMarkedForDeletion;

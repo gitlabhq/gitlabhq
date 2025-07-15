@@ -2,6 +2,8 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   currentUserResponse,
   workItemByIidResponseFactory,
@@ -24,6 +26,7 @@ import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowe
 jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('Work items router', () => {
+  useLocalStorageSpy();
   let wrapper;
 
   Vue.use(VueApollo);
@@ -41,6 +44,8 @@ describe('Work items router', () => {
     .fn()
     .mockResolvedValue(mockProjectPermissionsQueryResponse());
   const allowedParentTypesHandler = jest.fn().mockResolvedValue(allowedParentTypesResponse);
+
+  const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
 
   const createComponent = async (routeArg) => {
     const router = createRouter({ fullPath: '/work_item' });
@@ -76,6 +81,9 @@ describe('Work items router', () => {
         reportAbusePath: '/report/abuse/path',
         workItemPlanningViewEnabled: false,
       },
+      propsData: {
+        rootPageFullPath: '/',
+      },
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
@@ -88,12 +96,19 @@ describe('Work items router', () => {
         WorkItemDevelopment: true,
         WorkItemChangeTypeModal: true,
         WorkItemErrorTracking: true,
+        WorkItemMetadataProvider: true,
       },
     });
   };
 
+  beforeEach(() => {
+    setHTMLFixture(`<div class="params-issue-type">issue</div>`);
+  });
+
   afterEach(() => {
     window.location.hash = '';
+    resetHTMLFixture();
+    localStorage.clear();
   });
 
   it('includes relative_url_root', () => {
@@ -115,11 +130,37 @@ describe('Work items router', () => {
     expect(basePath).toBe('/groups/work_item/-');
   });
 
+  it(`renders create work item page on /issues/new route with 'type' param set to 'ISSUE'`, async () => {
+    await createComponent(`/issues/new?type=ISSUE`);
+
+    expect(findCreateWorkItem().exists()).toBe(true);
+    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
+  });
+
+  it(`renders create work item page on /issues/new route with 'issue[issue_type]' param set to 'ISSUE'`, async () => {
+    await createComponent(`/issues/new?issue%5Bissue_type%5D%3DISSUE`);
+
+    expect(findCreateWorkItem().exists()).toBe(true);
+    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
+  });
+
+  it(`renders create work item page on /issues/new route work item type set via localStorage draft`, async () => {
+    localStorage.setItem(
+      // full-path in router is set to `/work_item
+      'autosave/new-/work_item-widgets-draft',
+      JSON.stringify({ TYPE: { name: 'Task' } }),
+    );
+    await createComponent(`/issues/new`);
+
+    expect(findCreateWorkItem().exists()).toBe(true);
+    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('TASK');
+  });
+
   describe.each(workItemTypes)('Create Work Item for type: %s', (type) => {
     it(`renders create work item page on /${type}/new route`, async () => {
       await createComponent(`/${type}/new`);
 
-      expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);
+      expect(findCreateWorkItem().exists()).toBe(true);
     });
   });
 

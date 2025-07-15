@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_category: :cloud_connector do
+RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_category: :system_access do
   let_it_be(:expired_token) { create(:service_access_token, :expired) }
   let_it_be(:active_token) {  create(:service_access_token, :active) }
 

@@ -48,7 +48,9 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
 
       it_behaves_like 'deletes milestone id from issuables'
 
-      it 'logs destroy event' do
+      it 'logs destroy event and runs on-delete webhook' do
+        expect(service).to receive(:execute_hooks).with(milestone, 'delete')
+
         service.execute(milestone)
 
         event = Event.where(project_id: milestone.project_id, target_type: 'Milestone')
@@ -84,7 +86,9 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
 
       it_behaves_like 'deletes milestone id from issuables'
 
-      it 'does not log destroy event' do
+      it 'does not log destroy event and does not run on-delete webhook' do
+        expect(service).not_to receive(:execute_hooks).with(milestone, 'delete')
+
         expect { service.execute(milestone) }.not_to change { Event.count }
       end
     end

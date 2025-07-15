@@ -196,8 +196,8 @@ particular, you currently cannot use the `version` mechanism of
 CarrierWave. Things you can do include:
 
 - Filename validation
-- **Incompatible with direct upload:** One time pre-processing of file contents, for example, image resizing
-- **Incompatible with direct upload:** Encryption at rest
+- **Incompatible with direct upload**: One time pre-processing of file contents, for example, image resizing
+- **Incompatible with direct upload**: Encryption at rest
 
 CarrierWave pre-processing behaviors such as image resizing
 or encryption require local access to the uploaded file. This forces

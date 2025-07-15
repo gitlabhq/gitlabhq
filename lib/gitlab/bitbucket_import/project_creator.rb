@@ -14,9 +14,6 @@ module Gitlab
       end
 
       def execute
-        bitbucket_import_resumable_worker =
-          Feature.enabled?(:bitbucket_import_resumable_worker, current_user)
-
         ::Projects::CreateService.new(
           current_user,
           name: name,
@@ -28,12 +25,7 @@ module Gitlab
           import_type: 'bitbucket',
           import_source: repo.full_name,
           import_url: clone_url,
-          import_data: {
-            credentials: credentials,
-            data: {
-              bitbucket_import_resumable_worker: bitbucket_import_resumable_worker
-            }
-          },
+          import_data: { credentials: credentials },
           skip_wiki: skip_wiki
         ).execute
       end

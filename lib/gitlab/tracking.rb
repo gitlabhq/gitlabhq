@@ -8,8 +8,8 @@ module Gitlab
     class << self
       delegate :flush, to: :tracker
 
-      def enabled?
-        tracker.enabled?
+      def frontend_connect_directly_to_snowplow_collector?
+        Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
       end
 
       def micro_verification_enabled?

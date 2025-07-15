@@ -50,24 +50,22 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:preserve_markdown, project)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
+    push_frontend_feature_flag(:issues_list_create_modal, project)
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
     push_force_frontend_feature_flag(:glql_integration, !!project&.glql_integration_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:continue_indented_text, !!project&.continue_indented_text_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
     push_frontend_feature_flag(:work_item_status_feature_flag, project&.root_ancestor)
+    push_force_frontend_feature_flag(:work_items_bulk_edit, project&.work_items_bulk_edit_feature_flag_enabled?)
+    push_frontend_feature_flag(:hide_incident_management_features, project)
   end
 
   before_action only: [:index, :show] do
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
-  end
-
-  before_action only: [:index, :service_desk] do
-    push_frontend_feature_flag(:frontend_caching, project&.group)
   end
 
   before_action only: :show do
@@ -421,8 +419,7 @@ class Projects::IssuesController < Projects::ApplicationController
     # Service Desk issues and incidents should not use the work item view
     !issue.from_service_desk? &&
       !issue.work_item_type&.incident? &&
-      (Feature.enabled?(:work_item_view_for_issues, project&.group) ||
-      current_user&.user_preference&.use_work_items_view)
+      Feature.enabled?(:work_item_view_for_issues, project&.group)
   end
 
   def work_item_redirect_except_actions

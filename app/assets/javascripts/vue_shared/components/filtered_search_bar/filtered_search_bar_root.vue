@@ -399,17 +399,24 @@ export default {
         </template>
       </gl-filtered-search>
     </div>
-    <gl-sorting
-      v-if="selectedSortOption"
-      :sort-options="transformedSortOptions"
-      :sort-by="sortById"
-      :is-ascending="sortDirectionAscending"
-      class="sort-dropdown-container gl-w-full sm:!gl-m-0 sm:gl-w-auto"
-      dropdown-class="gl-grow"
-      dropdown-toggle-class="gl-grow"
-      sort-direction-toggle-class="!gl-shrink !gl-grow-0"
-      @sortByChange="handleSortByChange"
-      @sortDirectionChange="handleSortDirectionChange"
-    />
+    <div
+      :class="{
+        'gl-flex gl-items-center gl-justify-between gl-gap-3': $scopedSlots['user-preference'],
+      }"
+    >
+      <slot name="user-preference"></slot>
+      <gl-sorting
+        v-if="selectedSortOption"
+        :sort-options="transformedSortOptions"
+        :sort-by="sortById"
+        :is-ascending="sortDirectionAscending"
+        class="sort-dropdown-container gl-w-full sm:!gl-m-0 sm:gl-w-auto"
+        dropdown-toggle-class="gl-grow"
+        dropdown-class="gl-grow"
+        sort-direction-toggle-class="!gl-shrink !gl-grow-0"
+        @sortByChange="handleSortByChange"
+        @sortDirectionChange="handleSortDirectionChange"
+      />
+    </div>
   </div>
 </template>

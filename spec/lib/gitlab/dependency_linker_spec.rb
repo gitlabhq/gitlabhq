@@ -113,7 +113,7 @@ RSpec.describe Gitlab::DependencyLinker do
 
       described_class.link('Gemfile', nil, nil, used_on: :diff)
 
-      dependency_linker_usage_counter = Gitlab::Metrics.registry.get(:dependency_linker_usage)
+      dependency_linker_usage_counter = Gitlab::Metrics.client.get(:dependency_linker_usage)
 
       expect(dependency_linker_usage_counter.get(used_on: :diff)).to eq(1)
       expect(dependency_linker_usage_counter.get(used_on: :blob)).to eq(0)

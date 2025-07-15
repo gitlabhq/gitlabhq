@@ -26,6 +26,7 @@ module Gitlab
         SignupDisabledError = Class.new(StandardError)
         SigninDisabledForProviderError = Class.new(StandardError)
         IdentityWithUntrustedExternUidError = Class.new(StandardError)
+        UnknownAttributeMappingError = Class.new(StandardError)
 
         attr_reader :auth_hash
 
@@ -271,8 +272,7 @@ module Gitlab
 
           if sync_profile_from_provider?
             UserSyncedAttributesMetadata.syncable_attributes(auth_hash.provider).each do |key|
-              if auth_hash.has_attribute?(key) && gl_user.sync_attribute?(key)
-                gl_user.public_send("#{key}=".to_sym, auth_hash.public_send(key)) # rubocop:disable GitlabSecurity/PublicSend
+              if assign_value_to_user(gl_user, auth_hash, key)
                 metadata.set_attribute_synced(key, true)
               else
                 metadata.set_attribute_synced(key, false)
@@ -322,6 +322,23 @@ module Gitlab
           auth_hash.errors.each do |attr, error|
             gl_user.errors.add(attr, error)
           end
+        end
+
+        private
+
+        def assign_value_to_user(user, auth_hash, key)
+          return unless auth_hash.has_attribute?(key) && user.sync_attribute?(key)
+
+          value = auth_hash.public_send(key) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `auth_hash.has_attribute?(key)` on L330
+          if key.to_sym == :organization
+            user.user_detail_organization = value
+          elsif user.respond_to?(:"#{key}=")
+            user.public_send("#{key}=".to_sym, value) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `gl_user.sync_attribute?(key)` on L330
+          else
+            raise UnknownAttributeMappingError
+          end
+
+          true
         end
       end
     end

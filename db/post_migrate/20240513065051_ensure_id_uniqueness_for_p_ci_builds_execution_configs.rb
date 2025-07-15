@@ -4,7 +4,6 @@ class EnsureIdUniquenessForPCiBuildsExecutionConfigs < Gitlab::Database::Migrati
   include Gitlab::Database::PartitioningMigrationHelpers::UniquenessHelpers
 
   milestone '17.1'
-  enable_lock_retries!
 
   TABLE_NAME = :p_ci_builds_execution_configs
   SEQ_NAME = :p_ci_builds_execution_configs_id_seq

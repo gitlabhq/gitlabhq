@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/env_assignment'
 
-RSpec.describe RuboCop::Cop::RSpec::EnvAssignment do
+RSpec.describe RuboCop::Cop::RSpec::EnvAssignment, feature_category: :shared do
   offense_call_single_quotes_key = %(ENV['FOO'] = 'bar')
   offense_call_double_quotes_key = %(ENV["FOO"] = 'bar')
 

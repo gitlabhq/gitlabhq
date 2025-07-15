@@ -21,4 +21,4 @@ export const MOCK_USERS = [
 
 export const MOCK_ADMIN_USER_PATH = 'admin/users/:id';
 
-export const MOCK_GROUP_COUNTS = { 2177: 5 };
+export const MOCK_MEMBERSHIP_COUNTS = { 2177: { groupCount: 5, projectCount: 10 } };

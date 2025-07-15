@@ -66,7 +66,7 @@ Replace the placeholders in the URL with your specific values:
 - `:id`: Your project ID or URL-encoded path
 - `:package_name`: Name of your package
 - `:package_version`: Version of your package
-- `:file_name`: Name of the file you're uploading
+- `:file_name`: Name of the file you're uploading. See [valid package filename format](#valid-package-filename-format) below.
 
 For example:
 
@@ -528,6 +528,20 @@ You can also use the API to implement custom cleanup scripts.
 The [Write CI-CD Variables in Pipeline](https://gitlab.com/guided-explorations/cfg-data/write-ci-cd-variables-in-pipeline) project contains a working example you can use to create, upload, and download generic packages in GitLab CI/CD.
 
 It also demonstrates how to manage a semantic version for the generic package: storing it in a CI/CD variable, retrieving it, incrementing it, and writing it back to the CI/CD variable when tests for the download work correctly.
+
+## Valid package filename format
+
+Valid package filenames can include:
+
+- Letters: A-Z, a-z
+- Numbers: 0-9
+- Special characters: . (dot), _ (underscore), - (hyphen), + (plus), ~ (tilde), @ (at sign), / (forward slash)
+
+The package filename cannot:
+
+- Start with a tilde (~) or the at sign (@)
+- End with a tilde (~) or the at sign (@)
+- Include spaces
 
 ## Troubleshooting
 

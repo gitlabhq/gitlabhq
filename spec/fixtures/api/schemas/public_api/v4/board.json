@@ -1,14 +1,19 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "id",
     "project",
     "lists"
   ],
-  "properties" : {
-    "id": { "type": "integer" },
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
     "project": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "required": [
         "id",
         "avatar_url",
@@ -29,25 +34,80 @@
         "last_activity_at"
       ],
       "properties": {
-        "id": { "type": "integer" },
-        "avatar_url": { "type": ["string", "null"] },
-        "readme_url":  { "type": ["string", "null"] },
-        "description": { "type": ["string", "null"] },
-        "default_branch": { "type": ["string", "null"] },
-        "tag_list": { "type": "array" },
-        "topics": { "type": "array" },
-        "ssh_url_to_repo": { "type": "string" },
-        "http_url_to_repo": { "type": "string" },
-        "web_url": { "type": "string" },
-        "name": { "type": "string" },
-        "name_with_namespace": { "type": "string" },
-        "path": { "type": "string" },
-        "path_with_namespace": { "type": "string" },
-        "star_count": { "type": "integer" },
-        "forks_count": { "type": "integer" },
-        "created_at": { "type": "string", "format": "date-time" },
-        "namespace": {"type": "object" },
-        "last_activity_at": { "type": "string", "format": "date-time" }
+        "id": {
+          "type": "integer"
+        },
+        "avatar_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "readme_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tag_list": {
+          "type": "array"
+        },
+        "topics": {
+          "type": "array"
+        },
+        "ssh_url_to_repo": {
+          "type": "string"
+        },
+        "http_url_to_repo": {
+          "type": "string"
+        },
+        "web_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_with_namespace": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "path_with_namespace": {
+          "type": "string"
+        },
+        "star_count": {
+          "type": "integer"
+        },
+        "forks_count": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "namespace": {
+          "type": "object"
+        },
+        "last_activity_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "visibility": {
+          "type": "string"
+        }
       },
       "additionalProperties": false
     },
@@ -55,15 +115,20 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required" : [
+        "required": [
           "id",
           "label",
           "position"
         ],
-        "properties" : {
-          "id": { "type": "integer" },
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
           "label": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "required": [
               "id",
               "color",
@@ -71,19 +136,42 @@
               "name"
             ],
             "properties": {
-              "id": { "type": "integer" },
+              "id": {
+                "type": "integer"
+              },
               "color": {
                 "type": "string",
                 "pattern": "#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})"
               },
-              "description": { "type": ["string", "null"] },
-              "name": { "type": "string" }
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": "string"
+              }
             }
           },
-          "position": { "type": ["integer", "null"] },
-          "max_issue_count": { "type": "integer" },
-          "max_issue_weight": { "type": "integer" },
-          "limit_metric": { "type": ["string", "null"] }
+          "position": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "max_issue_count": {
+            "type": "integer"
+          },
+          "max_issue_weight": {
+            "type": "integer"
+          },
+          "limit_metric": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         },
         "additionalProperties": false
       }

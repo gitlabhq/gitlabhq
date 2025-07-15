@@ -8,6 +8,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportLfsObjectsWorker, feature_cate
   subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
+  it_behaves_like Import::ResumableImportJob
 
   describe '#import' do
     it 'imports all the lfs objects' do

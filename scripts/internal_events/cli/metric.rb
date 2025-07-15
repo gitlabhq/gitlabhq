@@ -60,12 +60,25 @@ module InternalEventsCli
     def time_frame
       self[:time_frame] || 'all'
     end
+
+    # Enables comparison with new metrics
+    def unique_ids
+      prefix = [
+        (actions || []).sort.join('+'),
+        identifier,
+        'filter-',
+        filtered?
+      ].join('_')
+
+      Array(time_frame).map { |t| prefix + t }
+    end
   end
 
   NewMetric = Struct.new(*NEW_METRIC_FIELDS, :identifier, :actions, :key, :filters, keyword_init: true) do
     def formatted_output
       METRIC_DEFAULTS
         .merge(to_h.compact)
+        .merge(time_frame: assign_time_frame)
         .merge(
           key_path: key_path,
           events: events)
@@ -99,7 +112,7 @@ module InternalEventsCli
     end
 
     def time_frame
-      Metric::TimeFrame.new(self[:time_frame])
+      Metric::TimeFrames.new(self[:time_frame])
     end
 
     def identifier
@@ -112,6 +125,18 @@ module InternalEventsCli
 
     def filters
       Metric::Filters.new(self[:filters])
+    end
+
+    # Enables comparison with existing metrics
+    def unique_ids
+      prefix = [
+        actions.sort.join('+'),
+        identifier.value,
+        'filter-',
+        filtered?
+      ].join('_')
+
+      time_frame.value.map { |t| prefix + t }
     end
 
     # Returns value for the `events` key in the metric definition.
@@ -138,7 +163,7 @@ module InternalEventsCli
       self[:actions] || []
     end
 
-    # How to interpretting different values for filters:
+    # How to interpret different values for filters:
     # nil --> not expected, assigned or filtered
     #        (metric not initialized with filters)
     # [] --> both expected and filtered
@@ -160,13 +185,11 @@ module InternalEventsCli
     # ex) Weekly/Monthly count of unique
     # ex) Count of
     def description_prefix
-      description_components = [
-        time_frame.description,
+      [
+        (time_frame.description if time_frame.single?),
         identifier.prefix,
         *(identifier.plural if identifier.default?)
-      ].compact
-
-      description_components.join(' ').capitalize
+      ].compact.join(' ').capitalize
     end
 
     # Provides simplified but technically accurate description
@@ -175,7 +198,7 @@ module InternalEventsCli
       event_name = actions.first if events.length == 1 && !filtered?
       event_name ||= 'the selected events'
       [
-        time_frame.description,
+        (time_frame.description if time_frame.single?),
         (identifier.description % event_name).to_s
       ].compact.join(' ').capitalize
     end
@@ -183,24 +206,35 @@ module InternalEventsCli
     def bulk_assign(key_value_pairs)
       key_value_pairs.each { |key, value| self[key] = value }
     end
+
+    # Maintain current functionality of string time_frame for backward compatibility
+    # TODO: Remove once we can deduplicate and merge metric files
+    def assign_time_frame
+      time_frame.single? ? time_frame.value.first : time_frame.value
+    end
   end
 
   class Metric
-    TimeFrame = Struct.new(:value) do
+    TimeFrames = Struct.new(:value) do
       def description
-        return if value.is_a? Array # array time_frame metrics have no description prefix
-
-        TimeFramedKeyPath::METRIC_TIME_FRAME_DESC[value]
+        (%w[all 28d 7d] & value).map do |time_trame|
+          TimeFramedKeyPath::METRIC_TIME_FRAME_DESC[time_trame].capitalize
+        end.join('/')
       end
 
       def directory_name
-        return "counts_all" if value.is_a? Array
+        return "counts_all" unless single?
 
-        "counts_#{value}"
+        "counts_#{value.first}"
       end
 
       def key_path
-        description&.downcase if %w[7d 28d].include?(value)
+        description&.downcase if single? && %w[7d 28d].include?(value.first)
+      end
+
+      # TODO: Delete once we are able to deduplicate and merge metric files
+      def single?
+        !value.is_a?(Array) || value.length == 1
       end
     end
 

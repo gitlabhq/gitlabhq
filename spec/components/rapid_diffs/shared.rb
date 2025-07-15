@@ -3,9 +3,9 @@
 require "spec_helper"
 
 RSpec.shared_context "with diff file component tests" do
+  let_it_be(:diff_file) { build(:diff_file) }
   let(:web_component_selector) { 'diff-file' }
   let(:web_component) { page.find(web_component_selector) }
-  let(:diff_file) { build(:diff_file) }
   let(:repository) { diff_file.repository }
   let(:project) { repository.container }
   let(:namespace) { project.namespace }
@@ -24,6 +24,7 @@ RSpec.shared_context "with diff file component tests" do
     render_component
     expect(page).to have_selector(web_component_selector)
     expect(page).to have_selector("#{web_component_selector}-mounted")
+    expect(page).to have_selector("details[data-file-body]")
   end
 
   it "renders server data" do

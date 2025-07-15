@@ -8,6 +8,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_DELETING,
   NAME_TO_TEXT_LOWERCASE_MAP,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '../constants';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
@@ -16,7 +17,7 @@ export default {
     GlAlert,
     WorkItemDetail,
   },
-  inject: ['issuesListPath'],
+  inject: { issuesListPath: 'issuesListPath', epicsListPath: { default: '' } },
   props: {
     iid: {
       type: String,
@@ -60,7 +61,9 @@ export default {
 
           const msg = sprintfWorkItem(s__('WorkItem|%{workItemType} deleted'), workItemType);
           this.$toast.show(msg);
-          visitUrl(this.issuesListPath);
+          visitUrl(
+            workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.epicsListPath : this.issuesListPath,
+          );
         })
         .catch((e) => {
           this.error =

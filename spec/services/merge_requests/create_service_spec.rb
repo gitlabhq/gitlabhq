@@ -38,6 +38,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
+      it 'invalidates counts cache for author' do
+        expect(user).to receive(:invalidate_merge_request_cache_counts)
+
+        service.execute
+      end
+
       it 'does not execute hooks' do
         expect(project).not_to receive(:execute_hooks)
 

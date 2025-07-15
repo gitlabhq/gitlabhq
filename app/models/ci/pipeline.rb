@@ -35,7 +35,6 @@ module Ci
 
     DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
 
-    CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
     # UI only shows 100+. TODO: pass constant to UI for SSoT
     COUNT_FAILED_JOBS_LIMIT = 101
@@ -155,8 +154,6 @@ module Ci
     has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
     has_one :source_bridge, through: :source_pipeline, source: :source_bridge
-
-    has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
     has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
 
@@ -360,7 +357,7 @@ module Ci
         end
       end
 
-      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         next unless pipeline.bridge_waiting?
 
         pipeline.run_after_commit do
@@ -494,6 +491,12 @@ module Ci
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
 
+    scope :not_archived, -> do
+      archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
+
+      archive_cutoff ? created_after(archive_cutoff) : all
+    end
+
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #
@@ -541,6 +544,16 @@ module Ci
         .from("(VALUES #{refs_values}) refs_values (ref)")
         .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{quoted_table_name} ON TRUE")
         .index_by(&:ref)
+    end
+
+    def self.latest_pipelines_for_ref_by_statuses(ref, statuses = AVAILABLE_STATUSES)
+      status_values = Arel::Nodes::ValuesList.new(statuses.map { |s| [s] }).to_sql
+      query = Arel.sql("status_values.status = #{quoted_table_name}.status")
+      join_query = for_ref(ref).where(query).order(id: :desc).limit(1)
+
+      Ci::Pipeline
+        .from(sanitize_sql_array(["(#{status_values}) AS status_values(status)"]))
+        .joins(sanitize_sql_array(["INNER JOIN LATERAL (#{join_query.to_sql}) #{quoted_table_name} ON TRUE"]))
     end
 
     def self.latest_running_for_ref(ref)
@@ -736,9 +749,17 @@ module Ci
       retryable_builds.any?
     end
 
-    def archived?
+    def archived?(log: false)
       archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
-      archive_builds_older_than.present? && created_at < archive_builds_older_than
+      is_archived = archive_builds_older_than.present? && created_at < archive_builds_older_than
+
+      if log
+        ::Gitlab::Ci::Pipeline::AccessLogger
+          .new(pipeline: self, archived: is_archived)
+          .log
+      end
+
+      is_archived
     end
 
     def cancelable?
@@ -1108,7 +1129,7 @@ module Ci
     end
 
     def bridge_waiting?
-      source_bridge&.dependent?
+      source_bridge&.has_strategy?
     end
 
     def child?
@@ -1155,6 +1176,25 @@ module Ci
 
     def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
       builds_in_self_and_project_descendants.with_artifacts(reports_scope)
+    end
+
+    # Expired artifacts are still valid if
+    # "Keep artifacts from most recent successful jobs" is enabled
+    def downloadable_artifacts_in_self_and_project_descendants
+      hierarchy_builds = builds_in_self_and_project_descendants
+
+      artifacts = Ci::JobArtifact
+        .with_job
+        .where(job_id: hierarchy_builds.select(:id))
+        .downloadable
+        .in_partition(self)
+
+      non_expired = artifacts.not_expired
+
+      locked_pipeline_ids = self_and_project_descendants.artifacts_locked.select(:id)
+      from_locked_pipelines = artifacts.joins(:job).where(p_ci_builds: { commit_id: locked_pipeline_ids })
+
+      non_expired.or(from_locked_pipelines).distinct
     end
 
     def builds_with_coverage
@@ -1256,7 +1296,11 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      complete? && builds.latest.with_exposed_artifacts.exists?
+      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
+        complete? && builds.latest.any_with_exposed_artifacts?
+      else
+        complete? && builds.latest.with_exposed_artifacts.exists?
+      end
     end
 
     def has_erasable_artifacts?

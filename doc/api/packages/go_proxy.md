@@ -14,7 +14,7 @@ title: Go Proxy API
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/_index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
-the GitLab Rails console can [enable](../../administration/feature_flags.md)
+the GitLab Rails console can [enable](../../administration/feature_flags/_index.md)
 this API for your GitLab instance.
 
 {{< alert type="warning" >}}

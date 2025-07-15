@@ -29,7 +29,7 @@ describe('MRWidgetHowToMerge', () => {
   });
 
   it('renders a selection of markdown fields', () => {
-    expect(findInstructionsFields().length).toBe(2);
+    expect(findInstructionsFields()).toHaveLength(2);
   });
 
   it('renders a tip including a link to docs when a valid link is present', () => {

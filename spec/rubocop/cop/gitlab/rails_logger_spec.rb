@@ -8,10 +8,10 @@ RSpec.describe RuboCop::Cop::Gitlab::RailsLogger do
     it "flags the use of Rails.logger.#{method} with a constant receiver" do
       node = "Rails.logger.#{method}('some error')"
 
-      expect_offense(<<~CODE, node: node, msg: "Use a structured JSON logger instead of `Rails.logger`. [...]")
+      expect_offense(<<~RUBY, node: node, msg: "Use a structured JSON logger instead of `Rails.logger`. [...]")
         %{node}
         ^{node} %{msg}
-      CODE
+      RUBY
     end
   end
 

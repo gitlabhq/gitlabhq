@@ -11,7 +11,17 @@ module Gitlab
             ip = RequestContext.instance.client_ip
             unique_ips = update_and_return_ips_count(user_id, ip)
 
-            raise TooManyIps.new(user_id, ip, unique_ips) if unique_ips > config.unique_ips_limit_per_user
+            if unique_ips > config.unique_ips_limit_per_user
+              Gitlab::AuthLogger.error(
+                message: 'too_many_ips',
+                remote_ip: ip,
+                unique_ips_count: unique_ips,
+                user_id: user_id,
+                **Gitlab::ApplicationContext.current
+              )
+
+              raise TooManyIps.new(user_id, ip, unique_ips)
+            end
           end
         end
 

@@ -25,14 +25,14 @@ For public and internal projects, you can change who can see your:
 - Pipelines
 - Job output logs
 - Job artifacts
-- [Pipeline security dashboard](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
+- [Pipeline security results](../../user/application_security/detect/security_scanning_results.md)
 
 To change the visibility of your pipelines and related features:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. Select or clear the **Public pipelines** checkbox.
+1. Select or clear the **Project-based pipeline visibility** checkbox.
    When it is selected, pipelines and related features are visible:
 
    - For [**Public**](../../user/public_access.md) projects, to everyone.
@@ -57,7 +57,7 @@ This setting has no effect when:
 
 - Project visibility is set to [**Internal** or **Private**](../../user/public_access.md),
   because non-project members cannot access internal or private projects.
-- The [**Public pipelines**](#change-which-users-can-view-your-pipelines) setting is disabled.
+- The [**Project-based pipeline visibility**](#change-which-users-can-view-your-pipelines) setting is disabled.
 
 To change the pipeline visibility for non-project members:
 
@@ -88,12 +88,6 @@ running job can be canceled before it completes. After a job with
 `interruptible: false` starts, the entire pipeline is no longer considered interruptible.
 
 ## Prevent outdated deployment jobs
-
-{{< history >}}
-
-- Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
-
-{{< /history >}}
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -287,7 +281,7 @@ These changes do not apply to projects in an [external integration](../../user/p
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `ci_delete_old_pipelines`. Disabled by default.
 - [Feature flag `ci_delete_old_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/issues/503153) removed in GitLab 17.9.
 
 {{< /history >}}

@@ -38,6 +38,14 @@ const defaultMocks = {
   $router,
 };
 
+beforeEach(() => {
+  gon.features = { hideIncidentManagementFeatures: false };
+});
+
+afterEach(() => {
+  window.gon.features = {};
+});
+
 describe('Incident Tabs component', () => {
   let wrapper;
 
@@ -83,6 +91,7 @@ describe('Incident Tabs component', () => {
   const findSummaryTab = () => wrapper.findByTestId('summary-tab');
   const findTimelineTab = () => wrapper.findByTestId('timeline-tab');
   const findAlertDetailsTab = () => wrapper.findByTestId('alert-details-tab');
+  const findMetricsTab = () => wrapper.findByTestId('metrics-tab');
   const findAlertDetailsComponent = () => wrapper.findComponent(AlertDetailsTable);
   const findDescriptionComponent = () => wrapper.findComponent(DescriptionComponent);
   const findHighlightBarComponent = () => wrapper.findComponent(HighlightBar);
@@ -207,6 +216,26 @@ describe('Incident Tabs component', () => {
       await nextTick();
       expect(findActiveTabs()).toHaveLength(1);
       expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.metricsTitle);
+    });
+  });
+
+  describe('when hideIncidentManagementFeatures feature flag is enabled', () => {
+    beforeEach(() => {
+      gon.features = { hideIncidentManagementFeatures: true };
+      mountComponent();
+    });
+
+    it('does not render the timeline tab', () => {
+      expect(findTimelineTab().exists()).toBe(false);
+    });
+
+    it('does not render the alert details tab', () => {
+      mountComponent({ hasLinkedAlerts: true });
+      expect(findAlertDetailsTab().exists()).toBe(false);
+    });
+
+    it('does not render the metrics tab', () => {
+      expect(findMetricsTab().exists()).toBe(false);
     });
   });
 });

@@ -15,7 +15,7 @@ title: Test a new look for issues
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9584) in GitLab 17.5 [with a flag](../../../administration/feature_flags.md) named `work_items_view_preference`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9584) in GitLab 17.5 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_view_preference`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 - Feature flag named `work_items_view_preference` enabled on GitLab.com in GitLab 17.9 for a subset of users.
 - Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 17.11.
@@ -42,12 +42,15 @@ Find a bug or have a request? Leave feedback in [issue 523713](https://gitlab.co
 
 The new issues experience includes these improvements:
 
-- **Drawer view**: When you open an issue from the issue list, board, or child or linked item list, the issue opens in a
+- **Drawer view**: When you open an issue from the issue list, the issue opens in a
   drawer without leaving the current page.
   The drawer provides a complete view of the issue.
+
   To view the full page instead, either:
   1. Select **View in full page** at the top of the drawer.
   1. Open the link in a new tab.
+
+  To always open issues in the full page view on the Epics page, in the top right corner, select **Display options** ({{< icon name="preferences" >}}) and turn off the **Open items in side panel** toggle.
 - **Issue controls**: All issue controls, including confidentiality settings, are now in the top actions menu.
   This menu stays visible as you scroll through the page.
 - **Redesigned sidebar**: The sidebar is now embedded in the page, similar to merge requests and epics.
@@ -61,6 +64,14 @@ The new issues experience includes these improvements:
      only exist in groups.
 - **Development**: Merge requests, branches, and feature flags related to this item are shown in a single list.
 
-## Related topics
+## Work item Markdown reference
 
-- [Test a new look for epics](../../group/epics/epic_work_items.md)
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).

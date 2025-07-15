@@ -1199,6 +1199,17 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       end
     end
 
+    context 'for work items' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { build_stubbed(:work_item, project: project) }
+        let(:comment_body) { /mentioned this issue in \[a work item\|/ }
+
+        it 'uses work item iid for resource url' do
+          expect(resource_url).to include("/-/work_items/#{resource.iid}")
+        end
+      end
+    end
+
     context 'for merge requests' do
       it_behaves_like 'handles cross-references' do
         let(:resource) { build_stubbed(:merge_request, source_project: project) }

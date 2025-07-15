@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Gitlab::EeOnlyClass, feature_category: :shared do
   describe 'bad examples' do
     shared_examples 'reference offense' do
       it 'registers an offense' do
-        expect_offense(<<~CODE, file_name)
+        expect_offense(<<~RUBY, file_name)
           module EE
             class NullNotificationService
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This area is meant for extending CE [...]
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gitlab::EeOnlyClass, feature_category: :shared do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Gitlab::EeOnlyClass, feature_category: :shared do
       let(:file_name) { 'ee/app/services/ee/some_extended_ce_code.rb' }
 
       it 'does not register an offense' do
-        expect_no_offenses(<<~CODE, file_name)
+        expect_no_offenses(<<~RUBY, file_name)
           module EE
             module SomeExtendedCeCode
               def execute
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Gitlab::EeOnlyClass, feature_category: :shared do
               end
             end
           end
-        CODE
+        RUBY
       end
     end
   end

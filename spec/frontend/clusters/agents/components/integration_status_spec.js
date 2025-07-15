@@ -90,7 +90,7 @@ describe('IntegrationStatus', () => {
       ({ tokens, integrationStatuses }) => {
         createWrapper(tokens);
 
-        expect(findAgentIntegrationStatusRows().length).toBe(integrationStatuses.length);
+        expect(findAgentIntegrationStatusRows()).toHaveLength(integrationStatuses.length);
 
         integrationStatuses.forEach((integrationStatus, index) => {
           expect(findAgentIntegrationStatusRows().at(index).props()).toMatchObject({

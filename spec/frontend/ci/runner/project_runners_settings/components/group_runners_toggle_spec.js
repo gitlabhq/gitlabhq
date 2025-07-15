@@ -66,8 +66,8 @@ describe('GroupRunnersToggle', () => {
       isLoading: true,
       labelPosition: 'left',
       value: null,
-      label: 'Turn on group runners for this project',
     });
+    expect(findToggle().text()).toBe('Turn on group runners for this project');
   });
 
   it('fetches current setting', async () => {

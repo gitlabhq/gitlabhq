@@ -18,7 +18,7 @@ GitLab administrators can configure how passwords and OAuth tokens are stored.
 
 {{< history >}}
 
-- PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360658) in GitLab 15.2 [with flags](../administration/feature_flags.md) named `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write`. Disabled by default.
+- PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360658) in GitLab 15.2 [with flags](../administration/feature_flags/_index.md) named `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write`. Disabled by default.
 - Feature flags [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101691) in GitLab 15.6 and PBKDF2+SHA512 was made available to all GitLab instances running in FIPS mode.
 
 {{< /history >}}
@@ -34,7 +34,7 @@ library to hash user passwords. Created password hashes have these attributes:
     function is used to generate the hash of the provided password. This cryptographic hashing function is
     strong and industry-standard.
   - **PBKDF2+SHA512**: PBKDF2+SHA512 is supported:
-    - In GitLab 15.2 to GitLab 15.5 when `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write` [feature flags](../administration/feature_flags.md) are enabled.
+    - In GitLab 15.2 to GitLab 15.5 when `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write` [feature flags](../administration/feature_flags/_index.md) are enabled.
     - In GitLab 15.6 and later when FIPS mode is enabled (feature flags are not required).
 - **Stretching**: Password hashes are [stretched](https://en.wikipedia.org/wiki/Key_stretching)
   to harden against brute-force attacks. By default, GitLab uses a stretching
@@ -48,7 +48,7 @@ library to hash user passwords. Created password hashes have these attributes:
 
 {{< history >}}
 
-- PBKDF2+SHA512 introduced in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
+- PBKDF2+SHA512 introduced in GitLab 15.3 [with flag](../administration/feature_flags/_index.md) named `hash_oauth_tokens`.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.5.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.6.
 

@@ -26,7 +26,7 @@ describe('SubscriptionsDropdown component', () => {
     });
 
     it('renders default text', () => {
-      expect(findDropdown().props('toggleText')).toBe('Select status');
+      expect(findDropdown().props('toggleText')).toBe('Select state');
     });
 
     it('renders dropdown items with `isSelected` prop set to `false`', () => {
@@ -74,7 +74,7 @@ describe('SubscriptionsDropdown component', () => {
 
       expect(dropdownItems.at(0).props('isSelected')).toBe(false);
       expect(dropdownItems.at(1).props('isSelected')).toBe(false);
-      expect(findDropdown().props('toggleText')).toBe('Select status');
+      expect(findDropdown().props('toggleText')).toBe('Select state');
     });
   });
 });

@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import GlqlActions from '~/glql/components/common/actions.vue';
+// import GlqlActions from '~/glql/components/common/actions.vue';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -36,28 +36,14 @@ describe('TablePresenter', () => {
     expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
   });
 
-  it('renders skeleton loader if isPreview is true', () => {
+  it('renders skeleton loader if showPreview is true', () => {
     createWrapper(
-      { data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, isPreview: true },
+      { data: { nodes: [] }, config: { fields: MOCK_FIELDS }, showPreview: true },
       mountExtended,
     );
 
     // 5 rows of 4 columns each
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(20);
-  });
-
-  it('renders actions', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
-    expect(wrapper.findComponent(GlqlActions).props()).toEqual({
-      modalTitle: 'GLQL table',
-      showCopyContents: true,
-    });
-  });
-
-  it('renders a footer text', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
-
-    expect(wrapper.findByTestId('footer').text()).toEqual('View powered by GLQL');
   });
 
   it('renders a row of items presented by appropriate presenters', async () => {
@@ -96,12 +82,6 @@ describe('TablePresenter', () => {
       'Closed',
       'This is another description',
     ]);
-  });
-
-  it('shows a "No data" message if the list of items provided is empty', async () => {
-    await createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } }, mountExtended);
-
-    expect(wrapper.text()).toContain('No data found for this query');
   });
 
   const order0 = [

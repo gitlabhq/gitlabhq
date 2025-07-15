@@ -162,44 +162,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
-  describe 'GET branches' do
-    it 'contains branch and tags information' do
-      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-
-      get :branches, params: { namespace_id: project.namespace, project_id: project, id: commit.id }
-
-      expect(assigns(:branches)).to include('master', 'feature_conflict')
-      expect(assigns(:branches_limit_exceeded)).to be_falsey
-      expect(assigns(:tags)).to include('v1.1.0')
-      expect(assigns(:tags_limit_exceeded)).to be_falsey
-    end
-
-    it 'returns :limit_exceeded when number of branches/tags reach a threshhold' do
-      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      allow_any_instance_of(Repository).to receive(:branch_count).and_return(1001)
-      allow_any_instance_of(Repository).to receive(:tag_count).and_return(1001)
-
-      get :branches, params: { namespace_id: project.namespace, project_id: project, id: commit.id }
-
-      expect(assigns(:branches)).to eq([])
-      expect(assigns(:branches_limit_exceeded)).to be_truthy
-      expect(assigns(:tags)).to eq([])
-      expect(assigns(:tags_limit_exceeded)).to be_truthy
-    end
-
-    context 'when commit is not found' do
-      it 'responds with 404' do
-        get(:branches, params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: '11111111111111111111111111111111111111'
-        })
-
-        expect(response).to be_not_found
-      end
-    end
-  end
-
   describe 'POST revert' do
     context 'when target branch is not provided' do
       it 'renders the 404 page' do
@@ -644,6 +606,17 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
               get_pipelines(id: commit.id, ref: project.default_branch, format: :json)
 
               expect(json_response['pipelines'].count).to eq(1)
+            end
+
+            context 'while being on last page' do
+              it 'paginates the result when ref is present' do
+                allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+
+                get_pipelines(id: commit.id, ref: project.default_branch, page: 2, format: :json)
+
+                expect(json_response['pipelines'].count).to eq(1)
+                expect(json_response['count']['all']).to eq 2
+              end
             end
           end
         end

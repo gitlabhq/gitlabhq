@@ -16,15 +16,16 @@ description: Estimates, time spent, and reporting.
 {{< history >}}
 
 - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
-- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/epic_work_items.md) must be enabled.
+- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
 - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Time tracking for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
 
 {{< /history >}}
 
 Time tracking helps record and manage time invested in GitLab work items.
 Time tracking:
 
-- Records actual time spent on issues, merge requests, epics [with the new look](../group/epics/epic_work_items.md), and tasks.
+- Records actual time spent on issues, merge requests, epics, and tasks.
 - Estimates total time needed for completion.
 - Provides detailed reports of time entries.
 - Calculates totals using standardized time units.
@@ -206,14 +207,14 @@ The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `global_time_tracking_report`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`. Disabled by default.
 - Enabled on GitLab.com in GitLab 16.5.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 

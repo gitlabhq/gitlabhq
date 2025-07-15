@@ -13,7 +13,11 @@ module QA
 
         it(
           'has service ping toggle is disabled',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348340'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348340',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues/750',
+            type: :investigating
+          }
         ) do
           Page::Admin::Settings::MetricsAndProfiling.perform do |settings|
             settings.expand_usage_statistics do |usage_statistics|

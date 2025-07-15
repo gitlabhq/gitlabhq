@@ -35,9 +35,12 @@ $crud-header-min-height: px-to-rem(49px);
         border-right-style: none;
       }
 
+      > [data-label]::before {
+        text-align: left;
+      }
+
       > th {
         border-top-width: $gl-border-size-1;
-        border-bottom-width: 0;
       }
 
       &::after {
@@ -96,7 +99,19 @@ $crud-header-min-height: px-to-rem(49px);
 
   td:last-of-type,
   th:last-of-type {
-    @apply gl-border-r-0;
+    @apply gl-border-r-0 #{!important};
+  }
+
+  tr:first-of-type th {
+    @apply gl-border-t-0;
+  }
+
+  tr:last-of-type td {
+    @apply gl-border-b-0;
+  }
+
+  tr:hover td {
+    @apply gl-bg-strong dark:gl-bg-neutral-700;
   }
 }
 

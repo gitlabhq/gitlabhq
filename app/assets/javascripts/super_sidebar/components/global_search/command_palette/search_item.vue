@@ -51,15 +51,17 @@ export default {
       :shape="avatarShape"
       aria-hidden="true"
     />
-    <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" />
+    <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" data-testid="icon" />
     <span class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
       <span v-safe-html="highlightedName" class="gl-truncate gl-text-strong"></span>
-      <span class="gl-text-subtle" aria-hidden="true">·</span>
-      <span
-        v-if="item.namespace"
-        v-safe-html="item.namespace"
-        class="gl-truncate gl-text-sm gl-text-subtle"
-      ></span>
+      <template v-if="item.namespace">
+        <span class="gl-text-subtle" aria-hidden="true" data-testid="namespace-bullet">·</span>
+        <span
+          v-safe-html="item.namespace"
+          class="gl-truncate gl-text-sm gl-text-subtle"
+          data-testid="namespace"
+        ></span>
+      </template>
     </span>
   </div>
 </template>

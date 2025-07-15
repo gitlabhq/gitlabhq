@@ -1,6 +1,7 @@
 export const MINIMUM_SEARCH_LENGTH = 3;
 
 export const TYPENAME_ADMIN_MEMBER_ROLE = 'AdminMemberRole';
+export const TYPENAME_AI_DUO_WORKFLOW = 'Ai::DuoWorkflows::Workflow';
 export const TYPENAME_BOARD = 'Board';
 export const TYPENAME_CI_BUILD = 'Ci::Build';
 export const TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP = 'CiJobTokenAccessibleGroup';
@@ -21,12 +22,14 @@ export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';
 export const TYPENAME_FEATURE_FLAG = 'FeatureFlag';
 export const TYPENAME_GROUP = 'Group';
 export const TYPENAME_ISSUE = 'Issue';
+export const TYPENAME_TASK = 'Task';
 export const TYPENAME_ITERATION = 'Iteration';
 export const TYPENAME_ITERATIONS_CADENCE = 'Iterations::Cadence';
 export const TYPENAME_LABEL = 'Label';
 export const TYPENAME_MEMBER_ROLE = 'MemberRole';
 export const TYPENAME_MERGE_REQUEST = 'MergeRequest';
 export const TYPENAME_MILESTONE = 'Milestone';
+export const TYPENAME_NAMESPACE = 'Namespace';
 export const TYPENAME_NOTE = 'Note';
 export const TYPENAME_PACKAGES_PACKAGE = 'Packages::Package';
 export const TYPENAME_PROJECT = 'Project';

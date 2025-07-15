@@ -257,7 +257,7 @@ describe('BaseToken', () => {
         wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
 
         expect(findMockSuggestionList().exists()).toBe(true);
-        expect(getMockSuggestionListSuggestions().length).toEqual(maxSuggestions);
+        expect(getMockSuggestionListSuggestions()).toHaveLength(maxSuggestions);
       });
     });
 
@@ -365,6 +365,19 @@ describe('BaseToken', () => {
           } else {
             expect(filteredSearchSuggestions).toHaveLength(0);
           }
+        });
+      });
+
+      describe('when searching for a value', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            props: { defaultSuggestions: OPTIONS_NONE_ANY },
+          });
+          findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
+        });
+
+        it('does not render default suggestions', () => {
+          expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
         });
       });
     });

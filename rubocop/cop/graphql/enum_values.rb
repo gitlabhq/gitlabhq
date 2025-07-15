@@ -41,18 +41,22 @@ module RuboCop
         MSG = "Enum values must either be an uppercase string literal or uppercased with the `upcase` method. " \
               "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"
 
+        # @!method enum_value(node)
         def_node_matcher :enum_value, <<~PATTERN
           (send nil? :value $_ $...)
         PATTERN
 
+        # @!method deprecated?(node)
         def_node_search :deprecated?, <<~PATTERN
           (hash <(pair (sym :deprecated) _) ...>)
         PATTERN
 
+        # @!method upcase_literal?(node)
         def_node_matcher :upcase_literal?, <<~PATTERN
           (str #upcase?)
         PATTERN
 
+        # @!method upcase_method?(node)
         def_node_matcher :upcase_method?, <<~PATTERN
           `(send _ :upcase)
         PATTERN

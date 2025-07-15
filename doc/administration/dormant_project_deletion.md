@@ -15,7 +15,7 @@ title: Dormant project deletion
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](feature_flags/_index.md) named `inactive_projects_deletion`. Disabled by default.
 - [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
 - Configuration through GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85575) in GitLab 15.1.
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/533275) from inactive project deletion in GitLab 18.1.

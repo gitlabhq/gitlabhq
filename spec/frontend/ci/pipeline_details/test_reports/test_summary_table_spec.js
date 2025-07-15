@@ -49,7 +49,7 @@ describe('Test reports summary table', () => {
 
     it('renders the correct number of rows', () => {
       expect(noSuitesToShow().exists()).toBe(false);
-      expect(allSuitesRows().length).toBe(testReports.test_suites.length);
+      expect(allSuitesRows()).toHaveLength(testReports.test_suites.length);
     });
 
     describe('when there is a suite error', () => {

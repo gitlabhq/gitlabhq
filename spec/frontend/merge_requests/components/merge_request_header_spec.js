@@ -37,6 +37,7 @@ describe('MergeRequestHeader component', () => {
       propsData: {
         initialState: 'opened',
         isImported,
+        isDraft: false,
       },
     });
   };
@@ -47,6 +48,7 @@ describe('MergeRequestHeader component', () => {
     expect(findStatusBadge().props()).toEqual({
       issuableType: 'merge_request',
       state: 'opened',
+      isDraft: false,
     });
   });
 
@@ -93,7 +95,7 @@ describe('MergeRequestHeader component', () => {
     it('renders when merge request is imported', () => {
       createComponent({ isImported: true });
 
-      expect(findImportedBadge().props('importableType')).toBe('merge_request');
+      expect(findImportedBadge().exists()).toBe(true);
     });
 
     it('does not render when merge request is not imported', () => {

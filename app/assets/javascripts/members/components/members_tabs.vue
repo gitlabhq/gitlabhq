@@ -110,7 +110,7 @@ export default {
       />
       <members-app v-else :namespace="tab.namespace" :tab-query-param-value="tab.queryParamValue" />
     </gl-tab>
-    <template #tabs-end>
+    <template #toolbar-end>
       <gl-button
         v-if="shouldShowExportButton"
         data-event-tracking="click_export_group_members_as_csv"

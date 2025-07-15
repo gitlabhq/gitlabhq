@@ -19,6 +19,7 @@ module Gitlab
           saved_to_database
           streamed
           scope
+          compliance_controls
         ].freeze
       end
     end

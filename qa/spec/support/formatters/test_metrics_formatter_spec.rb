@@ -22,7 +22,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:metrics_gcs_creds) { 'metrics-gcs-creds' }
   let(:metrics_gcs_bucket_name) { 'metrics-gcs-bucket' }
   let(:gcs_client_options) { { force: true, content_type: 'application/json' } }
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
+  let(:gcs_client) { double("Fog::Google::StorageJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
   let(:ci_timestamp) { '2021-02-23T20:58:41Z' }
   let(:ci_job_name) { 'test-job 1/5' }
   let(:ci_job_url) { 'job-url' }
@@ -114,7 +114,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   before do
     allow(::Gitlab::QA::Runtime::Env).to receive(:retry_failed_specs?).and_return(retry_failed_specs)
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
-    allow(Fog::Storage::Google).to receive(:new)
+    allow(Fog::Google::Storage).to receive(:new)
                                      .with(google_project: metrics_gcs_project_id,
                                        google_json_key_string: metrics_gcs_creds)
                                      .and_return(gcs_client)

@@ -181,13 +181,19 @@ You can define a devfile in the following locations, relative to your project's 
 
 - `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
 - The devfile must have at least one component.
+- The devfile size must not exceed 3 MB.
 - For `components`:
   - Names must not start with `gl-`.
   - Only [`container`](#container-component-type) and `volume` are supported.
-- For `commands`, IDs must not start with `gl-`.
+- For `commands`:
+  - IDs must not start with `gl-`.
+  - Only `exec` and `apply` command types are supported.
+  - For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.
+  - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
 - For `events`:
   - Names must not start with `gl-`.
-  - Only `preStart` is supported.
+  - Only `preStart` and [`postStart`](#user-defined-poststart-events) are supported.
+  - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
 - `parent`, `projects`, and `starterProjects` are not supported.
 - For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
 - For `attributes`:
@@ -212,6 +218,19 @@ The `container` component type supports the following schema properties only:
 | `endpoints`    | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
 | `volumeMounts` | Storage volume to mount in the container.                                                                                      |
 
+### User-defined `postStart` events
+
+You can define custom `postStart` events in your devfile to run commands after the workspace starts. Use this type of event to:
+
+- Set up development dependencies.
+- Configure the workspace environment.
+- Run initialization scripts.
+
+`postStart` event names must not start with `gl-` and can only reference `exec` type commands.
+
+For an example that shows how to configure `postStart` events,
+see the [example configurations](#example-configurations).
+
 ### Example configurations
 
 The following is an example devfile configuration:
@@ -232,13 +251,30 @@ components:
       endpoints:
         - name: http-3000
           targetPort: 3000
+commands:
+  - id: install-dependencies
+    exec:
+      component: tooling-container
+      commandLine: "npm install"
+  - id: setup-environment
+    exec:
+      component: tooling-container
+      commandLine: "echo 'Setting up development environment'"
+events:
+  postStart:
+    - install-dependencies
+    - setup-environment
 ```
+
+{{< alert type="note" >}}
+
+This container image is for demonstration purposes only. To use your own container image,
+see [Arbitrary user IDs](#arbitrary-user-ids).
+
+{{< /alert >}}
 
 For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
-
-This container image is for demonstration purposes only.
-To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
 ## Workspace container requirements
 
@@ -293,7 +329,7 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
 - Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
 
 {{< /history >}}
@@ -324,8 +360,7 @@ Terminating the workspace revokes the token.
 
 Use the `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`
 [environment variables](https://git-scm.com/docs/git-config/#Documentation/git-config.txt-GITCONFIGCOUNT)
-for Git authentication in the workspace. Git added support for these variables in Git 2.31, so the Git version
-you use in the workspace container must be 2.31 or later.
+for Git authentication in the workspace. These variables require Git 2.31 or later in the workspace container.
 
 ## Pod interaction in a cluster
 
@@ -379,6 +414,29 @@ see [Create a custom workspace image that supports arbitrary user IDs](create_im
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Shallow cloning
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543982) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `workspaces_shallow_clone_project`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+When you create a workspace, GitLab uses shallow cloning to improve performance.
+A shallow clone downloads only the latest commit history instead of the complete Git history,
+which significantly reduces the initial clone time for large repositories.
+
+After the workspace starts, Git converts the shallow clone to a full clone in the background.
+This process is transparent and doesn't affect your development workflow.
 
 ## Related topics
 

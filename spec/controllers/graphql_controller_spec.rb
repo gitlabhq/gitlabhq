@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GraphqlController, feature_category: :integrations do
+RSpec.describe GraphqlController, :with_current_organization, feature_category: :integrations do
   include GraphqlHelpers
   include Auth::DpopTokenHelper
 
@@ -563,6 +563,12 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           'meta.auth_fail_token_id',
           'meta.auth_fail_requested_scopes')
       end
+    end
+
+    it 'includes Current.organization context' do
+      post :execute
+
+      expect(assigns(:context)[:current_organization]).to eq(current_organization)
     end
 
     it 'includes request object in context' do

@@ -58,19 +58,16 @@ module Gitlab
             schema_validation_passed = schema_validator.valid?
 
             schema_validator.errors.each { |error| report.add_error('Schema', error) }
-            schema_validator.deprecation_warnings.each { |deprecation_warning| report.add_warning('Schema', deprecation_warning) }
             schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
 
             schema_validation_passed
           end
 
           def schema_validator
-            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(
-              report.type,
+            @schema_validator ||= ::Gitlab::SecurityReportSchemas::Validator.new(
               report_data,
-              report.version,
-              project: @project,
-              scanner: top_level_scanner_data
+              report.type,
+              report.version
             )
           end
 
@@ -186,7 +183,7 @@ module Gitlab
           def create_scan
             return unless scan_data.is_a?(Hash)
 
-            report.add_scan(::Gitlab::Ci::Reports::Security::Scan.new(scan_data))
+            report.scan = ::Gitlab::Ci::Reports::Security::Scan.new(scan_data)
           end
 
           def set_report_version
@@ -211,13 +208,12 @@ module Gitlab
           def create_scanner(scanner_data)
             return unless scanner_data.is_a?(Hash)
 
-            report.add_scanner(
-              ::Gitlab::Ci::Reports::Security::Scanner.new(
-                external_id: scanner_data['id'],
-                name: scanner_data['name'],
-                vendor: scanner_data.dig('vendor', 'name'),
-                version: scanner_data['version'],
-                primary_identifiers: create_scan_primary_identifiers))
+            report.scanner = ::Gitlab::Ci::Reports::Security::Scanner.new(
+              external_id: scanner_data['id'],
+              name: scanner_data['name'],
+              vendor: scanner_data.dig('vendor', 'name'),
+              version: scanner_data['version'],
+              primary_identifiers: create_scan_primary_identifiers)
           end
 
           # TODO: primary_identifiers should be initialized on the

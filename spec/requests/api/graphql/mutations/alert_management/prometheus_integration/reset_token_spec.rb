@@ -7,11 +7,12 @@ RSpec.describe 'Resetting a token on an existing Prometheus Integration', featur
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
-  let_it_be(:integration) { create(:prometheus_integration, project: project) }
+  let_it_be(:old_integration) { create(:prometheus_integration, project: project) }
+  let_it_be(:integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
 
   let(:mutation) do
     variables = {
-      id: GitlabSchema.id_from_object(integration).to_s
+      id: GitlabSchema.id_from_object(old_integration).to_s
     }
     graphql_mutation(:prometheus_integration_reset_token, variables) do
       <<~QL
@@ -27,29 +28,15 @@ RSpec.describe 'Resetting a token on an existing Prometheus Integration', featur
 
   let(:mutation_response) { graphql_mutation_response(:prometheus_integration_reset_token) }
 
-  it 'creates a token' do
-    post_graphql_mutation(mutation, current_user: user)
+  it 'updates the token' do
+    expect { post_graphql_mutation(mutation, current_user: user) }
+      .to change { integration.reload.token }
+
     integration_response = mutation_response['integration']
 
     expect(response).to have_gitlab_http_status(:success)
     expect(integration_response['id']).to eq(GitlabSchema.id_from_object(integration).to_s)
     expect(integration_response['token']).not_to be_nil
-    expect(integration_response['token']).to eq(project.alerting_setting.token)
-  end
-
-  context 'with an existing alerting setting' do
-    let_it_be(:alerting_setting) { create(:project_alerting_setting, project: project) }
-
-    it 'updates the token' do
-      previous_token = alerting_setting.token
-
-      post_graphql_mutation(mutation, current_user: user)
-      integration_response = mutation_response['integration']
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(integration_response['id']).to eq(GitlabSchema.id_from_object(integration).to_s)
-      expect(integration_response['token']).not_to eq(previous_token)
-      expect(integration_response['token']).to eq(alerting_setting.reload.token)
-    end
+    expect(integration_response['token']).to eq(integration.token)
   end
 end

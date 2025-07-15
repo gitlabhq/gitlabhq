@@ -7,12 +7,17 @@ module Packages
 
       ExtractionError = Class.new(StandardError)
 
+      # 10MB limit: accommodates largest metadata files
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/385913#note_2546795745
+      MAX_METADATA_FILE_SIZE = 10.megabytes.freeze
+
       def initialize(package_file)
         @package_file = package_file
       end
 
       def execute
         raise ExtractionError, 'invalid package file' unless valid_package_file?
+        raise ExtractionError, 'invalid package file' if file_type_meta? && invalid_metadata_file_size?
 
         if file_type == :unsupported
           raise ExtractionError, "unsupported file extension for file #{package_file.file_name}"
@@ -27,6 +32,10 @@ module Packages
 
       def valid_package_file?
         package_file && package_file.package&.debian? && !package_file.file.empty_size?
+      end
+
+      def invalid_metadata_file_size?
+        package_file.size > MAX_METADATA_FILE_SIZE
       end
 
       def file_type_basic

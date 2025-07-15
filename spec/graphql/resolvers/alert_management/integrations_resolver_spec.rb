@@ -8,12 +8,16 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver, feature_categor
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:project2) { create(:project) }
-  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
+
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_proj_integration) { create(:alert_management_http_integration, project: project2) }
-  let_it_be(:other_proj_prometheus_integration) { create(:prometheus_integration, project: project2) }
+
+  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
   let_it_be(:migrated_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
+
+  let_it_be(:alt_prometheus_integration) { create(:prometheus_integration, project: project2) }
+  let_it_be(:alt_migrated_integration) { create(:alert_management_prometheus_integration, :legacy, project: project2) }
 
   let(:params) { {} }
 
@@ -33,7 +37,7 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver, feature_categor
       project2.add_maintainer(current_user)
     end
 
-    it { is_expected.to contain_exactly(active_http_integration, prometheus_integration) }
+    it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
 
     context 'when HTTP Integration ID is given' do
       context 'when integration is from the current project' do
@@ -53,11 +57,11 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver, feature_categor
       context 'when integration is from the current project' do
         let(:params) { { id: global_id_of(prometheus_integration) } }
 
-        it { is_expected.to contain_exactly(prometheus_integration) }
+        it { is_expected.to contain_exactly(migrated_integration) }
       end
 
       context 'when integration is from other project' do
-        let(:params) { { id: global_id_of(other_proj_prometheus_integration) } }
+        let(:params) { { id: global_id_of(alt_prometheus_integration) } }
 
         it { is_expected.to be_empty }
       end

@@ -105,8 +105,6 @@ gdk:compile-test-assets:
   extends:
     - compile-test-assets
     - .build-images:rules:build-gdk-image
-  variables:
-    BABEL_ENV: "istanbul"
 
 update-assets-compile-production-cache:
   extends:

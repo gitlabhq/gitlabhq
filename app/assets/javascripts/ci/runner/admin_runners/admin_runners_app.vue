@@ -24,7 +24,6 @@ import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
-import RunnerJobStatusBadge from '../components/runner_job_status_badge.vue';
 
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
@@ -36,7 +35,6 @@ import {
   INSTANCE_TYPE,
   I18N_FETCH_ERROR,
   FILTER_CSS_CLASSES,
-  JOBS_ROUTE_PATH,
 } from '../constants';
 import { captureException } from '../sentry_utils';
 
@@ -55,7 +53,6 @@ export default {
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
-    RunnerJobStatusBadge,
     RunnerDashboardLink: () =>
       import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
   },
@@ -180,12 +177,6 @@ export default {
     },
   },
   methods: {
-    jobsUrl(runner) {
-      const url = new URL(runner.adminUrl);
-      url.hash = `#${JOBS_ROUTE_PATH}`;
-
-      return url.href;
-    },
     onUpdated(event) {
       // When a runner becomes paused or is deleted, the tab count can
       // become stale, refetch outdated counts.
@@ -257,12 +248,6 @@ export default {
         @toggledPaused="onUpdated"
         @deleted="onUpdated"
       >
-        <template #runner-job-status-badge="{ runner }">
-          <runner-job-status-badge
-            :href="jobsUrl(runner)"
-            :job-status="runner.jobExecutionStatus"
-          />
-        </template>
         <template #runner-name="{ runner }">
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />

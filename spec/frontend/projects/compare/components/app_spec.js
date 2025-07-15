@@ -82,7 +82,7 @@ describe('CompareApp component', () => {
   it('render Source and Target BranchDropdown components', () => {
     const revisionCards = wrapper.findAllComponents(RevisionCard);
 
-    expect(revisionCards.length).toBe(2);
+    expect(revisionCards).toHaveLength(2);
     expect(revisionCards.at(0).props('revisionText')).toBe(I18N.source);
     expect(revisionCards.at(1).props('revisionText')).toBe(I18N.target);
   });

@@ -13,12 +13,13 @@ module AuthorizedProjectUpdate # rubocop:disable Gitlab/BoundedContexts -- keepi
     idempotent!
     deduplicate :until_executing, including_scheduled: true
 
-    def perform(group_id)
+    def perform(group_id, params = {})
       group = Group.find_by_id(group_id)
       return unless group
 
       group.refresh_members_authorized_projects(
-        priority: UserProjectAccessChangedService::LOW_PRIORITY
+        priority: params.fetch('priority', UserProjectAccessChangedService::LOW_PRIORITY).to_sym,
+        direct_members_only: params.fetch('direct_members_only', false)
       )
     end
   end

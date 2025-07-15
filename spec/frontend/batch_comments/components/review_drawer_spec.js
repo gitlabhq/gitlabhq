@@ -52,7 +52,7 @@ describe('ReviewDrawer', () => {
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
   };
 
-  const createComponent = ({ canApprove = true } = {}) => {
+  const createComponent = ({ canApprove = true, glFeatures = {} } = {}) => {
     getCurrentUserLastNote = Vue.observable({ id: 1 });
 
     const store = new Vuex.Store({
@@ -100,7 +100,12 @@ describe('ReviewDrawer', () => {
     const apolloProvider = createMockApollo(requestHandlers);
 
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
-    wrapper = mountExtended(ReviewDrawer, { pinia, store, apolloProvider });
+    wrapper = mountExtended(ReviewDrawer, {
+      pinia,
+      store,
+      apolloProvider,
+      provide: { glFeatures },
+    });
   };
 
   beforeEach(() => {
@@ -360,6 +365,36 @@ describe('ReviewDrawer', () => {
       await nextTick();
 
       expect(useBatchComments().setDrawerOpened).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('when mrReviewBatchSubmit is enabled', () => {
+    it('calls publishReview when drafts count is 0', async () => {
+      useBatchComments().drafts = [];
+
+      useBatchComments().drawerOpened = true;
+
+      createComponent({ glFeatures: { mrReviewBatchSubmit: true } });
+
+      await waitForPromises();
+
+      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+      expect(useBatchComments().publishReview).toHaveBeenCalled();
+    });
+
+    it('calls publishReviewInBatches when drafts count is more than 0', async () => {
+      useBatchComments().drafts = new Array(1).fill({});
+
+      useBatchComments().drawerOpened = true;
+
+      createComponent({ glFeatures: { mrReviewBatchSubmit: true } });
+
+      await waitForPromises();
+
+      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+      expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import your project from GitHub to GitLab
 ---
@@ -30,7 +30,7 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 
 Using the GitLab UI, the GitHub importer always imports from the
 `github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
-[GitLab Import API](#use-the-api) GitHub endpoint.
+[GitLab Import API](#use-the-api) GitHub endpoint with a GitLab access token with the `api` scope.
 
 You can change the target namespace and target repository name before you import.
 
@@ -398,7 +398,7 @@ The following items of a project are imported:
   - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
-  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
+  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags/_index.md). From GitLab 15.5, can
   be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
@@ -410,7 +410,7 @@ The following items of a project are imported:
   GitLab 14.5.
 - Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
-  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
+  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags/_index.md) disabled by default.
   From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
   removed.
 
@@ -429,7 +429,7 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
 | **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#protect-a-branch)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
-| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
+| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#require-signed-commits)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../repository/branches/protected.md#require-code-owner-approval)                                                                                                                        | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
 | **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#protect-a-branch). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |

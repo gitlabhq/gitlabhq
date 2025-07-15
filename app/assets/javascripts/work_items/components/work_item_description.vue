@@ -17,6 +17,7 @@ import {
   autocompleteDataSources,
   markdownPreviewPath,
 } from '~/work_items/utils';
+import projectPermissionsQuery from '../graphql/ai_permissions_for_project.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
 import { i18n, NEW_WORK_ITEM_IID, TRACKING_CATEGORY_SHOW, ROUTES } from '../constants';
@@ -39,11 +40,6 @@ export default {
     WorkItemDescriptionTemplateListbox,
   },
   mixins: [Tracking.mixin()],
-  provide: {
-    editorAiActions: window.gon?.licensed_features?.generateDescription
-      ? [generateDescriptionAction()]
-      : [],
-  },
   inject: ['isGroup'],
   props: {
     description: {
@@ -137,11 +133,18 @@ export default {
       descriptionTemplate: null,
       appliedTemplate: '',
       showTemplateApplyWarning: false,
+      workspacePermissions: {},
     };
   },
   computed: {
     createFlow() {
       return this.workItemId === newWorkItemId(this.newWorkItemType);
+    },
+    editorAiActions() {
+      const { id, userPermissions } = this.workspacePermissions;
+      return userPermissions?.generateDescription
+        ? [generateDescriptionAction({ resourceId: id })]
+        : [];
     },
     workItemFullPath() {
       return this.createFlow
@@ -341,6 +344,25 @@ export default {
       error(e) {
         Sentry.captureException(e);
         this.$emit('error', s__('WorkItem|Unable to find selected template.'));
+      },
+    },
+    workspacePermissions: {
+      query() {
+        return projectPermissionsQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data.workspace || {};
+      },
+      skip() {
+        return this.isGroup;
+      },
+      error(error) {
+        Sentry.captureException(error);
       },
     },
   },
@@ -545,6 +567,7 @@ export default {
           :autocomplete-data-sources="autocompleteDataSources"
           :restricted-tool-bar-items="restrictedToolBarItems"
           :uploads-path="uploadsPath"
+          :editor-ai-actions="editorAiActions"
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"

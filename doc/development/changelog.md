@@ -106,31 +106,31 @@ A good changelog entry should be descriptive and concise. It should explain the
 change to a reader who has _zero context_ about the change. If you have trouble
 making it both concise and descriptive, err on the side of descriptive.
 
-- **Bad:** Go to a project order.
-- **Good:** Show a user's starred projects at the top of the "Go to project"
+- **Bad**: Go to a project order.
+- **Good**: Show a user's starred projects at the top of the "Go to project"
   dropdown list.
 
 The first example provides no context of where the change was made, or why, or
 how it benefits the user.
 
-- **Bad:** Copy (some text) to clipboard.
-- **Good:** Update the "Copy to clipboard" tooltip to indicate what's being
+- **Bad**: Copy (some text) to clipboard.
+- **Good**: Update the "Copy to clipboard" tooltip to indicate what's being
   copied.
 
 Again, the first example is too vague and provides no context.
 
-- **Bad:** Fixes and Improves CSS and HTML problems in mini pipeline graph and
+- **Bad**: Fixes and Improves CSS and HTML problems in mini pipeline graph and
   builds dropdown list.
-- **Good:** Fix tooltips and hover states in mini pipeline graph and builds
+- **Good**: Fix tooltips and hover states in mini pipeline graph and builds
   dropdown list.
 
 The first example is too focused on implementation details. The user doesn't
 care that we changed CSS and HTML, they care about the _end result_ of those
 changes.
 
-- **Bad:** Strip out `nil`s in the Array of Commit objects returned from
+- **Bad**: Strip out `nil`s in the Array of Commit objects returned from
   `find_commits_by_message_with_elastic`
-- **Good:** Fix 500 errors caused by Elasticsearch results referencing
+- **Good**: Fix 500 errors caused by Elasticsearch results referencing
   garbage-collected commits
 
 The first example focuses on _how_ we fixed something, not on _what_ it fixes.

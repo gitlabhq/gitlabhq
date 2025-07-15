@@ -1,11 +1,11 @@
 ---
-stage: Systems
-group: Cloud Connector
+stage: Shared ownership
+group: Shared ownership
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Cloud Connector
 ---
 
-[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
+GitLab Cloud Connector is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
 dedicated service itself, but rather a collection of APIs and code that standardizes the approach to authentication and
 other items when integrating Cloud based services with the GitLab instance. This page aims to explain how to use
@@ -32,7 +32,7 @@ To add new feature to the existing backend service (**Ai Gateway**):
 1. [Implement authorization checks in backend service](#implement-authorization-checks-in-backend-service).
 
 **Optional:** If the backend service the token is used for requires additional claims to be embedded in the
-service access token, contact [#g_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
+service access token, contact [#f_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
 because we do not currently have interfaces in place to self-service this.
 
 #### Register the new feature in the JWT issuer
@@ -144,20 +144,10 @@ To decide if the service is available or visible to the end user, we need to:
   ```ruby
     # Returns whether the service is free to access (no addon purchases is required)
     CloudConnector::AvailableServices.find_by_name(:new_feature).free_access?
-   ```
+  ```
 
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
-
-- On GitLab.com and GitLab Self-Managed, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
-
-  ```ruby
-    # Returns true if at least one add-on that is bundled with the service is purchased.
-    #
-    # - For provided namespace, it will check if add-on is purchased for the provided group/project or its ancestors.
-    # - For SM, it would ignore namespace as AddOns are not purchased per namespace for GitLab Self-Managed customers.
-    CloudConnector::AvailableServices.find_by_name(:new_feature).purchased?(namespace)
-  ```
 
 - On GitLab.com and GitLab Self-Managed, check if the customer's end-user has been assigned to the proper seat.
 
@@ -357,7 +347,7 @@ to `foo-service`.
 
 Adding new routes requires access to production infrastructure configuration. If you require a new route to be
 added, open an issue in the [`gitlab-org/gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
-and assign it to the Cloud Connector group.
+and assign it to the Runway group.
 
 ## Testing
 

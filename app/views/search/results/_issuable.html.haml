@@ -20,7 +20,7 @@
     .description.term.gl-px-0.gl-text-sm
       = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)
     - if issuable.labels.any?
-      .gl-mt-3
+      .gl-mt-3.gl-flex.gl-flex-wrap.gl-gap-2
         - presented_labels_sorted_by_title(issuable.labels, issuable.project).each do |label|
           = link_to_label(label)
 

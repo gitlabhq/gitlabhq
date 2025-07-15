@@ -69,13 +69,13 @@ Settings are not cascading by default. To define a cascading setting, take the f
 By defining an attribute using the `cascading_attr` method, a number of convenience
 methods are automatically defined.
 
-**Definition:**
+**Definition**:
 
 ```ruby
 cascading_attr :delayed_project_removal
 ```
 
-**Convenience Methods Available:**
+**Convenience Methods Available**:
 
 - `delayed_project_removal`
 - `delayed_project_removal=`

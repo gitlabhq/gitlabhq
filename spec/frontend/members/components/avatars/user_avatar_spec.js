@@ -5,6 +5,8 @@ import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 
 import { member as memberMock, member2faEnabled, orphanedMember } from '../../mock_data';
 
+jest.mock('lodash/uniqueId', () => (x) => `${x}1`);
+
 describe('UserAvatar', () => {
   let wrapper;
 
@@ -72,6 +74,12 @@ describe('UserAvatar', () => {
       },
     });
     expect(wrapper.find('img').exists()).toBe(false);
+  });
+
+  it('renders id on parent to make popover accessible via keyboard', () => {
+    createComponent();
+
+    expect(wrapper.find('span').attributes('id')).toBe('user-popover-1');
   });
 
   describe('when user property does not exist', () => {

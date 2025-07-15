@@ -23,6 +23,7 @@ module RuboCop
         MSG = '`graphql_name` should be the first line of the class: '\
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#naming-conventions'
 
+        # @!method graphql_name?(node)
         def_node_search :graphql_name?, <<~PATTERN
           (send nil? :graphql_name ...)
         PATTERN

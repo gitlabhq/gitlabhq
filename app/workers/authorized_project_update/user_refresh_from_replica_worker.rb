@@ -7,6 +7,7 @@ module AuthorizedProjectUpdate
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
+    worker_resource_boundary :cpu
     data_consistency :delayed
     queue_namespace :authorized_project_update
 
@@ -14,7 +15,8 @@ module AuthorizedProjectUpdate
     deduplicate :until_executing, including_scheduled: true
 
     def perform(user_id)
-      use_replica_if_available do
+      sessions = [::ApplicationRecord, ::Ci::ApplicationRecord]
+      ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available(sessions) do
         user = User.find_by_id(user_id)
 
         if user && project_authorizations_needs_refresh?(user)
@@ -24,12 +26,6 @@ module AuthorizedProjectUpdate
     end
 
     private
-
-    def use_replica_if_available(&block)
-      ::Gitlab::Database::LoadBalancing::SessionMap
-        .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
-        .use_replicas_for_read_queries(&block)
-    end
 
     def project_authorizations_needs_refresh?(user)
       AuthorizedProjectUpdate::FindRecordsDueForRefreshService.new(user).needs_refresh?

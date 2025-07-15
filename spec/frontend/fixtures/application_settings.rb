@@ -13,7 +13,7 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    allow(Gitlab::Metrics).to receive(:metrics_folder_present?).and_return(true)
+    Labkit::Metrics::Client.enable!
     sign_in(admin)
     enable_admin_mode!(admin)
   end
@@ -26,6 +26,7 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
 
   it 'application_settings/accounts_and_limit.html' do
     stub_application_setting(user_default_external: false)
+    stub_licensed_features(personal_access_token_expiration_policy: true)
 
     get :general
 

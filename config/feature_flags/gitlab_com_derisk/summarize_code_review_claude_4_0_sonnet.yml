@@ -1,9 +1,0 @@
----
-name: summarize_code_review_claude_4_0_sonnet
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/545693
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193685
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547972
-milestone: '18.1'
-group: group::code creation
-type: gitlab_com_derisk
-default_enabled: false

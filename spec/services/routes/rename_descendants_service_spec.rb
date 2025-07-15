@@ -38,15 +38,11 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
 
     shared_examples_for 'descendant paths are not updated' do
       it do
-        expect { execute }.to change {
-          subgroup_routes_with_old_path.size
-        }.by(0).and change {
-          subgroup_projects_routes_with_old_path.size
-        }.by(0).and change {
-          subgroup_routes_with_new_path.size
-        }.by(0).and change {
-          subgroup_projects_routes_with_new_path.size
-        }.by(0)
+        expect { execute }
+          .to not_change { subgroup_routes_with_old_path.size }
+          .and not_change { subgroup_projects_routes_with_old_path.size }
+          .and not_change { subgroup_routes_with_new_path.size }
+          .and not_change { subgroup_projects_routes_with_new_path.size }
       end
     end
 
@@ -66,15 +62,11 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
 
     shared_examples_for 'descendant names are not updated' do
       it do
-        expect { execute }.to change {
-          subgroup_routes_with_old_name.size
-        }.by(0).and change {
-          subgroup_projects_routes_with_old_name.size
-        }.by(0).and change {
-          subgroup_routes_with_new_name.size
-        }.by(0).and change {
-          subgroup_projects_routes_with_new_name.size
-        }.by(0)
+        expect { execute }
+          .to not_change { subgroup_routes_with_old_name.size }
+          .and not_change { subgroup_projects_routes_with_old_name.size }
+          .and not_change { subgroup_routes_with_new_name.size }
+          .and not_change { subgroup_projects_routes_with_new_name.size }
       end
     end
 

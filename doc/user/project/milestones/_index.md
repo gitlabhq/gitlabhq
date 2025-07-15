@@ -16,7 +16,7 @@ description: Burndown charts, goals, progress tracking, and releases.
 Milestones help track and organize work in GitLab.
 Milestones:
 
-- Group related issues and merge requests to track progress toward a goal.
+- Group related issues, epics, and merge requests to track progress toward a goal.
 - Support time-based planning with optional start and due dates.
 - Work alongside iterations to track concurrent timeboxes.
 - Track releases and generate release evidence.
@@ -24,7 +24,7 @@ Milestones:
 
 Milestones can belong to a [project](../_index.md) or [group](../../group/_index.md).
 Project milestones apply to issues and merge requests in that project only.
-Group milestones apply to any issue or merge request in that group's projects.
+Group milestones apply to any issue, epic or merge request in that group's projects.
 
 For information about project and group milestones API, see:
 
@@ -49,7 +49,7 @@ milestones with the [Releases feature](../releases/_index.md#associate-milestone
 A milestone can belong to [project](../_index.md) or [group](../../group/_index.md).
 
 You can assign **project milestones** to issues or merge requests in that project only.
-You can assign **group milestones** to any issue or merge request of any project in that group.
+You can assign **group milestones** to any issue, epic, or merge request of any project in that group.
 
 For information about project and group milestones API, see:
 
@@ -101,7 +101,7 @@ in the **Milestones** page, select the title of the milestone you want to view.
 The milestone view shows the title and description.
 The tabs below the title and description show the following:
 
-- **Issues**: Shows all issues assigned to the milestone. Issues are displayed in three columns named:
+- **Work Items**: Shows all work items assigned to the milestone. Work items are displayed in three columns named:
   - Unstarted Issues (open and unassigned)
   - Ongoing Issues (open and assigned)
   - Completed Issues (closed)
@@ -124,10 +124,10 @@ showing the progress of completing a milestone.
 
 The sidebar on the milestone view shows the following:
 
-- Percentage complete, which is calculated as number of closed issues divided by total number of issues.
+- Percentage complete, which is calculated as number of closed work items divided by total number of work items.
 - The start date and due date.
-- The total time spent on all issues and merge requests assigned to the milestone.
-- The total issue weight of all issues assigned to the milestone.
+- The total time spent on all work items and merge requests assigned to the milestone.
+- The total issue weight of all work items assigned to the milestone.
 - The count of total, open, closed, and merged merge requests.
 - Links to associated releases.
 - The milestone's reference you can copy to your clipboard.
@@ -140,6 +140,7 @@ The sidebar on the milestone view shows the following:
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195530) milestones to Epic work items in GitLab 18.2.
 
 {{< /history >}}
 
@@ -266,15 +267,21 @@ To promote a project milestone:
    - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.
 1. Select **Promote Milestone**.
 
-## Assign a milestone to an issue or merge request
+## Assign a milestone to an item
 
-Every issue and merge request can be assigned one milestone.
+{{< history >}}
+
+- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+
+{{< /history >}}
+
+Every issue, epic, or merge request can be assigned one milestone.
 The milestones are visible on every issue and merge request page, on the right sidebar.
-They are also visible in the issue board.
+They are also visible in the work item board.
 
 To assign or unassign a milestone:
 
-1. View an issue or a merge request.
+1. View an issue, an epic, or a merge request.
 1. On the right sidebar, next to **Milestones**, select **Edit**.
 1. In the **Assign milestone** list, search for a milestone by typing its name.
    You can select from both project and group milestones.

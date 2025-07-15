@@ -223,6 +223,80 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     end
   end
 
+  describe '#org_user_detail' do
+    let(:org_user_detail) { create(:organization_user_detail, organization: project.organization) }
+    let(:author) { create(:user, in_organization: project.organization) }
+
+    it 'supports mentioning users aliased within organization' do
+      reference = org_user_detail.to_reference
+      doc = reference_filter("Hey #{reference}", project: project)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(org_user_detail.user)
+    end
+
+    it 'supports mentioning user aliases for snippets' do
+      reference = org_user_detail.to_reference
+      doc = reference_filter("Hey #{reference}", author: author)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(org_user_detail.user)
+    end
+
+    context 'with no context for filter' do
+      let!(:user) { create(:user, :with_organization) }
+      let!(:org_user_detail) { create(:organization_user_detail, user: user, organization: user.organizations.first) }
+
+      it 'supports mentioning user aliases from default organization' do
+        expect(Organizations::Organization.count).to eq(1)
+
+        reference = org_user_detail.to_reference
+        doc = reference_filter("Hey #{reference}")
+
+        expect(doc.css('a').first.attr('href')).to eq urls.user_url(org_user_detail.user)
+      end
+    end
+
+    context 'in group context' do
+      let(:group) { create(:group, developers: [group_member]) }
+      let(:group_member) { create(:user) }
+      let(:org_user_detail) { create(:organization_user_detail, organization: group.organization) }
+      let(:context) { { author: group_member, project: nil, group: group } }
+
+      it 'supports mentioning a single user' do
+        reference = org_user_detail.to_reference
+        doc = reference_filter("Hey #{reference}", context)
+
+        expect(doc.css('a').first.attr('href')).to eq urls.user_url(org_user_detail.user)
+      end
+    end
+
+    context 'when organization_users_internal FF is disabled' do
+      before do
+        stub_feature_flags(organization_users_internal: false)
+      end
+
+      it 'does not support mentioning users aliased within organization' do
+        reference = org_user_detail.to_reference
+        doc = reference_filter("Hey #{reference}", project: project)
+
+        expect(doc.css('a')).to be_empty
+      end
+
+      context 'in group context' do
+        let(:group) { create(:group, developers: [group_member]) }
+        let(:group_member) { create(:user) }
+        let(:org_user_detail) { create(:organization_user_detail, organization: group.organization) }
+        let(:context) { { author: group_member, project: nil, group: group } }
+
+        it 'does not support mentioning a single user' do
+          reference = org_user_detail.to_reference
+          doc = reference_filter("Hey #{reference}", context)
+
+          expect(doc.css('a')).to be_empty
+        end
+      end
+    end
+  end
+
   context 'checking N+1' do
     let(:user2)      { create(:user) }
     let(:group)      { create(:group) }

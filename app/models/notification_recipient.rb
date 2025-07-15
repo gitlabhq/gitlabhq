@@ -30,7 +30,7 @@ class NotificationRecipient
   end
 
   def notifiable?
-    return false if has_composite_identity?
+    return false if composite_identity_enforced?
     return false unless has_access?
     return false if emails_disabled?
     return false if own_activity?
@@ -122,8 +122,8 @@ class NotificationRecipient
     end
   end
 
-  def has_composite_identity?
-    user.has_composite_identity?
+  def composite_identity_enforced?
+    user.composite_identity_enforced?
   end
 
   def excluded_watcher_action?

@@ -154,7 +154,7 @@ Now you can update tests for existing files and write tests for the new files:
 1. `spec/frontend/work_items/components/work_item_attributes_wrapper_spec.js` or `ee/spec/frontend/work_items/components/work_item_attributes_wrapper_spec.js`.
 1. `spec/frontend/work_items/components/work_item_<widget_name>_spec.js` or `ee/spec/frontend/work_items/components/work_item_<widget_name>_spec.js`.
 1. `spec/frontend/work_items/graphql/resolvers_spec.js` or `ee/spec/frontend/work_items/graphql/resolvers_spec.js`.
-1. `spec/features/work_items/work_item_detail_spec.rb` or `ee/spec/features/work_items/work_item_detail_spec.rb`.
+1. `spec/features/work_items/detail/work_item_detail_spec.rb` or `ee/spec/features/work_items/detail/work_item_detail_spec.rb`.
 
 {{< alert type="note" >}}
 

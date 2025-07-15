@@ -18,9 +18,12 @@
         = render Pajamas::BadgeComponent.new(s_('AdminUsers|Deactivated'), variant: :neutral)
       - if @user.access_locked?
         = render Pajamas::BadgeComponent.new(s_('AdminUsers|Locked'), variant: :warning)
+      - if @user.ldap_user?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|LDAP'), variant: :info)
       - if can?(current_user, :admin_all_resources)
         = render_if_exists 'admin/users/auditor_user_badge'
         = render_if_exists 'admin/users/gma_user_badge'
+        = render_if_exists 'admin/users/admin_role_badge'
 
   - if can?(current_user, :admin_all_resources)
     - c.with_actions do

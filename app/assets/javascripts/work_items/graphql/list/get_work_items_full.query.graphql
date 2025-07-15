@@ -1,0 +1,121 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "./work_item_widgets.fragment.graphql"
+
+query getWorkItemsFull(
+  $excludeProjects: Boolean = false
+  $includeDescendants: Boolean = true
+  $fullPath: ID!
+  $search: String
+  $sort: WorkItemSort
+  $state: IssuableState
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $closedAfter: Time
+  $closedBefore: Time
+  $confidential: Boolean
+  $createdAfter: Time
+  $createdBefore: Time
+  $dueAfter: Time
+  $dueBefore: Time
+  $labelName: [String!]
+  $milestoneTitle: [String!]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $subscribed: SubscriptionStatus
+  $types: [IssueType!]
+  $updatedAfter: Time
+  $updatedBefore: Time
+  $in: [IssuableSearchableField!]
+  $not: NegatedWorkItemFilterInput
+  $or: UnionedWorkItemFilterInput
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  namespace(fullPath: $fullPath) {
+    id
+    name
+    workItems(
+      excludeProjects: $excludeProjects
+      includeDescendants: $includeDescendants
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
+      confidential: $confidential
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      dueBefore: $dueBefore
+      dueAfter: $dueAfter
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      subscribed: $subscribed
+      types: $types
+      updatedAfter: $updatedAfter
+      updatedBefore: $updatedBefore
+      in: $in
+      not: $not
+      or: $or
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        iid
+        author {
+          id
+          avatarUrl
+          name
+          username
+          webUrl
+          webPath
+        }
+        closedAt
+        confidential
+        createdAt
+        hidden
+        namespace {
+          id
+          fullPath
+        }
+        reference(full: true)
+        state
+        title
+        updatedAt
+        userDiscussionsCount
+        webUrl
+        widgets(
+          onlyTypes: [
+            ASSIGNEES
+            AWARD_EMOJI
+            MILESTONE
+            START_AND_DUE_DATE
+            TIME_TRACKING
+            LINKED_ITEMS
+            DEVELOPMENT
+          ]
+        ) {
+          type
+          ...WorkItemWidgets
+        }
+        workItemType {
+          id
+          name
+        }
+      }
+    }
+  }
+}

@@ -23,7 +23,7 @@ describe('index.js', () => {
 
       expect(withoutWrapLines).not.toContain('wrapLines');
       expect(withWrapLines).toContain('wrapLines');
-      expect(withWrapLines.length).toBe(withoutWrapLines.length + 1);
+      expect(withWrapLines).toHaveLength(withoutWrapLines.length + 1);
     });
   });
 

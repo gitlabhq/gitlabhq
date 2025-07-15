@@ -13,7 +13,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  time: '2024-11-18T17:39:57.000+00:00',
+  time: new Date().getTime() - 60e3 * 60 * 24 * 2,
   tooltipPlacement: 'top',
   cssClass: '',
   dateTimeFormat: 'asDateTime',

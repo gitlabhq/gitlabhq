@@ -27,6 +27,11 @@ export default {
       required: false,
       default: undefined,
     },
+    withClose: {
+      type: Function,
+      required: false,
+      default: () => {},
+    },
   },
   computed: {
     ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching']),
@@ -67,6 +72,13 @@ export default {
 
       this.fetchItems({ page, versionDigest });
     },
+    close() {
+      if (this.withClose) {
+        this.withClose();
+      }
+
+      this.closeDrawer();
+    },
   },
 };
 </script>
@@ -83,7 +95,7 @@ export default {
       :z-index="700"
       :open="open"
       @opened="focusDrawer"
-      @close="closeDrawer"
+      @close="close"
     >
       <template #title>
         <h2 id="whats-new-drawer-heading" class="page-title gl-heading-2-fixed gl-my-2">
@@ -107,6 +119,6 @@ export default {
         <skeleton-loader />
       </div>
     </gl-drawer>
-    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="closeDrawer"></div>
+    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="close"></div>
   </div>
 </template>

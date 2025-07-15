@@ -17,7 +17,7 @@ When working with jobs, you might encounter the following issues.
 ## Jobs or pipelines run unexpectedly when using `changes:`
 
 You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/_index.md#ruleschanges)
-or [`only: changes`](../yaml/_index.md#onlychanges--exceptchanges) without
+or [`only: changes`](../yaml/deprecated_keywords.md#onlychanges--exceptchanges) without
 [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 Pipelines on branches or tags that don't have an explicit association with a merge request

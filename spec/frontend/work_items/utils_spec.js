@@ -2,6 +2,9 @@ import {
   NEW_WORK_ITEM_IID,
   STATE_CLOSED,
   STATE_OPEN,
+  WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -41,9 +44,14 @@ import {
   getParentGroupName,
   createBranchMRApiPathHelper,
   getNewWorkItemAutoSaveKey,
+  getNewWorkItemWidgetsAutoSaveKey,
+  getWorkItemWidgets,
+  updateDraftWorkItemType,
+  getDraftWorkItemType,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
+import { workItemQueryResponse } from './mock_data';
 
 describe('formatLabelForListbox', () => {
   const label = {
@@ -257,6 +265,16 @@ describe('newWorkItemPath', () => {
       '/foobar/project/-/work_items/new?foo=bar',
     );
   });
+
+  it('returns `work_items` path for group issues', () => {
+    expect(
+      newWorkItemPath({
+        fullPath: 'my-group',
+        isGroup: true,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      }),
+    ).toBe('/foobar/groups/my-group/-/work_items/new');
+  });
 });
 
 describe('convertTypeEnumToName', () => {
@@ -425,27 +443,159 @@ describe('getNewWorkItemAutoSaveKey', () => {
     expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-draft');
   });
 
-  it('returns autosave key with only allowed params', () => {
-    window.location.search = '?vulnerability_id=1';
-    let autosaveKey = getNewWorkItemAutoSaveKey({
-      fullPath: 'gitlab-org/gitlab',
-      workItemType: 'issue',
-    });
-    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-vulnerability_id=1-draft');
+  it.each`
+    locationSearch                            | expectedAutosaveKey
+    ${'vulnerability_id=1'}                   | ${'new-gitlab-org/gitlab-issue-vulnerability_id=1-draft'}
+    ${'discussion_to_resolve=2'}              | ${'new-gitlab-org/gitlab-issue-discussion_to_resolve=2-draft'}
+    ${'issue[issue_type]=Issue'}              | ${'new-gitlab-org/gitlab-issue-issue%5Bissue_type%5D=Issue-draft'}
+    ${'issuable_template=FeatureIssue'}       | ${'new-gitlab-org/gitlab-issue-issuable_template=FeatureIssue-draft'}
+    ${'discussion_to_resolve=2&state=opened'} | ${'new-gitlab-org/gitlab-issue-discussion_to_resolve=2-draft'}
+  `(
+    'returns autosave key with query params $locationSearch',
+    ({ locationSearch, expectedAutosaveKey }) => {
+      window.location.search = locationSearch;
+      const autosaveKey = getNewWorkItemAutoSaveKey({
+        fullPath: 'gitlab-org/gitlab',
+        workItemType: 'issue',
+      });
 
-    window.location.search = '?discussion_to_resolve=2';
-    autosaveKey = getNewWorkItemAutoSaveKey({
-      fullPath: 'gitlab-org/gitlab',
-      workItemType: 'issue',
-    });
-    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-discussion_to_resolve=2-draft');
+      expect(autosaveKey).toEqual(expectedAutosaveKey);
+    },
+  );
 
-    window.location.search = '?discussion_to_resolve=2&state=opened';
-    autosaveKey = getNewWorkItemAutoSaveKey({
+  it('returns autosave key for new related item', () => {
+    const autosaveKey = getNewWorkItemAutoSaveKey({
       fullPath: 'gitlab-org/gitlab',
       workItemType: 'issue',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
     });
-    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-discussion_to_resolve=2-draft');
+
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-related-22-draft');
+  });
+});
+
+describe('getNewWorkItemWidgetsAutoSaveKey', () => {
+  it('returns autosave key for a new work item', () => {
+    const autosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+      fullPath: 'gitlab-org/gitlab',
+    });
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-widgets-draft');
+  });
+
+  it('returns autosave key for new related item', () => {
+    const autosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+    });
+
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-related-22-widgets-draft');
+  });
+});
+
+describe('getWorkItemWidgets', () => {
+  it('returns the correct widgets for a work item', () => {
+    const result = getWorkItemWidgets({
+      workspace: {
+        workItem: workItemQueryResponse.data.workItem,
+      },
+    });
+
+    const { widgets } = workItemQueryResponse.data.workItem;
+    expect(result).toEqual({
+      TITLE: workItemQueryResponse.data.workItem.title,
+      TYPE: workItemQueryResponse.data.workItem.workItemType,
+      [WIDGET_TYPE_DESCRIPTION]: widgets.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION),
+      [WIDGET_TYPE_ASSIGNEES]: widgets.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES),
+      [WIDGET_TYPE_HIERARCHY]: widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY),
+    });
+  });
+});
+
+describe('updateDraftWorkItemType', () => {
+  useLocalStorageSpy();
+
+  const workItemWidgetsAutosaveKey = 'autosave/new-gitlab-org/gitlab-widgets-draft';
+  const workItemType = {
+    id: 'gid://gitlab/WorkItemType/1',
+    name: WORK_ITEM_TYPE_NAME_ISSUE,
+    iconName: 'issue-type-issue',
+  };
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('sets `TYPE` with workItemType to localStorage widgets drafts key when it does not exist', () => {
+    updateDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      workItemType,
+    });
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      workItemWidgetsAutosaveKey,
+      JSON.stringify({ TYPE: workItemType }),
+    );
+  });
+
+  it('updates `TYPE` with workItemType to localStorage widgets drafts key when it already exists', () => {
+    localStorage.setItem(workItemWidgetsAutosaveKey, JSON.stringify({ TITLE: 'Some work item' }));
+
+    updateDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      workItemType,
+    });
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      workItemWidgetsAutosaveKey,
+      JSON.stringify({ TITLE: 'Some work item', TYPE: workItemType }),
+    );
+  });
+
+  it('updates `TYPE` with workItemType to localStorage widgets for related item drafts key when it already exists', () => {
+    const workItemWidgetsKey = 'autosave/new-gitlab-org/gitlab-related-22-widgets-draft';
+    localStorage.setItem(workItemWidgetsKey, JSON.stringify({ TITLE: 'Some work item' }));
+
+    updateDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+      workItemType,
+    });
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      workItemWidgetsKey,
+      JSON.stringify({ TITLE: 'Some work item', TYPE: workItemType }),
+    );
+  });
+});
+
+describe('getDraftWorkItemType', () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('gets `TYPE` from localStorage widgets draft when it exists', () => {
+    localStorage.setItem(
+      'autosave/new-gitlab-org/gitlab-widgets-draft',
+      JSON.stringify({ TYPE: 'Issue' }),
+    );
+    const workItemType = getDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+    });
+
+    expect(workItemType).toBe('Issue');
+  });
+
+  it('gets `TYPE` from localStorage widgets for related item draft when it exists', () => {
+    localStorage.setItem(
+      'autosave/new-gitlab-org/gitlab-related-22-widgets-draft',
+      JSON.stringify({ TYPE: 'Issue' }),
+    );
+    const workItemType = getDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+    });
+
+    expect(workItemType).toBe('Issue');
   });
 });
 

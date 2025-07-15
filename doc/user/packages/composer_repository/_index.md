@@ -348,7 +348,7 @@ You can install from source by pulling the Git repository directly. To do so, ei
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags/_index.md) named `composer_use_ssh_source_urls`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329246) GitLab 16.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135467) in GitLab 16.6. Feature flag `composer_use_ssh_source_urls` removed.
 

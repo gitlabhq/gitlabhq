@@ -6,7 +6,14 @@ module ClickHouse
       attr_accessor :logger
 
       def self.migrations_paths(database_name)
-        File.join("db/click_house/migrate", database_name.to_s)
+        paths = [File.join("db/click_house/migrate", database_name.to_s)]
+
+        unless ::Gitlab::Utils.to_boolean(ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'])
+          paths << File.join("db/click_house/post_migrate",
+            database_name.to_s)
+        end
+
+        paths
       end
 
       def initialize(

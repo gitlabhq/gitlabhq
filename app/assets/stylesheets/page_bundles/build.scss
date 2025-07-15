@@ -180,7 +180,7 @@
 }
 
 .job-log-line-number {
-  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
+  @apply gl-text-neutral-400 dark:gl-text-neutral-300 gl-relative;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
@@ -193,6 +193,19 @@
     text-decoration: underline;
     @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   }
+
+  &::before {
+    content: ' ';
+    display: block;
+    // min accessibility height for the touch target
+    height: 24px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    // this transform is used to center the line number in the line
+    transform: translateY(-2.25px);
+  }
+
 }
 
 .job-log-time {

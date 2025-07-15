@@ -119,4 +119,32 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe '.bulk_insert_and_keep_commits!' do
+    let_it_be(:user) { create(:user) }
+    let(:drafts) do
+      [
+        build(:draft_note, merge_request: merge_request, author: user),
+        build(:draft_note_on_text_diff, merge_request: merge_request, author: user),
+        build(:draft_note_on_text_diff, merge_request: merge_request, author: user)
+      ]
+    end
+
+    it 'inserts items in the given number of batches' do
+      expect(described_class)
+        .to receive(:bulk_insert!)
+        .with(drafts, batch_size: 5)
+        .and_call_original
+
+      described_class.bulk_insert_and_keep_commits!(drafts, batch_size: 5)
+    end
+
+    it 'calls keep_around_commits on the first draft note on diff' do
+      expect(drafts[0]).not_to receive(:keep_around_commits)
+      expect(drafts[1]).to receive(:keep_around_commits)
+      expect(drafts[2]).not_to receive(:keep_around_commits) # This tests that we only keep around the first commit
+
+      described_class.bulk_insert_and_keep_commits!(drafts, batch_size: 10)
+    end
+  end
 end

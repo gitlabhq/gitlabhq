@@ -36,7 +36,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.6.2)
-    rack (2.2.10)
+    rack (2.2.17)
     rainbow (3.1.1)
     regexp_parser (2.7.0)
     request_store (1.5.1)
@@ -116,7 +116,7 @@ CHECKSUMS
   parser (3.2.2.3) sha256=10685f358ab36ffea2252dc4952e5b8fad3a297a8152a85f59adc982747b91eb
   pry (0.14.2) sha256=c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d
   racc (1.6.2) sha256=58d26b3666382396fea84d33dc0639b7ee8d704156a52f8f22681f07b2f94f26
-  rack (2.2.10) sha256=e4a5ee3f8f2ba45614a4498114d6dc7da1c51a0f0dd810d891906ea71d3aa72b
+  rack (2.2.17) sha256=5fe02a1ca80d6fb2271dba00985ee2962d6f5620b6f46dfed89f5301ac4699dd
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   regexp_parser (2.7.0) sha256=f8b8b7f34cc53c907fad6aec2b9da996a4311a0ddd92f3bfd3b999de5420c234
   request_store (1.5.1) sha256=07a204d161590789f2b1d27f9f0eadcdecd6d868cb2f03240250e1bc747df78e

@@ -25,19 +25,19 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionMonitoring, feature_cate
     it 'reports number of present partitions' do
       subject
 
-      expect(Gitlab::Metrics.registry.get(:db_partitions_present).get({ table: table })).to eq(current_partitions.size)
+      expect(Gitlab::Metrics.client.get(:db_partitions_present).get({ table: table })).to eq(current_partitions.size)
     end
 
     it 'reports number of missing partitions' do
       subject
 
-      expect(Gitlab::Metrics.registry.get(:db_partitions_missing).get({ table: table })).to eq(missing_partitions.size)
+      expect(Gitlab::Metrics.client.get(:db_partitions_missing).get({ table: table })).to eq(missing_partitions.size)
     end
 
     it 'reports number of extra partitions' do
       subject
 
-      expect(Gitlab::Metrics.registry.get(:db_partitions_extra).get({ table: table })).to eq(extra_partitions.size)
+      expect(Gitlab::Metrics.client.get(:db_partitions_extra).get({ table: table })).to eq(extra_partitions.size)
     end
   end
 end

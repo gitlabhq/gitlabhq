@@ -68,7 +68,7 @@ describe('~/actioncable_link', () => {
           ...TEST_OPERATION,
           query: print(TEST_OPERATION.query),
         },
-        { received: expect.any(Function) },
+        { received: expect.any(Function), connected: expect.any(Function) },
       );
     });
 
@@ -105,6 +105,22 @@ describe('~/actioncable_link', () => {
         ['next', 'test result'],
         ['error', ['boom!']],
       ]);
+    });
+
+    it('emits "actioncable:reconnected" event on reconnected', () => {
+      const eventSpy = jest.spyOn(document, 'dispatchEvent');
+
+      cable.subscriptions.subscriptions[0].connected({ reconnected: true });
+
+      expect(eventSpy).toHaveBeenCalledWith(new CustomEvent('actioncable:reconnected'));
+    });
+
+    it('does not emit "actioncable:reconnected" event on initial connection', () => {
+      const eventSpy = jest.spyOn(document, 'dispatchEvent');
+
+      cable.subscriptions.subscriptions[0].connected({ reconnected: false });
+
+      expect(eventSpy).not.toHaveBeenCalled();
     });
   });
 });

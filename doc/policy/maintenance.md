@@ -46,13 +46,23 @@ The following table describes the version types and their release cadence:
 
 ## Maintained versions
 
-The following versions are currently maintained:
+The following GitLab release versions are currently maintained:
 
 {{< maintained-versions >}}
 
 <!-- vale gitlab_base.CurrentStatus = YES -->
 
 <!-- END -->
+
+{{< alert type="note" >}}
+
+For **GitLab team members** looking for maintained versions for the upcoming patch release, refer to the [**"Release Versions"**](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
+under the "Patch Release Information" section in the internal Grafana dashboard ["delivery: Release Information"](https://dashboards.gitlab.net/goto/6zeLfPENR?orgId=1).
+They will be different from the above list of maintained versions when the active monthly release date is prior to the active patch release date.
+
+**Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions**.
+
+{{< /alert >}}
 
 ## Upgrade recommendations
 

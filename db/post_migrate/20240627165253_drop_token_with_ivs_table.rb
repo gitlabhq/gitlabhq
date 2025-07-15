@@ -3,8 +3,6 @@
 class DropTokenWithIvsTable < Gitlab::Database::Migration[2.2]
   milestone '17.5'
 
-  enable_lock_retries!
-
   TABLE_NAME = :token_with_ivs
 
   def up

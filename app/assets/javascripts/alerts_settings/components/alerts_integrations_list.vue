@@ -128,12 +128,12 @@ export default {
       this.integrationToDelete = integration;
     },
     deleteIntegration() {
-      const { id, type } = this.integrationToDelete;
-      this.$emit('delete-integration', { id, type });
+      const { id } = this.integrationToDelete;
+      this.$emit('delete-integration', { id });
       this.integrationToDelete = { ...integrationToDeleteDefault };
     },
-    editIntegration({ id, type }) {
-      this.$emit('edit-integration', { id, type });
+    editIntegration({ id }) {
+      this.$emit('edit-integration', { id });
     },
   },
 };
@@ -183,7 +183,6 @@ export default {
           />
           <gl-button
             v-gl-modal.deleteIntegration
-            :disabled="item.type === $options.typeSet.prometheus"
             icon="remove"
             :aria-label="$options.i18n.deleteIntegration"
             @click="setIntegrationToDelete(item)"

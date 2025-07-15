@@ -178,7 +178,7 @@ export const INCIDENTS_I18N = {
   fetchError: s__(
     'IncidentManagement|An error occurred while fetching the incident status. Please reload the page.',
   ),
-  title: s__('IncidentManagement|Status'),
+  title: s__('IncidentManagement|Paging status'),
   updateError: s__(
     'IncidentManagement|An error occurred while updating the incident status. Please reload the page and try again.',
   ),

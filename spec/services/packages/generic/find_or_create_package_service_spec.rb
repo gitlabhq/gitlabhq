@@ -26,7 +26,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
     it 'creates package' do
       response
 
-      expect(project.packages.generic.last).to have_attributes(
+      expect(::Packages::Generic::Package.for_projects(project).last).to have_attributes(
         name: 'mypackage',
         version: '0.0.1',
         last_build_info: nil,
@@ -40,7 +40,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
       it_behaves_like 'valid response for new generic package'
 
       it 'create a new package' do
-        expect { response }.to change { project.packages.generic.count }.by(1)
+        expect { response }.to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
       end
 
       context 'when build is provided' do
@@ -78,14 +78,6 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
 
         shared_examples 'protected package' do
           it_behaves_like 'returning an error service response', message: 'Package protected.'
-
-          context 'when feateure flag :packages_protected_packages_generic is disabled' do
-            before do
-              stub_feature_flags(packages_protected_packages_generic: false)
-            end
-
-            it_behaves_like 'valid response for new generic package'
-          end
         end
 
         before do
@@ -122,7 +114,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
     end
 
     context 'when packages already exists' do
-      let!(:package) { project.packages.generic.create!(params.except(:build)) }
+      let!(:package) { ::Packages::Generic::Package.for_projects(project).create!(params.except(:build)) }
 
       context 'when package was created manually' do
         context 'when build is provided' do
@@ -156,13 +148,15 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
           it { expect(response[:package]).to eq package }
 
           it 'does not create a new package' do
-            expect { response }.not_to change { project.packages.generic.count }
+            expect { response }.not_to change { ::Packages::Generic::Package.for_projects(project).count }
           end
         end
       end
 
       context 'when a pending_destruction package exists', :aggregate_failures do
-        let!(:package) { project.packages.generic.create!(params.merge(status: :pending_destruction)) }
+        let!(:package) do
+          ::Packages::Generic::Package.for_projects(project).create!(params.merge(status: :pending_destruction))
+        end
 
         it_behaves_like 'valid response for new generic package'
       end

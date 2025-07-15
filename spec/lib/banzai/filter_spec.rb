@@ -8,5 +8,9 @@ RSpec.describe Banzai::Filter, feature_category: :markdown do
       expect(described_class.filter_item_limit_exceeded?(described_class::FILTER_ITEM_LIMIT - 1)).to be_falsey
       expect(described_class.filter_item_limit_exceeded?(described_class::FILTER_ITEM_LIMIT + 1)).to be_truthy
     end
+
+    it 'allows limit top be specified' do
+      expect(described_class.filter_item_limit_exceeded?(2, limit: 1)).to be_truthy
+    end
   end
 end

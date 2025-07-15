@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 
 describe('Code Coverage', () => {
@@ -37,7 +38,7 @@ describe('Code Coverage', () => {
         graphRef,
         graphCsvPath,
       },
-      stubs: { GlCollapsibleListbox },
+      stubs: { GlCollapsibleListbox, SettingsSection },
     });
   };
 

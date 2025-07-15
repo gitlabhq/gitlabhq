@@ -23,36 +23,31 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
     end
   end
 
+  context 'when ancestor group is already archived' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      group.add_owner(user)
+      parent.update!(archived: true)
+    end
+
+    it 'returns an error response' do
+      expect(service_response).to be_error
+      expect(service_response.message)
+        .to eq("Cannot archive group since one of the ancestor groups is already archived!")
+    end
+  end
+
   context 'when the group is not archived' do
     before do
       group.namespace_settings.update!(archived: false)
     end
 
     context 'when archiving succeeds' do
-      before do
-        allow(group).to receive(:archive).and_return(true)
-      end
-
       it 'calls archive on the group' do
         expect(group).to receive(:archive).and_return(true)
-        service_response
-      end
-
-      it 'updates associated projects' do
-        projects = create_list(:project, 2, group: group)
-
-        expect_next_instance_of(GroupProjectsFinder,
-          hash_including(current_user: user, group: group)) do |group_projects_finder|
-          expect(group_projects_finder).to receive(:execute).and_return(projects)
-        end
-
-        projects.each do |project|
-          expect_next_instances_of(::Projects::UpdateService, 1, true, project, user,
-            archived: true) do |project_update_service|
-            expect(project_update_service).to receive(:execute).and_return(true)
-          end
-        end
-
         service_response
       end
 
@@ -70,27 +65,6 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
         response = service_response
         expect(response).to be_error
         expect(response.message).to eq("Failed to archive group!")
-      end
-    end
-
-    context 'when project update fails' do
-      let_it_be(:failing_project) { create(:project, group: group) }
-
-      before do
-        allow(group).to receive(:archive).and_return(true)
-      end
-
-      it 'archiving fails and raises an UpdateError' do
-        expect_next_instance_of(GroupProjectsFinder, hash_including(current_user: user, group: group)) do |finder|
-          expect(finder).to receive(:execute).and_return([failing_project])
-        end
-
-        expect_next_instance_of(::Projects::UpdateService, failing_project, user, archived: true) do |update_service|
-          expect(update_service).to receive(:execute).and_return(false)
-        end
-
-        expect { service_response }
-          .to raise_error(described_class::UpdateError, "Project #{failing_project.id} can't be archived!")
       end
     end
   end

@@ -10,22 +10,103 @@ module Namespaces
           container_or_date
         end
 
-      return unless date
+      return unless date.is_a?(Date) || date.is_a?(Time)
 
       ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(date).strftime(format)
     end
 
-    def delete_delayed_namespace_message(namespace)
+    def deletion_in_progress_or_scheduled_in_hierarchy_chain?(namespace)
+      return false unless namespace.respond_to?(:deletion_in_progress_or_scheduled_in_hierarchy_chain?)
+
+      namespace.deletion_in_progress_or_scheduled_in_hierarchy_chain?
+    end
+
+    def self_or_ancestors_deletion_in_progress_or_scheduled_message(namespace)
+      _self_deletion_in_progress_message(namespace) || _deletion_scheduled_in_hierarchy_chain_message(namespace)
+    end
+
+    def _self_deletion_in_progress_message(namespace)
+      return unless namespace.self_deletion_in_progress?
+
+      messages = {
+        group: _('This group and its subgroups are being deleted.'),
+        project: _('This project is being deleted. Repository and other project resources are read-only.')
+      }
+
+      _message_for_namespace(namespace, messages)
+    end
+
+    def _deletion_scheduled_in_hierarchy_chain_message(namespace)
+      if namespace.self_deletion_scheduled?
+        _self_deletion_scheduled_message(namespace)
+      else
+        _parent_deletion_scheduled_message(namespace)
+      end
+    end
+
+    def _self_deletion_scheduled_message(namespace)
+      date = permanent_deletion_date_formatted(namespace)
+
+      messages = {
+        group: _('This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.'),
+        project: _('This project is pending deletion, and will be deleted on %{date}. Repository and other project ' \
+          'resources are read-only.')
+      }
+
       safe_format(
-        _message_for_namespace(namespace, _delete_delayed_namespace_messages),
+        _message_for_namespace(namespace, messages),
+        date: tag.strong(date)
+      )
+    end
+
+    def _parent_deletion_scheduled_message(namespace)
+      namespace_pending_deletion = namespace.first_scheduled_for_deletion_in_hierarchy_chain
+      date = permanent_deletion_date_formatted(namespace_pending_deletion)
+
+      messages = {
+        group: _('This group will be deleted on %{date} because its parent group is ' \
+          'scheduled for deletion.'),
+        project: _('This project will be deleted on %{date} because its parent group is ' \
+          'scheduled for deletion.')
+      }
+
+      safe_format(
+        _message_for_namespace(namespace, messages),
+        date: tag.strong(date)
+      )
+    end
+
+    def delete_delayed_namespace_message(namespace)
+      messages = {
+        group: _('This action will place this group, including its subgroups and projects, ' \
+          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
+          'and delete it permanently on %{date}.'),
+        project: _('This action will place this project, including all its resources, ' \
+          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
+          'and delete it permanently on %{date}.')
+      }
+
+      safe_format(
+        _message_for_namespace(namespace, messages),
         deletion_adjourned_period: namespace.deletion_adjourned_period,
         date: tag.strong(permanent_deletion_date_formatted)
       )
     end
 
     def delete_immediately_namespace_scheduled_for_deletion_message(namespace)
+      messages = {
+        group: _('This group is scheduled for deletion on %{date}. ' \
+          'This action will permanently delete this group, ' \
+          'including its subgroups and projects, %{strongOpen}immediately%{strongClose}. ' \
+          'This action cannot be undone.'),
+        project: _('This project is scheduled for deletion on %{date}. ' \
+          'This action will permanently delete this project, ' \
+          'including all its resources, %{strongOpen}immediately%{strongClose}. ' \
+          'This action cannot be undone.')
+      }
+
       safe_format(
-        _message_for_namespace(namespace, _delete_immediately_namespace_scheduled_for_deletion_messages),
+        _message_for_namespace(namespace, messages),
         date: tag.strong(permanent_deletion_date_formatted(namespace)),
         strongOpen: '<strong>'.html_safe,
         strongClose: '</strong>'.html_safe
@@ -50,7 +131,7 @@ module Namespaces
     end
 
     def confirm_remove_group_message(group, permanently_remove)
-      return _permanently_delete_group_message(group) if permanently_remove || group.marked_for_deletion?
+      return _permanently_delete_group_message(group) if permanently_remove || group.self_deletion_scheduled?
 
       safe_format(
         _("The contents of this group, its subgroups and projects will be permanently deleted after " \
@@ -75,16 +156,33 @@ module Namespaces
     end
 
     def restore_namespace_title(namespace)
-      _message_for_namespace(namespace, _restore_namespace_titles)
+      messages = {
+        group: _('Restore group'),
+        project: _('Restore project')
+      }
+
+      _message_for_namespace(namespace, messages)
     end
 
     def restore_namespace_path(namespace)
-      _message_for_namespace(namespace, _restore_namespace_paths)[namespace]
+      paths = {
+        group: ->(namespace) { group_restore_path(namespace) },
+        project: ->(namespace) { namespace_project_restore_path(namespace.parent, namespace) }
+      }
+
+      _message_for_namespace(namespace, paths)[namespace]
     end
 
     def restore_namespace_scheduled_for_deletion_message(namespace)
+      messages = {
+        group: _("This group has been scheduled for deletion on %{date}. " \
+          "To cancel the scheduled deletion, you can restore this group, including all its resources."),
+        project: _("This project has been scheduled for deletion on %{date}. " \
+          "To cancel the scheduled deletion, you can restore this project, including all its resources.")
+      }
+
       safe_format(
-        _message_for_namespace(namespace, _restore_namespace_scheduled_for_deletion_message),
+        _message_for_namespace(namespace, messages),
         date: tag.strong(permanent_deletion_date_formatted(namespace))
       )
     end
@@ -99,53 +197,6 @@ module Namespaces
       else
         raise "Unsupported namespace type: #{namespace.class.name}"
       end
-    end
-
-    def _delete_delayed_namespace_messages
-      {
-        group: _('This action will place this group, including its subgroups and projects, ' \
-          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
-          'and delete it permanently on %{date}.'),
-        project: _('This action will place this project, including all its resources, ' \
-          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
-          'and delete it permanently on %{date}.')
-      }
-    end
-
-    def _delete_immediately_namespace_scheduled_for_deletion_messages
-      {
-        group: _('This group is scheduled for deletion on %{date}. ' \
-          'This action will permanently delete this group, ' \
-          'including its subgroups and projects, %{strongOpen}immediately%{strongClose}. ' \
-          'This action cannot be undone.'),
-        project: _('This project is scheduled for deletion on %{date}. ' \
-          'This action will permanently delete this project, ' \
-          'including all its resources, %{strongOpen}immediately%{strongClose}. ' \
-          'This action cannot be undone.')
-      }
-    end
-
-    def _restore_namespace_titles
-      {
-        group: _('Restore group'),
-        project: _('Restore project')
-      }
-    end
-
-    def _restore_namespace_paths
-      {
-        group: ->(namespace) { group_restore_path(namespace) },
-        project: ->(namespace) { namespace_project_restore_path(namespace.parent, namespace) }
-      }
-    end
-
-    def _restore_namespace_scheduled_for_deletion_message
-      {
-        group: _("This group has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this group, including all its resources."),
-        project: _("This project has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this project, including all its resources.")
-      }
     end
 
     def _permanently_delete_group_message(group)

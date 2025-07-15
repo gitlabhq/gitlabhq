@@ -50,13 +50,13 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       expect(page).to have_content(group.full_name)
       expect(page).to have_content(public_group.full_name)
       expect(page).not_to have_content(private_group.full_name)
-      expect(page.all('[data-testid="groups-list-tree-container"] .groups-list li').length).to eq 2
+      expect(page.all('[data-testid="nested-groups-projects-list"] .groups-list li').length).to eq 2
     end
 
     it 'shows non-archived projects count' do
       # Initially project is not archived
       expect(
-        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
       ).to have_text("1")
 
       # Archive project
@@ -65,7 +65,7 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
 
       # Check project count
       expect(
-        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
       ).to have_text("0")
 
       # Unarchive project
@@ -74,7 +74,7 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
 
       # Check project count
       expect(
-        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
       ).to have_text("1")
     end
 

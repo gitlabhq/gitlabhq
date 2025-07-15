@@ -101,6 +101,10 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
+  def self.current_transaction
+    connection.current_transaction
+  end
+
   def create_or_load_association(association_name)
     association(association_name).create unless association(association_name).loaded?
   rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation

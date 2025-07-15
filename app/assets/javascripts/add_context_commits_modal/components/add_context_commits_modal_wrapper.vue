@@ -105,6 +105,7 @@ export default {
       'contextCommits',
       'contextCommitsLoadingError',
       'selectedCommits',
+      // eslint-disable-next-line vue/no-unused-properties -- searchText is mapped from Vuex and used in handleSearchCommits(),
       'searchText',
       'toRemoveCommits',
     ]),
@@ -280,9 +281,6 @@ export default {
     },
     handleModalHide() {
       this.resetModalState();
-    },
-    shouldShowInputDateFormat(value) {
-      return ['Committed-before', 'Committed-after'].indexOf(value) !== -1;
     },
   },
 };

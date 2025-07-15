@@ -13,10 +13,7 @@ const initWorkItemPage = async () => {
 
 const issuableData = issuableInitialDataById('js-issuable-app');
 
-if (
-  !isLegacyIssueType(issuableData) &&
-  (gon.features.workItemViewForIssues || gon.current_user_use_work_items_view)
-) {
+if (!isLegacyIssueType(issuableData) && gon.features.workItemViewForIssues) {
   initWorkItemPage();
 } else {
   initLegacyIssuePage();

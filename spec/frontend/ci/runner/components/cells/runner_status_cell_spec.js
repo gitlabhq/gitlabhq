@@ -3,6 +3,8 @@ import RunnerStatusCell from '~/ci/runner/components/cells/runner_status_cell.vu
 
 import RunnerStatusBadge from '~/ci/runner/components/runner_status_badge.vue';
 import RunnerPausedBadge from '~/ci/runner/components/runner_paused_badge.vue';
+import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
+
 import {
   I18N_PAUSED,
   I18N_STATUS_ONLINE,
@@ -18,6 +20,7 @@ describe('RunnerStatusCell', () => {
 
   const findStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
   const findPausedBadge = () => wrapper.findComponent(RunnerPausedBadge);
+  const findRunnerJobStatusBadge = () => wrapper.findComponent(RunnerJobStatusBadge);
 
   const createComponent = ({ runner = {}, ...options } = {}) => {
     wrapper = shallowMount(RunnerStatusCell, {
@@ -33,6 +36,7 @@ describe('RunnerStatusCell', () => {
       stubs: {
         RunnerStatusBadge,
         RunnerPausedBadge,
+        RunnerJobStatusBadge,
       },
       ...options,
     });
@@ -52,7 +56,7 @@ describe('RunnerStatusCell', () => {
       },
     });
 
-    expect(wrapper.text()).toMatchInterpolatedText(I18N_STATUS_OFFLINE);
+    expect(wrapper.text()).toContain(I18N_STATUS_OFFLINE);
     expect(findStatusBadge().text()).toBe(I18N_STATUS_OFFLINE);
   });
 
@@ -64,7 +68,7 @@ describe('RunnerStatusCell', () => {
       },
     });
 
-    expect(wrapper.text()).toMatchInterpolatedText(`${I18N_STATUS_ONLINE} ${I18N_PAUSED}`);
+    expect(wrapper.text()).toContain(I18N_PAUSED);
     expect(findPausedBadge().text()).toBe(I18N_PAUSED);
   });
 
@@ -72,19 +76,20 @@ describe('RunnerStatusCell', () => {
     createComponent({
       runner: {
         status: null,
+        jobExecutionStatus: null,
       },
     });
 
     expect(wrapper.text()).toBe('');
   });
 
-  it('Displays "runner-job-status-badge" slot', () => {
+  it('Displays runner job status', () => {
     createComponent({
-      scopedSlots: {
-        'runner-job-status-badge': ({ runner }) => `Job status ${runner.jobExecutionStatus}`,
+      runner: {
+        jobExecutionStatus: 'ACTIVE',
       },
     });
 
-    expect(wrapper.text()).toContain(`Job status ${JOB_STATUS_IDLE}`);
+    expect(findRunnerJobStatusBadge().text()).toBe('Active');
   });
 });

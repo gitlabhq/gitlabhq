@@ -940,6 +940,37 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
   end
 
+  describe 'set_issue_metadata rule for new issues' do
+    context 'when user has set_new_issue_metadata permission' do
+      let(:project) { create(:project, :private) }
+      let(:new_issue) { build(:issue, project: project) }
+
+      before do
+        project.add_guest(guest)
+      end
+
+      it 'allows guest to set metadata on new issues when they have set_new_issue_metadata permission' do
+        # The rule: ~persisted & can?(:set_new_issue_metadata) should enable :set_issue_metadata
+        expect(permissions(guest, new_issue)).to be_allowed(:set_issue_metadata)
+      end
+
+      it 'does not allow guest to set metadata on persisted issues without higher permissions' do
+        persisted_issue = create(:issue, project: project)
+        expect(permissions(guest, persisted_issue)).to be_disallowed(:set_issue_metadata)
+      end
+    end
+
+    context 'when user does not have set_new_issue_metadata permission' do
+      let(:project) { create(:project, :private) }
+      let(:new_issue) { build(:issue, project: project) }
+      let(:non_member) { create(:user) }
+
+      it 'does not allow non-member to set metadata on new issues' do
+        expect(permissions(non_member, new_issue)).to be_disallowed(:set_issue_metadata)
+      end
+    end
+  end
+
   context 'with incident issue type' do
     let_it_be(:project) { create(:project, group: group, guests: guest, planners: planner, reporters: reporter, owners: owner) }
     let_it_be(:incident) { create(:issue, :incident, project: project) }

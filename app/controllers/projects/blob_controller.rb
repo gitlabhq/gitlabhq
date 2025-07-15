@@ -179,7 +179,7 @@ class Projects::BlobController < Projects::ApplicationController
   attr_reader :branch_name
 
   def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
   end
 
   def blob

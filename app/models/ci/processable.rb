@@ -46,6 +46,14 @@ module Ci
       )
     end
 
+    # The run after commit queue is processed LIFO
+    # We need to ensure that the Redis data is persisted before any other callbacks the might depend on it.
+    before_commit do |job|
+      job.run_after_commit do
+        redis_state.save if defined?(@redis_state)
+      end
+    end
+
     state_machine :status do
       event :enqueue do
         transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :with_resource_group?
@@ -158,7 +166,7 @@ module Ci
       # ignore the persisted `scoped_user_id`, because that is propagated
       # together with `options` to cloned jobs.
       # We also handle the case where `user` is `nil` (legacy behavior in specs).
-      return unless user&.has_composite_identity?
+      return unless user&.composite_identity_enforced?
 
       User.find_by_id(options[:scoped_user_id])
     end
@@ -168,6 +176,10 @@ module Ci
       return false if retried? || archived? || deployment_rejected?
 
       success? || failed? || canceled? || canceling?
+    end
+
+    def archived?(...)
+      degenerated? || super
     end
 
     def aggregated_needs_names
@@ -265,7 +277,21 @@ module Ci
     end
 
     def manual_confirmation_message
-      options[:manual_confirmation] if manual_job?
+      options[:manual_confirmation] if manual_job? && playable?
+    end
+
+    def redis_state
+      strong_memoize(:redis_state) do
+        Ci::JobRedisState.find_or_initialize_by(job: self)
+      end
+    end
+
+    def enqueue_immediately?
+      redis_state.enqueue_immediately?
+    end
+
+    def set_enqueue_immediately!
+      redis_state.enqueue_immediately = true
     end
 
     private

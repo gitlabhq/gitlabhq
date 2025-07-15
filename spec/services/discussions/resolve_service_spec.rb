@@ -49,10 +49,18 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
     end
 
     context 'when not all discussions are resolved' do
-      let(:other_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+      before do
+        create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion
+      end
 
-      it 'does not publish the discussions resolved event' do
+      it 'does not publish the discussions resolved event when the project requires all discussions to be resolved' do
+        project.update!(only_allow_merge_if_all_discussions_are_resolved: true)
+
         expect { service.execute }.not_to publish_event(MergeRequests::DiscussionsResolvedEvent)
+      end
+
+      it 'publishes the discussions resolved event when the project does not require all discussions to be resolved' do
+        expect { service.execute }.to publish_event(MergeRequests::DiscussionsResolvedEvent)
       end
     end
 

@@ -54,6 +54,13 @@ RSpec.describe Gitlab::Auth::UniqueIpsLimiter, :clean_gitlab_redis_shared_state 
         expect(described_class.limit_user! { user }).to eq(user)
 
         change_ip('ip3')
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(hash_including(
+          message: 'too_many_ips',
+          remote_ip: 'ip3',
+          unique_ips_count: 3,
+          user_id: user.id
+        )).and_call_original
         expect { described_class.limit_user! { user } }.to raise_error(Gitlab::Auth::TooManyIps)
       end
     end

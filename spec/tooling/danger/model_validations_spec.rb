@@ -25,7 +25,6 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
 
     before do
       allow(model_validations.project_helper).to receive(:file_lines).and_return(file_lines)
-      allow(model_validations.helper).to receive(:added_files).and_return([added_filename])
       allow(model_validations.helper).to receive(:modified_files).and_return([filename])
       allow(model_validations.helper).to receive(:changed_lines).with(filename).and_return(file_diff)
     end
@@ -48,15 +47,29 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
         ]
       end
 
-      it 'adds suggestions at the correct line' do
-        suggested_line = "\n#{described_class::SUGGEST_MR_COMMENT.chomp}"
+      context 'when the model already existed' do
+        it 'adds suggestions at the correct line' do
+          allow(model_validations.helper).to receive(:added_files).and_return([])
 
-        matching_line_numbers = [*2..6, 8, 9, 11]
-        matching_line_numbers.each do |line_number|
-          expect(model_validations).to receive(:markdown).with(suggested_line, file: filename, line: line_number)
+          suggested_line = "\n#{described_class::SUGGEST_MR_COMMENT.chomp}"
+
+          matching_line_numbers = [*2..6, 8, 9, 11]
+          matching_line_numbers.each do |line_number|
+            expect(model_validations).to receive(:markdown).with(suggested_line, file: filename, line: line_number)
+          end
+
+          model_validations.add_comment_for_added_validations
         end
+      end
 
-        model_validations.add_comment_for_added_validations
+      context 'when the model is new' do
+        it 'does not add suggestion' do
+          allow(model_validations.helper).to receive(:added_files).and_return([added_filename])
+
+          expect(model_validations).not_to receive(:markdown)
+
+          model_validations.add_comment_for_added_validations
+        end
       end
     end
 

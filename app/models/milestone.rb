@@ -99,6 +99,10 @@ class Milestone < ApplicationRecord
     state :active
   end
 
+  def hook_attrs
+    Gitlab::HookData::MilestoneBuilder.new(self).build
+  end
+
   # Searches for timeboxes with a matching title.
   #
   # This method uses ILIKE on PostgreSQL

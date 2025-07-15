@@ -1,6 +1,12 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLink,
+  GlTooltipDirective,
+  GlLoadingIcon,
+  GlAnimatedChevronLgDownUpIcon,
+} from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
@@ -40,6 +46,7 @@ export default {
     GlLink,
     GlButton,
     GlLoadingIcon,
+    GlAnimatedChevronLgDownUpIcon,
     ContentRow,
     DynamicContent,
     DynamicScroller,
@@ -443,12 +450,14 @@ export default {
             :title="collapseButtonLabel"
             :aria-expanded="`${!isCollapsed}`"
             :aria-label="collapseButtonLabel"
-            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             data-testid="toggle-button"
             size="small"
+            class="btn-icon"
             @click="toggleCollapsed"
-          />
+          >
+            <gl-animated-chevron-lg-down-up-icon :is-on="!isCollapsed" />
+          </gl-button>
         </div>
       </div>
     </div>

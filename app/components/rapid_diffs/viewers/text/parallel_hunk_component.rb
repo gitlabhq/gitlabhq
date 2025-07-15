@@ -12,19 +12,28 @@ module RapidDiffs
           @file_path = file_path
         end
 
-        def sides(line_pair)
-          [
+        def id(line)
+          line.id(@file_hash)
+        end
+
+        def line_pairs
+          @diff_hunk.parallel_lines.map do |pair|
             {
-              line: line_pair[:left],
-              position: :old,
-              border: :right
-            },
-            {
-              line: line_pair[:right],
-              position: :new,
-              border: :both
+              line_id: id(pair[:left] || pair[:right]),
+              sides: [
+                {
+                  line: pair[:left],
+                  position: :old,
+                  border: :right
+                },
+                {
+                  line: pair[:right],
+                  position: :new,
+                  border: :both
+                }
+              ]
             }
-          ]
+          end
         end
       end
     end

@@ -126,7 +126,7 @@ To configure MR comments for Libbehave:
 
 ```yaml
 include:
-  - component: $CI_SERVER_FQDN/security-products/experiments/libbehave/libbehave@v0.1.0
+  - component: gitlab.com/security-products/experiments/libbehave/libbehave@v0.1.0
     inputs:
       stage: test
 ```

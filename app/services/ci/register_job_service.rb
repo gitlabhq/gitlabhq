@@ -12,6 +12,20 @@ module Ci
 
     Result = Struct.new(:build, :build_json, :build_presented, :valid?)
 
+    class ResultFactory
+      def self.success(build, build_json, build_presented)
+        Result.new(build: build, build_json: build_json, build_presented: build_presented, valid?: true)
+      end
+
+      def self.conflict(valid:)
+        Result.new(build: nil, build_json: nil, build_presented: nil, valid?: valid)
+      end
+
+      def self.invalid
+        conflict(valid: false)
+      end
+    end
+
     ##
     # The queue depth limit number has been determined by observing 95
     # percentile of effective queue depth on gitlab.com. This is only likely to
@@ -42,7 +56,7 @@ module Ci
       if !replica_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
-        ::Ci::RegisterJobService::Result.new(nil, nil, nil, false)
+        ResultFactory.invalid
       else
         result
       end
@@ -110,7 +124,7 @@ module Ci
 
       track_conflict(depth, valid)
 
-      Result.new(nil, nil, nil, valid)
+      ResultFactory.conflict(valid: valid)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -175,11 +189,11 @@ module Ci
       # to make sure that this is properly handled by runner.
       @metrics.increment_queue_operation(:build_conflict_lock)
 
-      Result.new(nil, nil, nil, false)
+      ResultFactory.invalid
     rescue StateMachines::InvalidTransition
       @metrics.increment_queue_operation(:build_conflict_transition)
 
-      Result.new(nil, nil, nil, false)
+      ResultFactory.invalid
     rescue StandardError => ex
       @metrics.increment_queue_operation(:build_conflict_exception)
 
@@ -204,7 +218,7 @@ module Ci
       # `ci_pending_builds` table, we need to respond with 409 to retry
       # this operation.
       #
-      Result.new(nil, nil, nil, false) if ::Ci::UpdateBuildQueueService.new.remove!(build)
+      ResultFactory.invalid if ::Ci::UpdateBuildQueueService.new.remove!(build)
     end
 
     def runner_matched?(build)
@@ -234,7 +248,8 @@ module Ci
       build_json = @logger.instrument(:present_build_response_json) do
         Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
       end
-      Result.new(build, build_json, presented_build, true)
+
+      ResultFactory.success(build, build_json, presented_build)
     end
 
     def log_build_dependencies_size(presented_build)
@@ -327,7 +342,7 @@ module Ci
     end
 
     def track_exception_for_build(ex, build)
-      Gitlab::ErrorTracking.track_exception(ex, **build_tracking_data(build))
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **build_tracking_data(build))
     end
 
     def build_tracking_data(build)

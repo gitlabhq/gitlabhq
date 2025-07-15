@@ -574,18 +574,5 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
 
       expect(objects).to contain_exactly(user_1)
     end
-
-    context 'when multiple projects provided' do
-      let_it_be(:project_2) { create(:project, namespace: group) }
-
-      subject(:results) { described_class.new(user, query, project: [project, project_2], repository_ref: repository_ref, filters: filters) }
-
-      it 'returns users belonging to projects matching the search query' do
-        create(:project_member, :developer, user: user_1, project: project)
-        create(:project_member, :developer, user: user_3, project: project_2)
-
-        expect(objects).to contain_exactly(user_1, user_3)
-      end
-    end
   end
 end

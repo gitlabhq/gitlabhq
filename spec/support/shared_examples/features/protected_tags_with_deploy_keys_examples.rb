@@ -61,7 +61,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
       end
     end
 
-    context 'when deploy key is already selected for protected branch' do
+    context 'when deploy key is already selected for protected tag' do
       let(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v1.0.0') }
       let(:write_access_key) { create(:deploy_key, user: user, write_access_to: project) }
 

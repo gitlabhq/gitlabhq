@@ -4,6 +4,8 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
 
+%h1.gl-sr-only= page_title
+
 .js-issues-list-root{ data: group_issues_list_data(@group, current_user) }
 - if can?(current_user, :admin_issue, @group) && @group.licensed_feature_available?(:group_bulk_edit)
   = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues

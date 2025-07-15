@@ -765,13 +765,9 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     context 'with composite identity', :request_store do
-      let_it_be(:user) { create(:user, username: 'user-with-composite-identity') }
+      let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
 
       before do
-        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
-          user.username == 'user-with-composite-identity'
-        end
-
         set_bearer_token(oauth_access_token.plaintext_token)
       end
 
@@ -1326,29 +1322,21 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     context 'when route_setting allows cluster agent token' do
       let(:route_authentication_setting) { { cluster_agent_token_allowed: true } }
 
-      context 'Authorization header is empty' do
+      context 'Gitlab-Agent-Api-Request header is empty' do
         it { is_expected.to be_nil }
       end
 
-      context 'Authorization header is incorrect' do
+      context 'Gitlab-Agent-Api-Request header does not matches the agent token' do
         before do
-          request.headers['Authorization'] = 'Bearer ABCD'
+          request.headers['Gitlab-Agent-Api-Request'] = 'ABCD'
         end
 
         it { is_expected.to be_nil }
       end
 
-      context 'Authorization header is malformed' do
+      context 'Gitlab-Agent-Api-Request header matches agent token' do
         before do
-          request.headers['Authorization'] = 'Bearer'
-        end
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'Authorization header matches agent token' do
-        before do
-          request.headers['Authorization'] = "Bearer #{agent_token.token}"
+          request.headers['Gitlab-Agent-Api-Request'] = agent_token.token
         end
 
         it { is_expected.to eq(agent_token) }

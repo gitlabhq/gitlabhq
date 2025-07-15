@@ -12,7 +12,7 @@ RSpec.describe Integrations::SlackWorkspace::ApiScope, feature_category: :integr
         .to change { described_class.count }.by(1)
 
       expect { described_class.find_or_initialize_by_names(%w[baz foo]) }
-        .to change { described_class.count }.by(0)
+        .not_to change { described_class.count }
 
       expect(described_class.pluck(:name)).to match_array(%w[foo bar baz buzz])
     end

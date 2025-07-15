@@ -323,28 +323,21 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
     end
 
-    context 'when the pipeline is a downstream pipeline and the bridge is depended' do
-      let!(:bridge) { create(:ci_bridge, :strategy_depend, status: 'success') }
-
+    shared_examples 'updates the bridge status when authorized' do
       before do
         create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
       end
 
-      context 'without permission' do
-        it 'does nothing to the bridge' do
+      context 'without authorization' do
+        it 'does not change the bridge status' do
           expect { service.execute(pipeline) }.to not_change { bridge.reload.status }
            .and not_change { bridge.reload.user }
         end
       end
 
-      context 'with permission' do
-        let!(:bridge_pipeline) { create(:ci_pipeline, project: create(:project)) }
-        let!(:bridge) do
-          create(:ci_bridge, :strategy_depend, status: 'success', pipeline: bridge_pipeline)
-        end
-
+      context 'with authorization' do
         before do
-          bridge_pipeline.project.add_maintainer(user)
+          downstream_pipeline.project.add_maintainer(user)
         end
 
         it 'marks source bridge as pending' do
@@ -354,6 +347,22 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         it 'assigns the current user to the source bridge' do
           expect { service.execute(pipeline) }.to change { bridge.reload.user }.to(user)
         end
+      end
+    end
+
+    context 'when the pipeline is a downstream pipeline and the bridge status has a strategy' do
+      let!(:downstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
+
+      context 'when the strategy is `depend`' do
+        let!(:bridge) { create(:ci_bridge, :strategy_depend, status: 'success', pipeline: downstream_pipeline) }
+
+        it_behaves_like 'updates the bridge status when authorized'
+      end
+
+      context 'when the strategy is `mirror`' do
+        let!(:bridge) { create(:ci_bridge, :strategy_mirror, status: 'success', pipeline: downstream_pipeline) }
+
+        it_behaves_like 'updates the bridge status when authorized'
       end
     end
 

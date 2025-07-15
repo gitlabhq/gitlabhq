@@ -8,6 +8,10 @@ module ActiveContext
 
         delegate :bulk_process, to: :client
 
+        def name
+          'postgresql'
+        end
+
         def client_klass
           ActiveContext::Databases::Postgresql::Client
         end

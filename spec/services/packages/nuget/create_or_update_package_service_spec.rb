@@ -206,14 +206,6 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
             .and not_change { ::Packages::DependencyLink.count }
             .and not_change { ::Packages::Nuget::DependencyLinkMetadatum.count }
         end
-
-        context 'when feature flag :packages_protected_packages_nuget is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_nuget: false)
-          end
-
-          it_behaves_like 'valid package'
-        end
       end
 
       shared_examples 'protected package from deploy token' do

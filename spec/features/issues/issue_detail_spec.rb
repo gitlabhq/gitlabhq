@@ -29,17 +29,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
   end
 
-  context 'when user displays the issue as an incident' do
-    before do
-      visit project_issue_path(project, incident)
-      wait_for_requests
-    end
-
-    it 'does not show design management' do
-      expect(page).not_to have_selector('.js-design-management')
-    end
-  end
-
   context 'when issue description has emojis' do
     let(:issue) { create(:issue, project: project, author: user, description: 'hello world :100:') }
 

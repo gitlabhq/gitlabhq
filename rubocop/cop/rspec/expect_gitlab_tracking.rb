@@ -5,7 +5,7 @@ require 'rubocop-rspec'
 module RuboCop
   module Cop
     module RSpec
-      # This cop checks for `expect(Gitlab::Tracking).to receive(:event)` usage in specs.
+      # Checks for `expect(Gitlab::Tracking).to receive(:event)` usage in specs.
       # See /spec/support/helpers/snowplow_helpers.rb for details on the replacement.
       #
       # @example

@@ -11,14 +11,11 @@
     %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title
       GitLab
-    - if Feature.enabled?(:enhanced_notify_css)
-      = universal_stylesheet_link_tag 'mailers/notify_enhanced'
-      %style{ type: 'text/css', 'data-premailer': 'ignore' }
-        -# The MUA automatically turns some text into links.
-        -# Match the color of explicit links ($blue-600 from typography.scss).
-        a { color: #1068bf; }
-    - else
-      = universal_stylesheet_link_tag 'mailers/notify'
+    = universal_stylesheet_link_tag 'mailers/notify_enhanced'
+    %style{ type: 'text/css', 'data-premailer': 'ignore' }
+      -# The MUA automatically turns some text into links.
+      -# Match the color of explicit links ($blue-600 from typography.scss).
+      a { color: #1068bf; }
     = yield :head
   %body
     -# Test stub for RSpec testing of Notify and associated modules

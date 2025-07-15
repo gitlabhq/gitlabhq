@@ -132,7 +132,7 @@ describe('IssuableHeader component', () => {
     it('renders when issuable is hidden', () => {
       createComponent({ isHidden: true });
 
-      expect(findHiddenBadge().props('issuableType')).toBe('issue');
+      expect(findHiddenBadge().exists()).toBe(true);
     });
 
     it('does not render when issuable is not hidden', () => {
@@ -146,7 +146,7 @@ describe('IssuableHeader component', () => {
     it('renders when issuable is imported', () => {
       createComponent({ isImported: true });
 
-      expect(findImportedBadge().props('importableType')).toBe('issue');
+      expect(findImportedBadge().exists()).toBe(true);
     });
 
     it('does not render when issuable is not imported', () => {

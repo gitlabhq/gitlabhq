@@ -15,7 +15,7 @@ description: Reusable, versioned CI/CD components for pipelines.
 
 {{< history >}}
 
-- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
+- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags/_index.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
 - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
 - [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
@@ -664,7 +664,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
-  - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description) defined.
+  - Have a [project description](../../user/project/working_with_projects.md#edit-a-project) defined.
   - Have a `README.md` file in the root directory for the commit SHA of the tag being released.
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
     for the commit SHA of the tag being released.
@@ -833,7 +833,7 @@ To mirror a GitLab.com component in your GitLab Self-Managed instance:
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
 1. [Create a group](../../user/group/_index.md#create-a-group) to host the component projects (recommended group: `components`).
 1. [Create a mirror of the component project](../../user/project/repository/mirror/pull.md) in the new group.
-1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description)
+1. Write a [project description](../../user/project/working_with_projects.md#edit-a-project)
    for the component project mirror because mirroring repositories does not copy the description.
 1. [Set the self-hosted component project as a catalog resource](#set-a-component-project-as-a-catalog-project).
 1. Publish [a new release](../../user/project/releases/_index.md) in the self-hosted component project by

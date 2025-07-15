@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/graphql/authorize_types'
 
 RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
   it 'adds an offense when there is no authorize call' do
-    expect_offense(<<~TYPE)
+    expect_offense(<<~RUBY)
       module Types
         class AType < BaseObject
         ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
           field :another_thing
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'adds add an offense when authorize has no arguments' do
@@ -64,52 +64,52 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
   end
 
   it 'does not add an offense for base types' do
-    expect_no_offenses(<<~TYPE)
+    expect_no_offenses(<<~RUBY)
       module Types
         class AType < BaseEnum
           field :a_thing
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense for Enums' do
-    expect_no_offenses(<<~TYPE)
+    expect_no_offenses(<<~RUBY)
       module Types
         class ATypeEnum < AnotherEnum
           field :a_thing
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense for subtypes of BaseUnion' do
-    expect_no_offenses(<<~TYPE)
+    expect_no_offenses(<<~RUBY)
       module Types
         class AType < BaseUnion
           possible_types Types::Foo, Types::Bar
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense for subtypes of BaseInputObject' do
-    expect_no_offenses(<<~TYPE)
+    expect_no_offenses(<<~RUBY)
       module Types
         class AType < BaseInputObject
           argument :a_thing
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense for InputTypes' do
-    expect_no_offenses(<<~TYPE)
+    expect_no_offenses(<<~RUBY)
       module Types
         class AInputType < SomeObjectType
           argument :a_thing
         end
       end
-    TYPE
+    RUBY
   end
 end

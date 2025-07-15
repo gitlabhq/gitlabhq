@@ -93,6 +93,18 @@ export const FILTER_OPTIONS_CREDENTIALS_INVENTORY = [
       { value: 'gpg_keys', title: s__('CredentialsInventory|GPG keys') },
     ],
   },
+  {
+    icon: 'user',
+    title: s__('CredentialsInventory|Owner type'),
+    type: 'owner_type',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'human', title: __('Human') },
+      { value: 'service_account', title: __('Service account') },
+    ],
+  },
   ...FILTER_OPTIONS,
 ];
 

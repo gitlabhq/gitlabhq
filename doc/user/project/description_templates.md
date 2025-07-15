@@ -16,6 +16,8 @@ description: Issue templates, merge request templates, instance, and group templ
 {{< history >}}
 
 - [Work item support](https://gitlab.com/gitlab-org/gitlab/-/issues/512208) introduced in GitLab 17.10.
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/16088) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `work_item_epics`. Enabled by default. Introduced in [beta](../../policy/development_stages_support.md#beta).
+- Support for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1. Feature flag `work_item_epics` removed.
 
 {{< /history >}}
 
@@ -33,10 +35,13 @@ Description templates:
 You can define templates to use as descriptions
 for your:
 
-- [issues](issues/_index.md)
-- [epics](../group/epics/epic_work_items.md)
-- [tasks](../tasks.md)
-- [merge requests](merge_requests/_index.md)
+- [Issues](issues/_index.md)
+- [Epics](../group/epics/_index.md) ([group-level description templates](#set-group-level-description-templates) must be set up)
+- [Tasks](../tasks.md)
+- [Objectives and key results](../okrs.md)
+- [Incidents](../../operations/incident_management/manage_incidents.md)
+- [Service Desk tickets](service_desk/_index.md)
+- [Merge requests](merge_requests/_index.md)
 
 Projects inherit templates from their group and instance.
 
@@ -46,29 +51,25 @@ Templates must be:
 - Stored in your project's repository in the `.gitlab/issue_templates` or `.gitlab/merge_request_templates` directory.
 - Present on the default branch.
 
-## Create an issue template
+## Create a description template
 
-Create a new Markdown (`.md`) file inside the `.gitlab/issue_templates/`
-directory in your repository.
+Create a new description template as a Markdown (`.md`) file inside the `.gitlab/issue_templates/` directory in your repository.
 
-{{< alert type="note" >}}
-
-Issue templates are supported in all types of Work item including issues, epics, tasks, objectives and key results.
-
-{{< /alert >}}
-
-To create an issue description template:
+To create a work item description template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
 1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/issue_templates/mytemplate.md`,
-   where `mytemplate` is the name of your issue template.
+   where `mytemplate` is the name of your template.
 1. Commit to your default branch.
 
-To check if this has worked correctly, [create a new issue](issues/create_issues.md)
-and see if you can find your description template in the **Choose a template** dropdown list.
+To check if this has worked correctly:
+
+1. [Create a new issue](issues/create_issues.md) or
+   [create a new epic](../group/epics/manage_epics.md#create-an-epic).
+1. See if you can find your description template in the **Choose a template** dropdown list.
 
 ## Create a merge request template
 
@@ -175,7 +176,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 - The project must be a direct child of the group.
 
-To re-use templates [you've created](description_templates.md#create-an-issue-template):
+To re-use templates [you've created](description_templates.md#create-a-description-template):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -213,7 +214,7 @@ To set a default description template for merge requests, either:
 
 To set a default description template for issues, either:
 
-- [Create an issue template](#create-an-issue-template) named `Default.md` (case-insensitive)
+- [Create an issue template](#create-a-description-template) named `Default.md` (case-insensitive)
   and save it in `.gitlab/issue_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:

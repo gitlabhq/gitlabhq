@@ -4,7 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::UpdateClosedMergedMrs, feature_category: :code_review_workflow do
   describe '#perform' do
-    let(:user) { table(:users).create!(name: 'user1', email: 'user1@example.com', projects_limit: 5) }
+    let(:user) do
+      table(:users).create!(name: 'user1', email: 'user1@example.com', projects_limit: 5,
+        organization_id: organization.id)
+    end
+
     let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
     let(:namespace) { table(:namespaces).create!(name: 'name', path: 'path', organization_id: organization.id) }
 

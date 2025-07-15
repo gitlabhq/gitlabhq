@@ -73,8 +73,7 @@ function retrieve_failed_tests() {
   scripts/failed_tests.rb \
     --previous-tests-report-path "${pipeline_report_path}" \
     --format "${failed_tests_format}" \
-    --output-directory "${directory_for_output_reports}" \
-    $([[ "${output_mode}" == "single_output" ]] && echo "--single-output" || echo '')
+    --output-directory "${directory_for_output_reports}"
 }
 
 function rspec_args() {

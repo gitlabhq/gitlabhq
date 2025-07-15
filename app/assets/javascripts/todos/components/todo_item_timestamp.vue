@@ -3,12 +3,18 @@ import { isInPast, isToday, newDate } from '~/lib/utils/datetime_utility';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { s__, sprintf } from '~/locale';
+import TodoSnoozedTimestamp from './todo_snoozed_timestamp.vue';
 
 export default {
+  components: { TodoSnoozedTimestamp },
   mixins: [timeagoMixin],
   props: {
     todo: {
       type: Object,
+      required: true,
+    },
+    isSnoozed: {
+      type: Boolean,
       required: true,
     },
   },
@@ -46,16 +52,27 @@ export default {
 </script>
 
 <template>
-  <span class="gl-text-sm gl-text-subtle">
+  <div
+    class="gl-flex gl-gap-2 gl-text-sm gl-text-subtle sm:gl-h-7 sm:gl-flex-col sm:gl-justify-center sm:gl-gap-0"
+  >
+    <span class="gl-text-right">
+      <todo-snoozed-timestamp
+        v-if="todo.snoozedUntil"
+        class="gl-mr-2"
+        :snoozed-until="todo.snoozedUntil"
+        :has-reached-snooze-timestamp="!isSnoozed"
+      />
+
+      {{ formattedCreatedAt }}
+    </span>
+    <span v-if="formattedDueDate" class="gl-inline sm:gl-hidden"> &middot; </span>
     <span
       v-if="formattedDueDate"
       :class="{
         'gl-text-danger': showDueDateAsError,
         'gl-text-warning': showDueDateAsWarning,
       }"
-      >{{ formattedDueDate }}</span
-    >
-    <template v-if="formattedDueDate"> &middot; </template>
-    {{ formattedCreatedAt }}
-  </span>
+      >{{ formattedDueDate }}
+    </span>
+  </div>
 </template>

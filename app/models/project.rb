@@ -88,6 +88,7 @@ class Project < ApplicationRecord
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
   MAX_MERGE_REQUEST_TITLE_REGEX = 255
+  MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION = 255
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -167,6 +168,8 @@ class Project < ApplicationRecord
   after_save :save_topics
 
   after_save :reload_project_namespace_details
+
+  after_save :invalidate_namespace_cache, if: :saved_change_to_archived?
 
   use_fast_destroy :build_trace_chunks
 
@@ -599,6 +602,7 @@ class Project < ApplicationRecord
       delegate :duo_features_enabled, :duo_features_enabled=
       delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
       delegate :merge_request_title_regex, :merge_request_title_regex=
+      delegate :merge_request_title_regex_description, :merge_request_title_regex_description=
       delegate :web_based_commit_signing_enabled, :web_based_commit_signing_enabled=
     end
   end
@@ -1648,11 +1652,28 @@ class Project < ApplicationRecord
     notes.where(noteable_type: "Commit")
   end
 
+  # Returns sanitized import URL.
+  #
+  # @param `masked:` [Boolean] Toggles how URL will be sanitized. Defaults to `true`.
+  #  when `true` the userinfo credentials will be masked,
+  #  when `false` the userinfo credentials will be stripped.
+  #
+  # @example project.safe_import_url #=> "https://*****:*****@example.com"
+  # @example project.safe_import_url(masked: false) # => "https://example.com"
+  #
+  # @return [String] Sanitized import URL.
+  def safe_import_url(masked: true)
+    url = Gitlab::UrlSanitizer.new(import_url)
+    masked ? url.masked_url : url.sanitized_url
+  end
+
   def import_url=(value)
     if Gitlab::UrlSanitizer.valid?(value)
+      # Assign sanitized URL, stripped of userinfo credentials, to `Project#import_url` attribute.
       import_url = Gitlab::UrlSanitizer.new(value)
       super(import_url.sanitized_url)
 
+      # Assign any userinfo credentials to the `ProjectImportData#credentials` attribute.
       credentials = import_url.credentials.to_h.transform_values { |value| CGI.unescape(value.to_s) }
       build_or_assign_import_data(credentials: credentials)
     else
@@ -1660,6 +1681,17 @@ class Project < ApplicationRecord
     end
   end
 
+  # WARNING - This method returns sensitive userinfo credentials of the import URL.
+  # Use `#safe_import_url` instead unless it is necessary to include sensitive credentials.
+  #
+  # Builds an import URL including userinfo credentials from the `import_url` attribute
+  # and the encrypted `ProjectImportData#credentials`.
+  #
+  # @see #safe_import_url
+  #
+  # @example project.import_url #=> "https://user:secretpassword@example.com"
+  #
+  # @return [String] Unsanitized import URL.
   def import_url
     if import_data && super.present?
       import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
@@ -1669,10 +1701,6 @@ class Project < ApplicationRecord
     end
   rescue StandardError
     super
-  end
-
-  def valid_import_url?
-    valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
@@ -1685,7 +1713,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration?
+    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration? || Gitlab::ImportSources.template?(import_type)
   end
 
   def external_import?
@@ -1696,11 +1724,6 @@ class Project < ApplicationRecord
     return false if import_type.nil? || mirror? || forked?
 
     gitea_import? || github_import? || bitbucket_import? || bitbucket_server_import?
-  end
-
-  def safe_import_url(masked: true)
-    url = Gitlab::UrlSanitizer.new(import_url)
-    masked ? url.masked_url : url.sanitized_url
   end
 
   def jira_import?
@@ -1733,7 +1756,7 @@ class Project < ApplicationRecord
 
   def github_enterprise_import?
     github_import? &&
-      URI.parse(import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
+      URI.parse(safe_import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
   end
 
   # Determine whether any kind of import is in progress.
@@ -2721,6 +2744,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
         .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
         .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
+        .append(key: 'CI_DEFAULT_BRANCH_SLUG', value: Gitlab::Utils.slugify(default_branch.to_s))
         .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
     end
   end
@@ -2922,7 +2946,12 @@ class Project < ApplicationRecord
   end
 
   def archived
-    super && !marked_for_deletion?
+    super && !self_deletion_scheduled?
+  end
+
+  def self_or_ancestors_archived?
+    # We can remove `archived?` once we move the project archival to the `namespaces.archived` column
+    archived? || project_namespace.self_or_ancestors_archived?
   end
 
   def renamed?
@@ -3419,12 +3448,8 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
-  def work_item_epic_milestones_feature_flag_enabled?
-    group&.work_item_epic_milestones_feature_flag_enabled? || Feature.enabled?(:work_item_epic_milestones, type: :beta)
-  end
-
   def work_item_status_feature_available?
-    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag, type: :wip)) &&
+    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
       licensed_feature_available?(:work_item_status)
   end
 
@@ -3436,8 +3461,12 @@ class Project < ApplicationRecord
     group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self)
   end
 
-  def continue_indented_text_feature_flag_enabled?
-    group&.continue_indented_text_feature_flag_enabled? || Feature.enabled?(:continue_indented_text, self, type: :wip)
+  def work_items_bulk_edit_feature_flag_enabled?
+    group&.work_items_bulk_edit_feature_flag_enabled? || Feature.enabled?(:work_items_bulk_edit, self, type: :wip)
+  end
+
+  def markdown_placeholders_feature_flag_enabled?
+    group&.markdown_placeholders_feature_flag_enabled? || Feature.enabled?(:markdown_placeholders, self, type: :gitlab_com_derisk)
   end
 
   def enqueue_record_project_target_platforms
@@ -3587,9 +3616,9 @@ class Project < ApplicationRecord
     end
   end
 
-  def has_container_registry_protected_tag_rules?(action:, access_level:, include_immutable: true)
-    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level, include_immutable) do
-      container_registry_protection_tag_rules.for_actions_and_access([action], access_level, include_immutable:).exists?
+  def has_container_registry_protected_tag_rules?(action:, access_level:)
+    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level) do
+      container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
     end
   end
 
@@ -3597,6 +3626,11 @@ class Project < ApplicationRecord
     namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
   end
   strong_memoize_attr :job_token_policies_enabled?
+
+  # Overridden for EE
+  def licensed_ai_features_available?
+    false
+  end
 
   private
 
@@ -3843,6 +3877,10 @@ class Project < ApplicationRecord
     return unless (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && project_namespace.namespace_details.present?
 
     project_namespace.namespace_details.reset
+  end
+
+  def invalidate_namespace_cache
+    Namespaces::Descendants.expire_for([namespace_id])
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)

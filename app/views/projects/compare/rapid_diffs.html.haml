@@ -2,7 +2,6 @@
 - container_class = fluid_layout ? '' : 'container-limited'
 - add_to_breadcrumbs s_("CompareRevisions|Compare revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]} to #{params[:to]}"
-- has_diff = @commits.present? || @diffs.present? && @diffs.diff_files.present?
 -# Only show commit list in the first page
 - hide_commit_list = params[:page].present? && params[:page] != '1'
 - add_page_specific_style 'page_bundles/merge_requests'
@@ -13,12 +12,11 @@
     .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
       #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if has_diff
+- if @commits.present?
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list" unless hide_commit_list
   .container-fluid
-    - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: nil, show_whitespace: @show_whitespace_default, diff_view: diff_view, diffs_stats_endpoint: @diffs_stats_endpoint, update_user_endpoint: @update_current_user_path, diff_files_endpoint: @diff_files_endpoint, diff_file_endpoint: @diff_file_endpoint, lazy: true }
-    = render ::RapidDiffs::AppComponent.new(**args)
+    = render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter)
 - else
   .container-fluid
     = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |c|

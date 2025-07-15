@@ -4,7 +4,6 @@ import { GlButton, GlIcon, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
-import { TYPE_DESIGN } from '~/import/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
@@ -130,7 +129,6 @@ export default {
     },
   },
   DESIGNS_ROUTE_NAME,
-  TYPE_DESIGN,
 };
 </script>
 
@@ -147,11 +145,7 @@ export default {
           </span>
           <gl-icon name="chevron-right" class="gl-shrink-0" variant="disabled" />
           <span class="gl-truncate gl-font-normal">{{ filename }}</span>
-          <imported-badge
-            v-if="isImported"
-            :importable-type="$options.TYPE_DESIGN"
-            class="gl-ml-2"
-          />
+          <imported-badge v-if="isImported" class="gl-ml-2" />
         </h2>
         <small v-if="updatedAt" class="gl-text-subtle">{{ updatedText }}</small>
       </div>

@@ -24,7 +24,7 @@ describe('rateLimitStreamRequests', () => {
       total: 0,
     });
     expect(factory).toHaveBeenCalledTimes(0);
-    expect(requests.length).toBe(0);
+    expect(requests).toHaveLength(0);
   });
 
   it('does not exceed total requests', () => {
@@ -36,7 +36,7 @@ describe('rateLimitStreamRequests', () => {
       total: 2,
     });
     expect(factory).toHaveBeenCalledTimes(2);
-    expect(requests.length).toBe(2);
+    expect(requests).toHaveLength(2);
   });
 
   it('creates immediate requests', () => {
@@ -47,7 +47,7 @@ describe('rateLimitStreamRequests', () => {
       total: 2,
     });
     expect(factory).toHaveBeenCalledTimes(2);
-    expect(requests.length).toBe(2);
+    expect(requests).toHaveLength(2);
   });
 
   it('returns correct values', async () => {
@@ -83,7 +83,7 @@ describe('rateLimitStreamRequests', () => {
       total: 3,
     });
     expect(factory).toHaveBeenCalledTimes(2);
-    expect(requests.length).toBe(3);
+    expect(requests).toHaveLength(3);
 
     await waitForPromises();
 
@@ -107,7 +107,7 @@ describe('rateLimitStreamRequests', () => {
       total: 2,
     });
     expect(factory).toHaveBeenCalledTimes(1);
-    expect(requests.length).toBe(2);
+    expect(requests).toHaveLength(2);
 
     await waitForPromises();
 
@@ -139,7 +139,7 @@ describe('rateLimitStreamRequests', () => {
       timeout: 9999,
     });
     expect(factory).toHaveBeenCalledTimes(1);
-    expect(requests.length).toBe(2);
+    expect(requests).toHaveLength(2);
 
     await waitForPromises();
 

@@ -8,9 +8,9 @@ title: Features inside the `.gitlab/` directory
 We have implemented standard features that depend on configuration files in the `.gitlab/` directory. You can find `.gitlab/` in various GitLab repositories.
 When implementing new features, refer to these existing features to avoid conflicts:
 
-- [Issue Templates](../user/project/description_templates.md#create-an-issue-template): `.gitlab/issue_templates/`.
-- [Merge request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
-- [GitLab agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent): `.gitlab/agents/`.
+- [Description templates](../user/project/description_templates.md#create-a-description-template): `.gitlab/issue_templates/`.
+- [Merge request templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
+- [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent): `.gitlab/agents/`.
 - [CODEOWNERS](../user/project/codeowners/_index.md#set-up-code-owners): `.gitlab/CODEOWNERS`.
 - [Route Maps](../ci/review_apps/_index.md#route-maps): `.gitlab/route-map.yml`.
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.

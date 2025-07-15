@@ -7,5 +7,6 @@ feature_categories:
 description: Stores user agent details for submission to Akismet spam detection.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5538
 milestone: '8.11'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: medium
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553472

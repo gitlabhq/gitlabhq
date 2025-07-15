@@ -375,6 +375,10 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 
 If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
+### Geo installations 17.11.0
+
+- GitLab versions 17.11 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
+
 ## 17.10.0
 
 ### New encryption secrets
@@ -386,6 +390,10 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_key_derivation_salt`
 
 If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+### Geo installations 17.10.0
+
+- GitLab versions 17.10 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
 
 ## 17.9.0
 
@@ -467,7 +475,7 @@ to identify and assess the compatibility of your external integrations.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
   action is needed. However, [Cloud Native Hybrid](../../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services) installations
   use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
-  the TLS versions, ciphers, and certificates that are used to work with the security level changes 
+  the TLS versions, ciphers, and certificates that are used to work with the security level changes
   in the following discussion.
 
 With the upgrade to OpenSSL 3:
@@ -531,7 +539,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
     that's stored as part of the backup.
 - Git 2.46.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 - S3 object storage uploads in Workhorse are now handled by default using the [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597). If you experience issues
-  with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature).
+  with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags/_index.md#enable-or-disable-the-feature).
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
   If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
   To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/_index.md#update-the-oauth-callback-url).
@@ -548,7 +556,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
   Then run `gitlab-ctl reconfigure`.
 
-  ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect.md#alpn-enforcement).
+  ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect/configure.md#alpn-enforcement).
   Upgrading to one of those versions removes the need to set `GRPC_ENFORCE_ALPN_ENABLED`.
 
 ## 17.3.0

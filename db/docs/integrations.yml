@@ -63,5 +63,5 @@ description: 'Support 3rd party integrations: Jira, Slack, etc., formerly servic
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64562
 milestone: '9.4'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463856
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541026
 table_size: small

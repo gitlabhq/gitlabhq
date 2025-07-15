@@ -120,7 +120,7 @@ describe('Getters Notes Store', () => {
 
         const discussions = getDiscussions();
 
-        expect(discussions.length).toEqual(discussionMock.notes.length);
+        expect(discussions).toHaveLength(discussionMock.notes.length);
         discussions.forEach((discussion) => {
           expect(discussion.individual_note).toBe(true);
           expect(discussion.id).toBe(discussion.notes[0].id);
@@ -185,7 +185,7 @@ describe('Getters Notes Store', () => {
     };
 
     it('should return a single system note when a description was updated multiple times', () => {
-      expect(getters.discussions(stateCollapsedNotes, {}, {}).length).toEqual(1);
+      expect(getters.discussions(stateCollapsedNotes, {}, {})).toHaveLength(1);
     });
   });
 

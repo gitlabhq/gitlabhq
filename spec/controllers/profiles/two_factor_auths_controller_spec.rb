@@ -221,7 +221,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
       it 'assigns error' do
         go
-        expect(assigns[:error]).to eq({ message: 'Invalid pin code.' })
+        expect(assigns[:otp_error]).to eq({ message: 'Invalid pin code.' })
       end
 
       it 'assigns qr_code' do

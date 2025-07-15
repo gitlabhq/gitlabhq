@@ -9,38 +9,23 @@ RSpec.describe 'Manually create a todo item from issue', :js, feature_category: 
 
   before do
     stub_feature_flags(notifications_todos_buttons: false)
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in(user)
     visit project_issue_path(project, issue)
   end
 
   it 'creates todo when clicking button' do
-    page.within '.issuable-sidebar' do
-      click_button 'Add a to-do item'
-      expect(page).to have_content 'Mark as done'
-    end
+    click_button 'Add a to-do item'
 
-    within_testid 'todos-shortcut-button' do
-      expect(page).to have_content '1'
-    end
-
-    visit project_issue_path(project, issue)
-
-    within_testid 'todos-shortcut-button' do
-      expect(page).to have_content '1'
-    end
+    expect(page).to have_button 'Mark as done'
+    expect(page).to have_link 'To-Do List 1'
   end
 
   it 'marks a todo as done' do
-    page.within '.issuable-sidebar' do
-      click_button 'Add a to-do item'
-      click_button 'Mark as done'
-    end
+    click_button 'Add a to-do item'
+    click_button 'Mark as done'
 
-    expect(page).to have_selector("[data-testid='todos-shortcut-button']", text: '')
-
-    visit project_issue_path(project, issue)
-
-    expect(page).to have_selector("[data-testid='todos-shortcut-button']", text: '')
+    expect(page).to have_link 'To-Do List 0'
   end
 end

@@ -44,8 +44,11 @@ module Gitlab
               :current_path_array
 
             def parse_line(node_attrs)
+              matched_path = matched_full_path
+              return unless matched_path
+
               coverage_data = { node_attrs.fetch('nr').to_i => node_attrs.fetch('ci').to_i }
-              coverage_report.add_file(matched_full_path, coverage_data)
+              coverage_report.add_file(matched_path, coverage_data)
             rescue KeyError
               raise Jacoco::InvalidLineInformationError, "Line information had invalid attributes"
             end
@@ -58,13 +61,9 @@ module Gitlab
             # so we need to match the files against the ones changed on the MR
             # and provide the full path in our reports
             def matched_full_path
-              matched_path = merge_request_file_paths.find do |full_path|
+              merge_request_file_paths.find do |full_path|
                 full_path.include?(current_path)
               end
-
-              Gitlab::AppLogger.info(message: "Missing merge request changes for #{current_path}") unless matched_path
-
-              matched_path
             end
 
             def unixify(path)

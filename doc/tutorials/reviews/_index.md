@@ -87,9 +87,9 @@ to a problem or a feature request in an issue.
 
 Below the description, check the merge request widget to understand the
 current status of this work. This example shows a merge widget for a merge request
-that is missing approvals, is still in draft mode, and has unresolved discussion threads:
+that is missing approvals, is still in draft mode, and has open discussion threads:
 
-![Merge widget showing blocked status with three failed checks: missing approvals, draft mode, and unresolved discussions](img/widget_v17_0.png)
+![Merge widget showing blocked status with three failed checks: missing approvals, draft mode, and open threads](img/widget_v17_0.png)
 
 - Does it cross-link to an issue? Check the description and merge widget
   for links to other issues. Some merge requests are straightforward, but

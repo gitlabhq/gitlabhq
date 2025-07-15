@@ -15,7 +15,7 @@ title: Merge trains
 {{< history >}}
 
 - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
-- Support for [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
+- Support for [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags/_index.md) named `fast_forward_merge_trains_support`. Enabled by default.
 - [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
 
 {{< /history >}}
@@ -168,7 +168,7 @@ You can also remove ({{< icon name="close" >}}) a merge request from the merge t
 
 {{< history >}}
 
-- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
 - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
 - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
 - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
@@ -245,7 +245,7 @@ merge method and the source branch is behind the target branch. See [issue 43407
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `merge_trains_skip_train`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags/_index.md) named `merge_trains_skip_train`. Disabled by default.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/development_stages_support.md) in GitLab 16.10.
 
 {{< /history >}}
@@ -253,7 +253,7 @@ merge method and the source branch is behind the target branch. See [issue 43407
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../administration/feature_flags.md)
+an administrator can [disable the feature flag](../../administration/feature_flags/_index.md)
 named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 {{< /alert >}}

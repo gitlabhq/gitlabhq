@@ -14,7 +14,7 @@ title: Account email verification
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86352) in GitLab 15.2 [with a flag](../administration/feature_flags.md) named `require_email_verification`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86352) in GitLab 15.2 [with a flag](../administration/feature_flags/_index.md) named `require_email_verification`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/519123) in GitLab 18.1 Feature flag `require_email_verification` removed.
 
 {{< /history >}}

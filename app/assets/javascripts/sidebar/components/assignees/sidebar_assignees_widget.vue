@@ -255,7 +255,8 @@ export default {
     showError() {
       createAlert({ message: __('An error occurred while fetching participants.') });
     },
-    setDirtyState() {
+    onInput($event) {
+      this.selected = $event;
       this.isDirty = true;
       if (!this.allowMultipleAssignees) {
         this.collapseWidget();
@@ -303,7 +304,7 @@ export default {
       <template #default="{ edit }">
         <user-select
           ref="userSelect"
-          v-model="selected"
+          :value="selected"
           :text="$options.i18n.assignees"
           :header-text="$options.i18n.assignTo"
           :iid="iid"
@@ -317,7 +318,7 @@ export default {
           class="dropdown-menu-user -gl-mt-3 gl-w-full"
           @toggle="collapseWidget"
           @error="showError"
-          @input="setDirtyState"
+          @input="onInput"
         >
           <template #footer>
             <gl-dropdown-item v-if="directlyInviteMembers">

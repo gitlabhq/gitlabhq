@@ -11,7 +11,6 @@ import { ISSUE_MR_CHANGE_MILESTONE } from '~/behaviors/shortcuts/keybindings';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import groupMilestonesQuery from '~/sidebar/queries/group_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   NAME_TO_TEXT_LOWERCASE_MAP,
@@ -169,32 +168,21 @@ export default {
       this.updateInProgress = true;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$apollo
-          .mutate({
-            mutation: updateNewWorkItemMutation,
-            variables: {
-              input: {
-                fullPath: this.fullPath,
-                milestone: this.localMilestone
-                  ? {
-                      ...this.localMilestone,
-                      webPath: this.localMilestone.webUrl,
-                      startDate: '',
-                      projectMilestone: false,
-                    }
-                  : null,
-                workItemType: this.workItemType,
-              },
-            },
-          })
-          .catch((error) => {
-            Sentry.captureException(error);
-          })
-          .finally(() => {
-            this.updateInProgress = false;
-            this.searchTerm = '';
-            this.shouldFetch = false;
-          });
+        this.$emit('updateWidgetDraft', {
+          fullPath: this.fullPath,
+          milestone: this.localMilestone
+            ? {
+                ...this.localMilestone,
+                webPath: this.localMilestone.webUrl,
+                startDate: '',
+                projectMilestone: false,
+              }
+            : null,
+          workItemType: this.workItemType,
+        });
+        this.updateInProgress = false;
+        this.searchTerm = '';
+        this.shouldFetch = false;
         return;
       }
 

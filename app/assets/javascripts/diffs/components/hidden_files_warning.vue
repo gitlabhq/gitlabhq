@@ -26,11 +26,13 @@ export default {
     },
     plainDiffPath: {
       type: String,
-      required: true,
+      default: undefined,
+      required: false,
     },
     emailPatchPath: {
       type: String,
-      required: true,
+      default: undefined,
+      required: false,
     },
   },
   computed: {
@@ -53,10 +55,10 @@ export default {
       </template>
     </gl-sprintf>
     <template #actions>
-      <gl-button :href="plainDiffPath" class="gl-alert-action gl-mr-3">
+      <gl-button v-if="plainDiffPath" :href="plainDiffPath" class="gl-alert-action gl-mr-3">
         {{ $options.i18n.plainDiff }}
       </gl-button>
-      <gl-button :href="emailPatchPath" class="gl-alert-action">
+      <gl-button v-if="emailPatchPath" :href="emailPatchPath" class="gl-alert-action">
         {{ $options.i18n.emailPatch }}
       </gl-button>
     </template>

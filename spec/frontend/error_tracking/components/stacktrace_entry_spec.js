@@ -49,15 +49,15 @@ describe('Stacktrace Entry', () => {
   it('should render stacktrace entry table expanded', () => {
     mountComponent({ expanded: true, lines });
     expect(wrapper.find('table').exists()).toBe(true);
-    expect(wrapper.findAll('tr.line_holder').length).toBe(4);
-    expect(findAllContentLines().length).toBe(1);
+    expect(wrapper.findAll('tr.line_holder')).toHaveLength(4);
+    expect(findAllContentLines()).toHaveLength(1);
   });
 
   it('should render stacktrace entry table expanded with GraphQL API data format', () => {
     mountComponent({ expanded: true, lines: graphqlLines });
     expect(wrapper.find('table').exists()).toBe(true);
-    expect(wrapper.findAll('tr.line_holder').length).toBe(4);
-    expect(findAllContentLines().length).toBe(1);
+    expect(wrapper.findAll('tr.line_holder')).toHaveLength(4);
+    expect(findAllContentLines()).toHaveLength(1);
   });
 
   it('should render file information if filePath exists', () => {

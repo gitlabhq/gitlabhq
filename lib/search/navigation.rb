@@ -105,10 +105,6 @@ module Search
 
     attr_reader :user, :project, :group, :options
 
-    def show_elasticsearch_tabs?
-      !!options[:show_elasticsearch_tabs]
-    end
-
     def search_tab_ability_map
       {
         milestones: :read_milestone,
@@ -155,9 +151,7 @@ module Search
     end
 
     def show_comments_search_tab?
-      return true if tab_enabled_for_project?(:notes)
-
-      project.nil? && show_elasticsearch_tabs?
+      tab_enabled_for_project?(:notes)
     end
 
     def show_snippets_search_tab?

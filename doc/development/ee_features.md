@@ -781,7 +781,7 @@ partials. One example would be
 `ee/app/views/projects/settings/_archive.html.haml`:
 
 ```ruby
-- return if @project.marked_for_deletion?
+- return if @project.self_deletion_scheduled?
 = render_ce 'projects/settings/archive'
 ```
 

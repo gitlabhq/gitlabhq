@@ -188,3 +188,16 @@ i_container_registry_delete_tag_user-user: i_container_registry_delete_tag_user
 i_container_registry_push_repository_user-user: i_container_registry_push_repository_user
 i_container_registry_push_tag_user-user: i_container_registry_push_tag_user
 i_code_review_user_searches_diff-user: i_code_review_user_searches_diff
+'ci_template_included-filter:[label:jobs_dast_default_branch_deploy,property:true]-project': p_ci_templates_implicit_jobs_dast_default_branch_deploy
+'ci_template_included-filter:[label:android,property:false]-project': p_ci_templates_android
+'ci_template_included-filter:[label:auto_devops,property:true]-project': p_ci_templates_implicit_auto_devops
+'ci_template_included-filter:[label:5_minute_production_app,property:false]-project': p_ci_templates_5_minute_production_app
+'ci_template_included-filter:[label:android_fastlane,property:false]-project': p_ci_templates_android_fastlane
+'ci_template_included-filter:[label:android_latest,property:false]-project': p_ci_templates_android_latest
+'ci_template_included-filter:[label:aws_cf_provision_and_deploy_ec2,property:false]-project': p_ci_templates_aws_cf_provision_and_deploy_ec2
+'ci_template_included-filter:[label:bash,property:false]-project': p_ci_templates_bash
+'ci_template_included-filter:[label:c,property:false]-project': p_ci_templates_c
+'ci_template_included-filter:[label:chef,property:false]-project': p_ci_templates_chef
+'ci_template_included-filter:[label:clojure,property:false]-project': p_ci_templates_clojure
+'ci_template_included-filter:[label:code_quality,property:false]-project': p_ci_templates_code_quality
+'ci_template_included-filter:[label:composer,property:false]-project': p_ci_templates_composer

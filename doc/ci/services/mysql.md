@@ -45,12 +45,12 @@ For more information, see [GitLab CI/CD variables](../variables/_index.md).
    ```yaml
    variables:
      # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
-     MYSQL_DATABASE: $MYSQL_DATABASE
-     MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+     MYSQL_DATABASE: $MYSQL_DB
+     MYSQL_ROOT_PASSWORD: $MYSQL_PASS
    ```
 
    The MySQL container uses `MYSQL_DATABASE` and `MYSQL_ROOT_PASSWORD` to connect to the database.
-   Pass these values by using variables (`$MYSQL_DB` and `$MYSQL_PASS`),
+   Pass these values by using [GitLab CI/CD variables](../variables/_index.md) (`$MYSQL_DB` and `$MYSQL_PASS` in the example above),
    [rather than calling them directly](https://gitlab.com/gitlab-org/gitlab/-/issues/30178).
 
 1. Configure your application to use the database, for example:

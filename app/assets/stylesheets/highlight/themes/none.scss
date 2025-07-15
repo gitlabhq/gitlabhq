@@ -18,7 +18,8 @@ $none-code-mark: #d3e3f4;
   --diff-deletion-color: #{$gl-color-neutral-50};
 }
 
-.code.none {
+.code.none,
+.code.code-syntax-highlight-theme {
   --code-light-theme: 1;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 

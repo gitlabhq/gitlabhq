@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
-import { update2WeekFromNow } from '~/vue_shared/access_tokens/utils';
+import { update15DaysFromNow } from '~/vue_shared/access_tokens/utils';
 import { createAlert } from '~/alert';
 import { smoothScrollTop } from '~/behaviors/smooth_scroll';
 import axios from '~/lib/utils/axios_utils';
@@ -21,7 +21,7 @@ jest.mock('~/alert', () => ({
 
 jest.mock('~/vue_shared/access_tokens/utils', () => ({
   ...jest.requireActual('~/vue_shared/access_tokens/utils'),
-  update2WeekFromNow: jest.fn(),
+  update15DaysFromNow: jest.fn(),
 }));
 
 jest.mock('~/behaviors/smooth_scroll');
@@ -187,7 +187,7 @@ describe('useAccessTokens store', () => {
       const tooltipTitle = 'Filter for active tokens';
       beforeEach(() => {
         store.setup({ filters, id, page, sorting, urlShow });
-        update2WeekFromNow.mockReturnValueOnce([{ title, tooltipTitle, filters }]);
+        update15DaysFromNow.mockReturnValueOnce([{ title, tooltipTitle, filters }]);
       });
 
       it('uses correct params in the fetch', async () => {
@@ -563,6 +563,7 @@ describe('useAccessTokens store', () => {
 
     describe('setup', () => {
       it('sets up the store', () => {
+        store.token = 'new token';
         store.setup({
           filters,
           id,
@@ -580,6 +581,7 @@ describe('useAccessTokens store', () => {
         expect(store.page).toBe(page);
         expect(store.showCreateForm).toBe(true);
         expect(store.sorting).toEqual(sorting);
+        expect(store.token).toEqual(null);
         expect(store.urlCreate).toBe(urlCreate);
         expect(store.urlRevoke).toBe(urlRevoke);
         expect(store.urlRotate).toBe(urlRotate);
@@ -589,6 +591,14 @@ describe('useAccessTokens store', () => {
   });
 
   describe('getters', () => {
+    describe('params', () => {
+      it('returns correct value', () => {
+        store.page = 2;
+
+        expect(store.params).toEqual({ page: 2 });
+      });
+    });
+
     describe('sort', () => {
       it('returns correct value', () => {
         expect(store.sort).toBe('expires_asc');
@@ -596,6 +606,18 @@ describe('useAccessTokens store', () => {
         store.sorting = { value: 'name', isAsc: false };
 
         expect(store.sort).toBe('name_desc');
+      });
+    });
+
+    describe('urlParmas', () => {
+      it('return correct value', () => {
+        store.page = 2;
+        store.sorting = { value: 'name', isAsc: false };
+
+        expect(store.urlParams).toEqual({
+          page: 2,
+          sort: 'name_desc',
+        });
       });
     });
   });

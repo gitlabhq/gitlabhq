@@ -38,13 +38,14 @@ module QA
       private
 
       def fetch_test_users
-        users = fetch_resources("/users")
+        qa_users = fetch_resources("/users?search=qa-user-")
+        test_users = fetch_resources("/users?search=test-user-")
+        users = qa_users + test_users
 
         users.select do |user|
           user[:username].start_with?('qa-user-', 'test-user-') \
             && user[:name].start_with?('QA User', 'QA Test') \
-            && @exclude_users.exclude?(user[:username]) \
-            && Date.parse(user.fetch(:created_at, Date.today.to_s)) < @delete_before
+            && @exclude_users.exclude?(user[:username])
         end
       end
 

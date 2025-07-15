@@ -86,7 +86,7 @@ curl --request GET \
 
 ## Get details on a group access token
 
-Gets details on a group access token. You can reference a specific group access token, or use the keyword `self` to return details on the authenticating group access token.
+Gets details on a group access token.
 
 ```plaintext
 GET /groups/:id/access_tokens/:token_id
@@ -95,7 +95,7 @@ GET /groups/:id/access_tokens/:token_id
 | Attribute  | Type              | required | Description |
 | ---------- | ----------------- | -------- | ----------- |
 | `id`       | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
-| `token_id` | integer or string | yes      | ID of a group access token or the keyword `self`. |
+| `token_id` | integer or string | yes      | ID |
 
 ```shell
 curl --request GET \

@@ -22,7 +22,7 @@ end
 
 RSpec.shared_examples 'create cluster service error' do
   it 'returns an error' do
-    expect { subject }.to change { Clusters::Cluster.count }.by(0)
+    expect { subject }.to not_change { Clusters::Cluster.count }
     expect(subject.errors[:"provider_gcp.gcp_project_id"]).to be_present
   end
 end

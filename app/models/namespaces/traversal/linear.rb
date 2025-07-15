@@ -130,7 +130,7 @@ module Namespaces
       def descendants
         return super unless use_traversal_ids?
 
-        self_and_descendants.where.not(id: id)
+        self_and_descendants.id_not_in(id)
       end
 
       def self_and_hierarchy
@@ -139,12 +139,12 @@ module Namespaces
         self_and_descendants.or(ancestors)
       end
 
-      def ancestors(hierarchy_order: nil)
+      def ancestors(hierarchy_order: nil, skope: self.class)
         return super unless use_traversal_ids?
 
-        return self.class.none if parent_id.blank?
+        return skope.none if parent_id.blank?
 
-        lineage(bottom: parent, hierarchy_order: hierarchy_order)
+        lineage(bottom: parent, hierarchy_order: hierarchy_order, skope: skope)
       end
 
       def ancestor_ids(hierarchy_order: nil)
@@ -181,12 +181,12 @@ module Namespaces
           .order('ancestors.ord': hierarchy_order)
       end
 
-      def self_and_ancestors(hierarchy_order: nil)
+      def self_and_ancestors(hierarchy_order: nil, skope: self.class)
         return super unless use_traversal_ids?
 
-        return self.class.where(id: id) if parent_id.blank?
+        return skope.where(id: id) if parent_id.blank?
 
-        lineage(bottom: self, hierarchy_order: hierarchy_order)
+        lineage(bottom: self, hierarchy_order: hierarchy_order, skope: skope)
       end
 
       def self_and_ancestor_ids(hierarchy_order: nil)
@@ -231,14 +231,14 @@ module Namespaces
       def set_traversal_ids
         return if id.blank?
 
-        # This is a temporary guard and will be removed.
-        return if is_a?(Namespaces::ProjectNamespace)
-
         # Update our traversal_ids state to match the database.
         self.traversal_ids = self.class.where(id: self).pick(:traversal_ids)
         clear_traversal_ids_change
 
         clear_memoization(:root_ancestor)
+
+        # ProjectNamespace doesn't have any children.
+        return if is_a?(Namespaces::ProjectNamespace)
 
         # Update traversal_ids for any associated child objects.
         children.each(&:reload) if children.loaded?
@@ -253,12 +253,12 @@ module Namespaces
         ].compact
 
         roots = Gitlab::ObjectHierarchy
-          .new(Namespace.where(id: parent_ids))
+          .new(Namespace.id_in(parent_ids))
           .base_and_ancestors
-          .reorder(nil)
+          .without_order
           .top_level
 
-        Namespace.lock('FOR NO KEY UPDATE').select(:id).where(id: roots).order(id: :asc).load
+        Namespace.lock('FOR NO KEY UPDATE').select(:id).id_in(roots).order(id: :asc).load
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.

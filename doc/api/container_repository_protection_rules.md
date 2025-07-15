@@ -15,7 +15,7 @@ title: Container repository protection rules API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155798) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `container_registry_protected_containers`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155798) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `container_registry_protected_containers`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
 

@@ -76,6 +76,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           'developer_can_initial_push' => false
         },
         default_ci_config_path: nil,
+        default_dark_syntax_highlighting_theme: 2,
         default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
@@ -213,12 +214,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         recaptcha_enabled: false,
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
+        relation_export_batch_size: 50,
         remember_me_enabled: true,
         repository_checks_enabled: true,
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,
         require_admin_two_factor_authentication: false,
         require_email_verification_on_account_locked: false,
+        delay_user_account_self_deletion: false,
         require_personal_access_token_expiry: true,
         require_two_factor_authentication: false,
         resource_access_token_notify_inherited: false,
@@ -597,6 +600,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           max_yaml_size_bytes
           namespace_aggregation_schedule_lease_duration_in_seconds
           project_jobs_api_rate_limit
+          relation_export_batch_size
           session_expire_delay
           snippet_size_limit
           throttle_authenticated_api_period_in_seconds
@@ -919,6 +923,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value('token').for(:slack_app_verification_token) }
         it { is_expected.not_to allow_value(nil).for(:slack_app_verification_token) }
       end
+    end
+
+    describe 'import_sources' do
+      let(:invalid_import_sources) { ['gitlab_built_in_project_template'] }
+      let(:valid_import_sources) { Gitlab::ImportSources.values - invalid_import_sources }
+
+      it { is_expected.to allow_value(valid_import_sources).for(:import_sources) }
+      it { is_expected.not_to allow_value(invalid_import_sources).for(:import_sources) }
     end
 
     describe 'default_artifacts_expire_in' do
@@ -1602,6 +1614,15 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it 'rejects invalid values for default syntax highlighting theme' do
         is_expected.not_to allow_value(nil, 0,
           Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme)
+      end
+    end
+
+    context 'for default_dark_syntax_highlighting_theme' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_dark_syntax_highlighting_theme) }
+
+      it 'rejects invalid values for default dark syntax highlighting theme' do
+        is_expected.not_to allow_value(nil, 0,
+          Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_dark_syntax_highlighting_theme)
       end
     end
 

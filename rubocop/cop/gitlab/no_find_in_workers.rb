@@ -30,6 +30,7 @@ module RuboCop
           Refrain from using `find`, use `find_by` instead. See #{DOC_LINK}.
         MSG
 
+        # @!method find_method?(node)
         def_node_matcher :find_method?, <<~PATTERN
           (send _ :find ...)
         PATTERN

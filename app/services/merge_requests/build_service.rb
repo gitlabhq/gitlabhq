@@ -201,8 +201,6 @@ module MergeRequests
     end
 
     def ref_exists_in_gitaly?
-      return false unless Feature.enabled?(:pull_ref_directly_from_gitaly, project)
-
       # The following check acts as a fallback if there is a mismatch between
       # the cache and repository state. If the branch ref does not exist in the cache
       # then we validate the repository state with Gitaly to avoid an inconsistent response.

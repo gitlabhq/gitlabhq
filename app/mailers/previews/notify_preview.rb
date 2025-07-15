@@ -112,6 +112,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.access_token_about_to_expire_email(user, ['%w', '%w']).message
   end
 
+  def deploy_token_about_to_expire_email
+    Notify.deploy_token_about_to_expire_email(user, 'token_name', project).message
+  end
+
   def ssh_key_expired_email
     fingerprints = []
     Notify.ssh_key_expired_email(user, fingerprints).message

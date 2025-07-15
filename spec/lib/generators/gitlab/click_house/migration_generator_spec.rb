@@ -6,33 +6,7 @@ require 'fileutils'
 require 'rails/generators/testing/behavior'
 
 RSpec.describe Gitlab::ClickHouse::MigrationGenerator, feature_category: :database do
-  include Rails::Generators::Testing::Behavior
-  include FileUtils
+  let(:migration_path) { 'db/click_house/migrate' }
 
-  let(:migration_name) { "CreateProjects" }
-  let(:migration_file) do
-    Dir.glob(File.join(destination_root, "db/click_house/migrate/main/*_create_projects.rb")).first
-  end
-
-  destination Dir.mktmpdir
-
-  before do
-    prepare_destination
-    generator = described_class.new([migration_name], {}, {})
-    generator.destination_root = destination_root
-
-    generator.invoke_all
-  end
-
-  after do
-    FileUtils.rm_rf(destination_root)
-  end
-
-  it "creates the correct migration file" do
-    expect(File).to exist(migration_file)
-  end
-
-  it "uses the correct migration template" do
-    expect(File.read(migration_file)).to include("class CreateProjects < ClickHouse::Migration")
-  end
+  it_behaves_like 'ClickHouse migration generator'
 end

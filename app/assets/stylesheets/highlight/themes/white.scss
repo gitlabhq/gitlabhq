@@ -1,6 +1,7 @@
 @import '../white_base';
 
-.code.white {
+.code.white,
+.code.code-syntax-highlight-theme {
   @include white-base;
   @include conflict-colors('white');
 

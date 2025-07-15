@@ -6,13 +6,11 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
     ({
       id,
       fullName,
-      webUrl,
       parent,
-      markedForDeletionOn,
       maxAccessLevel: accessLevel,
-      userPermissions,
       descendantGroupsCount,
       children,
+      fullPath,
       ...group
     }) => {
       const baseGroup = {
@@ -20,15 +18,15 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
         id: getIdFromGraphQLId(id),
         avatarLabel: fullName,
         fullName,
-        webUrl,
         parent: parent?.id || null,
-        markedForDeletionOn,
         accessLevel,
-        availableActions: availableGraphQLGroupActions({ userPermissions, markedForDeletionOn }),
+        availableActions: availableGraphQLGroupActions(group),
         descendantGroupsCount,
         children: children?.length ? formatGraphQLGroups(children, callback) : [],
         childrenLoading: false,
         hasChildren: Boolean(descendantGroupsCount),
+        fullPath,
+        relativeWebUrl: `/${fullPath}`,
       };
 
       return {

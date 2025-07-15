@@ -117,7 +117,7 @@ describe('InputSetter', () => {
     it('should call .setInput for each config element', () => {
       const allArgs = testContext.inputSetter.setInput.mock.calls;
 
-      expect(allArgs.length).toEqual(2);
+      expect(allArgs).toHaveLength(2);
 
       allArgs.forEach((args, i) => {
         expect(args[0]).toBe(testContext.config[i]);

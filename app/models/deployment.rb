@@ -15,6 +15,9 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
+  ignore_column :id_convert_to_bigint, :project_id_convert_to_bigint, :environment_id_convert_to_bigint,
+    :user_id_convert_to_bigint, remove_with: '18.3', remove_after: '2025-09-01'
+
   belongs_to :project, optional: false
   belongs_to :environment, optional: false
   belongs_to :user

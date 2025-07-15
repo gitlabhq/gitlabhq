@@ -120,12 +120,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get all pipelines triggered by a pipeline schedule
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368566) in GitLab 15.3.
-
-{{< /history >}}
-
 Get all pipelines triggered by a pipeline schedule in a project.
 
 ```plaintext
@@ -180,7 +174,7 @@ Example response:
 
 {{< history >}}
 
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Enabled by default.
 - `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}

@@ -92,6 +92,10 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
         .and not_change { IncidentManagement::IssuableEscalationStatus.where(status: resolved).count }
     end
 
+    it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+      subject(:execute_service) { service.execute(issue) }
+    end
+
     context 'issue is incident type' do
       let(:issue) { create(:incident, project: project) }
       let(:current_user) { user }
@@ -261,7 +265,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
       it 'verifies the number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 36
+        expected_queries = 40
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)

@@ -174,6 +174,14 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
       end
 
+      context 'when source host name has userinfo credentials' do
+        let(:source_hostname) { 'https://user:password@myhost.com/path' }
+
+        it 'normalizes the base URI and removes the userinfo credentials' do
+          expect(find_or_create_source_user.source_hostname).to eq('https://myhost.com')
+        end
+      end
+
       context 'when source host name has a subdomain' do
         let(:source_hostname) { 'https://subdomain.github.com/path' }
 

@@ -534,15 +534,36 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           expect(response).to have_gitlab_http_status(:accepted)
         end
 
+        it 'creates new audit event' do
+          expect(::Import::BulkImports::Audit::Auditor)
+            .to receive(:new)
+            .with(
+              event_name: ::Import::BulkImports::Audit::Events::EXPORT_INITIATED,
+              event_message: 'Direct Transfer relations export initiated',
+              current_user: user,
+              scope: project
+            )
+
+          post api(path, user)
+        end
+
         context 'when response is not success' do
-          it 'returns api error' do
+          before do
             allow_next_instance_of(BulkImports::ExportService) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error', http_status: :error))
             end
+          end
 
+          it 'returns api error' do
             post api(path, user)
 
             expect(response).to have_gitlab_http_status(:error)
+          end
+
+          it 'does not create audit event' do
+            expect(::Import::BulkImports::Audit::Auditor).not_to receive(:new)
+
+            post api(path, user)
           end
         end
 
@@ -573,6 +594,21 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response.header['Content-Disposition']).to eq("attachment; filename=\"labels.ndjson.gz\"; filename*=UTF-8''labels.ndjson.gz")
+            end
+
+            it 'creates new audit event' do
+              upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+
+              expect(::Import::BulkImports::Audit::Auditor)
+                .to receive(:new)
+                .with(
+                  event_name: ::Import::BulkImports::Audit::Events::EXPORT_DOWNLOADED,
+                  event_message: 'Direct Transfer relation export downloaded',
+                  current_user: user,
+                  scope: project
+                )
+
+              get api(download_path, user)
             end
           end
 
@@ -622,6 +658,21 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.header['Content-Disposition']).to eq("attachment; filename=\"labels.ndjson.gz\"; filename*=UTF-8''labels.ndjson.gz")
+          end
+
+          it 'creates new audit event' do
+            upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+
+            expect(::Import::BulkImports::Audit::Auditor)
+              .to receive(:new)
+              .with(
+                event_name: ::Import::BulkImports::Audit::Events::EXPORT_BATCH_DOWNLOADED,
+                event_message: 'Direct Transfer relation export batch downloaded',
+                current_user: user,
+                scope: project
+              )
+
+            get api(download_path, user), params: { batched: true, batch_number: batch.batch_number }
           end
 
           context 'when request is to download not batched export' do

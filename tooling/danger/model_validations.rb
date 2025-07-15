@@ -36,7 +36,7 @@ module Tooling
 
       def changed_model_files
         added_files = helper.added_files
-        modified_files = helper.modified_files
+        modified_files = helper.modified_files - helper.added_files
 
         modified_files.grep(MODEL_FILES_REGEX) + added_files.grep(MODEL_CONCERN_FILES_REGEX)
       end

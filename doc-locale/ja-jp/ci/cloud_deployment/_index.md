@@ -28,9 +28,9 @@ GitLab CI/CD を使用して AWS に接続するには、認証する必要が�
 
 1. AWS アカウントにサインオンします。
 1. [IAM ユーザー](https://console.aws.amazon.com/iam/home#/home)を作成します。
-1. ユーザーを選択して、詳細にアクセスします。**\[セキュリティ認証情報] > \[新しいアクセスキーの作成]**に移動します。
+1. ユーザーを選択して、詳細にアクセスします。**セキュリティ認証情報 > 新しいアクセスキーの作成**に移動します。
 1. **アクセスキー ID**と**シークレットアクセスキー**をメモしておきます。
-1. GitLabプロジェクトで、**\[設定] > \[CI/CD]**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します:
+1. GitLabプロジェクトで、**設定 > CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します:
 
    | 環境変数名      | 値                   |
    |:-------------------------------|:------------------------|
@@ -38,7 +38,7 @@ GitLab CI/CD を使用して AWS に接続するには、認証する必要が�
    | `AWS_SECRET_ACCESS_KEY`        | シークレットアクセスキー。 |
    | `AWS_DEFAULT_REGION`           | リージョンコード。使用する予定の AWS サービスが選択したリージョンで[利用可能であることを確認](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/)することをお勧めします。 |
 
-1. 変数は[デフォルトで保護されています](../variables/_index.md#protect-a-cicd-variable)。保護されていないブランチまたは tag で GitLab CI/CD を使用するには、**\[変数を保護する]**チェックボックスをオフにします。
+1. 変数は[デフォルトで保護されています](../variables/_index.md#protect-a-cicd-variable)。保護されていないブランチまたは tag で GitLab CI/CD を使用するには、**変数を保護する**チェックボックスをオフにします。
 
 ## イメージを使用して AWS コマンドを実行する
 
@@ -80,7 +80,7 @@ GitLab は、AWS CLI を含む Docker イメージを提供します。
 
 ECS クラスターにデプロイするには:
 
-1. GitLabプロジェクトで、**\[設定] > \[CI/CD]**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します:これらの名前は、[Amazon ECS ダッシュボード](https://console.aws.amazon.com/ecs/home)でターゲットクラスターを選択すると確認できます。
+1. GitLabプロジェクトで、**設定 > CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します:これらの名前は、[Amazon ECS ダッシュボード](https://console.aws.amazon.com/ecs/home)でターゲットクラスターを選択すると確認できます。
 
    | 環境変数名      | 値                   |
    |:-------------------------------|:------------------------|

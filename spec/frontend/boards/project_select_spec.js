@@ -73,7 +73,7 @@ describe('ProjectSelect component', () => {
       await waitForPromises();
       findGlCollapsibleListBox().vm.$emit('shown');
       await nextTick();
-      expect(findGlCollapsibleListBox().props('items').length).toEqual(mockProjects.length - 1);
+      expect(findGlCollapsibleListBox().props('items')).toHaveLength(mockProjects.length - 1);
     });
   });
 

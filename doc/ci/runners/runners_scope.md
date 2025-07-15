@@ -43,7 +43,7 @@ If you are using GitLab.com:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags.md)
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags/_index.md)
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
@@ -162,7 +162,7 @@ To enable instance runners for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable instance runners for this project** toggle.
+1. Enable the **Turn on instance runners for this project** toggle.
 
 ### Enable instance runners for a group
 
@@ -171,7 +171,7 @@ To enable instance runners for a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable instance runners for this group** toggle.
+1. Enable the **Turn on instance runners for this group** toggle.
 
 ### Disable instance runners for a project
 
@@ -184,7 +184,7 @@ To disable instance runners for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Instance runners** area, turn off the **Enable instance runners for this project** toggle.
+1. In the **Instance runners** area, enable the **Turn runners for this project** toggle.
 
 Instance runners are automatically disabled for a project:
 
@@ -251,7 +251,7 @@ Group runners process jobs by using a first in, first out queue.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags/_index.md). Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
@@ -505,7 +505,7 @@ You cannot unassign a runner from the owner project. Delete the runner instead.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags/_index.md). Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
@@ -780,6 +780,27 @@ project.
 1. Select the runner name and find the **IP Address** row.
 
 ![Screenshot showing where to find the IP address for a project runner in the runner details](img/project_runner_ip_address_v17_6.png)
+
+## Add maintenance notes to runner configuration
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced for administrators](https://gitlab.com/gitlab-org/gitlab/-/issues/348299) in GitLab 15.1.
+- [Made available for groups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/422621) in GitLab 18.2.
+
+{{< /history >}}
+
+You can add a maintenance note to document the runner. Users who can edit the runner
+see the note when they view the runner details.
+
+Use this feature to inform others about consequences or problems related to changing the runner configuration.
 
 ## Enable use of runner registration tokens in projects and groups
 

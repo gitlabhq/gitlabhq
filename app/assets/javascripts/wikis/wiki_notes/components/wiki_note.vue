@@ -92,6 +92,9 @@ export default {
     authorId() {
       return getIdFromGid(this.author?.id);
     },
+    authorEmails() {
+      return this.author.emails?.nodes?.reduce((acc, node) => acc.concat(node.email), []);
+    },
     noteId() {
       return getIdFromGid(this.note?.id);
     },
@@ -272,7 +275,7 @@ export default {
         <slot name="avatar-badge"></slot>
       </gl-avatar-link>
     </div>
-    <div class="gl-mb-5" :class="dynamicClasses.noteParent">
+    <div :class="dynamicClasses.noteParent">
       <div class="note-content gl-px-3 gl-py-2">
         <div class="note-header">
           <note-header
@@ -282,12 +285,14 @@ export default {
             :note-id="noteId"
             :noteable-type="noteableType"
             :email-participant="note.externalAuthor"
+            :is-internal-note="note.internal"
           >
             <span class="gl-hidden sm:gl-inline">&middot;</span>
           </note-header>
           <note-actions
             :class="{ '-gl-mr-5': replyNote }"
             :author-id="authorId"
+            :author-emails="authorEmails"
             :show-edit="canEdit"
             :show-reply="canReply"
             :can-report-as-abuse="canReportAsAbuse"

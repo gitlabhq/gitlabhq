@@ -210,7 +210,6 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
         Ci::JobAnnotation
         Ci::JobArtifact
         Ci::JobArtifactReport
-        Ci::PipelineConfig
         Ci::PipelineVariable
         Ci::RunnerManagerBuild
         Ci::Stage

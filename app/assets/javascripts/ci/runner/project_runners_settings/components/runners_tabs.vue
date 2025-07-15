@@ -1,10 +1,14 @@
 <script>
 import { GlTabs } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
+import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
+
 import RunnersTab from './runners_tab.vue';
 import RunnerToggleAssignButton from './runner_toggle_assign_button.vue';
 import GroupRunnersToggle from './group_runners_toggle.vue';
+import InstanceRunnersTabEmptyState from './instance_runners_tab_empty_state.vue';
 import GroupRunnersTabEmptyState from './group_runners_tab_empty_state.vue';
+import ProjectRunnersTabEmptyState from './project_runners_tab_empty_state.vue';
 
 export default {
   name: 'RunnersTabs',
@@ -12,7 +16,10 @@ export default {
     GlTabs,
     RunnersTab,
     GroupRunnersToggle,
+    InstanceRunnersToggle,
+    InstanceRunnersTabEmptyState,
     GroupRunnersTabEmptyState,
+    ProjectRunnersTabEmptyState,
     RunnerToggleAssignButton,
   },
   inject: {
@@ -28,11 +35,34 @@ export default {
       type: String,
       required: true,
     },
+    instanceRunnersEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    instanceRunnersDisabledAndUnoverridable: {
+      type: Boolean,
+      required: true,
+    },
+    instanceRunnersUpdatePath: {
+      type: String,
+      required: true,
+    },
+    instanceRunnersGroupSettingsPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    groupName: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   emits: ['error'],
   data() {
     return {
       groupRunnersEnabled: null,
+      instanceRunnersEnabledModel: this.instanceRunnersEnabled,
     };
   },
   methods: {
@@ -47,6 +77,10 @@ export default {
     onGroupRunnersToggled(value) {
       this.groupRunnersEnabled = value;
       this.$refs.groupRunners.refresh();
+    },
+    onInstanceRunnersToggled(value) {
+      this.instanceRunnersEnabledModel = value;
+      this.$refs.instanceRunners.refresh();
     },
   },
   INSTANCE_TYPE,
@@ -64,11 +98,7 @@ export default {
       @error="onError"
     >
       <template #empty>
-        {{
-          s__(
-            'Runners|No project runners found, you can create one by selecting "New project runner".',
-          )
-        }}
+        <project-runners-tab-empty-state />
       </template>
       <template #other-runner-actions="{ runner }">
         <runner-toggle-assign-button
@@ -103,13 +133,29 @@ export default {
       </template>
     </runners-tab>
     <runners-tab
+      ref="instanceRunners"
       :title="s__('Runners|Instance')"
       :runner-type="$options.INSTANCE_TYPE"
       :project-full-path="projectFullPath"
       @error="onError"
     >
+      <template #settings>
+        <instance-runners-toggle
+          :is-enabled="instanceRunnersEnabledModel"
+          :is-disabled-and-unoverridable="instanceRunnersDisabledAndUnoverridable"
+          :update-path="instanceRunnersUpdatePath"
+          :group-settings-path="instanceRunnersGroupSettingsPath"
+          :group-name="groupName"
+          @change="onInstanceRunnersToggled"
+        />
+      </template>
       <template #empty>
-        {{ s__('Runners|No instance runners found.') }}
+        <instance-runners-tab-empty-state
+          :instance-runners-enabled="instanceRunnersEnabledModel"
+          :instance-runners-disabled-and-unoverridable="instanceRunnersDisabledAndUnoverridable"
+          :group-settings-path="instanceRunnersGroupSettingsPath"
+          :group-name="groupName"
+        />
       </template>
     </runners-tab>
   </gl-tabs>

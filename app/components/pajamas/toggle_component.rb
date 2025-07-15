@@ -18,8 +18,8 @@ class Pajamas::ToggleComponent < Pajamas::Component
   def initialize(
     classes:, label: nil, label_position: nil,
     id: nil, name: nil, help: nil, data: {},
-    is_disabled: false, is_checked: false, is_loading: false)
-
+    is_disabled: false, is_checked: false, is_loading: false
+  )
     @id = id
     @name = name
     @classes = classes

@@ -131,6 +131,7 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
 
       it 'triggers GraphQL subscription userMergeRequestUpdated' do
         expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user, merge_request)
+        expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(merge_request.author, merge_request)
 
         execute!
       end

@@ -7,12 +7,10 @@ module Types
       description: 'Total count of collection.'
 
     def count
-      # rubocop: disable CodeReuse/ActiveRecord
       relation = object.items
 
       # sometimes relation is an Array
-      relation = relation.reorder(nil) if relation.respond_to?(:reorder)
-      # rubocop: enable CodeReuse/ActiveRecord
+      relation = relation.without_order if relation.respond_to?(:reorder)
 
       if relation.try(:group_values).present?
         relation.size.keys.size

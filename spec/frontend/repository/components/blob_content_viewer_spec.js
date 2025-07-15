@@ -22,6 +22,7 @@ import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import getRefMixin from '~/repository/mixins/get_ref';
+import { InternalEvents } from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -42,7 +43,7 @@ import {
   projectMock,
   getProjectMockWithOverrides,
 } from 'ee_else_ce_jest/repository/mock_data';
-import { mockTracking } from 'helpers/tracking_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/repository/components/blob_viewers');
 jest.mock('~/lib/utils/url_utility');
@@ -53,9 +54,10 @@ jest.mock('~/alert');
 let wrapper;
 let blobInfoMockResolver;
 let projectInfoMockResolver;
-let trackingSpy;
 
 Vue.use(Vuex);
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const mockAxios = new MockAdapter(axios);
 
@@ -123,7 +125,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       store: createMockStore(),
       apolloProvider: fakeApollo,
       propsData: propsMock,
-      mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin()],
+      mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
       mocks: {
         $route: mockRoute,
         $router: mockRouter,
@@ -136,7 +138,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       },
     }),
   );
-  trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
   await waitForPromises();
 };
@@ -459,10 +460,15 @@ describe('Blob content viewer component', () => {
         });
 
         if (tooLarge) {
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'view_source', {
-            label: 'repository_file_size_limit_exceeded',
-            property: { label: language, property: size },
-          });
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'repository_file_size_limit_exceeded',
+            {
+              label: language,
+              property: String(size),
+            },
+            undefined,
+          );
         }
 
         await waitForPromises();

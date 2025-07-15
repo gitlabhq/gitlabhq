@@ -19,7 +19,7 @@
 #     milestone_wildcard_id: 'none', 'any', 'upcoming', 'started' (cannot be simultaneously used with milestone_title)
 #     release_tag: string
 #     author_id: integer
-#     author_username: string
+#     author_username: username string or a group handle (e.g., '@group/subgroup')
 #     assignee_id: integer or 'None' or 'Any'
 #     closed_by_id: integer
 #     assignee_username: string
@@ -182,7 +182,7 @@ class IssuableFinder
 
     state_counts = finder
       .execute
-      .reorder(nil)
+      .without_order
       .group(:state_id)
       .count
 
@@ -385,11 +385,9 @@ class IssuableFinder
     items.pg_full_text_search(search, matched_columns: params[:in].to_s.split(','))
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_iids(items)
-    params[:iids].present? ? items.where(iid: params[:iids]) : items
+    params[:iids].present? ? items.iid_in(params[:iids]) : items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_negated_iids(items)
@@ -414,6 +412,7 @@ class IssuableFinder
 
   def by_author(items)
     Issuables::AuthorFilter.new(
+      current_user: current_user,
       params: original_params
     ).filter(items)
   end

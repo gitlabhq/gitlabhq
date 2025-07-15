@@ -82,7 +82,7 @@ Each architecture is designed to handle specific RPS targets for different types
 
 Finding out the RPS can depend notably on the specific environment setup and monitoring stack. Some potential options include:
 
-- [GitLab Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`.
+- [GitLab Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`.
 - [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads) from GitLab Support.
 - Other monitoring solutions.
 - Load Balancer statistics.
@@ -340,7 +340,7 @@ For details about what machine types we test against and how, refer to [validati
 
 Most standard disk types are expected to work for GitLab. However, be aware of the following specific call-outs:
 
-- [Gitaly](../gitaly/_index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
+- Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 - We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
 
 Other disk types are expected to work with GitLab. Choose based on your requirements such as durability or cost.
@@ -434,7 +434,7 @@ architectures are designed to have enough memory in most cases to avoid the need
 
 ### Praefect PostgreSQL
 
-[Praefect requires its own database server](../gitaly/praefect.md#postgresql). To achieve full HA, a third-party PostgreSQL database solution is required.
+[Praefect requires its own database server](../gitaly/praefect/configure.md#postgresql). To achieve full HA, a third-party PostgreSQL database solution is required.
 
 We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
 can be set up using the Linux package as the specifications reflect. For more details, see the following issues:
@@ -714,7 +714,7 @@ For more information, see the following documentation:
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/_index.md#migrate-to-gitaly-cluster)
+- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster)
 
 ### Upgrades
 

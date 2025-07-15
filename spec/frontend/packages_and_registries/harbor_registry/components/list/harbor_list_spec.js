@@ -24,7 +24,7 @@ describe('Harbor List', () => {
     it('contains one list element for each image', () => {
       mountComponent();
 
-      expect(findHarborListRow().length).toBe(harborImagesList.length);
+      expect(findHarborListRow()).toHaveLength(harborImagesList.length);
     });
 
     it('passes down the metadataLoading prop', () => {

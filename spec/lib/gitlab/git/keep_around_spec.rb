@@ -11,8 +11,8 @@ RSpec.describe Gitlab::Git::KeepAround, feature_category: :gitaly do
   let(:metric_labels) { { source: 'keeparound_spec' } }
 
   def expect_metrics_change(requested, created, &block)
-    requested_metric = Gitlab::Metrics.registry.get(:gitlab_keeparound_refs_requested_total)
-    created_metric = Gitlab::Metrics.registry.get(:gitlab_keeparound_refs_created_total)
+    requested_metric = Gitlab::Metrics.client.get(:gitlab_keeparound_refs_requested_total)
+    created_metric = Gitlab::Metrics.client.get(:gitlab_keeparound_refs_created_total)
 
     expect(&block).to change { requested_metric.get(metric_labels) }.by(requested)
       .and change { created_metric.get(metric_labels) }.by(created)

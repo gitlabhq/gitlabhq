@@ -5,7 +5,7 @@ module Ci
     def execute(pipeline)
       return unless pipeline.bridge_triggered?
 
-      pipeline.source_bridge.inherit_status_from_downstream!(pipeline)
+      pipeline.source_bridge.inherit_status_from_downstream(pipeline)
     end
   end
 end

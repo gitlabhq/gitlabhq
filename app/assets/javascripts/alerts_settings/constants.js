@@ -44,6 +44,9 @@ export const i18n = {
       help: s__(
         'AlertSettings|To create a custom mapping, enter an example payload from your monitoring tool, in JSON format. Select the "Parse payload fields" button to continue.',
       ),
+      prometheusHelp: s__(
+        'AlertSettings|To create a custom mapping, enter a single JSON object from the array under the %{codeStart}alerts%{codeEnd} key of a payload from your Prometheus instance. Select the "Parse payload fields" button to continue.',
+      ),
       placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
       editPayload: s__('AlertSettings|Edit payload'),
       parsePayload: s__('AlertSettings|Parse payload fields'),

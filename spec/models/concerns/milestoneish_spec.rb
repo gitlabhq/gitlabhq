@@ -18,6 +18,7 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
   let_it_be(:security_issue_2, reload: true) { create(:work_item, :confidential, assignees: [assignee], milestone: milestone) }
   let_it_be(:closed_issue_1, reload: true) { create(:work_item, :task, :closed, milestone: milestone) }
   let_it_be(:closed_issue_2, reload: true) { create(:work_item, :closed, milestone: milestone) }
+  let_it_be(:closed_incident, reload: true) { create(:work_item, :incident, :closed, milestone: milestone) }
   let_it_be(:closed_security_issue_1, reload: true) { create(:work_item, :confidential, :closed, author: author, milestone: milestone) }
   let_it_be(:closed_security_issue_2, reload: true) { create(:work_item, :confidential, :closed, assignees: [assignee], milestone: milestone) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
@@ -28,28 +29,21 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
   before do
     project.add_developer(member)
     project.add_guest(guest)
-    stub_feature_flags(work_item_epic_milestones: false)
   end
 
-  describe '#sorted_issues' do
-    before do
-      issue.labels << label_1
-      security_issue_1.labels << label_2
-      closed_issue_1.labels << label_3
-    end
-
-    it 'sorts issues by label priority' do
-      issues = milestone.sorted_issues(member)
+  describe '#milestone_issues' do
+    it 'returns issues' do
+      issues = milestone.milestone_issues(member)
 
       expect(issues.first).to eq(issue)
       expect(issues.second).to eq(security_issue_1)
       expect(issues.third).not_to eq(closed_issue_1)
     end
 
-    it 'limits issue count and keeps the ordering' do
+    it 'limits issue count' do
       stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 4)
 
-      issues = milestone.sorted_issues(member)
+      issues = milestone.milestone_issues(member)
       # Cannot use issues.count here because it is sorting
       # by a virtual column 'highest_priority' and it will break
       # the query.
@@ -57,9 +51,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
 
       expect(issues.length).to eq(4)
       expect(total_issues_count).to eq(4)
-      expect(issues.first).to eq(issue)
-      expect(issues.second).to eq(security_issue_1)
-      expect(issues.third).not_to eq(closed_issue_1)
     end
   end
 
@@ -152,20 +143,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     end
   end
 
-  describe '#sorted_merge_requests' do
-    it 'sorts merge requests by label priority' do
-      merge_request_1 = create(:labeled_merge_request, labels: [label_2], source_project: project, source_branch: 'branch_1', milestone: milestone)
-      merge_request_2 = create(:labeled_merge_request, labels: [label_1], source_project: project, source_branch: 'branch_2', milestone: milestone)
-      merge_request_3 = create(:labeled_merge_request, labels: [label_3], source_project: project, source_branch: 'branch_3', milestone: milestone)
-
-      merge_requests = milestone.sorted_merge_requests(member)
-
-      expect(merge_requests.first).to eq(merge_request_2)
-      expect(merge_requests.second).to eq(merge_request_1)
-      expect(merge_requests.third).to eq(merge_request_3)
-    end
-  end
-
   describe '#merge_requests_visible_to_user' do
     context 'when project is private' do
       before do
@@ -251,13 +228,13 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
 
   describe '#closed_issues_count' do
     it 'counts all closed issues including confidential' do
-      expect(milestone.closed_issues_count).to eq 4
+      expect(milestone.closed_issues_count).to eq 5
     end
   end
 
   describe '#total_issues_count' do
     it 'counts all issues including confidential' do
-      expect(milestone.total_issues_count).to eq 7
+      expect(milestone.total_issues_count).to eq 8
     end
   end
 

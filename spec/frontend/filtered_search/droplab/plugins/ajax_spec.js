@@ -24,7 +24,7 @@ describe('Ajax', () => {
       it('calls preprocessing', () => {
         Ajax.preprocessing(config, []);
 
-        expect(config.preprocessing.mock.calls.length).toBe(1);
+        expect(config.preprocessing.mock.calls).toHaveLength(1);
       });
 
       it('overrides AjaxCache', () => {
@@ -34,7 +34,7 @@ describe('Ajax', () => {
 
         Ajax.preprocessing(config, []);
 
-        expect(AjaxCache.override.mock.calls.length).toBe(1);
+        expect(AjaxCache.override.mock.calls).toHaveLength(1);
       });
     });
   });

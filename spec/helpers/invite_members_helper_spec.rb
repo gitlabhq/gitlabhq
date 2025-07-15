@@ -22,7 +22,7 @@ RSpec.describe InviteMembersHelper do
         help_link: help_page_url('user/permissions.md'),
         is_project: 'true',
         access_levels: ProjectMember.access_level_roles.to_json,
-        full_path: Gitlab.ee? ? project.root_ancestor.full_path : project.full_path
+        full_path: project.full_path
       }
 
       expect(helper.common_invite_group_modal_data(project, ProjectMember)).to include(attributes)
@@ -60,7 +60,7 @@ RSpec.describe InviteMembersHelper do
         root_id: project.root_ancestor.id,
         name: project.name,
         default_access_level: Gitlab::Access::GUEST,
-        full_path: Gitlab.ee? ? project.root_ancestor.full_path : project.full_path
+        full_path: project.full_path
       }
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)

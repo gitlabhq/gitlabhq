@@ -1,9 +1,5 @@
-import { initWebauthnAuthenticate, initWebauthnRegister } from './webauthn';
+import { initWebauthnAuthenticate } from './webauthn';
 
 export const mount2faAuthentication = () => {
   initWebauthnAuthenticate();
-};
-
-export const mount2faRegistration = () => {
-  initWebauthnRegister();
 };

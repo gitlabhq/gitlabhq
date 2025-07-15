@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Jira issues integration
 ---
@@ -27,7 +27,7 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 {{< history >}}
 
 - Authentication with Jira personal access tokens [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
-- **Jira issues** and **Jira issues for vulnerabilities** sections [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+- **Jira issues** and **Jira issues for vulnerabilities** sections [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - **Jira issues** and **Jira issues for vulnerabilities** sections [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 - **Enable Jira issues** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
 - **Enable Jira issue creation from vulnerabilities** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **Create Jira issues for vulnerabilities** in GitLab 17.0.
@@ -128,7 +128,7 @@ To configure your project settings in GitLab:
 {{< history >}}
 
 - Enabling Jira issues for a group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
-- Viewing issues from multiple Jira projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+- Viewing issues from multiple Jira projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - Viewing issues from multiple Jira projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 
 {{< /history >}}
@@ -165,7 +165,7 @@ Issues are grouped into the following tabs based on their
 
 {{< history >}}
 
-- Filtering Jira issues by project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+- Filtering Jira issues by project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - Filtering Jira issues by project [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 
 {{< /history >}}

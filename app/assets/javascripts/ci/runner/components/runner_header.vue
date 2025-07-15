@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import { s__, sprintf } from '~/locale';
 import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
 import { formatRunnerName } from '../utils';
 import RunnerCreatedAt from './runner_created_at.vue';
@@ -28,7 +29,9 @@ export default {
   },
   computed: {
     name() {
-      return formatRunnerName(this.runner);
+      return sprintf(s__('Runners|Runner %{name}'), {
+        name: formatRunnerName(this.runner),
+      });
     },
   },
   I18N_LOCKED_RUNNER_DESCRIPTION,

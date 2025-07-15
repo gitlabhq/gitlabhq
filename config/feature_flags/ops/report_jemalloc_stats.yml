@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91283
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367845
 milestone: '15.2'
 type: ops
-group: group::cloud connector
+group: group::durability
 default_enabled: false

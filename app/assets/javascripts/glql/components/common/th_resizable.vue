@@ -1,12 +1,6 @@
 <script>
 export default {
   name: 'ThResizable',
-  props: {
-    table: {
-      required: true,
-      type: HTMLTableElement,
-    },
-  },
   data() {
     return {
       initialX: 0,
@@ -18,6 +12,9 @@ export default {
     };
   },
   computed: {
+    table() {
+      return this.$el?.closest('table');
+    },
     headerStyle() {
       return (
         this.columnWidth && {
@@ -29,10 +26,15 @@ export default {
   },
   mounted() {
     this.updateTableHeight();
+
+    this.table?.addEventListener('mouseenter', this.updateTableHeight);
+  },
+  destroyed() {
+    this.table?.removeEventListener('mouseenter', this.updateTableHeight);
   },
   methods: {
     updateTableHeight() {
-      this.tableHeight = this.table.clientHeight;
+      this.tableHeight = this.table?.clientHeight ?? 0;
     },
     onDocumentMouseMove(e) {
       this.columnWidth = this.initialColumnWidth + e.clientX - this.initialX;
@@ -61,12 +63,12 @@ export default {
 };
 </script>
 <template>
-  <th :style="headerStyle" class="gl-relative">
+  <th :style="headerStyle" class="!gl-border-r gl-relative">
     <slot></slot>
     <div
-      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-2 gl-cursor-col-resize gl-select-none hover:gl-bg-strong"
+      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-0 gl-cursor-col-resize gl-select-none gl-border-y-0 gl-border-l-[4px] gl-border-r-2 gl-border-solid gl-border-transparent gl-transition-colors hover:gl-border-r-blue-500"
       data-testid="resize-handle"
-      :class="{ 'gl-bg-strong': isResizing }"
+      :class="{ 'gl-border-r-blue-500': isResizing }"
       :style="{ height: `${tableHeight}px` }"
       @mouseover="updateTableHeight"
       @mousedown="onMouseDown"

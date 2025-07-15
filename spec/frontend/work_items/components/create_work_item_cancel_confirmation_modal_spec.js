@@ -66,7 +66,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
 
       findContinueEditingButton().vm.$emit('click');
 
-      expect(wrapper.emitted('continueEditing').length).toBe(1);
+      expect(wrapper.emitted('continueEditing')).toHaveLength(1);
     });
 
     it('emits proper event when "Discard changes" button is clicked', async () => {
@@ -74,7 +74,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
 
       await findDiscardButton().vm.$emit('click');
 
-      expect(wrapper.emitted('discardDraft').length).toBe(1);
+      expect(wrapper.emitted('discardDraft')).toHaveLength(1);
     });
   });
 });

@@ -91,8 +91,8 @@ Test Planning: https://handbook.gitlab.com/handbook/engineering/infrastructure/t
 <!-- This section should be used for setting the appropriate tier that this feature will belong to. Pricing can be found here: https://about.gitlab.com/pricing/
 
 * Free
-* Premium/Silver
-* Ultimate/Gold
+* Premium
+* Ultimate
 -->
 
 ### Feature Usage Metrics

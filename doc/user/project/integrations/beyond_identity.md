@@ -19,8 +19,15 @@ title: Beyond Identity
 
 {{< /history >}}
 
-Configure GitLab to verify GPG keys issued by [Beyond Identity](https://www.beyondidentity.com/)
-added to a user profile.
+In GitLab, users can sign their commits after [adding a GPG key to their profile](../repository/signed_commits/gpg.md).
+The GitLab integration with [Beyond Identity](https://www.beyondidentity.com/) extends this feature.
+
+When configured, this integration uses Beyond Identity to validate any new GPG key that a user adds
+to their profile. Keys that do not pass validation are rejected, and the user must upload a new key.
+
+When a user pushes a signed commit to the GitLab instance, GitLab runs a pre-receive
+check to validate those commits against the GPG key stored in the user's profile.
+This ensures that only commits signed with validated keys are accepted.
 
 ## Set up the Beyond Identity integration for your instance
 
@@ -81,7 +88,7 @@ To skip the push check for [service accounts](../../profile/service_accounts.md)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `beyond_identity_exclusions`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.0 [with a flag](../../../administration/feature_flags/_index.md) named `beyond_identity_exclusions`. Enabled by default.
 - Option to exclude groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.1.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/457893) in GitLab 17.7. Feature flag `beyond_identity_exclusions` removed.
 

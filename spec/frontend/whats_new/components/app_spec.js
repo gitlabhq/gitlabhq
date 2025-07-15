@@ -24,7 +24,10 @@ describe('App', () => {
   let state;
   let trackingSpy;
 
+  const withClose = jest.fn();
+
   const buildProps = () => ({
+    withClose,
     versionDigest: 'version-digest',
   });
 
@@ -106,6 +109,7 @@ describe('App', () => {
       it('dispatches closeDrawer when clicking close', () => {
         getDrawer().vm.$emit('close');
         expect(actions.closeDrawer).toHaveBeenCalled();
+        expect(withClose).toHaveBeenCalled();
       });
 
       it('dispatches closeDrawer when clicking the backdrop', () => {

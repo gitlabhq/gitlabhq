@@ -78,6 +78,7 @@ describe('YourWorkProjectsApp', () => {
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
       shouldUpdateActiveTabCountFromTabQuery: true,
       paginationType: PAGINATION_TYPE_KEYSET,
+      userPreferencesSortKey: 'projectsSort',
     });
   });
 });

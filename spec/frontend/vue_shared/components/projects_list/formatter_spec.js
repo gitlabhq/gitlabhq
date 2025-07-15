@@ -38,8 +38,9 @@ describe('formatGraphQLProjects', () => {
       availableActions: ['edit', 'delete'],
       customProperty: firstMockProject.nameWithNamespace,
       isPersonal: false,
+      relativeWebUrl: `/${firstMockProject.fullPath}`,
     });
 
-    expect(formattedProjects.length).toBe(projects.length);
+    expect(formattedProjects).toHaveLength(projects.length);
   });
 });

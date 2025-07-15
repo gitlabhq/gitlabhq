@@ -9,29 +9,6 @@ export default {
   name: 'ProjectsList',
   components: { ProjectsListItem },
   props: {
-    /**
-     * Expected format:
-     *
-     * {
-     *   id: number | string;
-     *   name: string;
-     *   webUrl: string;
-     *   topics: string[];
-     *   forksCount?: number;
-     *   avatarUrl: string | null;
-     *   starCount: number;
-     *   visibility: string;
-     *   issuesAccessLevel: string;
-     *   forkingAccessLevel: string;
-     *   openIssuesCount: number;
-     *   permissions: {
-     *     projectAccess: { accessLevel: 50 };
-     *   };
-     *   descriptionHtml: string;
-     *   updatedAt: string;
-     *   createdAt: string;
-     * }[]
-     */
     items: {
       type: Array,
       required: true,

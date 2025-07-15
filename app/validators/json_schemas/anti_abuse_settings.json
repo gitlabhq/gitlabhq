@@ -11,6 +11,10 @@
     "require_email_verification_on_account_locked": {
       "type": "boolean",
       "description": "Set to `true` to enforce email verification when an account is locked."
+    },
+    "delay_user_account_self_deletion": {
+      "type": "boolean",
+      "description": "Set to `true` to delay deletion of the user's own account after it is marked for removal."
     }
   }
 }

@@ -1,9 +1,12 @@
+import { getParameterByName } from '~/lib/utils/url_utility';
 import WorkItemList from 'ee_else_ce/work_items/pages/work_items_list_app.vue';
 import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
+import { getDraftWorkItemType } from '../utils';
 import {
   ROUTES,
+  NAME_TO_ENUM_MAP,
   WORK_ITEM_BASE_ROUTE_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -20,14 +23,19 @@ function generateTypeRegex(routeMap) {
  * @returns {string|null}
  */
 function getIssueTypeEnumFromDocument() {
-  const issueType = document.querySelector('.params-issue-type')?.textContent.toUpperCase().trim();
+  // Get type from DOM as present in app/views/projects/issues/new.html.haml
+  const issueType =
+    getParameterByName('issue[issue_type]') &&
+    document.querySelector('.params-issue-type')?.textContent.toUpperCase().trim();
+
+  // Check if DOM-provided type is either Incident or Issue
   if ([WORK_ITEM_TYPE_ENUM_INCIDENT, WORK_ITEM_TYPE_ENUM_ISSUE].includes(issueType)) {
     return issueType;
   }
   return null;
 }
 
-function getRoutes() {
+function getRoutes(fullPath) {
   const routes = [
     {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})`,
@@ -40,7 +48,10 @@ function getRoutes() {
       component: CreateWorkItem,
       props: ({ params, query }) => ({
         workItemTypeEnum:
-          query.type || getIssueTypeEnumFromDocument() || WORK_ITEM_BASE_ROUTE_MAP[params.type],
+          query.type ||
+          getIssueTypeEnumFromDocument() ||
+          NAME_TO_ENUM_MAP[getDraftWorkItemType({ fullPath })?.name] ||
+          WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },
     {

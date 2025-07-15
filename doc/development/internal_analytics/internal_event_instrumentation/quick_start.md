@@ -235,9 +235,12 @@ expect { subject }
   .and change { mr.notes.count }.by(1)
 ```
 
-> [!tip] Debugging tip
-> If your new tests are failing due to metrics not being incremented when you expect them to be, 
-> you may need to apply the `:clean_gitlab_redis_shared_state` trait to clear the Redis cache between examples.
+{{< alert type="note" >}}
+
+Debugging tip: If your new tests are failing due to metrics not being incremented when you expect them to be,
+you may need to apply the `:clean_gitlab_redis_shared_state` trait to clear the Redis cache between examples.
+
+{{< /alert >}}
 
 To test that an event was not triggered, you can use the `not_trigger_internal_events` matcher. It does not accept message chains.
 

@@ -25,7 +25,7 @@ module Gitlab
             @name = name
             @vendor = vendor
             @version = version
-            @primary_identifiers = primary_identifiers
+            @primary_identifiers = primary_identifiers || []
           end
 
           def to_hash

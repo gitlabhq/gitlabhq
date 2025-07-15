@@ -1,0 +1,11 @@
+---
+table_name: p_ai_active_context_code_repositories
+classes:
+- Ai::ActiveContext::Code::Repository
+feature_categories:
+- global_search
+description: Projects where Code embeddings are enabled
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193173
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

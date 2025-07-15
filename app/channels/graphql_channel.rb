@@ -52,7 +52,13 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
   def context
     request_authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
     scope_validator = ::Gitlab::Auth::ScopeValidator.new(current_user, request_authenticator)
-    { channel: self, current_user: current_user, is_sessionless_user: false, scope_validator: scope_validator }
+    {
+      channel: self,
+      current_user: current_user,
+      current_organization: connection.current_organization,
+      is_sessionless_user: false,
+      scope_validator: scope_validator
+    }
   end
 end
 

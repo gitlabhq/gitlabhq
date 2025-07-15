@@ -202,6 +202,31 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
       end
     end
 
+    context 'when sec: uses different database' do
+      context 'when sec: is enabled' do
+        let(:test_config) do
+          {
+            main: main_database_config,
+            ci: additional_database_config,
+            sec: additional_database_config.merge(database: 'sec')
+          }
+        end
+
+        it_behaves_like 'validates successfully'
+      end
+
+      context 'when sec: is enabled without ci:' do
+        let(:test_config) do
+          {
+            main: main_database_config,
+            sec: additional_database_config
+          }
+        end
+
+        it_behaves_like 'raises an error', /The 'sec' connection is expecting 'ci' to be enabled/
+      end
+    end
+
     context 'one of the databases is in read-only mode' do
       let(:test_config) do
         {

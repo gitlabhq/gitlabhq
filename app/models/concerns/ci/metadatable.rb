@@ -21,7 +21,6 @@ module Ci
 
       delegate :timeout, to: :metadata, prefix: true, allow_nil: true
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
-      delegate :environment_auto_stop_in, to: :metadata, prefix: false, allow_nil: true
       delegate :id_tokens, to: :metadata, allow_nil: true
       delegate :exit_code, to: :metadata, allow_nil: true
 
@@ -30,10 +29,41 @@ module Ci
       scope :with_project_and_metadata, -> do
         joins(:metadata).includes(:metadata).preload(:project)
       end
+
+      def self.any_with_exposed_artifacts?
+        found_exposed_artifacts = false
+
+        # TODO: Remove :project preload when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
+        includes(:project).each_batch do |batch|
+          # We only load what we need for `has_exposed_artifacts?`
+          records = batch.select(:id, :partition_id, :project_id, :options).to_a
+
+          ActiveRecord::Associations::Preloader.new(
+            records: records,
+            associations: :metadata,
+            scope: Ci::BuildMetadata.select(:build_id, :partition_id, :config_options)
+          ).call
+
+          next unless records.any?(&:has_exposed_artifacts?)
+
+          found_exposed_artifacts = true
+          break
+        end
+
+        found_exposed_artifacts
+      end
+
+      def self.select_with_exposed_artifacts
+        includes(:metadata, :job_artifacts_metadata, :project).select(&:has_exposed_artifacts?)
+      end
     end
 
     def has_exposed_artifacts?
-      !!metadata&.has_exposed_artifacts?
+      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
+        options.dig(:artifacts, :expose_as).present?
+      else
+        !!metadata&.has_exposed_artifacts?
+      end
     end
 
     def ensure_metadata
@@ -64,10 +94,10 @@ module Ci
     def options=(value)
       write_metadata_attribute(:options, :config_options, value)
 
+      # TODO: Remove code below when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
       ensure_metadata.tap do |metadata|
         # Store presence of exposed artifacts in build metadata to make it easier to query
         metadata.has_exposed_artifacts = value&.dig(:artifacts, :expose_as).present?
-        metadata.environment_auto_stop_in = value&.dig(:environment, :auto_stop_in)
       end
     end
 
@@ -91,14 +121,12 @@ module Ci
       ensure_metadata.id_tokens = value
     end
 
-    def enqueue_immediately?
-      !!options[:enqueue_immediately]
-    end
+    # TODO: Update this logic when column `p_ci_builds.debug_trace_enabled` is added.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194954#note_2574776849.
+    def debug_trace_enabled?
+      return true if degenerated?
 
-    def set_enqueue_immediately!
-      # ensures that even if `config_options: nil` in the database we set the
-      # new value correctly.
-      self.options = options.merge(enqueue_immediately: true)
+      metadata&.debug_trace_enabled?
     end
 
     private

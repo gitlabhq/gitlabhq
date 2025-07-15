@@ -75,8 +75,8 @@ Composer package naming scope is Instance Level.
 
 To avoid name conflict for instance-level endpoints you must define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
-ID or full project path in the package name. See
-[Conan's naming convention](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
+ID or full project path in the package name. For more information with an example, see
+[Package recipe naming convention for instance remotes](../../user/packages/conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
 
 For group and project-level endpoints, naming can be less constrained and it is up to the group and project
 members to be certain that there is no conflict between two package names. However, the system should prevent

@@ -6,6 +6,9 @@ description: Settings and commands in the GitLab Workflow extension for VS Code.
 title: GitLab Workflow extension settings and commands
 ---
 
+The GitLab Workflow extension for VS Code integrates with the VS Code Command Palette, extends existing
+VS Code integrations with Git, and provides configuration options.
+
 ## Command Palette commands
 
 This extension provides several sets of commands that you can trigger in the
@@ -88,15 +91,15 @@ If you use self-signed certificates to connect to your GitLab instance, read the
 | Setting | Default | Information |
 | ------- | ------- | ----------- |
 | `gitlab.customQueries` | Not applicable | Defines the search queries that retrieves the items shown on the GitLab Panel. For more information, see [Custom Queries documentation](custom_queries.md). |
-| `gitlab.debug` | false | Set to `true` to enable debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
-| `gitlab.duo.enabledWithoutGitlabProject` | true | Set to `true` to keep GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, all GitLab Duo features are disabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
+| `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
+| `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
 | `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of [officially supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code suggestions quality for the added languages might not be optimal. |
-| `gitlab.duoCodeSuggestions.enabled` | true | Toggle to enable or disable AI-assisted code suggestions. |
+| `gitlab.duoCodeSuggestions.enabled` | true | When `true`, enables AI-assisted code suggestions. |
 | `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for which to enable Code Suggestions. By default, all supported languages are enabled. |
-| `gitlab.duoCodeSuggestions.openTabsContext` | true | Toggle to enable or disable sending of context across open tabs to improve Code Suggestions. |
-| `gitlab.keybindingHints.enabled"` | true | Enable keybinding hints for GitLab Duo. |
-| `gitlab.pipelineGitRemoteName` | null | The name of the Git remote name corresponding to the GitLab repository with your pipelines. If set to `null` or missing, then the extension uses the same remote as for the non-pipeline features. |
-| `gitlab.showPipelineUpdateNotifications` | false | Set to `true` to show an alert when a pipeline completes. |
+| `gitlab.duoCodeSuggestions.openTabsContext` | true | When `true`, enables sending of context across open tabs to improve Code Suggestions. |
+| `gitlab.keybindingHints.enabled` | true | Enables keybinding hints for GitLab Duo. |
+| `gitlab.pipelineGitRemoteName` | null | The name of the Git remote name corresponding to the GitLab repository with your pipelines. When `null` or empty, then the extension uses the same remote as for the non-pipeline features. |
+| `gitlab.showPipelineUpdateNotifications` | false | When `true`, shows an alert when a pipeline completes. |
 
 ### `duoFeaturesEnabledForProject`
 

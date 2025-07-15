@@ -49,6 +49,13 @@ module Gitlab
       by_id(Gitlab::CurrentSettings.default_syntax_highlighting_theme)
     end
 
+    # Get the default dark Scheme
+    #
+    # Returns a Scheme
+    def self.default_dark
+      by_id(Gitlab::CurrentSettings.default_dark_syntax_highlighting_theme)
+    end
+
     # Iterate through each Scheme
     #
     # Yields the Scheme object
@@ -62,10 +69,42 @@ module Gitlab
     #
     # Returns a Scheme
     def self.for_user(user)
+      return default unless user
+
+      if user_prefers_dark_mode?(user)
+        dark_for_user(user)
+      else
+        light_for_user(user)
+      end
+    end
+
+    def self.user_prefers_dark_mode?(user)
+      user&.color_mode_id == Gitlab::ColorModes::APPLICATION_DARK
+    end
+
+    # Get the light Scheme for the specified user, or the default
+    #
+    # user - User record
+    #
+    # Returns a Scheme
+    def self.light_for_user(user)
       if user
         by_id(user.color_scheme_id)
       else
         default
+      end
+    end
+
+    # Get the dark Scheme for the specified user, or the default
+    #
+    # user - User record
+    #
+    # Returns a Scheme
+    def self.dark_for_user(user)
+      if user && !user.dark_color_scheme_id.nil?
+        by_id(user.dark_color_scheme_id)
+      else
+        default_dark
       end
     end
 

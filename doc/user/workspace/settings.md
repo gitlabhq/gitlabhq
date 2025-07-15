@@ -2,11 +2,12 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure the GitLab agent for workspaces.
+description: Configure the GitLab agent for Kubernetes to support workspaces.
 title: Workspace settings
 ---
 
-Workspace settings configure how the GitLab agent manages remote development environments in
+Workspace settings configure how the GitLab agent for Kubernetes manages remote development environments
+in
 your Kubernetes cluster. These settings control:
 
 - Resource allocation
@@ -42,13 +43,13 @@ Updating any of these settings, except `enabled`, does not affect existing works
 
 | Setting                                                                                   | Description                                                                                   | Format                                                      | Default value                           | Required |
 |-------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------|-----------------------------------------|----------|
-| [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent.                         | Boolean                                                     | `false`                                 | Yes      |
+| [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent for Kubernetes.                         | Boolean                                                     | `false`                                 | Yes      |
 | [`dns_zone`](#dns_zone)                                                                   | DNS zone where workspaces are available.                                                      | String. Valid DNS format.                                   | None                                    | Yes      |
 | [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | Namespace where [`gitlab-workspaces-proxy`](set_up_gitlab_agent_and_proxies.md) is installed. | String. Valid Kubernetes namespace name.                    | `gitlab-workspaces`                     | No       |
 | [`network_policy`](#network_policy)                                                       | Firewall rules for workspaces.                                                                | Object containing `enabled` and `egress` fields.            | See [`network_policy`](#network_policy) | No       |
 | [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | Default requests and limits for CPU and memory per workspace container.                       | Object with `requests` and `limits` for CPU and memory.     | `{}`                                    | No       |
 | [`max_resources_per_workspace`](#max_resources_per_workspace)                             | Maximum requests and limits for CPU and memory per workspace.                                 | Object with `requests` and `limits` for CPU and memory      | `{}`                                    | No       |
-| [`workspaces_quota`](#workspaces_quota)                                                   | Maximum number of workspaces for the GitLab agent.                                            | Integer                                                     | `-1`                                    | No       |
+| [`workspaces_quota`](#workspaces_quota)                                                   | Maximum number of workspaces for the GitLab agent for Kubernetes.                                            | Integer                                                     | `-1`                                    | No       |
 | [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | Maximum number of workspaces per user.                                                        | Integer                                                     | `-1`                                    | No       |
 | [`use_kubernetes_user_namespaces`](#use_kubernetes_user_namespaces)                       | Indicates whether to use user namespaces in Kubernetes.                                       | Boolean: `true` or `false`                                  | `false`                                 | No       |
 | [`default_runtime_class`](#default_runtime_class)                                         | Default Kubernetes `RuntimeClass`.                                                            | String. Valid `RuntimeClass` name.                          | `""`                                    | No       |
@@ -64,8 +65,8 @@ Updating any of these settings, except `enabled`, does not affect existing works
 
 Use this setting to define whether:
 
-- The GitLab agent can communicate with the GitLab instance.
-- You can [create a workspace](configuration.md#create-a-workspace) with the GitLab agent.
+- The GitLab agent for Kubernetes can communicate with the GitLab instance.
+- You can [create a workspace](configuration.md#create-a-workspace) with the GitLab agent for Kubernetes.
 
 The default value is `false`.
 
@@ -277,7 +278,7 @@ to perform bootstrapping operations such as cloning the project repository.
 
 {{< /history >}}
 
-Use this setting to set the maximum number of workspaces for the GitLab agent.
+Use this setting to set the maximum number of workspaces for the GitLab agent for Kubernetes.
 
 You cannot create new workspaces for an agent when:
 
@@ -535,9 +536,8 @@ For more information about `labels`, see
 
 {{< /history >}}
 
-Use this setting to automatically stop the agent's workspaces after the specified number of hours
-have passed, because the workspace last transitioned to an active state.
-An "active state" is defined as any non-stopped or non-terminated state.
+This setting automatically stops the agent's workspaces after they have been active for the specified
+number of hours. An active state is any non-stopped or non-terminated state.
 
 The timer for this setting starts when you create the workspace, and is reset every time you
 restart the workspace.

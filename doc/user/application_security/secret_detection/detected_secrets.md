@@ -18,24 +18,34 @@ This table lists the secrets detected by:
 - Client-side secret detection
 - Secret push protection
 
+Secret detection rules are updated in the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main).
+Detected secrets with patterns that have been removed or updated remain open so you can triage them.
+
 <!-- markdownlint-disable MD034 -->
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->
 
 | Description                                   | ID                                            | Pipeline secret detection | Client-side secret detection | Secret push protection |
 |:----------------------------------------------|:----------------------------------------------|:--------------------------|:-----------------------------|:-----------------------|
+| Adafruit IO Key                               | AdafruitIOKey                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Adobe Client ID (OAuth Web)                       | Adobe Client ID (Oauth Web)                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Adobe client secret                               | Adobe Client Secret                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Age secret key                                    | Age secret key                                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Aiven Service Password                            | AivenServicePassword                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Alibaba AccessKey ID                              | Alibaba AccessKey ID                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Alibaba Secret Key                                | Alibaba Secret Key                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Anthropic API key                                 | anthropic_key                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Artifactory API Key                               | ArtifactoryApiKey                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Artifactory Identity Token                        | ArtifactoryIdentityToken                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Artifactory API Key                               | ArtifactoryApiKey                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Artifactory Identity Token                        | ArtifactoryIdentityToken                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Asana client ID                                   | Asana Client ID                               | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Asana client secret                               | Asana Client Secret                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Asana Personal Access Token V1                   | AsanaPersonalAccessTokenV1                    | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Asana Personal Access Token V2                   | AsanaPersonalAccessTokenV2                    | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Atlassian API Key                                 | AtlassianApiKey                               | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Atlassian API token                               | Atlassian API token                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Atlassian User API Token                          | AtlassianUserApiToken                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | AWS access token                                  | AWS                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Azure Entra Client Secret                         | AzureEntraClientSecret                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Beamer API token                                  | Beamer API token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Bitbucket client ID                               | Bitbucket client ID                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Bitbucket client secret                           | Bitbucket client secret                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
@@ -54,16 +64,19 @@ This table lists the secrets detected by:
 | Discord API key                                   | Discord API key                               | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Discord client ID                                 | Discord client ID                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Discord client secret                             | Discord client secret                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Docker Personal Access Token                      | DockerPersonalAccessToken                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Doppler API token                                 | Doppler API token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Doppler Service token                             | Doppler Service token                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Dropbox API secret/key                            | Dropbox API secret/key                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Dropbox long lived API token                      | Dropbox long lived API token                  | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Dropbox short lived API token                     | Dropbox short lived API token                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Dropbox short lived API token                     | Dropbox short lived API token                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Duffel API token                                  | Duffel API token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Dynatrace API token                               | Dynatrace API token                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Dynatrace Platform Token                          | DynatracePlatformToken                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | EasyPost production API key                       | EasyPost API token                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | EasyPost test API key                             | EasyPost test API token                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Facebook token                                    | Facebook token                                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Fastly API user or automation token               | Fastly API token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Figma Personal Access Token                       | FigmaPersonalAccessToken                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Finicity API token                                | Finicity API token                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Finicity client secret                            | Finicity client secret                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Flutterwave test encrypted key                    | Flutterwave encrypted key                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
@@ -73,10 +86,12 @@ This table lists the secrets detected by:
 | GCP API key                                       | GCP API key                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | GCP OAuth client secret                           | GCP OAuth client secret                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | GitHub app token                                  | Github App Token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| GitHub App Installation Token                     | GithubAppInstallationToken                    | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| GitHub Fine Grained Personal Access Token         | GithubFineGrainedPersonalAccessToken          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | GitHub OAuth Access Token                         | Github OAuth Access Token                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | GitHub personal access token (classic)            | Github Personal Access Token                  | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | GitHub refresh token                              | Github Refresh Token                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| GitLab CI build token                             | gitlab_ci_build_token                         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| GitLab CI/CD job token                            | gitlab_ci_build_token                         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | GitLab deploy token                               | gitlab_deploy_token                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | GitLab Feature Flags Client Token                 | None                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | GitLab feed token                                 | gitlab_feed_token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
@@ -96,7 +111,10 @@ This table lists the secrets detected by:
 | HashiCorp Terraform API token                     | Hashicorp Terraform user/org API token        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | HashiCorp Vault batch token                       | Hashicorp Vault batch token                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Heroku API key or application authorization token | Heroku API Key                                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| HubSpot private app API token                     | Hubspot API token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Highnote Live Secret Key                          | HighnoteLiveSecretKey                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Highnote Test Secret Key                          | HighnoteTestSecretKey                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| HubSpot private app API token                     | Hubspot API token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Hugging Face User Access Token                    | HuggingFaceUserAccessToken                    | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Instagram access token                            | Instagram access token                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Intercom API token                                | Intercom API token                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Intercom client secret or client ID               | Intercom client secret/ID                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
@@ -117,6 +135,8 @@ This table lists the secrets detected by:
 | MessageBird API client ID                         | MessageBird API client ID                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Meta access token                                 | Meta access token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | New Relic ingest browser API token                | New Relic ingest browser API token            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| New Relic ingest browser API token v2             | New Relic ingest browser API token v2         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| New Relic REST API Key                            | New Relic REST API Key                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | New Relic user API ID                             | New Relic user API ID                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | New Relic user API key                            | New Relic user API Key                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | npm access token                                  | npm access token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
@@ -127,7 +147,11 @@ This table lists the secrets detected by:
 | PGP private key                                   | PGP private key                               | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | PKCS8 private key                                 | PKCS8 private key                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | PlanetScale API token                             | Planetscale API token                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| PlanetScale App Secret                            | PlanetscaleAppSecret                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| PlanetScale OAuth Secret                          | PlanetscaleOAuthSecret                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | PlanetScale password                              | Planetscale password                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| PostHog Personal API key                          | PostHogPersonalAPIkey                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| PostHog Project API key                           | PostHogProjectAPIkey                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Postman API token                                 | Postman API token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Pulumi API token                                  | Pulumi API token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | PyPi upload token                                 | PyPI upload token                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
@@ -144,23 +168,32 @@ This table lists the secrets detected by:
 | Slack app level token                             | SlackAppLevelToken                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Slack bot user OAuth token                        | Slack token                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Slack webhook                                     | Slack Webhook                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| SonarQube Global Analysis Token                   | SonarQubeGlobalAnalysisToken                  | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| SonarQube Project Analysis Token                  | SonarQubeProjectAnalysisToken                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| SonarQube User Token                              | SonarQubeUserToken                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | SSH (DSA) private key                             | SSH (DSA) private key                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | SSH (EC) private key                              | SSH (EC) private key                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | SSH private key                                   | SSH private key                               | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Stripe live restricted key                        | StripeLiveRestrictedKey                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Stripe live secret key                            | StripeLiveSecretKey                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Stripe Live Short Secret Key                      | StripeLiveShortSecretKey                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Stripe publishable live key                       | StripeLivePublishableKey                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Stripe publishable test key                       | StripeTestPublishableKey                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Stripe restricted test key                        | StripeTestRestrictedKey                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Stripe secret test key                            | StripeTestSecretKey                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Stripe Test Short Secret Key                      | StripeTestShortSecretKey                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Tailscale key                                     | Tailscale key                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Tencent Cloud Secret ID                           | TencentCloudSecretID                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Twilio Account SID                                | Twilio Account SID                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Twilio API key                                    | Twilio API Key                                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | Twitch OAuth client secret                        | Twitch API token                              | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Typeform personal access token                    | Typeform API token                            | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Volcengine Access Key ID                          | VolcengineAccessKeyID                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| WakaTime API Key                                  | WakaTimeAPIKey                                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | X token                                           | Twitter token                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Yandex.Cloud AWS API compatible access secret     | Yandex.Cloud AWS API compatible Access Secret | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Yandex.Cloud API Key                              | Yandex.Cloud API Key                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Yandex.Cloud IAM cookie v1-1                      | Yandex.Cloud IAM Cookie v1 - 1                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Yandex.Cloud IAM cookie v1-2                      | Yandex.Cloud IAM Cookie v1 - 2                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Yandex.Cloud IAM cookie v1-3                      | Yandex.Cloud IAM Cookie v1 - 3                | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->

@@ -7,8 +7,7 @@ import {
   GlButtonGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { __ } from '~/locale';
@@ -19,6 +18,7 @@ import {
   MR_FILTER_TRACKING_USER_COMMENTS,
   MR_FILTER_TRACKING_BOT_COMMENTS,
 } from '~/notes/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 const filterOptionToTrackingEventMap = {
   comments: MR_FILTER_TRACKING_USER_COMMENTS,
@@ -46,10 +46,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      mergeRequestFilters: (state) => state.notes.mergeRequestFilters,
-      discussionSortOrder: (state) => state.notes.discussionSortOrder,
-    }),
+    ...mapState(useNotes, ['mergeRequestFilters', 'discussionSortOrder']),
     selectedFilterText() {
       const { length } = this.mergeRequestFilters;
 
@@ -80,7 +77,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateMergeRequestFilters', 'setDiscussionSortDirection']),
+    ...mapActions(useNotes, ['updateMergeRequestFilters', 'setDiscussionSortDirection']),
     updateSortDirection() {
       this.setDiscussionSortDirection({
         direction: this.isSortAsc ? 'desc' : 'asc',

@@ -9,7 +9,7 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
-  ignore_column :trigger_request_id, remove_with: '18.2', remove_after: '2025-06-14'
+  ignore_column :environment_auto_stop_in, remove_with: '18.4', remove_after: '2025-09-01'
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
@@ -175,7 +175,7 @@ class CommitStatus < Ci::ApplicationRecord
 
     event :cancel do
       transition running: :canceling, if: :supports_canceling?
-      transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
+      transition CANCELABLE_STATUSES.map(&:to_sym) => :canceled
     end
 
     event :force_cancel do
@@ -301,8 +301,8 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def archived?
-    pipeline.archived?
+  def archived?(...)
+    pipeline.archived?(...)
   end
 
   def stuck?

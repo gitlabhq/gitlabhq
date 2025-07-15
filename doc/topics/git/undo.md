@@ -271,6 +271,9 @@ want to undo. This process preserves the history and provides a clear timeline a
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+   accTitle: Git revert operation workflow diagram
+   accDescr: Shows commits A, B, C in sequence, then commit -B that reverses B's changes, followed by D. Commit B remains in history.
+
    REMOTE["REMOTE"] --> A(A)
    A --> B(B)
    B --> C(C)

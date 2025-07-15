@@ -105,7 +105,7 @@ describe('data-read-more-height defines when to show the read-more button', () =
 
     initReadMore();
 
-    expect(findTrigger().length).toBe(1);
+    expect(findTrigger()).toHaveLength(1);
   });
 
   it('if set hides button as threshold is met', () => {
@@ -120,6 +120,6 @@ describe('data-read-more-height defines when to show the read-more button', () =
 
     initReadMore();
 
-    expect(findTrigger().length).toBe(0);
+    expect(findTrigger()).toHaveLength(0);
   });
 });

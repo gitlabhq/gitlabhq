@@ -151,7 +151,7 @@ describe('AlertManagementStatus', () => {
   describe('Statuses', () => {
     it('renders default translated statuses', () => {
       mountComponent({});
-      expect(findAllStatusOptions().length).toBe(3);
+      expect(findAllStatusOptions()).toHaveLength(3);
       expect(findFirstStatusOption().text()).toBe('Triggered');
     });
 

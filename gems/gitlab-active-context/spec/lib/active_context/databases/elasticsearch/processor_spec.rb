@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
   let(:collection) { double('collection', current_search_embedding_version: search_embedding_version) }
   let(:user) { double('user') }
-  let(:search_embedding_version) { { field: 'preset_field', model: model } }
+  let(:search_embedding_version) { { field: 'preset_field', model: model, class: Test::Embeddings } }
   let(:generated_embedding) { [0.5, 0.6] }
   let(:model) { 'some-model' }
 
@@ -27,7 +27,8 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
 
     before do
       allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
-        .with(anything, model: model, user: user).and_return([generated_embedding])
+        .with(anything, version: search_embedding_version, user: user)
+        .and_return([generated_embedding])
     end
 
     context 'with filter queries' do

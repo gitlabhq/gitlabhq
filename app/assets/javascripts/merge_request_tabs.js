@@ -4,7 +4,13 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
-import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
+import {
+  getCookie,
+  isMetaClick,
+  NO_SCROLL_TO_HASH_CLASS,
+  parseBoolean,
+  scrollToElement,
+} from '~/lib/utils/common_utils';
 import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -242,8 +248,19 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
+    let prevHref = window.location.href;
     window.addEventListener('popstate', (event) => {
+      const [prevPath] = prevHref.split('#');
+      const [newPath, newHash] = window.location.href.split('#');
+
+      prevHref = window.location.href;
+
+      if (prevPath === newPath && newHash) {
+        const target = document.getElementById(newHash);
+        if (target && target.classList.contains(NO_SCROLL_TO_HASH_CLASS)) return;
+      }
       if (event?.state?.skipScrolling) return;
+
       const action = getActionFromHref(window.location.pathname);
 
       this.tabShown(action, location.href);
@@ -351,7 +368,14 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else if (this.isDiffAction(action)) {
-        if (!isInVueNoteablePage()) {
+        if (this.createRapidDiffsApp) {
+          if (!this.rapidDiffsApp) {
+            this.rapidDiffsApp = this.createRapidDiffsApp();
+            this.rapidDiffsApp.init();
+          } else {
+            this.rapidDiffsApp.show();
+          }
+        } else if (!isInVueNoteablePage()) {
           /*
             for pages where we have not yet converted to the new vue
             implementation we load the diff tab content the old way,
@@ -533,17 +557,7 @@ export default class MergeRequestTabs {
 
   // Initialize the Changes tab
   async startDiffs(options = {}) {
-    if (this.createRapidDiffsApp) {
-      if (!this.rapidDiffsApp) {
-        this.rapidDiffsApp = this.createRapidDiffsApp();
-        this.rapidDiffsApp.reloadDiffs(true);
-        this.rapidDiffsApp.init();
-      } else {
-        this.rapidDiffsApp.show();
-      }
-    } else {
-      this.loadDiff(options);
-    }
+    this.loadDiff(options);
   }
   // load the legacy diff tab content from the backend
   loadDiff({ endpoint, strip = true }) {

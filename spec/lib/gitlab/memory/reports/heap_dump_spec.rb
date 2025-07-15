@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Reports::HeapDump, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Reports::HeapDump, feature_category: :durability_metrics do
   # Copy this class so we do not mess with its state.
   let(:klass) { described_class.dup }
 

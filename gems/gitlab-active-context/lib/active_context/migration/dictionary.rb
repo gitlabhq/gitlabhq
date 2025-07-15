@@ -36,6 +36,13 @@ module ActiveContext
         @migrations[version.to_s]
       end
 
+      # Find a version by class name (e.g., 'CreateCode')
+      def find_version_by_class_name(class_name)
+        @migrations.find do |_version, klass|
+          klass.name&.demodulize == class_name
+        end&.first
+      end
+
       private
 
       def load_migrations

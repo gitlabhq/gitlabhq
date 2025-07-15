@@ -245,7 +245,7 @@ Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
 [allows failure](../../ci/yaml/_index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
-for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#downloading-security-scan-results).
+for [download in the pipeline security tab](../../user/application_security/detect/security_scanning_results.md#download-a-security-report).
 
 ### Logging
 
@@ -296,7 +296,7 @@ help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/_index.md#download-a-sast-report),
 [DAST](../../user/application_security/dast/browser/_index.md),
-[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md#output),
+[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md#understanding-the-results),
 and [Container Scanning](../../user/application_security/container_scanning/_index.md#reports-json-format)
 
 You can find the schemas for these scanners here:
@@ -377,8 +377,6 @@ Content is invalid
 This field specifies which [Security Report Schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) version you are using. For information about the versions to use, see [releases](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases).
 
 GitLab validates your report against the version of the schema specified by this value.
-The versions supported by GitLab can be found in
-[`gitlab/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas).
 
 #### Vulnerabilities
 
@@ -474,7 +472,7 @@ the risk. End-users interact with this field, whereas GitLab automatically proce
 ##### Identifiers
 
 The `identifiers` array describes the detected vulnerability. An identifier object's `type` and
-`value` fields are used to [tell if two identifiers are the same](../../user/application_security/vulnerability_report/pipeline.md#deduplication-process).
+`value` fields are used to [tell if two identifiers are the same](../../user/application_security/detect/vulnerability_deduplication.md).
 The user interface uses the object's `name` and `url` fields to display the identifier.
 
 We recommend that you use the identifiers the GitLab scanners already [define](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/main/identifier.go):
@@ -505,7 +503,7 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system saves only the first 20 of them. The vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
+the system saves only the first 20 of them. The vulnerabilities in the [Pipeline Security](../../user/application_security/detect/security_scanning_results.md)
 tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 #### Details
@@ -632,7 +630,7 @@ For instance, user feedback on a SAST vulnerability is lost
 if the affected file is renamed or the affected line moves down.
 This is addressed in [issue #7586](https://gitlab.com/gitlab-org/gitlab/-/issues/7586).
 
-See also [deduplication process](../../user/application_security/vulnerability_report/pipeline.md#deduplication-process).
+See also [deduplication process](../../user/application_security/detect/vulnerability_deduplication.md).
 
 ##### Severity
 

@@ -1,5 +1,5 @@
 ---
-stage: Foundations
+stage: AI-powered
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Advanced search migration style guide
@@ -128,7 +128,7 @@ the [Elasticsearch specs metadata](../testing_guide/best_practices.md#elasticsea
 #### `assert_names_in_query`
 
 Validate that [named queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/query-dsl-bool-query.html#named-queries)
-exist (`with`) or do not exist (`without`) in an Elasticsearch query. 
+exist (`with`) or do not exist (`without`) in an Elasticsearch query.
 
 #### `assert_fields_in_query`
 
@@ -139,7 +139,7 @@ Validate that an Elasticsearch query contains the specified fields.
 {{< alert type="warning" >}}
 
 This method requires sending a search request to Elasticsearch. Use `assert_names_in_query` to test
-the queries generated directly. 
+the queries generated directly.
 
 {{< /alert >}}
 
@@ -159,12 +159,12 @@ records that have been queued for indexing using the `track!` method.
 #### `refresh_index!`
 
 Performs an Elasticsearch index refresh on all indices (including the migrations index). This makes recent operations
-performed on an index available for search. 
+performed on an index available for search.
 
 #### `set_elasticsearch_migration_to`
 
 Set the current migration in the migrations index to a specific migration (by name or version). The migration is
-marked as completed by default and can set to pending by sending `including: false`. 
+marked as completed by default and can set to pending by sending `including: false`.
 
 #### `es_helper`
 
@@ -196,7 +196,7 @@ The following migration helpers are available in `ee/app/workers/concerns/elasti
 
 #### `Search::Elastic::MigrationBackfillHelper`
 
-Backfills a specific field in an index. 
+Backfills a specific field in an index.
 
 Requirements:
 

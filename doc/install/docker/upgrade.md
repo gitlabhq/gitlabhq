@@ -81,25 +81,6 @@ To upgrade a GitLab instance that was [installed using Docker Compose](installat
    docker compose up -d
    ```
 
-## Convert Community Edition to Enterprise Edition
-
-You can convert an existing GitLab Community Edition (CE) container for Docker
-to a GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE) container
-using the same approach as [upgrading the version](upgrade.md).
-
-We recommend you convert from the same version of CE to EE (for example, CE 14.1 to EE 14.1).
-However, this is not required. Any standard upgrade (for example, CE 14.0 to EE 14.1) should work.
-The following steps assume that you are converting to the same version.
-
-1. Take a [backup](backup.md). At minimum, back up [the database](backup.md#create-a-database-backup) and
-   the GitLab secrets file.
-
-1. Stop the current CE container, and remove or rename it.
-
-1. To create a new container with GitLab EE,
-   replace `ce` with `ee` in your `docker run` command or `docker-compose.yml` file.
-   Reuse the CE container name, port mappings, file mappings, and version.
-
 ## Downgrade GitLab
 
 The restore overwrites all newer GitLab database content with the older state.

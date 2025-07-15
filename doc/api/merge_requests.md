@@ -20,7 +20,7 @@ title: Merge requests API
 - `reference` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
 - `merged_by` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
 - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
-- `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
+- `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
 - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
 - `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 - `merge_after` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092) in GitLab 17.5.
@@ -70,7 +70,6 @@ Supported attributes:
 |-----------------------------|---------------|----------|-------------|
 | `approved_by_ids`               | integer array  | No       | Returns the merge requests approved by all the users with the given `id`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only.                                                                                                                                        |
 | `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only.                                                                                                                          |
-| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. Requires the `mr_approved_filter` [feature flag](../administration/feature_flags.md), disabled by default.                                                                    |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee.                                                                                                                                                                                                           |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.                                                                                                                                                                                                      |
 | `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`.                                                                                                                                                                                                                                                               |
@@ -99,7 +98,7 @@ Supported attributes:
 | `updated_before`                | datetime       | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                          |
 | `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request.                                                                                                                                                                                                                                                                 |
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`.                                                                                                                                                                                        |
-| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
 | `wip`                           | string         | No       | Filter merge requests against their `wip` status. Use `yes` to return only draft merge requests, `no` to return non-draft merge requests.                                                                                                                                                                                                              |
 
 Example response:
@@ -257,7 +256,6 @@ Supported attributes:
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `approved_by_ids`               | integer array  | No       | Returns merge requests approved by all the users with the given `id`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
 | `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
-| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. Requires the `mr_approved_filter` feature flag, disabled by default. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
 | `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. |
@@ -287,7 +285,7 @@ Supported attributes:
 | `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `wip`                           | string         | No       | Filter merge requests against their `wip` status. `yes` to return only draft merge requests, `no` to return non-draft merge requests. |
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -507,7 +505,6 @@ Supported attributes:
 | `approved_by_ids`               | integer array  | No       | Returns the merge requests approved by all the users with the given `id`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
 | `approved_by_usernames`         | string array  | No       | Returns the merge requests approved by all the users with the given `username`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
 | `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
-| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. Requires the `mr_approved_filter` feature flag, disabled by default. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
 | `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. |
@@ -533,7 +530,7 @@ Supported attributes:
 | `updated_before`                | datetime       | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
 
 To restrict the list of merge requests, use the pagination parameters `page` and `per_page`.
 
@@ -1389,7 +1386,7 @@ Supported attributes:
 |---------------------|----------------|----------|-------------|
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) owned by the authenticated user. |
 | `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
-| `block_id`          | integer        | Yes      | The internal ID of the block. |
+| `block_id`          | integer        | Yes      | The ID of the block. |
 
 Example request:
 
@@ -1895,7 +1892,7 @@ Example response:
 
 {{< history >}}
 
-- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 

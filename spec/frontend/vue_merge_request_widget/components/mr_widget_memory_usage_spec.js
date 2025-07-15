@@ -83,7 +83,7 @@ describe('MemoryUsage', () => {
       const data = MemoryUsage.data();
 
       expect(Array.isArray(data.memoryMetrics)).toBe(true);
-      expect(data.memoryMetrics.length).toBe(0);
+      expect(data.memoryMetrics).toHaveLength(0);
 
       expect(typeof data.deploymentTime).toBe('number');
       expect(data.deploymentTime).toBe(0);

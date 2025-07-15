@@ -227,7 +227,7 @@ container_scanning:
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | スキャンするイメージのDockerリポジトリタグ。 |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | アナライザーのDockerイメージ。GitLabが提供するアナライザーイメージで`:latest`タグを使用しないでください。 |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | デフォルトブランチの`CS_IMAGE`の名前。詳細については、「[デフォルトブランチイメージを設定する](#setting-the-default-branch-image)」を参照してください。 |
-| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | {{< icon name="warning" >}}GitLab 17.0で**[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)**されました。 |
+| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | {{< icon name="warning" >}}GitLab 17.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)されました。 |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | スキャンされたイメージにインストールされている言語固有パッケージのスキャンを無効にします。 |
 | `CS_DOCKER_INSECURE`           | `"false"`     | 証明書を検証せずに、HTTPSを使用してセキュアなDocker レジストリへのアクセスを許可します。 |
 | `CS_DOCKERFILE_PATH`           | `Dockerfile`  | 修正の生成に使用する`Dockerfile`へのパス。デフォルトでは、スキャナーはプロジェクトのルートディレクトリにある`Dockerfile`という名前のファイルを探します。この変数は、`Dockerfile`がサブディレクトリなどの標準以外の場所にある場合にのみ設定する必要があります。詳細については、「[脆弱性のソリューション](#solutions-for-vulnerabilities-auto-remediation)」を参照してください。 |

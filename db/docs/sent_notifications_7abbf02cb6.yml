@@ -1,0 +1,14 @@
+---
+table_name: sent_notifications_7abbf02cb6
+classes:
+- PartitionedSentNotification
+feature_categories:
+- team_planning
+description: Information related to sent email notifications that supports reply-by-email
+  functionality
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192267
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: medium

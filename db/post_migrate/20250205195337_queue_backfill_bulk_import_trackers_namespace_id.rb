@@ -10,31 +10,10 @@ class QueueBackfillBulkImportTrackersNamespaceId < Gitlab::Database::Migration[2
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :bulk_import_trackers,
-      :id,
-      :namespace_id,
-      :bulk_import_entities,
-      :namespace_id,
-      :bulk_import_entity_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because the original migration ran but was not successful https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188587#note_2457847947
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :bulk_import_trackers,
-      :id,
-      [
-        :namespace_id,
-        :bulk_import_entities,
-        :namespace_id,
-        :bulk_import_entity_id
-      ]
-    )
+    # no-op because the original migration ran but was not successful https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188587#note_2457847947
   end
 end

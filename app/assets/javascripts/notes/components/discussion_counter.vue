@@ -142,7 +142,7 @@ export default {
         />
       </template>
       <template v-else>
-        {{ n__('%d unresolved thread', '%d unresolved threads', unresolvedDiscussionsCount) }}
+        {{ n__('%d open thread', '%d open threads', unresolvedDiscussionsCount) }}
         <gl-button-group class="gl-ml-3">
           <gl-button
             v-gl-tooltip.html="previousUnresolvedDiscussionTooltip"

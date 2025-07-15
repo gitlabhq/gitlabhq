@@ -152,15 +152,26 @@ module Atlassian
           yield data
         else
           case response.code
-          when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
+          when 400 then { 'errorMessages' => parse_jira_error_messages(data) }
           when 401 then { 'errorMessages' => ['Invalid JWT'] }
           when 403 then { 'errorMessages' => ["App does not support #{name}"] }
-          when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
+          when 413 then { 'errorMessages' => ['Data too large'] + parse_jira_error_messages(data) }
           when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
           when 503 then { 'errorMessages' => ['Service unavailable'] }
           else
             { 'errorMessages' => ['Unknown error'], 'response' => data }
           end.merge('responseCode' => response.code)
+        end
+      end
+
+      def parse_jira_error_messages(data)
+        case data
+        when Array
+          data.map { |e| e['message'] }
+        when Hash
+          [data['message'] || data['error'] || 'Unknown error']
+        else
+          ['Unknown error']
         end
       end
 

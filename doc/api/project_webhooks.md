@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project webhooks API
 ---
@@ -70,6 +70,7 @@ Example response:
   "wiki_page_events": true,
   "deployment_events": true,
   "releases_events": true,
+  "milestone_events": true,
   "feature_flag_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
@@ -374,7 +375,7 @@ Resend a specific project webhook event.
 
 This endpoint has a rate limit of five requests per minute for each project webhook and authenticated user.
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/events/:hook_event_id/resend
@@ -431,6 +432,7 @@ Supported attributes:
 | `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                  | boolean           | No       | Trigger project webhook on push events. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
+| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki events. |
@@ -475,6 +477,7 @@ Supported attributes:
 | `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                  | boolean           | No       | Trigger project webhook on push events. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
+| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki page events. |
@@ -507,7 +510,7 @@ is returned.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
-- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
 
 {{< /history >}}
 
@@ -519,7 +522,7 @@ In GitLab 17.0 and later, this endpoint has a special rate limit:
 - In GitLab 17.1, this was changed to five requests per minute for each project and authenticated user.
 
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/test/:trigger
@@ -531,7 +534,7 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example response:
 

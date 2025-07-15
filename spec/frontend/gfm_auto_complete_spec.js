@@ -1236,7 +1236,9 @@ describe('GfmAutoComplete', () => {
 
     beforeEach(() => {
       window.gon = {
-        current_user_use_work_items_view: true,
+        features: {
+          workItemViewForIssues: true,
+        },
       };
       document.body.dataset.page = 'projects:issues:show';
       setHTMLFixture(`

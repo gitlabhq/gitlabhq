@@ -68,7 +68,7 @@ Now, after the pipeline runs, the quality tool's results are [processed and disp
 
 {{< alert type="warning" >}}
 
-This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
+This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
 [Integrate the results from a supported tool directly](#import-code-quality-results-from-a-cicd-job) instead.
 
 {{< /alert >}}
@@ -163,11 +163,11 @@ that were found on the branch it was run on.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72724) in GitLab 14.5 [with a flag](../../administration/feature_flags.md) named `project_quality_summary_page`. This feature is in [beta](../../policy/development_stages_support.md). Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72724) in GitLab 14.5 [with a flag](../../administration/feature_flags/_index.md) named `project_quality_summary_page`. This feature is in [beta](../../policy/development_stages_support.md). Disabled by default.
 
 {{< /history >}}
 
-The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../user/feature_flags.md) feature flag to be enabled for this particular project.
+The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../administration/feature_flags/_index.md) feature flag to be enabled for this particular project.
 
 ![Total number of issues, called violations, followed by the number of issues of each severity](img/code_quality_summary_v15_9.png)
 

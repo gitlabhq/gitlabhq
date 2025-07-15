@@ -60,7 +60,7 @@ fi
 
 if [ -z "${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION is not explicitly set. Using default."
-  GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION="0.1.18"
+  GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION="0.1.20"
 fi
 
 if [ -z "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" ]; then
@@ -344,6 +344,9 @@ helm repo update
 
 helm --namespace "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" uninstall "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAME}" --ignore-not-found --timeout=600s --wait
 
+# NOTE: We had to change default sshService.port from 22 to 30022 because of port 22 stopped working
+#       sometime around Jan 2025. Perhaps a MacOS update or Rancher change caused it, we don't know yet.
+#       This means you need to pass `-p 30022` to `ssh` command to connect to the workspace.
 helm upgrade --install "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAME}" \
   gitlab-workspaces-proxy/gitlab-workspaces-proxy \
   --version="${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}" \
@@ -360,6 +363,7 @@ helm upgrade --install "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAME}" \
   --set="ingress.tls[1].hosts[0]=${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" \
   --set="ingress.tls[1].secretName=${GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_SECRET}" \
   --set="ingress.className=nginx" \
+  --set="sshService.port=30022" \
   --timeout=600s --wait --wait-for-jobs
 
 kubectl wait pod \

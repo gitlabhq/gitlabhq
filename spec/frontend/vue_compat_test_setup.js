@@ -117,23 +117,6 @@ if (global.document) {
     };
   });
 
-  jest.mock('portal-vue', () => ({
-    __esModule: true,
-    default: {
-      install: jest.fn(),
-    },
-    Portal: {},
-    PortalTarget: {
-      template: '<div>PORTAL-TARGET</div>',
-    },
-    MountingPortal: {
-      template: '<h1>MOUNTING-PORTAL</h1>',
-    },
-    Wormhole: {
-      hasTarget: jest.fn(),
-    },
-  }));
-
   VTU.config.global.renderStubDefaultSlot = true;
 
   const noop = () => {};

@@ -1,0 +1,25 @@
+---
+description: GitLab Agent for Workspace (agentw) registered at KAS
+internal_events: true
+status: active
+action: register_agentw_at_kas
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: GitLab Agent version
+  property:
+    description: CPU architecture of the agent, e.g. x86_64
+  value:
+    description: GitLab Agent unique id
+product_group: environments
+product_categories:
+- continuous_delivery
+milestone: '18.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194418
+tiers:
+- free
+- premium
+- ultimate

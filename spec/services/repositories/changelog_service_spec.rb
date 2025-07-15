@@ -79,7 +79,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
-      expect(recorder.count).to eq(14)
+      expect(recorder.count).to eq(15)
       expect(changelog).to include('Title 1', 'Title 2')
     end
 
@@ -193,7 +193,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
 
         allow(Gitlab::Changelog::Config)
           .to receive(:from_git)
-          .with(project, creator, 'specified_changelog_config.yml')
+          .with(project, creator, 'specified_changelog_config.yml', 'HEAD')
           .and_return(config)
 
         described_class
@@ -203,6 +203,39 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
         changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
         expect(changelog).to include('specified_changelog_content')
+      end
+    end
+
+    context 'when changelog config file is located in a specific branch' do
+      subject { described_class.new(project, creator, **service_params).execute(commit_to_changelog: false) }
+
+      let(:service_params) { { version: '1.0.0', from: sha1, config_file: changelog_file_path } }
+      let(:changelog_content) { YAML.dump('template' => 'custom changelog') }
+      let(:changelog_file_path) { 'custom_changelog.yml' }
+      let(:custom_branch) { 'foo' }
+
+      before do
+        create_commit(
+          project,
+          creator,
+          commit_message: 'Custom changelog file',
+          branch_name: custom_branch,
+          actions: [{ action: 'create', content: changelog_content, file_path: changelog_file_path }]
+        )
+      end
+
+      context 'without config_file_ref' do
+        it 'returns a default changelog template' do
+          is_expected.not_to include 'custom changelog'
+        end
+      end
+
+      context 'with config_file_ref' do
+        let(:service_params) { super().merge(config_file_ref: custom_branch) }
+
+        it 'applies the correct changelog config' do
+          is_expected.to include 'custom changelog'
+        end
       end
     end
   end

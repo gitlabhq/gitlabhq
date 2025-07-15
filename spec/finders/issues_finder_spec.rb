@@ -7,6 +7,16 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
 
   it_behaves_like 'issues or work items finder', :issue, '{Issues|WorkItems}Finder#execute context'
 
+  context 'when filtering by author username' do
+    let_it_be(:issuable_parent) { create(:project) }
+    let_it_be(:issuable_attributes) { { project: issuable_parent } }
+    let_it_be(:issuable_factory) { :issue }
+    let_it_be(:factory_params) { [] }
+    let_it_be(:search_params) { { project_id: issuable_parent.id } }
+
+    it_behaves_like 'filterable by group handle'
+  end
+
   context 'when filtering by group_id' do
     include_context '{Issues|WorkItems}Finder#execute context', :issue
 

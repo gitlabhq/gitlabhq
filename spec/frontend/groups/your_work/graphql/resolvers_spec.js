@@ -61,7 +61,7 @@ describe('your work groups resolver', () => {
     expect(nodes[0]).toMatchObject({
       __typename: TYPENAME_GROUP,
       id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.id),
-      fullPath: '/frontend-fixtures-group',
+      fullPath: 'frontend-fixtures-group',
       fullName: 'frontend-fixtures-group',
       parent: { id: null },
       webUrl: mockGroup.web_url,
@@ -73,7 +73,9 @@ describe('your work groups resolver', () => {
       visibility: 'public',
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
-      markedForDeletionOn: mockGroup.marked_for_deletion_on,
+      markedForDeletion: mockGroup.marked_for_deletion,
+      isSelfDeletionInProgress: mockGroup.is_self_deletion_in_progress,
+      isSelfDeletionScheduled: mockGroup.is_self_deletion_scheduled,
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {
@@ -127,6 +129,25 @@ describe('your work groups resolver', () => {
         descendantGroupsCount: null,
         projectsCount: null,
         groupMembersCount: null,
+      });
+    });
+  });
+
+  describe('when permission_integer is undefined', () => {
+    it('returns 0 for maxAccessLevel', async () => {
+      const {
+        data: {
+          groups: { nodes },
+        },
+      } = await makeQuery(
+        dashboardGroupsWithChildrenResponse.map((group) => ({
+          ...group,
+          permission_integer: undefined,
+        })),
+      );
+
+      expect(nodes[0]).toMatchObject({
+        maxAccessLevel: { integerValue: 0 },
       });
     });
   });

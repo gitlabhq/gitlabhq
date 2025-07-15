@@ -1,0 +1,19 @@
+---
+description: Count of authorized projects used in user query for CI owned project runners
+internal_events: true
+status: active
+action: query_ci_available_project_runners_with_project_ids
+identifiers:
+- user
+additional_properties:
+  value:
+    description: Number of project ids
+product_group: runner
+product_categories:
+- fleet_visibility
+milestone: '18.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194442
+tiers:
+- free
+- premium
+- ultimate

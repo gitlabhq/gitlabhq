@@ -302,7 +302,7 @@ A common reason a job is added to a pipeline unexpectedly is because the `change
 keyword always evaluates to true in certain cases. For example, `changes` is always
 true in certain pipeline types, including scheduled pipelines and pipelines for tags.
 
-The `changes` keyword is used in combination with [`only/except`](yaml/_index.md#onlychanges--exceptchanges)
+The `changes` keyword is used in combination with [`only/except`](yaml/deprecated_keywords.md#onlychanges--exceptchanges)
 or [`rules`](yaml/_index.md#ruleschanges). It's recommended to only use `changes` with
 `if` sections in `rules` or `only/except` configuration that ensures the job is only added to
 branch pipelines or merge request pipelines.
@@ -439,8 +439,8 @@ On GitLab Self-Managed, you can [increase the size limits](../administration/ins
 
 ### `500` error when editing the `.gitlab-ci.yml` file
 
-A [loop of included configuration files](pipeline_editor/_index.md#configuration-validation-currently-not-available-message)
-can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
+A loop of included configuration files can cause a `500` error when editing the `.gitlab-ci.yml` file
+with the [web editor](../user/project/repository/web_editor.md).
 
 Ensure that included configuration files do not create a loop of references to each other.
 

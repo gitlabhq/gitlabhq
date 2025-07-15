@@ -433,7 +433,7 @@ Mark them for refinement:
 
 By this point in the tutorial, your **Backlog** board should look like this:
 
-![Example issue board](img/issue_board_demo_v16_10.png)
+![A backlog board with user stories distributed across iteration columns.](img/issue_board_demo_v16_10.png)
 
 In practice, you will use this board to sequence many stories into upcoming iterations.
 When your backlog grows, and you have dozens of stories spanning multiple features, it can be helpful
@@ -502,7 +502,7 @@ Provide all team members the appropriate time to contribute and collaborate.
 
    For example:
 
-   ![Example threads for planned stories](img/story_threads_v16_10.png)
+   ![Three discussion threads for sprint planning stories with checklist items.](img/story_threads_v16_10.png)
 
 1. After every story has a thread, edit the issue description and [mention each team member](../../user/discussions/_index.md#mentions).
    Mentioning team members automatically creates a to-do item for them in their respective [to-do lists](../../user/todos.md).

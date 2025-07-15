@@ -8,7 +8,7 @@ title: GitLab Duo data usage
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-native feature operates independently and is not required for other features to function.
 
-GitLab uses the right large language models (LLMs) for specific tasks. These LLMs are [Anthropic Claude](https://www.anthropic.com/product), [Fireworks AI-hosted Qwen2.5](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b), and [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models).
+GitLab uses the right large language models (LLMs) for specific tasks. These LLMs are [Anthropic Claude](https://www.anthropic.com/product), [Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral-2501), and [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models).
 
 ## Progressive enhancement
 
@@ -30,7 +30,7 @@ Excluding [Fireworks AI prompt caching](../project/repository/code_suggestions/_
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
-GitLab Duo Chat and GitLab Duo Workflow retain chat history and workflow history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/_index.md).
+GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/_index.md).
 
 Fireworks AI prompt caching is enabled by default to improve Code Suggestions latency. For more information and how to opt out of prompt caching, see the [Code Suggestions prompt caching documentation](../project/repository/code_suggestions/_index.md#prompt-caching).
 

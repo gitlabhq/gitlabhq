@@ -17,11 +17,11 @@
  *   />
  */
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderMarkdown } from '~/notes/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   name: 'PlaceholderNote',
@@ -43,7 +43,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUserData']),
+    ...mapState(useNotes, ['getUserData']),
     renderedNote() {
       return renderMarkdown(this.note.body);
     },

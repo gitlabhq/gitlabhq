@@ -34,7 +34,7 @@ describe('diff_stats', () => {
     it('is not rendered if diffsCount is empty', () => {
       createComponent();
 
-      expect(findDiffStatsGroup().length).toBe(2);
+      expect(findDiffStatsGroup()).toHaveLength(2);
     });
 
     it('is not rendered if diffsCount is not a number', () => {
@@ -42,7 +42,7 @@ describe('diff_stats', () => {
         diffsCount: null,
       });
 
-      expect(findDiffStatsGroup().length).toBe(2);
+      expect(findDiffStatsGroup()).toHaveLength(2);
     });
   });
 

@@ -56,7 +56,7 @@ CI/CD Variables:
 
 ## Define input parameters with `spec:inputs`
 
-Use `spec:inputs` in the CI/CD configuration [header](../yaml/_index.md) to define input parameters that
+Use `spec:inputs` in the CI/CD configuration [header](../yaml/_index.md#header-keywords) to define input parameters that
 can be passed to the configuration file.
 
 Use the `$[[ inputs.input-id ]]` interpolation format outside the header section to declare where to use
@@ -366,7 +366,7 @@ For example, with [`trigger:inputs`](../yaml/_index.md#triggerinputs):
 ```yaml
 trigger-job:
   trigger:
-    strategy: depend
+    strategy: mirror
     include:
       - local: path/to/child-pipeline.yml
         inputs:
@@ -382,12 +382,10 @@ trigger-job:
 ```yaml
 trigger-job:
   trigger:
-    strategy: depend
-    include:
-      - project: project-group/my-downstream-project
-        file: ".gitlab-ci.yml"
-        inputs:
-          job-name: "defined"
+    strategy: mirror
+    project: project-group/my-downstream-project
+    inputs:
+      job-name: "defined"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```

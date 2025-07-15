@@ -26,7 +26,7 @@ RSpec/ExampleWording:
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'spec/controllers/projects/milestones_controller_spec.rb'
     - 'spec/features/groups/merge_requests_spec.rb'
-    - 'spec/features/issues/user_creates_issue_spec.rb'
+    - 'spec/features/issues/new/user_creates_issue_spec.rb'
     - 'spec/features/issues/user_edits_issue_spec.rb'
     - 'spec/features/profiles/user_edit_profile_spec.rb'
     - 'spec/finders/user_group_notification_settings_finder_spec.rb'

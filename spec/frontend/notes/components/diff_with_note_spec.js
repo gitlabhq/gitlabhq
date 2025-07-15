@@ -1,20 +1,20 @@
+import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import discussionFixture from 'test_fixtures/merge_requests/diff_discussion.json';
 import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_discussion.json';
-import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 Vue.use(PiniaVuePlugin);
 
 describe('diff_with_note', () => {
-  let store;
   let pinia;
   let wrapper;
 
@@ -36,7 +36,6 @@ describe('diff_with_note', () => {
   const createComponent = (propsData) => {
     wrapper = shallowMount(DiffWithNote, {
       propsData,
-      store,
       pinia,
     });
   };
@@ -44,15 +43,7 @@ describe('diff_with_note', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    store = createStore();
-    store.replaceState({
-      ...store.state,
-      notes: {
-        noteableData: {
-          current_user: {},
-        },
-      },
-    });
+    useNotes().noteableData = { current_user: {} };
   });
 
   describe('text diff', () => {
@@ -81,7 +72,7 @@ describe('diff_with_note', () => {
     });
 
     it('shows diff lines', () => {
-      expect(selectors.diffRows.length).toBe(12);
+      expect(selectors.diffRows).toHaveLength(12);
     });
 
     it('shows notes row', () => {
@@ -105,7 +96,7 @@ describe('diff_with_note', () => {
 
     describe('when discussion does not have a diff_file', () => {
       beforeEach(() => {
-        const imageDiscussion = JSON.parse(JSON.stringify(imageDiscussionFixture[0]));
+        const imageDiscussion = cloneDeep(imageDiscussionFixture[0]);
         delete imageDiscussion.diff_file;
 
         createComponent({ discussion: imageDiscussion, diffFile: {} });
@@ -182,6 +173,50 @@ describe('diff_with_note', () => {
     it('falls back to discussion.commit_id for baseSha and headSha', () => {
       expect(findDiffViewer().props('oldSha')).toBe(mockCommitId);
       expect(findDiffViewer().props('newSha')).toBe(mockCommitId);
+    });
+  });
+
+  describe('diff header', () => {
+    let fileDiscussion;
+
+    beforeEach(() => {
+      fileDiscussion = JSON.parse(JSON.stringify(discussionFixture[0]));
+      fileDiscussion.position.position_type = 'file';
+      fileDiscussion.original_position.position_type = 'file';
+    });
+
+    describe('when the discussion has a diff_file', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: fileDiscussion, diffFile: {} },
+          pinia,
+        });
+      });
+
+      it('links directly to the file to take advantage of the prioritized Linked File feature', () => {
+        const header = findDiffFileHeader();
+
+        expect(header.attributes('discussionpath')).toContain(
+          `file=${fileDiscussion.diff_file.file_hash}`,
+        );
+      });
+    });
+
+    describe('when the discussion does not have a diff_file', () => {
+      beforeEach(() => {
+        delete fileDiscussion.diff_file;
+
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: fileDiscussion, diffFile: {} },
+          pinia,
+        });
+      });
+
+      it('does not include the `file` search parameter in the file link', () => {
+        const header = findDiffFileHeader();
+
+        expect(header.attributes('discussionpath')).not.toContain('file=');
+      });
     });
   });
 });

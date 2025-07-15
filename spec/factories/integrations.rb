@@ -95,8 +95,6 @@ FactoryBot.define do
     active { true }
     api_url { 'https://prometheus.example.com/' }
     manual_configuration { true }
-    google_iap_audience_client_id { 'IAP_CLIENT_ID.apps.googleusercontent.com' }
-    google_iap_service_account_json { '{ type: "service_account", project_id: "123" }' }
   end
 
   factory :bamboo_integration, class: 'Integrations::Bamboo' do

@@ -74,6 +74,9 @@
 
 body.modal-open {
   overflow: hidden;
+}
+
+body.modal-open:not(.body-fixed-scrollbar) {
   padding-right: 0 !important;
 }
 

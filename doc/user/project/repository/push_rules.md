@@ -29,6 +29,7 @@ can and can't be pushed to your repository. While GitLab offers
 - Enforcing [branch name rules](branches/_index.md#name-your-branch).
 - Evaluating the details of files.
 - Preventing Git tag removal.
+- Requiring signed commits.
 
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions
 in push rules. You can test them at the [regex101 regex tester](https://regex101.com/).
@@ -118,13 +119,6 @@ Use these rules for your commit messages.
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
 
-## Reject commits that aren't DCO certified
-
-Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
-certify the contributor wrote, or has the right to submit, the code contributed in that commit.
-You can require all commits to your project to comply with the DCO. This push rule requires a
-`Signed-off-by:` trailer in every commit message, and rejects any commits that lack it.
-
 ## Validate branch names
 
 To validate your branch names, enter a regular expression for **Branch name**.
@@ -160,9 +154,8 @@ Use these rules to prevent unintended consequences.
 
 - **Reject unsigned commits**: Commit [must be signed](signed_commits/_index.md). This rule
   can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
-  and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
+  and allow [unsigned commits to appear in commit history](#unsigned-commits-appear-in-commit-history).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
-  Users can still delete tags in the UI.
 
 ## Validate files
 
@@ -268,7 +261,7 @@ The regular expression can:
 - Exclude specific file types by extension.
 - Combine multiple expressions to exclude several patterns.
 
-#### Regular expression examples
+### Regular expression examples
 
 These examples use common regex string boundary patterns:
 
@@ -277,7 +270,7 @@ These examples use common regex string boundary patterns:
 - `\.`: Matches a literal period character. The backslash escapes the period.
 - `\/`: Matches a literal forward slash. The backslash escapes the forward slash.
 
-##### Prevent specific file types
+#### Prevent specific file types
 
 - To prevent pushing `.exe` files to any location in the repository:
 
@@ -285,7 +278,7 @@ These examples use common regex string boundary patterns:
   \.exe$
   ```
 
-##### Prevent specific files
+#### Prevent specific files
 
 - To prevent pushing a specific configuration file:
 
@@ -307,7 +300,7 @@ These examples use common regex string boundary patterns:
   (^|\/)install\.exe$
   ```
 
-##### Combine patterns
+#### Combine patterns
 
 You can combine multiple patterns into one expression. This example combines all the previous expressions:
 
@@ -315,12 +308,37 @@ You can combine multiple patterns into one expression. This example combines all
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
 ```
 
+## Require signed commits
+
+[Signed commits](signed_commits/_index.md) are digital signatures used to verify authenticity.
+Use the **Reject unsigned commits** push rule to require all commits to have cryptographic signatures.
+
+When you enable this rule:
+
+- All new commits pushed to the repository must contain a valid cryptographic signature.
+- The signature must be created using a supported signing method (GPG, SSH, or X.509).
+- Commits without any signature are rejected at push time.
+- Commits with invalid or corrupted signatures are rejected.
+
+To enable the **Reject unsigned commits** push rule:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Repository**.
+1. Expand **Push rules**.
+1. Select **Reject unsigned commits**.
+1. Select **Save push rules**.
+
+## Reject commits that aren't DCO certified
+
+Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
+certify the contributor wrote, or has the right to submit, the code contributed in that commit.
+You can require all commits to your project to comply with the DCO. This push rule requires a
+`Signed-off-by:` trailer in every commit message, and rejects any commits that lack it.
+
 ## Related topics
 
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
-- [Signing commits with GPG](signed_commits/gpg.md)
-- [Signing commits with SSH](signed_commits/ssh.md)
-- [Signing commits with X.509](signed_commits/x509.md)
+- [Signed commits](signed_commits/_index.md)
 - [Protected branches](branches/protected.md)
 - [Secret detection](../../application_security/secret_detection/_index.md)
 
@@ -332,20 +350,20 @@ If a project has the **Reject unsigned commits** push rule, the user cannot
 create commits through the GitLab Web IDE.
 
 To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
-must disable the feature flag `reject_unsigned_commits_by_gitlab` [with a flag](../../../administration/feature_flags.md).
+must disable the feature flag `reject_unsigned_commits_by_gitlab` [with a flag](../../../administration/feature_flags/_index.md).
 
 ```ruby
 Feature.disable(:reject_unsigned_commits_by_gitlab)
 ```
 
-### Unsigned commits created in the GitLab UI
+### Unsigned commits appear in commit history
 
-The **Reject unsigned commits** push rule ignores commits that are authenticated
-and created by GitLab (either through the UI or API). When this push rule is
-enabled, unsigned commits may still appear in the commit history if a commit was
-created in GitLab itself. As expected, commits created outside GitLab and
-pushed to the repository are rejected. For more information about this issue,
-read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+The **Reject unsigned commits** push rule ignores commits that are authenticated and created by
+GitLab (either through the UI or API). When this push rule is enabled, unsigned commits might still
+appear in the commit history if a commit was created in GitLab itself.
+
+As expected, commits created outside GitLab and pushed to the repository are rejected.
+For more information, see [issue #5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
 
 ### Bulk update push rules for all projects
 

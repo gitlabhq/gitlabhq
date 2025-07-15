@@ -17,7 +17,7 @@ export const createRouter = () => {
     { name: ACTIVE_TAB_SHARED, path: '/groups/:group*/-/shared' },
     { name: ACTIVE_TAB_SHARED_GROUPS, path: '/groups/:group*/-/shared_groups' },
     { name: ACTIVE_TAB_INACTIVE, path: '/groups/:group*/-/inactive' },
-    { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, path: '/:group*' },
+    { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, path: '/(groups)?/:group*' },
   ];
 
   const router = new VueRouter({

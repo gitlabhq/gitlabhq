@@ -49,7 +49,7 @@ Verify the `remote_development` module is enabled in your agent configuration:
      enabled: true
    ```
 
-If the `remote_development` module is disabled for the GitLab agent,
+If the `remote_development` module is disabled for the GitLab agent for Kubernetes,
 set [`enabled`](settings.md#enabled) to `true`.
 
 ### Check agent name mismatch

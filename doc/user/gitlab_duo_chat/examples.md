@@ -38,7 +38,7 @@ The example questions on this page, including the [slash commands](#gitlab-duo-c
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on GitLab Self-Managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on GitLab Self-Managed in GitLab 17.0 [with a flag](../../administration/feature_flags/_index.md) named `ai_gateway_docs_search`. Enabled by default.
 - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154876) in GitLab 17.1.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
@@ -215,6 +215,36 @@ You can ask about a specific GitLab pipeline job. For example:
 - `What are the main steps executed in this pipeline job?`
 - When you are viewing a pipeline job in GitLab, you can ask `Generate a summary of the current pipeline job.`
 
+## Ask about a specific work item
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194302) in GitLab 18.2.
+
+{{< /history >}}
+
+You can ask about a specific GitLab work item. For example:
+
+- `Generate a summary for the work item identified via this link: <link to your work item>`
+- When you are viewing an work item in GitLab, you can ask `Generate a concise summary of the current work item.`
+- `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
+
+{{< alert type="note" >}}
+
+If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+{{< /alert >}}
+
 ## Explain selected code
 
 {{< details >}}
@@ -380,7 +410,7 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477258) in GitLab 17.7 [with flags](../../administration/feature_flags.md) named `duo_additional_context` and `duo_include_context_file`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477258) in GitLab 17.7 [with flags](../../administration/feature_flags/_index.md) named `duo_additional_context` and `duo_include_context_file`. Disabled by default.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15183) in GitLab 17.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188613) in GitLab 18.0. All feature flags removed.
@@ -451,6 +481,8 @@ You can include additional instructions to be considered. For example:
 - Focus on performance, for example `/refactor improving performance`.
 - Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
 
+`/refactor` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
+
 For more information, see:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
@@ -492,6 +524,8 @@ You can include additional instructions to be considered. For example:
 - Focus on code performance problems, for example, `/fix performance problems`.
 - Focus on fixing the build when the code does not compile, for example, `/fix the build`.
 
+`/fix` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
+
 ## Write tests in the IDE
 
 {{< details >}}
@@ -526,6 +560,8 @@ You can include additional instructions to be considered. For example:
 - Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
 - Focus on performance, for example `/tests focus on performance`.
 - Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
+
+`/tests` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
 
 For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 
@@ -639,10 +675,11 @@ To troubleshoot a failed CI/CD job from the job log:
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -654,7 +691,7 @@ To troubleshoot a failed CI/CD job from the job log:
 
 You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SAST vulnerability report.
 
-For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability).
+For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation).
 
 ## Create a new conversation
 
@@ -669,7 +706,7 @@ For more information, see [Explaining a vulnerability](../application_security/v
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `duo_chat_multi_thread`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190042) in GitLab 18.1. Feature flag `duo_chat_multi_thread` removed.
 
 {{< /history >}}
@@ -757,7 +794,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)      | Vulnerabilities |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
 | /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations-with-chat). GitLab 17.10 and later.         | All |
 
 ### IDE

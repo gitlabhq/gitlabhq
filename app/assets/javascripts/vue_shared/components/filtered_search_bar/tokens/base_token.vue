@@ -141,7 +141,7 @@ export default {
       return this.applyMaxSuggestions(suggestions);
     },
     showDefaultSuggestions() {
-      return this.availableDefaultSuggestions.length > 0;
+      return this.availableDefaultSuggestions.length > 0 && !this.searchKey;
     },
     showNoMatchesText() {
       return this.searchKey && !this.availableSuggestions.length;

@@ -49,4 +49,39 @@ RSpec.describe SystemNoteMetadata, feature_category: :team_planning do
       it { expect(described_class.for_notes(::Note.id_in(notes))).to match_array([metadata1, metadata2]) }
     end
   end
+
+  describe '#about_relation?' do
+    let(:note) { create(:note) }
+    let(:system_note_metadata) { build(:system_note_metadata, note: note) }
+
+    context 'when action is in cross_reference_types_with_branch' do
+      SystemNoteMetadata::WORK_ITEMS_CROSS_REFERENCE.each do |action_type|
+        it "returns true for action '#{action_type}'" do
+          system_note_metadata.action = action_type
+
+          expect(system_note_metadata.about_relation?).to be true
+        end
+      end
+    end
+
+    context 'when action is not in cross_reference_types_with_branch' do
+      let(:non_cross_reference_actions) do
+        SystemNoteMetadata::ICON_TYPES - SystemNoteMetadata::WORK_ITEMS_CROSS_REFERENCE
+      end
+
+      it 'returns false for actions not in cross reference types' do
+        non_cross_reference_actions.each do |action_type|
+          system_note_metadata.action = action_type
+
+          expect(system_note_metadata.about_relation?).to be false
+        end
+      end
+
+      it 'returns false for custom action not in any predefined types' do
+        system_note_metadata.action = 'custom_action'
+
+        expect(system_note_metadata.about_relation?).to be false
+      end
+    end
+  end
 end

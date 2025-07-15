@@ -4,7 +4,7 @@ module Gitlab
   module Backup
     module Cli
       module Commands
-        class BackupSubcommand < ObjectStorageCommand
+        class BackupSubcommand < Command
           package_name 'Backup'
 
           desc 'all', 'Creates a backup including repositories, database and local files'

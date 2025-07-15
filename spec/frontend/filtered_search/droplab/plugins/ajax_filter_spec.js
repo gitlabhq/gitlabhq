@@ -48,7 +48,7 @@ describe('AjaxFilter', () => {
       };
 
       await AjaxFilter.trigger();
-      expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(1);
+      expect(dummyConfig.onLoadingFinished.mock.calls).toHaveLength(1);
     });
 
     it('does not call onLoadingFinished if Ajax call fails', async () => {
@@ -59,7 +59,7 @@ describe('AjaxFilter', () => {
       };
 
       await expect(AjaxFilter.trigger()).rejects.toEqual(dummyError);
-      expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(0);
+      expect(dummyConfig.onLoadingFinished.mock.calls).toHaveLength(0);
     });
   });
 });

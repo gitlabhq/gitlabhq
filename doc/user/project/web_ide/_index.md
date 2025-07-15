@@ -24,7 +24,7 @@ commits directly in the GitLab UI. Unlike the [Web Editor](../repository/web_edi
 IDE provides a full-featured development environment with source control management.
 
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
-[issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
+[epic 15810](https://gitlab.com/groups/gitlab-org/-/epics/15810).
 
 ## Open the Web IDE
 
@@ -252,11 +252,11 @@ To view any notification you might have missed:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 - `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
 - `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 - `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../../administration/feature_flags/_index.md) in GitLab 17.10. Disabled by default.
 - `web_ide_extensions_marketplace` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662), and `vscode_extension_marketplace_settings` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662) in GitLab 17.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192659) in GitLab 18.1. Feature flags `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` removed.
 
@@ -265,6 +265,12 @@ To view any notification you might have missed:
 The VS Code Extension Marketplace provides you with access to extensions that enhance the
 functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
 [Open VSX Registry](https://open-vsx.org/).
+
+{{< alert type="note" >}}
+
+To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+
+{{< /alert >}}
 
 Before you can manage and use extensions in the Web IDE:
 
@@ -306,6 +312,10 @@ With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
 
 To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
 extension. For more information, see [install an extension](#install-an-extension).
+
+#### AsciiDoc Support
+
+The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) extension provides live preview, syntax highlighting, and snippets for AsciiDoc files in the Web IDE. To use AsciiDoc markup preview in the Web IDE, you must install the AsciiDoc extension. For more information, see [install an extension](#install-an-extension).
 
 ## Related topics
 

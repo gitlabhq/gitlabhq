@@ -4,3 +4,4 @@
 
 draw 'directs/milestone'
 draw 'directs/subscription_portal'
+draw 'directs/about'

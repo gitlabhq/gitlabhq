@@ -64,7 +64,7 @@ describe('SingleFileDiff', () => {
     expect(diff.isOpen).toBe(true);
     expect(diff.content).not.toBeNull();
 
-    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get).toHaveLength(1);
   });
 
   it('ignores user-defined diff path attributes', () => {
@@ -110,6 +110,6 @@ describe('SingleFileDiff', () => {
     await diff.toggleDiff($(document.querySelector('.js-file-title')));
     expect(diff.isOpen).toBe(true);
 
-    expect(mock.history.get.length).toBe(0);
+    expect(mock.history.get).toHaveLength(0);
   });
 });

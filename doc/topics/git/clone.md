@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to clone Git repositories from a GitLab server using different protocols (SSH or HTTPS) and various IDEs.
 title: Clone a Git repository to your local computer
 ---
 

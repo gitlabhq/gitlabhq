@@ -44,6 +44,9 @@ Capybara.register_driver :chrome do |app|
 
   options.add_argument("disable-search-engine-choice-screen")
 
+  # Ensure the Chrome locale is `en` so all dates are deterministic regardless of local settings
+  options.add_preference('intl.accept_languages', 'en')
+
   unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
     # Run headless by default unless WEBDRIVER_HEADLESS specified
     options.add_argument("headless")

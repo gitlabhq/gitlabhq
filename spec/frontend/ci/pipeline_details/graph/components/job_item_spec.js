@@ -268,7 +268,7 @@ describe('pipeline graph job item', () => {
 
       it('shows a badge on the job item', () => {
         expect(findBadge().exists()).toBe(true);
-        expect(findBadge().text()).toBe('Trigger job');
+        expect(findBadge().text()).toBe('trigger job');
       });
 
       it('applies a rounded corner style instead of the usual pill shape', () => {

@@ -92,12 +92,12 @@ class GroupDescendantsFinder
     groups_to_load_ancestors_of = paginated_projects_without_direct_descendents.pluck(:namespace_id)
     # rubocop:enable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord
     ancestors_of_groups(groups_to_load_ancestors_of)
-      .with_selects_for_list(archived: params[:archived])
+      .with_selects_for_list(archived: params[:archived], active: params[:active])
   end
 
   def ancestors_of_filtered_subgroups
     ancestors_of_groups(paginated_subgroups_without_direct_descendents)
-      .with_selects_for_list(archived: params[:archived])
+      .with_selects_for_list(archived: params[:archived], active: params[:active])
   end
 
   def subgroups
@@ -109,7 +109,7 @@ class GroupDescendantsFinder
                direct_child_groups
              end
 
-    groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
+    groups.with_selects_for_list(archived: params[:archived], active: params[:active]).order_by(sort)
   end
 
   def direct_child_projects

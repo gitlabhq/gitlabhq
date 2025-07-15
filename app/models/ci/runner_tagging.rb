@@ -19,7 +19,11 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :runner_type, presence: true
-    validate :check_sharding_key_id
+    validates :sharding_key_id, presence: true, unless: :instance_type?
+    validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
+
+    validate :no_sharding_key_id, if: :instance_type?
+    validate :no_organization_id, if: :instance_type?
 
     scope :scoped_runners, -> do
       where(arel_table[:runner_id].eq(Ci::Runner.arel_table[Ci::Runner.primary_key]))
@@ -33,16 +37,16 @@ module Ci
       self.runner_type = runner.runner_type
     end
 
-    def check_sharding_key_id
-      if runner_type == 'instance_type'
-        return if sharding_key_id.nil?
+    def no_sharding_key_id
+      return if sharding_key_id.nil?
 
-        errors.add(:sharding_key_id, 'instance_type runners must not have a sharding_key_id')
-      else
-        return if sharding_key_id.present?
+      errors.add(:sharding_key_id, 'instance_type runners must not have a sharding_key_id')
+    end
 
-        errors.add(:sharding_key_id, 'non-instance_type runners must have a sharding_key_id')
-      end
+    def no_organization_id
+      return if organization_id.nil?
+
+      errors.add(:organization_id, 'instance_type runners must not have an organization_id')
     end
   end
 end

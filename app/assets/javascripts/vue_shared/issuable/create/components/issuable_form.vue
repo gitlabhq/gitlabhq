@@ -3,8 +3,7 @@ import { GlForm, GlFormInput, GlFormCheckbox, GlFormGroup } from '@gitlab/ui';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { __, sprintf } from '~/locale';
-import { issuableTypeText } from '~/issues/constants';
+import { __ } from '~/locale';
 
 export default {
   VARIANT_EMBEDDED,
@@ -33,10 +32,6 @@ export default {
       type: String,
       required: true,
     },
-    issuableType: {
-      type: String,
-      required: true,
-    },
   },
   descriptionFormFieldProps: {
     ariaLabel: __('Description'),
@@ -56,11 +51,8 @@ export default {
   },
   computed: {
     confidentialityText() {
-      return sprintf(
-        __(
-          'This %{issuableType} is confidential and should only be visible to team members with at least the Planner role.',
-        ),
-        { issuableType: issuableTypeText[this.issuableType] },
+      return __(
+        'Turn on confidentiality: Limit visibility to project members with at least the Planner role.',
       );
     },
   },

@@ -489,14 +489,81 @@
       list-style-type: none;
       position: relative;
       min-height: 22px;
-      padding-inline-start: 28px;
+      padding-inline-start: 32px;
       margin-inline-start: 0 !important;
 
       > p > input.task-list-item-checkbox,
       > input.task-list-item-checkbox {
         position: absolute;
         inset-inline-start: $gl-padding-8;
-        inset-block-start: 5px;
+        inset-block-start: 3px;
+      }
+    }
+  }
+
+  ul[data-type=taskList] input[type=checkbox],
+  ul.task-list .task-list-item-checkbox {
+    all: unset;
+    @apply gl-w-5 gl-h-5 gl-cursor-pointer gl-box-border gl-rounded-base focus-visible:gl-focus;
+    background-color: var(--gl-control-background-color-default);
+    border: 1px solid var(--gl-control-border-color-default);
+
+    // Ensure size of the target for pointer inputs is at least 24 pixels to satisfy WCAG 2.5.8.
+    &::before {
+      content: '';
+      margin-top: calc(-#{$gl-spacing-scale-2} - 1px);
+      margin-left: calc(-#{$gl-spacing-scale-2} - 1px);
+      @apply gl-absolute gl-z-1 gl-w-6 gl-h-6 gl-bg-transparent;
+    }
+
+    &:not(:disabled):hover {
+      border-color: var(--gl-control-border-color-hover);
+    }
+
+    &:not(:disabled):focus {
+      @apply gl-focus;
+      border-color: var(--gl-control-border-color-focus);
+    }
+
+    &:checked {
+      background-color: var(--gl-control-background-color-selected-default);
+      border-color: var(--gl-control-border-color-selected-default);
+
+      &::after {
+        content: '';
+        @apply gl-absolute gl-z-2 gl-w-5 gl-h-5 gl-mt-[-1px] gl-ml-[-1px] gl-rounded-base;
+        mask: url("#{$gl-icon-check}") center center no-repeat;
+        background-color: var(--gl-control-indicator-color-selected);
+      }
+
+      @media (forced-colors: active) {
+        background-color: LinkText; // stylelint-disable-line scale-unlimited/declaration-strict-value
+        border-color: LinkText; // stylelint-disable-line scale-unlimited/declaration-strict-value
+      }
+    }
+
+    &:not(:disabled):checked:hover {
+      background-color: var(--gl-control-background-color-selected-hover);
+      border-color: var(--gl-control-border-color-selected-hover);
+    }
+
+    &:not(:disabled):checked:focus {
+      background-color: var(--gl-control-background-color-selected-focus);
+      border-color: var(--gl-control-border-color-selected-focus);
+    }
+
+    &:disabled {
+      background-color: var(--gl-control-background-color-disabled);
+      border-color: var(--gl-control-border-color-disabled);
+      @apply gl-cursor-not-allowed gl-text-disabled;
+    }
+
+    &:disabled:checked {
+      background-color: var(--gl-control-background-color-disabled);
+      border-color: var(--gl-control-border-color-disabled);
+
+      &::after {
+        background-color: var(--gl-control-indicator-color-disabled);
       }
     }
   }

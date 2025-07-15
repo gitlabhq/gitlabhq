@@ -71,6 +71,11 @@ export default {
       required: false,
       default: false,
     },
+    container: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -202,6 +207,7 @@ export default {
     :target="target"
     :delay="$options.USER_POPOVER_DELAY"
     :placement="placement"
+    :container="container"
     boundary="viewport"
     triggers="hover focus manual"
     data-testid="user-popover"

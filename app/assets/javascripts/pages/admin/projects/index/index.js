@@ -3,13 +3,17 @@ import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import csrf from '~/lib/utils/csrf';
 import Translate from '~/vue_shared/translate';
+import { initAdminProjects } from '~/admin/projects/index';
 
 import deleteProjectModal from './components/delete_project_modal.vue';
 
-(() => {
-  Vue.use(Translate);
-
+// To be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/549452
+const initDeleteProjectModal = () => {
   const deleteProjectModalEl = document.getElementById('delete-project-modal');
+
+  if (!deleteProjectModalEl) return;
+
+  Vue.use(Translate);
 
   const deleteModal = new Vue({
     el: deleteProjectModalEl,
@@ -41,4 +45,7 @@ import deleteProjectModal from './components/delete_project_modal.vue';
       });
     },
   });
-})();
+};
+
+initDeleteProjectModal();
+initAdminProjects();

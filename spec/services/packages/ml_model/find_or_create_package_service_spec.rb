@@ -21,9 +21,9 @@ RSpec.describe Packages::MlModel::FindOrCreatePackageService, feature_category: 
 
     context 'when model does not exist' do
       it 'creates the model' do
-        expect { subject }.to change { project.packages.ml_model.count }.by(1)
+        expect { subject }.to change { ::Packages::MlModel::Package.for_projects(project).count }.by(1)
 
-        package = project.packages.ml_model.last
+        package = ::Packages::MlModel::Package.for_projects(project).last
 
         aggregate_failures do
           expect(package.creator).to eq(user)
@@ -38,9 +38,9 @@ RSpec.describe Packages::MlModel::FindOrCreatePackageService, feature_category: 
         let(:params) { base_params.merge(build: ci_build) }
 
         it 'creates package and package build info' do
-          expect { subject }.to change { project.packages.ml_model.count }.by(1)
+          expect { subject }.to change { ::Packages::MlModel::Package.for_projects(project).count }.by(1)
 
-          package = project.packages.ml_model.last
+          package = ::Packages::MlModel::Package.for_projects(project).last
 
           aggregate_failures do
             expect(package.creator).to eq(user)
@@ -55,12 +55,12 @@ RSpec.describe Packages::MlModel::FindOrCreatePackageService, feature_category: 
 
     context 'when model already exists' do
       it 'does not create a new model', :aggregate_failures do
-        model = project.packages.ml_model.create!(params)
+        model = ::Packages::MlModel::Package.for_projects(project).create!(params)
 
         expect do
           new_model = subject
           expect(new_model).to eq(model)
-        end.not_to change { project.packages.ml_model.count }
+        end.not_to change { ::Packages::MlModel::Package.for_projects(project).count }
       end
     end
   end

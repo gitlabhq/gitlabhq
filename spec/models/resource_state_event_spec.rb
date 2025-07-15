@@ -5,8 +5,10 @@ require 'spec_helper'
 RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :model do
   subject { build(:resource_state_event, issue: issue) }
 
-  let(:issue) { create(:issue) }
-  let(:merge_request) { create(:merge_request) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request) }
+  let_it_be_with_reload(:project) { merge_request.target_project }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
   it_behaves_like 'a resource event'
   it_behaves_like 'a resource event that responds to imported'
@@ -17,19 +19,19 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
   describe 'validations' do
     describe 'Issuable validation' do
       it 'is valid if an issue is set' do
-        subject.attributes = { issue: build_stubbed(:issue), merge_request: nil }
+        subject.attributes = { issue: issue, merge_request: nil }
 
         expect(subject).to be_valid
       end
 
       it 'is valid if a merge request is set' do
-        subject.attributes = { issue: nil, merge_request: build_stubbed(:merge_request) }
+        subject.attributes = { issue: nil, merge_request: merge_request }
 
         expect(subject).to be_valid
       end
 
       it 'is invalid if both issue and merge request are set' do
-        subject.attributes = { issue: build_stubbed(:issue), merge_request: build_stubbed(:merge_request) }
+        subject.attributes = { issue: issue, merge_request: merge_request }
 
         expect(subject).not_to be_valid
       end
@@ -108,6 +110,45 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_closed_action)
 
         create(described_class.name.underscore.to_sym, merge_request: merge_request, state: described_class.states[:closed])
+      end
+    end
+
+    describe 'ensure_namespace_id' do
+      context 'when state_event belongs to a project issue' do
+        let(:state_event) { described_class.new(issue: issue) }
+
+        it 'sets the namespace id from the issue namespace id' do
+          expect(state_event.namespace_id).to be_nil
+
+          state_event.valid?
+
+          expect(state_event.namespace_id).to eq(issue.namespace.id)
+        end
+      end
+
+      context 'when state_event belongs to a group issue' do
+        let(:issue) { create(:issue, :group_level, namespace: group) }
+        let(:state_event) { described_class.new(issue: issue) }
+
+        it 'sets the namespace id from the issue namespace id' do
+          expect(state_event.namespace_id).to be_nil
+
+          state_event.valid?
+
+          expect(state_event.namespace_id).to eq(issue.namespace.id)
+        end
+      end
+
+      context 'when state_event belongs to a merge request' do
+        let(:state_event) { described_class.new(merge_request: merge_request) }
+
+        it 'sets the namespace id from the merge request project namespace id' do
+          expect(state_event.namespace_id).to be_nil
+
+          state_event.valid?
+
+          expect(state_event.namespace_id).to eq(merge_request.source_project.project_namespace_id)
+        end
       end
     end
   end

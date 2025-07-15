@@ -123,9 +123,9 @@ describe('Container expiration policy project settings', () => {
         });
         await waitForPromises();
 
-        const sprintf = findAlert().findComponent(GlSprintf);
-        expect(sprintf.text()).toBe('administration settings');
-        expect(sprintf.findComponent(GlLink).attributes('href')).toBe(
+        const alert = findAlert();
+        expect(alert.text()).toMatch(/administration settings/);
+        expect(alert.findComponent(GlLink).attributes('href')).toBe(
           defaultProvidedValues.adminSettingsPath,
         );
       });

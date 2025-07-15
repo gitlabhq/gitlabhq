@@ -490,7 +490,7 @@ export const BACKOFF_TIMEOUT = 'BACKOFF_TIMEOUT';
  *        // continue if result is not what we need
  *        next();
  *
- *        // when result is what we need let's stop with the repetitions and jump out of the cycle
+ *        // when result is what we need let's stop with the repetions and jump out of the cycle
  *        stop(result);
  *      })
  *      .catch(function (error) {
@@ -791,6 +791,8 @@ export const isCurrentUser = (userId) => {
 /**
  * Clones an object via JSON stringifying and re-parsing.
  * This ensures object references are not persisted (e.g. unlike lodash cloneDeep)
+ * See https://github.com/lodash/lodash/issues/4710#issuecomment-606892867 for details on cloneDeep circular references
+ * See https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm for the underlying mechanism used by Lodash
  */
 export const cloneWithoutReferences = (obj) => {
   return JSON.parse(JSON.stringify(obj));

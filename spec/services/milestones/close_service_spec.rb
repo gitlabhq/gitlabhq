@@ -12,19 +12,71 @@ RSpec.describe Milestones::CloseService, feature_category: :team_planning do
   end
 
   describe '#execute' do
-    before do
-      described_class.new(project, user, {}).execute(milestone)
+    let(:service) { described_class.new(project, user, {}) }
+
+    context 'when service is called before test suite' do
+      before do
+        service.execute(milestone)
+      end
+
+      it { expect(milestone).to be_valid }
+      it { expect(milestone).to be_closed }
+
+      describe 'event' do
+        let(:event) { Event.recent.first }
+
+        it { expect(event.milestone).to be_truthy }
+        it { expect(event.target).to eq(milestone) }
+        it { expect(event.action_name).to eq('closed') }
+      end
     end
 
-    it { expect(milestone).to be_valid }
-    it { expect(milestone).to be_closed }
+    shared_examples 'closes the milestone' do |with_project_hooks:|
+      it 'executes hooks with close action and creates new event' do
+        expect(service).to receive(:execute_hooks).with(milestone, 'close').and_call_original
+        expect(project).to receive(:execute_hooks).with(kind_of(Hash), :milestone_hooks) if with_project_hooks
 
-    describe 'event' do
-      let(:event) { Event.recent.first }
+        expect { service.execute(milestone) }.to change { Event.count }.by(1)
+      end
+    end
 
-      it { expect(event.milestone).to be_truthy }
-      it { expect(event.target).to eq(milestone) }
-      it { expect(event.action_name).to eq('closed') }
+    shared_examples 'does not close the milestone' do
+      it 'does not execute hooks and does not create new event' do
+        expect(service).not_to receive(:execute_hooks)
+
+        expect { service.execute(milestone) }.not_to change { Event.count }
+      end
+    end
+
+    context 'when milestone is successfully closed' do
+      context 'when project has active milestone hooks' do
+        let(:project) do
+          create(:project).tap do |project|
+            create(:project_hook, project: project, milestone_events: true)
+          end
+        end
+
+        it_behaves_like 'closes the milestone', with_project_hooks: true
+      end
+
+      context 'when project has no active milestone hooks' do
+        it_behaves_like 'closes the milestone', with_project_hooks: false
+      end
+    end
+
+    context 'when milestone fails to close' do
+      context 'when milestone is already closed' do
+        let(:milestone) { create(:milestone, :closed, project: project) }
+
+        it_behaves_like 'does not close the milestone'
+      end
+
+      context 'when milestone is a group milestone' do
+        let(:group) { create(:group) }
+        let(:milestone) { create(:milestone, group: group) }
+
+        it_behaves_like 'does not close the milestone'
+      end
     end
   end
 end

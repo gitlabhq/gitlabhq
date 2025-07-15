@@ -192,6 +192,7 @@ module IssuesHelper
       quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
       releases_path: project_releases_path(project, format: :json),
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
+      project_namespace_full_path: project.namespace.full_path,
       show_new_issue_link: show_new_issue_link?(project).to_s,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
     )
@@ -224,7 +225,8 @@ module IssuesHelper
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      rss_path: url_for(safe_params.merge(rss_url_options))
+      rss_path: url_for(safe_params.merge(rss_url_options)),
+      is_status_feature_enabled_on_instance: Feature.enabled?(:work_item_status_feature_flag, :instance).to_s
     }
   end
 

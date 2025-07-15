@@ -2,7 +2,6 @@
 
 class DropExternalApprovalRulesProtectedBranchesTable < Gitlab::Database::Migration[2.2]
   milestone '17.0'
-  enable_lock_retries!
 
   def up
     drop_table :external_approval_rules_protected_branches

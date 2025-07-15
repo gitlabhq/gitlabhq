@@ -125,7 +125,9 @@ Step 1 helps prevent wastage of compute quota that would be spent running analyz
 
 Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
-[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](https://www.youtube.com/watch?v=KauRBlfUbDE)
+<i class="fa-youtube-play" aria-hidden="true"></i>
+[How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://www.youtube.com/watch?v=KauRBlfUbDE)
+<!-- Video published on 2019-10-09 -->
 
 ### Testing local changes
 
@@ -395,10 +397,10 @@ Assuming the current analyzer release is `v{N}`:
    - Merge non-breaking changes to the `default` branch (aka `master` or `main`)
    - Merge breaking changes to the `v{N+1}` branch, and create a separate `release candidate` entry in the `CHANGELOG.md` file for each change:
 
-      ```markdown
-      ## v{N+1}.0.0-rc.0
-      - some breaking change (!123)
-      ```
+     ```markdown
+     ## v{N+1}.0.0-rc.0
+     - some breaking change (!123)
+     ```
 
       Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 

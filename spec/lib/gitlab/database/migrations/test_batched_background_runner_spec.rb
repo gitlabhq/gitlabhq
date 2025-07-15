@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     batch_size: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE,
     sub_batch_size: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE
   )
-
     batch_max_value = define_batchable_model(batch_table_name, connection: connection).maximum(batch_column_name)
 
     Gitlab::Database::SharedModel.using_connection(connection) do

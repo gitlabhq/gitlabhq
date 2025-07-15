@@ -166,47 +166,81 @@ sufficient or if an additional tool must be used to answer the question.
 
 [Zero-shot agent in action](https://gitlab.com/gitlab-org/gitlab/-/issues/427979).
 
-## GitLab Duo Workflow terminology
+## GitLab Duo Agent Platform terminology
+
+## Core Layer Concepts (GitLab-specific)
+
+### Flow 
+
+A **goal-oriented, structured graph** that orchestrates agents and tools to deliver a single, economically-valuable outcome (e.g., *create a code-review MR*, *triage issues*).
+
+- **Structure** – Explicit phases: planning → execution → completion  
+- **Nodes** – Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
+- **Trigger & Terminator** – Every flow has one or many defined start trigger(s) and a defined end state  
+- **Input** - Each Flow must have an input. Inputs set the context for the Flow session and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
+- **Session** – One execution of an flow; sessions carry user-specific goals and data
+
+> **Analogy:** *competency / job description* – the "what & when" of getting work done.
 
 ### Agent
 
-A general term for a software entity that performs tasks. Agents can range from simple, rule-based systems to complex AI-driven entities that learn and adapt over time. For our purposes, we typically use "Agent" to refer to an AI-driven entity.
+A **specialized, LLM-powered decision-maker** that owns a single node inside an flow. Can be defined independently and reused across multiple flows as a reusable component.
 
-### Autonomous Agents
+- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents    
+- **Prompt (Goal)** – Receives the session-specific objective from the flow
+- **Tools** – May call only the tools granted by the flow node definition and the user/company definition of available tools
+- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available 
+- **Reasoning** – Uses an LLM to decompose its goal into dynamic subtasks  
+- **Context awareness** – Gains project / repo / issue data through tool calls  
 
-Agents that operate independently without direct input or supervision from humans. They make decisions and perform actions based on their programming and the data they perceive from their environment. These often receive instructions from a Supervisor Agent.
-
-### Frameworks
-
-These are platforms or environments that support the development and operation of multi-agent systems. Frameworks provide the necessary infrastructure, tools, and libraries that developers can use to build, deploy, and manage agents. Langchain, for example, is a framework that facilitates building language-based agents integrated with different AI technologies.
-
-### General Agent or Generic Agent
-
-An agent capable of performing a variety of tasks, not limited to a specific domain or set of actions. This type of agent usually has broader capabilities and can adapt to a wide range of scenarios.
-
-### Hand-crafted Agents
-
-These are agents specifically designed by developers with tailored rules and behaviors to perform specific tasks. They are usually fine-tuned to operate within well-defined scenarios.
-
-### Multi-agent Workflows
-
-A system or process where multiple agents interact or collaborate to complete tasks or solve problems. Each agent in the workflow might have a specific role or expertise, contributing to a collective outcome.
-
-### Specialized Agents
-
-Agents designed to perform specific, often complex tasks where specialized knowledge or skills are required. These agents are usually highly effective within their domain of expertise but may not perform well outside of it.
-
-### Subagent
-
-A term used to describe an agent that operates under the supervision of another agent. Subagents typically handle specific tasks or components of a larger process within a multi-agent system.
-
-### Supervisor Agent
-
-An agent tasked with overseeing and coordinating the actions of other agents within a workflow. This type of agent ensures that tasks are assigned appropriately, and that the workflow progresses smoothly and efficiently.
+GitLab agents are **specialists**, not generalists, to maximize reliability and UX.
 
 ### Tool
 
-In the context of multi-agent workflows, a tool is a utility or application that agents can use to perform tasks. Tools are used to communicate with the outside world, and are an interface to something other than an LLM, like reading GitLab issues, cloning a repository, or reading documentation.
+A **discrete, deterministic capability** an agent (or flow step) invokes to perform read/write actions. Tools can be used to perform these in GitLab or in 3rd party applications via MCP or other protocols.
+
+*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.  
+Tools expose data or side-effects; they themselves perform **no reasoning**.
+
+## Flow types 
+
+### Current implementation 
+
+- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner 
+
+### Future implementations 
+
+- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations  
+- **Multi Agent** - A pool of agents are working to complete a task in a manner where each agent is getting a chance to solve it, and/or a supervisor chooses the final solution. Can support different graph topologies
+
+## Supporting Terminology
+
+| Term | Definition |
+| ---- | ---------- |
+| **Node (Flow node)** | A single step in the flow graph. GitLab currently supports *Agent*, *Tool Executor*, *Agent Handover*, *Supervisor*, and *Terminator* nodes. |
+| **Run** | One instantiation of an flow with concrete user input and data context. |
+| **Task** | A formal object representing a unit of work inside a run. At present only the *Executor* agent persists tasks, but the concept is extensible. |
+| **Trigger** | An event that starts an flow run (e.g., slash command, schedule, issue label). |
+| **Agent Handover** | Node type that packages context from one agent and passes it to another. |
+| **Supervisor Agent** | An agent node that monitors other agents' progress and enforces run-level constraints (timeout, max tokens, etc.). |
+| **Subagent** | Shorthand for an agent that operates under a Supervisor within the same run. |
+| **Autonomous Agent** | Historical term for an agent that can loop without human approval. In GitLab, autonomy level is governed by flow design, not by a separate agent type. |
+| **Framework** | A platform for building multi-agent systems. GitLab Duo Agent Platform uses **LangGraph**, an extension to LangChain that natively models agent graphs. |
+
+## Execution 
+
+Flows are executed in the following ways:
+
+- **Local** - The Flow is executed in relation to a project or a folder (future)
+- **Remote** - The Flow is executed in CI Runners in relation to a project, Group (future), Namespace (future)
+
+## Quick Reference Matrix
+
+| Layer | Human Analogy | Key Question Answered |
+| ----- | ------------- | --------------------- |
+| **Tool** | Capability | "What concrete action can I perform?" |
+| **Agent** | Skill / Specialist | "How do I use my tools to reach my goal?" |
+| **Flow** | Competency / Job | "When and in what order should skills be applied to deliver value?" |
 
 ## AI Context Terminology
 

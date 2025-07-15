@@ -11,7 +11,7 @@ export default {
       return this.note.resolved;
     },
     resolveButtonTitle() {
-      return this.discussionResolved ? __('Unresolve thread') : __('Resolve thread');
+      return this.discussionResolved ? __('Reopen thread') : __('Resolve thread');
     },
   },
   methods: {

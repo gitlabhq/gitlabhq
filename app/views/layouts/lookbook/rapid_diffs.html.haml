@@ -2,7 +2,8 @@
 = universal_stylesheet_link_tag 'application_utilities'
 = universal_stylesheet_link_tag 'tailwind'
 = universal_stylesheet_link_tag 'lookbook/rapid_diffs'
+= Gon::Base.render_data(nonce: content_security_policy_nonce)
 = webpack_bundle_tag 'javascripts/entrypoints/lookbook/rapid_diffs'
 
-%div{ style: 'padding: 20px' }
+%div{ style: 'padding: 20px', data: { rapid_diffs: true } }
   = yield

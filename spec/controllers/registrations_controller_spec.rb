@@ -611,6 +611,69 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
         it_behaves_like 'a user without present first name or last name'
       end
     end
+
+    describe 'registration timing tracking' do
+      let(:base_user_params) do
+        { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: User.random_password }
+      end
+
+      let(:user_params) { { user: base_user_params } }
+
+      context 'when a user is registered successfully' do
+        it 'logs registration metrics with durations' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(
+              event: 'user_registration_duration',
+              total_duration_s: a_kind_of(Float),
+              set_resource_fields_duration_s: a_kind_of(Float),
+              devise_create_user_duration_s: a_kind_of(Float),
+              after_successful_create_hook_duration_s: a_kind_of(Float)
+            )
+          )
+
+          post :create, params: user_params
+        end
+      end
+
+      context 'when registration fails' do
+        let(:invalid_user_params) { { user: base_user_params.merge(username: '') } }
+
+        it 'logs registration metrics even when registration fails' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(
+              event: 'user_registration_duration',
+              total_duration_s: a_kind_of(Float)
+            )
+          )
+
+          post :create, params: invalid_user_params
+        end
+      end
+
+      context 'when user is not invited' do
+        it 'tracks user creation with signup label' do
+          post :create, params: user_params
+
+          expect_snowplow_event(
+            category: 'RegistrationsController',
+            action: 'create_user',
+            label: 'signup',
+            user: User.find_by(email: base_user_params[:email])
+          )
+        end
+      end
+
+      context 'when a timing operation fails' do
+        it 'logs warning if timing measurement fails but continues registration' do
+          allow(controller).to receive(:current_monotonic_time).and_return(nil)
+          expect(Gitlab::AppJsonLogger).to receive(:warn).with(/Timing instrumentation failed/).at_least(:once)
+          expect(Gitlab::AppJsonLogger).to receive(:warn).with(/Error logging registration metrics/)
+          expect do
+            post :create, params: user_params
+          end.to change { User.count }.by(1)
+        end
+      end
+    end
   end
 
   describe '#destroy' do

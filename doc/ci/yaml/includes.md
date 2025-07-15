@@ -455,7 +455,7 @@ these keywords:
 
 {{< history >}}
 
-- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_include_rules_when_never`. Disabled by default.
 - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
 {{< /history >}}
@@ -489,7 +489,7 @@ test:
 
 {{< history >}}
 
-- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_include_rules_when_never`. Disabled by default.
 - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
 {{< /history >}}

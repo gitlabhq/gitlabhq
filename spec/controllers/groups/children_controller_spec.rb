@@ -261,20 +261,6 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
         subject(:make_request) { get :index, params: { group_id: group.to_param, active: active_param }, format: :json }
 
-        shared_examples 'request with no parameter' do
-          it 'returns direct child', :aggregate_failures do
-            make_request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(descendant_ids(json_response)).to contain_exactly(
-              active_subgroup.id,
-              active_project.id,
-              inactive_subgroup.id,
-              inactive_project.id
-            )
-          end
-        end
-
         context 'when true' do
           let_it_be(:active_param) { true }
 
@@ -284,14 +270,6 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
             expect(response).to have_gitlab_http_status(:ok)
             expect(descendant_ids(json_response)).to include(active_subgroup.id, active_project.id)
             expect(descendant_ids(json_response)).not_to include(inactive_subgroup.id, inactive_project.id)
-          end
-
-          context 'when `group_descendants_active_filter` flag is disabled' do
-            before do
-              stub_feature_flags(group_descendants_active_filter: false)
-            end
-
-            it_behaves_like 'request with no parameter'
           end
         end
 
@@ -342,14 +320,6 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
                 inactive_descendant_project.id
               )
             end
-          end
-
-          context 'when `group_descendants_active_filter` flag is disabled' do
-            before do
-              stub_feature_flags(group_descendants_active_filter: false)
-            end
-
-            it_behaves_like 'request with no parameter'
           end
         end
       end

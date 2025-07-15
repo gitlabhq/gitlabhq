@@ -1,3 +1,4 @@
+import { GlEmptyState } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
 import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
@@ -8,7 +9,6 @@ describe('Empty State', () => {
 
   const defaultProps = {
     illustrationPath: 'illustrations/empty-state/empty-job-pending-md.svg',
-    illustrationSizeClass: '',
     jobId: mockId,
     jobName: 'My job',
     title: 'This job has not started yet',
@@ -27,8 +27,9 @@ describe('Empty State', () => {
 
   const content = 'This job is in pending state and is waiting to be picked by a runner';
 
-  const findEmptyStateImage = () => wrapper.find('img');
-  const findTitle = () => wrapper.findByTestId('job-empty-state-title');
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyStateImage = () => findEmptyState().props('svgPath');
+  const findTitle = () => findEmptyState().props('title');
   const findContent = () => wrapper.findByTestId('job-empty-state-content');
   const findAction = () => wrapper.findByTestId('job-empty-state-action');
   const findManualVarsForm = () => wrapper.findComponent(ManualJobForm);
@@ -39,15 +40,11 @@ describe('Empty State', () => {
     });
 
     it('renders empty state image', () => {
-      expect(findEmptyStateImage().exists()).toBe(true);
-    });
-
-    it('renders alt text', () => {
-      expect(findEmptyStateImage().attributes('alt')).toBe('Manual job empty state image');
+      expect(findEmptyStateImage()).toBe(defaultProps.illustrationPath);
     });
 
     it('renders provided title', () => {
-      expect(findTitle().text().trim()).toBe(defaultProps.title);
+      expect(findTitle()).toBe(defaultProps.title);
     });
   });
 

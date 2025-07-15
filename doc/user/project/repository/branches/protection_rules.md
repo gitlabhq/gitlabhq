@@ -14,7 +14,8 @@ title: Protection rules and permissions
 {{< /details >}}
 
 Protection rules control access to branches and determine what happens when multiple
-rules apply to the same branch. They help you implement the right security measures for your
+rules apply to the same branch.
+They help you implement the right security measures for your
 repository branches. These rules cover:
 
 - Permission levels, precedence, and rule conflicts.
@@ -22,15 +23,25 @@ repository branches. These rules cover:
 - Code Owner approvals.
 - Protection settings between groups and projects.
 
+## Rule behaviors
+
+When a branch matches multiple protection rules, these behaviors apply:
+
+- Group rules apply to all projects in a group and cannot be modified from project settings.
+  For more information, see [Rules across groups and projects](#rules-across-groups-and-projects).
+- When a branch matches multiple rules, the most permissive rule applies. However,
+  [code owner approval](#code-owner-approval) uses the most restrictive rule.
+- Exact branch names like `main` do not override wildcard patterns like `m*`.
+
 ## Push and merge permissions
 
 {{< history >}}
 
-- Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+- Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **Allowed** permission in GitLab 16.0.
 
 {{< /history >}}
 
-When a branch is protected, the default behavior enforces these restrictions on the branch:
+When a branch is protected, the default behavior enforces these restrictions:
 
 | Action                   | Who can do it                           |
 |:-------------------------|:----------------------------------------|
@@ -44,45 +55,10 @@ When a branch is protected, the default behavior enforces these restrictions on 
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch](protected.md#delete-protected-branches) from the UI or API.
 
-### When a branch matches multiple rules
-
-When a branch matches multiple rules, the **most permissive rule** determines the
-level of protection for the branch. For example, consider these rules, which include
-[wildcards](protected.md#use-wildcard-rules):
-
-| Branch name pattern | Allowed to merge       | Allowed to push and merge |
-|---------------------|------------------------|---------------------------|
-| `v1.x`              | Maintainer             | Maintainer                |
-| `v1.*`              | Maintainer + Developer | Maintainer                |
-| `v*`                | No one                 | No one                    |
-
-A branch named `v1.x` is a case-sensitive match for all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
-As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
-
-- **Allowed to merge**: Of the three settings, `Maintainer + Developer` is most permissive,
-  and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
-  (which each have stricter permissions), users with the Developer role can merge into the branch.
-- **Allowed to push and merge**: Of the three settings, `Maintainer` is the most permissive, and controls
-  branch behavior as a result. Even though branches matching `v*` are set to `No one`, branches
-  that also match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
-
-To be certain that a rule controls the behavior of a branch,
-_all_ other patterns that match must apply less or equally permissive rules.
-
-If you want to ensure that `No one` is allowed to push to branch `v1.x`, every pattern
-that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
-
-| Branch name pattern | Allowed to merge       | Allowed to push and merge |
-|---------------------|------------------------|---------------------------|
-| `v1.x`              | Maintainer             | No one                    |
-| `v1.*`              | Maintainer + Developer | No one                    |
-| `v*`                | No one                 | No one                    |
-
 ## Force push permissions
 
-When a branch matches multiple rules, the **most permissive rule** determines whether
-force push is allowed. For example, consider these rules, which include
-[wildcards](protected.md#use-wildcard-rules):
+Force push permissions follow the same most permissive rule applies logic. For example, consider
+these rules, which include [wildcards](protected.md#use-wildcard-rules):
 
 | Branch name pattern | Allow force push |
 |---------------------|------------------|
@@ -97,7 +73,7 @@ As the most permissive option determines the behavior, the resulting permissions
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), any user that can push to this branch can also force push.
 
-## Code owner approvals
+## Code owner approval
 
 {{< details >}}
 
@@ -106,8 +82,10 @@ As the most permissive option determines the behavior, the resulting permissions
 
 {{< /details >}}
 
-If a branch is protected by multiple rules, code owner approval is required if any of
-the applicable rules have **Required approval from code owners** enabled.
+Unlike push and merge permissions, and force push permissions, code owner approval uses the most
+restrictive rule. If a branch is protected by multiple rules, code owner approval is required if any of
+the applicable rules have **Required approval from code owners** enabled. For more information, see
+[require code owner approval](protected.md#require-code-owner-approval).
 
 For example, consider these rules:
 
@@ -121,97 +99,90 @@ A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, an
 Because at least one rule (`v1.x`) requires code owner approval, all merge requests to this branch
 require approval by a Code Owner before they can be merged.
 
-Unlike push, merge, and force push permissions (which use the most permissive rule),
-code owner approval uses the most restrictive rule. If any rule requires code owner approval,
-then all merge requests to matching branches require approval.
-
 ## Rules across groups and projects
 
 Branch protection rules can be set in both groups and projects:
 
-- Group rules apply to all projects in a group and cannot be overridden.
+- Group rules apply to all projects in a group and cannot be modified from project settings.
 - Project rules apply only to that specific project.
 
 When both group and project rules exist that match a branch:
 
-1. Group rules always take precedence over project rules.
-1. If multiple group rules match a branch, the most permissive rule applies.
-1. If no group rules match but multiple project rules match, the most permissive project rule applies.
+- All matching rules are evaluated together.
+- The most permissive rule applies for most settings.
+- For [code owner approval](#code-owner-approval), the most restrictive rule applies.
 
-For example, if a group owner set up a rule requiring Code Owner approval for the `main` branch,
-project maintainers cannot disable this requirement in the project.
+You cannot edit or remove group rules from project settings, but you can add
+additional project rules for the same branch. For example:
 
-## Examples
+- A group rule for `main` disallows force push.
+- You can add a project rule for `main` that allows force push.
+- Both rules exist, but the more permissive project rule takes effect for force push settings.
 
-The following examples illustrate how protection rules work in practice.
+## Multiple branch rule examples
 
-### Merge permission
+The following examples demonstrate how different rules can affect branch protection.
 
-Assume you have these rules set up:
+### Allowed to merge
 
-| Branch name pattern | Allowed to merge                          |
-|---------------------|-------------------------------------------|
-| `development`       | Developers + Maintainers                  |
-| `dev*`              | Maintainers only                          |
-| `*`                 | No one                                    |
+An example of how an exact branch name does not override a more permissive wildcard pattern.
 
-With these rules:
+| Branch pattern | Allowed to merge          |
+|----------------|---------------------------|
+| `release-v1.0` | No one                    |
+| `release*`     | Maintainer                |
+| `*`            | Developer + Maintainer    |
 
-- For a branch named `development`: Developers and Maintainers can merge (from `development` rule).
-- For a branch named `dev-feature`: Maintainers can merge (from `dev*` rule).
-- For a branch named `feature`: No one can merge (from `*` rule).
+- Branch `release-v1.0` matches all three patterns. The most permissive rule applies:
+  - **Allowed to merge**: Developer + Maintainer can merge (from `*` rule).
 
-### Push permission
+### Allowed to push and merge
 
-Assume you have these rules set up:
+An example of how multiple branch rules apply to different branch names.
 
-| Branch name pattern | Allowed to push and merge                  |
-|---------------------|-------------------------------------------|
-| `production`        | No one                                    |
-| `prod*`             | Maintainers only                          |
-| `*`                 | Developers + Maintainers                  |
+| Branch pattern | Allowed to merge       | Allowed to push and merge |
+|----------------|------------------------|---------------------------|
+| `main`         | Maintainer             | No one                    |
+| `m*`           | Developer + Maintainer | Developer + Maintainer    |
+| `r*`           | No one                 | No one                    |
 
-With these rules:
+- Branch `main` matches two patterns (`main` and `m*`). The most permissive rule applies:
+  - **Allowed to merge**: Developer + Maintainer can merge (from `m*` rule).
+  - **Allowed to push and merge**: Developer + Maintainer can push (from `m*` rule).
+- Branch `release-v1.0` matches one pattern:
+  - **Allowed to merge**: No one can merge (from `r*` rule).
+  - **Allowed to push and merge**: No one can push (from `r*` rule).
 
-- For a branch named `production`: No one can push (from `production` rule).
-- For a branch named `prod-release`: Maintainers can push (from `prod*` rule).
-- For a branch named `feature`: Developers and Maintainers can push (from `*` rule).
+### Code owner requirements
 
-### Direct push permission
+Code owner approval works differently from other branch protection settings. When multiple rules
+match, the most restrictive rule applies instead of the most permissive.
 
-Assume you have these rules set up:
+| Branch pattern | Code owner approval required |
+|----------------|------------------------------|
+| `production`   | Yes                          |
+| `prod*`        | No                           |
+| `p*`           | Yes                          |
 
-| Branch name pattern | Allowed to merge        | Allowed to push and merge |
-|---------------------|-------------------------|---------------------------|
-| `main`              | Everyone with access    | No one                    |
-| `m*`                | Maintainers only        | Maintainers only          |
+- Branch `production` matches all three patterns. The most restrictive rule applies:
+  - **Code owner approval**: Required (from `production` and `p*` rules).
+- Branch `product-v1.0` matches two patterns (`prod*` and `p*`). The most restrictive rule applies:
+  - **Code owner approval**: Required (from `p*` rule).
 
-With these rules:
+### Ensure strict protection
 
-- For a branch named `main`:
-  - Everyone with access can create merge requests.
-  - No one can push directly (must use merge requests).
-- For a branch named `maintenance`:
-  - Only Maintainers can create merge requests.
-  - Only Maintainers can push directly.
+To ensure strict protection that cannot be overridden by more permissive patterns, configure all
+matching patterns with the same restrictive settings.
 
-### Code owner approval
+| Branch pattern | Allowed to merge | Allowed to push and merge |
+|----------------|------------------|---------------------------|
+| `production`   | Maintainer       | No one                    |
+| `prod*`        | Maintainer       | No one                    |
+| `p*`           | Maintainer       | No one                    |
+| `*`            | Maintainer       | No one                    |
 
-Assume you have these rules set up:
-
-| Branch name pattern | Code owner approval required | Allowed to push and merge |
-|---------------------|------------------------------|---------------------------|
-| `release-*`         | Yes                          | Maintainers only          |
-| `rel*`              | No                           | Maintainers only          |
-
-With these rules:
-
-- For a branch named `release-1.0`:
-  - Code owner approval is required for merge requests.
-  - Only Maintainers can push directly.
-- For a branch named `relations-feature`:
-  - Code owner approval is not required.
-  - Only Maintainers can push directly.
+Now branch `production` has restrictive push permissions because all matching rules specify
+**No one** can push.
 
 ## Related topics
 

@@ -45,14 +45,14 @@ Here's an example of how you can use the tokens for runner registration:
 
 GitLab and the runner are then connected.
 
-## List owned runners
+## List available runners
 
 Get a list of runners available to the user.
 
 Prerequisites:
 
-- You must be an administrator of or have the Owner role for the target namespace or project.
-- For `instance_type`, you must be an administrator of the GitLab instance.
+- For group runners, you must have the Owner role in the owner namespace.
+- For project runners, you must have at least the Maintainer role in a project assigned to the runner.
 
 ```plaintext
 GET /runners
@@ -144,13 +144,11 @@ Example response:
 
 {{< /details >}}
 
-Get a list of all runners in the GitLab instance (project and shared). Access
-is restricted to users with either administrator access or auditor access.
+Get a list of all runners in the GitLab instance (project and shared).
 
 Prerequisites:
 
-- You must be an administrator of or have the Owner role for the target namespace or project.
-- For `instance_type`, you must be an administrator of the GitLab instance.
+- You must have either administrator access or auditor access.
 
 ```plaintext
 GET /runners/all
@@ -263,11 +261,16 @@ To view more than the first 20 runners, use [pagination](rest/_index.md#paginati
 
 Get details of a runner.
 
-Instance runner details through this endpoint are available to all authenticated users.
+Instance runner details are available to all authenticated users through this endpoint.
 
 Prerequisites:
 
-- You must have at least the Developer role for the target namespace or project.
+- User access: You must have one of the following:
+
+  - For group runners: At least the Maintainer role in the owner namespace.
+  - For project runners: At least the Maintainer role in the project that owns the runner.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -361,9 +364,13 @@ PUT /runners/:id
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- User access: You must have one of the following:
+
+  - For instance runners: Administrator access to the GitLab instance.
+  - For group runners: Owner role in the owner namespace.
+  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
 - An access token with the `manage_runner` scope and the appropriate role.
 
 | Attribute          | Type    | Required | Description |
@@ -449,9 +456,13 @@ Pause a runner.
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- User access: You must have one of the following:
+
+  - For instance runners: Administrator access to the GitLab instance.
+  - For group runners: Owner role in the owner namespace.
+  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -535,7 +546,6 @@ Example response:
             "bio": null,
             "location": null,
             "public_email": "",
-            "skype": "",
             "linkedin": "",
             "twitter": "",
             "website_url": "",
@@ -631,7 +641,7 @@ List all runners available in the project, including from ancestor groups and [a
 
 Prerequisites:
 
-- You must be an administrator of or have at least the Maintainer role for the target project.
+- You must be an administrator of the GitLab instance or have at least the Maintainer or Auditor role for the target project.
 
 ```plaintext
 GET /projects/:id/runners
@@ -721,9 +731,10 @@ Assign an available project runner to the project.
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- User access: You must have one of the following:
+
+  - At least the Maintainer role for the project that owns the runner and the target project.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
 
 ```plaintext
 POST /projects/:id/runners
@@ -774,9 +785,13 @@ Use the call to [delete a runner](#delete-a-runner) instead.
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- You must not lock the runner, unless you are an administrator.
+- User access: You must have one of the following:
+
+  - At least the Maintainer role in the project you want to unassign.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
+- An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
 DELETE /projects/:id/runners/:runner_id
@@ -797,7 +812,13 @@ List all runners available in the group and its ancestor groups, including [any 
 
 Prerequisites:
 
-- You must be an administrator or have the Maintainer role for the target namespace.
+- User access: You must have one of the following:
+
+  - Administrator access to the GitLab instance.
+  - Owner or Auditor role in the group.
+  - A custom role with the `admin_runners` permission in the group.
+
+- An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
 GET /groups/:id/runners
@@ -959,9 +980,13 @@ To delete the runner by ID, use your access token with the runner's ID:
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- User access: You must have one of the following:
+
+  - For instance runners: Administrator access to the GitLab instance.
+  - For group runners: Owner role in the owner namespace.
+  - For project runners: At least the Maintainer role in the project that owns the runner.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -978,12 +1003,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ### Delete a runner by authentication token
 
-To delete the runner by using its authentication token:
-
-Prerequisites:
-
-- You must be an administrator of or have the Owner role for the target namespace or project.
-- For `instance_type`, you must be an administrator of the GitLab instance.
+Delete the runner by using its authentication token.
 
 ```plaintext
 DELETE /runners
@@ -1121,9 +1141,13 @@ Reset the runner's authentication token by using its runner ID.
 
 Prerequisites:
 
-- For `instance_type`, you must be an administrator of the GitLab instance.
-- For `group_type`, you must have the Owner role for the target namespace.
-- For `project_type`, you must have at least the Maintainer role for the target project.
+- User access: You must have one of the following:
+
+  - For instance runners: Administrator access to the GitLab instance.
+  - For group runners: Owner role in the owner namespace.
+  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - A custom role with the `admin_runners` permission in the relevant group or project.
+
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext

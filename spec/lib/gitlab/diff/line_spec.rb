@@ -153,13 +153,15 @@ RSpec.describe Gitlab::Diff::Line do
   end
 
   describe '#id' do
+    let(:file_hash) { '1234567890' }
+
+    subject(:id) { line.id(file_hash) }
+
     context 'when meta line' do
-      it 'returns nil' do
-        expect(line.id('', :old)).to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
-    context 'when changed line' do
+    context 'with added line' do
       let(:line) do
         described_class.new(
           '<input>',
@@ -173,15 +175,41 @@ RSpec.describe Gitlab::Diff::Line do
         )
       end
 
-      let(:file_hash) { '1234567890' }
+      it { is_expected.to eq("line_#{file_hash[0..8]}_A#{line.new_pos}") }
+    end
 
-      it 'returns the correct old side ID' do
-        expect(line.id(file_hash, :old)).to eq("line_#{file_hash[0..8]}_L#{line.old_pos}")
+    context 'with unchanged line' do
+      let(:line) do
+        described_class.new(
+          '<input>',
+          nil,
+          1,
+          10,
+          11,
+          parent_file: double(:file),
+          line_code: double(:line_code),
+          rich_text: rich_text
+        )
       end
 
-      it 'returns the correct new side ID' do
-        expect(line.id(file_hash, :new)).to eq("line_#{file_hash[0..8]}_R#{line.new_pos}")
+      it { is_expected.to eq("line_#{file_hash[0..8]}_#{line.old_pos}") }
+    end
+
+    context 'with removed line' do
+      let(:line) do
+        described_class.new(
+          '<input>',
+          'old',
+          1,
+          10,
+          11,
+          parent_file: double(:file),
+          line_code: double(:line_code),
+          rich_text: rich_text
+        )
       end
+
+      it { is_expected.to eq("line_#{file_hash[0..8]}_#{line.old_pos}") }
     end
   end
 end

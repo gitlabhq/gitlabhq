@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import initMrNotes from 'ee_else_ce/mr_notes';
-import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED } from '~/diffs/constants';
@@ -24,7 +23,7 @@ const tabData = Vue.observable({
 const initMrStickyHeader = () => {
   const el = document.getElementById('js-merge-sticky-header');
 
-  if (el) {
+  if (el && !CSS.supports('container-type: scroll-state')) {
     const { data } = el.dataset;
 
     let parsedData;
@@ -45,6 +44,7 @@ const initMrStickyHeader = () => {
       sourceProjectPath,
       blocksMerge,
       imported,
+      isDraft,
     } = parsedData;
 
     tabData.tabs = tabs;
@@ -56,6 +56,9 @@ const initMrStickyHeader = () => {
       store,
       pinia,
       apolloProvider,
+      components: {
+        StickyHeader: () => import('~/merge_requests/components/sticky_header.vue'),
+      },
       provide: {
         query: getStateQuery,
         iid,
@@ -67,10 +70,11 @@ const initMrStickyHeader = () => {
         sourceProjectPath,
       },
       render(h) {
-        return h(StickyHeader, {
+        return h('sticky-header', {
           props: {
             tabs: tabData.tabs,
             isImported: parseBoolean(imported),
+            isDraft: parseBoolean(isDraft),
           },
         });
       },
@@ -79,8 +83,6 @@ const initMrStickyHeader = () => {
 };
 
 const initReviewDrawer = () => {
-  if (!window.gon?.features?.improvedReviewExperience) return;
-
   // Review drawer has to be located outside the MR sticky/non-sticky header
   // Otherwise it will disappear when header switches between sticky/non-sticky components
   const el = document.querySelector('#js-review-drawer');
@@ -101,8 +103,8 @@ const initReviewDrawer = () => {
   });
 };
 
-export function initMrPage() {
-  initMrNotes();
+export function initMrPage(createRapidDiffsApp) {
+  initMrNotes(createRapidDiffsApp);
   initShow(store, pinia);
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });

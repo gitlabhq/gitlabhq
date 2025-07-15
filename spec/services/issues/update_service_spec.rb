@@ -146,6 +146,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
 
       it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        let(:trigger_call_counter) { 2 }
+
         subject(:execute_service) { update_issue(opts) }
       end
 
@@ -435,6 +437,38 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
         update_issue(opts)
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+      end
+
+      context 'when updating state_event' do
+        context 'when state_event is close' do
+          let(:opts) { { state_event: 'close' } }
+
+          it 'closes the issue' do
+            expect { update_issue(opts) }
+              .to change(issue, :state).from('opened').to('closed')
+          end
+
+          it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+            subject(:execute_service) { update_issue(opts) }
+          end
+        end
+
+        context 'when state_event is reopen' do
+          let(:opts) { { state_event: 'reopen' } }
+
+          before do
+            issue.close!
+          end
+
+          it 'reopens the issue' do
+            expect { update_issue(opts) }
+              .to change(issue, :state).from('closed').to('opened')
+          end
+
+          it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+            subject(:execute_service) { update_issue(opts) }
+          end
+        end
       end
 
       context 'when moving issue between issues from different projects' do

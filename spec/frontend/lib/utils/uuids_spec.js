@@ -31,7 +31,7 @@ describe('UUIDs Util', () => {
     it('outputs an array of UUIDs', () => {
       const ids = uuids({ count: 11 });
 
-      expect(ids.length).toEqual(11);
+      expect(ids).toHaveLength(11);
       expect(ids.every((id) => UUIDV4.test(id))).toEqual(true);
     });
 

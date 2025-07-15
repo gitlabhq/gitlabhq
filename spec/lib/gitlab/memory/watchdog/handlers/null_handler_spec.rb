@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog::Handlers::NullHandler, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Watchdog::Handlers::NullHandler, feature_category: :durability_metrics do
   subject(:handler) { described_class.instance }
 
   describe '#call' do

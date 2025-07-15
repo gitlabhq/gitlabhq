@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replication do
-  include_examples 'remote object storage cleaner' do
+  include_examples 'remote object storage cleaner',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/545622' do
     let(:bucket_name) { 'artifacts' }
     let(:model_class) { ::Ci::JobArtifact }
     let(:stub_object_storage_uploader_for_cleaner) { stub_artifacts_object_storage }
@@ -26,7 +27,8 @@ RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replicat
     context 'with a tracked file' do
       let(:file_path) { artifact.file.path }
 
-      it 'returns a relation that includes the artifact' do
+      it 'returns a relation that includes the artifact',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/545624' do
         query = cleaner.send(:query_for_row_tracking_the_file, file_path)
 
         expect(query.exists?).to be true

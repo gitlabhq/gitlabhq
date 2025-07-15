@@ -714,6 +714,21 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
               .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
           end
+
+          context 'with anonymous user on public project' do
+            let(:current_user) { nil }
+
+            before do
+              project.update!(visibility: ::Gitlab::VisibilityLevel::PUBLIC)
+            end
+
+            it 'returns only items that the user has access to' do
+              post_graphql(query, current_user: current_user)
+
+              expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
+                .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
+            end
+          end
         end
 
         context 'when limiting the number of results' do
@@ -862,7 +877,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 { "type" => "NOTIFICATIONS" },
                 { "type" => "PARTICIPANTS" },
                 { "type" => "START_AND_DUE_DATE" },
-                { "type" => "TIME_TRACKING" }
+                { "type" => "TIME_TRACKING" },
+                { "type" => "LINKED_RESOURCES" }
               ]
             )
           end

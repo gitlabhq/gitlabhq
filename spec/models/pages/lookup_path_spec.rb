@@ -6,11 +6,12 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   let(:trim_prefix) { nil }
   let(:path_prefix) { nil }
   let(:file_store) { ::ObjectStorage::Store::REMOTE }
-  let(:group) { build(:group, path: 'mygroup') }
+  let(:group) { create(:group, path: 'mygroup') }
+  let(:sub_group) { create(:group, name: 'mysubgroup', parent: group) }
   let(:access_control) { false }
 
   let(:deployment) do
-    build(
+    create(
       :pages_deployment,
       id: 1,
       project: project,
@@ -19,10 +20,10 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   let(:project) do
-    build(
+    create(
       :project,
       :pages_private,
-      group: group,
+      group: sub_group,
       path: 'myproject',
       pages_https_only: true)
   end
@@ -30,6 +31,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   subject(:lookup_path) do
     described_class.new(
       deployment: deployment,
+      root_namespace_id: project.namespace.root_ancestor.id,
       trim_prefix: trim_prefix,
       access_control: access_control
     )
@@ -78,7 +80,9 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#https_only' do
-    subject(:lookup_path) { described_class.new(deployment: deployment, domain: domain) }
+    subject(:lookup_path) do
+      described_class.new(deployment: deployment, root_namespace_id: project.namespace.root_ancestor.id, domain: domain)
+    end
 
     context 'when no domain provided' do
       let(:domain) { nil }

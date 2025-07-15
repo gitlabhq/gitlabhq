@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: Jira Incident Replicator
+title: Jira to GitLab DORA Integration
 ---
 
 {{< details >}}
@@ -22,6 +22,8 @@ With GitLab, you can get visibility into [DORA metrics](../../user/analytics/dor
 While the first two metrics are generated from GitLab CI/CD and Merge Requests, the latter two depend on [GitLab incidents](../../operations/incident_management/manage_incidents.md) being created. 
 
 For teams using Jira for incident tracking, this means that incidents need to be replicated from Jira to GitLab in real-time. This project walks through setting up that replication.
+
+**NOTE**: A similar integration exists for issue replication to generate Value Stream Analytics metrics (Lead Time, Issues Created, and Issues Closed). If you're interested in issue replication for VSA metrics, refer to the [Jira to GitLab VSA Integration](jira_vsa.md).
 
 ## Architecture
 
@@ -131,7 +133,7 @@ At this point, incidents you resolve in Jira will also be resolved in GitLab. Th
 - [DORA metrics](../../user/analytics/dora_metrics.md)
   - [Measure DORA metrics with Jira](../../user/analytics/dora_metrics.md#with-jira)
 - [GitLab incident management](../../operations/incident_management/manage_incidents.md)
-- [GitLab HTTP endpoints](../../operations/incident_management/integrations.md#http-endpoints)
+- [GitLab HTTP endpoints](../../operations/incident_management/integrations.md#alerting-endpoints)
   - [GitLab HTTP endpoint authorization](../../operations/incident_management/integrations.md#authorization)
   - [GitLab alert parameters](../../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab)
   - [GitLab recovery alerts](../../operations/incident_management/integrations.md#recovery-alerts)

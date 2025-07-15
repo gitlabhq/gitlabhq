@@ -29,6 +29,7 @@ describe('FailedJobDetails component', () => {
 
   const defaultProps = {
     job,
+    canTroubleshootJob: true,
   };
 
   const createComponent = ({ props = {} } = {}) => {

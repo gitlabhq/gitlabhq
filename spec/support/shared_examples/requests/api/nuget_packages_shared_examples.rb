@@ -899,14 +899,6 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
         expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
       end
-
-      context 'when feature flag :packages_protected_packages_nuget is disabled' do
-        before do
-          stub_feature_flags(packages_protected_packages_nuget: false)
-        end
-
-        it_behaves_like 'successful nuget upload'
-      end
     end
 
     context 'for personal access token' do
@@ -966,6 +958,7 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth
         args[:property] = 'guest'
       elsif auth == :deploy_token
         args[:property] = 'deploy_token'
+        args[:additional_properties] = { deploy_token_id: Gitlab::CryptoHelper.sha256(deploy_token.id) }
       else
         args[:user] = user
         args[:property] = 'user'

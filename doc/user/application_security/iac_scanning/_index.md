@@ -26,7 +26,10 @@ With GitLab Ultimate, IaC scanning results are also processed so you can:
 - Use them in approval workflows.
 - Review them in the vulnerability report.
 
-## Enable the scanner
+## Getting started
+
+If you are new to IaC scanning, the following steps show
+how you can quickly enable IaC scanning for your project.
 
 Prerequisites:
 
@@ -38,24 +41,74 @@ Prerequisites:
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
 
-To enable IaC scanning of a project:
+To enable IaC scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
-   already exists, add only the `template` line below it.
+1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
+1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
+
+Using a template:
 
    ```yaml
    include:
      - template: Jobs/SAST-IaC.gitlab-ci.yml
    ```
 
-1. Select the **Validate** tab, then select **Validate pipeline**.
-   The message **Simulation completed successfully** indicates the file is valid.
-1. Select the **Edit** tab.
-1. Select **Commit changes**.
+Or using a CI component:
 
-Pipelines now include an IaC scanning job.
+   ```yaml
+   include:
+     - component: gitlab.com/components/sast/iac-sast@main
+   ```
+
+At this point, IaC scanning is enabled in your pipeline.
+If supported IaC source code is present, the default rules automatically scan for vulnerabilities when a pipeline runs.
+The corresponding job will appear under the test stage in your pipeline.
+
+You can see a working example in
+[IaC-Scanning Example Project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/kics/iac-getting-started).
+
+After completing these steps, you can:
+
+- Learn more about how to [understand the results](#understanding-the-results)
+- Review [optimization tips](#optimization)
+- Plan a [rollout to more projects](#roll-out)
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - Location: Shows the filename and line number where the issue was found.
+     Selecting the file path opens the corresponding line in the code view.
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers and the IDs of the rules that detected it.
+
+You can also download the security scan results:
+
+- In the pipeline's **Security** tab, select **Download results**.
+
+For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+
+{{< alert type="note" >}}
+
+Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
+
+{{< /alert >}}
+
+Additional ways to see IaC scanning results:
+
+- [Merge request widget](../sast/_index.md#merge-request-widget): Shows newly introduced or resolved findings.
+- [Merge request changes view](../sast/_index.md#merge-request-changes-view): Shows inline annotations for changed lines.
+- [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
 
 ## Supported languages and frameworks
 
@@ -91,7 +144,7 @@ Supported configuration formats:
 
   {{< /alert >}}
 
-## Customize rules
+## Optimization
 
 {{< details >}}
 
@@ -100,7 +153,8 @@ Supported configuration formats:
 
 {{< /details >}}
 
-You can customize the default IaC scanning rules provided with GitLab.
+Currently, customizing the default IaC scanning rules is the only supported way
+to optimize IaC scanning in GitLab.
 
 The following customization options can be used separately, or together:
 
@@ -319,7 +373,7 @@ include:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags/_index.md) named `sec_mark_dropped_findings_as_resolved`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2. Feature flag `sec_mark_dropped_findings_as_resolved` removed.
 
 {{< /history >}}
@@ -347,6 +401,13 @@ The JSON report file can be downloaded from:
 
 For more information see [Downloading artifacts](../../../ci/jobs/job_artifacts.md).
 
+## Roll out
+
+After validating the IaC scanning results for one project, you can implement the same approach across additional projects.
+
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply IaC scanning settings across groups.
+- Share and reuse a central ruleset by [specifying a remote configuration file](../sast/customize_rulesets.md#specify-a-remote-configuration-file).
+
 ## Troubleshooting
 
 When working with IaC scanning, you might encounter the following issues.
@@ -364,4 +425,4 @@ so IaC findings in the "Passwords and Secrets" family show as `No longer detecte
 
 You might get an error in the job log that states `exec /bin/sh: exec format error`. This issue
 occurs when attempting to run the IaC scanning analyzer on an architecture other than AMD64
-architecture. For details of IaC scanning prerequisites, see [Enable the scanner](#enable-the-scanner).
+architecture. For details of IaC scanning prerequisites, see [Prerequisites](#getting-started).

@@ -9,6 +9,7 @@ module Atlassian
 
         COMMITS_LIMIT = 2000
         ISSUE_KEY_LIMIT = 500
+        ASSOCIATION_LIMIT = 500
 
         format_with(:iso8601, &:iso8601)
 
@@ -33,9 +34,27 @@ module Atlassian
 
         def associations
           keys = issue_keys
+          commits = commits_since_last_deploy.first(ASSOCIATION_LIMIT)
+          merge_requests = deployment.deployment_merge_requests.first(ASSOCIATION_LIMIT)
+          repository_id = project.id.to_s
 
           combined_associations = service_ids_from_integration_configuration
           combined_associations << { associationType: :issueKeys, values: keys } if keys.present?
+
+          # Add commit as associations
+          if commits.present?
+            commit_objects = commits.map { |commit| { commitHash: commit.id, repositoryId: repository_id } }
+            combined_associations << { associationType: :commit, values: commit_objects }
+          end
+
+          # Add merge requests as associations
+          if merge_requests.present?
+            mr_objects = merge_requests.map do |mr|
+              { pullRequestId: mr.merge_request_id, repositoryId: repository_id }
+            end
+            combined_associations << { associationType: 'pull-request', values: mr_objects }
+          end
+
           combined_associations.presence
         end
         strong_memoize_attr :associations
@@ -107,24 +126,7 @@ module Atlassian
         # Extract Jira issue keys from commits made to the deployment's branch or tag
         # since the last successful deployment was made to the environment.
         def issue_keys_from_commits_since_last_deploy
-          last_deployed_commit = environment
-            .successful_deployments
-            .id_not_in(deployment.id)
-            .ordered
-            .first
-            &.commit
-
-          commit_range = if last_deployed_commit
-                           "#{last_deployed_commit.id}..#{deployment.commit.id}"
-                         else
-                           deployment.commit.id
-                         end
-
-          commits = project.repository.commits(
-            commit_range,
-            skip_merges: true,
-            limit: COMMITS_LIMIT
-          )
+          commits = commits_since_last_deploy.without_merge_commits
 
           commits.flat_map do |commit|
             JiraIssueKeyExtractor.new(commit.message).issue_keys
@@ -154,6 +156,28 @@ module Atlassian
 
           [{ command: 'initiate_deployment_gating' }]
         end
+
+        def commits_since_last_deploy
+          last_deployed_commit = environment
+                                     .successful_deployments
+                                     .id_not_in(deployment.id)
+                                     .ordered
+                                     .first
+                                     &.commit
+
+          commit_range = if last_deployed_commit
+                           "#{last_deployed_commit.id}..#{deployment.commit.id}"
+                         else
+                           deployment.commit.id
+                         end
+
+          project.repository.commits(
+            commit_range,
+            skip_merges: false,
+            limit: COMMITS_LIMIT
+          )
+        end
+        strong_memoize_attr :commits_since_last_deploy
       end
     end
   end

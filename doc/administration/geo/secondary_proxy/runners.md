@@ -15,7 +15,7 @@ title: Secondary runners
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9779) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9779) in GitLab 16.8 [with a flag](../../feature_flags/_index.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/434041) in GitLab 16.9.
 
 {{< /history >}}

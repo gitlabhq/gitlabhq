@@ -38,6 +38,9 @@ describe('CommitFormModal', () => {
         static: true,
         visible: true,
       },
+      stubs: {
+        GlForm,
+      },
     });
   };
 
@@ -174,10 +177,8 @@ describe('CommitFormModal', () => {
   });
 
   it('action primary button triggers Redis HLL tracking api call', async () => {
-    createComponent({ method: mountExtended, propsData: { primaryActionEventName: 'test_event' } });
-    await nextTick();
-
-    getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
+    createComponent({ propsData: { primaryActionEventName: 'test_event' } });
+    await findModal().vm.$emit('primary');
 
     expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_event');
   });

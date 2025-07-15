@@ -17,7 +17,7 @@
 - if repository_file_tree_browser_enabled
   .gl-flex.navigation-root
     #js-file-browser
-    .gl-w-full.gl-min-w-0
+    .gl-w-full.gl-min-w-0.gl-pl-4
       = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
 - else
   = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)

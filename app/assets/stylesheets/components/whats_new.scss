@@ -1,7 +1,11 @@
 .whats-new-drawer {
   box-shadow: none;
   overflow-y: hidden;
-  width: 500px;
+
+   // setting custom width above mobile breakpoint
+  @media (min-width: $breakpoint-md) {
+    width: 500px;
+  }
 
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-infinite-scroll-legend {

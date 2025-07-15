@@ -17,17 +17,17 @@ See [GitLab Duo licensing for local development](ai_development_license.md).
 
 ### Required: Install AI gateway
 
-**Why:** Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
+**Why**: Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
 
-**How:**
+**How**:
 Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md)
 to install the AI gateway with GDK.
 
 ### Required: Run `gitlab:duo:setup` script
 
-**Why:** This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
+**Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
 
-**How:**
+**How**:
 
 1. GitLab.com (SaaS) mode
 
@@ -113,12 +113,12 @@ else:
   # Build a prompt from the old prompt template
 ```
 
-**IMPORTANT:** At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
+**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
 If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
-**IMPORTANT:** Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
+**IMPORTANT**: Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
-**Technical details:**
+**Technical details**:
 
 - When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
   which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI gateway.

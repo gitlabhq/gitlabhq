@@ -63,6 +63,7 @@ export default {
       isSubmitEnabled: true,
       colorModeOnCreate: null,
       schemeOnCreate: null,
+      darkSchemeOnCreate: null,
       integrationValues,
     };
   },
@@ -77,6 +78,7 @@ export default {
     this.formEl.addEventListener('ajax:error', this.handleError);
     this.colorModeOnCreate = this.getSelectedColorMode();
     this.schemeOnCreate = this.getSelectedScheme();
+    this.darkSchemeOnCreate = this.getSelectedDarkScheme();
   },
   beforeDestroy() {
     this.formEl.removeEventListener('ajax:beforeSend', this.handleLoading);
@@ -97,6 +99,9 @@ export default {
     getSelectedScheme() {
       return new FormData(this.formEl).get('user[color_scheme_id]');
     },
+    getSelectedDarkScheme() {
+      return new FormData(this.formEl).get('user[dark_color_scheme_id]');
+    },
     handleLoading() {
       this.isSubmitEnabled = false;
     },
@@ -105,7 +110,8 @@ export default {
       // or if color scheme has changed to correctly load all required styles.
       if (
         !isEqual(this.colorModeOnCreate, this.getSelectedColorMode()) ||
-        !isEqual(this.schemeOnCreate, this.getSelectedScheme())
+        !isEqual(this.schemeOnCreate, this.getSelectedScheme()) ||
+        !isEqual(this.darkSchemeOnCreate, this.getSelectedDarkScheme())
       ) {
         window.location.reload();
         return;

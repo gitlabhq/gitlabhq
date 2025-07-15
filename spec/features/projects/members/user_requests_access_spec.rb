@@ -11,7 +11,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   let(:owner) { project.first_owner }
   let(:more_actions_dropdown) do
-    find('[data-testid="groups-projects-more-actions-dropdown"] .gl-new-dropdown-custom-toggle')
+    find_by_testid('groups-projects-more-actions-dropdown')
   end
 
   before do
@@ -31,7 +31,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
   it 'user can request access to a project', :js do
     perform_enqueued_jobs do
       more_actions_dropdown.click
-      click_link 'Request Access'
+      find_by_testid('request-access-link').click
     end
 
     expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[owner.notification_email_or_default], [maintainer.notification_email_or_default]])
@@ -60,7 +60,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   it 'user is not listed in the project members page', :js do
     more_actions_dropdown.click
-    click_link 'Request Access'
+    find_by_testid('request-access-link').click
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
@@ -76,12 +76,12 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   it 'user can withdraw its request for access', :js do
     more_actions_dropdown.click
-    click_link 'Request Access'
+    find_by_testid('request-access-link').click
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
     more_actions_dropdown.click
-    accept_gl_confirm { click_link 'Withdraw Access Request' }
+    accept_gl_confirm { find_by_testid('withdraw-access-link').click }
 
     more_actions_dropdown.click
     expect(page).not_to have_content 'Withdraw Access Request'

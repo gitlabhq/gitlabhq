@@ -1,0 +1,13 @@
+---
+table_name: arkose_sessions
+classes:
+- Users::ArkoseSession
+feature_categories:
+- instance_resiliency
+description: Stores the session data received when verifying an Arkose Labs session for a user
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194590
+milestone: '18.2'
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
+table_size: small

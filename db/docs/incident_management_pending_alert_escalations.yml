@@ -8,14 +8,6 @@ description: Persists information about pending alert escalations for incidents
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64274
 milestone: '14.1'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: alert_id
-        table: alert_management_alerts
-        sharding_key: project_id
-        belongs_to: alert
-desired_sharding_key_migration_job_name: BackfillIncidentManagementPendingAlertEscalationsProjectId
+sharding_key:
+  project_id: projects
 table_size: small

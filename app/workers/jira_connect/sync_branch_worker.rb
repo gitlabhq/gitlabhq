@@ -10,6 +10,7 @@ module JiraConnect
     data_consistency :delayed
     loggable_arguments 1, 2
     urgency :low
+    concurrency_limit -> { 1000 }
 
     worker_has_external_dependencies!
 

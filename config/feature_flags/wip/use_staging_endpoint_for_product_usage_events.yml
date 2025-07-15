@@ -1,9 +1,0 @@
----
-name: use_staging_endpoint_for_product_usage_events
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/535911
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190236
-rollout_issue_url:
-milestone: '18.0'
-group: group::analytics instrumentation
-type: wip
-default_enabled: false

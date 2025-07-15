@@ -1,5 +1,5 @@
 ---
-stage: Foundations
+stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Search API
@@ -14,9 +14,9 @@ title: Search API
 
 Every API call to search must be authenticated.
 
-When [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search),
-these additional scopes are available for the [advanced search](#advanced-search-api),
-[group search](#group-search-api), and [project search](#project-search-api) APIs:
+When [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search),
+these additional scopes are available for the [global search](#global-search),
+[group search](#group-search), and [project search](#project-search) APIs:
 
 - `wiki_blobs`
 - `commits`
@@ -26,7 +26,9 @@ these additional scopes are available for the [advanced search](#advanced-search
 If you want to use basic search instead, see
 [specify a search type](../user/search/_index.md#specify-a-search-type).
 
-## Advanced search API
+The search API supports [offset-based pagination](rest/_index.md#offset-based-pagination).
+
+## Global search
 
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.
 The response depends on the requested scope.
@@ -311,7 +313,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search wikis.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye"
@@ -350,7 +353,7 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=commits&search=bye"
@@ -389,7 +392,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search code.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 
@@ -437,7 +441,7 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=notes&search=maxime"
@@ -470,7 +474,7 @@ Example response:
 ]
 ```
 
-## Group search API
+## Group search
 
 Search for a [term](../user/search/_index.md) in the specified group.
 
@@ -727,7 +731,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search wikis.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye"
@@ -766,7 +771,7 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=commits&search=bye"
@@ -805,7 +810,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search code.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 
@@ -853,7 +859,7 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=notes&search=maxime"
@@ -886,7 +892,7 @@ Example response:
 ]
 ```
 
-## Project search API
+## Project search
 
 Search for a [term](../user/search/_index.md) in the specified project.
 
@@ -1111,7 +1117,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search wikis.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 
@@ -1167,7 +1174,7 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
@@ -1206,7 +1213,8 @@ Example response:
 
 {{< /details >}}
 
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
+Use this scope to search code.
+This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 

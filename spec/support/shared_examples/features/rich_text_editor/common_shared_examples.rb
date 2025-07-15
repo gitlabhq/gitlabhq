@@ -157,4 +157,24 @@ supported in Markdown and will be converted to HTML."
 </table>'
     end
   end
+
+  describe 'preserving list sourcemaps' do
+    before do
+      stub_feature_flags(preserve_markdown: true)
+    end
+
+    it 'does not preserve list item sourcemaps when changing list type' do
+      textarea = find 'textarea'
+      textarea.send_keys "* list item 1\n"
+      textarea.send_keys "list item 2"
+
+      switch_to_content_editor
+      click_on 'Add a numbered list'
+
+      wait_until_hidden_field_is_updated(/1. list item/)
+      switch_to_markdown_editor
+
+      expect(find('textarea').value).to eq("1. list item 1\n2. list item 2")
+    end
+  end
 end

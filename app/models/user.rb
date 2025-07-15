@@ -33,9 +33,10 @@ class User < ApplicationRecord
   include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
+  include Gitlab::InternalEventsTracking
 
   ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
-  ignore_column :role, remove_after: '2025-09-13', remove_with: '18.5'
+  ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -86,6 +87,7 @@ class User < ApplicationRecord
   attribute :theme_id, default: -> { gitlab_config.default_theme }
   attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
   attribute :color_mode_id, default: -> { Gitlab::ColorModes::APPLICATION_DEFAULT }
+  attribute :organization_id, default: -> { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.credentials.otp_key_base,
@@ -275,6 +277,7 @@ class User < ApplicationRecord
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
   belongs_to :created_by, class_name: 'User', optional: true
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user # deprecated
@@ -443,6 +446,7 @@ class User < ApplicationRecord
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,
+    :markdown_maintain_indentation, :markdown_maintain_indentation=,
     :diffs_deletion_color, :diffs_deletion_color=,
     :diffs_addition_color, :diffs_addition_color=,
     :use_new_navigation, :use_new_navigation=,
@@ -468,10 +472,9 @@ class User < ApplicationRecord
   delegate :mastodon, :mastodon=, to: :user_detail, allow_nil: true
   delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
   delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
-  delegate :skype, :skype=, to: :user_detail, allow_nil: true
   delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
   delegate :location, :location=, to: :user_detail, allow_nil: true
-  delegate :organization, :organization=, to: :user_detail, allow_nil: true
+  delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
   delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
@@ -686,11 +689,23 @@ class User < ApplicationRecord
     .includes(:projects)
   end
 
+  scope :with_organization_user_details, -> do
+    includes(organization_user_details: [:organization])
+  end
+
   scope :left_join_user_detail, -> { left_joins(:user_detail) }
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   scope :by_bot_namespace_ids, ->(namespace_ids) do
     project_bot.joins(:user_detail).where(user_detail: { bot_namespace_id: namespace_ids })
+  end
+
+  scope :with_incoming_email_token, ->(token_values) do
+    where(incoming_email_token: Array.wrap(token_values))
+  end
+
+  scope :with_feed_token, ->(token_values) do
+    where(feed_token: Array.wrap(token_values))
   end
 
   def self.supported_keyset_orderings
@@ -1328,7 +1343,7 @@ class User < ApplicationRecord
     end
 
     if email_taken &&
-        ::Feature.enabled?(:delay_delete_own_user) &&
+        ::Gitlab::CurrentSettings.delay_user_account_self_deletion &&
         User.find_by_any_email(email)&.deleted_own_account?
 
       help_page_url = Rails.application.routes.url_helpers.help_page_url(
@@ -1473,16 +1488,6 @@ class User < ApplicationRecord
     authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
-  # Returns the projects this user has reporter (or greater) access to, limited
-  # to at most the given projects.
-  #
-  # This method is useful when you have a list of projects and want to
-  # efficiently check to which of these projects the user has at least reporter
-  # access.
-  def projects_with_reporter_access_limited_to(projects)
-    authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
-  end
-
   def owned_projects
     @owned_projects ||= Project.from_union(
       [
@@ -1570,7 +1575,7 @@ class User < ApplicationRecord
   end
 
   def can_select_namespace?
-    several_namespaces? || admin
+    has_groups_allowing_project_creation? || admin
   end
 
   def can?(action, subject = :global, **opts)
@@ -1614,15 +1619,6 @@ class User < ApplicationRecord
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def several_namespaces?
-    union_sql = ::Gitlab::SQL::Union.new(
-      [owned_groups,
-        maintainers_groups,
-        groups_with_developer_project_access]).to_sql
-
-    ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
-  end
 
   def namespace_id
     namespace.try :id
@@ -2009,14 +2005,13 @@ class User < ApplicationRecord
     enabled_following && user.enabled_following
   end
 
-  def has_forkable_groups?
-    Groups::AcceptingProjectCreationsFinder.new(self).execute.exists?
+  def has_groups_allowing_project_creation?
+    groups_allowing_project_creation.exists?
   end
 
   def forkable_namespaces
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
-      groups_allowing_project_creation = Groups::AcceptingProjectCreationsFinder.new(self).execute
 
       Namespace.from_union(
         [
@@ -2094,17 +2089,35 @@ class User < ApplicationRecord
     Ci::ProjectMirror.from_union([projects, namespace_projects])
   end
 
-  def ci_owned_runners
-    @ci_owned_runners ||= Ci::Runner
-        .from_union([ci_owned_project_runners_from_project_members,
-          ci_owned_project_runners_from_group_members,
-          ci_owned_group_runners])
+  # Lists runners that are available to the user
+  # (group runners assigned to groups where the user has owner access to
+  # and project runners assigned to projects the user has maintainer access to)
+  def ci_available_runners
+    @ci_available_runners ||=
+      if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
+        Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
+      else
+        Ci::Runner.from_union([
+          ci_available_project_runners_from_project_members,
+          ci_available_project_runners_from_group_members,
+          ci_available_group_runners
+        ])
+      end
   end
 
-  def owns_runner?(runner)
+  def runner_available?(runner)
     runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
 
-    ci_owned_runners.include?(runner)
+    # NOTE: This is a workaround to the fact that `ci_available_group_runners` does not return the group runners that the
+    # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
+    # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
+    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
+    # and that would get used by `ci_available_group_runners`, but that would require deeper changes
+    # from the ~"group::authorization" team.
+    # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
+    return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
+
+    ci_available_runners.include?(runner)
   end
 
   def notification_email_for(notification_group)
@@ -2171,23 +2184,15 @@ class User < ApplicationRecord
   end
 
   def merge_request_dashboard_enabled?
-    Feature.enabled?(:merge_request_dashboard, self, type: :wip)
-  end
-
-  def merge_request_dashboard_author_or_assignee_enabled?
-    ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, self)
+    Feature.enabled?(:merge_request_dashboard, self, type: :beta)
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?, merge_request_dashboard_author_or_assignee_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       params = { state: 'opened', non_archived: true }
 
       if merge_request_dashboard_enabled?
-        params = params.merge(or: { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: ::Users::Internal.duo_code_review_bot.username })
-      end
-
-      if merge_request_dashboard_author_or_assignee_enabled? && merge_request_dashboard_enabled?
-        params = params.merge(include_assigned: true, author_id: id)
+        params = params.merge(include_assigned: true, author_id: id, or: { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: ::Users::Internal.duo_code_review_bot.username })
       else
         params[:assignee_id] = id
       end
@@ -2240,7 +2245,7 @@ class User < ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?, merge_request_dashboard_author_or_assignee_enabled?])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?])
     Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?])
   end
 
@@ -2598,15 +2603,6 @@ class User < ApplicationRecord
     true
   end
 
-  def has_composite_identity?
-    # Since this is called in a number of places in both Sidekiq and Web,
-    # be extra paranoid that this column exists before reading it. This check
-    # can be removed in GitLab 17.8 or later.
-    return false unless has_attribute?(:composite_identity_enforced)
-
-    composite_identity_enforced
-  end
-
   def uploads_sharding_key
     {}
   end
@@ -2755,7 +2751,7 @@ class User < ApplicationRecord
     is_deleting_own_record = deleted_by.id == id
 
     is_deleting_own_record &&
-      ::Feature.enabled?(:delay_delete_own_user) &&
+      ::Gitlab::CurrentSettings.delay_user_account_self_deletion &&
       has_possible_spam_contributions?
   end
 
@@ -2897,15 +2893,13 @@ class User < ApplicationRecord
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 
-  def ci_owned_project_runners_from_project_members
+  def ci_available_project_runners_from_project_members
     project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
 
-    Ci::Runner
-      .joins(:runner_projects)
-      .where(runner_projects: { project: project_ids })
+    Ci::Runner.belonging_to_project(project_ids)
   end
 
-  def ci_owned_project_runners_from_group_members
+  def ci_available_project_runners_from_group_members
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER).select(:namespace_id)
@@ -2925,7 +2919,28 @@ class User < ApplicationRecord
       .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
   end
 
-  def ci_owned_group_runners
+  def ci_available_project_runners
+    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
+
+    # track the size of project_ids to optimise this query further in future
+    track_ci_available_project_runners_query(project_ids.size)
+
+    # Load all project IDs upfront to handle indirect project access through group invitations
+    # and avoid CTE query when filtering runners for better performance
+    Ci::Runner.belonging_to_project(project_ids)
+  end
+
+  def track_ci_available_project_runners_query(size_of_project_ids)
+    track_internal_event(
+      'query_ci_available_project_runners_with_project_ids',
+      user: self,
+      additional_properties: {
+        value: size_of_project_ids
+      }
+    )
+  end
+
+  def ci_available_group_runners
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)
@@ -2968,6 +2983,10 @@ class User < ApplicationRecord
       # We cannot disclose the Pages unique domain, hence returning generic error message
       errors.add(:username, _('has already been taken'))
     end
+  end
+
+  def groups_allowing_project_creation
+    Groups::AcceptingProjectCreationsFinder.new(self).execute
   end
 end
 

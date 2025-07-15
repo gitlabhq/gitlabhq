@@ -11,7 +11,7 @@ describe('Container registry usage component', () => {
     containerRegistrySizeIsEstimated: false,
   };
 
-  const findTotalSizeSection = () => wrapper.findByTestId('total-size-section');
+  const findTotalSizeSection = () => wrapper.findByTestId('container-registry-size');
   const findWarningIcon = () => wrapper.findComponent(StorageTypeWarning);
 
   const createComponent = (props) => {

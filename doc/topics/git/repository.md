@@ -78,16 +78,16 @@ a copy of your repository, and download it.
 
    - `git filter-repo`:
 
-      ```shell
-      git filter-repo --analyze
-      head filter-repo/analysis/*-{all,deleted}-sizes.txt
-      ```
+     ```shell
+     git filter-repo --analyze
+     head filter-repo/analysis/*-{all,deleted}-sizes.txt
+     ```
 
    - `git-sizer`:
 
-      ```shell
-      git-sizer
-      ```
+     ```shell
+     git-sizer
+     ```
 
 1. Purge the history of your repository using one of the following `git filter-repo` options:
 

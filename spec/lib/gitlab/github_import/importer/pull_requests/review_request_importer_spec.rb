@@ -11,7 +11,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
     create(
       :import_source_user,
       source_user_identifier: 1,
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )

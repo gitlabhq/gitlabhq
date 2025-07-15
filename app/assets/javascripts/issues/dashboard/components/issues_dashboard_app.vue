@@ -78,6 +78,8 @@ export default {
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
+    WorkItemStatusBadge: () =>
+      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -101,6 +103,7 @@ export default {
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'rssPath',
+    'isStatusFeatureEnabledOnInstance',
   ],
   data() {
     const state = getParameterByName(PARAM_STATE);
@@ -501,6 +504,9 @@ export default {
           Sentry.captureException(error);
         });
     },
+    showStatusBadge(issuable) {
+      return issuable?.status && this.isStatusFeatureEnabledOnInstance;
+    },
   },
 };
 </script>
@@ -556,6 +562,12 @@ export default {
 
     <template #statistics="{ issuable = {} }">
       <issue-card-statistics :issue="issuable" />
+    </template>
+
+    <template #custom-status="{ issuable = {} }">
+      <div v-if="showStatusBadge(issuable)" class="gl-max-w-20">
+        <work-item-status-badge :item="issuable.status" />
+      </div>
     </template>
 
     <template #empty-state>

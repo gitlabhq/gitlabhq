@@ -51,7 +51,7 @@ describe('Branch dropdown', () => {
   });
 
   it('renders GlDropdownItem components for each branch', () => {
-    expect(findAllBranches().length).toBe(mockBranchNames.length);
+    expect(findAllBranches()).toHaveLength(mockBranchNames.length);
 
     mockBranchNames.forEach((branchName, index) =>
       expect(findAllBranches().at(index).text()).toBe(branchName),

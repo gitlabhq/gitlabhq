@@ -45,7 +45,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     TEXT_STYLE_DROPDOWN_ITEMS.forEach((textStyle, index) => {
       expect(findListbox().props('items').at(index).text).toContain(textStyle.label);
     });
-    expect(findListbox().props('items').length).toBe(TEXT_STYLE_DROPDOWN_ITEMS.length);
+    expect(findListbox().props('items')).toHaveLength(TEXT_STYLE_DROPDOWN_ITEMS.length);
   });
 
   describe('when there is an active item', () => {

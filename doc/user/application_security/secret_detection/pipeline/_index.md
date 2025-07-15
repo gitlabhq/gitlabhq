@@ -16,12 +16,12 @@ title: Pipeline secret detection
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
-After you [enable pipeline secret detection](#enable-the-analyzer), scans run in a CI/CD job named `secret_detection`.
+After you [enable pipeline secret detection](#getting-started), scans run in a CI/CD job named `secret_detection`.
 You can run scans and view [pipeline secret detection JSON report artifacts](../../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection) in any GitLab tier.
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
 
-- See them in the [merge request widget](../../detect/security_scan_results.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/_index.md).
+- See them in the [merge request widget](../../detect/security_scanning_results.md), [pipeline security report](../../detect/security_scanning_results.md), and [vulnerability report](../../vulnerability_report/_index.md).
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
@@ -41,13 +41,74 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | Capability                                                                                           | In Free & Premium      | In Ultimate            |
 |:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
 | [Customize analyzer behavior](configure.md#customize-analyzer-behavior)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Download [output](#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Download [output](#secret-detection-results)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+
+## Getting started
+
+To get started with pipeline secret detection, select a pilot project and enable the analyzer.
+
+Prerequisites:
+
+- You have a Linux-based runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  If you use hosted runners for GitLab.com, this is enabled by default.
+  - Windows Runners are not supported.
+  - CPU architectures other than amd64 are not supported.
+- You have a `.gitlab-ci.yml` file that includes the `test` stage.
+
+There are three ways to enable the analyzer:
+
+- Edit the `.gitlab-ci.yml` file manually. Use this method if your CI/CD configuration is complex.
+- Use an automatically configured merge request. Use this method if you don't have a CI/CD configuration, or your configuration is minimal.
+- Enable pipeline secret detection in a [scan execution policy](../../policies/scan_execution_policies.md).
+
+If this is your first time running a secret detection scan on your project, you should run a historic scan immediately after you enable the analyzer.
+
+After you enable pipeline secret detection, you can [customize the analyzer settings](configure.md).
+
+### Edit the `.gitlab-ci.yml` file manually
+
+This method requires you to manually edit an existing `.gitlab-ci.yml` file.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipeline editor**.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+
+   ```yaml
+   include:
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+   The message **Simulation completed successfully** indicates the file is valid.
+1. Select the **Edit** tab.
+1. Optional. In the **Commit message** text box, customize the commit message.
+1. In the **Branch** text box, enter the name of the default branch.
+1. Select **Commit changes**.
+
+Pipelines now include a pipeline secret detection job.
+Consider [running a historic scan](#run-a-historic-scan) after you enable the analyzer.
+
+### Use an automatically configured merge request
+
+This method automatically prepares a merge request to add a `.gitlab-ci.yml` file that includes the pipeline secret detection template. Merge the merge request to enable pipeline secret detection.
+
+To enable pipeline secret detection:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
+1. Optional. Complete the fields.
+1. Select **Create merge request**.
+1. Review and merge the merge request.
+
+Pipelines now include a pipeline secret detection job.
 
 ## Coverage
 
@@ -144,90 +205,53 @@ run again. This is because the leaked secret continues to be a security risk unt
 Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
 [Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
 
-## Enable the analyzer
-
-Enable the analyzer to use pipeline secret detection.
-After you enable it, you can [customize the analyzer settings](configure.md).
-
-Prerequisites:
-
-- Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using
-  hosted runners for GitLab.com, this is enabled by default.
-  - Windows Runners are not supported.
-  - CPU architectures other than amd64 are not supported.
-- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
-
-To enable pipeline secret detection, either:
-
-- Enable [Auto DevOps](../../../../topics/autodevops/_index.md), which includes [Auto Secret Detection](../../../../topics/autodevops/stages.md#auto-secret-detection).
-- [Edit the `.gitlab-ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually). Use this method
-  if your `.gitlab-ci.yml` file is complex.
-- [Use an automatically configured merge request](#use-an-automatically-configured-merge-request).
-
-### Edit the `.gitlab-ci.yml` file manually
-
-This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
-your GitLab CI/CD configuration file is complex.
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
-
-   ```yaml
-   include:
-     - template: Jobs/Secret-Detection.gitlab-ci.yml
-   ```
-
-1. Select the **Validate** tab, then select **Validate pipeline**.
-   The message **Simulation completed successfully** indicates the file is valid.
-1. Select the **Edit** tab.
-1. Optional. In the **Commit message** text box, customize the commit message.
-1. In the **Branch** text box, enter the name of the default branch.
-1. Select **Commit changes**.
-
-Pipelines now include a pipeline secret detection job.
-Consider [running a historic scan](#run-a-historic-scan) after you enable the analyzer.
-
-### Use an automatically configured merge request
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
-
-{{< /history >}}
-
-This method automatically prepares a merge request, with the pipeline secret detection template included in
-the `.gitlab-ci.yml` file. You then merge the merge request to enable pipeline secret detection.
-
-{{< alert type="note" >}}
-
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
-file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
-error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
-
-{{< /alert >}}
-
-To enable pipeline secret detection:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
-1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
-1. Optional. Complete the fields.
-1. Select **Create merge request**.
-1. Review and merge the merge request.
-
-Pipelines now include a pipeline secret detection job.
-
-## Output
+## Secret detection results
 
 Pipeline secret detection outputs the file `gl-secret-detection-report.json` as a job artifact. The file contains detected secrets. You can [download](../../../../ci/jobs/job_artifacts.md#download-job-artifacts) the file for processing outside GitLab.
 
-For more information, see:
+For more information, see the [report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json) and the [example report file](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json).
 
-- [Report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
-- [Example report file](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json)
+### Additional output
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+Job results are also reported on the:
+
+- [Merge request widget](../../detect/security_scanning_results.md#merge-request-security-widget): shows new findings introduced in the merge request.
+- [Pipeline security report](../../vulnerability_report/pipeline.md): displays all findings from the latest pipeline run.
+- [Vulnerability report](../../vulnerability_report/_index.md): provides centralized management of all security findings.
+- Security dashboard: offers organization-wide visibility into all vulnerabilities across projects and groups.
+
+## Understanding the results
+
+Pipeline secret detection provides detailed information about potential secrets found in your repository. Each secret includes the type of secret leaked and remediation guidelines.
+
+When reviewing results:
+
+1. Look at the surrounding code to determine if the detected pattern is actually a secret
+1. Test whether the detected value is a working credential.
+1. Consider the repository's visibility and the secret's scope.
+1. Address active, high-privilege secrets first.
+
+### Common detection categories
+
+Detections by pipeline secret detection often fall into one of three categories:
+
+- **True positives**: Legitimate secrets that should be rotated and removed. For example:
+  - Active API keys, database passwords, authentication tokens
+  - Private keys and certificates
+  - Service account credentials
+- **False positives**: Detected patterns that aren't actual secrets. For example:
+  - Example values in documentation
+  - Test data or mock credentials
+  - Configuration templates with placeholder values
+- **Historical findings**: Secrets that were previously committed but might not be active. These detections:
+  - Require investigation to determine current status
+  - Should still be rotated as a precaution
 
 ## Remediate a leaked secret
 
@@ -240,6 +264,52 @@ does not fully address the leak. The original secret remains in any existing for
 clones of the repository.
 
 For instructions on how to respond to a leaked secret, select the vulnerability in the vulnerability report.
+
+## Optimization
+
+Before deploying pipeline secret detection across your organization, optimize the configuration to reduce false positives and improve accuracy for your specific environment.
+
+False positives can create alert fatigue and reduce trust in the tool. Consider using custom ruleset configuration (Ultimate only):
+
+- Exclude known safe patterns specific to your codebase.
+- Adjust sensitivity for rules that frequently trigger on non-secrets.
+- Add custom rules for organization-specific secret formats.
+
+To optimize performance in large repositories or organizations with many projects, review your:
+
+- Scan scope management:
+  - Turn off historical scanning after you run a historical scan in a project.
+  - Schedule historic scans during low-usage periods.
+- Resource allocation:
+  - Allocate sufficient runner resources for larger repositories.
+  - Consider dedicated runners for security scanning workloads.
+  - Monitor scan duration and optimize based on repository size.
+
+### Testing optimization changes
+
+Before applying optimizations organization-wide:
+
+1. Validate that optimizations don't miss legitimate secrets.
+1. Track false positive reduction and scan performance improvements.
+1. Maintain records of effective optimization patterns.
+
+## Roll out
+
+You should implement pipeline secret detection incrementally.
+Start with a small-scale pilot to understand the tool's behavior before rolling out the feature across your organization.
+
+Follow these guidelines when you roll out pipeline secret detection:
+
+1. Choose a pilot project. Suitable projects have:
+   - Active development with regular commits.
+   - A manageable codebase size.
+   - A team familiar with GitLab CI/CD.
+   - Willingness to iterate on configuration.
+1. Start simple. Enable pipeline secret detection with default settings on your pilot project.
+1. Monitor results. Run the analyzer for one or two weeks to understand typical findings.
+1. Address detected secrets. Remediate any legitimate secrets found.
+1. Tune your configuration. Adjust settings based on initial results.
+1. Document the implementation. Record common false positives and remediation patterns.
 
 ## FIPS-enabled images
 
@@ -323,7 +393,7 @@ the `secret-detection` job on.
 
 #### `exec /bin/sh: exec format error` message in job log
 
-The GitLab pipeline secret detection analyzer [only supports](#enable-the-analyzer) running on the `amd64` CPU architecture.
+The GitLab pipeline secret detection analyzer [only supports](#getting-started) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
 #### Error: `fatal: detected dubious ownership in repository at '/builds/<project dir>'`

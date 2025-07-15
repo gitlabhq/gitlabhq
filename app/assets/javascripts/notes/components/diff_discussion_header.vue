@@ -1,12 +1,12 @@
 <script>
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { escape } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
 import NoteEditedText from './note_edited_text.vue';
 import NoteHeader from './note_header.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
@@ -102,7 +102,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
+    ...mapActions(useNotes, ['toggleDiscussion']),
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
     },

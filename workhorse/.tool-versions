@@ -1,1 +1,1 @@
-golang 1.24.3
+golang 1.24.4

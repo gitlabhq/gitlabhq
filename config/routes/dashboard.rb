@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 resource :dashboard, controller: 'dashboard', only: [] do
+  get :home
   get :issues, action: :issues_calendar, constraints: ->(req) { req.format == :ics }
   get :issues
   get :merge_requests

@@ -122,7 +122,9 @@ exceptions:
   - IIS
   - IMAP
   - IOPS
+  - IRAP
   - IRC
+  - ISM
   - ISMAP
   - ISO
   - JPEG
@@ -173,6 +175,7 @@ exceptions:
   - PGP
   - PHP
   - PID
+  - PIN
   - PKCS
   - PMD
   - PNG

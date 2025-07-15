@@ -20,10 +20,19 @@ module Gitlab
 
         private
 
+        def namespace_id_for_new_entity(new_entity)
+          case new_entity
+          when Issue
+            new_entity.namespace_id
+          else
+            raise StandardError, "Copying resource events for #{new_entity.class.name} is not supported yet"
+          end
+        end
+
         def copy_resource_label_events
           copy_events(ResourceLabelEvent.table_name, original_entity.resource_label_events) do |event|
             event.attributes
-              .except('id', 'reference', 'reference_html')
+              .except(*(blocked_resource_event_attributes + %w[reference reference_html]))
               .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
           end
         end
@@ -39,17 +48,24 @@ module Gitlab
         def copy_resource_state_events
           return unless state_events_supported?
 
+          new_namespace_id = namespace_id_for_new_entity(new_entity)
+
           copy_events(ResourceStateEvent.table_name, original_entity.resource_state_events) do |event|
             event.attributes
-              .except(*blocked_state_event_attributes)
-              .merge(entity_key => new_entity.id,
-                'state' => ResourceStateEvent.states[event.state])
+              .except(*blocked_resource_event_attributes)
+              .merge(
+                entity_key => new_entity.id,
+                'state' => ResourceStateEvent.states[event.state],
+                'namespace_id' => new_namespace_id
+              )
           end
         end
 
         # Overriden on EE::Gitlab::Issuable::Clone::CopyResourceEventsService
-        def blocked_state_event_attributes
-          ['id']
+        # These values should never be copied to the new entity. This service should always set a new appropriate
+        # value that references the new target.
+        def blocked_resource_event_attributes
+          %w[id issue_id merge_request_id]
         end
 
         def event_attributes_with_milestone(event, milestone_id)

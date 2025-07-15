@@ -472,12 +472,32 @@ module API
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
-        refs = []
-        refs.concat(user_project.repository.branch_names_contains(commit.id).map { |name| { type: 'branch', name: name } }) unless params[:type] == 'tag'
-        refs.concat(user_project.repository.tag_names_contains(commit.id).map { |name| { type: 'tag', name: name } }) unless params[:type] == 'branch'
+        page = params[:page] > 0 ? params[:page] : 1
+        per_page = params[:per_page] > 0 ? params[:per_page] : Kaminari.config.default_per_page
+
+        # Gitaly RPC doesn't support pagination, but we still can limit the number of requested records
+        # Example: per_page = 50, page = 3
+        # Limit will be set to 151 to capture enough records for Kaminari pagination to extract the right slice.
+        # 1 is added to the limit so that Kaminari knows there are more records and correctly sets the x-next-page
+        # and Link headers.
+        limit = ([per_page, Kaminari.config.max_per_page].min * page) + 1
+
+        args = {
+          type: declared_params[:type],
+          limit: limit
+        }.compact
+
+        refs = ::Gitlab::Repositories::ContainingCommitFinder.new(
+          user_project.repository,
+          commit.id,
+          args
+        ).execute
+
         refs = Kaminari.paginate_array(refs)
 
-        present paginate(refs), with: Entities::BasicRef
+        # Due to the limit applied above to capture just enough records, disable x-total, x-total-page, and "last" link
+        # in the response header. Without this, the response headers would contain incorrect and misleading values.
+        present paginate(refs, without_count: true), with: Entities::BasicRef
       end
 
       desc 'Post comment to commit' do

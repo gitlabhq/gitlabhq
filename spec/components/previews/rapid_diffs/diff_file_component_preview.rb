@@ -90,6 +90,56 @@ module RapidDiffs
 
     # @!endgroup
 
+    # @!group Binary
+
+    def binary_file_added
+      hunk = "
+        --- /dev/null
+        +++ b/binary
+          Binary files /dev/null and b/binary differ
+      "
+      diff = raw_diff(diff_content(hunk), new_file: true)
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff, binary: true)))
+    end
+
+    def binary_file_removed
+      hunk = "
+        --- a/binary
+        +++ /dev/null
+          Binary files a/binary and /dev/null differ
+      "
+      diff = raw_diff(diff_content(hunk), new_file: false, deleted_file: true)
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff, binary: true)))
+    end
+
+    def binary_file_changed_to_more_bytes
+      hunk = "
+        --- a/binary
+        +++ b/binary
+          Binary files a/binary and b/binary differ
+      "
+      diff = raw_diff(diff_content(hunk), new_file: false, deleted_file: false, a_mode: '100644')
+      file = diff_file(diff, binary: true)
+      file.new_blob.size = file.old_blob.size + 1024
+      file.new_blob.id = "#{file.new_blob.id}new"
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: file))
+    end
+
+    def binary_file_changed_to_less_bytes
+      hunk = "
+        --- a/binary
+        +++ b/binary
+          Binary files a/binary and b/binary differ
+      "
+      diff = raw_diff(diff_content(hunk), new_file: false, deleted_file: false, a_mode: '100644')
+      file = diff_file(diff, binary: true)
+      file.new_blob.size = file.old_blob.size - 10
+      file.new_blob.id = "#{file.new_blob.id}new"
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: file))
+    end
+
+    # @!endgroup
+
     # @!group NoPreview
 
     def moved_text_file
@@ -177,11 +227,11 @@ module RapidDiffs
 
     private
 
-    def diff_file(diff)
+    def diff_file(diff, binary: false)
       diff_refs = ::Gitlab::Diff::DiffRefs.new(base_sha: 'a', head_sha: 'b')
       ::Gitlab::Diff::File.new(diff, repository: FakeRepository.new, diff_refs: diff_refs).tap do |file|
-        file.instance_variable_set(:@new_blob, Blob.decorate(raw_blob(diff_content(diff.diff))))
-        file.instance_variable_set(:@old_blob, Blob.decorate(raw_blob(diff_content(diff.diff))))
+        file.instance_variable_set(:@new_blob, Blob.decorate(raw_blob(diff_content(diff.diff), binary)))
+        file.instance_variable_set(:@old_blob, Blob.decorate(raw_blob(diff_content(diff.diff), binary)))
       end
     end
 
@@ -210,7 +260,7 @@ module RapidDiffs
         })
     end
 
-    def raw_blob(hunk)
+    def raw_blob(hunk, binary = false)
       ::Gitlab::Git::Blob.new(
         id: 'bba46076dd3e6a406b45ad98ef3b8194fde8b568',
         commit_id: 'master',
@@ -219,7 +269,7 @@ module RapidDiffs
         path: new_path(hunk),
         data: "",
         mode: '100644'
-      )
+      ).tap { |blob| blob.instance_variable_set(:@binary, binary) }
     end
 
     def old_path(hunk)

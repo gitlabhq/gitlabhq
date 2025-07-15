@@ -2,7 +2,6 @@
 
 class CleanupBigintConversionForPackagesBuildInfosPipelineId < Gitlab::Database::Migration[2.2]
   milestone '17.4'
-  enable_lock_retries!
 
   TABLE = :packages_build_infos
   COLUMNS = [:pipeline_id]

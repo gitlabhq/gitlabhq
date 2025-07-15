@@ -6,6 +6,8 @@ module QA
     module Project
       module WebIDE
         class VSCode < Page::Base
+          COMMIT_SUCCESS_MESSAGE = 'Success! Your changes have been committed and pushed to the remote repository.'
+
           view 'app/views/shared/_broadcast_message.html.haml' do
             element 'broadcast-notification-container'
             element 'close-button'
@@ -201,7 +203,7 @@ module QA
             Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
-          def commit_and_push_to_existing_branch(file_name, message: 'Success! Your changes have been committed.')
+          def commit_and_push_to_existing_branch(file_name, message: COMMIT_SUCCESS_MESSAGE)
             commit_toggle(file_name)
             push_to_existing_branch(message: message)
             Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
@@ -228,7 +230,7 @@ module QA
               message: 'The secret detection scan encountered one or more findings.')
           end
 
-          def push_to_existing_branch(message: 'Success! Your changes have been committed.')
+          def push_to_existing_branch(message: COMMIT_SUCCESS_MESSAGE)
             within_vscode_editor do
               click_continue_with_existing_branch
             end
@@ -243,7 +245,7 @@ module QA
               send_keys(:enter)
             end
 
-            return if commit_shows_message?('Success! Your changes have been committed.')
+            return if commit_shows_message?(COMMIT_SUCCESS_MESSAGE)
 
             raise "failed to push_to_new_branch"
           end

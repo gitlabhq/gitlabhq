@@ -1,7 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
+import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import $ from 'jquery';
+import { escapeRegExp } from 'lodash';
 import {
   keysFor,
   BOLD_TEXT,
@@ -27,8 +29,8 @@ import HeaderDivider from './header_divider.vue';
 
 export default {
   findAndReplace: {
-    highlightColor: '#fdf1dd',
-    highlightColorActive: '#e6e4f2',
+    highlightColor: GL_COLOR_ORANGE_50,
+    highlightColorActive: GL_COLOR_ORANGE_200,
     highlightClass: 'js-highlight',
     highlightClassActive: 'js-highlight-active',
   },
@@ -54,12 +56,17 @@ export default {
     newCommentTemplatePaths: {
       default: () => [],
     },
-    editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
     canUseComposer: { default: false },
+    legacyEditorAiActions: { default: () => [] },
   },
   props: {
+    editorAiActions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     previewMarkdown: {
       type: Boolean,
       required: true,
@@ -122,6 +129,7 @@ export default {
   },
   data() {
     const modifierKey = getModifierKey();
+
     return {
       tag: '> ',
       suggestPopoverVisible: false,
@@ -137,6 +145,12 @@ export default {
     };
   },
   computed: {
+    aiActions() {
+      if (this.editorAiActions.length > 0) {
+        return this.editorAiActions;
+      }
+      return this.legacyEditorAiActions;
+    },
     commentTemplatePaths() {
       return this.newCommentTemplatePaths.length > 0
         ? this.newCommentTemplatePaths
@@ -179,6 +193,17 @@ export default {
         currentHighlight: this.findAndReplace.highlightedMatchIndex,
         totalHighlights: this.findAndReplace.totalMatchCount,
       });
+    },
+    previewToggleTooltip() {
+      return sprintf(
+        this.previewMarkdown
+          ? s__('MarkdownEditor|Continue editing (%{shiftKey}%{modifierKey}P)')
+          : s__('MarkdownEditor|Preview (%{shiftKey}%{modifierKey}P)'),
+        {
+          shiftKey: this.shiftKey,
+          modifierKey: this.modifierKey,
+        },
+      );
     },
   },
   watch: {
@@ -326,14 +351,17 @@ export default {
 
       this.findAndReplace.shouldShowBar = true;
     },
+    findAndReplace_close() {
+      this.findAndReplace.shouldShowBar = false;
+      this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
+      this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
+      this.cloneDiv = undefined;
+    },
     findAndReplace_handleKeyDown(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
       } else if (e.key === 'Escape') {
-        this.findAndReplace.shouldShowBar = false;
-        this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
-        this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
-        this.cloneDiv = undefined;
+        this.findAndReplace_close();
       }
     },
     findAndReplace_handleKeyUp(e) {
@@ -355,8 +383,14 @@ export default {
         return;
       }
 
-      const regex = new RegExp(`(${textToFind})`, 'g');
-      const segments = textArea.value.split(regex);
+      // RegExp.escape is not available in jest environment and some older browsers
+      const escapedText = (RegExp.escape || escapeRegExp).call(null, textToFind);
+
+      // Regex with global modifier maintains state between calls, causing inconsistent behaviour.
+      // So we have to test against a regexp without the global flag when matching segments.
+      const regexWithoutG = new RegExp(escapedText, 'gi');
+
+      const segments = textArea.value.split(new RegExp(`(${escapedText})`, 'gi'));
       const options = this.$options.findAndReplace;
 
       // Clear previous contents
@@ -365,7 +399,7 @@ export default {
 
       segments.forEach((segment) => {
         // If the segment matches the text we're highlighting
-        if (segment === textToFind) {
+        if (regexWithoutG.test(segment)) {
           const span = document.createElement('span');
           span.classList.add(options.highlightClass);
           span.style.backgroundColor = options.highlightColor;
@@ -508,8 +542,10 @@ export default {
         >
           <gl-button
             v-if="enablePreview"
+            v-gl-tooltip
             data-testid="preview-toggle"
             :value="previewMarkdown ? 'preview' : 'edit'"
+            :title="previewToggleTooltip"
             :label="$options.i18n.previewTabTitle"
             class="js-md-preview-button gl-flex-row-reverse gl-items-center !gl-font-normal"
             size="small"
@@ -562,10 +598,10 @@ export default {
             </div>
           </template>
           <div class="gl-flex gl-gap-y-2">
-            <div v-if="!previewMarkdown && editorAiActions.length" class="gl-flex gl-gap-y-2">
+            <div v-if="!previewMarkdown && aiActions.length" class="gl-flex gl-gap-y-2">
               <header-divider v-if="!previewMarkdown" />
               <ai-actions-dropdown
-                :actions="editorAiActions"
+                :actions="aiActions"
                 @input="insertAIAction"
                 @replace="replaceTextarea"
               />
@@ -816,6 +852,14 @@ export default {
           @click="findAndReplace_handleNext"
         />
       </div>
+      <gl-button
+        category="tertiary"
+        icon="close"
+        size="small"
+        data-testid="find-and-replace-close"
+        :aria-label="s__('MarkdownEditor|Close find and replace bar')"
+        @click="findAndReplace_close"
+      />
     </div>
   </div>
 </template>

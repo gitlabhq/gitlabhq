@@ -28,7 +28,7 @@ If you are [working with Support](https://about.gitlab.com/support/scheduling-up
 upgrade plan, document and share it with the answers to the following questions:
 
 - How is GitLab installed?
-- What is the operating system of the node? Check [OS versions that are no longer supported](../install/package/_index.md#supported-platforms)
+- What is the operating system of the node? Check the [supported platforms](../install/package/_index.md#supported-platforms)
   to confirm that later updates are available.
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?

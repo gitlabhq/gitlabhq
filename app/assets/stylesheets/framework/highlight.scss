@@ -71,6 +71,7 @@
       white-space: nowrap;
       display: flex;
       justify-content: flex-end;
+      position: relative;
 
       i,
       svg {
@@ -88,6 +89,17 @@
         svg {
           visibility: visible;
         }
+      }
+
+      &::after {
+        content: ' ';
+        display: block;
+        height: 24px;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 24px;
+        transform: translateY(-50%);
       }
     }
 

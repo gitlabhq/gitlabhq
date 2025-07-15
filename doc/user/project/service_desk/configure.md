@@ -157,7 +157,7 @@ For more information, see [System header and footer messages](../../../administr
 
 ## Use a custom template for Service Desk tickets
 
-You can select one [description template](../description_templates.md#create-an-issue-template)
+You can select one [description template](../description_templates.md#create-a-description-template)
 **per project** to be appended to every new Service Desk ticket's description.
 
 You can set description templates at various levels:
@@ -170,7 +170,7 @@ The templates are inherited. For example, in a project, you can also access temp
 
 Prerequisites:
 
-- You must have [created a description template](../description_templates.md#create-an-issue-template).
+- You must have [created a description template](../description_templates.md#create-a-description-template).
 
 To use a custom description template with Service Desk:
 
@@ -211,7 +211,7 @@ To edit the custom email display name:
 
 {{< /history >}}
 
-New tickets are confidential by default, so only project members with at least the Reporter role
+New tickets are confidential by default, so only project members with at least the Planner role
 can view them.
 
 In private and internal projects, you can configure GitLab so that new tickets are not confidential by default, and any project member can view them.
@@ -268,7 +268,7 @@ To enable this setting:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `service_desk_custom_email`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 - [Feature flag `service_desk_custom_email` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.7.

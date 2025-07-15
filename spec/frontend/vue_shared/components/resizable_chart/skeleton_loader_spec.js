@@ -14,9 +14,9 @@ describe('Resizable Skeleton Loader', () => {
     const gridItems = wrapper.findAll('[data-testid="skeleton-chart-grid"]').wrappers;
     const barItems = wrapper.findAll('[data-testid="skeleton-chart-bar"]').wrappers;
     const labelItems = wrapper.findAll('[data-testid="skeleton-chart-label"]').wrappers;
-    expect(gridItems.length).toBe(3);
-    expect(barItems.length).toBe(8);
-    expect(labelItems.length).toBe(8);
+    expect(gridItems).toHaveLength(3);
+    expect(barItems).toHaveLength(8);
+    expect(labelItems).toHaveLength(8);
   };
 
   describe('default setup', () => {

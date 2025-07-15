@@ -81,7 +81,7 @@ To open group settings:
    - **Disabled**: The wiki isn't accessible, and cannot be downloaded.
 1. Select **Save changes**.
 
-### Delete the contents of a group wiki
+## Delete the contents of a group wiki
 
 {{< details >}}
 
@@ -105,6 +105,10 @@ You should run these instructions in a test environment first. Keep a backup of 
 instance ready so you can restore the instance, if necessary.
 
 {{< /alert >}}
+
+Prerequisites:
+
+- You must be an administrator.
 
 To delete all of the data from a group wiki and recreate it in a blank state:
 

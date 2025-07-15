@@ -20,7 +20,7 @@ RSpec.describe 'getting organizations information', feature_category: :organizat
   let_it_be(:private_organization) { create(:organization, :private) }
   let_it_be(:public_organizations) { create_list(:organization, 3, :public) }
   let_it_be(:organization) { public_organizations.first }
-  let_it_be(:user) { create(:user, organizations: [organization]) }
+  let_it_be(:user) { create(:user, organization: organization, organizations: [organization]) }
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 

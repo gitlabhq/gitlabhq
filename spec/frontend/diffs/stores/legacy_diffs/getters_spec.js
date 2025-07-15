@@ -305,12 +305,12 @@ describe('Diffs Module Getters', () => {
       discussionMock.diff_file.file_hash = diffFileMock.file_hash;
       useNotes().discussions = [discussionMock];
 
-      expect(store.getDiffFileDiscussions(diffFileMock).length).toEqual(1);
+      expect(store.getDiffFileDiscussions(diffFileMock)).toHaveLength(1);
     });
 
     it('returns an empty array when no discussions are found in the given diff', () => {
       useNotes().discussions = [];
-      expect(store.getDiffFileDiscussions(diffFileMock).length).toEqual(0);
+      expect(store.getDiffFileDiscussions(diffFileMock)).toHaveLength(0);
     });
   });
 

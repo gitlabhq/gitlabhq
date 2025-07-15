@@ -1,6 +1,6 @@
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { sprintf, s__, __ } from '~/locale';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   props: {
@@ -21,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isDiscussionResolved']),
+    ...mapState(useNotes, ['isDiscussionResolved']),
     resolvedStatusMessage() {
       let message;
       const discussionResolved = this.isDiscussionResolved(
@@ -39,9 +39,9 @@ export default {
           ? s__('MergeRequests|Thread stays resolved')
           : s__('MergeRequests|Thread will be resolved');
       } else if (discussionResolved) {
-        message = s__('MergeRequests|Thread will be unresolved');
+        message = s__('MergeRequests|Thread will be open');
       } else if (this.$options.showStaysResolved) {
-        message = s__('MergeRequests|Thread stays unresolved');
+        message = s__('MergeRequests|Thread stays open');
       }
 
       return message;

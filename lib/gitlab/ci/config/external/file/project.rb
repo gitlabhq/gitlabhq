@@ -120,7 +120,7 @@ module Gitlab
                     loader.call([blob.commit_id, blob.path], blob.data)
                   end
                 end
-              rescue GRPC::NotFound, GRPC::Internal
+              rescue GRPC::NotFound, GRPC::Internal, GRPC::DeadlineExceeded
                 # no-op
               end
             end

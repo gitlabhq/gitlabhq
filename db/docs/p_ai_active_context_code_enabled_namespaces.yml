@@ -1,0 +1,13 @@
+---
+table_name: p_ai_active_context_code_enabled_namespaces
+classes:
+- Ai::ActiveContext::Code::EnabledNamespace
+feature_categories:
+- global_search
+description: Namespaces where Code embeddings are enabled
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193015
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small

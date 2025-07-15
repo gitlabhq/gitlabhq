@@ -103,4 +103,15 @@ describe('Diff File Row component', () => {
 
     expect(wrapper.classes('is-active')).toBe(true);
   });
+
+  it('marks viewed files', () => {
+    createComponent({
+      level: 0,
+      file: { fileHash: '123', type: 'blob' },
+      viewedFiles: { 123: true },
+      hideFileStats: false,
+    });
+
+    expect(wrapper.findComponent(FileRow).props('fileClasses')).toContain('gl-text-subtle');
+  });
 });

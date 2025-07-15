@@ -6,6 +6,7 @@ const componentsDetailsMockData = {
       name: 'Ruby gal',
       description: 'This is a pretty amazing component that does EVERYTHING ruby.',
       includePath: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      last30DayUsageCount: 12,
       inputs: [
         {
           name: 'version',
@@ -21,6 +22,7 @@ const componentsDetailsMockData = {
       name: 'Javascript madness',
       description: 'Adds some spice to your life.',
       includePath: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      last30DayUsageCount: 4,
       inputs: [
         {
           name: 'isFun',
@@ -50,6 +52,7 @@ const componentsDetailsMockData = {
       name: 'Go go go',
       description: 'When you write Go, you gotta go go go.',
       includePath: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      last30DayUsageCount: 0,
       inputs: [
         {
           name: 'version',
@@ -141,6 +144,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-42',
           fullPath: 'namespace/frontend-fixtures/project-42',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -160,6 +164,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-41',
           fullPath: 'namespace/frontend-fixtures/project-41',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -179,6 +184,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-42',
           fullPath: 'namespace/frontend-fixtures/project-42',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -198,6 +204,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-39',
           fullPath: 'namespace/frontend-fixtures/project-39',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -217,6 +224,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-38',
           fullPath: 'namespace/frontend-fixtures/project-38',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -236,6 +244,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-37',
           fullPath: 'namespace/frontend-fixtures/project-37',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -255,6 +264,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-36',
           fullPath: 'namespace/frontend-fixtures/project-36',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -274,6 +284,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-35',
           fullPath: 'namespace/frontend-fixtures/project-35',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -293,6 +304,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-34',
           fullPath: 'namespace/frontend-fixtures/project-34',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -312,6 +324,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-33',
           fullPath: 'namespace/frontend-fixtures/project-33',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -331,6 +344,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-32',
           fullPath: 'namespace/frontend-fixtures/project-32',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -350,6 +364,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-31',
           fullPath: 'namespace/frontend-fixtures/project-31',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -369,6 +384,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-30',
           fullPath: 'namespace/frontend-fixtures/project-30',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -388,6 +404,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-29',
           fullPath: 'namespace/frontend-fixtures/project-29',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -407,6 +424,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-28',
           fullPath: 'namespace/frontend-fixtures/project-28',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -426,6 +444,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-27',
           fullPath: 'namespace/frontend-fixtures/project-27',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -445,6 +464,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-26',
           fullPath: 'namespace/frontend-fixtures/project-26',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -464,6 +484,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-25',
           fullPath: 'namespace/frontend-fixtures/project-25',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -483,6 +504,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-24',
           fullPath: 'namespace/frontend-fixtures/project-24',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -502,6 +524,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-23',
           fullPath: 'namespace/frontend-fixtures/project-23',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
       ],
@@ -529,6 +552,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           last30DayUsageCount: 4,
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -563,6 +587,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-44 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -579,6 +604,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-43 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -604,6 +630,7 @@ export const catalogSharedDataMock = {
       description: 'This is the description of the repo',
       name: 'Ruby',
       starCount: 1,
+      archived: false,
       last30DayUsageCount: 4,
       starrersPath: '/path/to/project/-/starrers',
       topics: [],
@@ -683,6 +710,7 @@ export const mockComponents = {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
+      last30DayUsageCount: 12,
       versions: {
         __typename: 'CiCatalogResourceVersionConnection',
         nodes: [

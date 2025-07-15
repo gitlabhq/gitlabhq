@@ -13,7 +13,7 @@ RSpec.describe Types::Kas::AgentConnectionType do
 
   describe '#connected_at' do
     let(:connected_at) { double(Google::Protobuf::Timestamp, seconds: 123456, nanos: 654321) }
-    let(:object) { double(Gitlab::Agent::AgentTracker::Rpc::ConnectedAgent, connected_at: connected_at) }
+    let(:object) { double(Gitlab::Agent::AgentTracker::Rpc::ConnectedAgentk, connected_at: connected_at) }
 
     it 'converts the seconds value to a timestamp' do
       expect(resolve_field(:connected_at, object)).to eq(Time.at(connected_at.seconds))

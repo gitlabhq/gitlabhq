@@ -5,9 +5,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { stubCrypto } from 'helpers/crypto';
 import GlqlFacade from '~/glql/components/common/facade.vue';
+import GlqlActions from '~/glql/components/common/actions.vue';
 import { executeAndPresentQuery, presentPreview } from '~/glql/core';
 import Counter from '~/glql/utils/counter';
 import { eventHubByKey } from '~/glql/utils/event_hub_factory';
+import { MOCK_ISSUES } from '../../mock_data';
 
 jest.mock('~/glql/core');
 
@@ -55,7 +57,7 @@ describe('GlqlFacade', () => {
   });
 
   it('shows skeleton loader when loading', async () => {
-    presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+    presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
     executeAndPresentQuery.mockImplementation(() => new Promise(() => {})); // Never resolves
     await createComponent();
     await triggerIntersectionObserver();
@@ -67,8 +69,11 @@ describe('GlqlFacade', () => {
     const MockComponent = { render: (h) => h('div') };
 
     beforeEach(async () => {
-      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
-      executeAndPresentQuery.mockResolvedValue(MockComponent);
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
+      executeAndPresentQuery.mockResolvedValue({
+        component: MockComponent,
+        data: { count: 2, ...MOCK_ISSUES },
+      });
 
       await createComponent();
       await triggerIntersectionObserver();
@@ -76,6 +81,29 @@ describe('GlqlFacade', () => {
 
     it('renders presenter component after successful query execution', () => {
       expect(wrapper.findComponent(MockComponent).exists()).toBe(true);
+    });
+
+    it('renders actions', () => {
+      expect(wrapper.findComponent(GlqlActions).props()).toEqual({
+        modalTitle: 'GLQL list',
+        showCopyContents: true,
+      });
+    });
+
+    it('renders a footer text', () => {
+      expect(wrapper.text()).toContain('View powered by GLQL');
+    });
+
+    it('shows a "No data" message if the list of items provided is empty', async () => {
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
+      executeAndPresentQuery.mockResolvedValue({
+        component: MockComponent,
+        data: { count: 0, nodes: [] },
+      });
+      await createComponent();
+      await triggerIntersectionObserver();
+
+      expect(wrapper.text()).toContain('No data found for this query');
     });
 
     it('tracks GLQL render event', () => {
@@ -91,7 +119,7 @@ describe('GlqlFacade', () => {
     it('reloads the query when reload event is emitted on event hub', async () => {
       jest.spyOn(wrapper.vm, 'reloadGlqlBlock');
 
-      mockEventHub.$emit('dropdownAction', 'reload');
+      mockEventHub.$emit('reload');
 
       await nextTick();
 
@@ -101,7 +129,7 @@ describe('GlqlFacade', () => {
 
   describe('when the query results in a timeout (503) error', () => {
     beforeEach(async () => {
-      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
       executeAndPresentQuery.mockRejectedValue({ networkError: { statusCode: 503 } });
 
       await createComponent();
@@ -121,7 +149,7 @@ describe('GlqlFacade', () => {
     it('retries query execution when primary action of timeout error alert is triggered', async () => {
       presentPreview.mockClear();
       executeAndPresentQuery.mockClear();
-      executeAndPresentQuery.mockResolvedValue({ render: (h) => h('div') });
+      executeAndPresentQuery.mockResolvedValue({ component: { render: (h) => h('div') } });
 
       const alert = wrapper.findComponent(GlAlert);
       alert.vm.$emit('primaryAction');
@@ -133,7 +161,7 @@ describe('GlqlFacade', () => {
 
   describe('when the query results in a forbidden (403) error', () => {
     beforeEach(async () => {
-      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
       executeAndPresentQuery.mockRejectedValue({ networkError: { statusCode: 403 } });
 
       await createComponent();
@@ -185,7 +213,7 @@ describe('GlqlFacade', () => {
 
   describe('when number of GLQL blocks on page exceeds the limit', () => {
     beforeEach(async () => {
-      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
       executeAndPresentQuery.mockResolvedValue({ render: (h) => h('div') });
 
       // Simulate exceeding the limit
@@ -209,9 +237,9 @@ describe('GlqlFacade', () => {
 
     it('retries query execution when primary action of limit error alert is triggered', async () => {
       presentPreview.mockClear();
-      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      presentPreview.mockResolvedValue({ component: { render: (h) => h(GlSkeletonLoader) } });
       executeAndPresentQuery.mockClear();
-      executeAndPresentQuery.mockResolvedValue({ render: (h) => h('div') });
+      executeAndPresentQuery.mockResolvedValue({ component: { render: (h) => h('div') } });
 
       const alert = wrapper.findComponent(GlAlert);
       alert.vm.$emit('primaryAction');

@@ -8,7 +8,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidget, findNotesWidget } from '~/work_items/utils';
+import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -25,6 +25,7 @@ import {
 } from '../mock_data';
 
 describe('work items graphql cache utils', () => {
+  const originalFeatures = window.gon.features;
   const id = 'gid://gitlab/WorkItem/10';
   const mockCacheData = {
     workItem: {
@@ -47,6 +48,14 @@ describe('work items graphql cache utils', () => {
       ],
     },
   };
+
+  beforeEach(() => {
+    window.gon.features = {};
+  });
+
+  afterAll(() => {
+    window.gon.features = originalFeatures;
+  });
 
   describe('addHierarchyChild', () => {
     it('updates the work item with a new child', () => {
@@ -239,9 +248,15 @@ describe('work items graphql cache utils', () => {
 
       mockWriteQuery = jest.fn();
       apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
+
       localStorage.setItem(
         `autosave/new-gitlab-org-epic-draft`,
         JSON.stringify(mockCreateWorkItemDraftData),
+      );
+
+      localStorage.setItem(
+        `autosave/new-gitlab-org-widgets-draft`,
+        JSON.stringify(getWorkItemWidgets(mockCreateWorkItemDraftData)),
       );
     });
 

@@ -48,31 +48,37 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
       let(:environment) { create(:environment, project: project, name: 'review/feature', external_url: 'http://feature.review.example.com') }
       let!(:deployment) { create(:deployment, :success, environment: environment, ref: branch_name, sha: sha) }
 
-      context 'when visiting a comparison for the branch' do
+      context 'with legacy diffs' do
         before do
-          sign_in(user)
-
-          visit project_compare_path(project, from: 'master', to: branch_name)
-
-          wait_for_requests
+          stub_feature_flags(rapid_diffs: false, rapid_diffs_on_compare_show: false)
         end
 
-        it 'has a "View on env" button' do
-          expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+        context 'when visiting a comparison for the branch' do
+          before do
+            sign_in(user)
+
+            visit project_compare_path(project, from: 'master', to: branch_name)
+
+            wait_for_requests
+          end
+
+          it 'has a "View on env" button' do
+            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          end
         end
-      end
 
-      context 'when visiting a comparison for the commit' do
-        before do
-          sign_in(user)
+        context 'when visiting a comparison for the commit' do
+          before do
+            sign_in(user)
 
-          visit project_compare_path(project, from: 'master', to: sha)
+            visit project_compare_path(project, from: 'master', to: sha)
 
-          wait_for_requests
-        end
+            wait_for_requests
+          end
 
-        it 'has a "View on env" button' do
-          expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          it 'has a "View on env" button' do
+            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          end
         end
       end
 

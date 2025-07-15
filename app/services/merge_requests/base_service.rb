@@ -289,7 +289,7 @@ module MergeRequests
     end
 
     def trigger_user_merge_request_updated(merge_request)
-      [merge_request.assignees, merge_request.reviewers].flatten.uniq.each do |user|
+      [merge_request.author, *merge_request.assignees, *merge_request.reviewers].uniq.each do |user|
         GraphqlTriggers.user_merge_request_updated(user, merge_request)
       end
     end
@@ -328,6 +328,10 @@ module MergeRequests
       ::Users::Internal.duo_code_review_bot
     end
     strong_memoize_attr :duo_code_review_bot
+
+    def invalidate_all_users_cache_count(merge_request)
+      invalidate_cache_counts(merge_request, users: [*merge_request.assignees, *merge_request.reviewers, merge_request.author].uniq)
+    end
   end
 end
 

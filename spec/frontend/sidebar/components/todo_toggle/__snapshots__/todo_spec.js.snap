@@ -10,6 +10,7 @@ exports[`SidebarTodo template renders component container element with proper da
   data-issuable-type="epic"
   icon=""
   size="small"
+  tag="button"
   type="button"
   variant="default"
 >

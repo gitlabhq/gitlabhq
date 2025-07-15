@@ -1,20 +1,26 @@
 ---
-title: Create triage policies with the assistance of GitLab Duo Workflow
+title: Create triage policies with the assistance of GitLab Duo Agent Platform
 ---
+
+{{< history >}}
+
+- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2. 
+
+{{< /history >}}
 
 ## Summary
 
-This guide provides comprehensive instructions for writing triage automation policies in [triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops) using GitLab Duo Workflow. You will be able to self service label migrations after a department re-org by following this page.
+This guide provides comprehensive instructions for writing triage automation policies in [triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops) using GitLab Duo Agent Platform. You will be able to self service label migrations after a department re-org by following this page.
 
 Todo: include instructions for writing policies to perform other types of automated tasks.
 
 ## Purpose
 
-Triage policies are used when team members migrate labels across existing issues, merge requests, and epics using [GitLab-triage](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage). This tool automates triaging through [policies defined in YAML](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#what-is-a-triage-policy). To optimize operational efficiency and ensure seamless implementation, we recommend self-servicing the label migration MRs using [GitLab Duo Workflow](../../user/duo_workflow/_index.md).
+Triage policies are used when team members migrate labels across existing issues, merge requests, and epics using [GitLab-triage](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage). This tool automates triaging through [policies defined in YAML](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#what-is-a-triage-policy). To optimize operational efficiency and ensure seamless implementation, we recommend self-servicing the label migration MRs using [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md).
 
 ## Before you start
 
-Follow the [GitLab Duo Workflow documentation](../../user/duo_workflow/_index.md) to learn how to set up and access GitLab Duo Workflow in your code editor.
+Follow the [GitLab Duo Agent Platform documentation](../../user/duo_agent_platform/_index.md) to learn how to set up and access GitLab Duo Agent Platform in your code editor.
 
 ## Build your prompt
 
@@ -56,7 +62,7 @@ Note: the gem only performs [these actions](https://gitlab.com/gitlab-org/ruby/g
 
 ### Reference material
 
-GitLab Duo Workflow requires reference materials, preferably with examples, to write these files.
+GitLab Duo Agent Platform requires reference materials, preferably with examples, to write these files.
 
 Example prompt snippet: `Read instructions and example yml files in policies/one-off/duo-workflow-guide-and-example-policies to ensure the result has the correct syntax.`
 
@@ -74,7 +80,7 @@ Example prompt:
 
 > Update the policy you created in `policies/one-off/auth-migration.yml` by adding a new condition to skip resources currently labeled with ~"workflow::completed" using the forbidden_labels field
 
-### Resulting policy written by GitLab Duo Workflow
+### Resulting policy written by GitLab Duo Agent Platform
 
 The 2 prompts above generated the following policy:
 

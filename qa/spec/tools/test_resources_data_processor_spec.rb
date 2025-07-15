@@ -38,6 +38,55 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
     it 'collects and stores resource' do
       expect(processor.resources).to eq(result)
     end
+
+    context 'when fabrication_method is browser_ui' do
+      let(:method) { :browser_ui }
+
+      let(:group_resource) do
+        group = instance_double(QA::Resource::Group, 'Group Resource')
+        allow(group).to receive(:class).and_return(QA::Resource::Group)
+
+        # Start with nil
+        allow(group).to receive(:api_fabrication_http_method).and_return(nil)
+
+        allow(group).to receive(:api_delete_path) do
+          # After this call, simulate that the method gets set to :get
+          allow(group).to receive(:api_fabrication_http_method).and_return(:get)
+          "/groups/123"
+        end
+
+        allow(group).to receive(:respond_to?).with(:api_delete_path).and_return(true)
+        allow(group).to receive(:respond_to?).with(:api_get_path).and_return(true)
+
+        group
+      end
+
+      let(:expected_result_with_post) do
+        {
+          'QA::Resource::Group' => [{
+            info: info,
+            api_path: "/groups/123",
+            fabrication_method: method,
+            fabrication_time: time,
+            http_method: :post,
+            timestamp: Time.now.to_s
+          }]
+        }
+      end
+
+      it 'defaults http_method to :post when api_fabrication_http_method is nil' do
+        new_processor = Class.new(described_class).instance
+
+        new_processor.collect(
+          resource: group_resource,
+          info: info,
+          fabrication_method: method,
+          fabrication_time: time
+        )
+
+        expect(new_processor.resources).to eq(expected_result_with_post)
+      end
+    end
   end
 
   describe '.write_to_file' do

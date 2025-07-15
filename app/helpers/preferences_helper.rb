@@ -83,6 +83,10 @@ module PreferencesHelper
     @user_color_mode ||= Gitlab::ColorModes.for_user(current_user).css_class
   end
 
+  def user_application_light_mode?
+    user_application_color_mode == 'gl-light'
+  end
+
   def user_application_dark_mode?
     user_application_color_mode == 'gl-dark'
   end
@@ -97,6 +101,14 @@ module PreferencesHelper
 
   def user_color_scheme
     Gitlab::ColorSchemes.for_user(current_user).css_class
+  end
+
+  def user_light_color_scheme
+    Gitlab::ColorSchemes.light_for_user(current_user).css_class
+  end
+
+  def user_dark_color_scheme
+    Gitlab::ColorSchemes.dark_for_user(current_user).css_class
   end
 
   def user_tab_width

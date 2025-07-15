@@ -240,7 +240,7 @@ to match your username.
 
 {{< /history >}}
 
-You can add links to certain other external accounts you might have, like Skype and X (formerly Twitter).
+You can add links to certain other external accounts you might have, like Discord and X (formerly Twitter).
 They can help other users connect with you on other platforms.
 
 To add links to other accounts:
@@ -252,7 +252,7 @@ To add links to other accounts:
    - LinkedIn profile name.
    - Bluesky [did:plc identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
    - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
-   - Skype username.
+   - Discord username.
    - X (formerly Twitter) @username.
    - [ORCID](https://orcid.org/).
 

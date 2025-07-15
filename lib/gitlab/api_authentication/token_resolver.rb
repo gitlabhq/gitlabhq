@@ -18,6 +18,7 @@ module Gitlab
           personal_access_token_from_jwt
           deploy_token_from_jwt
           job_token_from_jwt
+          oauth_token
         ]
       }
 
@@ -45,31 +46,25 @@ module Gitlab
       def resolve(raw)
         case @token_type
         when :personal_access_token
-          resolve_personal_access_token raw
-
+          resolve_personal_access_token(raw)
         when :job_token
-          resolve_job_token raw
-
+          resolve_job_token(raw)
         when :deploy_token
-          resolve_deploy_token raw
-
+          resolve_deploy_token(raw)
         when :personal_access_token_with_username
-          resolve_personal_access_token_with_username raw
-
+          resolve_personal_access_token_with_username(raw)
         when :job_token_with_username
-          resolve_job_token_with_username raw
-
+          resolve_job_token_with_username(raw)
         when :deploy_token_with_username
-          resolve_deploy_token_with_username raw
-
+          resolve_deploy_token_with_username(raw)
         when :personal_access_token_from_jwt
-          resolve_personal_access_token_from_jwt raw
-
+          resolve_personal_access_token_from_jwt(raw)
         when :deploy_token_from_jwt
-          resolve_deploy_token_from_jwt raw
-
+          resolve_deploy_token_from_jwt(raw)
         when :job_token_from_jwt
-          resolve_job_token_from_jwt raw
+          resolve_job_token_from_jwt(raw)
+        when :oauth_token
+          resolve_oauth_token(raw)
         end
       end
 
@@ -155,6 +150,19 @@ module Gitlab
 
           resolve_job_token(UsernameAndPassword.new(nil, jwt_token['token']))
         end
+      end
+
+      def resolve_oauth_token(raw)
+        oauth_token = OauthAccessToken.by_token(raw.password)
+        raise ::Gitlab::Auth::UnauthorizedError unless oauth_token
+
+        oauth_token.revoke_previous_refresh_token!
+
+        ::Gitlab::Auth::Identity.link_from_oauth_token(oauth_token).tap do |identity|
+          raise ::Gitlab::Auth::UnauthorizedError if identity && !identity.valid?
+        end
+
+        oauth_token
       end
 
       def with_personal_access_token(raw, &block)

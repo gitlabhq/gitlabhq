@@ -37,6 +37,7 @@ module RuboCop
         FORBID_PERFORM_OVERRIDE = "Do not override `perform` in a `#{SUBSCRIBER_MODULE_NAME}`.".freeze
         REQUIRE_HANDLE_EVENT = "A `#{SUBSCRIBER_MODULE_NAME}` must implement `#handle_event(event)`.".freeze
 
+        # @!method includes_subscriber?(node)
         def_node_matcher :includes_subscriber?, <<~PATTERN
           (send nil? :include (const (const (const nil? :Gitlab) :EventStore) :Subscriber))
         PATTERN
@@ -49,11 +50,11 @@ module RuboCop
         end
 
         def on_def(node)
-          if is_subscriber && node.method_name == :perform
+          if is_subscriber && node.method?(:perform)
             add_offense(node, message: FORBID_PERFORM_OVERRIDE)
           end
 
-          self.implements_handle_event ||= true if node.method_name == :handle_event
+          self.implements_handle_event ||= true if node.method?(:handle_event)
         end
 
         def on_investigation_end

@@ -108,7 +108,6 @@ export default {
   safeHtmlConfig: {
     ADD_TAGS: ['use'], // to support icon SVGs
   },
-  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 

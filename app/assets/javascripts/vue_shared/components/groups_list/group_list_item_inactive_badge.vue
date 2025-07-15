@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 export default {
   name: 'GroupListItemInactiveBadge',
   i18n: {
+    deletionInProgress: __('Deletion in progress'),
     pendingDeletion: __('Pending deletion'),
   },
   components: {
@@ -17,10 +18,20 @@ export default {
     },
   },
   computed: {
+    isSelfDeletionInProgress() {
+      return Boolean(this.group.isSelfDeletionInProgress);
+    },
     isPendingDeletion() {
-      return Boolean(this.group.markedForDeletionOn);
+      return Boolean(this.group.markedForDeletion);
     },
     inactiveBadge() {
+      if (this.isSelfDeletionInProgress) {
+        return {
+          variant: 'warning',
+          text: this.$options.i18n.deletionInProgress,
+        };
+      }
+
       if (this.isPendingDeletion) {
         return {
           variant: 'warning',

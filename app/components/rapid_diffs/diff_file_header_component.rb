@@ -16,6 +16,13 @@ module RapidDiffs
       { path_parts: parts, filename: last }
     end
 
+    def file_link
+      helpers.project_blob_path(
+        @diff_file.repository.project,
+        helpers.tree_join(@diff_file.content_sha, @diff_file.new_path)
+      )
+    end
+
     def copy_path_button
       clipboard_button(
         text: @diff_file.file_path,
@@ -29,21 +36,7 @@ module RapidDiffs
     end
 
     def menu_items
-      base_items = [
-        {
-          text: helpers.safe_format(
-            _('View file @ %{commitSha}'),
-            commitSha: Commit.truncate_sha(@diff_file.content_sha)
-          ),
-          href: helpers.project_blob_path(
-            @diff_file.repository.project,
-            helpers.tree_join(@diff_file.content_sha, @diff_file.new_path)
-          ),
-          position: 0
-        }
-      ]
-
-      [*base_items, *@additional_menu_items].sort_by { |item| item[:position] || Float::INFINITY }
+      @additional_menu_items.sort_by { |item| item[:position] || Float::INFINITY }
     end
 
     def heading_id
@@ -63,12 +56,18 @@ module RapidDiffs
     end
 
     def stats_label
+      return false if @diff_file.binary?
+
       added = @diff_file.added_lines
       removed = @diff_file.removed_lines
       counters = []
       counters << (ns_('RapidDiffs|Added %d line.', 'RapidDiffs|Added %d lines.', added) % added) if added > 0
       counters << (ns_('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', removed) % removed) if removed > 0
       counters.join(' ')
+    end
+
+    def pretty_print_bytes(size)
+      ActiveSupport::NumberHelper.number_to_human_size(size)
     end
   end
 end

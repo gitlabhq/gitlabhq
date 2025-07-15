@@ -351,6 +351,29 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
+
+      let_it_be(:archived_group) { create(:group, :archived) }
+      let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
+      let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived_group) }
+
+      where(:archived, :result) do
+        nil   | lazy { [non_archived, non_archived_subgroup, archived_group, archived_subgroup_with_non_archived_parent, non_archived_subgroup_with_archived_parent] }
+        false | lazy { [non_archived, non_archived_subgroup] }
+        true  | lazy { [archived_group, archived_subgroup_with_non_archived_parent, non_archived_subgroup_with_archived_parent] }
+      end
+
+      with_them do
+        let(:params) { { archived: archived } }
+
+        subject { described_class.new(nil, params).execute.to_a }
+
+        it { is_expected.to match_array(result) }
+      end
+    end
+
     context 'with organization' do
       let_it_be(:organization_user) { create(:organization_user) }
       let_it_be(:organization) { organization_user.organization }
@@ -532,6 +555,26 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
         let(:params) { { sort: sort } }
 
         it { is_expected.to eq(sorted_groups) }
+      end
+    end
+
+    describe 'with_statistics' do
+      let_it_be(:group) { create(:group, :public) }
+
+      context 'when true' do
+        it 'loads project statistics' do
+          first_group = described_class.new(user, { all_available: true, with_statistics: true }).execute.first
+
+          expect(first_group.storage_size).to eq(0)
+        end
+      end
+
+      context 'when false' do
+        it 'does not load project statistics' do
+          first_group = described_class.new(user, { all_available: true, with_statistics: false }).execute.first
+
+          expect(first_group).not_to respond_to(:storage_size)
+        end
       end
     end
   end

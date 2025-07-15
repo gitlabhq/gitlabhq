@@ -10,7 +10,7 @@ module QA
           super
 
           base.view 'app/assets/javascripts/groups/components/groups.vue' do
-            element 'groups-list-tree-container'
+            element 'nested-groups-projects-list'
           end
         end
 
@@ -35,7 +35,7 @@ module QA
           click_element 'search-button'
           # Loading starts a moment after `return` is sent. We mustn't jump ahead
           wait_for_requests if spinner_exists?
-          has_element?('groups-list-tree-container', wait: 1)
+          has_element?('nested-groups-projects-list', wait: 1)
         end
       end
     end

@@ -29,7 +29,7 @@ module Ci
 
       def authorize
         unless user.present? && user.can?(:assign_runner, runner)
-          return ServiceResponse.error(message: 'User not allowed to assign runner')
+          return ServiceResponse.error(message: 'User not allowed to unassign runner')
         end
 
         unless user.can?(:admin_project_runners, project)

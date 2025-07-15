@@ -1,0 +1,16 @@
+---
+description: Someone clicks the "View powered by GLQL" link below a GLQL view
+internal_events: true
+status: active
+action: click_glql_info_link
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+milestone: '18.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195595
+tiers:
+- free
+- premium
+- ultimate

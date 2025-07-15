@@ -268,8 +268,8 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_cherry_pick(
         user:, commit:, branch_name:, message:,
-        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil)
-
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil
+      )
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
@@ -629,8 +629,8 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository, force, start_sha, sign, target_sha)
-
+        start_branch_name, start_repository, force, start_sha, sign, target_sha
+      )
         Gitaly::UserCommitFilesRequestHeader.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,

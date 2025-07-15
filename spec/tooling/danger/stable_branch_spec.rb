@@ -180,13 +180,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         let(:bug_label_present) { false }
 
         it_behaves_like 'with a failure', described_class::BUG_ERROR_MESSAGE
-      end
-
-      context 'with only documentation changes and no bug label' do
-        let(:bug_label_present) { false }
-        let(:changes_by_category_response) { { docs: ['foo.md'] } }
-
-        it_behaves_like 'without a failure'
+        it_behaves_like 'bypassing when flaky test or docs only'
       end
 
       context 'with a pipeline::expedited label' do

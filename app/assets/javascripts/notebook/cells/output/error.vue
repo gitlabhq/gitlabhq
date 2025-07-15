@@ -17,10 +17,6 @@ export default {
       type: Array,
       required: true,
     },
-    index: {
-      type: Number,
-      required: true,
-    },
   },
   computed: {
     parsedError() {

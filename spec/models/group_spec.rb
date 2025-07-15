@@ -2108,7 +2108,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#member_owners_excluding_project_bots' do
+  describe '#member_owners_excluding_project_bots_and_service_accounts' do
     let_it_be(:user) { create(:user) }
 
     let!(:member_owner) do
@@ -2121,11 +2121,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'returns the member-owners' do
-      expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+      expect(group.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner)
     end
 
     it 'preloads user and source' do
-      owner = group.member_owners_excluding_project_bots.first
+      owner = group.member_owners_excluding_project_bots_and_service_accounts.first
 
       expect(owner.association(:user).loaded?).to be_truthy
       expect(owner.association(:source).loaded?).to be_truthy
@@ -2137,7 +2137,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'returns only the human member-owners' do
-        expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+        expect(group.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner)
       end
     end
 
@@ -2152,7 +2152,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'returns the member-owners' do
-        expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+        expect(group.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner)
       end
     end
 
@@ -2167,7 +2167,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           end
 
           it 'returns only direct member-owners' do
-            expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+            expect(group.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner)
           end
 
           context 'when there is an invite in the linked group' do
@@ -2176,7 +2176,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
             end
 
             it 'returns only direct member-owners' do
-              expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+              expect(group.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner)
             end
           end
         end
@@ -2192,7 +2192,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         it 'returns member-owners including parents' do
-          expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2)
+          expect(subgroup.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner, member_owner_2)
         end
 
         context 'with group sharing' do
@@ -2205,7 +2205,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           end
 
           it 'returns member-owners including parents, and member-owners of the invited group' do
-            expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+            expect(subgroup.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
           end
 
           context 'when there is an invite in the linked group' do
@@ -2215,7 +2215,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
             end
 
             it 'returns member-owners including parents, and member-owners of the invited group' do
-              expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+              expect(subgroup.member_owners_excluding_project_bots_and_service_accounts).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
             end
           end
         end
@@ -2226,7 +2226,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:empty_group) { create(:group) }
 
       it 'returns an empty result' do
-        expect(empty_group.member_owners_excluding_project_bots).to be_empty
+        expect(empty_group.member_owners_excluding_project_bots_and_service_accounts).to be_empty
       end
     end
 
@@ -2238,7 +2238,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       context 'and it is a direct member' do
         it 'does include blocked user' do
-          expect(group.member_owners_excluding_project_bots).to include(blocked_member)
+          expect(group.member_owners_excluding_project_bots_and_service_accounts).to include(blocked_member)
         end
       end
 
@@ -2246,7 +2246,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:subgroup) { create(:group, parent: group) }
 
         it 'does include blocked user' do
-          expect(subgroup.member_owners_excluding_project_bots).to include(blocked_member)
+          expect(subgroup.member_owners_excluding_project_bots_and_service_accounts).to include(blocked_member)
         end
       end
     end
@@ -4355,13 +4355,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to be false }
   end
 
-  describe '#continue_indented_text_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :continue_indented_text }
-      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
-    end
-  end
-
   describe '#glql_integration_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_integration }
@@ -4373,6 +4366,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_load_on_click }
       let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
+    end
+  end
+
+  describe '#work_items_bulk_edit_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_bulk_edit }
+      let(:feature_flag_method) { :work_items_bulk_edit_feature_flag_enabled? }
     end
   end
 

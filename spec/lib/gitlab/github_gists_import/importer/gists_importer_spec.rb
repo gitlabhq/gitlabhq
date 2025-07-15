@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistsImporter, feature_categ
   let(:client) { instance_double('Gitlab::GithubImport::Client', rate_limit_resets_in: 5) }
   let(:token) { 'token' }
   let(:page_counter) { instance_double('Gitlab::Import::PageCounter', current: 1, set: true, expire!: true) }
-  let(:page) { instance_double('Gitlab::GithubImport::Client::Page', objects: [gist], number: 1) }
+  let(:page) { instance_double('Gitlab::GithubImport::Client::Page', objects: [gist], url: nil) }
   let(:url) { 'https://gist.github.com/foo/bar.git' }
   let(:waiter) { Gitlab::JobWaiter.new(0, 'some-job-key') }
 
@@ -62,14 +62,9 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistsImporter, feature_categ
         .with(token, parallel: true)
         .and_return(client)
 
-      allow(Gitlab::Import::PageCounter)
-        .to receive(:new)
-        .with(user, :gists, 'github-gists-importer')
-        .and_return(page_counter)
-
       allow(client)
         .to receive(:each_page)
-        .with(:gists, nil, { page: 1 })
+        .with(:gists, nil, nil)
         .and_yield(page)
 
       allow(Gitlab::GithubGistsImport::Representation::Gist)

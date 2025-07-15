@@ -1,5 +1,4 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlButton, GlFormGroup, GlFormInput, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
@@ -57,7 +56,6 @@ export default {
     },
   },
   methods: {
-    isEmpty,
     s__,
   },
   i18n: {

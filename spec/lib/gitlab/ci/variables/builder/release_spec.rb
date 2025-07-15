@@ -19,15 +19,26 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Release do
       }
     end
 
+    let(:name_variable) do
+      {
+        key: 'CI_RELEASE_NAME',
+        value: release.name,
+        public: true,
+        masked: false,
+        raw: false
+      }
+    end
+
     subject do
       builder.variables
     end
 
     context 'when the release is present' do
       let(:description_item) { item(description_variable) }
+      let(:name_item) { item(name_variable) }
 
       it 'contains all the variables' do
-        is_expected.to contain_exactly(description_item)
+        is_expected.to contain_exactly(description_item, name_item)
       end
 
       context 'for large description' do
@@ -48,8 +59,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Release do
         it 'returns without error' do
           builder = subject
 
-          expect(builder.to_a).to be_empty
           expect(builder.errors).to be_nil
+        end
+
+        it 'is not included' do
+          expect(subject.to_hash).not_to have_key('CI_RELEASE_DESCRIPTION')
         end
       end
     end

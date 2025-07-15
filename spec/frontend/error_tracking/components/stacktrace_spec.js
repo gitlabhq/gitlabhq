@@ -43,7 +43,7 @@ describe('ErrorDetails', () => {
     it('should render single Stacktrace entry', () => {
       mountComponent([stackTraceEntry]);
       const allEntries = wrapper.findAllComponents(StackTraceEntry);
-      expect(allEntries.length).toBe(1);
+      expect(allEntries).toHaveLength(1);
       const entry = allEntries.at(0);
       expect(entry.props()).toEqual({
         lines: stackTraceEntry.context,
@@ -58,7 +58,7 @@ describe('ErrorDetails', () => {
     it('should render single Stacktrace entry with GraphQL API data format', () => {
       mountComponent([graphqlStackTraceEntry]);
       const allEntries = wrapper.findAllComponents(StackTraceEntry);
-      expect(allEntries.length).toBe(1);
+      expect(allEntries).toHaveLength(1);
       const entry = allEntries.at(0);
       expect(entry.props()).toEqual({
         lines: graphqlStackTraceEntry.context,
@@ -74,7 +74,7 @@ describe('ErrorDetails', () => {
       const entriesNum = 3;
       mountComponent(new Array(entriesNum).fill(stackTraceEntry));
       const entries = wrapper.findAllComponents(StackTraceEntry);
-      expect(entries.length).toBe(entriesNum);
+      expect(entries).toHaveLength(entriesNum);
       expect(entries.at(0).props('expanded')).toBe(true);
       expect(entries.at(1).props('expanded')).toBe(false);
       expect(entries.at(2).props('expanded')).toBe(false);

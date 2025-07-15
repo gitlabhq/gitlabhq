@@ -172,8 +172,10 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
   end
 
   describe 'instrumentation in render_result' do
+    let(:subscription_name) { "call_filter.html_pipeline_#{Thread.current.object_id}" }
+
     it 'calculates pipeline timing' do
-      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with(subscription_name)
                                                                            .and_call_original.at_least(:once)
       expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
       expect(Rainbow).not_to receive(:new)
@@ -184,7 +186,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     end
 
     it 'enables debug output' do
-      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with(subscription_name)
                                                                            .and_call_original.at_least(:once)
       expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
       expect(Rainbow).to receive(:new).and_call_original.at_least(:once)
@@ -194,7 +196,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     end
 
     it 'enables debug_timing output' do
-      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with(subscription_name)
                                                                            .and_call_original.at_least(:once)
       expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
       expect(Rainbow).to receive(:new).and_call_original.at_least(:once)

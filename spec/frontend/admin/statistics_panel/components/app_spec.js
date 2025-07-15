@@ -1,9 +1,10 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import StatisticsPanelApp from '~/admin/statistics_panel/components/app.vue';
 import statisticsLabels from '~/admin/statistics_panel/constants';
 import createStore from '~/admin/statistics_panel/store';
@@ -22,6 +23,9 @@ describe('Admin statistics app', () => {
   const createComponent = () => {
     wrapper = shallowMount(StatisticsPanelApp, {
       store,
+      stubs: {
+        CrudComponent,
+      },
     });
   };
 
@@ -35,11 +39,11 @@ describe('Admin statistics app', () => {
 
   describe('template', () => {
     describe('when app is loading', () => {
-      it('renders a loading indicator', () => {
+      it('renders a skeleton loader', () => {
         store.dispatch('requestStatistics');
         createComponent();
 
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
       });
     });
 

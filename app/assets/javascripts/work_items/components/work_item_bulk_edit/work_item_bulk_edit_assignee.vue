@@ -46,6 +46,9 @@ export default {
   apollo: {
     currentUser: {
       query: currentUserQuery,
+      skip() {
+        return !this.searchStarted;
+      },
     },
     users: {
       query: usersSearchQuery,

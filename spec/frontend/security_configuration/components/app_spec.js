@@ -300,7 +300,7 @@ describe('~/security_configuration/components/app', () => {
     });
 
     it('does not render feature card component', () => {
-      expect(findFeatureCards().length).toBe(0);
+      expect(findFeatureCards()).toHaveLength(0);
     });
     it('renders component with correct props', () => {
       expect(findSecretPushProtection().exists()).toBe(true);
@@ -316,7 +316,7 @@ describe('~/security_configuration/components/app', () => {
     });
 
     it('does not render regular feature card component', () => {
-      expect(findFeatureCards().length).toBe(0);
+      expect(findFeatureCards()).toHaveLength(0);
     });
 
     it('renders PipelineSecretDetectionFeatureCard with correct props', () => {

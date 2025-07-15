@@ -36,7 +36,7 @@ module RuboCop
         def find_on_execute?(node)
           chained_on_node = node.descendants.first
           node.method_name.to_s =~ FIND_PATTERN &&
-            chained_on_node.is_a?(RuboCop::AST::SendNode) && chained_on_node.method_name == :execute
+            chained_on_node.is_a?(RuboCop::AST::SendNode) && chained_on_node.method?(:execute)
         end
 
         def allowed_module?(node)

@@ -89,11 +89,7 @@ describe('Time ago with tooltip component', () => {
     });
   });
 
-  describe('when gon.features.showDateWhenRelativeTimeOverAYear is true', () => {
-    beforeEach(() => {
-      window.gon = { features: { showDateWhenRelativeTimeOverAYear: true } };
-    });
-
+  describe('when timestamp is over a year old', () => {
     const timestampOneYearAgo = new Date().getTime() - 60e3 * 60 * 24 * 366;
 
     describe('with showDateWhenOverAYear: false', () => {

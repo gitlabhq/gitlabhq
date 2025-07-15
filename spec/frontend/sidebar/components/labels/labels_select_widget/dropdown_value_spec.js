@@ -53,7 +53,7 @@ describe('DropdownValue', () => {
     });
 
     it('does not render any labels', () => {
-      expect(findAllLabels().length).toBe(0);
+      expect(findAllLabels()).toHaveLength(0);
     });
   });
 
@@ -71,7 +71,7 @@ describe('DropdownValue', () => {
     });
 
     it('renders a list of three labels', () => {
-      expect(findAllLabels().length).toBe(3);
+      expect(findAllLabels()).toHaveLength(3);
     });
 
     it('passes correct props to the regular label', () => {

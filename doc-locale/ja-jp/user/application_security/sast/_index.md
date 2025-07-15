@@ -665,7 +665,7 @@ variables:
 
    パターンには、glob（サポートされているパターンについては[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match)を参照）、またはファイルパスやフォルダパス（`doc,spec`など）を使用できます。親ディレクトリもパターンに一致します。
 
-   `SAST_EXCLUDED_PATHS`のポストフィルター実装は、すべてのSASTアナライザーで使用できます。上付き文字**[2](#sast-excluded-paths-semgrep)**が付いたものなど、一部のSASTアナライザーは、`SAST_EXCLUDED_PATHS`をプリフィルターとポストフィルターの両方として実装します。プリフィルターは、スキャン対象のファイル数を減らすため、効率が向上します。
+   `SAST_EXCLUDED_PATHS`のポストフィルター実装は、すべてのSASTアナライザーで使用できます。上付き文字[2](#sast-excluded-paths-semgrep)が付いたものなど、一部のSASTアナライザーは、`SAST_EXCLUDED_PATHS`をプリフィルターとポストフィルターの両方として実装します。プリフィルターは、スキャン対象のファイル数を減らすため、効率が向上します。
 
    `SAST_EXCLUDED_PATHS`をプリフィルターとポストフィルターの両方としてサポートするアナライザーの場合、最初にプリフィルターが適用され、次にポストフィルターが残りの脆弱性に適用されます。
 

@@ -5,6 +5,7 @@ FactoryBot.define do
     namespace { association(:group) }
     self_and_descendant_group_ids { namespace.self_and_descendant_ids.pluck(:id).sort }
     all_project_ids { namespace.all_projects.pluck(:id).sort }
+    all_unarchived_project_ids { namespace.all_projects.self_and_ancestors_non_archived.pluck(:id).sort }
     traversal_ids { namespace.traversal_ids }
     outdated_at { nil }
     calculated_at { Time.current }

@@ -189,7 +189,7 @@ Use this extension to review, comment on, and approve merge requests without lea
 Use the diff to:
 
 - Review and create discussions.
-- Resolve and unresolve these discussions.
+- Resolve and reopen these discussions.
 - Delete and edit individual comments.
 
 ### Compare with default branch

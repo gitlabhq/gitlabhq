@@ -18,7 +18,7 @@ can [trigger paging](paging.md#paging) for on-call rotations or be used to [crea
 ## Integrations list
 
 With at least the Maintainer role, you can view the list of configured
-alerts integrations by navigating to **Settings > Monitor**
+alerting integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 
@@ -26,11 +26,11 @@ the integration name, type, and status (enabled or disabled):
 
 ## Configuration
 
-GitLab can receive alerts via a HTTP endpoint that you configure.
+GitLab can receive alerts via an HTTP endpoint that you configure.
 
-### Single HTTP Endpoint
+### Single Alerting Endpoint
 
-Enabling the HTTP Endpoint in a GitLab projects activates it to
+Enabling an alerting endpoint in a GitLab projects activates it to
 receive alert payloads in JSON format. You can always
 [customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
@@ -38,12 +38,12 @@ receive alert payloads in JSON format. You can always
    for a project.
 1. Go to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown list,
-   select **HTTP Endpoint**.
+   select **Prometheus** for alerts from Prometheus, or **HTTP Endpoint** for any other monitoring tool.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
    are available in the **View credentials** tab after you save the integration. You must also input
    the URL and Authorization Key in your external service.
 
-### HTTP Endpoints
+### Alerting Endpoints
 
 {{< details >}}
 
@@ -53,7 +53,7 @@ receive alert payloads in JSON format. You can always
 {{< /details >}}
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
-unique HTTP endpoints to receive alerts from any external source in JSON format,
+unique alerting endpoints to receive alerts from any external source in JSON format,
 and you can [customize the payload](#customize-the-alert-payload-outside-of-gitlab).
 
 1. Sign in to GitLab as a user with the Maintainer role
@@ -63,14 +63,14 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. For each endpoint you want to create:
 
    1. Select **Add new integration**.
-   1. In the **Select integration type** dropdown list, select **HTTP Endpoint**.
+   1. In the **Select integration type** dropdown list, select **Prometheus** for alerts from Prometheus, or **HTTP Endpoint** for any other monitoring tool. See details
    1. Name the integration.
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.
       You must also input the URL and Authorization Key in your external service.
    1. Optional. To map fields from your monitoring tool's alert to GitLab fields, enter a sample
       payload and select **Parse payload for custom mapping**. Valid JSON is required. If you update
-      a sample payload, you must also remap the fields.
+      a sample payload, you must also remap the fields. For Prometheus integrations, enter a single alert from the payload's `alerts` key instead of the entire payload.
 
    1. Optional. If you provided a valid sample payload, select each value in
       **Payload alert key** to [map to a **GitLab alert key**](#map-fields-in-custom-alerts).
@@ -86,11 +86,34 @@ side of the integrations list.
 You can integrate your monitoring tool's alert format with GitLab alerts. To show the
 correct information in the [Alert list](alerts.md#alert-list) and the
 [Alert Details page](alerts.md#alert-details-page), map your alert's fields to
-GitLab fields when you [create an HTTP endpoint](#http-endpoints):
+GitLab fields when you [create an HTTP endpoint](#alerting-endpoints):
 
 ![Alert Management List](img/custom_alert_mapping_v13_11.png)
 
+### Add integration credentials to Alertmanager (Prometheus integrations only)
+
+To send Prometheus alert notifications to GitLab, copy the URL and authorization key from
+your [Prometheus integration](#single-alerting-endpoint) into the
+[`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)
+section of the Prometheus Alertmanager configuration:
+
+```yaml
+receivers:
+  - name: gitlab
+    webhook_configs:
+      - http_config:
+          authorization:
+            type: Bearer
+            credentials: 1234567890abdcdefg
+        send_resolved: true
+        url: http://IP_ADDRESS:PORT/root/manual_prometheus/prometheus/alerts/notify.json
+        # Rest of configuration omitted
+        # ...
+```
+
 ## Customize the alert payload outside of GitLab
+
+### Expected HTTP request attributes
 
 For HTTP Endpoints without [custom mappings](#map-fields-in-custom-alerts), you can customize the payload by sending the following
 parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` is applied.
@@ -123,7 +146,7 @@ Ensure your requests are smaller than the
 
 {{< /alert >}}
 
-### Example request body
+#### Example request body
 
 Example payload:
 
@@ -145,50 +168,7 @@ Example payload:
 }
 ```
 
-### Prometheus endpoint
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
-1. Expand the **Alerts** section, and select **Add new integration**.
-1. From the **Select integration type** dropdown list, select **Prometheus**.
-1. Turn on the **Active** toggle.
-1. Enter the **Prometheus API base URL**.
-   You should enter a placeholder URL. The features which use this field are [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/379252) in GitLab 16.0.
-1. Select **Save integration**.
-
-The URL and authorization key for the webhook configuration
-are available in the **View credentials** tab.
-
-Enter the URL and authorization key in your external service.
-You can also send a test alert from your integration's
-[**Send test alert**](#triggering-test-alerts) tab.
-
-#### Add integration credentials to Prometheus Alertmanager
-
-To send Prometheus alert notifications to GitLab, copy the URL and authorization key from
-your [Prometheus integration](#prometheus-endpoint) into the
-[`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)
-section of the Prometheus Alertmanager configuration:
-
-```yaml
-receivers:
-  - name: gitlab
-    webhook_configs:
-      - http_config:
-          authorization:
-            type: Bearer
-            credentials: 1234567890abdcdefg
-        send_resolved: true
-        url: http://IP_ADDRESS:PORT/root/manual_prometheus/prometheus/alerts/notify.json
-        # Rest of configuration omitted
-        # ...
-```
-
-#### Expected request attributes
+### Expected Prometheus request attributes
 
 Alerts are expected to be formatted for a Prometheus [webhook receiver](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config).
 
@@ -314,6 +294,13 @@ Example request payload:
   }]
 }
 ```
+
+{{< alert type="note" >}}
+
+When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
+When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
+
+{{< /alert >}}
 
 ## Authorization
 
@@ -452,7 +439,7 @@ You can also configure the associated [incident to be closed automatically](mana
 {{< alert type="warning" >}}
 
 We are building deeper integration with Opsgenie and other alerting tools through
-[HTTP endpoint integrations](#single-http-endpoint) so you can see alerts in
+[HTTP endpoint integrations](#single-alerting-endpoint) so you can see alerts in
 the GitLab interface.
 
 {{< /alert >}}

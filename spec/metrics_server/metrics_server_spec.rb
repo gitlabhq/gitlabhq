@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_relative '../../metrics_server/metrics_server'
 
-RSpec.describe MetricsServer, feature_category: :cloud_connector do
+RSpec.describe MetricsServer, feature_category: :durability_metrics do
   let(:prometheus_config) { ::Prometheus::Client.configuration }
   let(:metrics_dir) { Dir.mktmpdir }
 

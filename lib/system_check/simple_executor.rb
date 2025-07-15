@@ -51,7 +51,7 @@ module SystemCheck
 
       # When implements skip method, we run it first, and if true, skip the check
       if check.can_skip? && check.skip?
-        $stdout.puts check.skip_reason.try(:color, :magenta) || Rainbow(check_klass.skip_reason).magenta
+        $stdout.puts Rainbow(check.skip_reason || check_klass.skip_reason).magenta
         return
       end
 

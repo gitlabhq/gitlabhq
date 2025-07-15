@@ -6,13 +6,9 @@ module EventForward
     SELF_MANAGED_SUFFIX = 'sm'
 
     def forward
-      if ::Feature.enabled?(:collect_product_usage_events, :instance)
-        process_events
+      process_events
 
-        head :ok
-      else
-        head :not_found
-      end
+      head :ok
     end
 
     private

@@ -15,6 +15,7 @@ title: Control how jobs run
 Before a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs can run in that pipeline. You can configure jobs to run depending on
 conditions like the value of variables or the pipeline type with [`rules`](job_rules.md).
+When using job rules, learn how to [avoid duplicate pipelines](job_rules.md#avoid-duplicate-pipelines). To control pipeline creation, use [workflow:rules](../yaml/workflow.md).
 
 ## Create a job that must be run manually
 
@@ -28,6 +29,8 @@ By default, manual jobs display as skipped when the pipeline starts.
 
 You can use [protected branches](../../user/project/repository/branches/protected.md) to more strictly
 [protect manual deployments](#protect-manual-jobs) from being run by unauthorized users.
+
+Manual jobs that are [archived](../../administration/settings/continuous_integration.md#archive-pipelines) do not run.
 
 ### Types of manual jobs
 
@@ -50,7 +53,7 @@ In blocking manual jobs:
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
-When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/_index.md#triggerstrategy),
+When using manual jobs in triggered pipelines with a [`trigger:strategy`](../yaml/_index.md#triggerstrategy),
 the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job
@@ -168,6 +171,9 @@ This job can no longer be scheduled to run automatically. You can, however, exec
 
 To start a delayed job manually, select **Unschedule** ({{< icon name="time-out" >}}) to stop the delay timer and then select **Run** ({{< icon name="play" >}}).
 Soon GitLab Runner starts the job.
+
+Delayed jobs that are [archived](../../administration/settings/continuous_integration.md#archive-pipelines)
+do not run.
 
 ## Parallelize large jobs
 
@@ -385,6 +391,56 @@ The jobs have three paths of execution:
 - macOS path: The `mac:rspec` job runs as soon as the `mac:build: [gcp, data]` and
   `mac:build: [vultr, data]` jobs finish, without waiting for `linux:build` to finish.
 - The `production` job runs as soon as all previous jobs finish.
+
+## Specify needs between parallelized jobs
+
+You can further define the order of each parallel matrix job using [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix).
+
+For example:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    # ensure that other parallel job other than build_job [1, A] runs longer
+    - '[[ "$VERSION" == "1" && "$MODE" == "A" ]] || sleep 30'
+    - echo build $VERSION $MODE
+  parallel:
+    matrix:
+      - VERSION: [1,2]
+        MODE: [A, B]
+
+deploy_job:
+  stage: deploy
+  script: echo deploy $VERSION $MODE
+  parallel:
+    matrix:
+      - VERSION: [3,4]
+        MODE: [C, D]
+
+'deploy_job: [3, D]':
+  stage: deploy
+  script: echo something
+  needs: 
+  - 'build_job: [1, A]'
+```
+
+This example generates several jobs. The parallel jobs each have different values
+for `VERSION` and `MODE`.
+
+- 4 parallel `build_job` jobs:
+  - `build_job: [1, A]`
+  - `build_job: [1, B]`
+  - `build_job: [2, A]`
+  - `build_job: [2, B]`
+- 4 parallel `deploy_job` jobs:
+  - `deploy_job: [3, C]`
+  - `deploy_job: [3, D]`
+  - `deploy_job: [4, C]`
+  - `deploy_job: [4, D]`
+
+The `deploy_job: [3, D]` job runs as soon as `build_job: [1, A]` job finishes, 
+without waiting for the other `build_job` jobs to finish.
 
 ## Troubleshooting
 

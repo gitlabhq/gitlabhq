@@ -83,21 +83,4 @@ RSpec.describe Packages::Maven::Package, type: :model, feature_category: :packag
       it_behaves_like 'not enqueuing a sync worker job'
     end
   end
-
-  describe '#prevent_concurrent_inserts' do
-    let(:maven_package) { build(:maven_package, project_id: 5) }
-    let(:lock_key) do
-      maven_package.connection.quote(
-        "#{described_class.table_name}-#{maven_package.project_id}-#{maven_package.name}-#{maven_package.version}"
-      )
-    end
-
-    subject(:exec) { maven_package.send(:prevent_concurrent_inserts) }
-
-    it 'executes advisory lock' do
-      expect(maven_package.connection).to receive(:execute).with("SELECT pg_advisory_xact_lock(hashtext(#{lock_key}))")
-
-      exec
-    end
-  end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :admin) }
   let_it_be(:group) { create(:group) }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:project) { create(:project) }
@@ -130,6 +130,48 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
       expect(source_internal_user_finder).to receive(:cached_ghost_user_id).once.and_return('10')
 
       2.times { subject.source_ghost_user_id }
+    end
+  end
+
+  describe '#override_file_size_limit?' do
+    subject(:override_file_size_limit?) { described_class.new(tracker).override_file_size_limit? }
+
+    context 'when the importing user is in admin mode', :enable_admin_mode do
+      context 'when import_admin_override_max_file_size is enabled for the user and top-level group' do
+        before do
+          stub_feature_flags(import_admin_override_max_file_size: [user, group.root_ancestor])
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when import_admin_override_max_file_size is enabled only for the user' do
+        before do
+          stub_feature_flags(import_admin_override_max_file_size: [user])
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when import_admin_override_max_file_size is enabled only for the top-level group' do
+        before do
+          stub_feature_flags(import_admin_override_max_file_size: [group.root_ancestor])
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when import_admin_override_max_file_size is disabled' do
+        before do
+          stub_feature_flags(import_admin_override_max_file_size: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'and the importing user is not in admin mode' do
+      it { is_expected.to eq(false) }
     end
   end
 end

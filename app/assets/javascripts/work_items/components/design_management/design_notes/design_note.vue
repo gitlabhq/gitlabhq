@@ -19,7 +19,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { TYPE_COMMENT } from '~/import/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import updateNoteMutation from '../graphql/update_note.mutation.graphql';
 import designNoteAwardEmojiToggleMutation from '../graphql/design_note_award_emoji_toggle.mutation.graphql';
@@ -261,7 +260,6 @@ export default {
     },
   },
   updateNoteMutation,
-  TYPE_COMMENT,
 };
 </script>
 
@@ -305,7 +303,7 @@ export default {
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
+          <imported-badge v-if="isImported" size="sm" />
         </span>
       </div>
       <div class="gl-flex gl-items-start">

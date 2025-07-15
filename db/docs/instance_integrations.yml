@@ -6,5 +6,5 @@ feature_categories:
 description: Support 3rd party instance-wide integrations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164503
 milestone: '17.4'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small

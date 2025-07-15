@@ -188,7 +188,7 @@ export default {
         </gl-skeleton-loader>
       </template>
       <template v-if="!isLoading" #default>
-        <bold-text class="gl-z-1" :message="summaryText" />
+        <bold-text :message="summaryText" />
       </template>
     </state-container>
     <div

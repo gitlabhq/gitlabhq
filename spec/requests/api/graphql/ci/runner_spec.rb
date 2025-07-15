@@ -443,7 +443,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         end
 
         let_it_be(:owned_project_owner) { create(:user) }
-        let_it_be(:owned_project) { create(:project) }
+        let_it_be(:owned_project) { create(:project, owners: owned_project_owner) }
         let_it_be(:other_project) { create(:project) }
         let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
         let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
@@ -456,10 +456,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         let_it_be(:other_build) do
           create(:ci_build, :success, runner: project_runner, pipeline: other_project_pipeline,
             tag_list: %i[d e f], created_at: 30.minutes.ago, started_at: 19.minutes.ago, finished_at: 1.minute.ago)
-        end
-
-        before_all do
-          owned_project.add_owner(owned_project_owner)
         end
 
         it 'returns empty values for sensitive fields in non-owned jobs' do
@@ -825,11 +821,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'by non-admin user' do
-    let(:user) { create(:user) }
-
-    before do
-      group.add_member(user, Gitlab::Access::OWNER)
-    end
+    let(:user) { create(:user, owner_of: group) }
 
     it_behaves_like 'retrieval with no admin url' do
       let(:runner) { active_group_runner }
@@ -951,100 +943,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
         it_behaves_like 'a protected ephemeral_authentication_token'
       end
-    end
-  end
-
-  describe 'Query limits' do
-    let_it_be(:user2) { another_admin }
-    let_it_be(:user3) { create(:user) }
-    let_it_be(:tag_list) { %w[n_plus_1_test some_tag] }
-    let_it_be(:args) do
-      { current_user: user, token: { personal_access_token: create(:personal_access_token, user: user) } }
-    end
-
-    let_it_be(:runner1) { create(:ci_runner, tag_list: tag_list, creator: user) }
-    let_it_be(:runner2) do
-      create(:ci_runner, :group, groups: [group], tag_list: tag_list, creator: user)
-    end
-
-    let_it_be(:runner3) do
-      create(:ci_runner, :project, projects: [project1], tag_list: tag_list, creator: user)
-    end
-
-    let(:single_discrete_runners_query) do
-      multiple_discrete_runners_query([])
-    end
-
-    let(:runner_fragment) do
-      <<~QUERY
-        #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
-        createdBy {
-          id
-          username
-          webPath
-          webUrl
-        }
-      QUERY
-    end
-
-    # Exclude fields that are already hardcoded above (or tested separately),
-    #   and also some fields from deeper objects which are problematic:
-    # - createdBy: Known N+1 issues, but only on exotic fields which we don't normally use
-    # - ownerProject.pipeline: Needs arguments (iid or sha)
-    # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
-    # - project.mergeTrains: Is a licensed feature
-    let(:excluded_fields) { %w[createdBy jobs pipeline productAnalyticsState mergeTrains] }
-
-    it 'avoids N+1 queries', :use_sql_query_cache do
-      discrete_runners_control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-        post_graphql(single_discrete_runners_query, **args)
-      end
-
-      additional_runners = setup_additional_records
-
-      expect do
-        post_graphql(multiple_discrete_runners_query(additional_runners), **args)
-
-        raise StandardError, flattened_errors if graphql_errors # Ensure any error in query causes test to fail
-      end.not_to exceed_query_limit(discrete_runners_control)
-    end
-
-    def runner_query(runner, nr)
-      <<~QUERY
-        runner#{nr}: runner(id: "#{runner.to_global_id}") {
-          #{runner_fragment}
-        }
-      QUERY
-    end
-
-    def multiple_discrete_runners_query(additional_runners)
-      <<~QUERY
-        {
-          #{runner_query(runner1, 1)}
-          #{runner_query(runner2, 2)}
-          #{runner_query(runner3, 3)}
-          #{additional_runners.each_with_index.map { |r, i| runner_query(r, 4 + i) }.join("\n")}
-        }
-      QUERY
-    end
-
-    def setup_additional_records
-      # Add more runners (including owned by other users)
-      runner4 = create(:ci_runner, tag_list: tag_list + %w[tag1 tag2], creator: user2)
-      runner5 = create(:ci_runner, :group, groups: [create(:group)], tag_list: tag_list + %w[tag2 tag3], creator: user3)
-      # Add one more project to runner
-      runner3.assign_to(create(:project))
-
-      # Add more runner managers (including to existing runners)
-      runner_manager1 = create(:ci_runner_machine, runner: runner1)
-      create(:ci_runner_machine, runner: runner1)
-      create(:ci_runner_machine, runner: runner2, system_xid: runner_manager1.system_xid)
-      create(:ci_runner_machine, runner: runner3)
-      create(:ci_runner_machine, runner: runner4, version: '16.4.1')
-      create(:ci_runner_machine, runner: runner5, version: '16.4.0', system_xid: runner_manager1.system_xid)
-      create(:ci_runner_machine, runner: runner3)
-
-      [runner4, runner5]
     end
   end
 

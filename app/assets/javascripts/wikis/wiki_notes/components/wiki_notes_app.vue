@@ -5,7 +5,6 @@ import { produce } from 'immer';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
-import eventHub, { EVENT_EDIT_WIKI_DONE, EVENT_EDIT_WIKI_START } from '../../event_hub';
 import OrderedLayout from './ordered_layout.vue';
 import PlaceholderNote from './placeholder_note.vue';
 import WikiNotesActivityHeader from './wiki_notes_activity_header.vue';
@@ -46,6 +45,7 @@ export default {
       result({ data }) {
         this.noteableId = data?.wikiPage?.id || '';
         this.discussions = cloneDeep(data?.wikiPage?.discussions?.nodes) || [];
+        this.userPermissions = data?.wikiPage?.userPermissions || {};
       },
     },
   },
@@ -53,6 +53,7 @@ export default {
     return {
       wikiPage: {},
       noteableId: '',
+      userPermissions: {},
       loadingFailed: false,
       placeholderNote: {},
       slotKeys: ['comments', 'place-holder-note', 'form'],
@@ -60,7 +61,6 @@ export default {
         id: index,
         isSkeletonNote: true,
       })),
-      isEditingPage: false,
     };
   },
   computed: {
@@ -78,15 +78,6 @@ export default {
         variables: this.queryVariables,
       });
     },
-  },
-  mounted() {
-    eventHub.$on(EVENT_EDIT_WIKI_START, () => {
-      this.isEditingPage = true;
-    });
-
-    eventHub.$on(EVENT_EDIT_WIKI_DONE, () => {
-      this.isEditingPage = false;
-    });
   },
   methods: {
     setPlaceHolderNote(note) {
@@ -178,7 +169,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="!isEditingPage">
+  <div>
     <wiki-notes-activity-header />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
@@ -186,6 +177,7 @@ export default {
           v-if="!isLoading"
           :noteable-id="noteableId"
           :note-id="noteableId"
+          :can-set-internal-note="userPermissions.markNoteAsInternal"
           @creating-note:start="setPlaceHolderNote"
           @creating-note:done="removePlaceholder"
           @creating-note:success="(discussion) => updateCache({ discussion })"

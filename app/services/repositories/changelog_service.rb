@@ -44,6 +44,9 @@ module Repositories
     # The `config_file` arguments specifies the path to the configuration file as
     # stored in the project's Git repository.
     #
+    # The `config_file_ref` argument specifies the ref where the configuration file is
+    # stored. By default, it's a default repository branch.
+    #
     # The `file` arguments specifies the name/path of the file to commit the
     # changes to. If the file doesn't exist, it's created automatically.
     #
@@ -61,6 +64,7 @@ module Repositories
       date: DateTime.now,
       trailer: DEFAULT_TRAILER,
       config_file: Gitlab::Changelog::Config::DEFAULT_FILE_PATH,
+      config_file_ref: Gitlab::Changelog::Config::DEFAULT_CONFIG_FILE_REFERENCE,
       file: DEFAULT_FILE,
       message: "Add changelog for version #{version}"
     )
@@ -73,13 +77,14 @@ module Repositories
       @branch = branch
       @trailer = trailer
       @config_file = config_file
+      @config_file_ref = config_file_ref
       @file = file
       @message = message
     end
     # rubocop: enable Metrics/ParameterLists
 
     def execute(commit_to_changelog: true)
-      config = Gitlab::Changelog::Config.from_git(@project, @user, @config_file)
+      config = Gitlab::Changelog::Config.from_git(@project, @user, @config_file, @config_file_ref)
       from = start_of_commit_range(config)
 
       # For every entry we want to only include the merge request that

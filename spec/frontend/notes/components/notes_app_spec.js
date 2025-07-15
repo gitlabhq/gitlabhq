@@ -3,9 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
-import { PiniaVuePlugin } from 'pinia';
+import { getActivePinia, PiniaVuePlugin, setActivePinia } from 'pinia';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -21,7 +19,6 @@ import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import * as constants from '~/notes/constants';
-import store from '~/mr_notes/stores';
 import OrderedLayout from '~/notes/components/ordered_layout.vue';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
@@ -30,13 +27,14 @@ import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybin
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
-import { globalAccessorPlugin, syncWithVuex } from '~/pinia/plugins';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import noteQuery from '~/notes/graphql/note.query.graphql';
 import { useBatchComments } from '~/batch_comments/store';
 import * as types from '~/notes/stores/mutation_types';
 import { SET_BATCH_COMMENTS_DRAFTS } from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 import * as mockData from '../mock_data';
+import { createDiscussionMock } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/lib/utils/resize_observer', () => ({
@@ -54,7 +52,6 @@ const propsData = {
   notesFilterValue: TEST_NOTES_FILTER_VALUE,
 };
 
-Vue.use(Vuex);
 Vue.use(VueApollo);
 Vue.use(PiniaVuePlugin);
 
@@ -64,14 +61,14 @@ describe('note_app', () => {
   let pinia;
 
   const initStore = (notesData = propsData.notesData) => {
-    store.dispatch('setNotesData', notesData);
-    store.dispatch('setNoteableData', propsData.noteableData);
-    store.dispatch('setUserData', mockData.userDataMock);
-    store.dispatch('setTargetNoteHash', getLocationHash());
+    useNotes().setNotesData(notesData);
+    useNotes().setNoteableData(propsData.noteableData);
+    useNotes().setUserData(mockData.userDataMock);
+    useNotes().setTargetNoteHash(getLocationHash());
     // call after mounted hook
     queueMicrotask(() => {
       queueMicrotask(() => {
-        store.dispatch('fetchNotes');
+        useNotes().fetchNotes();
       });
     });
   };
@@ -93,7 +90,6 @@ describe('note_app', () => {
           ...propsData,
           ...props,
         },
-        store,
         pinia,
       },
     );
@@ -111,13 +107,12 @@ describe('note_app', () => {
   };
 
   beforeEach(() => {
-    store.commit('reset');
     $('body').attr('data-page', 'projects:merge_requests:show');
 
     axiosMock = new AxiosMockAdapter(axios);
 
     pinia = createTestingPinia({
-      plugins: [globalAccessorPlugin, syncWithVuex],
+      plugins: [globalAccessorPlugin],
       stubActions: false,
     });
     useLegacyDiffs();
@@ -199,7 +194,7 @@ describe('note_app', () => {
   describe('timeline view', () => {
     beforeEach(() => {
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
-      store.commit(types.SET_TIMELINE_VIEW, true);
+      useNotes()[types.SET_TIMELINE_VIEW](true);
 
       mountComponent();
       return waitForPromises();
@@ -313,23 +308,32 @@ describe('note_app', () => {
     });
 
     it('dispatches toggleAward after toggleAward event', () => {
-      const spy = jest.spyOn(store, 'dispatch').mockImplementation(jest.fn());
+      const fakeDiscussion = createDiscussionMock();
+      const [firstNote] = fakeDiscussion.notes;
+      firstNote.award_emoji = [{ name: 'test', awardName: 'test', user: { id: 1 } }];
+      useNotes()[types.ADD_NEW_NOTE]({
+        discussion: fakeDiscussion,
+      });
       const toggleAwardEvent = new CustomEvent('toggleAward', {
         detail: {
           awardName: 'test',
-          noteId: 1,
+          noteId: firstNote.id,
         },
       });
 
+      const activePinia = getActivePinia();
+
       wrapper.element.dispatchEvent(toggleAwardEvent);
 
-      jest.advanceTimersByTime(2);
+      jest.runOnlyPendingTimers();
 
-      expect(spy).toHaveBeenCalledWith('toggleAward', {
+      // timers change the active pinia instance
+      setActivePinia(activePinia);
+
+      expect(useNotes().toggleAward).toHaveBeenCalledWith({
         awardName: 'test',
-        noteId: 1,
+        noteId: firstNote.id,
       });
-      spy.mockRestore();
     });
   });
 
@@ -343,22 +347,20 @@ describe('note_app', () => {
     it('should listen hashchange event for notes', () => {
       const hash = 'note_1234';
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(hash);
-      const dispatchMock = jest.spyOn(store, 'dispatch');
       window.dispatchEvent(new Event('hashchange'), hash);
 
-      expect(dispatchMock).toHaveBeenCalledWith('setTargetNoteHash', 'note_1234');
+      expect(useNotes().setTargetNoteHash).toHaveBeenCalledWith('note_1234');
     });
   });
 
   describe('when sort direction is desc', () => {
     beforeEach(() => {
-      store.commit(types.SET_DISCUSSIONS_SORT, { direction: constants.DESC });
-      store.commit(types.SET_NOTES_LOADING_STATE, true);
-      store.commit(types.ADD_NEW_NOTE, { discussion: mockData.discussionMock });
+      useNotes()[types.SET_DISCUSSIONS_SORT]({ direction: constants.DESC });
+      useNotes()[types.SET_NOTES_LOADING_STATE](true);
+      useNotes()[types.ADD_NEW_NOTE]({ discussion: mockData.discussionMock });
 
       wrapper = shallowMount(NotesApp, {
         propsData,
-        store,
         pinia,
         stubs: {
           'ordered-layout': OrderedLayout,
@@ -377,12 +379,11 @@ describe('note_app', () => {
 
   describe('when sort direction is asc', () => {
     beforeEach(() => {
-      store.commit(types.SET_NOTES_LOADING_STATE, true);
-      store.commit(types.ADD_NEW_NOTE, { discussion: mockData.discussionMock });
+      useNotes()[types.SET_NOTES_LOADING_STATE](true);
+      useNotes()[types.ADD_NEW_NOTE]({ discussion: mockData.discussionMock });
 
       wrapper = shallowMount(NotesApp, {
         propsData,
-        store,
         pinia,
         stubs: {
           'ordered-layout': OrderedLayout,
@@ -409,12 +410,11 @@ describe('note_app', () => {
         .fn()
         .mockResolvedValue(mockData.singleNoteResponseFactory({ urlHash, authorId }));
 
-      store.commit(types.SET_NOTES_LOADING_STATE, true);
-      store.commit(types.SET_TARGET_NOTE_HASH, urlHash);
+      useNotes()[types.SET_NOTES_LOADING_STATE](true);
+      useNotes()[types.SET_TARGET_NOTE_HASH](urlHash);
 
       wrapper = shallowMount(NotesApp, {
         propsData,
-        store,
         pinia,
         apolloProvider: createMockApollo([[noteQuery, noteQueryHandler]]),
         stubs: {
@@ -458,24 +458,19 @@ describe('note_app', () => {
 
   describe('when multiple draft types are present', () => {
     beforeEach(() => {
-      store.commit(types.SET_NOTES_LOADING_STATE, true);
-      store.commit(`batchComments/${SET_BATCH_COMMENTS_DRAFTS}`, [
+      useNotes()[types.SET_NOTES_LOADING_STATE](true);
+      useBatchComments()[SET_BATCH_COMMENTS_DRAFTS]([
         mockData.draftDiffDiscussion,
         mockData.draftReply,
         ...mockData.draftComments,
       ]);
       wrapper = shallowMount(NotesApp, {
         propsData,
-        store,
         pinia,
         stubs: {
           OrderedLayout,
         },
       });
-    });
-
-    afterEach(() => {
-      store.commit('batchComments/reset');
     });
 
     it('correctly finds only draft comments', () => {
@@ -491,7 +486,7 @@ describe('note_app', () => {
     describe('when note anchor is not present', () => {
       it('does not include extra query params', async () => {
         initStore();
-        wrapper = shallowMount(NotesApp, { propsData, store, pinia });
+        wrapper = shallowMount(NotesApp, { propsData, pinia });
         await waitForPromises();
 
         expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
@@ -506,7 +501,6 @@ describe('note_app', () => {
         });
         return shallowMount(NotesApp, {
           propsData,
-          store,
           pinia,
         });
       };
@@ -623,7 +617,6 @@ describe('note_app', () => {
             type,
           },
         },
-        store,
         pinia,
       });
     };

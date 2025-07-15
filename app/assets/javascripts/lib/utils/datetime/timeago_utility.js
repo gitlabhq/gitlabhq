@@ -178,7 +178,7 @@ export const getTimeago = (absoluteTimeformatName, { showDateWhenOverAYear = tru
     return localeDateFormat[absoluteTimeformatName] ?? localeDateFormat[DEFAULT_DATE_TIME_FORMAT];
   }
 
-  if (showDateWhenOverAYear && gon.features?.showDateWhenRelativeTimeOverAYear) {
+  if (showDateWhenOverAYear) {
     return timeagoWithDateFallback;
   }
 

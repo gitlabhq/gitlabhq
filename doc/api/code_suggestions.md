@@ -18,10 +18,10 @@ Use this API to access the [Code Suggestions](../user/project/repository/code_su
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags/_index.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
 - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416371) in GitLab 16.8. [Feature flag `code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174) removed.
-- `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+- `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
 
 {{< /history >}}
 
@@ -160,7 +160,7 @@ curl --request POST \
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452044) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `code_suggestions_direct_completions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452044) in GitLab 17.0 [with a flag](../administration/feature_flags/_index.md) named `code_suggestions_direct_completions`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/456443) in GitLab 17.2. Feature flag `code_suggestions_direct_completions` removed.
 
 {{< /history >}}

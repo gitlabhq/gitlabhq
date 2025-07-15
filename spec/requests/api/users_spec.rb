@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feature_category: :user_management do
   include WorkhorseHelpers
-  include KeysetPaginationHelpers
+  include PaginationHelpers
   include CryptoHelpers
 
   let_it_be(:admin) { create(:admin) }
@@ -1857,7 +1857,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['organization']).to eq('GitLab')
-      expect(user.reload.organization).to eq('GitLab')
+      expect(user.reload.user_detail_organization).to eq('GitLab')
     end
 
     it 'updates user with avatar' do

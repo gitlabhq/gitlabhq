@@ -46,22 +46,22 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
       context "with the scheme: #{scheme}" do
         tags = {
           a: {
-            doc: HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>"),
+            doc: Banzai::PipelineBase.parse("<a href='#{scheme}alert(1);'>foo</a>"),
             attr: "href",
             node_to_check: ->(doc) { doc.children.first }
           },
           img: {
-            doc: HTML::Pipeline.parse("<img src='#{scheme}alert(1);'>"),
+            doc: Banzai::PipelineBase.parse("<img src='#{scheme}alert(1);'>"),
             attr: "src",
             node_to_check: ->(doc) { doc.children.first }
           },
           video: {
-            doc: HTML::Pipeline.parse("<video><source src='#{scheme}alert(1);'></video>"),
+            doc: Banzai::PipelineBase.parse("<video><source src='#{scheme}alert(1);'></video>"),
             attr: "src",
             node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           },
           audio: {
-            doc: HTML::Pipeline.parse("<audio><source src='#{scheme}alert(1);'></audio>"),
+            doc: Banzai::PipelineBase.parse("<audio><source src='#{scheme}alert(1);'></audio>"),
             attr: "src",
             node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           }
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     end
 
     context 'handling child nodes' do
-      let(:doc) { HTML::Pipeline.parse(nodes_with_children) }
+      let(:doc) { Banzai::PipelineBase.parse(nodes_with_children) }
       let(:node) { doc.children.first }
 
       it 'santizes child nodes' do
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     end
 
     context 'when URI is valid' do
-      let(:doc) { HTML::Pipeline.parse("<a href='http://example.com'>foo</a>") }
+      let(:doc) { Banzai::PipelineBase.parse("<a href='http://example.com'>foo</a>") }
       let(:node) { doc.children.first }
 
       it 'does not remove it' do
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     end
 
     context 'when URI is invalid' do
-      let(:doc) { HTML::Pipeline.parse("<a href='http://example:wrong_port.com'>foo</a>") }
+      let(:doc) { Banzai::PipelineBase.parse("<a href='http://example:wrong_port.com'>foo</a>") }
       let(:node) { doc.children.first }
 
       it 'removes the link' do
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     end
 
     context 'when URI is encoded but still invalid' do
-      let(:doc) { HTML::Pipeline.parse("<a href='http://example%EF%BC%9A%E7%BD%91'>foo</a>") }
+      let(:doc) { Banzai::PipelineBase.parse("<a href='http://example%EF%BC%9A%E7%BD%91'>foo</a>") }
       let(:node) { doc.children.first }
 
       it 'removes the link' do
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
   describe "#safe_protocol?" do
     invalid_schemes.each do |scheme|
       context "with the scheme: #{scheme}" do
-        let(:doc) { HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>") }
+        let(:doc) { Banzai::PipelineBase.parse("<a href='#{scheme}alert(1);'>foo</a>") }
         let(:node) { doc.children.first }
         let(:uri) { Addressable::URI.parse(node['href']) }
 
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
 
   describe '#sanitize_unsafe_links' do
     it 'sanitizes all nodes without specifically recursing children' do
-      doc = HTML::Pipeline.parse(nodes_with_children)
+      doc = Banzai::PipelineBase.parse(nodes_with_children)
       allowlist = { elements: %w[details summary a], attributes: { 'a' => ['href'] },
                     transformers: [object.method(:sanitize_unsafe_links)] }
 

@@ -14,7 +14,7 @@ title: Pipeline execution policies
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `pipeline_execution_policy_type`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454278) in GitLab 17.3. Feature flag `pipeline_execution_policy_type` removed.
 
 {{< /history >}}
@@ -23,7 +23,7 @@ Use pipeline execution policies to manage and enforce CI/CD jobs for multiple pr
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
 
-## Pipeline execution policies schema
+## Schema
 
 {{< history >}}
 
@@ -45,7 +45,7 @@ the following sections and tables provide an alternative.
 |-------|------|----------|-------------|
 | `pipeline_execution_policy` | `array` of pipeline execution policy | true | List of pipeline execution policies (maximum five) |
 
-## Pipeline execution policy schema
+## `pipeline_execution_policy` schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -297,7 +297,7 @@ the policy configuration is not as well protected as when using the `allowlist` 
 
 {{< /alert >}}
 
-### Policy scope schema
+### `policy scope` schema
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
@@ -416,7 +416,7 @@ If you don't see the **CI/CD** settings, go to **Settings > General > Visibility
 
 Pipeline configuration strategy defines the method for merging the policy configuration with the project pipeline. Pipeline execution policies execute the jobs defined in the `.gitlab-ci.yml` file in isolated pipelines, which are merged into the pipelines of the target projects.
 
-### `inject_policy`
+### `inject_policy` type
 
 {{< history >}}
 
@@ -579,7 +579,7 @@ Special cases:
 
 {{< alert type="warning" >}}
 
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy) instead as it supports the enforcement of custom policy stages.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy-type) instead as it supports the enforcement of custom policy stages.
 
 {{< /alert >}}
 
@@ -605,7 +605,8 @@ the only jobs that run are the pipeline execution policy jobs.
 
 {{< history >}}
 
-- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `policies_always_override_project_ci`. Enabled by default.
+- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `policies_always_override_project_ci`. Enabled by default.
+- Updated [handling of `override_project_ci`](https://gitlab.com/gitlab-org/gitlab/-/issues/504434) to allow scan execution policies to run together with pipeline execution policies, in GitLab 17.9.
 - Updated handling of workflow rules [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512877) in GitLab 17.10. Feature flag `policies_always_override_project_ci` removed.
 
 {{< /history >}}
@@ -613,6 +614,9 @@ the only jobs that run are the pipeline execution policy jobs.
 This strategy replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, like when you want to enforce organization-wide CI/CD standards or compliance requirements in a highly regulated industry. To override the pipeline configuration, define the CI/CD jobs and do not use `include:project`.
 
 The strategy takes precedence over other policies that use the `inject_ci` or `inject_policy` strategy. If a policy with `override_project_ci` applies, the project CI/CD configuration is ignored. However, other security policy configurations are not overridden.
+
+When you use `override_project_ci` in a pipeline execution policy together with a scan execution policy,
+the CI/CD configurations are merged and both policies are applied to the resulting pipeline.
 
 Alternatively, you can merge the project's CI/CD configuration with the project's `.gitlab-ci.yml` instead of overriding it. To merge the configuration, use `include:project`. This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling the users to customize the policy jobs. For example, they can combine the policy and project CI/CD configuration into one YAML file to override the `before_script` configuration or define required variables, such as `CS_IMAGE`, to define the required path to the container to scan. Here's a [short demo](https://youtu.be/W8tubneJ1X8) of this behavior.
 The following diagram illustrates how variables defined at the project and policy levels are selected in the resulting pipeline:
@@ -792,25 +796,6 @@ By default, to prevent a regular pipeline from triggering, users can push a comm
 
 For more flexible control over `[skip ci]` behavior, see the [`skip_ci` type](#skip_ci-type) section.
 
-## Interaction with scan execution policies
-
-Using pipeline execution policies with the `override_project_ci` strategy can affect the behavior of [scan execution policies](scan_execution_policies.md).
-
-The scan execution policy can be overridden if all of these are true:
-
-- The scan execution policies is configured for the project
-- A pipeline execution policies is configured for the project
-- the pipeline execution policy uses the `override_project_ci` strategy.
-
-The scan execution policy is ignored because the `override_project_ci` strategy removes all CI/CD configuration that is defined for the project, including policies.
-
-To ensure that both pipeline execution policies and scan execution policies are applied:
-
-- Consider using a different strategy for pipeline execution policies, such as `inject_policy`.
-- If you must use `override_project_ci`, include the scanner templates that you require in your pipeline execution policy to maintain the desired security scans.
-
-Support for improvements in the integration between these policy types is proposed in [issue 504434](https://gitlab.com/gitlab-org/gitlab/-/issues/504434).
-
 ## Examples
 
 These examples demonstrate what you can achieve with pipeline execution policies.
@@ -862,6 +847,35 @@ policy::container-security:
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
 
+### Customize enforced jobs using `.gitlab-ci.yml` and artifacts
+
+Because policy pipelines run in isolation, pipeline execution policies cannot read variables from `.gitlab-ci.yml` directly.
+If you want to use the variables in `.gitlab-ci.yml` instead of defining them in the project's CI/CD configuration,
+you can use artifacts to pass variables from the `.gitlab-ci.yml` configuration to the pipeline execution policy's pipeline.
+
+```yaml
+# .gitlab-ci.yml
+
+build-job:
+  stage: build
+  script:
+    - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+```
+
+```yaml
+stages:
+- build
+- test
+
+test-job:
+  stage: test
+  script:
+    - echo "$BUILD_VARIABLE" # Prints "value_from_build_job"
+```
+
 ### Customize security scanner's behavior with `before_script` in project configurations
 
 To customize the behavior of a security job enforced by a policy in the project's `.gitlab-ci.yml`, you can override `before_script`.
@@ -903,6 +917,55 @@ secret_detection:
 ```
 
 By using `override_project_ci` and including the project's configuration, it allows for YAML configurations to be merged.
+
+### Configure resource-specific variable control
+
+You can allow teams to set global variables that can override pipeline execution policy variables, while still permitting job-specific overrides. This allows teams to set appropriate defaults for security scans, but use appropriate resources for other jobs.
+
+Include in your `resource-optimized-scans.yml`:
+
+```yaml
+variables:
+  # Default resource settings for all jobs
+  KUBERNETES_MEMORY_REQUEST: 4Gi
+  KUBERNETES_MEMORY_LIMIT: 4Gi
+  # Default values that teams can override via project variables
+  SAST_KUBERNETES_MEMORY_REQUEST: 4Gi
+
+sast:
+  variables:
+    SAST_EXCLUDED_ANALYZERS: 'spotbugs'
+    KUBERNETES_MEMORY_REQUEST: $SAST_KUBERNETES_MEMORY_REQUEST
+    KUBERNETES_MEMORY_LIMIT: $SAST_KUBERNETES_MEMORY_REQUEST
+```
+
+Include in your `policy.yml`:
+
+```yaml
+pipeline_execution_policy:
+- name: Resource-Optimized Security Policy
+  description: Enforces security scans with efficient resource management
+  enabled: true
+  pipeline_config_strategy: inject_ci
+  content:
+    include:
+    - project: security/policy-templates
+      file: resource-optimized-scans.yml
+      ref: main
+
+  variables_override:
+    allowed: false
+    exceptions:
+      # Allow scan-specific resource overrides
+      - SAST_KUBERNETES_MEMORY_REQUEST
+      - SECRET_DETECTION_KUBERNETES_MEMORY_REQUEST
+      - CS_KUBERNETES_MEMORY_REQUEST
+      # Allow necessary scan customization
+      - CS_IMAGE
+      - SAST_EXCLUDED_PATHS
+```
+
+This approach allows teams to set scan-specific resource variables (like `SAST_KUBERNETES_MEMORY_REQUEST`) using variable overrides without affecting all jobs in their pipeline, which provides better resource management for large projects. This example also shows the use of other common scan customization options that you can extend to developers. Make sure you document the available variables so your development teams can leverage them.
 
 ### Use group or project variables in a pipeline execution policy
 
@@ -994,4 +1057,25 @@ include:
           paths:
             - 'Dockerfile'
           project: '$CI_PROJECT_PATH'
+```
+
+To use this approach, the group or project must use the `override_project_ci` strategy.
+
+### Enforce a container scanning `component` using a pipeline execution policy
+
+You can use security scan components to improve the handling and enforcement of versioning.
+
+```yaml
+include:
+  - component: gitlab.com/components/container-scanning/container-scanning@main
+    inputs:
+      cs_image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+container_scanning: # override component with additional configuration
+  variables:
+    CS_REGISTRY_USER: $CI_REGISTRY_USER
+    CS_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    SECURE_LOG_LEVEL: debug # add for verbose debugging of the container scanner
+  before_script:
+  - echo $CS_IMAGE # optionally add a before_script for additional debugging
 ```

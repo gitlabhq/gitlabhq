@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::GroupMilestones, feature_category: :team_planning do
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:user) { create(:user, organization: organization) }
+  let_it_be(:user) { create(:user, user_detail_organization: organization) }
   let_it_be_with_refind(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, namespace: group, organization: organization) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }

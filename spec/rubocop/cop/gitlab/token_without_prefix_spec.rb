@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Gitlab::TokenWithoutPrefix, feature_category: :secr
   let(:msg) { described_class::MSG }
 
   it 'registers offense for single predicate method with allow_nil:true' do
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       add_authentication_token_field :foobar
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
       add_authentication_token_field :static_object_token, encrypted: :optional
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gitlab::TokenWithoutPrefix, feature_category: :secr
       add_authentication_token_field :token,
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
         digest: true
-    SOURCE
+    RUBY
   end
 
   it 'ignores code when prefix is provided' do

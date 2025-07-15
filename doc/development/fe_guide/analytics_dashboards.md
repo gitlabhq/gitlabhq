@@ -196,49 +196,49 @@ To create a built-in analytics dashboard:
 1. To add panels to your dashboard that reference your visualizations, use either:
    - Recommended. Use an inline visualization within the dashboard configuration file:
 
-      ```yaml
-      # cool_dashboard/dashboard.yaml
-      ---
-      title: My dashboard
-      description: My cool dashboard
-      panels:
-        - title: "My cool panel"
-          visualization:
-            version: 1
-            slug: 'cool_viz' # Recommended to define a slug when a visualization is inline
-            type: LineChart    # The render type of the visualization.
-            data:
-              type: my_datasource    # The name of the datasource
-              query: {}
-            options: {}
-          gridAttributes:
-            yPos: 0
-            xPos: 0
-            width: 3
-            height: 1
-      ```
+     ```yaml
+     # cool_dashboard/dashboard.yaml
+     ---
+     title: My dashboard
+     description: My cool dashboard
+     panels:
+       - title: "My cool panel"
+         visualization:
+           version: 1
+           slug: 'cool_viz' # Recommended to define a slug when a visualization is inline
+           type: LineChart    # The render type of the visualization.
+           data:
+             type: my_datasource    # The name of the datasource
+             query: {}
+           options: {}
+         gridAttributes:
+           yPos: 0
+           xPos: 0
+           width: 3
+           height: 1
+     ```
 
-      Both `query` and `options` objects will be passed to the data source and used to build the proper query.
+     Both `query` and `options` objects will be passed to the data source and used to build the proper query.
 
-      Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
+     Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
 
    - Use a visualization template:
 
-      ```yaml
-      # cool_dashboard/dashboard.yaml
-      ---
-      title:  My dashboard
-      description: My cool dashboard
+     ```yaml
+     # cool_dashboard/dashboard.yaml
+     ---
+     title:  My dashboard
+     description: My cool dashboard
 
-      panels:
-        - title: "My cool panel"
-          visualization: cool_viz    # Must match the visualization config filename
-          gridAttributes:
-            yPos: 0
-            xPos: 0
-            width: 3
-            height: 1
-      ```
+     panels:
+       - title: "My cool panel"
+         visualization: cool_viz    # Must match the visualization config filename
+         gridAttributes:
+           yPos: 0
+           xPos: 0
+           width: 3
+           height: 1
+     ```
 
    The `gridAttributes` position the panel within a 12x12 dashboard grid, powered by [gridstack](https://github.com/gridstack/gridstack.js/tree/master/doc#item-options).
 

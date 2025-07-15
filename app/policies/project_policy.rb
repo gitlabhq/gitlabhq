@@ -67,7 +67,7 @@ class ProjectPolicy < BasePolicy
   condition(:external_user) { user.external? }
 
   desc "Project is archived"
-  condition(:archived, scope: :subject, score: 0) { project.archived? }
+  condition(:archived, scope: :subject, score: 0) { project_archived_or_ancestors_archived? }
 
   desc "Project user pipeline variables minimum override role"
   condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
@@ -366,8 +366,6 @@ class ProjectPolicy < BasePolicy
     enable :add_catalog_resource
 
     enable :destroy_pipeline
-
-    enable :create_container_registry_protection_immutable_tag_rule
   end
 
   rule { can?(:guest_access) }.policy do
@@ -424,6 +422,13 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:create_issue) }.enable :create_work_item
 
+  # We cannot use `guest_access` because that includes non-members on public projects
+  # Only guests that are project members are allowed to set metadata when creating new issues
+  rule { guest | can?(:admin_issue) }.policy do
+    enable :set_new_issue_metadata
+    enable :set_new_work_item_metadata
+  end
+
   rule { can?(:create_issue) }.enable :create_task
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -435,6 +440,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board
+    enable :read_code
     enable :download_code
     enable :read_statistics
     enable :daily_statistics
@@ -889,6 +895,7 @@ class ProjectPolicy < BasePolicy
   rule { repository_disabled }.policy do
     prevent :build_push_code
     prevent :push_code
+    prevent :read_code
     prevent :download_code
     prevent :build_download_code
     prevent :fork_project
@@ -918,7 +925,6 @@ class ProjectPolicy < BasePolicy
     prevent :destroy_container_image
     prevent :destroy_container_image_tag
     prevent :destroy_container_registry_protection_tag_rule
-    prevent :create_container_registry_protection_immutable_tag_rule
   end
 
   rule { anonymous & ~public_project }.prevent_all
@@ -989,6 +995,7 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_commit_status
     enable :read_container_image
+    enable :read_code
     enable :download_code
     enable :read_release
     enable :download_wiki_code
@@ -1086,6 +1093,7 @@ class ProjectPolicy < BasePolicy
 
   rule { download_code_deploy_key }.policy do
     enable :download_code
+    enable :read_code
   end
 
   rule { push_code_deploy_key }.policy do
@@ -1200,10 +1208,6 @@ class ProjectPolicy < BasePolicy
     enable :read_project_metadata
   end
 
-  rule { can?(:download_code) }.policy do
-    enable :read_code
-  end
-
   rule { can?(:developer_access) & namespace_catalog_available }.policy do
     enable :read_namespace_catalog
   end
@@ -1249,6 +1253,10 @@ class ProjectPolicy < BasePolicy
   end
 
   private
+
+  def project_archived_or_ancestors_archived?
+    project.archived? || (Feature.enabled?(:archive_group, project.root_ancestor) && project.self_or_ancestors_archived?)
+  end
 
   def team_member?
     return false if @user.nil?

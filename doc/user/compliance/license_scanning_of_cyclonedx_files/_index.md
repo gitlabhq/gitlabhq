@@ -14,7 +14,7 @@ title: License scanning of CycloneDX files
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 - In GitLab 17.5 we introduced the ability to use a CycloneDX report artifact as a source of data for license information behind the feature flag `license_scanning_with_sbom_licenses`, disabled by default.
@@ -44,7 +44,7 @@ No contextual information (for example, a list of project dependencies) is sent 
 To enable License scanning of CycloneDX files:
 
 - Using the Dependency Scanning template
-  - Enable [Dependency Scanning](../../application_security/dependency_scanning/_index.md#enabling-the-analyzer)
+  - Enable [Dependency Scanning](../../application_security/dependency_scanning/_index.md#getting-started)
       and ensure that its prerequisites are met.
   - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.

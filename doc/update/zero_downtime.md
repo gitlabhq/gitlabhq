@@ -113,8 +113,30 @@ Run through the following steps sequentially on each component's node to perform
 
    ```shell
    sudo gitlab-ctl reconfigure
+   ```
+
+   {{< tabs >}}
+
+   {{< tab title="For PostgreSQL nodes only" >}}
+   
+   Restart the Consul client first, then restart all other services to ensure PostgreSQL failover occurs gracefully:
+
+   ```shell
+   sudo gitlab-ctl restart consul
+   sudo gitlab-ctl restart-except consul
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="For all other component nodes" >}}
+
+   ```shell
    sudo gitlab-ctl restart
    ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 ### Gitaly
 
@@ -169,7 +191,7 @@ In the future this functionality may be changed, [refer to this Epic](https://gi
 
 {{< alert type="note" >}}
 
-This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
+This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
 
 {{< /alert >}}
 

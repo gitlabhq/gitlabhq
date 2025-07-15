@@ -76,7 +76,7 @@ describe('HighlightMixin', () => {
     });
 
     it('calls postMessage on the worker', () => {
-      expect(workerMock.postMessage.mock.calls.length).toBe(2);
+      expect(workerMock.postMessage.mock.calls).toHaveLength(2);
 
       // first call instructs worker to highlight the first 70 lines
       expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({

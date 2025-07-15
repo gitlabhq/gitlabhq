@@ -19,8 +19,7 @@ module Namespaces
     idempotent!
 
     def perform
-      skipped_namespaces = 0
-      processed_namespaces = 0
+      results = {}
 
       loop_with_runtime_limit(MAX_RUNTIME) do |runtime_limiter|
         namespace_ids = Namespaces::Descendants.load_outdated_batch(BATCH_SIZE)
@@ -31,21 +30,17 @@ module Namespaces
             .new(namespace_id: namespace_id)
             .execute
 
-          if result == :processed
-            processed_namespaces += 1
-          else
-            skipped_namespaces += 1
-          end
+          results[result] ||= 0
+          results[result] += 1
 
           break if runtime_limiter.over_time?
         end
 
-        # Stop the processing if we had to skip a namespace. The worker will try it again later.
-        break if skipped_namespaces > 0
+        # Stop the processing if we had unprocessed namespace. The worker will try it again later.
+        break if results.keys != [:processed]
       end
 
-      log_extra_metadata_on_done(:result,
-        { processed_namespaces: processed_namespaces, skipped_namespaces: skipped_namespaces })
+      log_extra_metadata_on_done(:result, results)
     end
   end
 end

@@ -203,7 +203,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
 
         expect do
           described_class.send(:load_from_file, path)
-        end.to raise_error(%r{property '/name' is not of type: string})
+        end.to raise_error(Gitlab::Audit::Type::Definition::InvalidAuditEventTypeError, /Invalid definition/)
       end
     end
   end

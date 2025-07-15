@@ -91,11 +91,11 @@ describe('Issue title suggestions component', () => {
     });
 
     it('renders component', () => {
-      expect(wrapper.findAll('li').length).toBe(MOCK_ISSUES_COUNT);
+      expect(wrapper.findAll('li')).toHaveLength(MOCK_ISSUES_COUNT);
     });
 
     it('renders list of issues', () => {
-      expect(wrapper.findAllComponents(TitleSuggestionsItem).length).toBe(MOCK_ISSUES_COUNT);
+      expect(wrapper.findAllComponents(TitleSuggestionsItem)).toHaveLength(MOCK_ISSUES_COUNT);
     });
 
     it('adds margin class to first item', () => {

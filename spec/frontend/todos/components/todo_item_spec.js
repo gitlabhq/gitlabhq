@@ -1,29 +1,24 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
-import TodoItemTitle from '~/todos/components/todo_item_title.vue';
-import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
-import TodoSnoozedTimestamp from '~/todos/components/todo_snoozed_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
 import { useFakeDate } from 'helpers/fake_date';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
+import { MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
   let wrapper;
 
   const mockCurrentTime = new Date('2024-12-18T13:24:00');
-  const mockForAnHour = '2024-12-18T14:24:00';
   const mockUntilTomorrow = '2024-12-19T08:00:00';
   const mockYesterday = '2024-12-17T08:00:00';
 
   useFakeDate(mockCurrentTime);
 
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
-  const findTodoSnoozedTimestamp = () => wrapper.findComponent(TodoSnoozedTimestamp);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(TodoItem, {
@@ -43,16 +38,6 @@ describe('TodoItem', () => {
   it('renders the component', () => {
     createComponent();
     expect(wrapper.exists()).toBe(true);
-  });
-
-  it('renders TodoItemTitle component for normal todos', () => {
-    createComponent();
-    expect(wrapper.findComponent(TodoItemTitle).exists()).toBe(true);
-  });
-
-  it('renders TodoItemTitleHiddenBySaml component for hidden todos', () => {
-    createComponent({ todo: SAML_HIDDEN_TODO });
-    expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).exists()).toBe(true);
   });
 
   it('renders TodoItemBody component', () => {
@@ -132,42 +117,6 @@ describe('TodoItem', () => {
 
         expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
       });
-    });
-  });
-
-  describe('snoozed to-do items', () => {
-    it('does not render the TodoSnoozedTimestamp component when the item is not snoozed', () => {
-      createComponent();
-
-      expect(findTodoSnoozedTimestamp().exists()).toBe(false);
-    });
-
-    it('renders the TodoSnoozedTimestamp component when the item is snoozed until a future date', () => {
-      createComponent({
-        todo: {
-          ...MR_REVIEW_REQUEST_TODO,
-          snoozedUntil: mockForAnHour,
-        },
-      });
-
-      const component = findTodoSnoozedTimestamp();
-      expect(component.exists()).toBe(true);
-      expect(component.props('snoozedUntil')).toBe(mockForAnHour);
-      expect(component.props('hasReachedSnoozeTimestamp')).toBe(false);
-    });
-
-    it('renders the TodoSnoozedTimestamp component when the item has reached its snooze time', () => {
-      createComponent({
-        todo: {
-          ...MR_REVIEW_REQUEST_TODO,
-          snoozedUntil: mockYesterday,
-        },
-      });
-
-      const component = findTodoSnoozedTimestamp();
-      expect(component.exists()).toBe(true);
-      expect(component.props('snoozedUntil')).toBe(mockYesterday);
-      expect(component.props('hasReachedSnoozeTimestamp')).toBe(true);
     });
   });
 

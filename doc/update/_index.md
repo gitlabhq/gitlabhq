@@ -43,6 +43,7 @@ To upgrade GitLab:
 1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/_index.md)
    during the upgrade.
 1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
+   - [GitLab 18 changes](versions/gitlab_18_changes.md)
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
    - [GitLab 16 changes](versions/gitlab_16_changes.md)
    - [GitLab 15 changes](versions/gitlab_15_changes.md)
@@ -197,34 +198,6 @@ includes extra features mainly aimed at organizations with more than 100 users.
 
 In the following section you can find some guides to help you change GitLab editions.
 
-### Community to Enterprise Edition
-
-{{< alert type="note" >}}
-
-The following guides are for subscribers of the Enterprise Edition only.
-
-{{< /alert >}}
-
-If you wish to upgrade your GitLab installation from Community to Enterprise
-Edition, follow the guides in the following list based on the installation method:
-
-- [Source CE to EE upgrade guides](upgrading_from_ce_to_ee.md) - The steps are very similar
-  to a version upgrade: stop the server, get the code, update configuration files for
-  the new functionality, install libraries and do migrations, update the init
-  script, start the application and check its status.
-- [Linux package CE to EE](package/convert_to_ee.md) - Follow this guide to upgrade your Linux package
-  GitLab Community Edition to the Enterprise Edition.
-- [Docker CE to EE](../install/docker/upgrade.md#convert-community-edition-to-enterprise-edition) -
-  Follow this guide to upgrade your GitLab Community Edition container to an Enterprise Edition container.
-- [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
-  Follow this guide to upgrade your GitLab Community Edition Helm deployment to Enterprise Edition.
-
-### Enterprise to Community Edition
-
-To downgrade your Enterprise Edition installation back to Community
-Edition, you can follow [this guide](../downgrade_ee_to_ce/_index.md) to make the process as smooth as
-possible.
-
 ## Upgrade steps for additional features
 
 Some GitLab features have additional steps.
@@ -240,6 +213,7 @@ If you're using Geo:
 
 - Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
 - Read about the Geo version-specific update instructions:
+  - [GitLab 18](versions/gitlab_18_changes.md)
   - [GitLab 17](versions/gitlab_17_changes.md)
   - [GitLab 16](versions/gitlab_16_changes.md)
   - [GitLab 15](versions/gitlab_15_changes.md)

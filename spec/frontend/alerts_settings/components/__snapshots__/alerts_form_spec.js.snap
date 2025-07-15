@@ -102,6 +102,7 @@ exports[`Alert integration settings form default state should match the default 
       data-testid="save-changes-button"
       icon=""
       size="medium"
+      tag="button"
       type="submit"
       variant="confirm"
     >

@@ -1,8 +1,10 @@
 <script>
 import { GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { findNotesWidget } from '../utils';
 import TodosToggle from './shared/todos_toggle.vue';
@@ -11,6 +13,8 @@ import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 
 export default {
   components: {
+    HiddenBadge,
+    ImportedBadge,
     LockedBadge,
     GlIntersectionObserver,
     TodosToggle,
@@ -78,7 +82,7 @@ export default {
         data-testid="work-item-sticky-header"
       >
         <div
-          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
+          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-2 gl-px-5 xl:gl-px-6"
         >
           <work-item-state-badge
             v-if="workItemState"
@@ -94,6 +98,8 @@ export default {
             hide-text-in-small-screens
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
+          <hidden-badge v-if="workItem.hidden" />
+          <imported-badge v-if="workItem.imported" />
           <gl-link
             class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
             href="#top"

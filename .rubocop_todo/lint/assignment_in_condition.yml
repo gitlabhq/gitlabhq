@@ -23,7 +23,6 @@ Lint/AssignmentInCondition:
     - 'app/mailers/emails/service_desk.rb'
     - 'app/mailers/notify.rb'
     - 'app/models/blob_viewer/go_mod.rb'
-    - 'app/models/ci/build_metadata.rb'
     - 'app/models/ci/runner.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/after_commit_queue.rb'

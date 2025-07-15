@@ -102,6 +102,6 @@ describe('PipelineWizard', () => {
 
     wrapper.findComponent(PipelineWizardWrapper).vm.$emit('done');
 
-    expect(wrapper.emitted().done.length).toBe(1);
+    expect(wrapper.emitted().done).toHaveLength(1);
   });
 });

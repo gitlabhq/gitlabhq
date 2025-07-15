@@ -137,6 +137,8 @@ export const urlSortParams = {
   [RELATIVE_POSITION_ASC]: RELATIVE_POSITION,
   [TITLE_ASC]: 'title_asc',
   [TITLE_DESC]: 'title_desc',
+  [START_DATE_ASC]: 'start_date_asc',
+  [START_DATE_DESC]: 'start_date_desc',
   [HEALTH_STATUS_ASC]: 'health_status_asc',
   [HEALTH_STATUS_DESC]: 'health_status_desc',
   [WEIGHT_ASC]: 'weight',

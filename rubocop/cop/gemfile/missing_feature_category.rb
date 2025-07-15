@@ -21,10 +21,12 @@ module RuboCop
       class MissingFeatureCategory < RuboCop::Cop::Base
         DOCUMENT_LINK = 'https://docs.gitlab.com/ee/development/feature_categorization/#gemfile'
 
+        # @!method send_gem(node)
         def_node_matcher :send_gem, <<~PATTERN
           (send nil? :gem ...)
         PATTERN
 
+        # @!method feature_category_value(node)
         def_node_matcher :feature_category_value, <<~PATTERN
           (send nil? :gem
             ...

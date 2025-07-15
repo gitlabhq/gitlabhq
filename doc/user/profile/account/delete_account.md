@@ -27,13 +27,16 @@ Deleting a user deletes all projects in that user namespace.
 
 {{< history >}}
 
-- Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
+- Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags/_index.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+- On GitLab.com, this feature is available.
+- On GitLab Dedicated, this feature is not available.
+- On GitLab Self-Managed, the availability of this feature is controlled by the `delay_user_account_self_deletion` application setting and is disabled by default. Use the [Application settings API](../../../api/settings.md) to enable the
+`delay_user_account_self_deletion` setting for the instance.
 
 {{< /alert >}}
 
@@ -63,7 +66,7 @@ As a user, to delete your own account:
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/account-deletion/)
+If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/personal-data-request/)
 to ask for your account and data to be removed from GitLab.
 
 ### Create a new account with the same email address

@@ -115,7 +115,7 @@ percentage of time.
 
 {{< alert type="warning" >}}
 
-Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 {{< /alert >}}
 

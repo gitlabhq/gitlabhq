@@ -3,7 +3,7 @@ table_name: ci_namespace_mirrors
 classes:
 - Ci::NamespaceMirror
 feature_categories:
-- cell
+- continuous_integration
 description: Mirrors some data from the `main` database into the `ci` database so
   that we can join directly in a single query
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75621

@@ -105,7 +105,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
 
           # 4 notes are copied to the target work item: 2 system notes and 2 user notes
           # 2 system notes had also description version metadata
-          # 2 user notes notes had also description version metadata
+          # 2 user notes had also description version metadata
           expect { callback.after_create }.to change { ::Note.count }.by(5).and(
             change { ::SystemNoteMetadata.count }.by(2)).and(
               change { ::DescriptionVersion.count }.by(1)).and(
@@ -116,7 +116,11 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
                         change { ::IssueUserMention.count }.by(2))
 
           notes_details = target_work_item.reload.notes.pluck(:note, :discussion_id)
-          expect(notes_details).to match_array(expected_notes_details)
+          # size and notes would match
+          expect(notes_details.size).to eq(expected_notes_details.size)
+          expect(notes_details.map(&:first)).to match_array(expected_notes_details.map(&:first))
+          # but discussion_ids would not
+          expect(notes_details.map(&:last)).not_to match_array(expected_notes_details.map(&:last))
         end
       end
 

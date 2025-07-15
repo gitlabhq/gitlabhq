@@ -335,7 +335,9 @@
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - "doc-locale/**/*"
-  - "scripts/lint-i18n-doc.sh"
+  - "doc-locale/.markdownlint/.markdownlint-cli2.yaml"
+  - "scripts/i18n_lint_doc.sh"
+  - "scripts/i18n_verify_paths.sh"
 
 .if-tech-docs-localization: &if-tech-docs-localization
   if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||
@@ -530,6 +532,7 @@
 .frontend-code-patterns: &frontend-code-patterns
   - "**/{package.json,yarn.lock}"
   - "**/*.{js,cjs,mjs,vue,graphql}"
+  - ".eslint_todo/*.mjs"
   # match the .rc config files like .browserslistrc, .stylelintrc etc.,
   - "{.,}*rc"
 
@@ -638,6 +641,7 @@
 
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
+  - "{,ee/,jh/}app/policies/**/*"
   # Auto-generated files
   - "doc/api/openapi/openapi_v2.yaml"
 
@@ -783,6 +787,9 @@
   - GITLAB_WORKHORSE_VERSION
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
+
+.gdk-update-patterns: &gdk-update-patterns
+  - .gitlab/ci/gdk.gitlab-ci.yml
 
 .ruby-version-patterns: &ruby-version-patterns
   - ".ruby-version"
@@ -1034,6 +1041,10 @@
 
 .db:rules:invalidate-old-pipeline-results:
   rules:
+    - if: '$GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN == null'
+      when: never
+    - if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH !~ /^gitlab(-org|-cn)?\//'
+      when: never
     - <<: *if-merge-request
       changes: *db-patterns
       when: always
@@ -1143,6 +1154,10 @@
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
+        CACHE_ASSETS_AS_PACKAGE: "false"
     - <<: *if-default-branch-refs
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-cs-evaluation
@@ -2069,6 +2084,12 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-branch-schedule-weekly
 
+.rails:rules:setup-test-env-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:setup-test-env", rules]
+
 .rails:rules:setup-test-env-fips:
   rules:
     - <<: *if-default-branch-schedule-weekly
@@ -2761,6 +2782,8 @@
 
 .releases:rules:canonical-dot-com-security-gitlab-stable-branch-only:
   rules:
+    # Run release environment related jobs for initial RC tag pipelines - https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21267
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^v?[\d.]+-rc42-ee$/'
     - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
       when: never
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
@@ -3178,6 +3201,14 @@
       changes:
         - "scripts/flaky_examples/prune-old-flaky-examples"
 
+############################
+# Predictive testing rules #
+############################
+.predictive:rules:default:
+  rules:
+    - <<: *if-merge-request-tier-3
+      when: always
+
 ###################
 # workhorse rules #
 ###################
@@ -3185,6 +3216,23 @@
   rules:
     - <<: *if-default-refs
       changes: *workhorse-patterns
+
+#############
+# GDK rules #
+#############
+.gdk:rules:gdk-update:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-default-refs
+      changes: *gdk-update-patterns
+    - <<: *if-default-refs
+      changes: *ruby-version-patterns
+    - !reference [".prevent-tier-2-and-below", "rules"]
+    - <<: *if-default-refs
+      changes: *setup-test-env-patterns
 
 ###################
 # yaml-lint rules #
@@ -3225,14 +3273,15 @@
     - <<: *if-not-merge-request  # This is only designed to run in a merge request
       when: never
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
+    - *if-merge-request-labels-as-if-foss
+    - !reference [".prevent-tier-2-and-below", "rules"]
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-automated-merge-request
@@ -3264,170 +3313,6 @@
       changes: *redis-patterns
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
-
-.as-if-foss:rules:start-as-if-foss:allow-failure:manual:
-  rules:
-    - if: '$AS_IF_FOSS_TOKEN == null'
-      when: never
-    - <<: *if-not-merge-request
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    # Copy everything from .as-if-foss:rules:start-as-if-foss
-    # and add `allow_failure: true` and `when: manual` to all
-    - <<: *if-merge-request-labels-as-if-foss
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-all-rspec
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-all-jest
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-single-db
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-review-app
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-automated-merge-request
-      changes: *db-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-automated-merge-request
-      changes: *backend-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-security-merge-request
-      changes: *backend-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-security-merge-request
-      changes: *code-backstage-qa-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-security-merge-request
-      changes: *db-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-frontend-and-feature-flag
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *static-analysis-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *db-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *workhorse-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *decomposed-db-models-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *redis-patterns
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      allow_failure: true
-      when: manual
-
-.as-if-foss:rules:start-as-if-foss:allow-failure:
-  rules:
-    - if: '$AS_IF_FOSS_TOKEN == null'
-      when: never
-    - <<: *if-not-merge-request
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    # Copy everything from .as-if-foss:rules:start-as-if-foss
-    # and add `allow_failure: true` to all
-    - <<: *if-merge-request-labels-as-if-foss
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-all-rspec
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-all-jest
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-single-db
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-review-app
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-      allow_failure: true
-    - <<: *if-automated-merge-request
-      changes: *db-patterns
-      allow_failure: true
-    - <<: *if-automated-merge-request
-      changes: *backend-patterns
-      allow_failure: true
-    - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
-      allow_failure: true
-    - <<: *if-security-merge-request
-      changes: *backend-patterns
-      allow_failure: true
-    - <<: *if-security-merge-request
-      changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - <<: *if-security-merge-request
-      changes: *db-patterns
-      allow_failure: true
-    - <<: *if-merge-request-labels-frontend-and-feature-flag
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *static-analysis-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *db-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *workhorse-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *decomposed-db-models-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *redis-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      allow_failure: true
 
 ##################
 # as-if-jh rules #

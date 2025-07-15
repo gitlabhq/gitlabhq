@@ -51,7 +51,7 @@ To configure approval rules:
 
 You can also configure:
 
-- Additional [merge request approval settings](settings.md) for more control of the
+- More [merge request approval settings](settings.md) for more control of the
   level of oversight and security your project needs.
 - Merge request approval rules with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
@@ -76,7 +76,7 @@ Use cases include:
 - Specify categories of reviewers, such as backend, frontend, quality assurance, database, or documentation.
 - Use the [Code Owners](../../codeowners/_index.md) files to determine reviewers.
 - Require approval for [declining test coverage](../../../../ci/testing/code_coverage/_index.md#add-a-coverage-check-approval-rule).
-- GitLab Ultimate: [Require security team approval](../../../application_security/_index.md#security-approvals-in-merge-requests) for potential vulnerabilities.
+- GitLab Ultimate: [Require security team approval](../../../application_security/policies/merge_request_approval_policies.md) for potential vulnerabilities.
 
 ## View approval status
 
@@ -86,8 +86,8 @@ Use cases include:
 
 {{< /history >}}
 
-You can see the approval status of a merge request in two places. On the [merge request itself](#for-a-single-merge-request)
-and in the [list of merge requests](#in-the-list-of-merge-requests) for your project or group.
+To view the approval status of a merge request, check the merge request itself, or the list of
+merge requests for your project or group.
 
 ### For a single merge request
 
@@ -135,7 +135,7 @@ To see the review and approval status for each reviewer:
 1. Open the merge request.
 1. Check the right sidebar.
 
-Each reviewer's status is shown next to the their name.
+Each reviewer's status is shown next to their name.
 
 - {{< icon name="dash-circle" >}} Awaiting review
 - {{< icon name="status_running" >}} Review in progress
@@ -158,7 +158,7 @@ Approved merge requests display a green check mark ({{< icon name="check-circle-
 After a merge request receives the required approvals, it is ready to merge, unless it's blocked due to:
 
 - [Merge conflicts](../conflicts.md)
-- [Unresolved threads](../_index.md#prevent-merge-unless-all-threads-are-resolved)
+- [Open threads](../_index.md#prevent-merge-unless-all-threads-are-resolved)
 - [Failed CI/CD pipeline](../auto_merge.md)
 
 ### Prevent author approval
