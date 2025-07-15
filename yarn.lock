@@ -1449,14 +1449,14 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.138.0.tgz#5db6d76ceedcf3716e9ce624b272a58052d8d121"
   integrity sha512-Jzd7GhmKxsQdCTttOe6C4AjqGvq8L91N6uUYnAmwnLGeY3aRD12BKBSgId5FrTH6rvk2w36o1+AwIqP+YuHV4g==
 
-"@gitlab/ui@115.4.0":
-  version "115.4.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.4.0.tgz#f5fb265560c0d7bc98e5537c82ca701318be72f0"
-  integrity sha512-IjeeXHFZdnXIUoGqACdwwAPXTDT7OZdJ2kVPDOTfvc66Yow4OIXRNsZr300Fd3dvItyyDy5f/hCqhbyLMWb9hQ==
+"@gitlab/ui@115.5.0":
+  version "115.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.5.0.tgz#88100a1dc152bf4bb045293c5faf12f1ae7c8c15"
+  integrity sha512-CGDQogwLATAvtBqUcECSnJiNUBvipAMKl1UhSF2JBDVYJ1etYjFaLSb6lho0MM7iaTL95LKGhoQf+lhwprywZw==
   dependencies:
     "@floating-ui/dom" "1.7.2"
     echarts "^5.6.0"
-    gridstack "^12.2.1"
+    gridstack "^12.2.2"
     iframe-resizer "^4.4.5"
     lodash "^4.17.21"
     popper.js "^1.16.1"
@@ -8475,10 +8475,10 @@ graphql@16.11.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.11.0.tgz#96d17f66370678027fdf59b2d4c20b4efaa8a633"
   integrity sha512-mS1lbMsxgQj6hge1XZ6p7GPhbrtFwUFYi3wRzXAC/FmYnyXMTvvI3td3rjmQ2u8ewXueaSvRPWaEcgVVOT9Jnw==
 
-gridstack@^12.2.1:
-  version "12.2.1"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-12.2.1.tgz#0e82e3d9d11e5229388d73bd57f8ef1a0e7059c4"
-  integrity sha512-xU69tThmmVxgMHTuM/z3rIKiiGm0zW4tcB6yRcuwiOUUBiwb3tslzFOrUjWz+PwaxoAW+JChT4fqOLl+oKAxZA==
+gridstack@^12.2.1, gridstack@^12.2.2:
+  version "12.2.2"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-12.2.2.tgz#a9ec300cefc93516bcb8dd966510a728027be358"
+  integrity sha512-eK9XAbBWQp+QniqL6ipvofWSrCelm46j5USag73LNq8tOWSL2DeeGBWU9mTibLI6i66n0r7xYS+1/g2qqTqKcw==
 
 gzip-size@^6.0.0:
   version "6.0.0"

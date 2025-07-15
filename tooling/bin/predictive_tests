@@ -23,8 +23,12 @@ OptionParser.new do |opts|
     options[:select_tests] = true
   end
 
-  opts.on('--export-selected-test-metrics', 'Export selected test metrics') do
-    options[:export_metrics] = true
+  opts.on('--export-predictive-backend-metrics', 'Export predictive test metrics for rspec') do
+    options[:export_rspec_metrics] = true
+  end
+
+  opts.on('--export-predictive-frontend-metrics', 'Export predictive test metrics for frontend') do
+    options[:export_jest_metrics] = true
   end
 
   opts.on('-h', '--help', 'Show this help message') do
@@ -35,7 +39,10 @@ end.parse!
 
 # Validate that exactly one option is provided
 if options.empty?
-  puts "Error: Please specify either --select-tests or --export-selected-test-metrics"
+  puts "Error: Please specify one of these flags:
+    1. --select-tests
+    2. --export-predictive-backend-metrics
+    3. --export-predictive-frontend-metrics"
   puts "Use --help for more information"
   exit 1
 elsif options.size > 1
@@ -76,7 +83,7 @@ if options[:select_tests]
 
   # File with a list of mr changes is also used by frontend related pipelines/jobs
   File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
-elsif options[:export_metrics]
+elsif options[:export_rspec_metrics]
   require_relative '../lib/tooling/predictive_tests/metrics_exporter'
 
   validate_required_env_variables!(%w[
@@ -91,4 +98,19 @@ elsif options[:export_metrics]
     frontend_fixtures_mapping_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
     output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
   ).execute
+elsif options[:export_jest_metrics]
+  require_relative '../lib/tooling/predictive_tests/frontend_metrics_exporter'
+  validate_required_env_variables!(%w[
+    JEST_MATCHING_TEST_FILES_PATH
+    GLCI_JEST_FAILED_TESTS_FILE
+    GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
+  ])
+
+  Tooling::PredictiveTests::FrontendMetricsExporter.new(
+    rspec_changed_files_path: ENV['RSPEC_CHANGED_FILES_PATH'],
+    rspec_matching_js_files_path: ENV['RSPEC_MATCHING_JS_FILES_PATH'],
+    jest_failed_test_files_path: ENV['GLCI_JEST_FAILED_TESTS_FILE'],
+    output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
+  ).execute
+
 end

@@ -12,51 +12,14 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
   let(:attribute) { :build_artifacts_size }
 
   describe '#get' do
-    it 'returns the value when there is an existing value stored in the counter' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(counter.key, 456)
-      end
-
-      expect(counter.get).to eq(456)
-    end
-
-    it 'returns 0 when there is no existing value' do
-      expect(counter.get).to eq(0)
-    end
+    it_behaves_like 'handling a buffered counter in redis'
   end
 
   describe '#increment' do
     let(:increment) { Gitlab::Counters::Increment.new(amount: 123, ref: 1) }
     let(:other_increment) { Gitlab::Counters::Increment.new(amount: 100, ref: 2) }
 
-    context 'when the counter is not undergoing refresh' do
-      it 'sets a new key by the given value' do
-        counter.increment(increment)
-
-        expect(counter.get).to eq(increment.amount)
-      end
-
-      it 'increments an existing key by the given value' do
-        counter.increment(other_increment)
-        counter.increment(increment)
-
-        expect(counter.get).to eq(other_increment.amount + increment.amount)
-      end
-
-      it 'returns the value of the key after the increment' do
-        counter.increment(increment)
-        result = counter.increment(other_increment)
-
-        expect(result).to eq(increment.amount + other_increment.amount)
-      end
-
-      it 'schedules a worker to commit the counter key into database' do
-        expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute.to_s)
-
-        counter.increment(increment)
-      end
-    end
+    it_behaves_like 'incrementing a buffered counter when not undergoing a refresh'
 
     context 'when the counter is undergoing refresh' do
       let(:increment_1) { Gitlab::Counters::Increment.new(amount: 123, ref: 1) }

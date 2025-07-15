@@ -1,7 +1,7 @@
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
@@ -45,7 +45,8 @@ secret_detection:
   needs: []
   variables:
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"  # GitLab-specific
-    DS_EXCLUDED_ANALYZERS: "gemnasium-maven"
+    DS_ENFORCE_NEW_ANALYZER: "true"
+    DS_STATIC_REACHABILITY_ENABLED: "false"
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
@@ -55,13 +56,10 @@ secret_detection:
     # Remove sboms in test fixtures so that they are not ingested and scanned.
     - find spec ee/spec qa -path '**/fixtures/**/gl-sbom*.cdx.json' -delete
 
-gemnasium-dependency_scanning:
-  variables:
-    DS_REMEDIATE: "false"
-  rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
-
-gemnasium-python-dependency_scanning:
-  rules: !reference [".reports:rules:gemnasium-python-dependency_scanning", rules]
+dependency-scanning:
+  extends:
+    - .ds-analyzer
+    - .reports:rules:dependency_scanning
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter

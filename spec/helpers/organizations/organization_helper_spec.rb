@@ -229,19 +229,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     end
   end
 
-  describe '#home_organization_setting_app_data' do
-    it 'returns expected json' do
-      current_user = build_stubbed(:user)
-      allow(helper).to receive(:current_user).and_return(current_user)
-
-      expect(Gitlab::Json.parse(helper.home_organization_setting_app_data)).to eq(
-        {
-          'initial_selection' => current_user.user_preference.home_organization_id
-        }
-      )
-    end
-  end
-
   describe '#organization_settings_general_app_data' do
     it 'returns expected json' do
       expect(organization).to receive(:avatar_url).with(size: 192).and_return('avatar.jpg')

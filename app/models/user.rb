@@ -453,7 +453,6 @@ class User < ApplicationRecord
     :pinned_nav_items, :pinned_nav_items=,
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
-    :home_organization, :home_organization_id, :home_organization_id=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,

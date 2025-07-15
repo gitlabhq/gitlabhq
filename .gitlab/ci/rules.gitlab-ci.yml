@@ -2840,7 +2840,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
-.reports:rules:gemnasium-dependency_scanning:
+.reports:rules:dependency_scanning:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -2850,17 +2850,6 @@
     - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
-
-.reports:rules:gemnasium-python-dependency_scanning:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
-      when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/504908#note_2218591981 is resolved
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
-      changes: *python-patterns
 
 .reports:rules:test-dast:
   rules:

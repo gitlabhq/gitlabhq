@@ -6,14 +6,6 @@ description: Get help from a suite of AI-native features while you work in GitLa
 title: GitLab Duo
 ---
 
-{{< history >}}
-
-- [First GitLab Duo features introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
-- [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
-- [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
-
-{{< /history >}}
-
 GitLab Duo is a suite of AI-native features that assist you while you work in GitLab.
 These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 

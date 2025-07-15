@@ -12,7 +12,7 @@ module Gitlab
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,
           :ref], target_audience: nil)
-        new(build, ttl: build.metadata_timeout, aud: aud, sub_components: sub_components,
+        new(build, ttl: build.timeout_value, aud: aud, sub_components: sub_components,
           target_audience: target_audience).encoded
       end
 

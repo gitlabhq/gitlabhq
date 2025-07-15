@@ -128,16 +128,16 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
 
     it 'returns expiration time with leeway' do
       freeze_time do
-        allow(job).to receive(:metadata_timeout).and_return(2.hours)
+        allow(job).to receive(:timeout_value).and_return(2.hours)
         expected_time = Time.current + 2.hours + described_class::LEEWAY
 
         expect(expire_time).to eq(expected_time)
       end
     end
 
-    it 'uses default expire time when metadata_timeout is smaller' do
+    it 'uses default expire time when timeout_value is smaller' do
       freeze_time do
-        allow(job).to receive(:metadata_timeout).and_return(1.minute)
+        allow(job).to receive(:timeout_value).and_return(1.minute)
 
         expected_time = Time.current +
           ::JSONWebToken::Token::DEFAULT_EXPIRE_TIME +

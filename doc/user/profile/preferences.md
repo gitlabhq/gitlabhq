@@ -124,33 +124,6 @@ If you do not choose a default text editor, your last used choice is preserved.
 1. Choose either **Rich text editor** or **Plain text editor** as your default.
 1. Select **Save changes**.
 
-### Choose your home organization
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
-
-If you are a member of two or more [organizations](../organization/_index.md), you can choose a home organization.
-This is the organization you are in by default when you first sign in to GitLab.
-
-To choose your home organization:
-
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Home organization** dropdown list, select an option.
-1. Select **Save changes**.
-
 ### Choose your homepage
 
 {{< history >}}

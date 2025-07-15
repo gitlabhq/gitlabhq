@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import GreetingHeader from './greeting_header.vue';
 import MergeRequestsWidget from './merge_requests_widget.vue';
 import WorkItemsWidget from './work_items_widget.vue';
 import ActivityWidget from './activity_widget.vue';
@@ -9,6 +10,7 @@ import TodosWidget from './todos_widget.vue';
 export default {
   components: {
     GlAlert,
+    GreetingHeader,
     MergeRequestsWidget,
     WorkItemsWidget,
     ActivityWidget,
@@ -44,7 +46,7 @@ export default {
 
 <template>
   <div>
-    <h1 class="gl-mb-6">{{ __("Today's highlights") }}</h1>
+    <greeting-header />
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 md:gl-grid-cols-3">
       <div class="gl-flex gl-flex-col gl-gap-6 md:gl-col-span-2">
         <gl-alert

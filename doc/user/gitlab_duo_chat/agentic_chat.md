@@ -56,7 +56,7 @@ For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c
 
 ## Use Agentic Chat
 
-You can use Agentic Chat in the GitLab UI or in VS Code.
+You can use Agentic Chat in the GitLab UI, VS Code, or a JetBrains IDE.
 
 Prerequisites:
 
@@ -118,7 +118,7 @@ To use Agentic Chat:
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
-#### Create custom rules
+### Create custom rules
 
 {{< history >}}
 
@@ -126,11 +126,12 @@ Conversations in Agentic Chat do not expire and are stored permanently. You cann
 
 {{< /history >}}
 
-If you have specific instructions that you want Agentic Chat to follow in every conversation, you can create custom rules.
+In VS Code or a JetBrains IDE, if you have specific instructions that you want
+Agentic Chat to follow in every conversation, you can create custom rules.
 
 Prerequisites:
 
-- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
 
 {{< alert type="note" >}}
 
@@ -138,7 +139,9 @@ Conversations that existed before you created any custom rules do not follow tho
 
 {{< /alert >}}
 
-1. Create a `.gitlab/duo/chat-rules.md` file.
+1. Create a custom rules file:
+   - For VS Code, create a `.gitlab/duo/chat-rules.md` file.
+   - For JetBrains IDEs, create a `.gitlab/rules/chat.md` file.
 1. Enter the custom rules into the file. For example:
 
    ```markdown

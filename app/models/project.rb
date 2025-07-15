@@ -2954,6 +2954,10 @@ class Project < ApplicationRecord
     archived? || project_namespace.self_or_ancestors_archived?
   end
 
+  def ancestors_archived?
+    ancestors.archived.exists?
+  end
+
   def renamed?
     persisted? && path_changed?
   end

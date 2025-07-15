@@ -26,7 +26,7 @@ class FlushCounterIncrementsWorker
     return unless self.class.const_defined?(model_name)
 
     model_class = model_name.constantize
-    model = model_class.find_by_id(model_id)
+    model = model_class.primary_key_in([model_id]).take # rubocop: disable CodeReuse/ActiveRecord -- we work on a dynamic model name
     return unless model
 
     Gitlab::Counters::BufferedCounter.new(model, attribute).commit_increment!

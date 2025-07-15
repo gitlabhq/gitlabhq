@@ -1337,6 +1337,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="queryprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="queryprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
+| <a id="queryprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
 | <a id="queryprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="queryprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -35644,6 +35645,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="organizationprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="organizationprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
+| <a id="organizationprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
 | <a id="organizationprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="organizationprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 

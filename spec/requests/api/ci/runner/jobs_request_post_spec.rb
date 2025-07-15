@@ -217,12 +217,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           let(:expected_steps) do
             [{ 'name' => 'script',
                'script' => %w[echo],
-               'timeout' => job.metadata_timeout,
+               'timeout' => job.timeout_value,
                'when' => 'on_success',
                'allow_failure' => false },
              { 'name' => 'after_script',
                'script' => %w[ls date],
-               'timeout' => job.metadata_timeout,
+               'timeout' => job.timeout_value,
                'when' => 'always',
                'allow_failure' => true }]
           end

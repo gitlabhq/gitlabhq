@@ -73,7 +73,7 @@ module Ci
         end
 
         def expire_time(job)
-          ttl = [::JSONWebToken::Token::DEFAULT_EXPIRE_TIME, job.metadata_timeout.to_i].max
+          ttl = [::JSONWebToken::Token::DEFAULT_EXPIRE_TIME, job.timeout_value.to_i].max
           Time.current + ttl + LEEWAY
         end
 

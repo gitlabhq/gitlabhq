@@ -97,9 +97,30 @@ export-predictive-test-metrics:
       mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage"
       retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage/mapping.json"
   script:
-    - tooling/bin/predictive_tests --export-selected-test-metrics
+    - tooling/bin/predictive_tests --export-predictive-backend-metrics
   artifacts:
     expire_in: 7d
     paths:
       - $GLCI_CRYSTALBALL_MAPPING_DIR
       - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
+
+export-predictive-test-metrics-frontend:
+  extends:
+    - export-predictive-test-metrics
+    - .yarn-cache
+    - .with-ci-node-image
+  dependencies:
+    - detect-tests
+    - graphql-schema-dump
+  variables:
+    GLCI_JEST_FAILED_TESTS_FILE: "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/jest_failed_tests.txt"
+  before_script:
+    - !reference [export-predictive-test-metrics, before_script]
+    - yarn_install_script
+  script:
+    - tooling/bin/predictive_tests --export-predictive-frontend-metrics
+  artifacts:
+    expire_in: 7d
+    paths:
+      - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
+      - $JEST_MATCHING_TEST_FILES_PATH

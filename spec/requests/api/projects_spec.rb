@@ -5204,7 +5204,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'on an archived project' do
       before do
-        ::Projects::UpdateService.new(project, user, archived: true).execute
+        project.update!(archived: true)
       end
 
       it 'remains archived' do
@@ -5249,6 +5249,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
     end
+
+    context 'when archive service returns an error' do
+      it 'returns the error message' do
+        allow_next_instance_of(::Projects::ArchiveService) do |instance|
+          allow(instance).to receive(:execute).and_return(Projects::ArchiveService::ArchivingFailedError)
+        end
+
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Failed to archive project.')
+      end
+    end
   end
 
   describe 'POST /projects/:id/unarchive' do
@@ -5265,7 +5278,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'on an archived project' do
       before do
-        ::Projects::UpdateService.new(project, user, archived: true).execute
+        project.update!(archived: true)
       end
 
       it 'unarchives the project' do
@@ -5285,6 +5298,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user3)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when unarchive service returns an error' do
+      it 'returns the error message' do
+        allow_next_instance_of(::Projects::UnarchiveService) do |instance|
+          allow(instance).to receive(:execute).and_return(Projects::UnarchiveService::UnarchivingFailedError)
+        end
+
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Failed to unarchive project.')
       end
     end
   end

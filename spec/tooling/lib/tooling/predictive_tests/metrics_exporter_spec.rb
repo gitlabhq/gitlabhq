@@ -25,7 +25,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
   let(:event_name) { "glci_predictive_tests_metrics" }
-  let(:extra_properties) { { ci_job_id: "123" } }
+  let(:extra_properties) { { ci_job_id: "123", test_type: "backend" } }
 
   # temporary folder for inputs and outputs
   let(:input_dir) { Dir.mktmpdir("predictive-tests-input") }
@@ -111,7 +111,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       .and_return(changed_files)
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
     allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
-    allow(Logger).to receive(:new).with($stdout, progname: "predictive testing").and_return(logger)
+    allow(Logger).to receive(:new).with($stdout, progname: "rspec predictive testing").and_return(logger)
   end
 
   describe "#execute" do

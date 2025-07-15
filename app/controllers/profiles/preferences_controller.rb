@@ -44,7 +44,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :dark_color_scheme_id,
       :diffs_deletion_color,
       :diffs_addition_color,
-      :home_organization_id,
       :layout,
       :dashboard,
       :project_view,

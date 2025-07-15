@@ -19,7 +19,6 @@ module Ci
 
       accepts_nested_attributes_for :metadata
 
-      delegate :timeout, to: :metadata, prefix: true, allow_nil: true
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
       delegate :id_tokens, to: :metadata, allow_nil: true
       delegate :exit_code, to: :metadata, allow_nil: true
@@ -127,6 +126,12 @@ module Ci
       return true if degenerated?
 
       metadata&.debug_trace_enabled?
+    end
+
+    def timeout_value
+      # TODO: need to add the timeout to p_ci_builds later
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/538183#note_2542611159
+      try(:timeout) || metadata&.timeout
     end
 
     private

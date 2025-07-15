@@ -231,7 +231,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def archive
-    ::Projects::UpdateService.new(@project, current_user, archived: true).execute
+    ::Projects::ArchiveService.new(project: @project, current_user: current_user).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -239,7 +239,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def unarchive
-    ::Projects::UpdateService.new(@project, current_user, archived: false).execute
+    ::Projects::UnarchiveService.new(project: @project, current_user: current_user).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }

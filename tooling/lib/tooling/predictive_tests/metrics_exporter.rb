@@ -19,6 +19,7 @@ module Tooling
 
       PREDICTIVE_TEST_METRICS_EVENT = "glci_predictive_tests_metrics"
       STRATEGIES = [:coverage, :described_class].freeze
+      TEST_TYPE = "backend"
 
       def initialize(
         rspec_all_failed_tests_file:,
@@ -30,7 +31,7 @@ module Tooling
         @crystalball_mapping_dir = crystalball_mapping_dir
         @frontend_fixtures_mapping_file = frontend_fixtures_mapping_file
         @output_dir = output_dir
-        @logger = Logger.new($stdout, progname: "predictive testing")
+        @logger = Logger.new($stdout, progname: "rspec predictive testing")
       end
 
       # Execute metrics export
@@ -123,7 +124,7 @@ module Tooling
         ).execute
       end
 
-      # Create, save and export metrics for selected tests for specific strategy
+      # Create, save and export metrics for selected RSpec tests for specific strategy
       #
       # @param strategy [Symbol]
       # @return [void]
@@ -148,7 +149,7 @@ module Tooling
         save_metrics(metrics, strategy)
         send_metrics_events(metrics, strategy)
 
-        logger.info("Metrics generation completed")
+        logger.info("Metrics generation completed for strategy '#{strategy}'")
       end
 
       # Create metrics hash with all calculated metrics based on crystalball mapping and selected test strategy
@@ -199,7 +200,7 @@ module Tooling
       # @return [void]
       def send_metrics_events(metrics, strategy)
         core = metrics[:core_metrics]
-        extra_properties = { ci_job_id: ENV["CI_JOB_ID"] }
+        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: TEST_TYPE }
 
         tracker.send_event(
           PREDICTIVE_TEST_METRICS_EVENT,

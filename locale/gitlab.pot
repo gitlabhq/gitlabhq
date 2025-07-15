@@ -43782,9 +43782,6 @@ msgstr ""
 msgid "Organization|Choose organization visibility level."
 msgstr ""
 
-msgid "Organization|Choose what organization you want to see by default."
-msgstr ""
-
 msgid "Organization|Copy organization ID"
 msgstr ""
 
@@ -43798,9 +43795,6 @@ msgid "Organization|Current organization"
 msgstr ""
 
 msgid "Organization|Get started with organizations"
-msgstr ""
-
-msgid "Organization|Home organization"
 msgstr ""
 
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
@@ -58256,6 +58250,9 @@ msgstr ""
 msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
+msgid "SecurityReports|Vulnerabilities over time"
+msgstr ""
+
 msgid "SecurityReports|Vulnerability Resolution available"
 msgstr ""
 
@@ -70254,6 +70251,9 @@ msgstr ""
 msgid "Weight - %{maxIssueWeight}"
 msgstr ""
 
+msgid "Welcome %{name},"
+msgstr ""
+
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr ""
 
@@ -74720,9 +74720,6 @@ msgid "is not linked to a SAML account or has an inactive SCIM identity. For inf
 msgstr ""
 
 msgid "is not one of"
-msgstr ""
-
-msgid "is not part of the given organization"
 msgstr ""
 
 msgid "is not valid."

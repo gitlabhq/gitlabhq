@@ -1356,6 +1356,51 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#ancestors_archived?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user_namespace_project) { create(:project) }
+
+    let_it_be_with_reload(:group_project) { create(:project, group: group) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
+
+    context 'when project itself is archived' do
+      it 'returns false' do
+        group_project.update!(archived: true)
+
+        expect(group_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project is not archived but parent group is archived' do
+      it 'returns true' do
+        group.archive
+
+        expect(group_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when project is not archived but parent subgroup is archived' do
+      it 'returns true' do
+        subgroup.archive
+
+        expect(subgroup_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when neither project nor any ancestor group is archived' do
+      it 'returns false' do
+        expect(subgroup_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project and any its ancestor are not archived' do
+      it 'returns false' do
+        expect(user_namespace_project.ancestors_archived?).to eq(false)
+      end
+    end
+  end
+
   describe '#ci_pipelines' do
     let_it_be(:project) { create(:project) }
 
