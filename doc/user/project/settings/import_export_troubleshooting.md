@@ -370,12 +370,15 @@ Marked stuck import jobs as failed. JIDs: xyz
 
 ### Problems and solutions
 
-| Problem | Possible solutions |
-| -------- | -------- |
-| [Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database | [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252) |
-| | Batch export |
-| | Optimize SQL |
-| | Move away from `ActiveRecord` callbacks (difficult) |
-| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)) | DB Commit sweet spot that uses less memory |
-| | [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help |
-| | Batch reading/writing to disk and any SQL |
+[Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database:
+
+- [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252) |
+- Batch export
+- Optimize SQL
+- Move away from `ActiveRecord` callbacks (difficult)
+
+High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)):
+
+- DB Commit sweet spot that uses less memory
+- [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help
+- Batch reading/writing to disk and any SQL

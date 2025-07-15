@@ -366,7 +366,7 @@ For example, with [`trigger:inputs`](../yaml/_index.md#triggerinputs):
 ```yaml
 trigger-job:
   trigger:
-    strategy: depend
+    strategy: mirror
     include:
       - local: path/to/child-pipeline.yml
         inputs:
@@ -382,7 +382,7 @@ trigger-job:
 ```yaml
 trigger-job:
   trigger:
-    strategy: depend
+    strategy: mirror
     project: project-group/my-downstream-project
     inputs:
       job-name: "defined"

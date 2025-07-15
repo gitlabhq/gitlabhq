@@ -53,7 +53,7 @@ In blocking manual jobs:
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
-When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/_index.md#triggerstrategy),
+When using manual jobs in triggered pipelines with a [`trigger:strategy`](../yaml/_index.md#triggerstrategy),
 the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job

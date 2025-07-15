@@ -154,7 +154,7 @@ deploy:
   stage: deploy
   trigger:
     include: deploy.gitlab-ci.yml
-    strategy: depend
+    strategy: mirror
   resource_group: AWS-production
 ```
 
@@ -175,9 +175,8 @@ deployment:
   environment: production
 ```
 
-You must define [`strategy: depend`](../yaml/_index.md#triggerstrategy)
-with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
-finishes.
+You must define [`trigger:strategy`](../yaml/_index.md#triggerstrategy) to ensure
+the lock isn't released until the downstream pipeline finishes.
 
 ## Related topics
 
@@ -202,7 +201,7 @@ test:
   stage: test
   trigger:
     include: child-pipeline-requires-production-resource-group.yml
-    strategy: depend
+    strategy: mirror
 
 deploy:
   stage: deploy
@@ -212,7 +211,7 @@ deploy:
 ```
 
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
-and the [`strategy: depend` option](../yaml/_index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
+and the [`strategy: mirror` option](../yaml/_index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
 The parent pipeline runs the `deploy` job in the next stage, that requires a resource from the `production` resource group.
 If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is executed next.
 
@@ -228,7 +227,7 @@ test:
   stage: test
   trigger:
     include: child-pipeline.yml
-    strategy: depend
+    strategy: mirror
   resource_group: production # Specify the resource group in the parent pipeline
 
 deploy:

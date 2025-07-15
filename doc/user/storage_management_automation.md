@@ -441,7 +441,7 @@ to iterate over large lists of pipelines and jobs.
     print("\nDone collecting data.")
 
     if len(ci_job_artifacts) > 0:
-        print("|Project|Job|Artifact name|Artifact type|Artifact size|\n|-|-|-|-|-|") #Start markdown friendly table
+        print("| Project | Job | Artifact name | Artifact type | Artifact size |\n|---------|-----|---------------|---------------|---------------|") # Start markdown friendly table
         for artifact in ci_job_artifacts:
             print('| [{project_name}]({project_web_url}) | {job_name} | {artifact_name} | {artifact_type} | {artifact_size} |'.format(project_name=artifact['project_path_with_namespace'], project_web_url=artifact['project_web_url'], job_name=artifact['job_id'], artifact_name=artifact['artifact_filename'], artifact_type=artifact['artifact_file_type'], artifact_size=render_size_mb(artifact['artifact_size'])))
     else:
@@ -454,8 +454,8 @@ content to an issue comment or description, or populate a Markdown file in a Git
 ```shell
 $ python3 get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py
 
-|Project|Job|Artifact name|Artifact type|Artifact size|
-|-|-|-|-|-|
+| Project | Job | Artifact name | Artifact type | Artifact size |
+|---------|-----|---------------|---------------|---------------|
 | [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | artifacts.zip | archive | 50.0154 |
 | [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | metadata.gz | metadata | 0.0001 |
 | [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | job.log | trace | 0.0030 |
@@ -865,7 +865,7 @@ The following process describes how the script searches for the artifact expiry 
                  print(f"Exception searching artifacts on ci_pipelines: {e}".format(e=e))
 
     if len(ci_job_artifacts_expiry) > 0:
-        print("|Project|Job|Artifact expiry|\n|-|-|-|") #Start markdown friendly table
+        print("| Project | Job | Artifact expiry |\n|---------|-----|-----------------|") #Start markdown friendly table
         for k, details in ci_job_artifacts_expiry.items():
             if details['job_name'][0] == '.':
                 continue # ignore job templates that start with a '.'
@@ -891,8 +891,8 @@ python3 -m pip install 'python-gitlab[yaml]'
 
 python3 get_all_cicd_config_artifacts_expiry.py
 
-|Project|Job|Artifact expiry|
-|-|-|-|
+| Project | Job | Artifact expiry |
+|---------|-----|-----------------|
 | [Gen Job Artifacts 4](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4) | generator | 30 days |
 | [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job10 | 10 days |
 | [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job1 | 1 days |

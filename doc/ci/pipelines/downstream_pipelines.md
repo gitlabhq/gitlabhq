@@ -38,7 +38,7 @@ Child pipelines:
 - Do not directly affect the overall status of the ref the pipeline runs against. For example,
   if a pipeline fails for the main branch, it's common to say that "main is broken".
   The status of child pipelines only affects the status of the ref if the child
-  pipeline is triggered with [`strategy:depend`](../yaml/_index.md#triggerstrategy).
+  pipeline is triggered with [`trigger:strategy`](../yaml/_index.md#triggerstrategy).
 - Are automatically canceled if the pipeline is configured with [`interruptible`](../yaml/_index.md#interruptible)
   when a new pipeline is created for the same ref.
 - Are not displayed in the project's pipeline list. You can only view child pipelines on
@@ -67,7 +67,7 @@ Multi-project pipelines:
   choose the ref of the downstream pipeline, and pass CI/CD variables to it.
 - Affect the overall status of the ref of the project it runs in, but does not
   affect the status of the triggering pipeline's ref, unless it was triggered with
-  [`strategy:depend`](../yaml/_index.md#triggerstrategy).
+  [`trigger:strategy`](../yaml/_index.md#triggerstrategy).
 - Are not automatically canceled in the downstream project when using [`interruptible`](../yaml/_index.md#interruptible)
   if a new pipeline runs for the same ref in the upstream pipeline. They can be
   automatically canceled if a new pipeline is triggered for the same ref on the downstream project.
@@ -428,7 +428,7 @@ In this example:
 ### Mirror the status of a downstream pipeline in the trigger job
 
 You can mirror the status of the downstream pipeline in the trigger job
-by using [`strategy: depend`](../yaml/_index.md#triggerstrategy):
+by using [`strategy: mirror`](../yaml/_index.md#triggerstrategy):
 
 {{< tabs >}}
 
@@ -439,7 +439,7 @@ trigger_job:
   trigger:
     include:
       - local: path/to/child-pipeline.yml
-    strategy: depend
+    strategy: mirror
 ```
 
 {{< /tab >}}
@@ -450,7 +450,7 @@ trigger_job:
 trigger_job:
   trigger:
     project: my/project
-    strategy: depend
+    strategy: mirror
 ```
 
 {{< /tab >}}
@@ -931,7 +931,7 @@ stages:
   trigger:
     project: project-group/deployment-project
     branch: main
-    strategy: depend
+    strategy: mirror
 
 deploy-review:
   stage: deploy

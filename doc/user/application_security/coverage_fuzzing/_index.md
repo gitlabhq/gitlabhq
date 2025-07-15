@@ -2,9 +2,11 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Coverage-guided fuzz testing
+title: Coverage-guided fuzz testing (deprecated)
 description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 ---
+
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -12,6 +14,13 @@ description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+and is planned for removal in 19.0. This is a breaking change.
+
+{{< /alert >}}
 
 ## Getting started
 
@@ -388,3 +397,5 @@ corpus file extracts into a folder named `corpus`.
 If you see this error message when running the fuzzing job with `COVFUZZ_USE_REGISTRY` set to `true`,
 ensure that duplicates are allowed. For more details, see
 [duplicate Generic packages](../../packages/generic_packages/_index.md#disable-publishing-duplicate-package-names).
+
+<!--- end_remove -->

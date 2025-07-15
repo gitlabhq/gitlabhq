@@ -73,15 +73,15 @@ We provide two debugging scripts to help administrators verify their self-hosted
      poetry run troubleshoot [options]
      ```
 
-      The `troubleshoot` command supports the following options:
+     The `troubleshoot` command supports the following options:
 
-      | Option | Description | Default | Example |
-      |--------|-------------|---------|---------|
-      | `--endpoint` | AI Gateway endpoint | `localhost:5052` | `--endpoint=localhost:5052` |
-      | `--model-family` | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` | - | `--model-family=mistral` |
-      | `--model-endpoint` | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. | - | `--model-endpoint=http://localhost:4000/v1` |
-      | `--model-identifier` | Model identifier. | - | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` |
-      | `--api-key` | Model API key. | - | `--api-key=your-api-key` |
+     | Option               | Default          | Example                                                       | Description |
+     |----------------------|------------------|---------------------------------------------------------------|-------------|
+     | `--endpoint`         | `localhost:5052` | `--endpoint=localhost:5052`                                   | AI Gateway endpoint |
+     | `--model-family`     | -                | `--model-family=mistral`                                      | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` |
+     | `--model-endpoint`   | -                | `--model-endpoint=http://localhost:4000/v1`                   | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. |
+     | `--model-identifier` | -                | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` | Model identifier. |
+     | `--api-key`          | -                | `--api-key=your-api-key`                                      | Model API key. |
 
      **Examples**:
 

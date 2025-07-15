@@ -31,9 +31,9 @@ You can connect ClickHouse to GitLab either:
 ## Supported ClickHouse versions
 
 | First GitLab version | ClickHouse versions | Comment |
-|-|-|-|
-|17.7.0 | 23.x (24.x, 25.x) | For using ClickHouse 24.x and 25.x see the [workaround section](#database-schema-migrations-on-gitlab-1800-and-earlier). |
-|18.1.0 | 23.x, 24.x, 25.x | |
+|----------------------|---------------------|---------|
+| 17.7.0               | 23.x (24.x, 25.x)   | For using ClickHouse 24.x and 25.x see the [workaround section](#database-schema-migrations-on-gitlab-1800-and-earlier). |
+| 18.1.0               | 23.x, 24.x, 25.x    |         |
 
 {{< alert type="note" >}}
 

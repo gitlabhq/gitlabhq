@@ -105,20 +105,20 @@ the class method `Integration.supported_events` in your model.
 The following events are supported for integrations:
 
 | Event type                                                                                     | Default | Value                | Trigger |
-|:-----------------------------------------------------------------------------------------------|:--------|:---------------------|:--|
+|:-----------------------------------------------------------------------------------------------|:--------|:---------------------|:--------|
 | Alert event                                                                                    |         | `alert`              | A new, unique alert is recorded. |
 | Commit event                                                                                   | ✓       | `commit`             | A commit is created or updated. |
 | [Deployment event](../../user/project/integrations/webhook_events.md#deployment-events)        |         | `deployment`         | A deployment starts or finishes. |
 | [Work item event](../../user/project/integrations/webhook_events.md#work-item-events)          | ✓       | `issue`              | An issue is created, updated, or closed. |
 | [Confidential issue event](../../user/project/integrations/webhook_events.md#work-item-events) | ✓       | `confidential_issue` | A confidential issue is created, updated, or closed. |
-| [Job event](../../user/project/integrations/webhook_events.md#job-events)                      |         | `job` | |
+| [Job event](../../user/project/integrations/webhook_events.md#job-events)                      |         | `job`                |         |
 | [Merge request event](../../user/project/integrations/webhook_events.md#merge-request-events)  | ✓       | `merge_request`      | A merge request is created, updated, or merged. |
 | [Comment event](../../user/project/integrations/webhook_events.md#comment-events)              |         | `comment`            | A new comment is added. |
 | [Confidential comment event](../../user/project/integrations/webhook_events.md#comment-events) |         | `confidential_note`  | A new comment on a confidential issue is added. |
 | [Pipeline event](../../user/project/integrations/webhook_events.md#pipeline-events)            |         | `pipeline`           | A pipeline status changes. |
 | [Push event](../../user/project/integrations/webhook_events.md#push-events)                    | ✓       | `push`               | A push is made to the repository. |
 | [Tag push event](../../user/project/integrations/webhook_events.md#tag-events)                 | ✓       | `tag_push`           | New tags are pushed to the repository. |
-| Vulnerability event                                                             |         | `vulnerability`      | A new, unique vulnerability is recorded. Ultimate only. |
+| Vulnerability event                                                                            |         | `vulnerability`      | A new, unique vulnerability is recorded. Ultimate only. |
 | [Wiki page event](../../user/project/integrations/webhook_events.md#wiki-page-events)          | ✓       | `wiki_page`          | A wiki page is created or updated. |
 
 #### Event examples
@@ -298,35 +298,35 @@ To add your custom properties to the form, you can define the metadata for them 
 
 This method should return an array of hashes for each field, where the keys can be:
 
-| Key            | Type    | Required | Default                      | Description |
-|:---------------|:--------|:---------|:-----------------------------|:--|
-| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, `:string_array` or `:select`. |
-| `section:`     | symbol  | false    |                              | Specify which section the field belongs to. |
-| `name:`        | string  | true     |                              | The property name for the form field. |
-| `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |
-| `title:`       | string  | false    | Capitalized value of `name:` | The label for the form field. |
-| `placeholder:` | string  | false    |                              | A placeholder for the form field. |
-| `help:`        | string  | false    |                              | A help text that displays below the form field. |
-| `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form. |
-| `description`  | string  | false   |                               | Description of the API field. |
-| `if:`          | boolean or lambda | false | `true`                | Specify if the field should be available. The value can be a boolean or a lambda. |
+| Key            | Type              | Required | Default                      | Description |
+|:---------------|:------------------|:---------|:-----------------------------|:------------|
+| `type:`        | symbol            | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, `:string_array` or `:select`. |
+| `section:`     | symbol            | false    |                              | Specify which section the field belongs to. |
+| `name:`        | string            | true     |                              | The property name for the form field. |
+| `required:`    | boolean           | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |
+| `title:`       | string            | false    | Capitalized value of `name:` | The label for the form field. |
+| `placeholder:` | string            | false    |                              | A placeholder for the form field. |
+| `help:`        | string            | false    |                              | A help text that displays below the form field. |
+| `api_only:`    | boolean           | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form. |
+| `description`  | string            | false    |                              | Description of the API field. |
+| `if:`          | boolean or lambda | false    | `true`                       | Specify if the field should be available. The value can be a boolean or a lambda. |
 
 ### Additional keys for `type: :checkbox`
 
 | Key               | Type   | Required | Default           | Description |
-|:------------------|:-------|:---------|:------------------|:--|
+|:------------------|:-------|:---------|:------------------|:------------|
 | `checkbox_label:` | string | false    | Value of `title:` | A custom label that displays next to the checkbox. |
 
 ### Additional keys for `type: :select`
 
 | Key        | Type  | Required | Default | Description |
-|:-----------|:------|:---------|:--------|:--|
+|:-----------|:------|:---------|:--------|:------------|
 | `choices:` | array | true     |         | A nested array of `[label, value]` tuples. |
 
 ### Additional keys for `type: :password`
 
 | Key                         | Type   | Required | Default           | Description |
-|:----------------------------|:-------|:---------|:------------------|:--|
+|:----------------------------|:-------|:---------|:------------------|:------------|
 | `non_empty_password_title:` | string | false    | Value of `title:` | An alternative label that displays when a value is already stored. |
 | `non_empty_password_help:`  | string | false    | Value of `help:`  | An alternative help text that displays when a value is already stored. |
 

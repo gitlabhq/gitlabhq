@@ -3458,7 +3458,7 @@ successfully finished job in its parent pipeline or another child pipeline in th
     stage: test
     trigger:
       include: child.yml
-      strategy: depend
+      strategy: mirror
     variables:
       PARENT_PIPELINE_ID: $CI_PIPELINE_ID
   ```
@@ -5911,6 +5911,12 @@ trigger-multi-project-pipeline:
 
 #### `trigger:strategy`
 
+{{< history >}}
+
+- `strategy:mirror` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431882) in GitLab 18.2.
+
+{{< /history >}}
+
 Use `trigger:strategy` to force the `trigger` job to wait for the downstream pipeline to complete
 before it is marked as **success**.
 
@@ -5919,13 +5925,19 @@ This behavior is different than the default, which is for the `trigger` job to b
 
 This setting makes your pipeline execution linear rather than parallel.
 
+**Supported values**:
+
+- `mirror`: Mirrors the status of the downstream pipeline exactly.
+- `depend`: The trigger job status shows **failed**, **success** or **running**,
+  depending on the downstream pipeline status. See additional details.
+
 **Example of `trigger:strategy`**:
 
 ```yaml
 trigger_job:
   trigger:
     include: path/to/child-pipeline.yml
-    strategy: depend
+    strategy: mirror
 ```
 
 In this example, jobs from subsequent stages wait for the triggered pipeline to
@@ -5936,13 +5948,14 @@ successfully complete before starting.
 - [Optional manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
   do not affect the status of the downstream pipeline or the upstream trigger job.
   The downstream pipeline can complete successfully without running any optional manual jobs.
+- By default, jobs in later stages do not start until the trigger job completes.
 - [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
-  must run before the trigger job is marked as successful or failed. The trigger job
-  shows **running** ({{< icon name="status_running" >}}) if the downstream pipeline status is
-  **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs.
-  By default, jobs in later stages do not start until the trigger job completes.
-- If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
-  the downstream pipeline is considered successful and the trigger job shows **success**.
+  must run before the trigger job is marked as successful or failed.
+- When using `stratgy:depend`:
+  - The trigger job shows **running** ({{< icon name="status_running" >}}) if the downstream pipeline status is
+    **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs.
+  - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
+    the downstream pipeline is considered successful and the trigger job shows **success**.
 
 #### `trigger:forward`
 

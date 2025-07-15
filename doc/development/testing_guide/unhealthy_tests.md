@@ -490,10 +490,10 @@ For tests that are above the thresholds, we automatically report slowness occurr
 
 For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
 
-| Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
-| :-: | :-: | :-: | :-: | :-: | :-: |
-| 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
-| 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
+|    Date    | Feature tests | Controllers and Requests tests | Unit  |     Other     | Method |
+|:----------:|:-------------:|:------------------------------:|:-----:|:-------------:|:------:|
+| 2023-02-15 | 67.42 seconds |         44.66 seconds          |   -   | 76.86 seconds | Top slow test eliminating the maximum |
+| 2023-06-15 | 50.13 seconds |         19.20 seconds          | 27.12 | 45.40 seconds | Avg for top 100 slow tests |
 
 ## Handling issues for flaky or slow tests
 

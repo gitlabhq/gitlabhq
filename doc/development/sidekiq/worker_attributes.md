@@ -107,7 +107,7 @@ shard_consumption = shard_rps * shard_duration_avg
 
 If we expect an increase of **less than 5%**, then no further action is needed.
 
-Otherwise, ping `@gitlab-org/scalability` on the merge request and ask
+Otherwise, ping `@gitlab-com/gl-infra/data-access/durability` on the merge request and ask
 for a review.
 
 ## Jobs with External Dependencies

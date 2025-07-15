@@ -115,6 +115,8 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/app/finders/
 /ee/spec/finders/
 /rubocop/rubocop-migrations.yml
+/lib/tasks/gitlab/db.rake
+/spec/tasks/gitlab/db_rake_spec.rb
 
 [Pipeline configuration] @gl-dx/pipeline-maintainers
 /.gitlab-ci.yml
@@ -1920,7 +1922,7 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/ @luciezhao @nhxnguyen
+/doc/**/geo/ @luciezhao @nhxnguyen @axil @phillipwells
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 geo_* @gitlab-org/geo-team/geo-backend

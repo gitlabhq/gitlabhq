@@ -1,0 +1,12 @@
+---
+name: gitlab_base.TableDelimiterRows
+description: |
+  Ensures tables don't have unnecessarily short delimiter row cells.
+extends: existence
+message: "Use at least three hyphens in each cell in the table delimiter row."
+link: https://docs.gitlab.com/development/documentation/styleguide/#creation-guidelines
+vocab: false
+level: error
+scope: raw
+raw:
+  - '(?<=\|\n) *\| ?-{0,2} ?\|'

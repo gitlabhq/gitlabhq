@@ -270,8 +270,8 @@ Factories consist of three main parts - the **Name** of the factory, the **Trait
 
 Given: `create(:iteration, :with_title, :current, title: 'My Iteration')`
 
-|                           |  |
-|:--------------------------|:-|
+|                           |    |
+|:--------------------------|:---|
 | **:iteration**            | This is the **Name** of the factory. The filename will be the plural form of this **Name** and reside under either `spec/factories/iterations.rb` or `ee/spec/factories/iterations.rb`. |
 | **:with_title**           | This is a **Trait** of the factory. [See how it's defined](https://gitlab.com/gitlab-org/gitlab/-/blob/9c2a1f98483921dd006d70fdaed316e21fc5652f/ee/spec/factories/iterations.rb#L21-23). |
 | **:current**              | This is a **Trait** of the factory. [See how it's defined](https://gitlab.com/gitlab-org/gitlab/-/blob/9c2a1f98483921dd006d70fdaed316e21fc5652f/ee/spec/factories/iterations.rb#L29-31). |
