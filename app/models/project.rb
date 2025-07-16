@@ -3626,11 +3626,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def job_token_policies_enabled?
-    namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
-  end
-  strong_memoize_attr :job_token_policies_enabled?
-
   # Overridden for EE
   def licensed_ai_features_available?
     false

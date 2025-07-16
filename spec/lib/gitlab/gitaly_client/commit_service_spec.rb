@@ -989,6 +989,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
     end
+
+    it 'sends an RPC request with a message_regex' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        order: 'NONE',
+        message_regex: '^foo',
+        global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false)
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:find_commits).with(request, kind_of(Hash))
+        .and_return([])
+
+      client.find_commits(message_regex: '^foo')
+    end
   end
 
   describe '#object_existence_map' do

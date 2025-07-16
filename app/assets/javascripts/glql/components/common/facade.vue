@@ -91,7 +91,8 @@ export default {
     },
     title() {
       return (
-        this.config.title || (this.config.display === 'table' ? __('GLQL table') : __('GLQL list'))
+        this.config.title ||
+        (this.config.display === 'table' ? __('Embedded table view') : __('Embedded list view'))
       );
     },
     showEmptyState() {
@@ -232,13 +233,13 @@ export default {
   i18n: {
     glqlDisplayError: {
       variant: 'warning',
-      title: __('An error occurred when trying to display this GLQL view:'),
+      title: __('An error occurred when trying to display this embedded view:'),
     },
     glqlLimitError: {
       variant: 'warning',
       title: sprintf(
         __(
-          'Only %{n} GLQL views can be automatically displayed on a page. Click the button below to manually display this block.',
+          'Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this block.',
         ),
         { n: MAX_GLQL_BLOCKS },
       ),
@@ -246,16 +247,19 @@ export default {
     },
     glqlTimeoutError: {
       variant: 'warning',
-      title: sprintf(__('GLQL view timed out. Add more filters to reduce the number of results.'), {
-        n: MAX_GLQL_BLOCKS,
-      }),
+      title: sprintf(
+        __('Embedded view timed out. Add more filters to reduce the number of results.'),
+        {
+          n: MAX_GLQL_BLOCKS,
+        },
+      ),
       action: __('Retry'),
     },
     glqlForbiddenError: {
       variant: 'danger',
-      title: __('GLQL view timed out. Try again later.'),
+      title: __('Embedded view timed out. Try again later.'),
     },
-    loadGlqlView: __('Load GLQL view'),
+    loadGlqlView: __('Load embedded view'),
   },
   numGlqlBlocks: new Counter(MAX_GLQL_BLOCKS),
 };

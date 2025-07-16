@@ -47,7 +47,7 @@ export default {
           action: () => this.execute('setHorizontalRule', 'horizontalRule'),
         },
         {
-          text: __('GitLab Query Language (GLQL) view'),
+          text: __('Embedded view'),
           action: () => this.execute('insertGLQLView', 'glqlView'),
           badge: {
             text: __('Beta'),

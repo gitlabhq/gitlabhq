@@ -10259,24 +10259,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#job_token_policies_enabled?' do
-    let_it_be(:project) { build_stubbed(:project) }
-
-    subject { project.job_token_policies_enabled? }
-
-    where(:setting_enabled) { [true, false] }
-
-    before do
-      project.clear_memoization(:job_token_policies_enabled?)
-      allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
-        :job_token_policies_enabled?).and_return(setting_enabled)
-    end
-
-    with_them do
-      it { is_expected.to eq(setting_enabled) }
-    end
-  end
-
   context 'with loose foreign key on projects.pool_repository_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:pool_repository) }

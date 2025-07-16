@@ -140,7 +140,7 @@ module RuboCop
 
         def extract_numeric_code(node)
           arg_node = argument(node)
-          return unless arg_node&.type == :int
+          return unless arg_node&.int_type?
 
           arg_node.children[0]
         end

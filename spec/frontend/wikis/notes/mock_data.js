@@ -99,6 +99,14 @@ export const awardEmoji = {
 export const noteableId = '7';
 
 export const queryVariables = { slug: 'home', projectId: 'gid://gitlab/Group/7' };
+export const wikiPageQueryMockData = {
+  title: 'home',
+  id: 'gid://gitlab/WikiPage/1',
+  subscribed: false,
+  userPermissions: {
+    markNoteAsInternal: false,
+  },
+};
 
 export const wikiCommentFormProvideData = {
   pageInfo,

@@ -11,6 +11,8 @@
 
 #js-vue-wiki-content-app{ data: {
   testid: 'wiki-page-content-app',
+  container_id: @wiki.container.id,
+  container_type: @wiki.container.is_a?(Project) ? 'project' : 'group',
   page_heading: @page.human_title,
   content_api: wiki_page_render_api_endpoint(@page),
   show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,

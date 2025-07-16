@@ -33,10 +33,10 @@ This feature is available for testing, but not ready for production use.
 With GitLab Query Language (GLQL), fields are used to:
 
 - Filter the results returned from a [GLQL query](_index.md#query-syntax).
-- Control the details displayed in a [GLQL view](_index.md#presentation-syntax).
-- Sort the results displayed in a GLQL view.
+- Control the details displayed in an [embedded view](_index.md#presentation-syntax).
+- Sort the results displayed in an embedded view.
 
-You use fields in three GLQL components:
+You use fields in three embedded view parameters:
 
 - **`query`** - Set conditions to determine which items to retrieve
 - **`fields`** - Specify which columns and details appear in your view
@@ -46,7 +46,7 @@ The following sections describe the available fields for each component.
 
 ## Fields inside query
 
-In a GLQL view, the `query` parameter can be used to include one or more expressions of the
+In an embedded view, the `query` parameter can be used to include one or more expressions of the
 format `<field> <operator> <value>`. Multiple expressions are joined with `and`,
 for example, `group = "gitlab-org" and author = currentUser()`.
 
@@ -522,7 +522,7 @@ The table below provides an overview of all available query fields and their spe
 
 - Only one group can be queried at a time.
 - The `group` cannot be used together with the `project` field.
-- If omitted when using inside a GLQL view in a group object (like an epic), `group` is assumed to
+- If omitted when using inside an embedded view in a group object (like an epic), `group` is assumed to
   be the current group.
 - Using the `group` field queries all objects in that group, all its subgroups, and child projects.
 - By default, issues or merge requests are searched in all descendant projects across all subgroups.
@@ -899,7 +899,7 @@ The table below provides an overview of all available query fields and their spe
 
 - Only one project can be queried at a time.
 - The `project` field cannot be used together with the `group` field.
-- If omitted when using inside a GLQL view, `project` is assumed to be the current project.
+- If omitted when using inside an embedded view, `project` is assumed to be the current project.
 
 **Examples**:
 
@@ -1106,7 +1106,7 @@ The table below provides an overview of all available query fields and their spe
 
 **Additional details**:
 
-- If omitted when used inside a GLQL view, the default `type` is `Issue`.
+- If omitted when used inside an embedded view, the default `type` is `Issue`.
 - `type = Epic` queries can only be used together with the [group](#group) field.
 
 **Examples**:
@@ -1211,7 +1211,7 @@ The table below provides an overview of all available query fields and their spe
   weight != 5
   ```
 
-## Fields in GLQL views
+## Fields in embedded views
 
 {{< history >}}
 
@@ -1223,8 +1223,8 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-In GLQL views, the `fields` view component is a comma-separated list of fields, or field functions that
-can be used to indicate what fields to include in the rendered GLQL view,
+In embedded views, the `fields` view parameter is a comma-separated list of fields, or field functions that
+can be used to indicate what fields to include in the rendered embedded view,
 for example, `fields: title, state, health, epic, milestone, weight, updated`.
 
 | Field            | Name or alias                         | Objects supported             | Description |
@@ -1260,7 +1260,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Updated at       | `updated`, `updatedAt`                | Issues, epics, merge requests | Display time since the object was last updated |
 | Weight           | `weight`                              | Issues                        | Display the weight of the object. Available in the Premium and Ultimate tiers. |
 
-## Fields to sort GLQL views by
+## Fields to sort embedded views by
 
 {{< history >}}
 
@@ -1268,7 +1268,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 
 {{< /history >}}
 
-In GLQL views, the `sort` view parameter is a field name followed by
+In embedded views, the `sort` view parameter is a field name followed by
 a sort order (`asc` or `desc`) that sorts the results by the specified
 field and order.
 
@@ -1357,7 +1357,7 @@ field and order.
 You might encounter these error messages:
 
 ```plaintext
-GLQL view timed out. Add more filters to reduce the number of results.
+Embedded view timed out. Add more filters to reduce the number of results.
 ```
 
 ```plaintext

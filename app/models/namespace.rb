@@ -193,7 +193,7 @@ class Namespace < ApplicationRecord
       :resource_access_token_notify_inherited_locked?,
       :resource_access_token_notify_inherited_locked_by_ancestor?,
       :resource_access_token_notify_inherited_locked_by_application_setting?
-    delegate :jwt_ci_cd_job_token_enabled?, :job_token_policies_enabled?
+    delegate :jwt_ci_cd_job_token_enabled?
 
     with_options allow_nil: true do
       delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=

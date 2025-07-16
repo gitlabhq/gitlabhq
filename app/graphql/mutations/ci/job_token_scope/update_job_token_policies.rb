@@ -37,10 +37,6 @@ module Mutations
           project = authorized_find!(project_path)
           target = find_target_using_path(target_path)
 
-          unless project.job_token_policies_enabled?
-            raise_resource_not_available_error! 'job token policies are disabled.'
-          end
-
           result = ::Ci::JobTokenScope::UpdatePoliciesService
             .new(project, current_user)
             .execute(target, default_permissions, job_token_policies)

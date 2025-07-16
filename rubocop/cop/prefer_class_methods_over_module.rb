@@ -62,7 +62,7 @@ module RuboCop
 
       def container_module_of(node)
         while node = node.parent
-          break if node.type == :module
+          break if node.module_type?
         end
 
         node

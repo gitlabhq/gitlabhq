@@ -38,19 +38,19 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
   });
 
   describe.each`
-    name                                        | contentType          | command                    | params
-    ${'Alert'}                                  | ${'alert'}           | ${'insertAlert'}           | ${[]}
-    ${'Code block'}                             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
-    ${'Details block'}                          | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
-    ${'Bullet list'}                            | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}
-    ${'Ordered list'}                           | ${'orderedList'}     | ${'toggleList'}            | ${['orderedList', 'listItem']}
-    ${'Task list'}                              | ${'taskList'}        | ${'toggleList'}            | ${['taskList', 'taskItem']}
-    ${'Mermaid diagram'}                        | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'mermaid' }]}
-    ${'PlantUML diagram'}                       | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'plantuml' }]}
-    ${'Table of contents'}                      | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
-    ${'Horizontal rule'}                        | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
-    ${'Create or edit diagram'}                 | ${'drawioDiagram'}   | ${'createOrEditDiagram'}   | ${[]}
-    ${'GitLab Query Language (GLQL) view Beta'} | ${'glqlView'}        | ${'insertGLQLView'}        | ${[]}
+    name                        | contentType          | command                    | params
+    ${'Alert'}                  | ${'alert'}           | ${'insertAlert'}           | ${[]}
+    ${'Code block'}             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
+    ${'Details block'}          | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
+    ${'Bullet list'}            | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}
+    ${'Ordered list'}           | ${'orderedList'}     | ${'toggleList'}            | ${['orderedList', 'listItem']}
+    ${'Task list'}              | ${'taskList'}        | ${'toggleList'}            | ${['taskList', 'taskItem']}
+    ${'Mermaid diagram'}        | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'mermaid' }]}
+    ${'PlantUML diagram'}       | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'plantuml' }]}
+    ${'Table of contents'}      | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
+    ${'Horizontal rule'}        | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
+    ${'Create or edit diagram'} | ${'drawioDiagram'}   | ${'createOrEditDiagram'}   | ${[]}
+    ${'Embedded view Beta'}     | ${'glqlView'}        | ${'insertGLQLView'}        | ${[]}
   `('when option $name is clicked', ({ name, command, contentType, params }) => {
     let commands;
     let btn;
@@ -92,10 +92,10 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     });
   });
 
-  it('shows a beta badge for the GLQL view option', () => {
+  it('shows a beta badge for the embedded view option', () => {
     buildWrapper();
 
-    const btn = wrapper.findByRole('button', { name: 'GitLab Query Language (GLQL) view Beta' });
+    const btn = wrapper.findByRole('button', { name: 'Embedded view Beta' });
     const badge = wrapper.findComponent(GlBadge);
 
     expect(btn.exists()).toBe(true);

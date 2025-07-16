@@ -45,7 +45,7 @@ module RuboCop
         top_block = nil
 
         while current_node && current_node.type != :def
-          top_block = current_node if current_node.type == :block
+          top_block = current_node if current_node.block_type?
           current_node = current_node.parent
         end
 
@@ -56,7 +56,7 @@ module RuboCop
         blocks = []
 
         until node == current_node || def?(current_node)
-          blocks << current_node if current_node.type == :block
+          blocks << current_node if current_node.block_type?
           current_node = current_node.parent
         end
 
@@ -65,8 +65,8 @@ module RuboCop
       end
 
       def def?(node)
-        node.type == :def || node.type == :defs ||
-          (node.type == :block && DEF_METHODS.include?(node.method_name))
+        node.type?(:def, :defs) ||
+          (node.block_type? && DEF_METHODS.include?(node.method_name))
       end
 
       def allowlisted?(block_node)

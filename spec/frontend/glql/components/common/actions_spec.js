@@ -39,8 +39,8 @@ describe('GlqlActions', () => {
   });
 
   it('sets correct tooltip and text for dropdown', () => {
-    expect(findDropdown().attributes('title')).toBe('GLQL view options');
-    expect(findDropdown().props('toggleText')).toBe('GLQL view options');
+    expect(findDropdown().attributes('title')).toBe('Embedded view options');
+    expect(findDropdown().props('toggleText')).toBe('Embedded view options');
   });
 
   it.each`

@@ -1146,7 +1146,7 @@ msgstr ""
 msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
 msgstr ""
 
-msgid "%{linkStart}View%{linkEnd} powered by GLQL"
+msgid "%{linkStart}Embedded view%{linkEnd} powered by GLQL"
 msgstr ""
 
 msgid "%{link_start}Communication Preference Center%{link_end}."
@@ -7201,7 +7201,7 @@ msgstr ""
 msgid "An error occurred restoring this group. Please refresh the page to try again."
 msgstr ""
 
-msgid "An error occurred when trying to display this GLQL view:"
+msgid "An error occurred when trying to display this embedded view:"
 msgstr ""
 
 msgid "An error occurred when updating the title"
@@ -7477,6 +7477,9 @@ msgstr ""
 msgid "An error occurred while searching for labels, please try again."
 msgstr ""
 
+msgid "An error occurred while subscribing to this page. Please try again later."
+msgstr ""
+
 msgid "An error occurred while triggering the job."
 msgstr ""
 
@@ -7499,6 +7502,9 @@ msgid "An error occurred while trying to update the registries: '%{error_message
 msgstr ""
 
 msgid "An error occurred while trying to update the registry: '%{error_message}'."
+msgstr ""
+
+msgid "An error occurred while unsubscribing from this page. Please try again later."
 msgstr ""
 
 msgid "An error occurred while updating approvers"
@@ -24658,6 +24664,24 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
+msgid "Embedded list view"
+msgstr ""
+
+msgid "Embedded table view"
+msgstr ""
+
+msgid "Embedded view"
+msgstr ""
+
+msgid "Embedded view options"
+msgstr ""
+
+msgid "Embedded view timed out. Add more filters to reduce the number of results."
+msgstr ""
+
+msgid "Embedded view timed out. Try again later."
+msgstr ""
+
 msgid "Emoji"
 msgstr ""
 
@@ -27883,21 +27907,6 @@ msgstr ""
 msgid "GCP region configured"
 msgstr ""
 
-msgid "GLQL list"
-msgstr ""
-
-msgid "GLQL table"
-msgstr ""
-
-msgid "GLQL view options"
-msgstr ""
-
-msgid "GLQL view timed out. Add more filters to reduce the number of results."
-msgstr ""
-
-msgid "GLQL view timed out. Try again later."
-msgstr ""
-
 msgid "GPG Key ID:"
 msgstr ""
 
@@ -28914,9 +28923,6 @@ msgid "GitLab Pages"
 msgstr ""
 
 msgid "GitLab Premium"
-msgstr ""
-
-msgid "GitLab Query Language (GLQL) view"
 msgstr ""
 
 msgid "GitLab Security"
@@ -31002,12 +31008,6 @@ msgid "GroupSettings|Enable email notifications"
 msgstr ""
 
 msgid "GroupSettings|Enable extension marketplace"
-msgstr ""
-
-msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens"
-msgstr ""
-
-msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens."
 msgstr ""
 
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
@@ -37416,7 +37416,7 @@ msgstr ""
 msgid "Load %{count} more"
 msgstr ""
 
-msgid "Load GLQL view"
+msgid "Load embedded view"
 msgstr ""
 
 msgid "Load more"
@@ -42255,6 +42255,12 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+msgid "Notifications Off"
+msgstr ""
+
+msgid "Notifications On"
+msgstr ""
+
 msgid "Notifications for %{project_or_group} are rate-limited due to the high volume of notifications sent."
 msgstr ""
 
@@ -42270,7 +42276,13 @@ msgstr ""
 msgid "Notifications temporarily disabled"
 msgstr ""
 
+msgid "Notifications turned off"
+msgstr ""
+
 msgid "Notifications turned off."
+msgstr ""
+
+msgid "Notifications turned on"
 msgstr ""
 
 msgid "Notifications turned on."
@@ -43498,7 +43510,7 @@ msgstr ""
 msgid "Online license"
 msgstr ""
 
-msgid "Only %{n} GLQL views can be automatically displayed on a page. Click the button below to manually display this block."
+msgid "Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this block."
 msgstr ""
 
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
@@ -69669,9 +69681,6 @@ msgstr ""
 msgid "Vulnerability|Scanner:"
 msgstr ""
 
-msgid "Vulnerability|Scanner: %{scannerName}"
-msgstr ""
-
 msgid "Vulnerability|Search or filter vulnerabilities..."
 msgstr ""
 
@@ -69735,10 +69744,16 @@ msgstr ""
 msgid "Vulnerability|URL:"
 msgstr ""
 
+msgid "Vulnerability|Unknown"
+msgstr ""
+
 msgid "Vulnerability|Unmodified response:"
 msgstr ""
 
 msgid "Vulnerability|Use AI to understand a vulnerability and suggest a fix"
+msgstr ""
+
+msgid "Vulnerability|Vendor: %{vendorName}"
 msgstr ""
 
 msgid "Vulnerability|View code flow"

@@ -21,6 +21,7 @@ module API
 
       expose :private_profile, documentation: { type: 'boolean', example: :null }
       expose :commit_email_or_default, as: :commit_email
+      expose :preferred_language, documentation: { type: 'string', example: 'en' }
     end
   end
 end

@@ -18,12 +18,13 @@ module Tooling
         changed_files:,
         rspec_test_mapping_path: nil,
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/450374#note_1836131381 on why limit might be used
-        rspec_mappings_limit_percentage: 50
+        rspec_mappings_limit_percentage: 50,
+        logger: Logger.new($stdout, progname: "predictive test selector")
       )
         @changed_files = changed_files
         @rspec_test_mapping_path = rspec_test_mapping_path
         @rspec_mappings_limit_percentage = rspec_mappings_limit_percentage
-        @logger = Logger.new($stdout, progname: "predictive testing")
+        @logger = logger
       end
 
       # Predictive rspec test files specs list

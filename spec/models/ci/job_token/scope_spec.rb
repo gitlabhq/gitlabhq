@@ -255,10 +255,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     let_it_be(:allowed_policy) { ::Ci::JobToken::Policies::POLICIES.first }
     let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
-    before do
-      allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
-
     shared_examples 'capturing job token policies' do
       it 'captures job token policies' do
         expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies).with(policies)
@@ -327,16 +323,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         before do
           accessed_project.ci_inbound_job_token_scope_enabled = false
           allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
-        end
-
-        it { is_expected.to be(true) }
-
-        it_behaves_like 'capturing job token policies'
-      end
-
-      context 'when job token policies are disabled' do
-        before do
-          allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(false)
         end
 
         it { is_expected.to be(true) }

@@ -633,6 +633,14 @@ To workaround the issue, you must hot-patch all Sidekiq nodes in the secondary s
 
 1. Unless you upgrade to a version containing the fix, you would have to repeat this workaround after every GitLab upgrade.
 
+### Error: `Error syncing repository: 13:creating repository: cloning repository: exit status 128`
+
+You might see this error for projects that do not sync successfully.
+
+Exit code 128 during repository creation means Git encountered a fatal error while cloning. This could be due to repository corruption, network issues, authentication problems, resource limits or because the project does not have an associated Git repository. More details about the specific cause for such failures can be found in the Gitaly logs.
+
+When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../../administration/repository_checks.md#run-a-check-using-the-command-line).
+
 ### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
 
 If Git fetch fails at exactly three hours while syncing a Git repository:

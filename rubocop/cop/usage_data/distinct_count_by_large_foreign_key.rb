@@ -51,7 +51,7 @@ module RuboCop
           batch_set_to_false = false
           options.each_pair do |key, value|
             next unless value.boolean_type? && value.falsey_literal?
-            next unless key.type == :sym && key.value == :batch
+            next unless key.sym_type? && key.value == :batch
 
             batch_set_to_false = true
             break

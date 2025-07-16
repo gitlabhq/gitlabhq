@@ -52,7 +52,7 @@ module RuboCop
 
         def remove_index_offense?(send_node)
           match_remove_index(send_node) do |column_or_options_node|
-            break true unless column_or_options_node.type == :hash
+            break true unless column_or_options_node.hash_type?
 
             column_or_options_node.children.none? { |pair| name_option?(pair) }
           end

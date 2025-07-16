@@ -73,6 +73,7 @@ describe('WikiNotesApp', () => {
               userPermissions: {
                 markNoteAsInternal: true,
               },
+              subscribed: false,
               discussions: {
                 nodes: [mockDiscussion('Discussion 1')],
               },
@@ -101,6 +102,7 @@ describe('WikiNotesApp', () => {
             userPermissions: {
               markNoteAsInternal: true,
             },
+            subscribed: false,
             discussions: {
               nodes: [mockDiscussion('Discussion 1')],
             },
@@ -223,6 +225,7 @@ describe('WikiNotesApp', () => {
             userPermissions: {
               markNoteAsInternal: true,
             },
+            subscribed: false,
             discussions,
           },
         },
@@ -273,6 +276,7 @@ describe('WikiNotesApp', () => {
             userPermissions: {
               markNoteAsInternal: true,
             },
+            subscribed: false,
             discussions,
           },
         },

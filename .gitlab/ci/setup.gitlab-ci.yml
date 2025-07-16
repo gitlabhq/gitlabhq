@@ -131,32 +131,25 @@ detect-tests:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
   needs: []
   stage: prepare
-  variables:
-    RSPEC_TESTS_MAPPING_ENABLED: "true"
-    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_PATH
   before_script:
-    - apt update && apt install -y curl
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
-    - retrieve_frontend_fixtures_mapping
     # Use alternative coverage based mappings for tier-2 pipeline
     - |
-      echo "Fetching crystalball mappings"
       if echo "$CI_MERGE_REQUEST_LABELS" | grep -q "pipeline::tier-2"; then
-        echo "Using alternative coverage based mapping path: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH"
-        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH")
+        echo "Using alternative coverage based mappings"
+        MAPPING_TYPE=coverage
       else
-        echo "Using standard described_class based mapping path: $RSPEC_PACKED_TESTS_MAPPING_PATH"
-        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_PATH")
+        echo "Using standard described_class based mappings"
+        MAPPING_TYPE=described_class
       fi
-      retrieve_tests_mapping "$MAPPING_ARCHIVE"
   script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
         mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
 
-        tooling/bin/predictive_tests --select-tests
+        tooling/bin/predictive_tests --select-tests --with-crystalball-mappings --mapping-type $MAPPING_TYPE
 
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};

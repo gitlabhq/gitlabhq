@@ -476,7 +476,8 @@ module Gitlab
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
           trailers: options[:trailers],
-          include_referenced_by: options[:include_referenced_by]
+          include_referenced_by: options[:include_referenced_by],
+          message_regex: options[:message_regex]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]

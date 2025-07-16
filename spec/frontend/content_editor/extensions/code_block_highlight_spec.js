@@ -98,12 +98,12 @@ describe('content_editor/extensions/code_block_highlight', () => {
     });
   });
 
-  describe('when inserting a GLQL view', () => {
+  describe('when inserting an embedded view', () => {
     beforeEach(() => {
       tiptapEditor.commands.insertGLQLView();
     });
 
-    it('inserts a GLQL view', () => {
+    it('inserts an embedded view', () => {
       expect(tiptapEditor.getJSON()).toEqual(
         doc(
           codeBlock(

@@ -30,7 +30,7 @@ module Tooling
         file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
       end
 
-      tff.test_files.uniq
+      tff.test_files.select { |file| file.end_with?('_spec.rb') }.uniq
     end
 
     private

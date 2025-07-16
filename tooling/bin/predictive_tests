@@ -31,23 +31,29 @@ OptionParser.new do |opts|
     options[:export_jest_metrics] = true
   end
 
+  opts.on('--with-crystalball-mappings', 'Download crystalball mappings for rspec tests') do
+    options[:with_crystalball_mappings] = true
+  end
+
+  opts.on('--mapping-type [string]', String, 'Crystalball mapping type, coverage or described_class') do |value|
+    options[:mapping_type] = value
+  end
+
   opts.on('-h', '--help', 'Show this help message') do
     puts opts
     exit
   end
 end.parse!
 
-# Validate that exactly one option is provided
-if options.empty?
-  puts "Error: Please specify one of these flags:
-    1. --select-tests
-    2. --export-predictive-backend-metrics
-    3. --export-predictive-frontend-metrics"
-  puts "Use --help for more information"
-  exit 1
-elsif options.size > 1
-  puts "Error: Please specify only one operation at a time"
-  puts "Use --help for more information"
+# Validate at least one option is provided
+if [options[:select_tests], options[:export_rspec_metrics], options[:export_jest_metrics]].all?(&:nil?)
+  puts <<~MSG
+    Error: Please specify one of these flags:
+      1. --select-tests
+      2. --export-predictive-backend-metrics
+      3. --export-predictive-frontend-metrics
+  MSG
+
   exit 1
 end
 
@@ -63,19 +69,32 @@ end
 if options[:select_tests]
   require_relative '../lib/tooling/predictive_tests/test_selector'
   require_relative '../lib/tooling/predictive_tests/changed_files'
+  require_relative '../lib/tooling/predictive_tests/mapping_fetcher'
 
   validate_required_env_variables!(%w[
     RSPEC_MATCHING_TEST_FILES_PATH
     FRONTEND_FIXTURES_MAPPING_PATH
     RSPEC_MATCHING_JS_FILES_PATH
   ])
-  test_mapping_file = (ENV['RSPEC_TESTS_MAPPING_PATH'] if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true')
+
+  logger = Logger.new($stdout, progname: '[Predictive Tests]')
+  logger.info("Running predictive test selection")
+
+  mapping_fetcher = Tooling::PredictiveTests::MappingFetcher.new(logger: logger)
+  test_mapping_file = if options[:with_crystalball_mappings]
+                        mapping_fetcher.fetch_rspec_mappings(
+                          'mapping.json',
+                          type: options[:mapping_type] || :described_class
+                        )
+                      end
+
   changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
-    frontend_fixtures_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH']
+    frontend_fixtures_file: mapping_fetcher.fetch_frontend_fixtures_mappings(ENV['FRONTEND_FIXTURES_MAPPING_PATH'])
   )
   test_selector = Tooling::PredictiveTests::TestSelector.new(
     changed_files: changed_files,
-    rspec_test_mapping_path: test_mapping_file
+    rspec_test_mapping_path: test_mapping_file,
+    logger: logger
   )
 
   # Used to generate predictive rspec test pipelines
@@ -83,7 +102,9 @@ if options[:select_tests]
   # Used by frontend related pipelines/jobs
   File.write(ENV['RSPEC_MATCHING_JS_FILES_PATH'], test_selector.js_spec_list.join(" "))
   File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
-elsif options[:export_rspec_metrics]
+end
+
+if options[:export_rspec_metrics]
   require_relative '../lib/tooling/predictive_tests/metrics_exporter'
 
   validate_required_env_variables!(%w[
@@ -98,7 +119,9 @@ elsif options[:export_rspec_metrics]
     frontend_fixtures_mapping_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
     output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
   ).execute
-elsif options[:export_jest_metrics]
+end
+
+if options[:export_jest_metrics]
   require_relative '../lib/tooling/predictive_tests/frontend_metrics_exporter'
   validate_required_env_variables!(%w[
     JEST_MATCHING_TEST_FILES_PATH
@@ -112,5 +135,4 @@ elsif options[:export_jest_metrics]
     jest_failed_test_files_path: ENV['GLCI_JEST_FAILED_TESTS_FILE'],
     output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
   ).execute
-
 end

@@ -14,6 +14,7 @@ class NamespaceSetting < ApplicationRecord
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
+  ignore_column :job_token_policies_enabled, remove_with: '18.5', remove_after: '2025-09-13'
 
   cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
@@ -84,7 +85,6 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
-    job_token_policies_enabled
   ].freeze
 
   # matches the size set in the database constraint

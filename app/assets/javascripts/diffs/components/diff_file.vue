@@ -215,7 +215,12 @@ export default {
       return !this.isCollapsed || this.automaticallyCollapsed;
     },
     showWarning() {
-      return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
+      return (
+        !this.reviewed &&
+        this.isCollapsed &&
+        this.automaticallyCollapsed &&
+        !this.viewDiffsFileByFile
+      );
     },
     expandableWarning() {
       return this.file.viewer?.generated
@@ -629,7 +634,7 @@ export default {
           <div v-else v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <div v-if="showWarning" :class="$options.warningClasses">
+          <div v-if="showWarning" :class="$options.warningClasses" data-testid="diff-file-warning">
             <p class="!gl-mb-0">
               <gl-sprintf :message="expandableWarning">
                 <template #tag="{ content }">

@@ -7,7 +7,7 @@ import PoliciesSelector from './policies_selector.vue';
 
 export default {
   components: { GlFormGroup, GlButton, GlFormInput, PoliciesSelector },
-  inject: ['fullPath', 'isJobTokenPoliciesEnabled'],
+  inject: ['fullPath'],
   props: {
     namespace: {
       type: Object,
@@ -51,12 +51,12 @@ export default {
         this.isSaving = true;
         this.errorMessage = '';
 
-        const variables = { projectPath: this.fullPath, targetPath: this.targetPath };
-
-        if (this.isJobTokenPoliciesEnabled) {
-          variables.defaultPermissions = this.defaultPermissions;
-          variables.jobTokenPolicies = this.defaultPermissions ? [] : this.jobTokenPolicies;
-        }
+        const variables = {
+          projectPath: this.fullPath,
+          targetPath: this.targetPath,
+          defaultPermissions: this.defaultPermissions,
+        };
+        variables.jobTokenPolicies = this.defaultPermissions ? [] : this.jobTokenPolicies;
 
         const mutation = this.namespace ? editNamespaceMutation : addNamespaceMutation;
         const response = await this.$apollo.mutate({ mutation, variables });
@@ -104,7 +104,6 @@ export default {
     </gl-form-group>
 
     <policies-selector
-      v-if="isJobTokenPoliciesEnabled"
       :is-default-permissions-selected="defaultPermissions"
       :job-token-policies="jobTokenPolicies"
       :disabled="isSaving"

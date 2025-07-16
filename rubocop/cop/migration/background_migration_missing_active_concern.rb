@@ -46,7 +46,7 @@ module RuboCop
 
         def module_extends_activesupport_concern?(node)
           while node = node.parent
-            break if node.type == :module
+            break if node.module_type?
           end
 
           return false unless node

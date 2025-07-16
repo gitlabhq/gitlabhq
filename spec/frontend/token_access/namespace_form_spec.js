@@ -23,7 +23,6 @@ describe('Namespace form component', () => {
     namespace,
     addMutationHandler = defaultAddMutationHandler,
     editMutationHandler = defaultEditMutationHandler,
-    isJobTokenPoliciesEnabled = true,
   } = {}) => {
     wrapper = shallowMountExtended(NamespaceForm, {
       apolloProvider: createMockApollo([
@@ -31,7 +30,7 @@ describe('Namespace form component', () => {
         [editNamespaceMutation, editMutationHandler],
       ]),
       propsData: { namespace },
-      provide: { fullPath: 'full/path', isJobTokenPoliciesEnabled },
+      provide: { fullPath: 'full/path' },
       stubs: {
         GlFormInput: stubComponent(GlFormInput, {
           props: ['autofocus', 'disabled', 'state', 'placeholder'],
@@ -232,26 +231,6 @@ describe('Namespace form component', () => {
 
       it('clears form input error state', () => {
         expect(findFormInput().props('state')).toBe(true);
-      });
-    });
-  });
-
-  describe('when isJobTokenPoliciesEnabled is false', () => {
-    beforeEach(() => createWrapper({ isJobTokenPoliciesEnabled: false }));
-
-    it('does not show permissions selector', () => {
-      expect(findPoliciesSelector().exists()).toBe(false);
-    });
-
-    describe('when namespace is saved', () => {
-      it('calls mutation without defaultPermissions or jobTokenPolicies', () => {
-        findFormInput().vm.$emit('input', 'gitlab');
-        findSubmitButton().vm.$emit('click');
-
-        expect(defaultAddMutationHandler).toHaveBeenCalledWith({
-          projectPath: 'full/path',
-          targetPath: 'gitlab',
-        });
       });
     });
   });

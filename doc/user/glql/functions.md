@@ -93,9 +93,9 @@ by filtering by a current user or a date.
   type = MergeRequest and merged = today()
   ```
 
-## Functions in GLQL views
+## Functions in embedded views
 
-To derive a new column from an existing field of a [GLQL view](_index.md#glql-views), include
+To derive a new column from an existing field of an [embedded view](_index.md#embedded-views), include
 functions in the `fields` parameter.
 
 ### Extract labels into a new column
@@ -140,7 +140,7 @@ in the regular `labels` column, if you choose to display that column as well.
   labels("*end")
   ```
 
-To include the `labels` function in a GLQL view:
+To include the `labels` function in an embedded view:
 
 ````markdown
 ```glql

@@ -5139,6 +5139,8 @@ CREATE TABLE p_knowledge_graph_replicas (
     state smallint DEFAULT 0 NOT NULL,
     retries_left smallint NOT NULL,
     reserved_storage_bytes bigint DEFAULT 10485760 NOT NULL,
+    indexed_at timestamp with time zone,
+    schema_version smallint DEFAULT 0 NOT NULL,
     CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
 )
 PARTITION BY RANGE (namespace_id);
@@ -26939,6 +26941,7 @@ CREATE TABLE zoekt_nodes (
     usable_storage_bytes_locked_until timestamp with time zone,
     schema_version smallint DEFAULT 0 NOT NULL,
     services smallint[] DEFAULT '{0}'::smallint[] NOT NULL,
+    knowledge_graph_schema_version smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_32f39efba3 CHECK ((char_length(search_base_url) <= 1024)),
     CONSTRAINT check_38c354a3c2 CHECK ((char_length(index_base_url) <= 1024))
 );
@@ -37118,6 +37121,8 @@ CREATE UNIQUE INDEX index_p_knowledge_graph_enabled_namespaces_on_namespace_id O
 CREATE INDEX index_p_knowledge_graph_enabled_namespaces_on_state ON ONLY p_knowledge_graph_enabled_namespaces USING btree (state);
 
 CREATE INDEX index_p_knowledge_graph_replicas_on_namespace_id ON ONLY p_knowledge_graph_replicas USING btree (namespace_id);
+
+CREATE INDEX index_p_knowledge_graph_replicas_on_schema_version ON ONLY p_knowledge_graph_replicas USING btree (schema_version);
 
 CREATE INDEX index_p_knowledge_graph_replicas_on_state ON ONLY p_knowledge_graph_replicas USING btree (state);
 

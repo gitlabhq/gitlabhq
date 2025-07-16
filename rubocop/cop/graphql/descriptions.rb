@@ -134,7 +134,7 @@ module RuboCop
 
         # Returns true if `description` node is a `:str` (as opposed to a `#copy_field_description` call)
         def string?(description)
-          description.type == :str
+          description.str_type?
         end
 
         # Returns a `Parser::Source::Range` that ends just before the final `String` delimiter.

@@ -635,6 +635,7 @@ Example response:
   "external": false,
   "private_profile": false,
   "commit_email": "admin@example.com",
+  "preferred_language": "en",
 }
 ```
 

@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def valid_table_node?(table_name)
-          table_name && table_name.type == :sym
+          table_name && table_name.sym_type?
         end
       end
     end

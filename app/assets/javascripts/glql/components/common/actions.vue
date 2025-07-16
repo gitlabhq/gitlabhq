@@ -60,14 +60,14 @@ export default {
     <gl-disclosure-dropdown
       v-gl-tooltip
       class="glql-actions"
-      :title="__('GLQL view options')"
+      :title="__('Embedded view options')"
       :items="items"
       :toggle-id="toggleId"
       :no-caret="true"
       size="small"
       category="tertiary"
       icon="ellipsis_v"
-      :toggle-text="__('GLQL view options')"
+      :toggle-text="__('Embedded view options')"
       text-sr-only
       placement="bottom-end"
     />

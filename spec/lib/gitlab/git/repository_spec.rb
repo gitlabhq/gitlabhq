@@ -854,153 +854,89 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe "#log" do
-    shared_examples 'repository log' do
-      let(:commit_with_old_name) do
-        Gitlab::Git::Commit.find(repository, @commit_with_old_name_id)
+    let(:commit_with_old_name) do
+      Gitlab::Git::Commit.find(repository, @commit_with_old_name_id)
+    end
+
+    let(:commit_with_new_name) do
+      Gitlab::Git::Commit.find(repository, @commit_with_new_name_id)
+    end
+
+    let(:rename_commit) do
+      Gitlab::Git::Commit.find(repository, @rename_commit_id)
+    end
+
+    before do
+      # Add new commits so that there's a renamed file in the commit history
+      @commit_with_old_name_id = repository.commit_files(
+        user,
+        branch_name: repository.root_ref,
+        message: 'Update CHANGELOG',
+        actions: [{
+          action: :update,
+          file_path: 'CHANGELOG',
+          content: 'CHANGELOG'
+        }]
+      ).newrev
+      @rename_commit_id = repository.commit_files(
+        user,
+        branch_name: repository.root_ref,
+        message: 'Move CHANGELOG to encoding/',
+        actions: [{
+          action: :move,
+          previous_path: 'CHANGELOG',
+          file_path: 'encoding/CHANGELOG',
+          content: 'CHANGELOG'
+        }]
+      ).newrev
+      @commit_with_new_name_id = repository.commit_files(
+        user,
+        branch_name: repository.root_ref,
+        message: 'Edit encoding/CHANGELOG',
+        actions: [{
+          action: :update,
+          file_path: 'encoding/CHANGELOG',
+          content: "I'm a new changelog with different text"
+        }]
+      ).newrev
+    end
+
+    after do
+      # Erase our commits so other tests get the original repo
+      repository.write_ref(repository.root_ref, TestEnv::BRANCH_SHA['master'])
+    end
+
+    context "where 'follow' == true" do
+      let(:options) { { ref: "master", follow: true } }
+
+      context "and 'path' is a directory" do
+        it "does not follow renames" do
+          log_commits = repository.log(options.merge(path: "encoding"))
+
+          aggregate_failures do
+            expect(log_commits).to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).not_to include(commit_with_old_name)
+          end
+        end
       end
 
-      let(:commit_with_new_name) do
-        Gitlab::Git::Commit.find(repository, @commit_with_new_name_id)
-      end
-
-      let(:rename_commit) do
-        Gitlab::Git::Commit.find(repository, @rename_commit_id)
-      end
-
-      before do
-        # Add new commits so that there's a renamed file in the commit history
-        @commit_with_old_name_id = repository.commit_files(
-          user,
-          branch_name: repository.root_ref,
-          message: 'Update CHANGELOG',
-          actions: [{
-            action: :update,
-            file_path: 'CHANGELOG',
-            content: 'CHANGELOG'
-          }]
-        ).newrev
-        @rename_commit_id = repository.commit_files(
-          user,
-          branch_name: repository.root_ref,
-          message: 'Move CHANGELOG to encoding/',
-          actions: [{
-            action: :move,
-            previous_path: 'CHANGELOG',
-            file_path: 'encoding/CHANGELOG',
-            content: 'CHANGELOG'
-          }]
-        ).newrev
-        @commit_with_new_name_id = repository.commit_files(
-          user,
-          branch_name: repository.root_ref,
-          message: 'Edit encoding/CHANGELOG',
-          actions: [{
-            action: :update,
-            file_path: 'encoding/CHANGELOG',
-            content: "I'm a new changelog with different text"
-          }]
-        ).newrev
-      end
-
-      after do
-        # Erase our commits so other tests get the original repo
-        repository.write_ref(repository.root_ref, TestEnv::BRANCH_SHA['master'])
-      end
-
-      context "where 'follow' == true" do
-        let(:options) { { ref: "master", follow: true } }
-
-        context "and 'path' is a directory" do
-          it "does not follow renames" do
-            log_commits = repository.log(options.merge(path: "encoding"))
+      context "and 'path' is a file that matches the new filename" do
+        context 'without offset' do
+          it "follows renames" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG"))
 
             aggregate_failures do
               expect(log_commits).to include(commit_with_new_name)
               expect(log_commits).to include(rename_commit)
-              expect(log_commits).not_to include(commit_with_old_name)
+              expect(log_commits).to include(commit_with_old_name)
             end
           end
         end
 
-        context "and 'path' is a file that matches the new filename" do
-          context 'without offset' do
-            it "follows renames" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG"))
-
-              aggregate_failures do
-                expect(log_commits).to include(commit_with_new_name)
-                expect(log_commits).to include(rename_commit)
-                expect(log_commits).to include(commit_with_old_name)
-              end
-            end
-          end
-
-          context 'with offset=1' do
-            it "follows renames and skip the latest commit" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1))
-
-              aggregate_failures do
-                expect(log_commits).not_to include(commit_with_new_name)
-                expect(log_commits).to include(rename_commit)
-                expect(log_commits).to include(commit_with_old_name)
-              end
-            end
-          end
-
-          context 'with offset=1', 'and limit=1' do
-            it "follows renames, skip the latest commit and return only one commit" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 1))
-
-              expect(log_commits).to contain_exactly(rename_commit)
-            end
-          end
-
-          context 'with offset=1', 'and limit=2' do
-            it "follows renames, skip the latest commit and return only two commits" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 2))
-
-              aggregate_failures do
-                expect(log_commits).to contain_exactly(rename_commit, commit_with_old_name)
-              end
-            end
-          end
-
-          context 'with offset=2' do
-            it "follows renames and skip the latest commit" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2))
-
-              aggregate_failures do
-                expect(log_commits).not_to include(commit_with_new_name)
-                expect(log_commits).not_to include(rename_commit)
-                expect(log_commits).to include(commit_with_old_name)
-              end
-            end
-          end
-
-          context 'with offset=2', 'and limit=1' do
-            it "follows renames, skip the two latest commit and return only one commit" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 1))
-
-              expect(log_commits).to contain_exactly(commit_with_old_name)
-            end
-          end
-
-          context 'with offset=2', 'and limit=2' do
-            it "follows renames, skip the two latest commit and return only one commit" do
-              log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 2))
-
-              aggregate_failures do
-                expect(log_commits).not_to include(commit_with_new_name)
-                expect(log_commits).not_to include(rename_commit)
-                expect(log_commits).to include(commit_with_old_name)
-              end
-            end
-          end
-        end
-
-        context "and 'path' is a file that matches the old filename" do
-          it "does not follow renames" do
-            log_commits = repository.log(options.merge(path: "CHANGELOG"))
+        context 'with offset=1' do
+          it "follows renames and skip the latest commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1))
 
             aggregate_failures do
               expect(log_commits).not_to include(commit_with_new_name)
@@ -1010,121 +946,179 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           end
         end
 
-        context "unknown ref" do
-          it "returns an empty array" do
-            log_commits = repository.log(options.merge(ref: 'unknown'))
+        context 'with offset=1', 'and limit=1' do
+          it "follows renames, skip the latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 1))
 
-            expect(log_commits).to eq([])
+            expect(log_commits).to contain_exactly(rename_commit)
+          end
+        end
+
+        context 'with offset=1', 'and limit=2' do
+          it "follows renames, skip the latest commit and return only two commits" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 2))
+
+            aggregate_failures do
+              expect(log_commits).to contain_exactly(rename_commit, commit_with_old_name)
+            end
+          end
+        end
+
+        context 'with offset=2' do
+          it "follows renames and skip the latest commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2))
+
+            aggregate_failures do
+              expect(log_commits).not_to include(commit_with_new_name)
+              expect(log_commits).not_to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
+          end
+        end
+
+        context 'with offset=2', 'and limit=1' do
+          it "follows renames, skip the two latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 1))
+
+            expect(log_commits).to contain_exactly(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=2', 'and limit=2' do
+          it "follows renames, skip the two latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 2))
+
+            aggregate_failures do
+              expect(log_commits).not_to include(commit_with_new_name)
+              expect(log_commits).not_to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
           end
         end
       end
 
-      context "where 'follow' == false" do
-        options = { follow: false }
+      context "and 'path' is a file that matches the old filename" do
+        it "does not follow renames" do
+          log_commits = repository.log(options.merge(path: "CHANGELOG"))
 
-        context "and 'path' is a directory" do
-          let(:log_commits) do
-            repository.log(options.merge(path: "encoding"))
-          end
-
-          it "does not follow renames" do
-            expect(log_commits).to include(commit_with_new_name)
-            expect(log_commits).to include(rename_commit)
-            expect(log_commits).not_to include(commit_with_old_name)
-          end
-        end
-
-        context "and 'path' is a file that matches the new filename" do
-          let(:log_commits) do
-            repository.log(options.merge(path: "encoding/CHANGELOG"))
-          end
-
-          it "does not follow renames" do
-            expect(log_commits).to include(commit_with_new_name)
-            expect(log_commits).to include(rename_commit)
-            expect(log_commits).not_to include(commit_with_old_name)
-          end
-        end
-
-        context "and 'path' is a file that matches the old filename" do
-          let(:log_commits) do
-            repository.log(options.merge(path: "CHANGELOG"))
-          end
-
-          it "does not follow renames" do
-            expect(log_commits).to include(commit_with_old_name)
-            expect(log_commits).to include(rename_commit)
+          aggregate_failures do
             expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
           end
         end
       end
 
-      context "where provides 'after' timestamp" do
-        options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
+      context "unknown ref" do
+        it "returns an empty array" do
+          log_commits = repository.log(options.merge(ref: 'unknown'))
 
-        it "returns commits on or after that timestamp" do
-          commits = repository.log(options)
-
-          expect(commits.size).to be > 0
-          expect(commits).to satisfy do |commits|
-            commits.all? { |commit| commit.committed_date >= options[:after] }
-          end
-        end
-      end
-
-      context "where provides 'before' timestamp" do
-        options = { before: Time.iso8601('2014-03-03T20:15:01+00:00') }
-
-        it "returns commits on or before that timestamp" do
-          commits = repository.log(options)
-
-          expect(commits.size).to be > 0
-          expect(commits).to satisfy do |commits|
-            commits.all? { |commit| commit.committed_date <= options[:before] }
-          end
-        end
-      end
-
-      context 'when multiple paths are provided' do
-        let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
-
-        def commit_files(commit)
-          commit.deltas.flat_map do |delta|
-            [delta.old_path, delta.new_path].uniq.compact
-          end
-        end
-
-        it 'only returns commits matching at least one path' do
-          commits = repository.log(options)
-
-          expect(commits.size).to be > 0
-          expect(commits).to satisfy do |commits|
-            commits.none? { |commit| (commit_files(commit) & options[:path]).empty? }
-          end
-        end
-      end
-
-      context 'limit validation' do
-        where(:limit) do
-          [0, nil, '', 'foo']
-        end
-
-        with_them do
-          it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
-        end
-      end
-
-      context 'with all' do
-        it 'returns a list of commits' do
-          commits = repository.log({ all: true, limit: 50 })
-
-          expect(commits.size).to eq(50)
+          expect(log_commits).to eq([])
         end
       end
     end
 
-    context 'when Gitaly find_commits feature is enabled' do
-      it_behaves_like 'repository log'
+    context "where 'follow' == false" do
+      options = { follow: false }
+
+      context "and 'path' is a directory" do
+        let(:log_commits) do
+          repository.log(options.merge(path: "encoding"))
+        end
+
+        it "does not follow renames" do
+          expect(log_commits).to include(commit_with_new_name)
+          expect(log_commits).to include(rename_commit)
+          expect(log_commits).not_to include(commit_with_old_name)
+        end
+      end
+
+      context "and 'path' is a file that matches the new filename" do
+        let(:log_commits) do
+          repository.log(options.merge(path: "encoding/CHANGELOG"))
+        end
+
+        it "does not follow renames" do
+          expect(log_commits).to include(commit_with_new_name)
+          expect(log_commits).to include(rename_commit)
+          expect(log_commits).not_to include(commit_with_old_name)
+        end
+      end
+
+      context "and 'path' is a file that matches the old filename" do
+        let(:log_commits) do
+          repository.log(options.merge(path: "CHANGELOG"))
+        end
+
+        it "does not follow renames" do
+          expect(log_commits).to include(commit_with_old_name)
+          expect(log_commits).to include(rename_commit)
+          expect(log_commits).not_to include(commit_with_new_name)
+        end
+      end
+    end
+
+    context "where provides 'after' timestamp" do
+      options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
+
+      it "returns commits on or after that timestamp" do
+        commits = repository.log(options)
+
+        expect(commits.size).to be > 0
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.committed_date >= options[:after] }
+        end
+      end
+    end
+
+    context "where provides 'before' timestamp" do
+      options = { before: Time.iso8601('2014-03-03T20:15:01+00:00') }
+
+      it "returns commits on or before that timestamp" do
+        commits = repository.log(options)
+
+        expect(commits.size).to be > 0
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.committed_date <= options[:before] }
+        end
+      end
+    end
+
+    context 'when multiple paths are provided' do
+      let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
+
+      def commit_files(commit)
+        commit.deltas.flat_map do |delta|
+          [delta.old_path, delta.new_path].uniq.compact
+        end
+      end
+
+      it 'only returns commits matching at least one path' do
+        commits = repository.log(options)
+
+        expect(commits.size).to be > 0
+        expect(commits).to satisfy do |commits|
+          commits.none? { |commit| (commit_files(commit) & options[:path]).empty? }
+        end
+      end
+    end
+
+    context 'limit validation' do
+      where(:limit) do
+        [0, nil, '', 'foo']
+      end
+
+      with_them do
+        it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
+
+    context 'with all' do
+      it 'returns a list of commits' do
+        commits = repository.log({ all: true, limit: 50 })
+
+        expect(commits.size).to eq(50)
+      end
     end
   end
 

@@ -12,7 +12,7 @@ module RuboCop
         return unless node.method?(OBSERVED_METHOD)
 
         node.arguments.each do |argument|
-          if argument.type == :kwarg || argument.type == :kwoptarg
+          if argument.type?(:kwarg, :kwoptarg)
             add_offense(node)
           end
         end

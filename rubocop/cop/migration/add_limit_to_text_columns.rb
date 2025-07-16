@@ -74,7 +74,7 @@ module RuboCop
           migration_method = node.children[1]
 
           if migration_method == :text
-            modifier.type == :lvar
+            modifier.lvar_type?
           elsif ADD_COLUMN_METHODS.include?(migration_method)
             modifier.nil? && text_column?(node.children[4])
           end
@@ -160,7 +160,7 @@ module RuboCop
         end
 
         def table_name_or_const_name(node)
-          node.type == :const ? node.const_name : node.value
+          node.const_type? ? node.const_name : node.value
         end
 
         def encrypted_attribute_name?(attribute_name)

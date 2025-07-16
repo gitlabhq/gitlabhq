@@ -45908,6 +45908,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:
@@ -65640,6 +65643,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:

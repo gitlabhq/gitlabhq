@@ -5,14 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Pinia
 ---
 
-{{< alert type="warning" >}}
-
-**[Pilot Phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279)**: Adopt Pinia with caution.
-This is a new technology at GitLab, and we might not have all the necessary precautions and best practices in place yet.
-If you're considering using Pinia, drop a message in the `#frontend` internal Slack channel for evaluation.
-
-{{< /alert >}}
-
 [Pinia](https://pinia.vuejs.org/) is a tool for [managing client-side state](state_management.md) for Vue applications.
 Refer to the [official documentation](https://pinia.vuejs.org/core-concepts/) on how to use Pinia.
 

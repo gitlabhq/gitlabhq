@@ -51,8 +51,8 @@ describe('GlqlFacade', () => {
       expect(wrapper.find('code').text()).toBe('assignee = "foo"');
     });
 
-    it('renders the Load GLQL view button', () => {
-      expect(wrapper.findComponent(GlButton).text()).toEqual('Load GLQL view');
+    it('renders the Load embedded view button', () => {
+      expect(wrapper.findComponent(GlButton).text()).toEqual('Load embedded view');
     });
   });
 
@@ -85,13 +85,13 @@ describe('GlqlFacade', () => {
 
     it('renders actions', () => {
       expect(wrapper.findComponent(GlqlActions).props()).toEqual({
-        modalTitle: 'GLQL list',
+        modalTitle: 'Embedded list view',
         showCopyContents: true,
       });
     });
 
     it('renders a footer text', () => {
-      expect(wrapper.text()).toContain('View powered by GLQL');
+      expect(wrapper.text()).toContain('Embedded view powered by GLQL');
     });
 
     it('shows a "No data" message if the list of items provided is empty', async () => {
@@ -141,7 +141,7 @@ describe('GlqlFacade', () => {
       expect(alert.exists()).toBe(true);
       expect(alert.props('variant')).toBe('warning');
       expect(alert.text()).toContain(
-        'GLQL view timed out. Add more filters to reduce the number of results.',
+        'Embedded view timed out. Add more filters to reduce the number of results.',
       );
       expect(alert.props('primaryButtonText')).toBe('Retry');
     });
@@ -172,7 +172,7 @@ describe('GlqlFacade', () => {
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.exists()).toBe(true);
       expect(alert.props('variant')).toBe('danger');
-      expect(alert.text()).toContain('GLQL view timed out. Try again later.');
+      expect(alert.text()).toContain('Embedded view timed out. Try again later.');
     });
   });
 
@@ -225,12 +225,12 @@ describe('GlqlFacade', () => {
       await triggerIntersectionObserver();
     });
 
-    it('displays limit error alert after exceeding GLQL block limit', () => {
+    it('displays limit error alert after exceeding embedded view block limit', () => {
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.exists()).toBe(true);
       expect(alert.props('variant')).toBe('warning');
       expect(alert.text()).toContain(
-        'Only 20 GLQL views can be automatically displayed on a page. Click the button below to manually display this block.',
+        'Only 20 embedded views can be automatically displayed on a page. Click the button below to manually display this block.',
       );
       expect(alert.props('primaryButtonText')).toBe('Display block');
     });
