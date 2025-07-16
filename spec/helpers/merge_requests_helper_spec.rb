@@ -418,7 +418,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     it 'returns the correct data' do
       expected_data = {
-        group_id: group.id,
+        namespace_id: group.id,
         full_path: group.full_path,
         show_new_resource_dropdown: "false",
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,

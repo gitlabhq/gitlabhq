@@ -276,6 +276,7 @@ module MergeRequestsHelper
     merge_project = merge_request_source_project_for_project(project)
 
     common_merge_request_list_data(current_user).merge({
+      namespace_id: project.id,
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
@@ -291,7 +292,7 @@ module MergeRequestsHelper
 
   def group_merge_requests_list_data(group, current_user)
     common_merge_request_list_data(current_user).merge({
-      group_id: group.id,
+      namespace_id: group.id,
       full_path: group.full_path,
       show_new_resource_dropdown: (current_user.presence && any_projects?(@projects)).to_s,
       has_any_merge_requests: group_merge_requests(group).exists?.to_s,
