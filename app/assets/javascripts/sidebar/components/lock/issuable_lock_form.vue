@@ -6,12 +6,12 @@ import {
   GlTooltipDirective,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
+import { useNotes } from '~/notes/store/legacy_notes';
 import eventHub from '../../event_hub';
 
 export default {
@@ -60,7 +60,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNoteableData']),
+    ...mapState(useNotes, ['getNoteableData']),
     isIssuable() {
       return this.getNoteableData.targetType === TYPE_ISSUE;
     },
@@ -128,7 +128,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updateLockedAttribute']),
+    ...mapActions(useNotes, ['updateLockedAttribute']),
     toggleForm() {
       if (this.isEditable) {
         this.isLockDialogOpen = !this.isLockDialogOpen;

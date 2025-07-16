@@ -103,49 +103,52 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector class="gl-border gl-rounded-lg gl-bg-subtle" @visible="reload">
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2 gl-px-5">
-      <h4 class="gl-grow">{{ __('To-do items') }}</h4>
+  <visibility-change-detector @visible="reload">
+    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
+      <h4 class="gl-heading-4 gl-my-4 gl-grow">{{ __('To-do items') }}</h4>
 
       <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
 
-    <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
-      <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
-        <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
-        <rect x="24" y="0" width="174" height="8" rx="2" ry="2" />
-        <rect x="182" y="0" width="16" height="8" rx="2" ry="2" />
-      </gl-skeleton-loader>
-    </div>
+    <div class="gl-rounded-lg gl-bg-subtle">
+      <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
+        <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
+          <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
+          <rect x="24" y="0" width="174" height="8" rx="2" ry="2" />
+          <rect x="182" y="0" width="16" height="8" rx="2" ry="2" />
+        </gl-skeleton-loader>
+      </div>
 
-    <div
-      v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
-      class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
-    >
-      <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
-      <span>
-        <strong>{{ __('Good job!') }}</strong>
-        {{ __('All your to-do items are done.') }}
-      </span>
-    </div>
-    <div
-      v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
-      class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
-    >
-      <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
-      <span>{{ __('Sorry, your filter produced no results') }}</span>
-    </div>
-    <div v-else>
-      <todo-item
-        v-for="todo in todos"
-        :key="todo.id"
-        :todo="todo"
-        @change="$apollo.queries.todos.refetch()"
-      />
-    </div>
+      <div
+        v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
+        class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+      >
+        <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
+        <span>
+          <strong>{{ __('Good job!') }}</strong>
+          {{ __('All your to-do items are done.') }}
+        </span>
+      </div>
+      <div
+        v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
+        class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+      >
+        <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
+        <span>{{ __('Sorry, your filter produced no results') }}</span>
+      </div>
+      <ol v-else class="gl-m-0 gl-list-none gl-p-0">
+        <todo-item
+          v-for="todo in todos"
+          :key="todo.id"
+          class="first:gl-rounded-t-lg hover:!gl-bg-strong"
+          :todo="todo"
+          @change="$apollo.queries.todos.refetch()"
+        />
+      </ol>
 
-    <div class="gl-px-5 gl-py-3">
-      <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
+      <div class="gl-px-5 gl-py-3">
+        <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
+      </div>
     </div>
   </visibility-change-detector>
 </template>

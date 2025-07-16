@@ -571,7 +571,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           'read_api'            | described_class.read_only_authentication_abilities
           'read_repository'     | %i[download_code]
           'write_repository'    | %i[download_code push_code]
-          'create_runner'       | %i[create_instance_runner create_runner]
+          'create_runner'       | %i[create_instance_runners create_runners]
           'manage_runner'       | %i[assign_runner update_runner delete_runner]
           'read_user'           | []
           'sudo'                | []
@@ -645,7 +645,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       it 'succeeds for personal access tokens with the `create_runner` scope' do
         personal_access_token = create(:personal_access_token, scopes: ['create_runner'])
 
-        expect_results_with_abilities(personal_access_token, %i[create_instance_runner create_runner])
+        expect_results_with_abilities(personal_access_token, %i[create_instance_runners create_runners])
       end
 
       it 'succeeds for personal access tokens with the `manage_runner` scope' do

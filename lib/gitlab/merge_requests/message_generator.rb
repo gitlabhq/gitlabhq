@@ -61,6 +61,9 @@ module Gitlab
         'first_multiline_commit' => ->(merge_request, _, _) {
           merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title
         },
+        'first_multiline_commit_description' => ->(merge_request, _, _) {
+          merge_request.first_multiline_commit_description&.strip
+        },
         'url' => ->(merge_request, _, _) { Gitlab::UrlBuilder.build(merge_request) },
         'reviewed_by' => ->(merge_request, _, _) {
           merge_request.reviewed_by_users
@@ -110,6 +113,7 @@ module Gitlab
         target_branch
         first_commit
         first_multiline_commit
+        first_multiline_commit_description
         co_authored_by
         all_commits
       ].freeze

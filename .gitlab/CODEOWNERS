@@ -417,15 +417,6 @@ Dangerfile
 /spec/frontend/diffs/
 /spec/frontend/batch_comments/
 
-# Remove when completed: https://gitlab.com/gitlab-org/gitlab/-/issues/474653
-[Merge Requests Vuex to Pinia migration DRI] @slashmanov @iamphill @thomasrandolph
-/app/assets/javascripts/notes/stores/
-/app/assets/javascripts/mr_notes/store/
-/app/assets/javascripts/diffs/stores/
-/spec/frontend/notes/stores/
-/spec/frontend/mr_notes/stores/
-/spec/frontend/diffs/store/
-
 ^[Analytics Dashboards backend] @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/backend
 /ee/app/controllers/projects/settings/analytics_controller.rb
 /ee/app/controllers/projects/analytics/dashboards_controller.rb

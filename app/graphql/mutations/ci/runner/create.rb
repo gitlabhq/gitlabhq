@@ -6,7 +6,7 @@ module Mutations
       class Create < BaseMutation
         graphql_name 'RunnerCreate'
 
-        authorize :create_runner
+        authorize :create_runners
 
         include Mutations::Ci::Runner::CommonMutationArguments
 
@@ -46,7 +46,7 @@ module Mutations
             args[:scope] = authorized_find!(**args)
             args.except!(:group_id, :project_id)
           else
-            raise_resource_not_available_error! unless current_user.can?(:create_instance_runner)
+            raise_resource_not_available_error! unless current_user.can?(:create_instance_runners)
           end
 
           response = { runner: nil, errors: [] }

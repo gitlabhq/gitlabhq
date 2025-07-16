@@ -25,7 +25,7 @@ module Ci
         end
 
         def authorized_user?
-          user.present? && user.can?(:create_runner, scope)
+          user.present? && user.can?(:create_runners, scope)
         end
 
         private

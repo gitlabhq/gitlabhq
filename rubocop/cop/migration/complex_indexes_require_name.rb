@@ -10,18 +10,22 @@ module RuboCop
 
         MSG = 'indexes added with custom options must be explicitly named'
 
+        # @!method match_create_table_index_with_options(node)
         def_node_matcher :match_create_table_index_with_options, <<~PATTERN
           (send _ {:index } _ (hash $...))
         PATTERN
 
+        # @!method match_add_index_with_options(node)
         def_node_matcher :match_add_index_with_options, <<~PATTERN
           (send _ {:add_index :add_concurrent_index} _ _ (hash $...))
         PATTERN
 
+        # @!method name_option?(node)
         def_node_matcher :name_option?, <<~PATTERN
           (pair {(sym :name) (str "name")} _)
         PATTERN
 
+        # @!method unique_option?(node)
         def_node_matcher :unique_option?, <<~PATTERN
           (pair {(:sym :unique) (str "unique")} _)
         PATTERN

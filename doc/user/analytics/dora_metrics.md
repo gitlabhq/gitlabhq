@@ -107,6 +107,19 @@ GitLab calculates lead time for changes based on the number of seconds to succes
 
 By default, lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 
+#### Deployments finishing before merge
+
+In rare cases, a deployment may finish before its associated merge request is merged.
+
+This scenario can happen when:
+
+- Deployment processes are triggered independently of the merge workflow.
+- Manual deployment interventions occur before code review completion.
+
+In this situation, GitLab uses the formula: `GREATEST(0, deployment_finished_at - merge_request_merged_at)`.
+The `GREATEST` function ensures that lead time values are never negative, by returning `0` instead of a negative value.
+This function prevents database constraint violations while maintaining data integrity.
+
 ### How to improve lead time for changes
 
 The first step is to benchmark the CI/CD pipelines' efficiency between groups and projects. Next, you should consider:

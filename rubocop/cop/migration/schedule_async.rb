@@ -15,14 +15,17 @@ module RuboCop
           `#queue_background_migration_jobs_by_range_at_intervals` migration helpers instead.
         MSG
 
+        # @!method calls_background_migration_worker?(node)
         def_node_matcher :calls_background_migration_worker?, <<~PATTERN
           (send (const {cbase nil?} :BackgroundMigrationWorker) #perform_method? ...)
         PATTERN
 
+        # @!method calls_ci_database_worker?(node)
         def_node_matcher :calls_ci_database_worker?, <<~PATTERN
           (send (const {(const {cbase nil?} :BackgroundMigration) nil?} :CiDatabaseWorker) #perform_method? ...)
         PATTERN
 
+        # @!method perform_method?(node)
         def_node_matcher :perform_method?, <<~PATTERN
           {:perform_async :bulk_perform_async :perform_in :bulk_perform_in}
         PATTERN

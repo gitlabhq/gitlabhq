@@ -694,7 +694,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
-    enable :create_runner
+    enable :create_runners
     enable :admin_project_runners
     enable :read_project_runners
     enable :read_runners_registration_token
@@ -709,7 +709,7 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
-    enable :admin_runner
+    enable :admin_runners
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
     enable :manage_protected_tags
@@ -728,7 +728,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
-  rule { can?(:admin_runner) }.enable :read_runner
+  rule { can?(:admin_runners) }.enable :read_runners
 
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard
@@ -1179,7 +1179,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
-    prevent :create_runner
+    prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do

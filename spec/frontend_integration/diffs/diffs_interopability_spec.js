@@ -4,8 +4,6 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import initDiffsApp from '~/diffs';
 import { initMrStateLazyLoad } from '~/mr_notes/init';
-import mrNotes from '~/mr_notes/stores';
-import diffState from '~/diffs/store/modules/diff_state';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { pinia } from '~/pinia/instance';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -51,7 +49,6 @@ const EXPECT_PARALLEL_RIGHT_SIDE = [
 ];
 
 const startDiffsApp = () => {
-  mrNotes.state.diffs = diffState();
   useNotes(pinia).$reset();
   useLegacyDiffs(pinia).$reset();
   useBatchComments(pinia).$reset();

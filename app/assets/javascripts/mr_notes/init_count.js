@@ -1,13 +1,15 @@
-import store from '~/mr_notes/stores';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export function initOverviewTabCounter() {
   const discussionsCount = document.querySelector('.js-discussions-count');
-  store.watch(
-    (state, getters) => getters.discussionTabCounter,
-    (val) => {
-      if (typeof val !== 'undefined') {
-        discussionsCount.textContent = val;
-      }
-    },
-  );
+
+  const store = useNotes();
+  let counter = store.discussionTabCounter;
+  store.$subscribe(() => {
+    const newCounter = store.discussionTabCounter;
+    if (counter !== newCounter) {
+      counter = newCounter;
+      discussionsCount.textContent = newCounter;
+    }
+  });
 }

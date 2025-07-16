@@ -5,7 +5,6 @@ import { createTestingPinia } from '@pinia/testing';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
-import { createStore } from '~/mr_notes/stores';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { getDiffFileMock } from '../mock_data/diff_file';
@@ -60,7 +59,6 @@ Vue.use(PiniaVuePlugin);
 describe('DiffExpansionCell', () => {
   let mockFile;
   let mockLine;
-  let store;
   let pinia;
 
   beforeEach(() => {
@@ -68,9 +66,6 @@ describe('DiffExpansionCell', () => {
     useLegacyDiffs().loadMoreLines.mockResolvedValue();
     mockFile = getDiffFileMock();
     mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, 8);
-    store = createStore();
-    store.state.diffs.diffFiles = [mockFile];
-    jest.spyOn(store, 'dispatch').mockReturnValue(Promise.resolve());
   });
 
   const createComponent = (options = {}) => {
@@ -84,7 +79,7 @@ describe('DiffExpansionCell', () => {
     };
     const propsData = { ...defaults, ...options };
 
-    return mount(DiffExpansionCell, { store, propsData, pinia });
+    return mount(DiffExpansionCell, { propsData, pinia });
   };
 
   const findExpandUp = (wrapper) => wrapper.find(EXPAND_UP_CLASS);
@@ -131,12 +126,8 @@ describe('DiffExpansionCell', () => {
         describe(`with diffViewType (${diffViewType})`, () => {
           beforeEach(() => {
             mockLine = getLine(mockFile, diffViewType, lineIndex);
-            store.state.diffs.diffFiles = [{ ...mockFile, ...file }];
-            store.state.diffs.diffViewType = diffViewType;
-          });
-
-          it('does not initially dispatch anything', () => {
-            expect(store.dispatch).not.toHaveBeenCalled();
+            useLegacyDiffs().diffFiles = [{ ...mockFile, ...file }];
+            useLegacyDiffs().diffViewType = diffViewType;
           });
 
           it('on expand all clicked, dispatch loadMoreLines', () => {

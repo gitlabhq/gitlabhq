@@ -10,18 +10,22 @@ module RuboCop
 
         MSG = 'migration methods that refer to existing indexes must do so by name'
 
+        # @!method match_index_exists(node)
         def_node_matcher :match_index_exists, <<~PATTERN
           (send _ :index_exists? _ _ (hash $...) ?)
         PATTERN
 
+        # @!method match_remove_index(node)
         def_node_matcher :match_remove_index, <<~PATTERN
           (send _ :remove_index _ $_)
         PATTERN
 
+        # @!method match_remove_concurrent_index(node)
         def_node_matcher :match_remove_concurrent_index, <<~PATTERN
           (send _ :remove_concurrent_index _ _ (hash $...) ?)
         PATTERN
 
+        # @!method name_option?(node)
         def_node_matcher :name_option?, <<~PATTERN
           (pair {(sym :name) (str "name")} _)
         PATTERN

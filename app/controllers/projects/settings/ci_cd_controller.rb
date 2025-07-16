@@ -104,7 +104,7 @@ module Projects
       def authorize_reset_cache!
         return if can_any?(current_user, [
           :admin_pipeline,
-          :admin_runner
+          :admin_runners
         ], project)
 
         access_denied!
@@ -114,7 +114,7 @@ module Projects
         return if can_any?(current_user, [
           :admin_cicd_variables,
           :admin_protected_environments,
-          :admin_runner
+          :admin_runners
         ], project)
 
         access_denied!

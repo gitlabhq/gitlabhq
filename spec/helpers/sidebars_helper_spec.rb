@@ -649,34 +649,36 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(group).to receive(:to_global_id).and_return(5)
     end
 
-    shared_examples 'nav panels available to logged-out users' do
+    shared_examples 'nav panels available to all users' do
       it 'returns Project Panel for project nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'project',
-          user: user)).to be_a(Sidebars::Projects::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'project', user: user))
+          .to be_a(Sidebars::Projects::SuperSidebarPanel)
       end
 
       it 'returns Group Panel for group nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user)).to be_a(Sidebars::Groups::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user))
+          .to be_a(Sidebars::Groups::SuperSidebarPanel)
       end
 
       it 'returns User profile Panel for user profile nav' do
         viewed_user = build(:user)
-        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user,
-          viewed_user: viewed_user)).to be_a(Sidebars::UserProfile::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: viewed_user))
+          .to be_a(Sidebars::UserProfile::Panel)
       end
 
       it 'returns Explore Panel for explore nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user)).to be_a(Sidebars::Explore::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user))
+          .to be_a(Sidebars::Explore::Panel)
       end
 
       it 'returns Organization Panel for organization nav' do
-        expect(
-          helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user)
-        ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user))
+          .to be_a(Sidebars::Organizations::SuperSidebarPanel)
       end
 
       it 'returns Search Panel for search nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user))
+          .to be_a(Sidebars::Search::Panel)
       end
     end
 
@@ -691,40 +693,94 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       it 'returns User Settings Panel for profile nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user)).to be_a(Sidebars::UserSettings::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user))
+          .to be_a(Sidebars::UserSettings::Panel)
+      end
+
+      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user))
+          .to be_a(Sidebars::YourWork::Panel)
       end
 
       describe 'admin user' do
         let(:user) { build(:admin) }
 
         it 'returns Admin Panel for admin nav', :enable_admin_mode do
-          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::Admin::Panel)
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::Admin::Panel)
+        end
+
+        it 'returns Your Work Panel for admin nav when not in admin mode' do
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::YourWork::Panel)
         end
       end
 
-      it 'returns Your Work Panel for admin nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::YourWork::Panel)
+      describe 'fallback behavior' do
+        it 'returns "Your Work" Panel as default fallback', :use_clean_rails_memory_store_caching do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::YourWork::Panel)
+        end
+
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns YourWork panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::YourWork::Panel)
+          end
+        end
       end
 
-      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it_behaves_like 'nav panels available to logged-out users'
+      it_behaves_like 'nav panels available to all users'
     end
 
     describe 'when logged-out' do
       let(:user) { nil }
 
-      it_behaves_like 'nav panels available to logged-out users'
+      describe 'fallback behavior' do
+        it 'returns "Explore" Panel as default fallback' do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::Explore::Panel)
+        end
 
-      it 'returns "Explore" Panel as a fallback' do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::Explore::Panel)
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns Explore panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
       end
+
+      it_behaves_like 'nav panels available to all users'
     end
   end
 

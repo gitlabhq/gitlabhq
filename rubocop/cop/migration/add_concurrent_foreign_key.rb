@@ -12,10 +12,12 @@ module RuboCop
 
         MSG = '`add_foreign_key` requires downtime, use `add_concurrent_foreign_key` instead'
 
+        # @!method false_node?(node)
         def_node_matcher :false_node?, <<~PATTERN
           (false)
         PATTERN
 
+        # @!method with_lock_retries?(node)
         def_node_matcher :with_lock_retries?, <<~PATTERN
           (:send nil? :with_lock_retries)
         PATTERN

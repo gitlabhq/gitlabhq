@@ -9,7 +9,7 @@ RSpec.describe 'RunnerCreate', feature_category: :runner do
   let_it_be(:group_owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
-  let_it_be(:group) { create(:group, owners: group_owner) }
+  let_it_be(:group) { create(:group, owners: group_owner, developers: user) }
   let_it_be(:other_group) { create(:group) }
 
   let(:mutation_params) do

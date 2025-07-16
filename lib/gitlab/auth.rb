@@ -336,7 +336,7 @@ module Gitlab
           write_virtual_registry: %i[write_dependency_proxy],
           read_repository: %i[download_code],
           write_repository: %i[download_code push_code],
-          create_runner: %i[create_instance_runner create_runner],
+          create_runner: %i[create_instance_runners create_runners],
           manage_runner: %i[assign_runner update_runner delete_runner],
           ai_workflows: %i[push_code download_code]
         }

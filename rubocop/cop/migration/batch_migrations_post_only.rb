@@ -20,6 +20,7 @@ module RuboCop
 
         SYMBOLIZED_MATCHER = FORBIDDEN_METHODS.map { |w| ":#{w}" }.join(' | ')
 
+        # @!method on_forbidden_method(node)
         def_node_matcher :on_forbidden_method, <<~PATTERN
           (send nil? {#{SYMBOLIZED_MATCHER}} ...)
         PATTERN

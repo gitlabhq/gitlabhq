@@ -147,7 +147,7 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
-    enable :create_instance_runner
+    enable :create_instance_runners
     enable :read_web_hook
     enable :admin_web_hook
 

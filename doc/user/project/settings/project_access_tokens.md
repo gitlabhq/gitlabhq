@@ -237,7 +237,7 @@ Your expired access tokens are listed in the [inactive project access tokens tab
 
 {{< /history >}}
 
-Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
+Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 

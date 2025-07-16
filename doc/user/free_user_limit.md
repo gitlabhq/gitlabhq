@@ -136,7 +136,7 @@ For example, your company has Group A and Group B:
 
 Users that are not part of the top-level namespace require additional seats to
 remain active. For more information, see
-[buy seats for your subscription](../subscriptions/gitlab_com/_index.md#buy-seats-for-a-subscription).
+[buy seats for your subscription](../subscriptions/manage_users_and_seats.md#buy-more-seats).
 
 ## Increase the five-user limit
 

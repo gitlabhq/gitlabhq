@@ -48,6 +48,7 @@ module RuboCop
           'For more details check the ' \
           'https://docs.gitlab.com/ee/development/migration_style_guide.html#creating-a-new-table-when-we-have-two-foreign-keys'
 
+        # @!method create_table_with_block?(node)
         def_node_matcher :create_table_with_block?, <<~PATTERN
           (block
             (send nil? :create_table ...)
@@ -55,10 +56,12 @@ module RuboCop
             _)
         PATTERN
 
+        # @!method belongs_to_and_references(node)
         def_node_search :belongs_to_and_references, <<~PATTERN
           (send _var {:references :belongs_to} $...)
         PATTERN
 
+        # @!method foreign_key_options(node)
         def_node_search :foreign_key_options, <<~PATTERN
           (_pair
             {(sym :foreign_key) (str "foreign_key")}
@@ -66,16 +69,19 @@ module RuboCop
           )
         PATTERN
 
+        # @!method to_table(node)
         def_node_search :to_table, <<~PATTERN
           (_pair
             {(sym :to_table) (str "to_table")} {(sym $...) (str $...)}
           )
         PATTERN
 
+        # @!method argument_name?(node)
         def_node_matcher :argument_name?, <<~PATTERN
           {(sym $...) (str $...)}
         PATTERN
 
+        # @!method standalone_foreign_keys(node)
         def_node_search :standalone_foreign_keys, <<~PATTERN
           (send _var :foreign_key $...)
         PATTERN

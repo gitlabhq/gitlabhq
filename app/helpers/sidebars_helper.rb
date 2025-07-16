@@ -202,20 +202,7 @@ module SidebarsHelper
     # We only return the panel if any menu item is rendered, otherwise fallback
     return panel if panel&.render?
 
-    # Fallback menu "Your work" for logged-in users, "Explore" for logged-out
-    if user
-      context = your_work_sidebar_context(user, **context_adds)
-      Sidebars::YourWork::Panel.new(context)
-    else
-      Sidebars::Explore::Panel.new(
-        Sidebars::Context.new(
-          current_user: nil,
-          container: nil,
-          current_organization: Current.organization,
-          **context_adds
-        )
-      )
-    end
+    fallback_sidebar_panel(nav, context_adds, user)
   end
 
   def command_palette_data(project: nil, current_ref: nil)
@@ -233,6 +220,25 @@ module SidebarsHelper
   end
 
   private
+
+  def fallback_sidebar_panel(nav, context_adds, user = nil)
+    # Fallback when panels fail to render:
+    # - UserProfile panel failures (no accessible content) -> Explore navigation for private/blocked users
+    # - Other panel failures -> Your Work (logged-in) or Explore (anonymous)
+    if nav != 'user_profile' && user
+      context = your_work_sidebar_context(user, **context_adds)
+      return Sidebars::YourWork::Panel.new(context)
+    end
+
+    Sidebars::Explore::Panel.new(
+      Sidebars::Context.new(
+        current_user: user,
+        container: nil,
+        current_organization: Current.organization,
+        **context_adds
+      )
+    )
+  end
 
   def search_data
     {

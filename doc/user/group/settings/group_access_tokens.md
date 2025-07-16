@@ -261,7 +261,7 @@ Your expired access tokens are listed in the [inactive group access tokens table
 
 ## Bot users for groups
 
-Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
+Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
 Each time you create a group access token, a bot user is created and added to the group.
 These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added

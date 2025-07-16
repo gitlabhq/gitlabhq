@@ -9,8 +9,6 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { createMrVersionsMock } from '../mock_data/merge_request_diffs';
 
-jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
-
 const TEST_TARGET_BRANCH = 'foo';
 const TEST_SOURCE_BRANCH = 'dev/update';
 

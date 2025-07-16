@@ -1796,6 +1796,14 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Returns the description (without the first line/title) of the first multiline commit
+  def first_multiline_commit_description
+    strong_memoize(:first_multiline_commit_description) do
+      commit = first_multiline_commit
+      commit&.description
+    end
+  end
+
   def squash_on_merge?
     return true if squash_always?
     return false if squash_never?

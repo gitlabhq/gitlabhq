@@ -13,7 +13,7 @@ RSpec.describe Mutations::Groups::Update, feature_category: :api do
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
   let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_group_or_admin_runner) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_group_or_admin_runners) }
 
   describe '#resolve' do
     subject { described_class.new(object: group, context: context, field: nil).resolve(**params) }

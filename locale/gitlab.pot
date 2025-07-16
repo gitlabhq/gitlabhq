@@ -21104,6 +21104,9 @@ msgstr ""
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
+msgid "Data Management"
+msgstr ""
+
 msgid "Data is still calculating…"
 msgstr ""
 
@@ -27186,6 +27189,24 @@ msgid "FeatureFlag|User IDs"
 msgstr ""
 
 msgid "FeatureFlag|User List"
+msgstr ""
+
+msgid "FeaturedUpdate|%{current} / %{total}"
+msgstr ""
+
+msgid "FeaturedUpdate|Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate."
+msgstr ""
+
+msgid "FeaturedUpdate|Featured updates"
+msgstr ""
+
+msgid "FeaturedUpdate|GitLab Premium and Ultimate with Duo"
+msgstr ""
+
+msgid "FeaturedUpdate|Granular access controls for GitLab Duo Core"
+msgstr ""
+
+msgid "FeaturedUpdate|Set detailed permissions for GitLab Duo Core across projects and groups to fit your workflow."
 msgstr ""
 
 msgid "Feb"
@@ -37494,9 +37515,6 @@ msgstr ""
 msgid "Lock the discussion"
 msgstr ""
 
-msgid "Lock this discussion? Only %{strongStart}project members%{strongEnd} will be able to comment."
-msgstr ""
-
 msgid "Lock to current projects"
 msgstr ""
 
@@ -42735,12 +42753,6 @@ msgstr ""
 msgid "OKRs|An update is due on: %{update_due_date}"
 msgstr ""
 
-msgid "OWASP Top 10 2017"
-msgstr ""
-
-msgid "OWASP Top 10 2021"
-msgstr ""
-
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
@@ -43982,6 +43994,9 @@ msgid "Other labels"
 msgstr ""
 
 msgid "Other merge requests block this MR"
+msgstr ""
+
+msgid "Other updates"
 msgstr ""
 
 msgid "Other versions"
@@ -58077,10 +58092,19 @@ msgstr ""
 msgid "SecurityReports|No vulnerabilities to report"
 msgstr ""
 
+msgid "SecurityReports|None"
+msgstr ""
+
 msgid "SecurityReports|Not available"
 msgstr ""
 
 msgid "SecurityReports|Not found"
+msgstr ""
+
+msgid "SecurityReports|OWASP Top 10 2017"
+msgstr ""
+
+msgid "SecurityReports|OWASP Top 10 2021"
 msgstr ""
 
 msgid "SecurityReports|Oops, something doesn't seem right."
@@ -60187,9 +60211,6 @@ msgid "Something went wrong on our end. Please try again."
 msgstr ""
 
 msgid "Something went wrong trying to change the locked state of the discussion"
-msgstr ""
-
-msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
 msgstr ""
 
 msgid "Something went wrong trying to load issue contacts."
@@ -66656,9 +66677,6 @@ msgstr ""
 msgid "Unlock the discussion"
 msgstr ""
 
-msgid "Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment."
-msgstr ""
-
 msgid "Unlock this in order to proceed"
 msgstr ""
 
@@ -70336,6 +70354,9 @@ msgid "What would you like to do?"
 msgstr ""
 
 msgid "What's new"
+msgstr ""
+
+msgid "What's new at GitLab"
 msgstr ""
 
 msgid "What's new moved to Help."

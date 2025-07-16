@@ -40,7 +40,7 @@ module Ci
             reason: :not_authorized_to_assign_runner)
         end
 
-        unless @user.can?(:create_runner, @project)
+        unless @user.can?(:create_runners, @project)
           return ServiceResponse.error(message: _('user is not authorized to add runners to project'),
             reason: :not_authorized_to_add_runner_in_project)
         end

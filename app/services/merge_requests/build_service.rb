@@ -51,6 +51,7 @@ module MergeRequests
       :draft_title,
       :description,
       :first_multiline_commit,
+      :first_multiline_commit_description,
       :errors,
       to: :merge_request
 

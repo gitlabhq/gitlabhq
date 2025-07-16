@@ -4832,6 +4832,8 @@ CREATE TABLE p_ci_job_artifacts (
     partition_id bigint NOT NULL,
     accessibility smallint DEFAULT 0 NOT NULL,
     file_final_path text,
+    exposed_as text,
+    exposed_paths text[],
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
     CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
 )
@@ -29914,6 +29916,9 @@ ALTER TABLE oauth_applications
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
+
+ALTER TABLE p_ci_job_artifacts
+    ADD CONSTRAINT check_b8fac815e7 CHECK ((char_length(exposed_as) <= 100)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

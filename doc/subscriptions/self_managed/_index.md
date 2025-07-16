@@ -29,30 +29,6 @@ If an instance is unable to generate a quarterly usage report, the existing
 [true up model](#users-over-subscription) is used. Prorated charges are not
 possible without a quarterly usage report.
 
-### Billable users
-
-Billable users count toward the number of subscription seats purchased in your subscription.
-
-The number of billable users changes when you block, deactivate, or [add](#buy-seats-for-a-subscription) users to your instance during your current subscription period.
-
-A user is not counted as a billable user if:
-
-- They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
-  [blocked](../../administration/moderate_users.md#block-a-user).
-- They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
-- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on GitLab Self-Managed Ultimate subscriptions.
-- They have only the [Guest role on an Ultimate subscription](#free-guest-users).
-- They do not have project or group memberships on an Ultimate subscription.
-- The account is a GitLab-created account:
-  - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
-  - Bots such as:
-    - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
-    - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
-    - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
-    - Other [internal users](../../administration/internal_users.md).
-
-The amount of **Billable users** is reported once a day in the **Admin** area.
-
 ### Users in subscription
 
 The number of users in subscription represents the number of users included in your current license, based on what you've paid for.
@@ -89,32 +65,6 @@ GitLab instance than you are licensed for. You must pay for the additional users
 called the "true up" process. If you do not do this, your license key does not work.
 
 To view the number of users over subscription, go to the **Admin** area.
-
-### Free Guest users
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
-The user must not be assigned any other role, anywhere in the instance.
-
-- If your project is private or internal, a user with the Guest role has
-  [a set of permissions](../../user/permissions.md#project-members-permissions).
-- If your project is public, all users, including those with the Guest role
-  can access your project.
-- A user's highest assigned role is updated asynchronously and may take some time to update.
-
-{{< alert type="note" >}}
-
-If a user creates a project, they are assigned the Maintainer or Owner role.
-To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../../administration/external_users.md).
-
-{{< /alert >}}
 
 ## View users
 
@@ -191,32 +141,11 @@ GitLab has several features to help you manage the number of users. You can:
 - View a breakdown of users by role in the
   [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
-### Buy seats for a subscription
-
-To increase the number of users covered by your license, buy seats for your subscription
+To increase the number of users covered by your license, [buy seats for your subscription](../manage_users_and_seats.md#buy-more-seats)
 during the subscription period. The cost of seats added during the subscription
 period is prorated from the date of purchase through to the end of the subscription
 period. You can continue to add users even if you reach the number of users in
 license count. GitLab [bills you for the overage](../quarterly_reconciliation.md).
-
-You cannot buy seats for your subscription if either:
-
-- You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
-- You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
-
-To buy seats for a subscription:
-
-1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
-1. Go to the **Subscriptions & purchases** page.
-1. Select **Add seats** on the relevant subscription card.
-1. Enter the number of additional users.
-1. Review the **Purchase summary** section, which lists the total price for
-   all users on the system and a credit for what you've already paid. You are only
-   charged for the net change.
-1. Enter your payment information.
-1. Select **Purchase seats**.
-
-A payment receipt is emailed to you, which you can also access in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
 
 If your subscription was activated with an activation code, the additional seats are reflected in
 your instance immediately. If you're using a license file, you receive an updated file.
@@ -258,7 +187,7 @@ The license usage file includes the following information:
 - Timestamp the file was generated at and exported (UTC)
 - Table of historical user counts for each day in the period:
   - Timestamp the count was recorded (UTC)
-  - [Billable user](#billable-users) count
+  - [Billable user](../manage_users_and_seats.md#billable-users) count
 
 {{< alert type="note" >}}
 

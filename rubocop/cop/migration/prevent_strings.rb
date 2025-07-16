@@ -13,6 +13,7 @@ module RuboCop
           'Updating limits on strings requires downtime. This can be avoided ' \
           'by using `text` and adding a limit with `add_text_limit`'
 
+        # @!method reverting?(node)
         def_node_matcher :reverting?, <<~PATTERN
           (def :down ...)
         PATTERN

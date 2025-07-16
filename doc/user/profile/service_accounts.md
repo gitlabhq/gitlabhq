@@ -37,7 +37,7 @@ Service accounts:
 - Cannot sign in to GitLab through the UI.
 - Are identified in the group and project membership as service accounts.
 - Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
-- Are not [billable users](../../subscriptions/self_managed/_index.md#billable-users) or [internal users](../../administration/internal_users.md).
+- Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
 - Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
@@ -261,7 +261,7 @@ To revoke a personal access token for a service account:
 
 ## Related topics
 
-- [Billable users](../../subscriptions/self_managed/_index.md#billable-users)
+- [Billable users](../../subscriptions/manage_users_and_seats.md#billable-users)
 - [Associated records](account/delete_account.md#associated-records)
 - [Project access tokens - bot users](../project/settings/project_access_tokens.md#bot-users-for-projects)
 - [Group access tokens - bot users](../group/settings/group_access_tokens.md#bot-users-for-groups)

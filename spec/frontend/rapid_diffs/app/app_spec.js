@@ -17,7 +17,6 @@ import { useApp } from '~/rapid_diffs/stores/app';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/awards_handler');
-jest.mock('~/mr_notes/stores');
 jest.mock('~/rapid_diffs/app/view_settings');
 jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/init_file_browser');

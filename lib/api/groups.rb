@@ -76,7 +76,7 @@ module API
       def authorized_params?(group, params)
         return true if can?(current_user, :admin_group, group)
 
-        can?(current_user, :admin_runner, group) &&
+        can?(current_user, :admin_runners, group) &&
           params.keys == [:shared_runners_setting]
       end
 
@@ -337,7 +337,7 @@ module API
         group.preload_shared_group_links
 
         mark_throttle! :update_namespace_name, scope: group if params.key?(:name) && params[:name].present?
-        authorize_any! [:admin_group, :admin_runner], group
+        authorize_any! [:admin_group, :admin_runners], group
 
         group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
 

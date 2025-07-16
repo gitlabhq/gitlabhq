@@ -1600,8 +1600,6 @@
     method: GET
     query_params:
       per_page: '100'
-      sort: created
-      state: all
     headers:
       Host: api.github.com
   response:
@@ -1947,8 +1945,6 @@
     method: GET
     query_params:
       per_page: '100'
-      sort: created
-      state: all
     headers:
       Host: api.github.com
   response:

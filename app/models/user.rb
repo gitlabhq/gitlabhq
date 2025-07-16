@@ -2113,7 +2113,7 @@ class User < ApplicationRecord
     # and that would get used by `ci_available_group_runners`, but that would require deeper changes
     # from the ~"group::authorization" team.
     # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
-    return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
+    return Ability.allowed?(self, :admin_runners, runner.owner) if runner.group_type?
 
     ci_available_runners.include?(runner)
   end

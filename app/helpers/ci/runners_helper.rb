@@ -128,10 +128,10 @@ module Ci
 
     def project_runners_settings_data(project)
       can_create_runner_for_group =
-        can?(current_user, :create_runner, project.group) || can?(current_user, :register_group_runners, project.group)
+        can?(current_user, :create_runners, project.group) || can?(current_user, :register_group_runners, project.group)
 
       data = {
-        can_create_runner: can?(current_user, :create_runner, project).to_s,
+        can_create_runner: can?(current_user, :create_runners, project).to_s,
         allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
         registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,
         project_full_path: project.full_path,

@@ -330,7 +330,7 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         post ':id/runners' do
-          authorize! :create_runner, user_project # Ensure the user is allowed to create a runner on the target project
+          authorize! :create_runners, user_project # Ensure the user is allowed to create a runner on the target project
 
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)

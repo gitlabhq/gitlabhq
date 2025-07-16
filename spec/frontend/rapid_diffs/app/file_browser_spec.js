@@ -4,7 +4,6 @@ import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import FileBrowser from '~/rapid_diffs/app/file_browser.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
-import store from '~/mr_notes/stores';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
@@ -18,7 +17,6 @@ describe('FileBrowser', () => {
 
   const createComponent = () => {
     wrapper = shallowMount(FileBrowser, {
-      store,
       pinia,
     });
   };

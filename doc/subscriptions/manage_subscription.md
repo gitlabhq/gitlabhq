@@ -234,7 +234,7 @@ To manually renew your subscription:
    {{< alert type="note" >}}
 
    Make sure this number is equal to, or greater than
-   the number of [billable users](self_managed/_index.md#billable-users) in the system at the time of renewal.
+   the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
 
    {{< /alert >}}
 
@@ -403,7 +403,7 @@ Customers Portal:
   - Licensee name
   - Licensee email
 - Historical [maximum user count](self_managed/_index.md#maximum-users)
-- [Billable users count](self_managed/_index.md#billable-users)
+- [Billable users count](manage_users_and_seats.md#billable-users)
 - GitLab version
 - Hostname
 - Instance ID

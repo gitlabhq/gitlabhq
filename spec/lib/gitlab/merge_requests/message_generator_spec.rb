@@ -333,6 +333,26 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           end
         end
       end
+
+      context 'when project has merge commit template with first_multiline_commit_description' do
+        let(message_template_name) { <<~MSG.rstrip }
+          Message: %{first_multiline_commit_description}
+        MSG
+
+        it 'uses first multiline commit description' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Message: Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          MSG
+        end
+
+        context 'when branch has no multiline commits' do
+          let(:source_branch) { 'spooky-stuff' }
+
+          it 'is empty' do
+            expect(result_message).to eq 'Message: '
+          end
+        end
+      end
     end
 
     context 'when project has merge commit template with reviewers' do
@@ -679,6 +699,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         description:%{description}
         first_commit:%{first_commit}
         first_multiline_commit:%{first_multiline_commit}
+        first_multiline_commit_description:%{first_multiline_commit_description}
         url:%{url}
         reviewed_by:%{reviewed_by}
         approved_by:%{approved_by}
@@ -702,6 +723,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           first_multiline_commit:Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          first_multiline_commit_description:Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
           url:#{Gitlab::UrlBuilder.build(merge_request)}
           reviewed_by:
           approved_by:
@@ -905,6 +927,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         description:%{description}
         first_commit:%{first_commit}
         first_multiline_commit:%{first_multiline_commit}
+        first_multiline_commit_description:%{first_multiline_commit_description}
         url:%{url}
         approved_by:%{approved_by}
         merged_by:%{merged_by}
@@ -926,6 +949,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           first_multiline_commit:Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          first_multiline_commit_description:Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
           url:
           approved_by:
           merged_by:
@@ -949,6 +973,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
             description:
             first_commit:
             first_multiline_commit:Bugfix
+            first_multiline_commit_description:
             url:
             approved_by:
             merged_by:

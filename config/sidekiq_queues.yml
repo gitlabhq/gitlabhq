@@ -961,6 +961,8 @@
   - 1
 - - security_pipeline_execution_policies_run_schedule
   - 1
+- - security_policies_failed_pipelines_audit
+  - 1
 - - security_policies_project_transfer
   - 1
 - - security_policies_skip_pipelines_audit

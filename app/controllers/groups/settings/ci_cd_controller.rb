@@ -55,7 +55,7 @@ module Groups
         return if can_any?(current_user, [
           :admin_cicd_variables,
           :admin_protected_environments,
-          :admin_runner
+          :admin_runners
         ], group)
 
         access_denied!
