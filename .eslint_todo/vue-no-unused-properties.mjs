@@ -243,7 +243,6 @@ export default {
     'ee/app/assets/javascripts/ci/secrets/components/secret_details/secret_details.vue',
     'ee/app/assets/javascripts/ci/secrets/components/secret_details/secret_details_wrapper.vue',
     'ee/app/assets/javascripts/ci/secrets/components/secret_form/secret_form.vue',
-    'ee/app/assets/javascripts/geo_sites/components/header/geo_site_last_updated.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_form.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedule.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/rotations/components/rotation_assignee.vue',

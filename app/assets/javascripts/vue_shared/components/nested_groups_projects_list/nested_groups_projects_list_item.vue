@@ -27,7 +27,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
-    initialExpanded: {
+    /**
+     * Allows the parent component to override `isExpanded`.
+     * This is needed when searching as we want the tree to be open after searching.
+     */
+    expandedOverride: {
       type: Boolean,
       required: false,
       default: false,
@@ -35,7 +39,7 @@ export default {
   },
   data() {
     return {
-      isExpanded: this.initialExpanded,
+      isExpanded: this.expandedOverride,
     };
   },
   computed: {
@@ -101,6 +105,11 @@ export default {
       return this.item.children;
     },
   },
+  watch: {
+    expandedOverride(newValue) {
+      this.isExpanded = newValue;
+    },
+  },
   methods: {
     onNestedItemsToggleClick() {
       this.isExpanded = !this.isExpanded;
@@ -131,7 +140,7 @@ export default {
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"
         :timestamp-type="timestampType"
-        :initial-expanded="initialExpanded"
+        :expanded-override="expandedOverride"
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
         @refetch="onRefetch"

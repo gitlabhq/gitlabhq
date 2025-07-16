@@ -30,6 +30,9 @@ query getAdminProjects(
     count
     nodes {
       ...Project
+      statistics {
+        storageSize
+      }
     }
     pageInfo {
       ...PageInfo

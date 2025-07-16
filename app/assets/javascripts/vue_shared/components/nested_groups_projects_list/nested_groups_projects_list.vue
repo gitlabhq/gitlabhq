@@ -31,7 +31,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
-    initialExpanded: {
+    /**
+     * Allows the parent component to override `isExpanded`.
+     * This is needed when searching as we want the tree to be open after searching.
+     */
+    expandedOverride: {
       type: Boolean,
       required: false,
       default: false,
@@ -48,7 +52,7 @@ export default {
       :key="`${item.type}-${item.id}`"
       :item="item"
       :timestamp-type="timestampType"
-      :initial-expanded="initialExpanded"
+      :expanded-override="expandedOverride"
       @load-children="$emit('load-children', $event)"
       @refetch="$emit('refetch')"
     />

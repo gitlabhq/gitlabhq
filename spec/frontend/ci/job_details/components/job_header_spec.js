@@ -108,7 +108,7 @@ describe('Header CI Component', () => {
     it('polls query to receive status updates', () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      jest.advanceTimersByTime(10000);
+      jest.advanceTimersByTime(30000);
 
       expect(successHandler).toHaveBeenCalledTimes(2);
     });

@@ -81,6 +81,7 @@ describe('ProjectsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
+  const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
   const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
@@ -190,6 +191,36 @@ describe('ProjectsListItem', () => {
 
     it('does not render access level badge', () => {
       expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when project does not have statistics key', () => {
+    beforeEach(createComponent);
+
+    it('does not render storage size badge', () => {
+      expect(findStorageSizeBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when project has statistics key', () => {
+    it('renders storage size in human size', () => {
+      createComponent({
+        propsData: { project: { ...project, statistics: { storageSize: 3072 } } },
+      });
+
+      expect(findStorageSizeBadge().text()).toBe('3.0 KiB');
+    });
+
+    describe('when storage size is null', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: { project: { ...project, statistics: { storageSize: null } } },
+        });
+      });
+
+      it('renders 0 B', () => {
+        expect(findStorageSizeBadge().text()).toBe('0 B');
+      });
     });
   });
 

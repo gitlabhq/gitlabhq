@@ -19598,6 +19598,7 @@ CREATE TABLE packages_debian_file_metadata (
     fields jsonb,
     project_id bigint,
     CONSTRAINT check_2ebedda4b6 CHECK ((char_length(component) <= 255)),
+    CONSTRAINT check_58297dfb13 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_e6e1fffcca CHECK ((char_length(architecture) <= 255))
 );
 

@@ -34,7 +34,11 @@ module WikiActions
 
     before_action do
       push_frontend_feature_flag(:preserve_markdown, container)
-      push_frontend_feature_flag(:glql_work_items, container)
+
+      if Feature.enabled?(:glql_work_items, container) || Feature.enabled?(:glql_work_items, current_user)
+        push_force_frontend_feature_flag(:glql_work_items, true)
+      end
+
       push_force_frontend_feature_flag(:glql_integration, !!container&.glql_integration_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end

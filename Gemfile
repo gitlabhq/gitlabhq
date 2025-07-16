@@ -242,9 +242,9 @@ gem 'seed-fu', '~> 2.3.7', feature_category: :shared
 gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
 gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
-gem 'aws-sdk-core', '~> 3.225.0', feature_category: :global_search
+gem 'aws-sdk-core', '~> 3.226.0', feature_category: :global_search
 gem 'aws-sdk-cloudformation', '~> 1', feature_category: :global_search
-gem 'aws-sdk-s3', '~> 1.189.0', feature_category: :global_search
+gem 'aws-sdk-s3', '~> 1.192.0', feature_category: :global_search
 gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
 gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
@@ -661,7 +661,7 @@ gem 'lograge', '~> 0.5', feature_category: :shared
 gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
 
 # DNS Lookup
-gem 'gitlab-net-dns', '~> 0.12.0', feature_category: :shared
+gem 'gitlab-net-dns', '~> 0.15.0', feature_category: :shared
 
 # Countries list
 gem 'countries', '~> 4.0.0', feature_category: :shared

@@ -2,16 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
   Exclude:
-    - 'ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb'
-    - 'ee/spec/models/security/scan_spec.rb'
-    - 'ee/spec/policies/group_policy_spec.rb'
-    - 'ee/spec/policies/project_policy_spec.rb'
-    - 'ee/spec/requests/api/dora/metrics_spec.rb'
-    - 'ee/spec/requests/api/graphql/group/epic/epic_ancestors_spec.rb'
-    - 'ee/spec/requests/api/graphql/group/epic/epic_children_spec.rb'
-    - 'ee/spec/requests/api/graphql/group/epics_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/create_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/releases/update_spec.rb'
     - 'ee/spec/requests/api/license_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/requests/api/saml_group_links_spec.rb'

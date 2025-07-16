@@ -56,7 +56,7 @@ describe('NestedGroupsProjectsListItem', () => {
         expect(findNestedGroupsProjectsList().props()).toMatchObject({
           timestampType: defaultPropsData.timestampType,
           items: [],
-          initialExpanded: false,
+          expandedOverride: false,
         });
         expect(findNestedGroupsProjectsList().classes()).toContain('gl-hidden');
       });
@@ -177,7 +177,7 @@ describe('NestedGroupsProjectsListItem', () => {
   });
 
   describe('when children have already been loaded', () => {
-    describe('when initialExpanded is true', () => {
+    describe('when expandedOverride is true', () => {
       it('passes children to NestedGroupsProjectsList component and removes gl-hidden class', () => {
         createComponent({
           propsData: {
@@ -185,7 +185,7 @@ describe('NestedGroupsProjectsListItem', () => {
               ...topLevelGroupA,
               children: topLevelGroupA.childrenToLoad,
             },
-            initialExpanded: true,
+            expandedOverride: true,
           },
         });
 
@@ -204,7 +204,7 @@ describe('NestedGroupsProjectsListItem', () => {
                 children: topLevelGroupA.childrenToLoad,
                 childrenCount: 25,
               },
-              initialExpanded: true,
+              expandedOverride: true,
             },
           });
 
@@ -212,9 +212,28 @@ describe('NestedGroupsProjectsListItem', () => {
           expect(findMoreChildrenLink().text()).toBe('View all (23 more items)');
         });
       });
+
+      describe('when expandedOverride prop is changed to false', () => {
+        it('collapses list item', async () => {
+          createComponent({
+            propsData: {
+              item: {
+                ...topLevelGroupA,
+                children: topLevelGroupA.childrenToLoad,
+              },
+              expandedOverride: true,
+            },
+          });
+          expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
+
+          await wrapper.setProps({ expandedOverride: false });
+
+          expect(findNestedGroupsProjectsList().classes()).toContain('gl-hidden');
+        });
+      });
     });
 
-    describe('when initialExpanded is false', () => {
+    describe('when expandedOverride is false', () => {
       beforeEach(() => {
         createComponent({
           propsData: {

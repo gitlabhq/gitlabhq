@@ -39,7 +39,7 @@ describe('NestedGroupsProjectsList', () => {
       defaultPropsData.items.map((item) => ({
         item,
         timestampType: defaultPropsData.timestampType,
-        initialExpanded: false,
+        expandedOverride: false,
       })),
     );
   });

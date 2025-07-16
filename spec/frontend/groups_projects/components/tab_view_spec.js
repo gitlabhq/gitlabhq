@@ -9,13 +9,14 @@ import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/yo
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
 import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import TabView from '~/groups_projects/components/tab_view.vue';
 import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
+import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -37,6 +38,7 @@ import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
@@ -80,10 +82,14 @@ describe('TabView', () => {
     paginationType: PAGINATION_TYPE_KEYSET,
   };
 
-  const createComponent = ({ handlers = [], propsData = {} } = {}) => {
+  const createComponent = ({
+    handlers = [],
+    propsData = {},
+    mountFn = shallowMountExtended,
+  } = {}) => {
     mockApollo = createMockApollo(handlers, resolvers(endpoint));
 
-    wrapper = shallowMountExtended(TabView, {
+    wrapper = mountFn(TabView, {
       apolloProvider: mockApollo,
       propsData: { ...defaultPropsData, ...propsData },
     });
@@ -224,23 +230,58 @@ describe('TabView', () => {
   });
 
   describe('when tab.listComponent is NestedGroupsProjectsList', () => {
-    beforeEach(() => {
-      mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
-    });
-
     describe('when search is defined', () => {
       beforeEach(async () => {
-        createComponent({ propsData: { tab: MEMBER_TAB_GROUPS } });
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
+        createComponent({
+          propsData: { tab: MEMBER_TAB_GROUPS },
+        });
         await waitForPromises();
       });
 
-      it('passes initialExpanded prop as true', () => {
-        expect(wrapper.findComponent(NestedGroupsProjectsList).props('initialExpanded')).toBe(true);
+      it('passes expandedOverride prop as true', () => {
+        expect(wrapper.findComponent(NestedGroupsProjectsList).props('expandedOverride')).toBe(
+          true,
+        );
+      });
+    });
+
+    describe('when GraphQL query is cached and search is cleared', () => {
+      // We need to globally render components to avoid circular references
+      // https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
+      Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
+      Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
+
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsWithChildrenResponse);
+        createComponent({
+          propsData: {
+            tab: { ...MEMBER_TAB_GROUPS, listComponent: markRaw(NestedGroupsProjectsList) },
+            search: '',
+          },
+          mountFn: mountExtended,
+        });
+        await waitForPromises();
+
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsWithChildrenResponse);
+        await wrapper.setProps({ search: 'foo' });
+        await waitForPromises();
+
+        await wrapper.setProps({ search: '' });
+      });
+
+      it('collapses groups that were expanded due to searching', () => {
+        expect(
+          wrapper
+            .findByTestId('nested-groups-project-list-item-toggle-button')
+            .attributes('aria-expanded'),
+        ).toBe('false');
       });
     });
 
     describe('when search is empty', () => {
       beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
         createComponent({
           propsData: {
             tab: MEMBER_TAB_GROUPS,
@@ -252,8 +293,8 @@ describe('TabView', () => {
         await waitForPromises();
       });
 
-      it('passes initialExpanded prop as false', () => {
-        expect(wrapper.findComponent(NestedGroupsProjectsList).props('initialExpanded')).toBe(
+      it('passes expandedOverride prop as false', () => {
+        expect(wrapper.findComponent(NestedGroupsProjectsList).props('expandedOverride')).toBe(
           false,
         );
       });
@@ -262,6 +303,10 @@ describe('TabView', () => {
     describe('when load-children event is fired', () => {
       const [group] = dashboardGroupsResponse;
       const [{ children }] = dashboardGroupsWithChildrenResponse;
+
+      beforeEach(() => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
+      });
 
       describe('when API request is loading', () => {
         beforeEach(async () => {

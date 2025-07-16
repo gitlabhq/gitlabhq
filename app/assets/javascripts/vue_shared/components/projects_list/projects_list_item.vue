@@ -12,7 +12,7 @@ import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_leve
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __, s__, n__, sprintf } from '~/locale';
-import { numberToMetricPrefix } from '~/lib/utils/number_utils';
+import { numberToHumanSize, numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
@@ -107,6 +107,16 @@ export default {
     },
     shouldShowAccessLevel() {
       return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
+    },
+    storageSize() {
+      if (!this.hasStatistics) {
+        return null;
+      }
+
+      return numberToHumanSize(this.project.statistics.storageSize || 0, 1);
+    },
+    hasStatistics() {
+      return Object.hasOwn(this.project, 'statistics');
     },
     starsHref() {
       return `${this.project.relativeWebUrl}/-/starrers`;
@@ -290,6 +300,7 @@ export default {
     <template #stats>
       <ci-icon v-if="pipelineStatus" :status="pipelineStatus" />
       <project-list-item-inactive-badge :project="project" />
+      <gl-badge v-if="storageSize" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <list-item-stat
         :href="starsHref"
         :tooltip-text="$options.i18n.stars"
