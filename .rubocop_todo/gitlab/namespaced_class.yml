@@ -548,7 +548,6 @@ Gitlab/NamespacedClass:
     - 'app/serializers/merge_request_poll_cached_widget_entity.rb'
     - 'app/serializers/merge_request_poll_widget_entity.rb'
     - 'app/serializers/merge_request_serializer.rb'
-    - 'app/serializers/merge_request_sidebar_basic_entity.rb'
     - 'app/serializers/merge_request_sidebar_extras_entity.rb'
     - 'app/serializers/merge_request_user_entity.rb'
     - 'app/serializers/merge_request_widget_commit_entity.rb'

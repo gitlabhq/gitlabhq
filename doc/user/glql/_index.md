@@ -134,8 +134,9 @@ This source should render a table like the one below:
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
-- Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
+- `title` and `description` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
 - Sorting and pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502701) in GitLab 18.2.
+- `collapsed` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197824) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -146,6 +147,7 @@ Supported parameters:
 
 | Parameter     | Default                                       | Description |
 | ------------- | --------------------------------------------- | ----------- |
+| `collapsed`   | `false`                                       | Whether to collapse or expand the view. |
 | `description` | None                                          | An optional description to display below the title. |
 | `display`     | `table`                                       | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
 | `fields`      | `title`                                       | A comma-separated list of [fields](fields.md#fields-in-embedded-views) to include in the view. |

@@ -2,7 +2,6 @@
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { identity, uniqueId } from 'lodash';
 import { __ } from '~/locale';
-import { eventHubByKey } from '../../utils/event_hub_factory';
 
 export default {
   name: 'GlqlActions',
@@ -12,7 +11,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['queryKey'],
   props: {
     modalTitle: {
       type: String,
@@ -27,7 +25,6 @@ export default {
   },
   data() {
     return {
-      eventHub: eventHubByKey(this.queryKey),
       toggleId: uniqueId('dropdown-toggle-btn-'),
     };
   },
@@ -36,19 +33,19 @@ export default {
       return [
         {
           text: __('View source'),
-          action: () => this.eventHub.$emit('viewSource', { title: this.modalTitle }),
+          action: () => this.$emit('viewSource', { title: this.modalTitle }),
         },
         {
           text: __('Copy source'),
-          action: () => this.eventHub.$emit('copySource'),
+          action: () => this.$emit('copySource'),
         },
         this.showCopyContents && {
           text: __('Copy contents'),
-          action: () => this.eventHub.$emit('copyAsGFM'),
+          action: () => this.$emit('copyAsGFM'),
         },
         {
           text: __('Reload'),
-          action: () => this.eventHub.$emit('reload'),
+          action: () => this.$emit('reload'),
         },
       ].filter(identity);
     },

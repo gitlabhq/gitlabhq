@@ -5,7 +5,7 @@ import { eventHubByKey } from '../../utils/event_hub_factory';
 import { DEFAULT_PAGE_SIZE } from '../../constants';
 
 export default {
-  name: 'GlqlFooter',
+  name: 'GlqlPagination',
   components: {
     GlButton,
   },

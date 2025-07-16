@@ -15,25 +15,15 @@ module Ci
     def for_pipeline(pipeline, limit: MAX_EXPOSED_ARTIFACTS)
       results = []
 
-      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
-        pipeline.builds.latest.each_batch do |job_batch|
-          job_batch.select_with_exposed_artifacts.each do |job|
-            exposed_artifacts = for_job(job)
-            results << exposed_artifacts if exposed_artifacts
-
-            break if results.size >= limit
-          end
+      pipeline.builds.latest.each_batch do |job_batch|
+        job_batch.select_with_exposed_artifacts.each do |job|
+          exposed_artifacts = for_job(job)
+          results << exposed_artifacts if exposed_artifacts
 
           break if results.size >= limit
         end
-      else
-        pipeline.builds.latest.with_exposed_artifacts.find_each do |job|
-          if job_exposed_artifacts = for_job(job)
-            results << job_exposed_artifacts
-          end
 
-          break if results.size >= limit
-        end
+        break if results.size >= limit
       end
 
       results

@@ -400,10 +400,11 @@ Settings related to the deletion of projects and groups.
 
 - Delayed group deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven days to 30 days in 18.0.2.
 
 {{< /history >}}
 
-Groups are permanently deleted after a seven-day delay.
+Groups are permanently deleted after a 30-day delay.
 
 See how to [view and restore groups marked for deletion](../group/_index.md#restore-a-group).
 
@@ -413,10 +414,11 @@ See how to [view and restore groups marked for deletion](../group/_index.md#rest
 
 - Delayed project deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven-days to 30 days in 18.0.2.
 
 {{< /history >}}
 
-Projects are permanently deleted after a seven-day delay.
+Projects are permanently deleted after a 30-day delay.
 
 See how to [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
 

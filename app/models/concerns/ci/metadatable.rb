@@ -32,10 +32,9 @@ module Ci
       def self.any_with_exposed_artifacts?
         found_exposed_artifacts = false
 
-        # TODO: Remove :project preload when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-        includes(:project).each_batch do |batch|
+        each_batch do |batch|
           # We only load what we need for `has_exposed_artifacts?`
-          records = batch.select(:id, :partition_id, :project_id, :options).to_a
+          records = batch.select(:id, :partition_id, :options).to_a
 
           ActiveRecord::Associations::Preloader.new(
             records: records,
@@ -58,11 +57,7 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
-        options.dig(:artifacts, :expose_as).present?
-      else
-        !!metadata&.has_exposed_artifacts?
-      end
+      options.dig(:artifacts, :expose_as).present?
     end
 
     def ensure_metadata
@@ -92,12 +87,6 @@ module Ci
 
     def options=(value)
       write_metadata_attribute(:options, :config_options, value)
-
-      # TODO: Remove code below when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-      ensure_metadata.tap do |metadata|
-        # Store presence of exposed artifacts in build metadata to make it easier to query
-        metadata.has_exposed_artifacts = value&.dig(:artifacts, :expose_as).present?
-      end
     end
 
     def yaml_variables=(value)

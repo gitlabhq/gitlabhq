@@ -405,36 +405,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '.with_exposed_artifacts' do
-    subject { described_class.with_exposed_artifacts }
-
-    let_it_be(:job1) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:job3) { create(:ci_build, pipeline: pipeline) }
-
-    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
-
-    context 'when some jobs have exposed artifacts and some not' do
-      let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
-
-      before_all do
-        job1.ensure_metadata.update!(has_exposed_artifacts: nil)
-        job3.ensure_metadata.update!(has_exposed_artifacts: false)
-      end
-
-      it 'selects only the jobs with exposed artifacts' do
-        is_expected.to eq([job2])
-      end
-    end
-
-    context 'when job does not expose artifacts' do
-      let(:options) { nil }
-
-      it 'returns an empty array' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
   describe '.with_artifacts' do
     subject(:builds) { described_class.with_artifacts(artifact_scope) }
 
@@ -2228,14 +2198,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it 'does not persist data in build' do
       expect(build.read_attribute(:options)).to be_nil
-    end
-
-    context 'when options include artifacts:expose_as' do
-      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }, pipeline: pipeline) }
-
-      it 'saves the presence of expose_as into build metadata' do
-        expect(build.metadata).to have_exposed_artifacts
-      end
     end
   end
 

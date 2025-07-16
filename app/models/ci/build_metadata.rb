@@ -39,8 +39,6 @@ module Ci
     end
 
     scope :with_interruptible, -> { where(interruptible: true) }
-    # TODO: Remove this scope when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-    scope :with_exposed_artifacts, -> { where(has_exposed_artifacts: true) }
 
     enum :timeout_source, {
       unknown_timeout_source: 1,

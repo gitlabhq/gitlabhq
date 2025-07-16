@@ -2391,6 +2391,9 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
+msgid "AICatalog|Agent"
+msgstr ""
+
 msgid "AICatalog|Agents"
 msgstr ""
 
@@ -2422,6 +2425,12 @@ msgid "AICatalog|Edit agent"
 msgstr ""
 
 msgid "AICatalog|Failed to run agent."
+msgstr ""
+
+msgid "AICatalog|Flow"
+msgstr ""
+
+msgid "AICatalog|Flows"
 msgstr ""
 
 msgid "AICatalog|Get started with the AI Catalog"
@@ -73665,9 +73674,6 @@ msgid "added a %{link_type} link"
 msgstr ""
 
 msgid "added a Zoom call to this issue"
-msgstr ""
-
-msgid "agent"
 msgstr ""
 
 msgid "agents"

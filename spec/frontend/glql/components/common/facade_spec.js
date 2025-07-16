@@ -8,7 +8,6 @@ import GlqlFacade from '~/glql/components/common/facade.vue';
 import GlqlActions from '~/glql/components/common/actions.vue';
 import { executeAndPresentQuery, presentPreview } from '~/glql/core';
 import Counter from '~/glql/utils/counter';
-import { eventHubByKey } from '~/glql/utils/event_hub_factory';
 import { MOCK_ISSUES } from '../../mock_data';
 
 jest.mock('~/glql/core');
@@ -16,7 +15,6 @@ jest.mock('~/glql/core');
 describe('GlqlFacade', () => {
   let wrapper;
   const mockQueryKey = 'glql_key';
-  const mockEventHub = eventHubByKey(mockQueryKey);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
   const createComponent = async (props = {}, glFeatures = {}) => {
@@ -111,7 +109,7 @@ describe('GlqlFacade', () => {
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'render_glql_block',
-        { label: 'glql_key' },
+        { label: expect.any(String) },
         undefined,
       );
     });
@@ -119,7 +117,7 @@ describe('GlqlFacade', () => {
     it('reloads the query when reload event is emitted on event hub', async () => {
       jest.spyOn(wrapper.vm, 'reloadGlqlBlock');
 
-      mockEventHub.$emit('reload');
+      wrapper.findComponent(GlqlActions).vm.$emit('reload');
 
       await nextTick();
 

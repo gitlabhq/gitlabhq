@@ -169,12 +169,6 @@ module Ci
       )
     end
 
-    # TODO: Remove this scope when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-    scope :with_exposed_artifacts, -> do
-      joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
-        .includes(:metadata, :job_artifacts_metadata)
-    end
-
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }

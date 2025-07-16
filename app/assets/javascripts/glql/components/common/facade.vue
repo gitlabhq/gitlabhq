@@ -9,6 +9,8 @@ import {
   GlSprintf,
   GlExperimentBadge,
 } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+import { sha256 } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
@@ -19,7 +21,7 @@ import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
 import { executeAndPresentQuery, presentPreview, loadMore } from '../../core';
 import Counter from '../../utils/counter';
 import { eventHubByKey } from '../../utils/event_hub_factory';
-import GlqlFooter from './footer.vue';
+import GlqlPagination from './pagination.vue';
 import GlqlActions from './actions.vue';
 import GlqlFootnote from './footnote.vue';
 
@@ -37,7 +39,7 @@ export default {
     GlExperimentBadge,
     GlIntersectionObserver,
     CrudComponent,
-    GlqlFooter,
+    GlqlPagination,
     GlqlFootnote,
     GlqlActions,
   },
@@ -55,9 +57,10 @@ export default {
   data() {
     return {
       eventHub: eventHubByKey(this.queryKey),
+      crudComponentId: uniqueId('glql-crud-'),
 
       queryModalSettings: {
-        id: `glql-${this.queryKey}`,
+        id: uniqueId('glql-modal-'),
         show: false,
         title: '',
         primaryAction: { text: __('Copy source') },
@@ -109,13 +112,14 @@ export default {
       return `\`\`\`glql\n${this.query}\n\`\`\``;
     },
   },
+  watch: {
+    previewPresenter(previewPresenter) {
+      this.isCollapsed = previewPresenter?.config?.collapsed || false;
+    },
+  },
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
 
-    this.eventHub.$on('viewSource', this.viewSource.bind(this));
-    this.eventHub.$on('copySource', this.copySource.bind(this));
-    this.eventHub.$on('copyAsGFM', this.copyAsGFM.bind(this));
-    this.eventHub.$on('reload', this.reload.bind(this));
     this.eventHub.$on('loadMore', this.loadMore.bind(this));
   },
 
@@ -223,7 +227,7 @@ export default {
     renderMarkdown,
     async trackRender() {
       try {
-        this.trackEvent('render_glql_block', { label: this.queryKey });
+        this.trackEvent('render_glql_block', { label: await sha256(this.query) });
       } catch (e) {
         // ignore any tracking errors
       }
@@ -292,19 +296,26 @@ export default {
     <gl-intersection-observer v-else @appear="loadGlqlBlock">
       <template v-if="finalPresenter || previewPresenter">
         <crud-component
-          :anchor-id="queryKey"
+          :anchor-id="crudComponentId"
           :title="title"
           :description="config.description"
           :count="data.count"
           is-collapsible
-          persist-collapsed-state
+          :collapsed="isCollapsed"
           class="!gl-mt-5"
           :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview }"
           @collapsed="isCollapsed = true"
           @expanded="isCollapsed = false"
         >
           <template #actions>
-            <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
+            <glql-actions
+              :show-copy-contents="showCopyContentsAction"
+              :modal-title="title"
+              @viewSource="viewSource"
+              @copySource="copySource"
+              @copyAsGFM="copyAsGFM"
+              @reload="reload"
+            />
           </template>
 
           <component :is="finalPresenter.component" v-if="finalPresenter" ref="presenter" />
@@ -313,7 +324,7 @@ export default {
             v-if="data.count && data.nodes.length < data.count"
             class="gl-border-t gl-border-section gl-p-3"
           >
-            <glql-footer :count="data.nodes.length" :total-count="data.count" />
+            <glql-pagination :count="data.nodes.length" :total-count="data.count" />
           </div>
 
           <template v-if="showEmptyState" #empty>

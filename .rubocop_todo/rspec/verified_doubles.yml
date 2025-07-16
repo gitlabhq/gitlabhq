@@ -728,7 +728,6 @@ RSpec/VerifiedDoubles:
     - 'spec/serializers/linked_project_issue_entity_spec.rb'
     - 'spec/serializers/merge_request_poll_cached_widget_entity_spec.rb'
     - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
-    - 'spec/serializers/merge_request_sidebar_basic_entity_spec.rb'
     - 'spec/serializers/merge_request_sidebar_extras_entity_spec.rb'
     - 'spec/serializers/merge_request_widget_commit_entity_spec.rb'
     - 'spec/serializers/merge_request_widget_entity_spec.rb'
