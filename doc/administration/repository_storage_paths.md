@@ -325,4 +325,4 @@ See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) fo
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/praefect/_index.md#migrate-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).

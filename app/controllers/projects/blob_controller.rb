@@ -146,8 +146,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def diff_lines
-    return render_404 unless rapid_diffs_enabled?
-
     params.require([:since, :to, :offset])
 
     bottom = diff_lines_params[:bottom] == 'true'
@@ -177,10 +175,6 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   attr_reader :branch_name
-
-  def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
-  end
 
   def blob
     return unless commit

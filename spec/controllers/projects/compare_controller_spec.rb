@@ -77,7 +77,6 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
     let(:page) { nil }
 
     before do
-      stub_feature_flags(rapid_diffs: false)
       stub_feature_flags(rapid_diffs_on_compare_show: false)
     end
 

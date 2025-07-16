@@ -2379,6 +2379,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
 | <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
+| <a id="mutationaiduoworkflowcreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="mutationaiduoworkflowcreatepreapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutationaiduoworkflowcreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiduoworkflowcreateworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Workflow type based on its capability. |
@@ -8118,6 +8119,32 @@ Input type: `LifecycleUpdateInput`
 | <a id="mutationlifecycleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationlifecycleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationlifecycleupdatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle updated. |
+
+### `Mutation.linkProjectComplianceViolationIssue`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LinkProjectComplianceViolationIssueInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueissueiid"></a>`issueIid` | [`String!`](#string) | IID of the issue to be linked. |
+| <a id="mutationlinkprojectcomplianceviolationissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the issue belongs to. |
+| <a id="mutationlinkprojectcomplianceviolationissueviolationid"></a>`violationId` | [`ComplianceManagementProjectsComplianceViolationID!`](#compliancemanagementprojectscomplianceviolationid) | Global ID of the project compliance violation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueviolation"></a>`violation` | [`ProjectComplianceViolation`](#projectcomplianceviolation) | Updated project compliance violation. |
 
 ### `Mutation.markAsSpamSnippet`
 
@@ -27716,9 +27743,11 @@ GitLab Duo Agent Platform session.
 | <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the session. |
 | <a id="duoworkflowlastexecutorlogsurl"></a>`lastExecutorLogsUrl` | [`String`](#string) | URL to the latest executor logs of the workflow. |
 | <a id="duoworkflowmcpenabled"></a>`mcpEnabled` | [`Boolean`](#boolean) | Has MCP been enabled for the namespace. |
+| <a id="duoworkflownamespace"></a>`namespace` | [`Namespace`](#namespace) | namespace that the session is in. |
+| <a id="duoworkflownamespaceid"></a>`namespaceId` | [`TypesNamespaceID`](#typesnamespaceid) | ID of the namespace. |
 | <a id="duoworkflowpreapprovedagentprivilegesnames"></a>`preApprovedAgentPrivilegesNames` | [`[String!]`](#string) | Privileges pre-approved for the agent during execution. |
-| <a id="duoworkflowproject"></a>`project` | [`Project!`](#project) | Project that the session is in. |
-| <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
+| <a id="duoworkflowproject"></a>`project` | [`Project`](#project) | Project that the session is in. |
+| <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID`](#projectid) | ID of the project. |
 | <a id="duoworkflowstalled"></a>`stalled` | [`Boolean`](#boolean) | Workflow got created but has no checkpoints. |
 | <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 | <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status name of the session. |
@@ -49952,6 +49981,12 @@ An example `TodoID` is: `"gid://gitlab/Todo/1"`.
 A `TodoableID` is a global ID. It is encoded as a string.
 
 An example `TodoableID` is: `"gid://gitlab/Todoable/1"`.
+
+### `TypesNamespaceID`
+
+A `TypesNamespaceID` is a global ID. It is encoded as a string.
+
+An example `TypesNamespaceID` is: `"gid://gitlab/Types::Namespace/1"`.
 
 ### `UntrustedRegexp`
 

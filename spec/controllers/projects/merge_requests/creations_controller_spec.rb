@@ -141,7 +141,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       let(:params) { get_diff_params }
 
       before do
-        stub_feature_flags(rapid_diffs: true, rapid_diffs_on_mr_creation: true, rapid_diffs_debug: true)
+        stub_feature_flags(rapid_diffs_on_mr_creation: true, rapid_diffs_debug: true)
       end
 
       include_examples 'renders rapid diffs'
@@ -165,7 +165,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       let(:params) { get_diff_params }
 
       before do
-        stub_feature_flags(rapid_diffs: false, rapid_diffs_on_mr_creation: false)
+        stub_feature_flags(rapid_diffs_on_mr_creation: false)
       end
 
       include_examples 'renders default new template'

@@ -22,6 +22,8 @@ class FlushCounterIncrementsWorker
 
   idempotent!
 
+  max_concurrency_limit_percentage 0.5
+
   def perform(model_name, model_id, attribute)
     return unless self.class.const_defined?(model_name)
 

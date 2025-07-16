@@ -50,18 +50,23 @@ module Users
       params[:search] && users_relation.size >= SEARCH_LIMIT
     end
 
-    def groups
-      return [] unless current_user
+    def groups(organization: nil)
+      return [] unless organization.nil? || organization.is_a?(Organizations::Organization)
 
-      relation = current_user.authorized_groups
+      strong_memoize_with(:groups, organization) do
+        break [] unless current_user
 
-      if params[:search]
-        relation.gfm_autocomplete_search(params[:search]).limit(SEARCH_LIMIT).to_a
-      else
-        relation.with_route.sort_by(&:full_path)
+        relation = current_user.authorized_groups
+
+        relation = relation.in_organization(organization) if organization
+
+        if params[:search]
+          relation.gfm_autocomplete_search(params[:search]).limit(SEARCH_LIMIT).to_a
+        else
+          relation.with_route.sort_by(&:full_path)
+        end
       end
     end
-    strong_memoize_attr :groups
 
     def render_participants_as_hash(participants)
       participants.map { |participant| participant_as_hash(participant) }

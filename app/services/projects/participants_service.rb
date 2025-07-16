@@ -14,7 +14,7 @@ module Projects
         all_members +
         project_members
 
-      participants += groups unless relation_at_search_limit?(project_members)
+      participants += groups(organization: organization) unless relation_at_search_limit?(project_members)
       participants = organization_user_details_for_participants(participants.uniq)
 
       render_participants_as_hash(participants)

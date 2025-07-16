@@ -20,7 +20,6 @@ module ApplicationWorker
     prefer_calling_context_feature_category false
     set_queue
     after_set_class_attribute { set_queue }
-    set_default_concurrency_limit
 
     def structured_payload(payload = {})
       context = Gitlab::ApplicationContext.current.merge(
@@ -251,10 +250,6 @@ module ApplicationWorker
       return schedule_at[index] if schedule_at.is_a?(Array) && schedule_at.all?(Array)
 
       schedule_at
-    end
-
-    def set_default_concurrency_limit
-      concurrency_limit -> { 0 }
     end
   end
 end

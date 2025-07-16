@@ -9,11 +9,9 @@ module Tooling
 
     def initialize(
       changed_files,
-      predictive_tests_pathname,
       mappings_file: nil,
       mappings_limit_percentage: nil
     )
-      @predictive_tests_pathname = predictive_tests_pathname
       @changed_files = changed_files
       @mappings_file = mappings_file
       @mappings_limit_percentage = mappings_limit_percentage
@@ -32,11 +30,11 @@ module Tooling
         file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
       end
 
-      write_array_to_file(predictive_tests_pathname, tff.test_files.uniq)
+      tff.test_files.uniq
     end
 
     private
 
-    attr_reader :changed_files, :predictive_tests_pathname, :mappings_file, :mappings_limit_percentage
+    attr_reader :changed_files, :mappings_file, :mappings_limit_percentage
   end
 end

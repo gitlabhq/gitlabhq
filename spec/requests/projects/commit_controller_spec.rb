@@ -24,25 +24,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       sign_in(user)
     end
 
-    context 'when the feature flag rapid_diffs is disabled' do
-      before do
-        stub_feature_flags(rapid_diffs: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'uses show action when rapid_diffs query parameter doesnt exist' do
-        get project_commit_path(project, commit)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include('data-page="projects:commit:show"')
-      end
-    end
-
     it 'returns 200' do
       send_request
 

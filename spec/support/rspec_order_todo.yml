@@ -2027,7 +2027,6 @@
 - './ee/spec/services/epics/reopen_service_spec.rb'
 - './ee/spec/services/epics/transfer_service_spec.rb'
 - './ee/spec/services/epics/update_dates_service_spec.rb'
-- './ee/spec/services/epics/update_service_spec.rb'
 - './ee/spec/services/external_status_checks/create_service_spec.rb'
 - './ee/spec/services/external_status_checks/destroy_service_spec.rb'
 - './ee/spec/services/external_status_checks/dispatch_service_spec.rb'

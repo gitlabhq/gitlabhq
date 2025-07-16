@@ -3200,7 +3200,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/epics/transfer_service.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/epics/update_dates_service.rb'
-    - 'ee/app/services/epics/update_service.rb'
     - 'ee/app/services/external_status_checks/base_service.rb'
     - 'ee/app/services/external_status_checks/create_service.rb'
     - 'ee/app/services/external_status_checks/destroy_service.rb'

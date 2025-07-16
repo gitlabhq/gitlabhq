@@ -58077,6 +58077,12 @@ msgstr ""
 msgid "SecurityReports|No vulnerabilities to report"
 msgstr ""
 
+msgid "SecurityReports|Not available"
+msgstr ""
+
+msgid "SecurityReports|Not found"
+msgstr ""
+
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
 
@@ -58099,6 +58105,9 @@ msgid "SecurityReports|Project was not found or you do not have permission to ad
 msgstr ""
 
 msgid "SecurityReports|Projects added"
+msgstr ""
+
+msgid "SecurityReports|Reachability"
 msgstr ""
 
 msgid "SecurityReports|Reachable:"
@@ -58266,6 +58275,9 @@ msgid "SecurityReports|Vulnerability will be archived on %{date}"
 msgstr ""
 
 msgid "SecurityReports|Warning parsing security reports"
+msgstr ""
+
+msgid "SecurityReports|Yes"
 msgstr ""
 
 msgid "SecurityReports|scanned resources"

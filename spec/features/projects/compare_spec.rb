@@ -95,7 +95,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
 
     context 'with legacy diffs' do
       before do
-        stub_feature_flags(rapid_diffs: false, rapid_diffs_on_compare_show: false)
+        stub_feature_flags(rapid_diffs_on_compare_show: false)
       end
 
       it 'renders additions info when click unfold diff' do

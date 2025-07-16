@@ -289,7 +289,6 @@ Style/IfUnlessModifier:
     - 'ee/app/services/ee/protected_branches/create_service.rb'
     - 'ee/app/services/ee/users/update_service.rb'
     - 'ee/app/services/epics/epic_links/update_service.rb'
-    - 'ee/app/services/epics/update_service.rb'
     - 'ee/app/services/geo/file_registry_removal_service.rb'
     - 'ee/app/services/geo/metrics_update_service.rb'
     - 'ee/app/services/geo/prune_event_log_service.rb'

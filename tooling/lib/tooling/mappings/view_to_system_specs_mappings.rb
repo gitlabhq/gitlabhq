@@ -9,10 +9,9 @@ module Tooling
     class ViewToSystemSpecsMappings
       include Helpers::PredictiveTestsHelper
 
-      def initialize(changed_files, predictive_tests_pathname, view_base_folder: 'app/views')
-        @changed_files             = changed_files
-        @predictive_tests_pathname = predictive_tests_pathname
-        @view_base_folders         = folders_for_available_editions(view_base_folder)
+      def initialize(changed_files, view_base_folder: 'app/views')
+        @changed_files = changed_files
+        @view_base_folders = folders_for_available_editions(view_base_folder)
       end
 
       def execute
@@ -29,12 +28,12 @@ module Tooling
           end
         end
 
-        write_array_to_file(predictive_tests_pathname, found_system_specs.compact.uniq.sort)
+        found_system_specs.compact.uniq.sort
       end
 
       private
 
-      attr_reader :changed_files, :predictive_tests_pathname, :view_base_folders
+      attr_reader :changed_files, :view_base_folders
 
       # Keep the views files that are in the @view_base_folders folder
       def filter_files

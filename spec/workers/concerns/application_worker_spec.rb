@@ -540,18 +540,6 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
     end
   end
 
-  describe 'concurrency_limit' do
-    before do
-      stub_const(worker.name, worker)
-    end
-
-    it 'sets concurrency_limit by default' do
-      expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.workers).to include(Gitlab::Foo::Bar::DummyWorker)
-      expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: Gitlab::Foo::Bar::DummyWorker))
-        .to eq 0
-    end
-  end
-
   describe '.concurrency_limit_resume' do
     around do |example|
       Sidekiq::Testing.fake!(&example)

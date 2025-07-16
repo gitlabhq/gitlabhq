@@ -12,9 +12,6 @@ title: Troubleshooting Gitaly
 
 {{< /details >}}
 
-Refer to the information below when troubleshooting Gitaly. For information on troubleshooting Gitaly Cluster (Praefect),
-see [Troubleshooting Gitaly Cluster](praefect/troubleshooting.md).
-
 The following sections provide possible solutions to Gitaly errors.
 
 See also [Gitaly timeout](../settings/gitaly_timeouts.md) settings,
@@ -36,7 +33,7 @@ to determine the available and used space on a Gitaly storage:
 
 ```ruby
 Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
-# For Gitaly Cluster
+# For Gitaly Cluster (Praefect)
 Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
 ```
 

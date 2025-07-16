@@ -2,15 +2,15 @@
 stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Gitaly Cluster recovery options and tools
+title: Gitaly Cluster (Praefect) recovery options and tools
 ---
 
-Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
-recovery and has Praefect tracking database tools.
+Gitaly Cluster (Praefect) can recover from primary-node failure and unavailable repositories. Gitaly Cluster (Praefect)
+can perform data recovery and has Praefect tracking database tools.
 
-## Manage Gitaly nodes on a Gitaly Cluster
+## Manage Gitaly nodes on a Gitaly Cluster (Praefect)
 
-You can add and replace Gitaly nodes on a Gitaly Cluster.
+You can add and replace Gitaly nodes on a Gitaly Cluster (Praefect).
 
 ### Add new Gitaly nodes
 
@@ -330,7 +330,7 @@ praefect['configuration'] = {
 
 {{< /history >}}
 
-The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
+The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster (Praefect), and all state associated with a given repository including:
 
 - On-disk repositories on all relevant Gitaly nodes.
 - Any database state tracked by Praefect.
@@ -398,7 +398,7 @@ Common maintenance tasks on the Praefect tracking database are documented in thi
 
 {{< /history >}}
 
-The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
+The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster (Praefect) that both:
 
 - Exist for at least one Gitaly storage.
 - Aren't tracked in the Praefect tracking database.

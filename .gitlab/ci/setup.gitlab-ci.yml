@@ -168,10 +168,6 @@ detect-tests:
         echoinfo 'Related EE RSpec tests:'
         echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_EE_PATH)"
         echo ""
-
-        echoinfo 'Related JS files:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_JS_FILES_PATH)"
-        echo ""
       fi
   artifacts:
     expire_in: 7d

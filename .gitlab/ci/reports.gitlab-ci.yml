@@ -59,7 +59,9 @@ secret_detection:
 dependency-scanning:
   extends:
     - .ds-analyzer
-    - .reports:rules:dependency_scanning
+  rules:
+    # Use !reference to prevent rule merging issues with template's dependency-scanning job
+    - !reference [.reports:rules:dependency_scanning, rules]
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter

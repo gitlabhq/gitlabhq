@@ -40,7 +40,6 @@ module Tooling
       def execute
         STRATEGIES.each do |strategy|
           logger.info("Running metrics export for '#{strategy}' strategy ...")
-          create_test_list!(strategy)
           generate_and_record_metrics(strategy)
         rescue StandardError => e
           logger.error("Failed to export test metrics for strategy '#{strategy}': #{e.message}")
@@ -110,18 +109,16 @@ module Tooling
         File.join(output_path, strategy.to_s, *args)
       end
 
-      # Create selected test list using specific strategy mapping
+      # Predictive spec list selector
       #
       # @param strategy [Symbol]
-      # @return [void]
-      def create_test_list!(strategy)
+      # @return [TestSelector]
+      def test_selector(strategy)
         Tooling::PredictiveTests::TestSelector.new(
           changed_files: changed_files,
           rspec_test_mapping_path: mapping_file_path(strategy),
-          rspec_matching_test_files_path: matching_rspec_test_files_path(strategy),
-          rspec_matching_js_files_path: path_for_strategy(strategy, "js_matching_files.txt"),
           rspec_mappings_limit_percentage: nil # always return all tests in the mapping
-        ).execute
+        )
       end
 
       # Create, save and export metrics for selected RSpec tests for specific strategy
@@ -132,7 +129,7 @@ module Tooling
         logger.info("Generating metrics for mapping strategy '#{strategy}' ...")
 
         # based on the predictive test selection strategy
-        predicted_test_files = read_array_from_file(matching_rspec_test_files_path(strategy))
+        predicted_test_files = test_selector(strategy).rspec_spec_list
         # actual failed tests from tier-3 run
         failed_test_files = read_array_from_file(rspec_all_failed_tests_file)
         # crystalball mapping file

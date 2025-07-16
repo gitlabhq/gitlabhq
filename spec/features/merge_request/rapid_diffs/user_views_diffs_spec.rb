@@ -11,7 +11,6 @@ RSpec.describe 'User views rapid diffs', :js, feature_category: :code_review_wor
   let(:diffs) { merge_request.diffs }
 
   before do
-    stub_feature_flags(rapid_diffs: true)
     visit(diffs_project_merge_request_path(project, merge_request, rapid_diffs: true))
 
     wait_for_requests

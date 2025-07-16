@@ -93,18 +93,6 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    context 'when rapid_diffs FF is disabled' do
-      before do
-        stub_feature_flags(rapid_diffs: false)
-      end
-
-      it 'returns 404' do
-        do_get(since: 2, to: 6, offset: 10, closest_line_number: 1)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'POST preview' do

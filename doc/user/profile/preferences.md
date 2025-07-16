@@ -354,7 +354,9 @@ To customize the time format:
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-## Disable exact code search
+<!--- start_remove The following content will be removed on remove_date: '2026-02-20' -->
+
+## Disable exact code search (deprecated)
 
 {{< details >}}
 
@@ -363,6 +365,13 @@ To customize the time format:
 - Status: Beta
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
+and is planned for removal in 18.6.
+
+{{< /alert >}}
 
 {{< history >}}
 
@@ -391,6 +400,8 @@ To disable [exact code search](../search/exact_code_search.md) in user preferenc
 1. Go to the **Exact code search** section.
 1. Clear the **Enable exact code search** checkbox.
 1. Select **Save changes**.
+
+<!--- end_remove -->
 
 ## User identities in CI job JSON web tokens
 

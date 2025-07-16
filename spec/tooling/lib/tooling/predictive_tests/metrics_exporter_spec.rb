@@ -21,8 +21,16 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   let(:event_tracker) { instance_double(Tooling::Events::TrackPipelineEvents, send_event: nil) }
-  let(:test_selector) { instance_double(Tooling::PredictiveTests::TestSelector, execute: nil) }
-  let(:logger) { instance_double(Logger, info: nil, error: nil) }
+  let(:logger) { Logger.new(log_output) }
+  let(:log_output) { StringIO.new } # useful for debugging to print out all log output
+
+  let(:test_selector_described) do
+    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_described_class_specs)
+  end
+
+  let(:test_selector_coverage) do
+    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_coverage_specs)
+  end
 
   let(:event_name) { "glci_predictive_tests_metrics" }
   let(:extra_properties) { { ci_job_id: "123", test_type: "backend" } }
@@ -50,8 +58,8 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   let(:changed_files) { mappings.values.pluck(:model) }
-  let(:matching_tests_described_class_content) { mappings.dig(:user, :spec) }
-  let(:matching_tests_coverage_content) { mappings.values.pluck(:spec).join(" ") }
+  let(:matching_tests_described_class_specs) { [mappings.dig(:user, :spec)] }
+  let(:matching_tests_coverage_specs) { mappings.values.pluck(:spec) }
   let(:failed_tests_content) { "#{mappings.dig(:user, :spec)}\n#{mappings.dig(:todo, :spec)}" }
 
   let(:described_class_mapping_content) do
@@ -101,40 +109,30 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
     # create files used as input for exporting selected test metrics
     File.write(failed_tests_file, failed_tests_content)
-    File.write(matching_tests_described_class_file, matching_tests_described_class_content)
-    File.write(matching_tests_coverage_file, matching_tests_coverage_content)
     File.write(coverage_mapping_file, coverage_mapping_content)
     File.write(described_class_mapping_file, described_class_mapping_content)
 
-    allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch)
-      .with(frontend_fixtures_file: frontend_fixtures_file)
-      .and_return(changed_files)
-    allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
-    allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
     allow(Logger).to receive(:new).with($stdout, progname: "rspec predictive testing").and_return(logger)
+    allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
+
+    allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch).with(
+      frontend_fixtures_file: frontend_fixtures_file
+    ).and_return(changed_files)
+
+    allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
+      changed_files: changed_files,
+      rspec_test_mapping_path: coverage_mapping_file,
+      rspec_mappings_limit_percentage: nil
+    ).and_return(test_selector_coverage)
+
+    allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
+      changed_files: changed_files,
+      rspec_test_mapping_path: described_class_mapping_file,
+      rspec_mappings_limit_percentage: nil
+    ).and_return(test_selector_described)
   end
 
   describe "#execute" do
-    it "creates selected test list for each strategy" do
-      exporter.execute
-
-      expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
-        changed_files: changed_files,
-        rspec_test_mapping_path: coverage_mapping_file,
-        rspec_matching_test_files_path: matching_tests_coverage_file,
-        rspec_matching_js_files_path: File.join(output_dir, "coverage", "js_matching_files.txt"),
-        rspec_mappings_limit_percentage: nil
-      )
-      expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
-        changed_files: changed_files,
-        rspec_test_mapping_path: described_class_mapping_file,
-        rspec_matching_test_files_path: matching_tests_described_class_file,
-        rspec_matching_js_files_path: File.join(output_dir, "described_class", "js_matching_files.txt"),
-        rspec_mappings_limit_percentage: nil
-      )
-      expect(test_selector).to have_received(:execute).twice
-    end
-
     it "exports metrics for described_class strategy", :aggregate_failures do
       exporter.execute
 

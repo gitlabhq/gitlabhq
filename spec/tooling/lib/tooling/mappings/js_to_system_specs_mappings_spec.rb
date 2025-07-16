@@ -6,44 +6,26 @@ require_relative '../../../../../tooling/lib/tooling/mappings/js_to_system_specs
 RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :js_base_folder, :system_specs_base_folder
-  attr_accessor :predictive_tests_file
 
   let(:changed_files) { %w[changed_file1 changed_file2] }
-  let(:predictive_tests_pathname) { predictive_tests_file.path }
-  let(:predictive_tests_content) { "previously_matching_spec.rb" }
 
   let(:instance) do
     described_class.new(
       changed_files,
-      predictive_tests_pathname,
       system_specs_base_folder: system_specs_base_folder,
       js_base_folder: js_base_folder
     )
   end
 
   around do |example|
-    self.predictive_tests_file = Tempfile.new('predictive_tests_file')
-
     Dir.mktmpdir do |tmp_js_base_folder|
       Dir.mktmpdir do |tmp_system_specs_base_folder|
         self.system_specs_base_folder = tmp_system_specs_base_folder
         self.js_base_folder           = tmp_js_base_folder
 
-        # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
-        #     Tempfile.html#class-Tempfile-label-Explicit+close
-        begin
-          example.run
-        ensure
-          predictive_tests_file.close
-          predictive_tests_file.unlink
-        end
+        example.run
       end
     end
-  end
-
-  before do
-    # We write into the temp files initially, to later check how the code modified those files
-    File.write(predictive_tests_pathname, predictive_tests_content)
   end
 
   describe '#execute' do
@@ -52,8 +34,8 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
     context 'when no JS files were changed' do
       let(:changed_files) { [] }
 
-      it 'does not change the output file' do
-        expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+      it 'returns empty array' do
+        expect(subject).to be_empty
       end
     end
 
@@ -61,8 +43,8 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       let(:changed_files) { ["#{js_base_folder}/issues/secret_values.js"] }
 
       context 'when the JS files are not present on disk' do
-        it 'does not change the output file' do
-          expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+        it 'return empty array' do
+          expect(subject).to be_empty
         end
       end
 
@@ -73,8 +55,8 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
         end
 
         context 'when no system specs match the JS keyword' do
-          it 'does not change the output file' do
-            expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+          it 'returns empty array' do
+            expect(subject).to be_empty
           end
         end
 
@@ -85,9 +67,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
           end
 
           it 'adds the new specs to the output file' do
-            expect { subject }.to change { File.read(predictive_tests_pathname) }
-              .from(predictive_tests_content)
-              .to("#{predictive_tests_content} #{system_specs_base_folder}/confidential_issues/issues_spec.rb")
+            expect(subject).to match_array(["#{system_specs_base_folder}/confidential_issues/issues_spec.rb"])
           end
         end
       end
@@ -140,7 +120,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
   end
 
   describe '#construct_js_keywords' do
-    subject { described_class.new(changed_files, predictive_tests_file).construct_js_keywords(js_files) }
+    subject { described_class.new(changed_files).construct_js_keywords(js_files) }
 
     let(:js_files) do
       %w[

@@ -38,8 +38,8 @@ repository storage is either:
 
 - A Gitaly storage with direct access to repositories using [storage paths](../repository_storage_paths.md),
   where each repository is stored on a single Gitaly node. All requests are routed to this node.
-- A [virtual storage](praefect/_index.md#virtual-storage) provided by [Gitaly Cluster](praefect/_index.md), where each
-  repository can be stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
+- A [virtual storage](praefect/_index.md#virtual-storage) provided by [Gitaly Cluster (Praefect)](praefect/_index.md),
+  where each repository can be stored on multiple Gitaly nodes for fault tolerance. With Gitaly Cluster (Praefect):
   - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
   - Write requests are broadcast to repository replicas.
 
@@ -56,7 +56,7 @@ In this example:
 
 ## Disk requirements
 
-Gitaly and Gitaly Cluster require fast local storage to perform effectively because they are heavy
+Gitaly and Gitaly Cluster (Praefect) require fast local storage to perform effectively because they are heavy
 I/O-based processes. Therefore, we strongly recommend that all Gitaly nodes use solid-state drives
 (SSDs). These SSDs should have high read and write throughput as Gitaly operates on many small files
 concurrently.
@@ -65,7 +65,7 @@ As a reference, the following charts show the P99 disk IOPS across the Gitaly pr
 GitLab.com at a one-minute granularity. The data were queried from a seven-day representative
 period, starting and ending on a Monday morning. Note the regular spikes in IOPS as traffic
 becomes more intense during the work week. The raw data shows even larger spikes, with writes
-peaking at 8000 IOPS. The available disk throughput must be able to handle these spikes to avoid
+peaking at 8000 IOPS. The available disk throughput must handle these spikes to avoid
 disruptions to Gitaly requests.
 
 - P99 disk IOPS (reads):
@@ -97,7 +97,7 @@ instances typically increases the available disk IOPS. You may also choose to se
 disk type with guaranteed throughput. Refer to the documentation of your cloud provider about how to
 configure IOPS correctly.
 
-For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons.
+For repository data, only local storage is supported for Gitaly and Gitaly Cluster (Praefect) for performance and consistency reasons.
 Alternatives such as [NFS](../nfs.md) or [cloud-based file systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
 
 ## Gitaly architecture
@@ -155,7 +155,7 @@ Gitaly comes pre-configured with a Linux package installation, which is a config
 - Self-compiled installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
-best suited by using Gitaly Cluster.
+best suited by using Gitaly Cluster (Praefect).
 
 ## Gitaly CLI
 
@@ -194,7 +194,7 @@ your assumptions, resulting in performance degradation, instability, and even da
 - Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
   that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
   interface.
-- [Gitaly Cluster](praefect/_index.md) has optimizations, such as fault tolerance and
+- [Gitaly Cluster (Praefect)](praefect/_index.md) has optimizations, such as fault tolerance and
   [distributed reads](praefect/_index.md#distributed-reads), that depend on the gRPC interface and database
   to determine repository state.
 

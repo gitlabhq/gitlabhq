@@ -15,6 +15,7 @@ If you're new to GitLab, get started learning about how GitLab works.
 - [Get started planning work](get_started_planning_work.md)
 - [Get started managing code](get_started_managing_code.md)
 - [Get started with GitLab CI/CD](../../ci/_index.md)
+- [Get started with GitLab Runner](get_started_runner.md)
 - [Get started securing your application](../application_security/get-started-security.md)
 - [Get started deploying and releasing your application](get_started_deploy_release.md)
 - [Get started managing your infrastructure](get_started_managing_infrastructure.md)

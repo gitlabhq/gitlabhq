@@ -73,15 +73,15 @@ if options[:select_tests]
   changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
     frontend_fixtures_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH']
   )
-
-  Tooling::PredictiveTests::TestSelector.new(
+  test_selector = Tooling::PredictiveTests::TestSelector.new(
     changed_files: changed_files,
-    rspec_matching_test_files_path: ENV['RSPEC_MATCHING_TEST_FILES_PATH'],
-    rspec_matching_js_files_path: ENV['RSPEC_MATCHING_JS_FILES_PATH'],
     rspec_test_mapping_path: test_mapping_file
-  ).execute
+  )
 
-  # File with a list of mr changes is also used by frontend related pipelines/jobs
+  # Used to generate predictive rspec test pipelines
+  File.write(ENV['RSPEC_MATCHING_TEST_FILES_PATH'], test_selector.rspec_spec_list.join(" "))
+  # Used by frontend related pipelines/jobs
+  File.write(ENV['RSPEC_MATCHING_JS_FILES_PATH'], test_selector.js_spec_list.join(" "))
   File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
 elsif options[:export_rspec_metrics]
   require_relative '../lib/tooling/predictive_tests/metrics_exporter'

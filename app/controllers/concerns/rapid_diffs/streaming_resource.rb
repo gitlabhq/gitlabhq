@@ -7,8 +7,6 @@ module RapidDiffs
     include DiffHelper
 
     def diffs
-      return render_404 unless rapid_diffs_enabled?
-
       streaming_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
       stream_headers
@@ -41,10 +39,6 @@ module RapidDiffs
     end
 
     private
-
-    def rapid_diffs_enabled?
-      ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
-    end
 
     def resource
       raise NotImplementedError
