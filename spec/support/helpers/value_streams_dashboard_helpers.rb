@@ -162,7 +162,7 @@ module ValueStreamsDashboardHelpers
     [
       [n_months_ago(1), 5, 1, 5, 2],
       [n_months_ago(2), 10, 3, 3, 3],
-      [n_months_ago(3), 8, 5, 7, 1]
+      [n_months_ago(3) - 2.days, 8, 5, 7, 1]
     ].each do |date, deploys, lead_time_for_changes, time_to_restore_service, incidents_count|
       create(
         :dora_daily_metrics,
