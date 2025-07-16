@@ -11,7 +11,7 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
@@ -145,12 +145,11 @@ export default {
     getMergeRequestsCountsQuery: { default: undefined },
     getMergeRequestsApprovalsQuery: { default: undefined },
     isProject: { default: true },
-    groupId: { default: undefined },
+    namespaceId: { default: undefined },
     showNewResourceDropdown: { default: undefined },
   },
   data() {
     return {
-      namespaceId: null,
       branchCacheAges: {},
       filterTokens: [],
       mergeRequests: [],
@@ -182,7 +181,6 @@ export default {
         if (!data) {
           return;
         }
-        this.namespaceId = getIdFromGraphQLId(data.namespace.id);
         this.pageInfo = data.namespace.mergeRequests?.pageInfo ?? {};
       },
       error(error) {
@@ -837,7 +835,7 @@ export default {
           <new-resource-dropdown
             v-if="showNewResourceDropdown"
             resource-type="merge-request"
-            :group-id="groupId"
+            :group-id="namespaceId"
             :query-variables="resourceDropdownQueryVariables"
             with-local-storage
           />

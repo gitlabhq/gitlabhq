@@ -23,7 +23,7 @@ export async function mountMergeRequestListsApp({
   const {
     autocompleteAwardEmojisPath,
     fullPath,
-    groupId,
+    namespaceId,
     hasAnyMergeRequests,
     hasScopedLabelsFeature,
     initialSort,
@@ -87,7 +87,7 @@ export async function mountMergeRequestListsApp({
       getMergeRequestsCountsQuery,
       getMergeRequestsApprovalsQuery,
       isProject,
-      groupId: groupId ? `${groupId}` : null,
+      namespaceId: namespaceId ? `${namespaceId}` : null,
       showNewResourceDropdown: parseBoolean(showNewResourceDropdown),
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
