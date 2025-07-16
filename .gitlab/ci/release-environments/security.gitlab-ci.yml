@@ -56,7 +56,7 @@ release-environments-build-omnibus-env:
     - for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
     - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
     - echo "SHORT_RUBY_VERSION=${RUBY_VERSION}" >> $BUILD_ENV
-    - echo "GITLAB_ASSETS_TAG=$(GLCI_ASSETS_IMAGE_TAG)" >> $BUILD_ENV
+    - echo "GITLAB_ASSETS_TAG=${GLCI_ASSETS_IMAGE_TAG}" >> $BUILD_ENV
     - echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
     - define_trigger_branch_in_build_env
     - echo "Built environment file for omnibus build:"
