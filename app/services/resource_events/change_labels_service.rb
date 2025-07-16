@@ -13,6 +13,7 @@ module ResourceEvents
       label_hash = {
         resource_column(resource) => resource.id,
         user_id: user.id,
+        namespace_id: Gitlab::Issuable::NamespaceGetter.new(resource).namespace_id,
         created_at: resource.system_note_timestamp
       }
 
@@ -67,4 +68,4 @@ module ResourceEvents
   end
 end
 
-ResourceEvents::ChangeLabelsService.prepend_mod_with('ResourceEvents::ChangeLabelsService')
+ResourceEvents::ChangeLabelsService.prepend_mod

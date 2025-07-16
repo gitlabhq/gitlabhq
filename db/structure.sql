@@ -22769,7 +22769,8 @@ CREATE TABLE resource_label_events (
     user_id bigint,
     created_at timestamp with time zone NOT NULL,
     reference text,
-    imported_from smallint DEFAULT 0 NOT NULL
+    imported_from smallint DEFAULT 0 NOT NULL,
+    namespace_id bigint NOT NULL
 );
 
 CREATE SEQUENCE resource_label_events_id_seq
@@ -29901,6 +29902,9 @@ ALTER TABLE vulnerability_scanners
 
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
+
+ALTER TABLE resource_label_events
+    ADD CONSTRAINT check_614704e750 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1)) NOT VALID;
 
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);

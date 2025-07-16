@@ -18,8 +18,9 @@ Configure Gitaly in one of two ways:
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-1. Edit `/etc/gitlab/gitlab.rb` and add or change the
-   [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
+1. Edit `/etc/gitlab/gitlab.rb` and add or change the Gitaly settings. Refer to the
+   [example Gitaly configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example). The
+   settings in the example file must be converted into Ruby.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 {{< /tab >}}
@@ -33,7 +34,8 @@ Configure Gitaly in one of two ways:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
+1. Edit `/home/git/gitaly/config.toml` and add or change the Gitaly settings. Refer to the
+   [example Gitaly configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 {{< /tab >}}

@@ -7,20 +7,65 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
   let_it_be(:group) { create(:group) }
   let_it_be(:project1) { create(:project, :public, group: group) }
   let_it_be(:project2) { create(:project, :public, group: group) }
-  let_it_be(:new_issue) { create(:issue, project: project2) }
+  let_it_be_with_reload(:new_issue) { create(:issue, project: project2) }
   let_it_be_with_reload(:original_issue) { create(:issue, project: project1) }
   let(:used_new_issue) { new_issue }
 
   subject { described_class.new(user, original_issue, used_new_issue) }
 
-  it 'copies the resource label events' do
-    resource_label_events = create_list(:resource_label_event, 2, issue: original_issue)
+  context 'with existing label events', :aggregate_failures do
+    let_it_be(:resource_label_events) { create_list(:resource_label_event, 2, issue: original_issue) }
 
-    subject.execute
+    it 'copies the resource label events' do
+      subject.execute
 
-    expected = resource_label_events.map(&:label_id)
+      expected = resource_label_events.map { |event| [event.label_id, project2.project_namespace_id] }
 
-    expect(new_issue.resource_label_events.map(&:label_id)).to match_array(expected)
+      expect(used_new_issue.resource_label_events.pluck(:label_id, :namespace_id)).to match_array(expected)
+    end
+
+    context 'when new entity is a work item', :aggregate_failures do
+      let(:used_new_issue) { new_issue.becomes(::WorkItem) } # rubocop:disable Cop/AvoidBecomes -- Less expensive than creating a new entity
+
+      it 'copies existing label events as expected' do
+        subject.execute
+
+        label_events = used_new_issue.reload.resource_label_events
+        expect(label_events.size).to eq(2)
+        expect(label_events.pluck(:label_id, :namespace_id)).to match_array(
+          resource_label_events.map { |event| [event.label_id, project2.project_namespace_id] }
+        )
+      end
+
+      context 'when it is a group level work item' do
+        let(:used_new_issue) { create(:work_item, :group_level, namespace: group) }
+
+        it 'copies existing label events as expected' do
+          subject.execute
+
+          label_events = used_new_issue.reload.resource_label_events
+          expect(label_events.size).to eq(2)
+          expect(label_events.pluck(:label_id, :namespace_id)).to match_array(
+            resource_label_events.map { |event| [event.label_id, group.id] }
+          )
+        end
+      end
+    end
+
+    context 'when the new entity is not of a supported type' do
+      let(:used_new_issue) { create(:merge_request, source_project: project2) }
+
+      # No reason not to support merge requests other than it's not implemente yet. Should be fine to implement
+      # if necessary, in the future
+      it 'raises an unsupported type error' do
+        expect do
+          subject.execute
+        end.to raise_error(
+          Gitlab::Issuable::NamespaceGetter::INVALID_ISSUABLE_ERROR,
+          'MergeRequest is not a supported Issuable type'
+        )
+      end
+    end
   end
 
   context 'with existing milestone events' do
@@ -140,7 +185,10 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
       it 'raises an unsupported type error' do
         expect do
           subject.execute
-        end.to raise_error(StandardError, 'Copying resource events for MergeRequest is not supported yet')
+        end.to raise_error(
+          Gitlab::Issuable::NamespaceGetter::INVALID_ISSUABLE_ERROR,
+          'MergeRequest is not a supported Issuable type'
+        )
       end
     end
 

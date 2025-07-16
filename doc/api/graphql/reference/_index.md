@@ -2305,6 +2305,35 @@ Input type: `AiCatalogAgentDeleteInput`
 | <a id="mutationaicatalogagentdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog Agent was successfully deleted. |
 
+### `Mutation.aiCatalogAgentUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogAgentUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentupdatedescription"></a>`description` | [`String`](#string) | Description for the agent. |
+| <a id="mutationaicatalogagentupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Agent to update. |
+| <a id="mutationaicatalogagentupdatename"></a>`name` | [`String`](#string) | Name for the agent. |
+| <a id="mutationaicatalogagentupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the item is publicly visible in the catalog. |
+| <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogagentupdateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Agent that was updated. |
+
 ### `Mutation.aiCatalogFlowCreate`
 
 {{< details >}}

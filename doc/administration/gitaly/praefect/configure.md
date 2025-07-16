@@ -523,6 +523,11 @@ praefect['configuration'] = {
 
 ### Praefect
 
+Before configuring Praefect, refer to the
+[example Praefect configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.praefect.toml.example)
+to familiarize yourself. If you used the Linux package to install GitLab, the settings in the example file must be
+converted into Ruby.
+
 If there are multiple Praefect nodes:
 
 1. Designate one node as the deploy node, and configure it using the following steps.

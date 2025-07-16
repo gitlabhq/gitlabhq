@@ -6,12 +6,15 @@ class ResourceLabelEvent < ResourceEvent
   include FromUnion
 
   belongs_to :label
+  belongs_to :namespace
 
   scope :inc_relations, -> { includes(:label, :user) }
 
   validates :label, presence: { unless: :importing? }, on: :create
   validate :exactly_one_issuable, unless: :importing?
+  validates :namespace, presence: true
 
+  before_validation :ensure_namespace_id
   after_commit :broadcast_notes_changed, unless: :importing?
 
   enum :action, {
@@ -63,6 +66,10 @@ class ResourceLabelEvent < ResourceEvent
 
   private
 
+  def ensure_namespace_id
+    self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(issuable, allow_nil: true).namespace_id
+  end
+
   def label_reference
     if local_label?
       label.to_reference(format: :id)
@@ -97,4 +104,4 @@ class ResourceLabelEvent < ResourceEvent
   end
 end
 
-ResourceLabelEvent.prepend_mod_with('ResourceLabelEvent')
+ResourceLabelEvent.prepend_mod

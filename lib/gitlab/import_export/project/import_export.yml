@@ -956,6 +956,7 @@ excluded_attributes:
     - :issue_id
     - :merge_request_id
     - :label_id
+    - :namespace_id
   runners:
     - :token
     - :token_encrypted

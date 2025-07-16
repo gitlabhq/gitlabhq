@@ -972,6 +972,7 @@ resource_label_events:
 - merge_request
 - epic
 - label
+- namespace
 error_tracking_setting:
 - project
 suggestions:

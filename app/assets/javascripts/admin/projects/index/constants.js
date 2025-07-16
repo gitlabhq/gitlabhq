@@ -5,6 +5,13 @@ import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import {
+  SORT_LABEL_CREATED,
+  SORT_LABEL_NAME,
+  SORT_LABEL_STARS,
+  SORT_LABEL_STORAGE_SIZE,
+  SORT_LABEL_UPDATED,
+} from '~/groups_projects/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 
 const baseTab = {
@@ -52,6 +59,39 @@ export const INACTIVE_TAB = {
     description: s__('Projects|Projects that are archived or pending deletion will appear here.'),
   },
 };
+
+export const SORT_OPTION_NAME = {
+  value: 'name',
+  text: SORT_LABEL_NAME,
+};
+
+export const SORT_OPTION_CREATED = {
+  value: 'created',
+  text: SORT_LABEL_CREATED,
+};
+
+export const SORT_OPTION_UPDATED = {
+  value: 'latest_activity',
+  text: SORT_LABEL_UPDATED,
+};
+
+export const SORT_OPTION_STARS = {
+  value: 'stars',
+  text: SORT_LABEL_STARS,
+};
+
+export const SORT_OPTION_STORAGE_SIZE = {
+  value: 'storage_size',
+  text: SORT_LABEL_STORAGE_SIZE,
+};
+
+export const SORT_OPTIONS = [
+  SORT_OPTION_NAME,
+  SORT_OPTION_CREATED,
+  SORT_OPTION_UPDATED,
+  SORT_OPTION_STARS,
+  SORT_OPTION_STORAGE_SIZE,
+];
 
 export const ADMIN_PROJECTS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 
