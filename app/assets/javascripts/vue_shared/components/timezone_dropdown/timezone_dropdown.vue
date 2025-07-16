@@ -9,6 +9,11 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
+    inputId: {
+      type: String,
+      required: false,
+      default: 'user_timezone',
+    },
     headerText: {
       type: String,
       required: false,
@@ -108,7 +113,7 @@ export default {
   <div class="gl-relative">
     <input
       v-if="name"
-      id="user_timezone"
+      :id="inputId"
       :name="name"
       :value="timezoneIdentifier || value"
       :required="required"

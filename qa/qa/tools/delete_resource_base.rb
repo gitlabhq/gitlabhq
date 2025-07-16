@@ -12,14 +12,14 @@ module QA
 
       ITEMS_PER_PAGE = '100'
       PAGE_CUTOFF = '10'
-      SANDBOX_GROUPS = %w[gitlab-e2e-sandbox-group-0
-        gitlab-e2e-sandbox-group-1
+      SANDBOX_GROUPS = %w[gitlab-e2e-sandbox-group-1
         gitlab-e2e-sandbox-group-2
         gitlab-e2e-sandbox-group-3
         gitlab-e2e-sandbox-group-4
         gitlab-e2e-sandbox-group-5
         gitlab-e2e-sandbox-group-6
-        gitlab-e2e-sandbox-group-7].freeze
+        gitlab-e2e-sandbox-group-7
+        gitlab-e2e-sandbox-group-8].freeze
 
       def initialize(dry_run: false)
         %w[GITLAB_ADDRESS GITLAB_QA_ACCESS_TOKEN].each do |var|
@@ -28,7 +28,7 @@ module QA
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (2 * 3600)).to_s).utc.iso8601(3)
+        @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (24 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
         @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
         @type = nil

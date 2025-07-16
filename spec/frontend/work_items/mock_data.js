@@ -8875,3 +8875,39 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
     },
   },
 };
+
+export const availableBulkEditWidgetsQueryResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      workItemsWidgets: [
+        'ASSIGNEES',
+        'AWARD_EMOJI',
+        'CRM_CONTACTS',
+        'CURRENT_USER_TODOS',
+        'CUSTOM_FIELDS',
+        'DESCRIPTION',
+        'DESIGNS',
+        'DEVELOPMENT',
+        'EMAIL_PARTICIPANTS',
+        'ERROR_TRACKING',
+        'HEALTH_STATUS',
+        'HIERARCHY',
+        'ITERATION',
+        'LABELS',
+        'LINKED_ITEMS',
+        'LINKED_RESOURCES',
+        'MILESTONE',
+        'NOTES',
+        'NOTIFICATIONS',
+        'PARTICIPANTS',
+        'START_AND_DUE_DATE',
+        'STATUS',
+        'TIME_TRACKING',
+        'VULNERABILITIES',
+        'WEIGHT',
+      ],
+    },
+  },
+};

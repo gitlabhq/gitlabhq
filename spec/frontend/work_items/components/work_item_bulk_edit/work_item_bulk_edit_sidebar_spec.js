@@ -15,35 +15,73 @@ import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
-import { workItemParentQueryResponse } from '../../mock_data';
+import getAvailableBulkEditWidgets from '~/work_items/graphql/list/get_available_bulk_edit_widgets.query.graphql';
+import {
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HEALTH_STATUS,
+  WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_MILESTONE,
+} from '~/work_items/constants';
+import {
+  workItemParentQueryResponse,
+  availableBulkEditWidgetsQueryResponse,
+} from '../../mock_data';
 
 jest.mock('~/alert');
 
 Vue.use(VueApollo);
+
+const availableWidgetsWithout = (widgetToExclude) => {
+  const widgetNames = availableBulkEditWidgetsQueryResponse.data.namespace.workItemsWidgets.filter(
+    (name) => name !== widgetToExclude,
+  );
+  return {
+    data: {
+      namespace: {
+        ...availableBulkEditWidgetsQueryResponse.data.namespace,
+        workItemsWidgets: widgetNames,
+      },
+    },
+  };
+};
 
 describe('WorkItemBulkEditSidebar component', () => {
   let axiosMock;
   let wrapper;
 
   const checkedItems = [
-    { id: 'gid://gitlab/WorkItem/11', title: 'Work Item 11' },
-    { id: 'gid://gitlab/WorkItem/22', title: 'Work Item 22' },
+    {
+      id: 'gid://gitlab/WorkItem/11',
+      title: 'Work Item 11',
+      workItemType: { id: 'gid://gitlab/WorkItems::Type/8' },
+    },
+    {
+      id: 'gid://gitlab/WorkItem/22',
+      title: 'Work Item 22',
+      workItemType: { id: 'gid://gitlab/WorkItems::Type/5' },
+    },
   ];
 
   const workItemParentQueryHandler = jest.fn().mockResolvedValue(workItemParentQueryResponse);
   const workItemBulkUpdateHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemBulkUpdate: { updatedWorkItemCount: 1 } } });
+  const defaultAvailableWidgetsHandler = jest
+    .fn()
+    .mockResolvedValue(availableBulkEditWidgetsQueryResponse);
 
   const createComponent = ({
     provide = {},
     props = {},
     mutationHandler = workItemBulkUpdateHandler,
+    availableWidgetsHandler = defaultAvailableWidgetsHandler,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemBulkEditSidebar, {
       apolloProvider: createMockApollo([
         [workItemParentQuery, workItemParentQueryHandler],
         [workItemBulkUpdateMutation, mutationHandler],
+        [getAvailableBulkEditWidgets, availableWidgetsHandler],
       ]),
       provide: {
         hasIssuableHealthStatusFeature: false,
@@ -270,6 +308,35 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
   });
 
+  describe('getAvailableBulkEditWidgets query', () => {
+    beforeEach(() => {
+      createComponent({ provide: { glFeatures: { workItemsBulkEdit: true } } });
+    });
+
+    it('is called when mounted', () => {
+      expect(defaultAvailableWidgetsHandler).toHaveBeenCalled();
+    });
+
+    it('is called when checkedItems is updated and there is a new work item type', async () => {
+      await wrapper.setProps({
+        checkedItems: [
+          ...checkedItems,
+          {
+            id: 'gid://gitlab/WorkItem/14',
+            title: 'Work Item 14',
+            workItemType: { id: 'gid://gitlab/WorkItems::Type/9' },
+          },
+        ],
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      // once on initial mount, once when checked items change
+      expect(defaultAvailableWidgetsHandler).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('workItemParent query', () => {
     it('is called when isEpicsList=true', () => {
       createComponent({ props: { isEpicsList: true } });
@@ -316,6 +383,41 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       expect(findAssigneeComponent().props('value')).toBe('gid://gitlab/User/5');
     });
+
+    it('enables "Assignee" component when "Assignees" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findAssigneeComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Assignee" component when "Assignees" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_ASSIGNEES)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findAssigneeComponent().props('disabled')).toBe(true);
+    });
   });
 
   describe('"Add labels" component', () => {
@@ -335,6 +437,41 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual(labelIds);
     });
+
+    it('enables "Add labels" component when "Labels" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findAddLabelsComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Add labels" component when "Labels" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_LABELS)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findAddLabelsComponent().props('disabled')).toBe(true);
+    });
   });
 
   describe('"Remove labels" component', () => {
@@ -353,6 +490,41 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual(labelIds);
+    });
+
+    it('enables "Remove labels" component when "Labels" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findRemoveLabelsComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Remove labels" component when "Labels" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_LABELS)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findRemoveLabelsComponent().props('disabled')).toBe(true);
     });
   });
 
@@ -379,6 +551,43 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findHealthStatusComponent().props('value')).toBe('needs_attention');
+    });
+
+    it('enables "Health status" component when "Health status" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+          hasIssuableHealthStatusFeature: true,
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findHealthStatusComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Health status" component when "Health status" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+          hasIssuableHealthStatusFeature: true,
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_HEALTH_STATUS)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findHealthStatusComponent().props('disabled')).toBe(true);
     });
   });
 
@@ -445,6 +654,41 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       expect(findMilestoneComponent().props('value')).toBe('gid://gitlab/Milestone/30');
     });
+
+    it('enables "Milestone" component when "Milestone" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findMilestoneComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Milestone" component when "Milestone" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_MILESTONE)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findMilestoneComponent().props('disabled')).toBe(true);
+    });
   });
 
   describe('"Parent" component', () => {
@@ -475,6 +719,41 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findParentComponent().props('value')).toBe('gid://gitlab/WorkItem/30');
+    });
+
+    it('enables "Parent" component when "Hierarchy" widget is available', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findParentComponent().props('disabled')).toBe(false);
+    });
+
+    it('disables "Parent" component when "Hierarchy" widget is unavailable', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+        availableWidgetsHandler: jest
+          .fn()
+          .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_HIERARCHY)),
+      });
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(findParentComponent().props('disabled')).toBe(true);
     });
   });
 });

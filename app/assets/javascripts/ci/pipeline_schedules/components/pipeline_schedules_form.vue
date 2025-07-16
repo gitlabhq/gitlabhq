@@ -323,11 +323,12 @@ export default {
     <!--Timezone-->
     <gl-form-group
       :label="$options.i18n.cronTimezoneText"
-      label-for="schedule-timezone"
+      label-for="user_timezone"
       class="lg:gl-w-2/3"
     >
       <timezone-dropdown
         id="schedule-timezone"
+        input-id="user_timezone"
         :value="cronTimezone"
         :timezone-data="timezoneData"
         name="schedule-timezone"

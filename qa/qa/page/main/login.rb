@@ -192,6 +192,10 @@ module QA
             password = user.password
             new_password_page.set_new_password(password, password)
           end
+
+          Support::Waiter.wait_until(message: "on_login_page? failed") do
+            Page::Main::Login.perform(&:on_login_page?)
+          end
         end
 
         private

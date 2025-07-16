@@ -163,7 +163,7 @@ export default {
   <div>
     <p class="gl-mb-3 gl-mt-0 gl-text-subtle" data-testid="worker-cron-expression-hint">
       {{ sprintf($options.i18n.pipelineScheduleWorkerExplanation, { workerCronExpression }) }}
-      <gl-link :href="pipelineScheduleWorkerUrl" target="_blank">
+      <gl-link :href="pipelineScheduleWorkerUrl" target="_blank" variant="inline">
         {{ $options.i18n.pipelineScheduleWorkerLink }}
       </gl-link>
     </p>
@@ -197,7 +197,7 @@ export default {
     />
     <p class="gl-mb-0 gl-mt-1 gl-text-subtle">
       {{ $options.i18n.learnCronSyntax }}
-      <gl-link :href="cronSyntaxUrl" target="_blank">
+      <gl-link :href="cronSyntaxUrl" target="_blank" variant="inline">
         {{ $options.i18n.cronSyntaxLink }}
       </gl-link>
     </p>

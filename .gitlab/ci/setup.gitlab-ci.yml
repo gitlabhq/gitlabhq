@@ -149,7 +149,7 @@ detect-tests:
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
         mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
 
-        tooling/bin/predictive_tests --select-tests --with-crystalball-mappings --mapping-type $MAPPING_TYPE
+        tooling/bin/predictive_tests --ci --select-tests --with-crystalball-mappings --mapping-type $MAPPING_TYPE
 
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};

@@ -5,21 +5,21 @@
 
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN, GITLAB_ADDRESS
 # Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
-#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 2 hours ago)
+#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 24 hours ago)
 
 # Run `rake delete_user_groups`
 
 module QA
   module Tools
     class DeleteUserGroups < DeleteResourceBase
-      EXCLUDE_GROUPS = %w[gitlab-e2e-sandbox-group-0
-        gitlab-e2e-sandbox-group-1
+      EXCLUDE_GROUPS = %w[gitlab-e2e-sandbox-group-1
         gitlab-e2e-sandbox-group-2
         gitlab-e2e-sandbox-group-3
         gitlab-e2e-sandbox-group-4
         gitlab-e2e-sandbox-group-5
         gitlab-e2e-sandbox-group-6
         gitlab-e2e-sandbox-group-7
+        gitlab-e2e-sandbox-group-8
         quality-e2e-tests
         quality-e2e-tests-2
         quality-e2e-tests-3
@@ -31,7 +31,7 @@ module QA
         qa-perf-testing
         remote-development].freeze
 
-      # @example - delete user groups older than 2 hours
+      # @example - delete user groups older than 24 hours
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   bundle exec rake delete_user_groups

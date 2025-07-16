@@ -2,11 +2,13 @@
 
 require_relative "test_selector"
 require_relative "changed_files"
+require_relative "mapping_fetcher"
 
 require_relative "../helpers/file_handler"
 require_relative "../events/track_pipeline_events"
 
 require "logger"
+require "tmpdir"
 
 module Tooling
   module PredictiveTests
@@ -21,15 +23,8 @@ module Tooling
       STRATEGIES = [:coverage, :described_class].freeze
       TEST_TYPE = "backend"
 
-      def initialize(
-        rspec_all_failed_tests_file:,
-        crystalball_mapping_dir:,
-        frontend_fixtures_mapping_file:,
-        output_dir: nil
-      )
+      def initialize(rspec_all_failed_tests_file:, output_dir: nil)
         @rspec_all_failed_tests_file = rspec_all_failed_tests_file
-        @crystalball_mapping_dir = crystalball_mapping_dir
-        @frontend_fixtures_mapping_file = frontend_fixtures_mapping_file
         @output_dir = output_dir
         @logger = Logger.new($stdout, progname: "rspec predictive testing")
       end
@@ -49,7 +44,7 @@ module Tooling
 
       private
 
-      attr_reader :rspec_all_failed_tests_file, :crystalball_mapping_dir, :frontend_fixtures_mapping_file, :logger
+      attr_reader :rspec_all_failed_tests_file, :logger
 
       # Project root folder
       #
@@ -84,12 +79,28 @@ module Tooling
         @changed_files ||= ChangedFiles.fetch(frontend_fixtures_file: frontend_fixtures_mapping_file)
       end
 
+      # Mapping file fetcher
+      #
+      # @return [MappingFetcher]
+      def mapping_fetcher
+        @mapping_fetcher ||= Tooling::PredictiveTests::MappingFetcher.new(logger: logger)
+      end
+
+      # Frontend fixtures mapping file
+      #
+      # @return [String]
+      def frontend_fixtures_mapping_file
+        @frontend_fixtures_mapping_file ||= File.join(Dir.tmpdir, "frontend_fixtures_mapping.json").tap do |file|
+          mapping_fetcher.fetch_frontend_fixtures_mappings(file)
+        end
+      end
+
       # Mapping file path for specific strategy
       #
       # @param strategy [Symbol]
       # @return [String]
       def mapping_file_path(strategy)
-        File.join(crystalball_mapping_dir, strategy.to_s, "mapping.json")
+        File.join(Dir.tmpdir, strategy.to_s, "mapping.json")
       end
 
       # Strategy specific matching rspec tests file path
@@ -128,6 +139,8 @@ module Tooling
       def generate_and_record_metrics(strategy)
         logger.info("Generating metrics for mapping strategy '#{strategy}' ...")
 
+        # fetch crystalball mappings for specific strategy
+        fetch_crystalball_mappings!(strategy)
         # based on the predictive test selection strategy
         predicted_test_files = test_selector(strategy).rspec_spec_list
         # actual failed tests from tier-3 run
@@ -147,6 +160,14 @@ module Tooling
         send_metrics_events(metrics, strategy)
 
         logger.info("Metrics generation completed for strategy '#{strategy}'")
+      end
+
+      # Fetch crystalball mappings
+      #
+      # @param strategy [Symbol]
+      # @return [void]
+      def fetch_crystalball_mappings!(strategy)
+        mapping_fetcher.fetch_rspec_mappings(mapping_file_path(strategy), type: strategy)
       end
 
       # Create metrics hash with all calculated metrics based on crystalball mapping and selected test strategy

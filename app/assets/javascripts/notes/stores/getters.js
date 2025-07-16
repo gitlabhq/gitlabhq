@@ -165,16 +165,13 @@ export const noteableType = (state) => {
 
 const reverseNotes = (array) => array.slice(0).reverse();
 
-const isLastNote = (note, state) =>
+const isCurrentUserLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = (state) =>
   flattenDeep(reverseNotes(state.discussions).map((note) => reverseNotes(note.notes))).find((el) =>
-    isLastNote(el, state),
+    isCurrentUserLastNote(el, state),
   );
-
-export const getDiscussionLastNote = (state) => (discussion) =>
-  reverseNotes(discussion.notes).find((el) => isLastNote(el, state));
 
 export const unresolvedDiscussionsCount = (state) => state.unresolvedDiscussionsCount;
 export const resolvableDiscussionsCount = (state) => state.resolvableDiscussionsCount;

@@ -14,8 +14,6 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   subject(:exporter) do
     described_class.new(
       rspec_all_failed_tests_file: failed_tests_file,
-      crystalball_mapping_dir: input_dir,
-      frontend_fixtures_mapping_file: frontend_fixtures_file,
       output_dir: output_dir
     )
   end
@@ -23,6 +21,14 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   let(:event_tracker) { instance_double(Tooling::Events::TrackPipelineEvents, send_event: nil) }
   let(:logger) { Logger.new(log_output) }
   let(:log_output) { StringIO.new } # useful for debugging to print out all log output
+
+  let(:mapping_fetcher) do
+    instance_double(
+      Tooling::PredictiveTests::MappingFetcher,
+      fetch_frontend_fixtures_mappings: nil,
+      fetch_rspec_mappings: nil
+    )
+  end
 
   let(:test_selector_described) do
     instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_described_class_specs)
@@ -39,10 +45,10 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   let(:input_dir) { Dir.mktmpdir("predictive-tests-input") }
   let(:output_dir) { Dir.mktmpdir("predictive-tests-output") }
   # various input files used by MetricsExporter to create metrics output
-  let(:coverage_mapping_file) { File.join(input_dir, "coverage", "mapping.json") }
-  let(:described_class_mapping_file) { File.join(input_dir, "described_class", "mapping.json") }
   let(:failed_tests_file) { File.join(input_dir, "failed_test.txt") }
-  let(:frontend_fixtures_file) { File.join(input_dir, "frontend_fixtures.json") }
+  let(:coverage_mapping_file) { File.join(Dir.tmpdir, "coverage", "mapping.json") }
+  let(:described_class_mapping_file) { File.join(Dir.tmpdir, "described_class", "mapping.json") }
+  let(:frontend_fixtures_file) { File.join(Dir.tmpdir, "frontend_fixtures_mapping.json") }
   # output files created by TestSelector and used by MetricsExporter to create metrics output
   let(:matching_tests_coverage_file) { File.join(output_dir, "coverage", "rspec_matching_test_files.txt") }
   let(:matching_tests_described_class_file) do
@@ -101,10 +107,9 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   before do
     stub_env({ "CI_JOB_ID" => extra_properties[:ci_job_id] })
 
-    # create folders for separate strategies
-    [input_dir, output_dir].each do |dir|
-      FileUtils.mkdir_p(File.join(dir, "coverage"))
-      FileUtils.mkdir_p(File.join(dir, "described_class"))
+    # create folders for mocked input files
+    [coverage_mapping_file, described_class_mapping_file, failed_tests_file].each do |file|
+      FileUtils.mkdir_p(File.dirname(file))
     end
 
     # create files used as input for exporting selected test metrics
@@ -115,6 +120,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     allow(Logger).to receive(:new).with($stdout, progname: "rspec predictive testing").and_return(logger)
     allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
 
+    allow(Tooling::PredictiveTests::MappingFetcher).to receive(:new).with(logger: logger).and_return(mapping_fetcher)
     allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch).with(
       frontend_fixtures_file: frontend_fixtures_file
     ).and_return(changed_files)
@@ -133,6 +139,17 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   describe "#execute" do
+    it "uses mapping fetcher to get mapping json files" do
+      exporter.execute
+
+      expect(mapping_fetcher).to have_received(:fetch_rspec_mappings)
+        .with(coverage_mapping_file, type: :coverage)
+      expect(mapping_fetcher).to have_received(:fetch_rspec_mappings)
+        .with(described_class_mapping_file, type: :described_class)
+      expect(mapping_fetcher).to have_received(:fetch_frontend_fixtures_mappings)
+        .with(frontend_fixtures_file)
+    end
+
     it "exports metrics for described_class strategy", :aggregate_failures do
       exporter.execute
 

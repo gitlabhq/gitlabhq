@@ -9,7 +9,7 @@
 #   - GITLAB_QA_ACCESS_TOKEN should have API access and belong to the user whose keys will be deleted
 
 # Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
-#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 2 hours ago
+#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise default is 24 hours ago
 
 # Run `rake delete_test_ssh_keys`
 

@@ -19,6 +19,10 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
+  opts.on('--ci', 'Use ci specific setup') do
+    options[:ci] = true
+  end
+
   opts.on('--select-tests', 'Run test selection logic') do
     options[:select_tests] = true
   end
@@ -37,6 +41,10 @@ OptionParser.new do |opts|
 
   opts.on('--mapping-type [string]', String, 'Crystalball mapping type, coverage or described_class') do |value|
     options[:mapping_type] = value
+  end
+
+  opts.on('--changed-files [string]', String, 'Space separated list of changed files. Used outside CI.') do |value|
+    options[:changed_files] = value
   end
 
   opts.on('-h', '--help', 'Show this help message') do
@@ -71,52 +79,70 @@ if options[:select_tests]
   require_relative '../lib/tooling/predictive_tests/changed_files'
   require_relative '../lib/tooling/predictive_tests/mapping_fetcher'
 
-  validate_required_env_variables!(%w[
-    RSPEC_MATCHING_TEST_FILES_PATH
-    FRONTEND_FIXTURES_MAPPING_PATH
-    RSPEC_MATCHING_JS_FILES_PATH
-  ])
+  ci = options[:ci]
 
-  logger = Logger.new($stdout, progname: '[Predictive Tests]')
+  if ci
+    validate_required_env_variables!(%w[
+      RSPEC_MATCHING_TEST_FILES_PATH
+      FRONTEND_FIXTURES_MAPPING_PATH
+      RSPEC_MATCHING_JS_FILES_PATH
+    ])
+  elsif options[:changed_files].nil? || options[:changed_files].strip.empty?
+    warn 'Please provide --changed-files with list of changed files for local run.'
+    exit 1
+  end
+
+  # silence all output on non ci and only output list of spec files to run so it could be used in scripts/hooks
+  logger = Logger.new($stdout, progname: '[Predictive Tests]', level: ci ? :info : :error)
   logger.info("Running predictive test selection")
 
   mapping_fetcher = Tooling::PredictiveTests::MappingFetcher.new(logger: logger)
   test_mapping_file = if options[:with_crystalball_mappings]
                         mapping_fetcher.fetch_rspec_mappings(
-                          'mapping.json',
+                          'tmp/crystalball_mappings.json',
                           type: options[:mapping_type] || :described_class
                         )
                       end
 
-  changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
-    frontend_fixtures_file: mapping_fetcher.fetch_frontend_fixtures_mappings(ENV['FRONTEND_FIXTURES_MAPPING_PATH'])
-  )
+  changed_files = if ci
+                    Tooling::PredictiveTests::ChangedFiles.fetch(
+                      frontend_fixtures_file: mapping_fetcher.fetch_frontend_fixtures_mappings(
+                        ENV['FRONTEND_FIXTURES_MAPPING_PATH']
+                      )
+                    )
+                  else
+                    options[:changed_files].split(" ")
+                  end
+
   test_selector = Tooling::PredictiveTests::TestSelector.new(
     changed_files: changed_files,
     rspec_test_mapping_path: test_mapping_file,
     logger: logger
   )
+  rspec_spec_list = test_selector.rspec_spec_list
+  js_spec_list = test_selector.js_spec_list
 
-  # Used to generate predictive rspec test pipelines
-  File.write(ENV['RSPEC_MATCHING_TEST_FILES_PATH'], test_selector.rspec_spec_list.join(" "))
-  # Used by frontend related pipelines/jobs
-  File.write(ENV['RSPEC_MATCHING_JS_FILES_PATH'], test_selector.js_spec_list.join(" "))
-  File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
+  if ci
+    # Used to generate predictive rspec test pipelines
+    File.write(ENV['RSPEC_MATCHING_TEST_FILES_PATH'], rspec_spec_list.join(" "))
+    # Used by frontend related pipelines/jobs
+    File.write(ENV['RSPEC_MATCHING_JS_FILES_PATH'], js_spec_list.join(" "))
+    File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
+  else
+    puts (rspec_spec_list + js_spec_list).join(' ')
+  end
 end
 
 if options[:export_rspec_metrics]
   require_relative '../lib/tooling/predictive_tests/metrics_exporter'
 
   validate_required_env_variables!(%w[
-    GLCI_CRYSTALBALL_MAPPING_DIR
     GLCI_ALL_FAILED_RSPEC_TESTS_FILE
     GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
   ])
 
   Tooling::PredictiveTests::MetricsExporter.new(
     rspec_all_failed_tests_file: ENV['GLCI_ALL_FAILED_RSPEC_TESTS_FILE'],
-    crystalball_mapping_dir: ENV['GLCI_CRYSTALBALL_MAPPING_DIR'],
-    frontend_fixtures_mapping_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
     output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
   ).execute
 end

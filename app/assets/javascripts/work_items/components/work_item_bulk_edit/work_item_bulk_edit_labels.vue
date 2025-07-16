@@ -39,6 +39,11 @@ export default {
       required: false,
       default: () => [],
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -177,6 +182,7 @@ export default {
       :searching="isLoading"
       :selected="selectedIds"
       :toggle-text="toggleText"
+      :disabled="disabled"
       @reset="handleSelect([])"
       @search="setSearchTermDebounced"
       @select="handleSelect"

@@ -6,8 +6,17 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { BULK_UPDATE_UNASSIGNED } from '../../constants';
+import {
+  BULK_UPDATE_UNASSIGNED,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HEALTH_STATUS,
+  WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_MILESTONE,
+} from '../../constants';
 import workItemBulkUpdateMutation from '../../graphql/list/work_item_bulk_update.mutation.graphql';
+import getAvailableBulkEditWidgets from '../../graphql/list/get_available_bulk_edit_widgets.query.graphql';
 import workItemParent from '../../graphql/list/work_item_parent.query.graphql';
 import WorkItemBulkEditAssignee from './work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditDropdown from './work_item_bulk_edit_dropdown.vue';
@@ -70,6 +79,7 @@ export default {
   },
   data() {
     return {
+      availableWidgets: [],
       addLabelIds: [],
       assigneeId: undefined,
       confidentiality: undefined,
@@ -100,6 +110,21 @@ export default {
         return !this.shouldUseGraphQLBulkEdit;
       },
     },
+    availableWidgets: {
+      query: getAvailableBulkEditWidgets,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          ids: this.workItemTypeIds,
+        };
+      },
+      update(data) {
+        return data.namespace?.workItemsWidgets || [];
+      },
+      skip() {
+        return this.checkedItems.length === 0;
+      },
+    },
   },
   computed: {
     legacyBulkEditEndpoint() {
@@ -112,6 +137,30 @@ export default {
     },
     isEditableUnlessEpicList() {
       return !this.shouldUseGraphQLBulkEdit || (this.shouldUseGraphQLBulkEdit && !this.isEpicsList);
+    },
+    workItemTypeIds() {
+      return [...new Set(this.checkedItems.map((item) => item.workItemType.id))];
+    },
+    hasItemsSelected() {
+      return this.checkedItems.length > 0;
+    },
+    canEditAssignees() {
+      return this.availableWidgets.includes(WIDGET_TYPE_ASSIGNEES);
+    },
+    canEditLabels() {
+      return this.availableWidgets.includes(WIDGET_TYPE_LABELS);
+    },
+    canEditHealthStatus() {
+      return this.availableWidgets.includes(WIDGET_TYPE_HEALTH_STATUS);
+    },
+    canEditIteration() {
+      return this.availableWidgets.includes(WIDGET_TYPE_ITERATION);
+    },
+    canEditMilestone() {
+      return this.availableWidgets.includes(WIDGET_TYPE_MILESTONE);
+    },
+    canEditParent() {
+      return this.availableWidgets.includes(WIDGET_TYPE_HIERARCHY);
     },
   },
   methods: {
@@ -208,6 +257,7 @@ export default {
       :header-text="__('Select state')"
       :items="$options.stateItems"
       :label="__('State')"
+      :disabled="!hasItemsSelected"
       data-testid="bulk-edit-state"
     />
     <work-item-bulk-edit-assignee
@@ -215,12 +265,14 @@ export default {
       v-model="assigneeId"
       :full-path="fullPath"
       :is-group="isGroup"
+      :disabled="!hasItemsSelected || !canEditAssignees"
     />
     <work-item-bulk-edit-labels
       :form-label="__('Add labels')"
       :full-path="fullPath"
       :is-group="isGroup"
       :selected-labels-ids="addLabelIds"
+      :disabled="!hasItemsSelected || !canEditLabels"
       data-testid="bulk-edit-add-labels"
       @select="addLabelIds = $event"
     />
@@ -230,6 +282,7 @@ export default {
       :full-path="fullPath"
       :is-group="isGroup"
       :selected-labels-ids="removeLabelIds"
+      :disabled="!hasItemsSelected || !canEditLabels"
       data-testid="bulk-edit-remove-labels"
       @select="removeLabelIds = $event"
     />
@@ -239,6 +292,7 @@ export default {
       :header-text="__('Select health status')"
       :items="$options.healthStatusItems"
       :label="__('Health status')"
+      :disabled="!hasItemsSelected || !canEditHealthStatus"
       data-testid="bulk-edit-health-status"
     />
     <work-item-bulk-edit-dropdown
@@ -247,6 +301,7 @@ export default {
       :header-text="__('Select subscription')"
       :items="$options.subscriptionItems"
       :label="__('Subscription')"
+      :disabled="!hasItemsSelected"
       data-testid="bulk-edit-subscription"
     />
     <work-item-bulk-edit-dropdown
@@ -255,6 +310,7 @@ export default {
       :header-text="__('Select confidentiality')"
       :items="$options.confidentialityItems"
       :label="__('Confidentiality')"
+      :disabled="!hasItemsSelected"
       data-testid="bulk-edit-confidentiality"
     />
     <work-item-bulk-edit-iteration
@@ -262,18 +318,21 @@ export default {
       v-model="iterationId"
       :full-path="fullPath"
       :is-group="isGroup"
+      :disabled="!hasItemsSelected || !canEditIteration"
     />
     <work-item-bulk-edit-milestone
       v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
       v-model="milestoneId"
       :full-path="fullPath"
       :is-group="isGroup"
+      :disabled="!hasItemsSelected || !canEditMilestone"
     />
     <work-item-bulk-edit-parent
       v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
       v-model="parentId"
       :full-path="fullPath"
       :is-group="isGroup"
+      :disabled="!hasItemsSelected || !canEditParent"
     />
   </gl-form>
 </template>

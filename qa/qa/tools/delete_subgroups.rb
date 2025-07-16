@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This script deletes all subgroups of all 'gitlab-e2e-sandbox-group-<#0-7>' groups OR all subgroups of a group
+# This script deletes all subgroups of all 'gitlab-e2e-sandbox-group-<#1-8>' groups OR all subgroups of a group
 # specified by ENV['TOP_LEVEL_GROUP_NAME']
 #   - If `dry_run` is true the script will list subgroups to be deleted, but it won't delete them
 
@@ -10,22 +10,22 @@
 #                                 PERMANENTLY_DELETE (default: false),
 #                                 DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
 # - Set TOP_LEVEL_GROUP_NAME to only delete subgroups under the given group.
-#   If not set, subgroups of all 'gitlab-e2e-sandbox-group-<#0-7>' groups will be deleted.
+#   If not set, subgroups of all 'gitlab-e2e-sandbox-group-<#1-8>' groups will be deleted.
 # - Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
 #   deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
 #   in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
-# - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 2 hours ago
+# - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 24 hours ago
 
 # Run `rake delete_subgroups`
 
 module QA
   module Tools
     class DeleteSubgroups < DeleteResourceBase
-      # @example mark subgroups for deletion that are older than 2 hours under all gitlab-e2e-sandbox-group-<#0-7> groups
+      # @example mark subgroups for deletion that are older than 24 hours under all gitlab-e2e-sandbox-group-<#1-8> groups
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> bundle exec rake delete_subgroups
       #
-      # @example permanently delete subgroups older than 2 hours under all gitlab-e2e-sandbox-group-<#0-7> groups
+      # @example permanently delete subgroups older than 24 hours under all gitlab-e2e-sandbox-group-<#1-8> groups
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   PERMANENTLY_DELETE=true bundle exec rake delete_subgroups

@@ -6,6 +6,7 @@ require "tmpdir"
 require "open3"
 require "logger"
 require "json"
+require "time"
 
 require_relative '../test_map_packer'
 
@@ -30,19 +31,23 @@ module Tooling
       end
 
       def fetch_rspec_mappings(unpacked_mapping_file, type: :described_class)
-        logger.info("Downloading spec mappings of type: #{type}")
+        logger.info("Fetching spec mappings of type: #{type}")
         FileUtils.mkdir_p(File.dirname(unpacked_mapping_file))
 
         mapping_file = MAPPINGS.fetch(type.to_sym) do
           logger.warn("No mappings available for type: #{type}, defaulting to described_class")
           MAPPINGS[:described_class]
         end
+        mapping_file_archive = File.join(Dir.tmpdir, "mapping.gz")
+        url = "#{PAGES_URL}/#{mapping_file}.gz"
+        logger.info("Downloading mapping archive")
+        download(url, mapping_file_archive) unless skip_download?(url, mapping_file_archive)
+
         # tmpdir ensures all temporary files get deleted
         Dir.mktmpdir("test-mappings") do |dir|
-          mapping_file_archive = File.join(dir, "mapping.gz")
           packed_mapping_file = File.join(dir, "mapping.json")
 
-          download("#{PAGES_URL}/#{mapping_file}.gz", mapping_file_archive)
+          logger.info("Creating and unpacking archive")
           extract_archive(mapping_file_archive, packed_mapping_file)
           unpack(packed_mapping_file, unpacked_mapping_file)
 
@@ -54,7 +59,8 @@ module Tooling
         logger.info("Downloading frontend fixtures mappings")
         FileUtils.mkdir_p(File.dirname(file_path))
 
-        download("#{PAGES_URL}/#{MAPPINGS[:frontend_fixtures]}", file_path)
+        url = "#{PAGES_URL}/#{MAPPINGS[:frontend_fixtures]}"
+        download(url, file_path) unless skip_download?(url, file_path)
         file_path
       end
 
@@ -62,13 +68,62 @@ module Tooling
 
       attr_reader :timeout, :logger
 
+      def skip_download?(url, file_path)
+        upstream_info = upstream_file_info(url)
+        return false unless upstream_info[:success]
+
+        local_info = local_file_info(file_path)
+        return false unless local_info[:success]
+
+        (upstream_info == local_info).tap do |skip|
+          logger.info("skipping, file exists!") if skip
+        end
+      end
+
+      def upstream_file_info(url)
+        response = self.class.head(url, timeout: timeout)
+
+        if response.success?
+          {
+            success: true,
+            content_length: response.headers['content-length']&.to_i,
+            last_modified: response.headers['last-modified']
+          }
+        else
+          { success: false, error: "HEAD request failed with status #{response.code}" }
+        end
+      rescue StandardError => e
+        logger.warn("Failed to fetch upstream file info: #{e.message}")
+        { success: false, error: e.message }
+      end
+
+      def local_file_info(file_path)
+        return { success: false, error: "File does not exist" } unless File.exist?(file_path)
+
+        begin
+          file_stat = File.stat(file_path)
+
+          {
+            success: true,
+            content_length: file_stat.size,
+            last_modified: file_stat.mtime.httpdate
+          }
+        rescue StandardError => e
+          logger.warn("Failed to fetch local file info: #{e.message}")
+          { success: false, error: e.message }
+        end
+      end
+
       def download(url, destination_path)
         logger.debug("Downloading #{url}...")
+        FileUtils.rm_f(destination_path) # ensure file does not exist since streaming with append mode is used
         response = self.class.get(url, timeout: timeout, stream_body: true) do |fragment|
           File.open(destination_path, 'ab') { |file| file.write(fragment) }
         end
         raise "Download failed with status #{response.code}: #{response.message}" unless response.success?
 
+        time = Time.parse(response.headers['last-modified'])
+        File.utime(time, time, destination_path) # preserve original last modified timestamp
         logger.debug("Download completed: #{destination_path}")
       end
 
