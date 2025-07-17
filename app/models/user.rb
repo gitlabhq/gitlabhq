@@ -2103,21 +2103,6 @@ class User < ApplicationRecord
       end
   end
 
-  def runner_available?(runner)
-    runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
-
-    # NOTE: This is a workaround to the fact that `ci_available_group_runners` does not return the group runners that the
-    # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
-    # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
-    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
-    # and that would get used by `ci_available_group_runners`, but that would require deeper changes
-    # from the ~"group::authorization" team.
-    # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
-    return Ability.allowed?(self, :admin_runners, runner.owner) if runner.group_type?
-
-    ci_available_runners.include?(runner)
-  end
-
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
     group_email = if notification_settings.loaded?
@@ -2939,6 +2924,14 @@ class User < ApplicationRecord
   end
 
   def ci_available_group_runners
+    # NOTE: `ci_available_group_runners` does not return the group runners that the user has access to in group A, when
+    # the user is owner of group B and group B has been invited as owner to group A.
+    # Instead it only returns group runners that belong to a group that the user is a direct owner of.
+    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
+    # and that would get used by `ci_available_group_runners`, but that would require deeper changes from the
+    # ~"group::authorization" team.
+    # NOTE: Issue captured in https://gitlab.com/gitlab-org/gitlab/-/issues/549985
+
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)

@@ -323,30 +323,30 @@ use the information in the failure error logs or the database:
 
 {{< tab title="From the database" >}}
 
-  1. [Check the status](#check-the-status-of-batched-background-migrations) of the
-     migration in the database.
-  1. Use the query results to construct a migration command, replacing the values
-     in angle brackets with the correct arguments:
-
-     ```shell
-     sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
-     ```
-
-     For example, if the query returns this data:
-
-     - `job_class_name`: `CopyColumnUsingBackgroundMigrationJob`
-     - `table_name`: `events`
-     - `column_name`: `id`
-     - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
-
-   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
-   comma between each argument with a backslash ` \ ` to prevent an invalid character error.
-   Every comma in the `job_arguments` parameter value must be escaped with a backslash.
-
-   For example:
+1. [Check the status](#check-the-status-of-batched-background-migrations) of the
+   migration in the database.
+1. Use the query results to construct a migration command, replacing the values
+   in angle brackets with the correct arguments:
 
    ```shell
-   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
+   sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
+   ```
+
+   For example, if the query returns this data:
+
+   - `job_class_name`: `CopyColumnUsingBackgroundMigrationJob`
+   - `table_name`: `events`
+   - `column_name`: `id`
+   - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
+
+ When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+ comma between each argument with a backslash ` \ ` to prevent an invalid character error.
+ Every comma in the `job_arguments` parameter value must be escaped with a backslash.
+
+ For example:
+
+ ```shell
+ sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
    ```
 
 {{< /tab >}}

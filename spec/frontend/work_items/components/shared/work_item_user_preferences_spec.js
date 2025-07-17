@@ -29,10 +29,7 @@ const mockCacheData = {
       __typename: 'UserPreferences',
       workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
     },
-    workItemPreferences: {
-      __typename: 'WorkItemPreferences',
-      displaySettings: { hiddenMetadataKeys: [] },
-    },
+    workItemPreferences: null,
   },
 };
 
@@ -234,6 +231,29 @@ describe('WorkItemUserPreferences', () => {
         });
       });
 
+      it('prevents multiple clicks from triggering duplicate API calls while loading', async () => {
+        const dropdownItems = findDropdownItems();
+        const firstMetadataItem = dropdownItems.at(0);
+        const secondMetadataItem = dropdownItems.at(1);
+
+        firstMetadataItem.vm.$emit('action');
+        secondMetadataItem.vm.$emit('action'); // Should be ignored while loading
+
+        await waitForPromises();
+
+        // Verify only one API call was made
+        expect(namespacePreferencesHandler).toHaveBeenCalledTimes(1);
+
+        // Verify cache was updated correctly (only once)
+        const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
+          query: getUserWorkItemsDisplaySettingsPreferences,
+          variables: { namespace: 'gitlab-org/gitlab' },
+        });
+
+        expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
+          hiddenMetadataKeys: ['assignee'],
+        });
+      });
       it('handles namespace preference errors gracefully', async () => {
         const error = new Error('Network error');
         const errorHandler = jest.fn().mockRejectedValue(error);

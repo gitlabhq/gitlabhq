@@ -695,8 +695,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_feature_flags_client
     enable :register_project_runners
     enable :create_runners
-    enable :admin_project_runners
-    enable :read_project_runners
+    enable :admin_runners
+    enable :read_runners
     enable :read_runners_registration_token
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
@@ -709,7 +709,6 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
-    enable :admin_runners
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
     enable :manage_protected_tags
@@ -728,7 +727,6 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
-  rule { can?(:admin_runners) }.enable :read_runners
 
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard

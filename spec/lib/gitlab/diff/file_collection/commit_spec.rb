@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::FileCollection::Commit do
+RSpec.describe Gitlab::Diff::FileCollection::Commit, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:diffable) { project.commit }
 

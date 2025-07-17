@@ -8,7 +8,7 @@ module Mutations
 
         include FindsProject
 
-        authorize :admin_project_runners
+        authorize :admin_runners
 
         argument :runner_id, ::Types::GlobalIDType[::Ci::Runner],
           required: true,

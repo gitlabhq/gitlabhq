@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab 16 changes
+title: GitLab 16 upgrade notes
 ---
 
 {{< details >}}
@@ -18,7 +18,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
+For additional information for Helm chart installations, see
+[the Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0.html).
 
 ## Issues to be aware of when upgrading from 15.11
 
@@ -762,7 +763,7 @@ Specific information applies to installations using Geo:
 
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |

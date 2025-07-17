@@ -275,16 +275,39 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
-    context 'when format is not supported' do
+    context 'when format param is given' do
       let(:from_project_id) { nil }
-      let(:request_params) { super().merge(format: 'json') }
       let(:from_ref) { 'master' }
       let(:to_ref) { 'feature' }
 
-      it 'returns a 404 error' do
-        show_request
+      context 'when format is diff' do
+        let(:request_params) { super().merge(format: 'diff') }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'sets the correct workhorse headers' do
+          show_request
+
+          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
+        end
+      end
+
+      context 'when format is patch' do
+        let(:request_params) { super().merge(format: 'patch') }
+
+        it 'sets the correct workhorse headers' do
+          show_request
+
+          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
+        end
+      end
+
+      context 'when format is not supported' do
+        let(:request_params) { super().merge(format: 'json') }
+
+        it 'returns a 404 error' do
+          show_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

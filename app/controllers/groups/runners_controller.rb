@@ -2,12 +2,12 @@
 
 class Groups::RunnersController < Groups::ApplicationController
   # overrriden in EE
-  def self.needs_authorize_read_group_runners
+  def self.needs_authorize_read_runners
     [:index, :show]
   end
 
-  before_action :authorize_read_group_runners!, only: needs_authorize_read_group_runners
-  before_action :authorize_create_group_runners!, only: [:new, :register]
+  before_action :authorize_read_runners!, only: needs_authorize_read_runners
+  before_action :authorize_create_runners!, only: [:new, :register]
   before_action :authorize_update_runner!, only: [:edit, :update]
   before_action :runner, only: [:edit, :update, :show, :register]
 
@@ -63,7 +63,7 @@ class Groups::RunnersController < Groups::ApplicationController
     render_404
   end
 
-  def authorize_create_group_runners!
+  def authorize_create_runners!
     return if can?(current_user, :create_runners, group)
 
     render_404

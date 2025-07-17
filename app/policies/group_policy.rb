@@ -316,7 +316,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_upload
     enable :import_projects
     enable :read_deploy_token
-    enable :read_group_runners
+    enable :read_runners
     enable :update_cluster
   end
 
@@ -342,7 +342,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :edit_billing
     enable :manage_merge_request_settings
     enable :read_billing
-    enable :read_group_runners
+    enable :read_runners
     enable :read_runners_registration_token
     enable :read_usage_quotas
     enable :register_group_runners

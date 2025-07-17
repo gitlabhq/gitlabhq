@@ -31,7 +31,7 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
 
   let(:mutation_response) { graphql_mutation_response(:runner_unassign_from_project) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_project_runners) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_runners) }
 
   context 'with invalid parameters' do
     context 'when project_path is missing' do

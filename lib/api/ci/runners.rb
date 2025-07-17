@@ -294,7 +294,7 @@ module API
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize! :read_project_runners, user_project }
+        before { authorize! :read_runners, user_project }
 
         desc 'Get runners available for project' do
           summary "List project's runners"
@@ -357,7 +357,7 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         delete ':id/runners/:runner_id' do
-          authorize! :admin_project_runners, user_project
+          authorize! :admin_runners, user_project
 
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           not_found!('Runner') unless runner_project
@@ -373,7 +373,7 @@ module API
         requires :id, type: String, desc: 'The ID of a group'
       end
       resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize! :read_group_runners, user_group }
+        before { authorize! :read_runners, user_group }
 
         desc 'Get runners available for group' do
           summary "List group's runners"

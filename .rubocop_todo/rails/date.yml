@@ -88,7 +88,6 @@ Rails/Date:
     - 'ee/spec/services/ee/issues/create_service_spec.rb'
     - 'ee/spec/services/ee/personal_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/ee/work_items/callbacks/start_and_due_date_spec.rb'
-    - 'ee/spec/services/epics/reopen_service_spec.rb'
     - 'ee/spec/services/groups/seat_usage_export_service_spec.rb'
     - 'ee/spec/services/issuable/callbacks/time_tracking_spec.rb'
     - 'ee/spec/services/iterations/cadences/destroy_service_spec.rb'

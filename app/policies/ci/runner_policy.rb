@@ -5,9 +5,20 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
+    condition(:can_admin_runner) do
+      # Check global admin_runner permission for instance runners
+      runner_owner = @subject.instance_type? ? :global : @subject.owner
+
+      can?(:admin_runners, runner_owner)
+    end
+
     with_score 20
-    condition(:owned_runner) do
-      @user.runner_available?(@subject)
+    condition(:runner_available) do
+      runner = @subject.is_a?(Ci::RunnerPresenter) ? @subject.__getobj__ : @subject
+
+      # TODO: use User#ci_available_project_runners once the optimize_ci_owned_project_runners_query FF is removed
+      # (https://gitlab.com/gitlab-org/gitlab/-/issues/551320)
+      @user.ci_available_runners.include?(runner)
     end
 
     condition(:creator) do
@@ -77,10 +88,27 @@ module Ci
 
     rule { anonymous }.prevent_all
 
-    rule { admin | owned_runner }.policy do
+    # NOTE: The `is_project_runner & belongs_to_multiple_projects & ` part is an optimization to avoid the
+    # `runner_available` condition, which is much more expensive than the `can_admin_runner` one.
+    # We can do this because:
+    # - it doesn't handle instance runners.
+    # - it handles group runners, but those only have a single group associated
+    #   (and can be handled by the `can_admin_runner` rule).
+    # - this leaves project runners. If they have a single associated project
+    #   (the owner project, the can_admin_runner condition will be true).
+    # So only if the runner has multiple projects is this rule useful at all.
+    rule { is_project_runner & belongs_to_multiple_projects & runner_available }.policy do
       enable :read_builds
-
       enable :read_runner
+
+      enable :assign_runner
+      enable :update_runner
+    end
+
+    rule { admin | can_admin_runner }.policy do
+      enable :read_builds
+      enable :read_runner
+
       enable :assign_runner
       enable :update_runner
       enable :delete_runner

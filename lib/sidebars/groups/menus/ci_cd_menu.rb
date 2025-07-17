@@ -41,7 +41,7 @@ module Sidebars
         end
 
         def show_runners?
-          can?(context.current_user, :read_group_runners, context.group)
+          can?(context.current_user, :read_runners, context.group)
         end
       end
     end

@@ -246,8 +246,8 @@ Note the following in relation to use of the Package Metadata Database:
 
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
 
-- License Scanning - prod-export-license-bucket-1a6c642fc4de57d4
-- Dependency Scanning - prod-export-advisory-bucket-1a6c642fc4de57d4
+- License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
+- Dependency Scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`
 
 ### Using the gsutil tool to download the package metadata exports
 

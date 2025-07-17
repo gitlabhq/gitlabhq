@@ -212,7 +212,7 @@ RSpec.shared_context 'with runner policy environment' do
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:maintainer) { create(:user, maintainer_of: group) }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
+  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager, creator: developer) }
   let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
   let_it_be(:subgroup_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
   let_it_be(:project_runner) do
@@ -288,6 +288,18 @@ RSpec.shared_examples 'runner policy' do |ability|
 
       it { expect_allowed ability }
 
+      context 'when user is developer in an associated project' do
+        let_it_be(:user) { create(:user, developer_of: other_project) }
+
+        it { expect_disallowed ability }
+      end
+
+      context 'when user is maintainer in an associated project' do
+        let_it_be(:user) { create(:user, maintainer_of: other_project) }
+
+        it { expect_allowed ability }
+      end
+
       context 'when user is maintainer in an unrelated group' do
         let_it_be(:maintainers_group_maintainer) { create(:user) }
         let_it_be_with_reload(:maintainers_group) do
@@ -342,6 +354,40 @@ RSpec.shared_examples 'runner policy' do |ability|
       let(:runner) { project_runner }
 
       it { expect_allowed ability }
+    end
+  end
+
+  context 'with admin user' do
+    let_it_be(:user) { create(:admin) }
+
+    context 'with instance runner' do
+      let(:runner) { instance_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
+    end
+
+    context 'with group runner' do
+      let(:runner) { group_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
+    end
+
+    context 'with project runner' do
+      let(:runner) { project_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
     end
   end
 end

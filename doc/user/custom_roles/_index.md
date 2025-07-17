@@ -240,8 +240,8 @@ have a custom role in their original group:
 
 The following table provides examples of the maximum role available to users invited to a group:
 
-| Scenario                                                | User with Guest role | User with Guest role + read_code | User with Guest role + read_vulnerability | User with Developer role     | User with Developer role + admin_vulnerability |
-| ------------------------------------------------------- | -------------------- | -------------------------------- | ----------------------------------------- | ---------------------------- | ---------------------------------------------- |
+| Scenario                                                | User with Guest role | User with Guest role + `read_code` | User with Guest role + `read_vulnerability` | User with Developer role     | User with Developer role + `admin_vulnerability` |
+| ------------------------------------------------------- | -------------------- | ---------------------------------- | ------------------------------------------- | ---------------------------- | ------------------------------------------------ |
 | **Invited with Guest role**                             | Guest                | Guest                            | Guest                                     | Guest                        | Guest                                          |
 | **Invited with Guest role + `read_code`**               | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Guest + `read_code`          | Guest + `read_code`                            |
 | **Invited with Guest role + `read_vulnerability`**      | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Guest + `read_vulnerability` | Guest + `read_vulnerability`                   |
@@ -254,11 +254,11 @@ You can only assign custom roles when you invite a group to another group. [Issu
 
 You can assign custom roles and permissions to the following:
 
-| Object       | Version       | Issue                                                  |
-| ----         | ----          | ----                                                   |
-| Users        | 15.9          | Released                                               |
-| Groups       | 17.7          | Partially supported. Further support for group assignment in projects is proposed in [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329)  |
-| Tokens       | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
+| Object | Version       | Issue |
+|--------|---------------|-------|
+| Users  | 15.9          | Released |
+| Groups | 17.7          | Partially supported. Further support for group assignment in projects is proposed in [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329) |
+| Tokens | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
 
 ## Sync users to custom roles
 

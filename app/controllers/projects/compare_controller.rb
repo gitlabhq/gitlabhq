@@ -50,6 +50,14 @@ class Projects::CompareController < Projects::ApplicationController
       format.html do
         render locals: { pagination_params: params.permit(:page) }
       end
+
+      format.patch do
+        send_git_patch source_project.repository, compare.diff_refs
+      end
+
+      format.diff do
+        send_git_diff source_project.repository, compare.diff_refs
+      end
     end
   end
 

@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab 18 changes
+title: GitLab 18 upgrade notes
 ---
 
 {{< details >}}
@@ -18,7 +18,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for 9.0](https://docs.gitlab.com/charts/releases/9_0/).
+For additional information for Helm chart installations, see
+[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
 
 ## Issues to be aware of when upgrading from 16.11
 

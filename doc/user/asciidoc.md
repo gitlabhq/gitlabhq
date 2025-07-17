@@ -550,3 +550,21 @@ https://www.youtube.com/watch?v=BlaZ65-b7y0[Link text for the video]
 // page break
 <<<
 ```
+
+## Table of contents
+
+```plaintext
+= Document Title (Level 0)
+:toc:
+:toclevels: 3
+:toc-title: Contents
+
+== Level 1
+=== Level 2
+==== Level 3
+===== Level 4
+====== Level 5
+== Back at Level 1
+```
+
+The `:toc-class:`, `:toc: left`, and `:toc: right` attributes are not supported.

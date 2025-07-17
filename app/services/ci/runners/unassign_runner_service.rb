@@ -32,7 +32,7 @@ module Ci
           return ServiceResponse.error(message: 'User not allowed to unassign runner')
         end
 
-        unless user.can?(:admin_project_runners, project)
+        unless user.can?(:admin_runners, project)
           return ServiceResponse.error(message: "User not allowed to manage project's runners")
         end
 

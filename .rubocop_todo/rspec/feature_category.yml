@@ -2295,7 +2295,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/diff/char_diff_spec.rb'
     - 'spec/lib/gitlab/diff/diff_refs_spec.rb'
     - 'spec/lib/gitlab/diff/file_collection/base_spec.rb'
-    - 'spec/lib/gitlab/diff/file_collection/commit_spec.rb'
     - 'spec/lib/gitlab/diff/file_collection/compare_spec.rb'
     - 'spec/lib/gitlab/diff/file_collection/merge_request_diff_base_spec.rb'
     - 'spec/lib/gitlab/diff/file_collection/merge_request_diff_spec.rb'

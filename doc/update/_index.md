@@ -106,7 +106,7 @@ editions, and they are based on the Linux package. See how to
 
 {{< tab title="Self-compiled (source)" >}}
 
-- [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) -
+- [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md):
   The guidelines for upgrading Community Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
   patch version, such as 15.2.0 to 15.2.1, and apply to both Community and Enterprise
