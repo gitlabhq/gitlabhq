@@ -8,6 +8,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
   let(:usage) { 100 }
   let(:cache_key) { 'test' }
   let(:expiry) { 60 }
+  let(:key_does_not_exist) { -2 }
 
   subject(:counter) { described_class.new(resource_key) }
 
@@ -19,8 +20,12 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
     end
   end
 
-  def increment
-    counter.increment(cache_key, expiry)
+  def increment(ttl = expiry)
+    counter.increment(cache_key, ttl)
+  end
+
+  def ttl
+    Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
   end
 
   describe '#increment' do
@@ -30,15 +35,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
       expect(increment).to eq 3 * usage
     end
 
-    it 'sets time to live (TTL) for the key' do
-      def ttl
-        Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
-      end
-
-      key_does_not_exist = -2
-
+    it 'sets time to live (TTL) for the key on first increment' do
       expect(ttl).to eq key_does_not_exist
       expect { increment }.to change { ttl }.by(a_value > 0)
+      expect { increment(expiry + 1) }.not_to change { ttl }
+    end
+
+    context 'when optimize_rate_limiter_redis_expiry is disabled' do
+      before do
+        stub_feature_flags(optimize_rate_limiter_redis_expiry: false)
+      end
+
+      it 'sets TTL on each increment' do
+        expect(ttl).to eq key_does_not_exist
+        expect { increment }.to change { ttl }.by(a_value > 0)
+        expect { increment(expiry + 1) }.to change { ttl }.by(a_value > 0)
+      end
     end
   end
 

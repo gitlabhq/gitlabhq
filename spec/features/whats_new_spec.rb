@@ -90,7 +90,7 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       find_by_testid('card-carousel-next-button').click
 
-      expect(page).to have_css("[data-testid='duo-pro-feature-card']")
+      expect(page).to have_css("[data-testid='duo-core-feature-card']")
     end
   end
 end

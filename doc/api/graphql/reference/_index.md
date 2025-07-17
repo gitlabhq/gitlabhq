@@ -46791,7 +46791,9 @@ Member role admin permission.
 | Value | Description |
 | ----- | ----------- |
 | <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read CI/CD details for runners and jobs in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read group details in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read system information such as background migrations, health checks, audit logs, and Gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read project details in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read subscription details in the Admin area. |
 | <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read the user list and user details in the Admin area. |
 
@@ -46823,7 +46825,9 @@ Member role permission.
 | <a id="memberrolepermissionmanage_protected_tags"></a>`MANAGE_PROTECTED_TAGS` | Create, read, update, and delete protected tags. |
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolepermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details for runners and jobs in the Admin Area. |
+| <a id="memberrolepermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` | Read group details in the Admin Area. |
 | <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Read system information such as background migrations, health checks, audit logs, and Gitaly in the Admin Area. |
+| <a id="memberrolepermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` | Read project details in the Admin Area. |
 | <a id="memberrolepermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 | <a id="memberrolepermissionread_admin_users"></a>`READ_ADMIN_USERS` | Read the user list and user details in the Admin area. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |

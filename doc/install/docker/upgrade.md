@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Upgrading a Docker installation
+title: Upgrade Docker-based installations
 ---
 
 {{< details >}}
@@ -12,8 +12,7 @@ title: Upgrading a Docker installation
 
 {{< /details >}}
 
-In most cases, upgrading GitLab is as easy as downloading the newest Docker
-image tag.
+Upgrade a Docker-based installation to a later version of GitLab.
 
 ## Upgrade GitLab using Docker Engine
 

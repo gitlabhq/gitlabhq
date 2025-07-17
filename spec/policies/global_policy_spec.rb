@@ -754,6 +754,8 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
           :access_admin_area,
           :read_application_statistics,
           :read_admin_users,
+          :read_admin_groups,
+          :read_admin_projects,
           :read_admin_audit_log,
           :read_admin_background_jobs,
           :read_admin_background_migrations,

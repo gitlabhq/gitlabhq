@@ -2387,7 +2387,6 @@
 - './ee/spec/workers/merge_requests/stream_approval_audit_event_worker_spec.rb'
 - './ee/spec/workers/merge_requests/sync_code_owner_approval_rules_worker_spec.rb'
 - './ee/spec/workers/namespaces/sync_namespace_name_worker_spec.rb'
-- './ee/spec/workers/new_epic_worker_spec.rb'
 - './ee/spec/workers/personal_access_tokens/groups/policy_worker_spec.rb'
 - './ee/spec/workers/personal_access_tokens/instance/policy_worker_spec.rb'
 - './ee/spec/workers/post_receive_spec.rb'

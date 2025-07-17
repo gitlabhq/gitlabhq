@@ -1,0 +1,10 @@
+---
+name: optimize_rate_limiter_redis_expiry
+description: Reduce EXPIRE calls from ApplicationRateLimiter
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555914
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197895
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555904
+milestone: '18.3'
+group: group::durability
+type: gitlab_com_derisk
+default_enabled: false

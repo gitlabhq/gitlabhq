@@ -1,8 +1,8 @@
 ---
-description: click_learn_more_in_duo_pro_featured_update_card
+description: click_learn_more_in_duo_core_featured_update_card
 internal_events: true
 status: active
-action: click_learn_more_in_duo_pro_featured_update_card
+action: click_learn_more_in_duo_core_featured_update_card
 identifiers:
 - user
 product_group: acquisition

@@ -376,7 +376,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
         'Namespaces::RemoveDormantMembersWorker' => 0,
-        'NewEpicWorker' => 3,
         'NewIssueWorker' => 3,
         'NewMergeRequestWorker' => 3,
         'NewNoteWorker' => 3,

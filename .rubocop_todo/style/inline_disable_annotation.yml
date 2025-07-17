@@ -1328,7 +1328,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/licenses/reset_submit_license_usage_data_banner_worker.rb'
     - 'ee/app/workers/members_destroyer/clean_up_group_protected_branch_rules_worker.rb'
     - 'ee/app/workers/merge_request_reset_approvals_worker.rb'
-    - 'ee/app/workers/new_epic_worker.rb'
     - 'ee/app/workers/okrs/checkin_reminder_emails_cron_worker.rb'
     - 'ee/app/workers/package_metadata/advisories_sync_worker.rb'
     - 'ee/app/workers/package_metadata/licenses_sync_worker.rb'

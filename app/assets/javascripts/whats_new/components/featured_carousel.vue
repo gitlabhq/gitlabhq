@@ -107,8 +107,8 @@ export default {
             :title="$options.i18n.duoProCardTitle"
             :description="$options.i18n.duoProCardDescription"
             :button-link="$options.GITLAB_DUO_PRO_CARD_URL"
-            data-testid="duo-pro-feature-card"
-            tracking-event="click_learn_more_in_duo_pro_featured_update_card"
+            data-testid="duo-core-feature-card"
+            tracking-event="click_learn_more_in_duo_core_featured_update_card"
           />
         </div>
       </div>

@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Upgrading Linux package instances
+title: Upgrade Linux package installations
 ---
 
 {{< details >}}
@@ -12,8 +12,7 @@ title: Upgrading Linux package instances
 
 {{< /details >}}
 
-Upgrading Linux package instances to a later version of GitLab requires several steps, many specific to Linux package
-installations.
+Upgrade a Linux package installation to a later version of GitLab.
 
 ## Upgrade the operating system (optional)
 

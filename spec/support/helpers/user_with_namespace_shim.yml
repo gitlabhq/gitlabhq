@@ -268,7 +268,6 @@
 - ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb
 - ee/spec/workers/groups/enterprise_users/associate_worker_spec.rb
 - ee/spec/workers/groups/enterprise_users/bulk_associate_by_domain_worker_spec.rb
-- ee/spec/workers/new_epic_worker_spec.rb
 - spec/controllers/admin/users_controller_spec.rb
 - spec/controllers/concerns/checks_collaboration_spec.rb
 - spec/controllers/concerns/routable_actions_spec.rb

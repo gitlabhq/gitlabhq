@@ -11,7 +11,7 @@ describe('FeaturedCard', () => {
     title: 'Test Feature Title',
     description: 'This is a test description for the featured card component.',
     buttonLink: 'https://example.com/learn-more',
-    trackingEvent: 'click_learn_more_in_duo_pro_featured_update_card',
+    trackingEvent: 'click_learn_more_in_duo_core_featured_update_card',
   };
 
   const buildWrapper = (props = {}) => {
@@ -68,7 +68,7 @@ describe('FeaturedCard', () => {
       await Vue.nextTick();
 
       expect(trackEventSpy).toHaveBeenCalledWith(
-        'click_learn_more_in_duo_pro_featured_update_card',
+        'click_learn_more_in_duo_core_featured_update_card',
         {},
         undefined,
       );

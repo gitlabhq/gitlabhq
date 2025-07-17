@@ -161,6 +161,8 @@ class GlobalPolicy < BasePolicy
     enable :read_admin_metrics_dashboard
     enable :read_admin_system_information
     enable :read_admin_users
+    enable :read_admin_groups
+    enable :read_admin_projects
     enable :read_application_statistics
   end
 
