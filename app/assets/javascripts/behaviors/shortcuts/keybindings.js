@@ -190,7 +190,10 @@ export const TOGGLE_MARKDOWN_PREVIEW = {
   // However, this particular shortcut has been in place since before the `mod` key was available.
   // We've chosen to leave this implemented as-is for the time being to avoid breaking people's workflows.
   // See discussion in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45308#note_527490548.
-  defaultKeys: ['ctrl+shift+p', 'command+shift+p'],
+  // Update 2025-07-17: Adding `alt` version to fix an issue in Windows
+  // This new combination is compatible across Mac, Linux and Windows.
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/17600#note_2633177789
+  defaultKeys: ['ctrl+shift+p', 'command+shift+p', 'alt+shift+p'],
 };
 
 /**

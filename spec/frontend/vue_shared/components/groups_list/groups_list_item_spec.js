@@ -14,7 +14,7 @@ import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_l
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
 import {
   VISIBILITY_TYPE_ICON,
-  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -114,8 +114,8 @@ describe('GroupsListItem', () => {
     const icon = findAvatarLabeled().findComponent(GlIcon);
     const tooltip = getBinding(icon.element, 'gl-tooltip');
 
-    expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_INTERNAL_STRING]);
-    expect(tooltip.value).toBe(GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]);
+    expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PUBLIC_STRING]);
+    expect(tooltip.value).toBe(GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]);
   });
 
   it('renders subgroup count', () => {
@@ -211,8 +211,11 @@ describe('GroupsListItem', () => {
   });
 
   describe('when group does not have projectStatistics key', () => {
+    const { projectStatistics, ...groupWithoutProjectStatistics } = group;
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        propsData: { group: groupWithoutProjectStatistics },
+      });
     });
 
     it('does not render storage size', () => {
@@ -222,11 +225,9 @@ describe('GroupsListItem', () => {
 
   describe('when group has projectStatistics key', () => {
     it('renders storage size in human size', () => {
-      createComponent({
-        propsData: { group: { ...group, projectStatistics: { storageSize: 3072 } } },
-      });
+      createComponent();
 
-      expect(findStorageSize().text()).toBe('3.00 KiB');
+      expect(findStorageSize().text()).toBe('100.00 MiB');
     });
 
     describe('when storage size is null', () => {

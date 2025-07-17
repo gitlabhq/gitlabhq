@@ -23019,7 +23019,8 @@ CREATE TABLE sbom_graph_paths (
     project_id bigint NOT NULL,
     path_length integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    top_level_ancestor boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE sbom_graph_paths_id_seq

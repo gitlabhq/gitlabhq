@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
-import { humanTimeframe, isInPast, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
+import { humanTimeframe, isInPast, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED, METADATA_KEYS } from '~/work_items/constants';
 import {
@@ -46,12 +46,10 @@ export default {
       return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;
     },
     datesText() {
-      if (this.startDate) {
+      if (this.startDate || this.dueDate) {
         return humanTimeframe(newDate(this.startDate), newDate(this.dueDate));
       }
-      if (this.dueDate) {
-        return localeDateFormat.asDate.format(newDate(this.dueDate));
-      }
+
       return null;
     },
     isClosed() {

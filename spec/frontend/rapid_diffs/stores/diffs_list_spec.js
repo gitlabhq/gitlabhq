@@ -5,7 +5,7 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import waitForPromises from 'helpers/wait_for_promises';
 import { toPolyfillReadable } from '~/streaming/polyfills';
-import { DiffFile } from '~/rapid_diffs/diff_file';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 
 jest.mock('~/streaming/polyfills');

@@ -53,10 +53,14 @@ module Gitlab
 
       def trusted_ips
         strong_memoize(:trusted_ips) do
-          config.ip_whitelist.map do |proxy|
+          trusted = config.ip_whitelist.map do |proxy|
             IPAddr.new(proxy)
           rescue IPAddr::InvalidAddressError
-          end.compact
+          end
+
+          trusted += trusted.compact.select(&:ipv4?).map(&:ipv4_mapped)
+
+          trusted.uniq
         end
       end
     end

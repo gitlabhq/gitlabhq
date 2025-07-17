@@ -17,7 +17,6 @@ import {
 } from '../../constants';
 import workItemBulkUpdateMutation from '../../graphql/list/work_item_bulk_update.mutation.graphql';
 import getAvailableBulkEditWidgets from '../../graphql/list/get_available_bulk_edit_widgets.query.graphql';
-import workItemParent from '../../graphql/list/work_item_parent.query.graphql';
 import WorkItemBulkEditAssignee from './work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditDropdown from './work_item_bulk_edit_dropdown.vue';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
@@ -84,7 +83,6 @@ export default {
       assigneeId: undefined,
       confidentiality: undefined,
       healthStatus: undefined,
-      parentNamespaceId: undefined,
       removeLabelIds: [],
       state: undefined,
       subscription: undefined,
@@ -94,22 +92,6 @@ export default {
     };
   },
   apollo: {
-    parentNamespaceId: {
-      query: workItemParent,
-      variables() {
-        return {
-          fullPath: this.isGroup
-            ? this.fullPath
-            : this.fullPath.substring(0, this.fullPath.lastIndexOf('/')),
-        };
-      },
-      update(data) {
-        return data.namespace.id;
-      },
-      skip() {
-        return !this.shouldUseGraphQLBulkEdit;
-      },
-    },
     availableWidgets: {
       query: getAvailableBulkEditWidgets,
       variables() {
@@ -196,7 +178,7 @@ export default {
         mutation: workItemBulkUpdateMutation,
         variables: {
           input: {
-            parentId: this.parentNamespaceId,
+            fullPath: this.fullPath,
             ids: this.checkedItems.map((item) => item.id),
             labelsWidget: hasLabelsToUpdate
               ? {

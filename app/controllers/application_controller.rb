@@ -548,11 +548,15 @@ class ApplicationController < BaseActionController
     auth_user if strong_memoized?(:auth_user)
   end
 
-  # Used by `set_current_organization` in BaseActionController
-  def organization_params
-    params.permit(
-      :controller, :namespace_id, :group_id, :id, :organization_path
-    )
+  def set_current_organization
+    return if ::Current.organization_assigned
+
+    ::Current.organization = Gitlab::Current::Organization.new(
+      params: params.permit(
+        :controller, :namespace_id, :group_id, :id, :organization_path
+      ),
+      user: current_user
+    ).organization
   end
 end
 

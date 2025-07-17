@@ -82,35 +82,16 @@ export-predictive-test-metrics:
   dependencies: []
   variables:
     GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR: "tmp/predictive_tests"
-    GLCI_ALL_FAILED_RSPEC_TESTS_FILE: "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt"
   before_script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
     - retrieve_failed_tests "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}" "oneline" "latest"
   script:
-    - tooling/bin/predictive_tests --export-predictive-backend-metrics
+    - |
+      tooling/bin/predictive_test_metrics \
+        --export-backend-metrics \
+        --failed-backend-tests-file "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt"
   artifacts:
     expire_in: 7d
     paths:
       - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
-
-export-predictive-test-metrics-frontend:
-  extends:
-    - export-predictive-test-metrics
-    - .yarn-cache
-    - .with-ci-node-image
-  dependencies:
-    - detect-tests
-    - graphql-schema-dump
-  variables:
-    GLCI_JEST_FAILED_TESTS_FILE: "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/jest_failed_tests.txt"
-  before_script:
-    - !reference [export-predictive-test-metrics, before_script]
-    - yarn_install_script
-  script:
-    - tooling/bin/predictive_tests --export-predictive-frontend-metrics
-  artifacts:
-    expire_in: 7d
-    paths:
-      - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
-      - $JEST_MATCHING_TEST_FILES_PATH

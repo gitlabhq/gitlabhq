@@ -948,7 +948,7 @@ GEM
       grape
       rack
     graphlyte (1.0.0)
-    graphql (2.4.13)
+    graphql (2.5.11)
       base64
       fiber-storage
       logger
@@ -2205,7 +2205,7 @@ DEPENDENCIES
   grape-swagger-entity (~> 0.5.5)
   grape_logging (~> 1.8, >= 1.8.4)
   graphlyte (~> 1.0.0)
-  graphql (= 2.4.13)
+  graphql (= 2.5.11)
   graphql-docs (~> 5.0.0)
   grpc (= 1.63.0)
   gssapi (~> 1.3.1)

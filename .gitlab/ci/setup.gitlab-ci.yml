@@ -132,35 +132,27 @@ detect-tests:
   needs: []
   stage: prepare
   before_script:
-    - source ./scripts/utils.sh
-    - source ./scripts/rspec_helpers.sh
     # Use alternative coverage based mappings for tier-2 pipeline
     - |
       if echo "$CI_MERGE_REQUEST_LABELS" | grep -q "pipeline::tier-2"; then
-        echo "Using alternative coverage based mappings"
         MAPPING_TYPE=coverage
       else
-        echo "Using standard described_class based mappings"
         MAPPING_TYPE=described_class
       fi
   script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
-        mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
-
-        tooling/bin/predictive_tests --ci --select-tests --with-crystalball-mappings --mapping-type $MAPPING_TYPE
-
-        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
-        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
-
-        echoinfo 'Related FOSS RSpec tests:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_FOSS_PATH)"
-        echo ""
-
-        echoinfo 'Related EE RSpec tests:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_EE_PATH)"
-        echo ""
+        tooling/bin/predictive_tests \
+          --ci \
+          --with-crystalball-mappings \
+          --mapping-type $MAPPING_TYPE \
+          --with-frontend-fixture-mappings \
+          --frontend-fixtures-mapping-path $FRONTEND_FIXTURES_MAPPING_PATH \
+          --matching-foss-rspec-test-files-path $RSPEC_MATCHING_TESTS_FOSS_PATH \
+          --matching-ee-rspec-test-files-path $RSPEC_MATCHING_TESTS_EE_PATH \
+          --matching-jest-test-files-path $RSPEC_MATCHING_JS_FILES_PATH \
+          --changed-files-path $RSPEC_CHANGED_FILES_PATH
       fi
   artifacts:
     expire_in: 7d
@@ -170,7 +162,6 @@ detect-tests:
       - ${RSPEC_MATCHING_JS_FILES_PATH}
       - ${RSPEC_MATCHING_TESTS_EE_PATH}
       - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
-      - ${RSPEC_MATCHING_TEST_FILES_PATH}
 
 detect-previous-failed-tests:
   extends:

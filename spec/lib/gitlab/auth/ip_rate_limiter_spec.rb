@@ -107,8 +107,20 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
       it { is_expected.to be_truthy }
     end
 
+    context 'when mapped ip is in the trusted list' do
+      let(:ip) { '::ffff:127.0.0.1' }
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when ip is not in the trusted list' do
       let(:ip) { '10.0.0.1' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when mapped ip is not in the trusted list' do
+      let(:ip) { '::ffff:10.0.0.1' }
 
       it { is_expected.to be_falsey }
     end

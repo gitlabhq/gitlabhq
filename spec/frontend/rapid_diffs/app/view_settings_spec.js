@@ -5,8 +5,8 @@ import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import { DiffFile } from '~/rapid_diffs/diff_file';
-import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
 
 jest.mock('~/diffs/components/diff_app_controls.vue', () => ({
   props: jest.requireActual('~/diffs/components/diff_app_controls.vue').default.props,

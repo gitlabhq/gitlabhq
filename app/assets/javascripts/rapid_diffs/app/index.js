@@ -1,20 +1,20 @@
-// eslint-disable-next-line max-classes-per-file
 import { pinia } from '~/pinia/instance';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
-import { DiffFile } from '~/rapid_diffs/diff_file';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
-import { StreamingError } from '~/rapid_diffs/streaming_error';
+import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
+import { StreamingError } from '~/rapid_diffs/web_components/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix';
+import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
-import { VIEWER_ADAPTERS } from '~/rapid_diffs/adapters';
+import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapters';
 import { camelizeKeys } from '~/lib/utils/object_utils';
-import { disableBrokenContentVisibility } from '~/rapid_diffs/app/content_visibility_fix';
+import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
 import { useApp } from '~/rapid_diffs/stores/app';
+import { createDiffFileMounted } from '~/rapid_diffs/web_components/diff_file_mounted';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -25,9 +25,11 @@ export class RapidDiffsFacade {
   adapterConfig = VIEWER_ADAPTERS;
 
   #DiffFileImplementation;
+  #DiffFileMounted;
 
   constructor({ DiffFileImplementation = DiffFile } = {}) {
     this.#DiffFileImplementation = DiffFileImplementation;
+    this.#DiffFileMounted = createDiffFileMounted(this);
     this.root = document.querySelector('[data-rapid-diffs]');
   }
 
@@ -105,15 +107,6 @@ export class RapidDiffsFacade {
     );
   }
 
-  get #DiffFileMounted() {
-    const appContext = this;
-    return class extends HTMLElement {
-      connectedCallback() {
-        this.parentElement.mount(appContext);
-      }
-    };
-  }
-
   #initHeader() {
     useDiffsView(pinia).diffsStatsEndpoint = this.appData.diffsStatsEndpoint;
     useDiffsView(pinia).streamUrl = this.appData.reloadStreamUrl;
@@ -155,7 +148,3 @@ export class RapidDiffsFacade {
     return this.appData.lazy;
   }
 }
-
-export const createRapidDiffsApp = (options) => {
-  return new RapidDiffsFacade(options);
-};

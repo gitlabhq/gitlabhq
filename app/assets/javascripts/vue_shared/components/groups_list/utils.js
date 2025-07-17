@@ -14,13 +14,18 @@ export const availableGraphQLGroupActions = ({
   isSelfDeletionInProgress,
   isSelfDeletionScheduled,
 }) => {
+  // No actions available when group deletion is in progress
+  if (isSelfDeletionInProgress) {
+    return [];
+  }
+
   const baseActions = [];
 
   if (userPermissions.viewEditPage) {
     baseActions.push(ACTION_EDIT);
   }
 
-  if (userPermissions.removeGroup && isSelfDeletionScheduled && !isSelfDeletionInProgress) {
+  if (userPermissions.removeGroup && isSelfDeletionScheduled) {
     baseActions.push(ACTION_RESTORE);
   }
 
@@ -33,7 +38,7 @@ export const availableGraphQLGroupActions = ({
     if (!markedForDeletion) {
       baseActions.push(ACTION_DELETE);
       // Groups with self deletion scheduled can be deleted immediately
-    } else if (isSelfDeletionScheduled && !isSelfDeletionInProgress) {
+    } else if (isSelfDeletionScheduled) {
       baseActions.push(ACTION_DELETE_IMMEDIATELY);
     }
   }

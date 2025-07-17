@@ -90,7 +90,6 @@ module Resolvers
       description: <<~DESC
                Path of the blob changed in merge request.
                Requires state, targetBranches, and createdAfter arguments.
-               Available only when the feature flag `filter_blob_path` is enabled.
       DESC
 
     argument :created_after, Types::TimeType,

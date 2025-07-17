@@ -1,9 +1,11 @@
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -15,7 +17,16 @@ import { groups } from '../groups_list/mock_data';
 describe('ListItem', () => {
   let wrapper;
 
-  const [resource] = groups;
+  const [group] = groups;
+
+  const {
+    data: {
+      projects: { nodes: graphqlProjects },
+    },
+  } = membershipProjectsGraphQlResponse;
+
+  const [project] = formatGraphQLProjects(graphqlProjects);
+
   const actions = {
     [ACTION_EDIT]: {
       href: '/foo',
@@ -26,7 +37,7 @@ describe('ListItem', () => {
   };
 
   const defaultPropsData = {
-    resource,
+    resource: group,
   };
 
   const createComponent = ({ propsData = {}, stubs = {}, scopedSlots = {} } = {}) => {
@@ -55,14 +66,14 @@ describe('ListItem', () => {
     const avatarLabeled = findAvatarLabeled();
 
     expect(avatarLabeled.props()).toMatchObject({
-      label: resource.avatarLabel,
-      labelLink: resource.relativeWebUrl,
+      label: group.avatarLabel,
+      labelLink: group.relativeWebUrl,
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({
-      'entity-id': resource.id.toString(),
-      'entity-name': resource.fullName,
-      src: resource.avatarUrl,
+      'entity-id': group.id.toString(),
+      'entity-name': group.fullName,
+      src: group.avatarUrl,
       shape: 'rect',
     });
   });
@@ -71,7 +82,7 @@ describe('ListItem', () => {
     const avatarLabelLink = '/foo';
 
     beforeEach(() => {
-      createComponent({ propsData: { resource: { ...resource, avatarLabelLink } } });
+      createComponent({ propsData: { resource: { ...group, avatarLabelLink } } });
     });
 
     it('uses that for labeLink prop', () => {
@@ -151,7 +162,7 @@ describe('ListItem', () => {
         createComponent({
           propsData: {
             resource: {
-              ...resource,
+              ...group,
               descriptionHtml: null,
             },
           },
@@ -193,7 +204,7 @@ describe('ListItem', () => {
 
         expect(findListActions().props()).toMatchObject({
           actions,
-          availableActions: resource.availableActions,
+          availableActions: group.availableActions,
         });
       });
     });
@@ -204,7 +215,7 @@ describe('ListItem', () => {
           propsData: {
             actions,
             resource: {
-              ...resource,
+              ...group,
               availableActions: [],
             },
           },
@@ -246,17 +257,18 @@ describe('ListItem', () => {
   });
 
   describe.each`
-    timestampType                      | expectedText | expectedTimeProp
-    ${TIMESTAMP_TYPE_CREATED_AT}       | ${'Created'} | ${resource.createdAt}
-    ${TIMESTAMP_TYPE_UPDATED_AT}       | ${'Updated'} | ${resource.updatedAt}
-    ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT} | ${'Updated'} | ${resource.lastActivityAt}
-    ${undefined}                       | ${'Created'} | ${resource.createdAt}
+    resource   | timestampType                      | expectedText | expectedTimeProp
+    ${group}   | ${TIMESTAMP_TYPE_CREATED_AT}       | ${'Created'} | ${'createdAt'}
+    ${group}   | ${TIMESTAMP_TYPE_UPDATED_AT}       | ${'Updated'} | ${'updatedAt'}
+    ${project} | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT} | ${'Updated'} | ${'lastActivityAt'}
+    ${group}   | ${undefined}                       | ${'Created'} | ${'createdAt'}
   `(
     'when `timestampType` prop is $timestampType',
-    ({ timestampType, expectedText, expectedTimeProp }) => {
+    ({ resource, timestampType, expectedText, expectedTimeProp }) => {
       beforeEach(() => {
         createComponent({
           propsData: {
+            resource,
             timestampType,
           },
         });
@@ -264,17 +276,17 @@ describe('ListItem', () => {
 
       it('displays correct text and passes correct `time` prop to `TimeAgoTooltip`', () => {
         expect(wrapper.findByText(expectedText).exists()).toBe(true);
-        expect(findTimeAgoTooltip().props('time')).toBe(expectedTimeProp);
+        expect(findTimeAgoTooltip().props('time')).toBe(resource[expectedTimeProp]);
       });
     },
   );
 
   describe('when timestamp type is not available in resource data', () => {
     beforeEach(() => {
-      const { createdAt, ...resourceWithoutCreatedAt } = resource;
+      const { createdAt, ...groupWithoutCreatedAt } = group;
       createComponent({
         propsData: {
-          resource: resourceWithoutCreatedAt,
+          resource: groupWithoutCreatedAt,
         },
       });
     });

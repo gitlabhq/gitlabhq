@@ -15,19 +15,6 @@ function update_tests_metadata() {
   cleanup_individual_job_reports
 }
 
-function retrieve_tests_mapping() {
-  local mapping_archive="${1:-$RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  local mapping_path="${2:-$RSPEC_TESTS_MAPPING_PATH}"
-
-  mkdir -p $(dirname "$mapping_archive")
-
-  if [[ ! -f "${mapping_archive}" ]]; then
-    (curl --fail --location  -o "${mapping_archive}.gz" "https://gitlab-org.gitlab.io/gitlab/${mapping_archive}.gz" && gzip -d "${mapping_archive}.gz") || echo "{}" > "${mapping_archive}"
-  fi
-
-  scripts/unpack-test-mapping "${mapping_archive}" "${mapping_path}"
-}
-
 function retrieve_frontend_fixtures_mapping() {
   mkdir -p $(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
 
@@ -524,22 +511,6 @@ function rspec_fail_fast() {
   else
     echo "No rspec fail-fast tests to run"
   fi
-}
-
-function filter_rspec_matched_foss_tests() {
-  local matching_tests_file="${1}"
-  local foss_matching_tests_file="${2}"
-
-  # Keep only FOSS files that exists
-  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("spec/") && File.exist?(f) }.join(" ")' > "${foss_matching_tests_file}"
-}
-
-function filter_rspec_matched_ee_tests() {
-  local matching_tests_file="${1}"
-  local ee_matching_tests_file="${2}"
-
-  # Keep only EE files that exists
-  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("ee/spec/") && File.exist?(f) }.join(" ")' > "${ee_matching_tests_file}"
 }
 
 function generate_frontend_fixtures_mapping() {

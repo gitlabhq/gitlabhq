@@ -61,7 +61,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_group_work_item',
             title: _('New work item'),
-            component: 'create_new_group_work_item_modal',
+            component: 'create_new_work_item_modal',
             data: {
               track_action: 'click_link_new_group_work_item',
               track_label: 'plus_menu_dropdown',
@@ -109,6 +109,7 @@ module Nav
               id: 'new_issue',
               title: _('New issue'),
               href: new_project_issue_path(project),
+              component: 'create_new_work_item_modal',
               data: {
                 track_action: 'click_link_new_issue',
                 track_label: 'plus_menu_dropdown',

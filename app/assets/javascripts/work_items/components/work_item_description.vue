@@ -270,7 +270,7 @@ export default {
   mounted() {
     const DEFAULT_TEMPLATE_NAME = 'default';
     const templateNameFromRoute =
-      this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems];
+      this.$route?.query[paramName] || this.$route?.query[oldParamNameFromPreWorkItems];
     const templateName = !this.isNewWorkItemRoute
       ? DEFAULT_TEMPLATE_NAME
       : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
@@ -459,7 +459,7 @@ export default {
         return;
       }
 
-      const params = new URLSearchParams(this.$route.query);
+      const params = new URLSearchParams(this.$route?.query);
       params.delete(paramName);
       params.delete(oldParamNameFromPreWorkItems);
       if (this.selectedTemplate && this.isNewWorkItemRoute) {

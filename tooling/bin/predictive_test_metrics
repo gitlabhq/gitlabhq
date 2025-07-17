@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/inline'
+require 'optparse'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'gitlab', '~> 5.1'
+  gem 'test_file_finder', '~> 0.3'
+  # loaded from standard library by gitlab and will stop working on ruby 3.4
+  gem 'base64'
+  gem 'csv'
+end
+
+require_relative '../lib/tooling/predictive_tests/metrics_exporter'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
+
+  opts.on('--export-backend-metrics', 'Export predictive test metrics for rspec') do
+    options[:export_backend_metrics] = true
+  end
+
+  opts.on('--export-frontend-metrics', 'Export predictive test metrics for frontend') do
+    options[:export_frontend_metrics] = true
+  end
+
+  opts.on('--output-dir [string]', String, 'Output directory for generated metrics files') do |value|
+    options[:output_dir] = value
+  end
+
+  opts.on('--failed-backend-tests-file', String, 'File with list of failed rspec tests') do |value|
+    options[:failed_backend_tests_file] = value
+  end
+
+  opts.on('--failed-frontend-tests-file', String, 'File with list of failed jest tests') do |value|
+    options[:failed_frontend_tests_file] = value
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Validate at least one option is provided
+if [options[:export_backend_metrics], options[:export_frontend_metrics]].all?(&:nil?)
+  puts <<~MSG
+    Error: Please specify at least one of these flags:
+      1. --export-backend-metrics
+      2. --export-frontend-metrics
+  MSG
+
+  exit 1
+end
+
+if options[:export_backend_metrics]
+  options[:failed_backend_tests_file].tap do |file|
+    next unless file.nil? || file.empty?
+
+    warn "[predictive tests] Missing argument: --failed-backend-tests-file"
+    exit 1
+  end
+
+  Tooling::PredictiveTests::MetricsExporter.new(
+    output_dir: options[:output_dir] || 'tmp/predictive_test_metrics',
+    rspec_all_failed_tests_file: options[:failed_backend_tests_file]
+  ).execute
+end
+
+if options[:export_frontend_metrics]
+  options[:failed_frontend_tests_file].tap do |file|
+    next unless file.nil? || file.empty?
+
+    warn "[predictive tests] Missing argument: --failed-frontend-tests-file"
+    exit 1
+  end
+
+  # TODO: Move the logic of exporting metrics of frontend tests to MetricsExporter in a follow up mr
+end

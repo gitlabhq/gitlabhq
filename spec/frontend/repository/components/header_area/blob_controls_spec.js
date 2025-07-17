@@ -89,7 +89,6 @@ describe('Blob controls component', () => {
     blobControlsResolver = blobControlsSuccessResolver,
     currentUserResolver = currentUserSuccessResolver,
     applicationInfoResolver = applicationInfoSuccessResolver,
-    glFeatures = {},
   } = {}) => {
     const projectPath = 'some/project';
     router = createRouter(projectPath, refMock);
@@ -111,7 +110,6 @@ describe('Blob controls component', () => {
       router,
       apolloProvider: fakeApollo,
       provide: {
-        glFeatures,
         currentRef: refMock,
       },
       directives: {
@@ -153,16 +151,11 @@ describe('Blob controls component', () => {
   });
 
   describe('MR badge', () => {
-    it('should render the badge if `filter_blob_path` flag is on', async () => {
-      await createComponent({ glFeatures: { filterBlobPath: true } });
+    it('should render the badge', async () => {
+      await createComponent();
       expect(findOpenMrBadge().exists()).toBe(true);
       expect(findOpenMrBadge().props('blobPath')).toBe('/some/file.js');
       expect(findOpenMrBadge().props('projectPath')).toBe('some/project');
-    });
-
-    it('should not render the badge if `filter_blob_path` flag is off', async () => {
-      await createComponent({ glFeatures: { filterBlobPath: false } });
-      expect(findOpenMrBadge().exists()).toBe(false);
     });
   });
 

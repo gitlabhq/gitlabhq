@@ -4,7 +4,9 @@ import {
   GlTooltipDirective,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
+  GlLink,
 } from '@gitlab/ui';
+import { isMetaClick } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { __, s__ } from '~/locale';
@@ -13,9 +15,9 @@ import {
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
 import {
+  BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_NAME_EPIC,
   CREATE_NEW_WORK_ITEM_MODAL,
-  CREATE_NEW_GROUP_WORK_ITEM_MODAL,
   NAME_TO_TEXT_LOWERCASE_MAP,
   sprintfWorkItem,
 } from '~/work_items/constants';
@@ -30,6 +32,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
+    GlLink,
     InviteMembersTrigger,
     CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
   },
@@ -39,7 +42,7 @@ export default {
   i18n: {
     createNew: __('Create new…'),
   },
-  inject: ['isImpersonating', 'fullPath', 'workItemPlanningViewEnabled'],
+  inject: ['isGroup', 'isImpersonating', 'fullPath', 'workItemPlanningViewEnabled'],
   props: {
     groups: {
       type: Array,
@@ -49,16 +52,26 @@ export default {
   data() {
     return {
       dropdownOpen: false,
-      showCreateGroupWorkItemModal: false,
       showCreateWorkItemModal: false,
     };
   },
   computed: {
+    allowedWorkItemTypes() {
+      if (this.isGroup) {
+        return [];
+      }
+      return BASE_ALLOWED_CREATE_TYPES;
+    },
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
         crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
       };
+    },
+    preselectedWorkItemType() {
+      return !this.workItemPlanningViewEnabled && this.isGroup
+        ? WORK_ITEM_TYPE_NAME_EPIC
+        : undefined;
     },
   },
   methods: {
@@ -68,15 +81,24 @@ export default {
     isCreateWorkItem(groupItem) {
       return groupItem.component === CREATE_NEW_WORK_ITEM_MODAL;
     },
-    isCreateGroupWorkItem(groupItem) {
-      return groupItem.component === CREATE_NEW_GROUP_WORK_ITEM_MODAL;
+    getCreateWorkItemItem(groupItem) {
+      // Make sure <gl-disclosure-dropdown-item> doesn't have an href so it's
+      // not rendered as <a> which prevents us from opening the create modal
+      return { ...groupItem, href: undefined };
     },
-    handleCreateWorkItemClick() {
-      if (this.workItemPlanningViewEnabled) {
-        this.showCreateWorkItemModal = true;
-      } else {
-        this.showCreateGroupWorkItemModal = true;
+    getCreateWorkItemHref(groupItem) {
+      return this.workItemPlanningViewEnabled ? undefined : groupItem.href;
+    },
+    handleCreateWorkItemClick(event) {
+      if (event && isMetaClick(event)) {
+        // opening in a new tab
+        return;
       }
+
+      // don't follow the link for normal clicks - open in modal
+      event?.preventDefault?.();
+
+      this.showCreateWorkItemModal = true;
     },
     handleWorkItemCreated(workItem) {
       // Triggering the toast at this component, because we want to lazy load the modal
@@ -85,7 +107,6 @@ export default {
 
       // Hide the modal first to prevent the component from being destroyed
       // before we can capture the event data
-      this.showCreateGroupWorkItemModal = false;
       this.showCreateWorkItemModal = false;
 
       const workItemType = NAME_TO_TEXT_LOWERCASE_MAP[workItem?.workItemType?.name];
@@ -135,39 +156,36 @@ export default {
           :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
         />
         <gl-disclosure-dropdown-item
-          v-else-if="isCreateGroupWorkItem(groupItem)"
-          :key="`${groupItem.text}-group-modal-trigger`"
-          :item="groupItem"
-          data-testid="new-group-work-item-trigger"
-          @action="showCreateGroupWorkItemModal = true"
-        />
-        <gl-disclosure-dropdown-item
           v-else-if="isCreateWorkItem(groupItem)"
           :key="`${groupItem.text}-modal-trigger`"
-          :item="groupItem"
+          :item="getCreateWorkItemItem(groupItem)"
           data-testid="new-work-item-trigger"
           @action="handleCreateWorkItemClick"
-        />
+        >
+          <template #list-item>
+            <gl-link
+              v-if="getCreateWorkItemHref(groupItem)"
+              class="gl-block gl-text-default hover:gl-text-default hover:gl-no-underline"
+              :href="getCreateWorkItemHref(groupItem)"
+              @click.stop="handleCreateWorkItemClick"
+            >
+              {{ groupItem.text }}
+            </gl-link>
+          </template>
+        </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>
     </gl-disclosure-dropdown-group>
     <create-work-item-modal
-      v-if="showCreateGroupWorkItemModal"
-      visible
-      :full-path="fullPath"
-      hide-button
-      is-group
-      data-testid="new-group-work-item-modal"
-      :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_EPIC"
-      @hideModal="showCreateGroupWorkItemModal = false"
-      @workItemCreated="handleWorkItemCreated"
-    />
-    <create-work-item-modal
       v-if="showCreateWorkItemModal"
-      visible
-      hide-button
-      data-testid="new-work-item-modal"
+      :allowed-work-item-types="allowedWorkItemTypes"
+      :always-show-work-item-type-select="!isGroup"
       :full-path="fullPath"
+      hide-button
+      :is-group="isGroup"
+      :preselected-work-item-type="preselectedWorkItemType"
+      visible
+      data-testid="new-work-item-modal"
       @hideModal="showCreateWorkItemModal = false"
       @workItemCreated="handleWorkItemCreated"
     />

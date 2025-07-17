@@ -110,6 +110,7 @@ To explore all public or internal groups:
 {{< history >}}
 
 - **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
 
@@ -122,8 +123,6 @@ This page shows groups that you are a member of through:
 
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
-
-If the `your_work_groups_vue` feature flag is enabled, groups that you are a member of appear in the **Member** tab.
 
 ## View a group
 
@@ -283,17 +282,17 @@ the deletion job will instead restore and unarchive the group, so the group will
 {{< history >}}
 
 - **Inactive** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
 
-To view a list of the subgroups that are pending deletion in a group:
+To view a list of the groups that are pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Subgroups and projects**.
+1. Select **View all my groups**.
+1. Select the **Inactive** tab.
 
 Groups that are marked for deletion are labeled **Pending deletion**.
-
-If the `your_work_groups_vue` feature flag is enabled, groups marked for deletion appear in the **Inactive** tab.
 
 ## Delete a group immediately
 

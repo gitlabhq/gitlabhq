@@ -14,7 +14,6 @@ import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_ed
 import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_parent.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
-import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
 import getAvailableBulkEditWidgets from '~/work_items/graphql/list/get_available_bulk_edit_widgets.query.graphql';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -23,10 +22,7 @@ import {
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
 } from '~/work_items/constants';
-import {
-  workItemParentQueryResponse,
-  availableBulkEditWidgetsQueryResponse,
-} from '../../mock_data';
+import { availableBulkEditWidgetsQueryResponse } from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -63,7 +59,6 @@ describe('WorkItemBulkEditSidebar component', () => {
     },
   ];
 
-  const workItemParentQueryHandler = jest.fn().mockResolvedValue(workItemParentQueryResponse);
   const workItemBulkUpdateHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemBulkUpdate: { updatedWorkItemCount: 1 } } });
@@ -79,7 +74,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemBulkEditSidebar, {
       apolloProvider: createMockApollo([
-        [workItemParentQuery, workItemParentQueryHandler],
         [workItemBulkUpdateMutation, mutationHandler],
         [getAvailableBulkEditWidgets, availableWidgetsHandler],
       ]),
@@ -124,51 +118,9 @@ describe('WorkItemBulkEditSidebar component', () => {
       expect(findForm().attributes('id')).toBe('work-item-list-bulk-edit');
     });
 
-    describe('when epics list', () => {
-      it('calls mutation to bulk edit', async () => {
-        const addLabelIds = ['gid://gitlab/Label/1'];
-        const removeLabelIds = ['gid://gitlab/Label/2'];
-        createComponent({ props: { isEpicsList: true } });
-        await waitForPromises();
-
-        findAddLabelsComponent().vm.$emit('select', addLabelIds);
-        findRemoveLabelsComponent().vm.$emit('select', removeLabelIds);
-        findForm().vm.$emit('submit', { preventDefault: () => {} });
-
-        expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
-          input: {
-            parentId: 'gid://gitlab/Group/1',
-            ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
-            labelsWidget: {
-              addLabelIds,
-              removeLabelIds,
-            },
-          },
-        });
-        expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
-        expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
-      });
-
-      it('renders error when there is a mutation error', async () => {
-        createComponent({
-          props: { isEpicsList: true },
-          mutationHandler: jest.fn().mockRejectedValue(new Error('oh no')),
-        });
-
-        findForm().vm.$emit('submit', { preventDefault: () => {} });
-        await waitForPromises();
-
-        expect(createAlert).toHaveBeenCalledWith({
-          captureError: true,
-          error: new Error('oh no'),
-          message: 'Something went wrong while bulk editing.',
-        });
-      });
-    });
-
-    describe('when not epics list', () => {
+    describe('when on project work items list page', () => {
       describe('when work_items_bulk_edit is enabled', () => {
-        it('calls mutation to bulk edit', async () => {
+        it('calls mutation to bulk edit with project fullPath', async () => {
           const addLabelIds = ['gid://gitlab/Label/1'];
           const removeLabelIds = ['gid://gitlab/Label/2'];
           createComponent({
@@ -176,7 +128,7 @@ describe('WorkItemBulkEditSidebar component', () => {
               hasIssuableHealthStatusFeature: true,
               glFeatures: { workItemsBulkEdit: true },
             },
-            props: { isEpicsList: false },
+            props: { isEpicsList: false, fullPath: 'group/project' },
           });
           await waitForPromises();
 
@@ -193,7 +145,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
           expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
             input: {
-              parentId: 'gid://gitlab/Group/1',
+              fullPath: 'group/project',
               ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
               labelsWidget: {
                 addLabelIds,
@@ -218,6 +170,25 @@ describe('WorkItemBulkEditSidebar component', () => {
           });
           expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
           expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
+        });
+
+        it('calls mutation with namespace fullPath', async () => {
+          createComponent({
+            provide: {
+              glFeatures: { workItemsBulkEdit: true },
+            },
+            props: { isEpicsList: false, fullPath: 'group/subgroup/project' },
+          });
+          await waitForPromises();
+
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+
+          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+            input: {
+              fullPath: 'group/subgroup/project',
+              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+            },
+          });
         });
 
         it('renders error when there is a mutation error', async () => {
@@ -334,20 +305,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       // once on initial mount, once when checked items change
       expect(defaultAvailableWidgetsHandler).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('workItemParent query', () => {
-    it('is called when isEpicsList=true', () => {
-      createComponent({ props: { isEpicsList: true } });
-
-      expect(workItemParentQueryHandler).toHaveBeenCalled();
-    });
-
-    it('is not called when isEpicsList=false', () => {
-      createComponent({ props: { isEpicsList: false } });
-
-      expect(workItemParentQueryHandler).not.toHaveBeenCalled();
     });
   });
 

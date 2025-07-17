@@ -1,12 +1,15 @@
-import { DiffFile } from '~/rapid_diffs/diff_file';
-import { VIEWER_ADAPTERS } from '~/rapid_diffs/adapters';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapters';
 
 customElements.define('diff-file', DiffFile);
 customElements.define(
   'diff-file-mounted',
   class extends HTMLElement {
     connectedCallback() {
-      this.parentElement.mount({ adapterConfig: VIEWER_ADAPTERS, observe: () => {} });
+      this.parentElement.mount({
+        adapterConfig: VIEWER_ADAPTERS,
+        observe: () => {},
+      });
     }
   },
 );

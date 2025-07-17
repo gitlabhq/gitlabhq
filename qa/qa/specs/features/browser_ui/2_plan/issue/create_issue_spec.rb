@@ -92,16 +92,14 @@ module QA
         project.visit!
         Page::Project::Menu.perform(&:go_to_new_issue)
         work_item_view_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        index_page_type = Page::Project::Issue::Index
+        show_page_type = Page::Project::WorkItem::Show
 
-        if work_item_view_enabled
-          resource = Resource::WorkItem.fabricate_via_browser_ui! { |work_item| work_item.project = project }
-          index_page_type = Page::Project::Issue::Index
-          show_page_type = Page::Project::WorkItem::Show
-        else
-          resource = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
-          index_page_type = Page::Project::Issue::Index
-          show_page_type = Page::Project::Issue::Show
-        end
+        resource = if work_item_view_enabled
+                     Resource::WorkItem.fabricate_via_browser_ui! { |work_item| work_item.project = project }
+                   else
+                     Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
+                   end
 
         [resource, index_page_type, show_page_type]
       end

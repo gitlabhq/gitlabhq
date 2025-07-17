@@ -43,7 +43,13 @@ module Gitlab
                   ]
                 }
               },
-              gitlab: { "gitlab-exporter": { enabled: false } },
+              gitlab: {
+                "gitlab-exporter": { enabled: false },
+                "gitlab-shell": {
+                  sshDaemon: 'gitlab-sshd',
+                  config: { proxyProtocol: true }
+                }
+              },
               redis: { metrics: { enabled: false } },
               prometheus: { install: false },
               certmanager: { install: false },

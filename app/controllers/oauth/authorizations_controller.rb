@@ -148,9 +148,8 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     ) && !doorkeeper_application&.trusted?
   end
 
-  # Used by `set_current_organization` in BaseActionController
-  def organization_params
-    {}
+  def set_current_organization
+    ::Current.organization = Gitlab::Current::Organization.new(user: current_user).organization
   end
 end
 

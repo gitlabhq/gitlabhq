@@ -4,7 +4,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { pinia } from '~/pinia/instance';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
-export async function initHiddenFilesWarning(el) {
+export function initHiddenFilesWarning(el) {
   // eslint-disable-next-line no-new
   new Vue({
     el,

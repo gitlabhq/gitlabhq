@@ -42,7 +42,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
-    push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
 
