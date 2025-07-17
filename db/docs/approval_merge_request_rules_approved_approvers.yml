@@ -8,14 +8,6 @@ description: Join table for approved approvers and ApprovalMergeRequestRule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: approval_merge_request_rule_id
-        table: approval_merge_request_rules
-        sharding_key: project_id
-        belongs_to: approval_merge_request_rule
+sharding_key:
+  project_id: projects
 table_size: medium
-desired_sharding_key_migration_job_name: BackfillApprovalMergeRequestRulesApprovedApproversProjectId

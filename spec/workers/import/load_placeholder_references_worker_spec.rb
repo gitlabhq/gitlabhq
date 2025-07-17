@@ -6,10 +6,9 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
   let(:user) { create(:user) }
   let(:import_source) { 'test_source' }
   let(:uid) { 123 }
-  let(:params) { { 'current_user_id' => user.id } }
 
   describe '#perform' do
-    subject(:perform) { described_class.new.perform(import_source, uid, params) }
+    subject(:perform) { described_class.new.perform(import_source, uid) }
 
     it 'executes LoadService' do
       expect_next_instance_of(Import::PlaceholderReferences::LoadService) do |service|
@@ -20,7 +19,7 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
     end
 
     it_behaves_like 'an idempotent worker' do
-      let(:job_args) { [import_source, uid, params] }
+      let(:job_args) { [import_source, uid] }
     end
   end
 

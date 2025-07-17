@@ -11,7 +11,6 @@ export default {
     'app/assets/javascripts/behaviors/components/json_table.vue',
     'app/assets/javascripts/behaviors/components/sandboxed_mermaid.vue',
     'app/assets/javascripts/behaviors/shortcuts/shortcut.vue',
-    'app/assets/javascripts/blob/filepath_form/components/template_selector.vue',
     'app/assets/javascripts/boards/components/board_add_new_column_form.vue',
     'app/assets/javascripts/boards/components/board_card_inner.vue',
     'app/assets/javascripts/boards/components/board_card_move_to_position.vue',

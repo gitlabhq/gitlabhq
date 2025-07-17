@@ -13,8 +13,9 @@ module Tooling
     end
 
     def execute
-      ff_union_regexp = Regexp.union(feature_flag_filenames)
+      return [] unless filter_files.any?
 
+      ff_union_regexp = Regexp.union(feature_flag_filenames)
       ruby_files.select { |ruby_file| ruby_file if ff_union_regexp.match?(File.read(ruby_file)) }.uniq
     end
 

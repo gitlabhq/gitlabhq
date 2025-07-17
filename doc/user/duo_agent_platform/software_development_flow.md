@@ -9,8 +9,8 @@ title: Agent flows
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
@@ -18,7 +18,7 @@ title: Agent flows
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../policy/development_stages_support.md).
-- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) and `duo_workflow` [flag enabled](../../administration/feature_flags/_index.md) in GitLab 18.2.
+- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382), `duo_workflow` [flag enabled](../../administration/feature_flags/_index.md), and status changed to beta in GitLab 18.2.
 
 {{< /history >}}
 

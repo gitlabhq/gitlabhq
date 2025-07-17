@@ -6,6 +6,7 @@ require_relative "mapping_fetcher"
 
 require_relative "../helpers/file_handler"
 require_relative "../events/track_pipeline_events"
+require_relative "../find_changes"
 
 require "logger"
 require "tmpdir"
@@ -76,7 +77,12 @@ module Tooling
       #
       # @return [String]
       def changed_files
-        @changed_files ||= ChangedFiles.fetch(frontend_fixtures_file: frontend_fixtures_mapping_file)
+        @changed_files ||= ChangedFiles.fetch(
+          changes: Tooling::FindChanges.new(
+            from: :api,
+            frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_file
+          ).execute
+        )
       end
 
       # Mapping file fetcher

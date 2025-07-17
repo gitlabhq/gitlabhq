@@ -32,8 +32,7 @@ module Gitlab
 
           ::Import::LoadPlaceholderReferencesWorker.perform_async(
             ::Import::SOURCE_GITHUB,
-            project.import_state.id,
-            { 'current_user_id' => project.creator.id }
+            project.import_state.id
           )
 
           info(

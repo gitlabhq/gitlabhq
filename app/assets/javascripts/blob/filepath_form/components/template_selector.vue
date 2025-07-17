@@ -55,7 +55,6 @@ export default {
       loading: false,
       searchTerm: '',
       selectedTemplate: undefined,
-      types: templateSelectors,
     };
   },
   computed: {

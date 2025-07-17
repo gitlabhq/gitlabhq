@@ -33,7 +33,7 @@ module Tooling
       def rspec_spec_list
         logger.info "Creating predictive rspec test files specs list ..."
         specs = {
-          crystalball_mapping_specs: specs_from_mapping,
+          test_file_finder_specs: specs_from_mapping,
           graphql_type_mapping_specs: specs_from_graphql_base_types,
           js_changes_specs: system_specs_from_js_changes,
           view_changes_specs: system_specs_from_view_changes

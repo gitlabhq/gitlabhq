@@ -219,8 +219,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
           stages_that_push_placeholder_references.length
         ).times.with(
           project.import_type,
-          project.import_state.id,
-          'current_user_id' => project.creator_id
+          project.import_state.id
         )
 
         importer.execute

@@ -24,8 +24,7 @@ RSpec.describe Gitlab::GithubImport::AdvanceStageWorker, feature_category: :impo
     it 'enqueues LoadPlaceholderReferencesWorker to save placeholder references' do
       expect(::Import::LoadPlaceholderReferencesWorker).to receive(:perform_async).with(
         ::Import::SOURCE_GITHUB,
-        project.import_state.id,
-        { 'current_user_id' => project.creator_id }
+        project.import_state.id
       )
 
       worker.perform(project.id, { '123' => 2 }, 'finish')

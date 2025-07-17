@@ -19,17 +19,20 @@ end
 require 'fileutils'
 require 'tmpdir'
 require 'json'
+require 'open3'
 
 require_relative '../lib/tooling/predictive_tests/test_selector'
 require_relative '../lib/tooling/predictive_tests/changed_files'
 require_relative '../lib/tooling/predictive_tests/mapping_fetcher'
+require_relative '../lib/tooling/find_changes'
 
-class PredictiveTests # rubocop:disable Gitlab/NamespacedClass -- standalone non rails script
+# rubocop:disable Gitlab/Json, Gitlab/NamespacedClass -- non rails
+class PredictiveTests
   def initialize(options)
     @with_crystalball_mappings = options[:with_crystalball_mappings]
     @mapping_type = options[:mapping_type] || :described_class
     @with_frontend_fixture_mappings = options[:with_frontend_fixture_mappings]
-    @changed_files = options[:changed_files]
+    @changed_files = options[:changed_files]&.split(' ')
     @changed_files_path = options[:changed_files_path]
     @matching_foss_rspec_test_files_path = options[:matching_foss_rspec_test_files_path]
     @matching_ee_rspec_test_files_path = options[:matching_ee_rspec_test_files_path]
@@ -90,22 +93,19 @@ class PredictiveTests # rubocop:disable Gitlab/NamespacedClass -- standalone non
     )
   end
 
-  def changed_file_list
-    @changed_file_list ||= if @changed_files
-                             @changed_files.split(" ")
-                           else
-                             Tooling::PredictiveTests::ChangedFiles.fetch(
-                               frontend_fixtures_file: frontend_fixtures_mapping_file
-                             )
-                           end
+  def changed_files
+    @changed_files ||= @ci ? mr_diff : git_diff
   end
 
   def test_selector
-    @test_selector ||= Tooling::PredictiveTests::TestSelector.new(
-      changed_files: changed_file_list,
-      rspec_test_mapping_path: test_mapping_file,
-      logger: logger
-    )
+    @test_selector ||= begin
+      logger.info("Generating predictive test list based on changed files: #{JSON.pretty_generate(changed_files)}")
+      Tooling::PredictiveTests::TestSelector.new(
+        changed_files: changed_files,
+        rspec_test_mapping_path: test_mapping_file,
+        logger: logger
+      )
+    end
   end
 
   def rspec_spec_list
@@ -116,10 +116,31 @@ class PredictiveTests # rubocop:disable Gitlab/NamespacedClass -- standalone non
     @js_spec_list ||= test_selector.js_spec_list
   end
 
-  # rubocop:disable Gitlab/Json -- non rails
+  def mr_diff
+    logger.debug('Fetching list of changes in gitlab merge request')
+    Tooling::FindChanges.new(
+      from: :api,
+      frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_file
+    ).execute
+  end
+
+  def git_diff
+    logger.debug('Fetching list of changes in local git repository')
+
+    out, status = Open3.capture2e('git rev-parse --abbrev-ref HEAD')
+    raise("Failed to fetch current branch name! Output: #{out}") unless status.success?
+
+    # get changes for the whole feature branch when not in master
+    cmd = out.strip != 'master' ? 'git diff --name-only master...HEAD' : 'git diff --name-only HEAD'
+    out, status = Open3.capture2e(cmd)
+    raise("Failed to fetch changed file list from git! Output: #{out}") unless status.success?
+
+    out.split("\n")
+  end
+
   def create_output_files
     # Used by frontend related pipelines/jobs
-    save_output(changed_file_list.join("\n"), @changed_files_path) if valid_file_path?(@changed_files_path)
+    save_output(changed_files.join("\n"), @changed_files_path) if valid_file_path?(@changed_files_path)
 
     # Used by predictive rspec pipelines
     if valid_file_path?(@matching_foss_rspec_test_files_path)
@@ -138,7 +159,6 @@ class PredictiveTests # rubocop:disable Gitlab/NamespacedClass -- standalone non
 
     save_output(js_spec_list.join(" "), @matching_jest_test_files_path)
   end
-  # rubocop:enable Gitlab/Json
 
   def save_output(output, file_path)
     logger.debug("Writing #{file_path}")
@@ -150,6 +170,7 @@ class PredictiveTests # rubocop:disable Gitlab/NamespacedClass -- standalone non
     !(file_path.nil? || file_path.empty?)
   end
 end
+# rubocop:enable Gitlab/Json, Gitlab/NamespacedClass
 
 if __FILE__ == $PROGRAM_NAME
   require 'optparse'
@@ -208,5 +229,10 @@ if __FILE__ == $PROGRAM_NAME
     end
   end.parse!
 
-  PredictiveTests.new(options).execute
+  begin
+    PredictiveTests.new(options).execute
+  rescue StandardError => e
+    warn "[predictive tests] ERROR: #{e.message}"
+    exit 1
+  end
 end

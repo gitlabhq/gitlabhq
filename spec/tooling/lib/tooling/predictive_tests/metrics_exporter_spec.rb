@@ -30,6 +30,10 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     )
   end
 
+  let(:find_changes) do
+    instance_double(Tooling::FindChanges, execute: ["base_changes"])
+  end
+
   let(:test_selector_described) do
     instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_described_class_specs)
   end
@@ -120,9 +124,13 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     allow(Logger).to receive(:new).with($stdout, progname: "rspec predictive testing").and_return(logger)
     allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
 
+    allow(Tooling::FindChanges).to receive(:new).with(
+      from: :api,
+      frontend_fixtures_mapping_pathname: frontend_fixtures_file
+    ).and_return(find_changes)
     allow(Tooling::PredictiveTests::MappingFetcher).to receive(:new).with(logger: logger).and_return(mapping_fetcher)
     allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch).with(
-      frontend_fixtures_file: frontend_fixtures_file
+      changes: ["base_changes"]
     ).and_return(changed_files)
 
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
