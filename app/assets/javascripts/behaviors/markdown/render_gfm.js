@@ -55,6 +55,5 @@ export function renderGFM(element) {
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
-
-  if (gon?.features?.glqlIntegration) renderGlql(glqlEls.map((e) => e.parentNode));
+  renderGlql(glqlEls.map((e) => e.parentNode));
 }

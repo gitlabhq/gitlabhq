@@ -1112,10 +1112,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:markdown_placeholders, type: :gitlab_com_derisk)
   end
 
-  def glql_integration_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
   end

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+entries:
+  helm-package-name:
+  - name: helm-package-name
+    type: application
+    version: 20240913.54469.0
+    apiVersion: v2
+    appVersion: "master"
+    description: Package backend API
+    created: '2025-06-26T13:40:16.223624000Z'
+    urls:
+    - charts/helm-package-name-20240913.54469.0.tgz
+generated: '2025-06-27T13:10:27.315984000Z'
+serverInfo:
+  contextPath: "/api/v4/projects/2/packages/helm"

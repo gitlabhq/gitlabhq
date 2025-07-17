@@ -441,7 +441,7 @@ When you configure jobs with the [`needs`](../yaml/_index.md#needs) keyword, you
 two options for how to group the jobs in the pipeline details page. To group the jobs
 by stage configuration, select **stage** in the **Group jobs by** section:
 
-![jobs grouped by stage](img/pipeline_stage_view_v17_9.png)
+![A pipeline graph showing jobs grouped under each stage](img/pipeline_stage_view_v17_9.png)
 
 To group the jobs by [`needs`](../yaml/_index.md#needs) configuration, select **Job dependencies**.
 You can optionally select **Show dependencies** to render lines between dependent jobs.

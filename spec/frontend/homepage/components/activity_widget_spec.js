@@ -5,9 +5,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ActivityWidget from '~/homepage/components/activity_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/utils/datetime_utility');
 
 describe('ActivityWidget', () => {
   let wrapper;
@@ -91,6 +93,22 @@ describe('ActivityWidget', () => {
 
     expect(wrapper.findByTestId(EVENT_TESTID).exists()).toBe(true);
     expect(wrapper.findByTestId(EVENT_TESTID).text()).toBe(EVENT_TEXT);
+  });
+
+  it('initializes timeago when timestamps are inserted', async () => {
+    const timestampHtml =
+      '<time class="js-timeago" title="Jul 4, 2025 12:09pm" datetime="2025-07-04T12:09:51Z" tabindex="0" aria-label="Jul 4, 2025 12:09pm" data-toggle="tooltip" data-placement="top" data-container="body">Jul 04, 2025</time>';
+    mockAxios
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .reply(200, {
+        html: timestampHtml,
+      });
+    createWrapper();
+    await waitForPromises();
+
+    const timestampEls = wrapper.vm.$el.querySelectorAll('.js-timeago');
+    expect(timestampEls).toHaveLength(1);
+    expect(localTimeAgo).toHaveBeenCalledWith(timestampEls);
   });
 
   describe('refresh functionality', () => {

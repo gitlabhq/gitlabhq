@@ -76,7 +76,9 @@ export default {
       },
       result() {
         this.selectedProject =
-          this.findSelectedProject(this.selectedProjectFullPath) || this.projects?.at(0);
+          this.frequentProjects?.at(0) ||
+          this.findSelectedProject(this.selectedProjectFullPath) ||
+          this.projects?.at(0);
         this.$emit('selectProject', this.selectedProject?.fullPath);
       },
     },
@@ -146,6 +148,7 @@ export default {
   },
   created() {
     this.debouncedSearch = debounce(this.handleSearch, SEARCH_DEBOUNCE);
+    this.setFrequentProjects();
   },
   beforeDestroy() {
     this.debouncedSearch?.cancel();

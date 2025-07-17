@@ -15,6 +15,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { isExternal, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
+import StatusBadge from '~/issuable/components/status_badge.vue';
 
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -48,6 +49,7 @@ export default {
     GlFormCheckbox,
     GlSprintf,
     GlSkeletonLoader,
+    StatusBadge,
     IssuableAssignees,
     WorkItemTypeIcon,
     WorkItemPrefetch,
@@ -275,6 +277,9 @@ export default {
           this.issuable.assignees,
       );
     },
+    showDraftStatusBadge() {
+      return Boolean(this.isMergeRequest && this.isOpen && this.issuable.draft);
+    },
     statusBadgeVariant() {
       if (this.isMergeRequest && this.isClosed) {
         return 'danger';
@@ -416,6 +421,14 @@ export default {
     </gl-form-checkbox>
     <div class="issuable-main-info">
       <div data-testid="issuable-title" class="issue-title title">
+        <status-badge
+          v-if="showDraftStatusBadge"
+          :state="issuable.state"
+          :is-draft="issuable.draft"
+          issuable-type="merge_request"
+          class="gl-relative gl-top-2"
+          data-testid="issuable-draft-status-badge"
+        />
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
           class="gl-mr-2"

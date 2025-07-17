@@ -816,6 +816,7 @@ project:
 - package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
+- helm_metadata_caches
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
 - alerting_setting

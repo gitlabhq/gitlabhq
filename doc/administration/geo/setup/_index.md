@@ -28,8 +28,6 @@ title: Setting up Geo
 - Confirm the [requirements for running Geo](../_index.md#requirements-for-running-geo) are met by all sites. For example, sites must use the same GitLab version, and sites must be able to communicate with each other over certain ports.
 - Confirm the **primary** and **secondary** site storage configurations match. If the primary Geo site uses object storage, the secondary Geo site must use it too. For more information, see [Geo with Object storage](../replication/object_storage.md).
 - Ensure clocks are synchronized between the **primary** site and the **secondary** site. Synchronized clocks are required for Geo to function correctly. For example, if the clock drift between the **primary** and **secondary** sites exceeds 1 minute, replication fails.
-- Do not configure GitLab sites to use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab)
-  because they will break the proxy between sites. For more information, see [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
 
 ## Using Linux package installations
 

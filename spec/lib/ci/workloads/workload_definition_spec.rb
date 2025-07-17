@@ -25,6 +25,7 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
     it 'builds a workload_definition' do
       expect(definition.to_job_hash).to eq({
         image: image,
+        stage: "build",
         variables: {
           "MY_ENV_VAR" => {
             value: "my env var value",

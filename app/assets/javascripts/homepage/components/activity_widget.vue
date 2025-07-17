@@ -3,6 +3,7 @@ import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const MAX_EVENTS = 10;
@@ -42,7 +43,15 @@ export default {
         const { data } = await axios.get(
           `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`,
         );
-        this.activityFeedHtml = data?.html ?? null;
+        if (data?.html) {
+          const parser = new DOMParser();
+          const resp = parser.parseFromString(data.html, 'text/html');
+          const timestamps = resp.querySelectorAll('.js-timeago');
+          if (timestamps.length > 0) {
+            localTimeAgo(timestamps);
+          }
+          this.activityFeedHtml = resp.body.innerHTML;
+        }
       } catch (e) {
         Sentry.captureException(e);
         this.hasError = true;

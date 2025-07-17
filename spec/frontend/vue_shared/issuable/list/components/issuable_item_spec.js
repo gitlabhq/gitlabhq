@@ -13,7 +13,7 @@ import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
-import { mockIssuable, mockRegularLabel } from '../mock_data';
+import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
 
 const createComponent = ({
   hasScopedLabelsFeature = false,
@@ -78,6 +78,7 @@ describe('IssuableItem', () => {
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
   const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
   const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
+  const findDraftStatusBadge = () => wrapper.findByTestId('issuable-draft-status-badge');
 
   describe('computed', () => {
     describe('author', () => {
@@ -948,6 +949,19 @@ describe('IssuableItem', () => {
           expect(visitUrl).toHaveBeenCalledWith(item.webUrl);
         });
       });
+    });
+  });
+
+  it('renders draft status for draft merge requests', () => {
+    wrapper = createComponent({
+      issuable: mockDraftIssuable,
+    });
+
+    expect(findDraftStatusBadge().exists()).toBe(true);
+    expect(findDraftStatusBadge().props()).toMatchObject({
+      state: 'opened',
+      isDraft: true,
+      issuableType: 'merge_request',
     });
   });
 });

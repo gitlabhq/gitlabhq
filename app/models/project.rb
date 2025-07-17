@@ -299,6 +299,7 @@ class Project < ApplicationRecord
     class_name: 'Packages::Debian::ProjectDistribution',
     dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :npm_metadata_caches, class_name: 'Packages::Npm::MetadataCache'
+  has_many :helm_metadata_caches, class_name: 'Packages::Helm::MetadataCache'
   has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
   has_many :package_protection_rules,
     class_name: 'Packages::Protection::Rule',
@@ -3455,10 +3456,6 @@ class Project < ApplicationRecord
   def work_item_status_feature_available?
     (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
       licensed_feature_available?(:work_item_status)
-  end
-
-  def glql_integration_feature_flag_enabled?
-    group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
   end
 
   def glql_load_on_click_feature_flag_enabled?

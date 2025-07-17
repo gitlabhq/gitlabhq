@@ -39,7 +39,6 @@ module WikiActions
         push_force_frontend_feature_flag(:glql_work_items, true)
       end
 
-      push_force_frontend_feature_flag(:glql_integration, !!container&.glql_integration_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end
 

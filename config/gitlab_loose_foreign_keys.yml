@@ -546,6 +546,12 @@ packages_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+packages_helm_metadata_caches:
+  - table: projects
+    column: project_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 packages_npm_metadata_caches:
   - table: projects
     column: project_id
