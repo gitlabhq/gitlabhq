@@ -2,6 +2,7 @@ import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
+import { currentAssignees } from '~/graphql_shared/issuable_client';
 import { COMMANDS } from '../constants';
 
 export function defaultSorter(searchFields) {
@@ -116,6 +117,8 @@ export function createDataSource({
 }
 
 export default class AutocompleteHelper {
+  tiptapEditor;
+
   constructor({ dataSourceUrls, sidebarMediator }) {
     this.updateDataSources(dataSourceUrls);
 
@@ -175,12 +178,20 @@ export default class AutocompleteHelper {
         }),
       user: (items) =>
         items.filter((item) => {
-          const assigned = this.sidebarMediator?.store?.assignees.some(
+          let assigned = this.sidebarMediator?.store?.assignees.some(
             (assignee) => assignee.username === item.username,
           );
           const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
             (reviewer) => reviewer.username === item.username,
           );
+
+          const { workItemId } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemId) {
+            const assignees = currentAssignees()[workItemId] || [];
+            assigned = assignees.some((assignee) => assignee.username === item.username);
+          }
 
           if (command === COMMANDS.ASSIGN) return !assigned;
           if (command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;

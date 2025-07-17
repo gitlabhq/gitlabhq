@@ -127,7 +127,7 @@ export default {
     :placeholder="s__('Jobs|Search or filter jobs…')"
     :available-tokens="tokens"
     :value="filteredSearchValue"
-    :search-text-option-label="__('Search for this text')"
+    :search-text-option-label="__('Search for this text (experiment)')"
     terms-as-tokens
     @submit="onSubmit"
   />

@@ -257,7 +257,6 @@ export default {
         if (!res.data) {
           return;
         }
-        this.activeChildItem = null;
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();

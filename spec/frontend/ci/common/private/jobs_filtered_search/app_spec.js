@@ -55,7 +55,9 @@ describe('Jobs filtered search', () => {
   it('displays filtered search text label', () => {
     createComponent();
 
-    expect(findFilteredSearch().props('searchTextOptionLabel')).toBe('Search for this text');
+    expect(findFilteredSearch().props('searchTextOptionLabel')).toBe(
+      'Search for this text (experiment)',
+    );
     expect(findFilteredSearch().props('termsAsTokens')).toBe(true);
   });
 

@@ -31,10 +31,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def new
     define_new_vars
-    return unless rapid_diffs?
 
-    # load 'rapid_diffs' javascript entrypoint instead of 'new'
-    @js_action_name = 'rapid_diffs'
     @rapid_diffs_presenter = ::RapidDiffs::MergeRequestCreationPresenter.new(
       @merge_request,
       project,
@@ -42,7 +39,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       diff_options,
       { merge_request: merge_request_params }
     )
-    render action: :rapid_diffs
   end
 
   def create
@@ -155,15 +151,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     set_pipeline_variables
-  end
-
-  def rapid_diffs?
-    ::Feature.enabled?(:rapid_diffs_on_mr_creation, current_user, type: :beta) &&
-      !rapid_diffs_disabled?
-  end
-
-  def rapid_diffs_disabled?
-    ::Feature.enabled?(:rapid_diffs_debug, current_user, type: :ops) && params[:rapid_diffs_disabled] == 'true'
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

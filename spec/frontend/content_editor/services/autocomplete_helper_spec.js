@@ -29,6 +29,29 @@ jest.mock('~/emoji', () => ({
   getAllEmoji: () => [{ name: 'thumbsup' }],
 }));
 
+jest.mock('~/graphql_shared/issuable_client', () => ({
+  currentAssignees: jest.fn().mockReturnValue({
+    1: [
+      {
+        type: 'User',
+        username: 'errol',
+        name: "Linnie O'Connell",
+        avatar_url:
+          'https://www.gravatar.com/avatar/d3d9a468a9884eb217fad5ca5b2b9bd7?s=80\u0026d=identicon',
+        availability: null,
+      },
+      {
+        type: 'User',
+        username: 'evelynn_olson',
+        name: 'Dimple Dare',
+        avatar_url:
+          'https://www.gravatar.com/avatar/bc1e51ee3512c2b4442f51732d655107?s=80\u0026d=identicon',
+        availability: null,
+      },
+    ],
+  }),
+}));
+
 describe('defaultSorter', () => {
   it('returns items as is if query is empty', () => {
     const items = [{ name: 'abc' }, { name: 'bcd' }, { name: 'cde' }];
@@ -120,10 +143,11 @@ describe('AutocompleteHelper', () => {
   let mock;
   let autocompleteHelper;
   let dateNowOld;
+  let dataSourceUrls;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    const dataSourceUrls = {
+    dataSourceUrls = {
       members: '/members',
       issues: '/issues',
       snippets: '/snippets',
@@ -223,6 +247,32 @@ describe('AutocompleteHelper', () => {
       ).toMatchSnapshot();
     },
   );
+
+  describe('for work items', () => {
+    beforeEach(() => {
+      autocompleteHelper = new AutocompleteHelper({
+        dataSourceUrls,
+        sidebarMediator: {
+          store: { assignees: [], reviewers: [] },
+        },
+      });
+
+      autocompleteHelper.tiptapEditor = {
+        view: { dom: { closest: () => ({ dataset: { workItemId: 1 } }) } },
+      };
+    });
+
+    it.each`
+      command
+      ${'/assign'}
+      ${'/unassign'}
+    `('filters users using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('user', { command });
+      const results = await dataSource.search();
+
+      expect(results.map(({ username }) => username)).toMatchSnapshot();
+    });
+  });
 
   it('filters items correctly for the second time, when the first command was different', async () => {
     let dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });

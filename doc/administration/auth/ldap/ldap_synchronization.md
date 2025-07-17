@@ -796,7 +796,7 @@ network and LDAP server response time affects these metrics.
 
 ### Adjust LDAP user sync schedule
 
-By default, GitLab runs a worker once per day at 01:30 a.m. server time to
+By default, GitLab runs a worker once per day at 01:30 AM server time to
 check and update GitLab users against LDAP.
 
 {{< alert type="warning" >}}

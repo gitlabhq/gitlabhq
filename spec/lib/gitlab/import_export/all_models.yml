@@ -429,6 +429,7 @@ builds:
 - trace_chunks
 - report_results
 - namespace
+- inputs
 - job_artifacts
 - job_variables
 - sourced_pipelines

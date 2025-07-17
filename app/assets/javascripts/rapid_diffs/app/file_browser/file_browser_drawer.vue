@@ -63,6 +63,7 @@ export default {
       v-show="fileBrowserDrawerVisible"
       :open="openedOnce"
       :z-index="$options.DRAWER_Z_INDEX"
+      header-sticky
       @close="close"
     >
       <template #title>

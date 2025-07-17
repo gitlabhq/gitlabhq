@@ -23,6 +23,7 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Full path of the namespace.'
     field :name, GraphQL::Types::String, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Name of the namespace.'
     field :path, GraphQL::Types::String, null: false,
       description: 'Path of the namespace.'
@@ -34,6 +35,7 @@ module Types
       description: 'Indicates if the cross_project_pipeline feature is available for the namespace.'
 
     field :description, GraphQL::Types::String, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Description of the namespace.'
 
     field :lfs_enabled,
@@ -180,6 +182,12 @@ module Types
       description: 'Licensed features available on the namespace.',
       method: :itself,
       experiment: { milestone: '18.1' }
+
+    field :web_url,
+      GraphQL::Types::String,
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'URL of the namespace.'
 
     markdown_field :description_html, null: true, &:namespace_details
 

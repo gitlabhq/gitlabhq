@@ -1,6 +1,0 @@
--# required for file browser styles, remove when .diff-tree-list is refactored into Rapid Diffs
-- add_page_specific_style 'page_bundles/merge_requests'
-- add_page_specific_style 'page_bundles/merge_request_creation_rapid_diffs'
-
-= render "page" do
-  = render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter)

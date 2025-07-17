@@ -262,7 +262,55 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 Use the following endpoints to configure and manage upstream Maven registries.
 
-### List all upstream registries
+### List all upstream registries for a top-level group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Lists all upstream registries for a top-level group.
+
+```plaintext
+GET /groups/:id/-/virtual_registries/packages/maven/upstreams
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:-----|:---------|:------------|
+| `id` | string/integer | yes | The group ID or full group path. Must be a top-level group. |
+| `page` | integer | no | The page number. Defaults to 1. |
+| `per_page` | integer | no | The number of items per page. Defaults to 20. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/packages/maven/upstreams"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "group_id": 5,
+    "url": "https://repo.maven.apache.org/maven2",
+    "name": "Maven Central",
+    "description": "Maven Central repository",
+    "cache_validity_hours": 24,
+    "username": "user",
+    "created_at": "2024-05-30T12:28:27.855Z",
+    "updated_at": "2024-05-30T12:28:27.855Z"
+  }
+]
+```
+
+### List all upstream registries for a virtual registry
 
 {{< history >}}
 

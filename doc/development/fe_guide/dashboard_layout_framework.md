@@ -18,53 +18,22 @@ title: Dashboard layout framework
 
 {{< /history >}}
 
-The [`dashboard_layout.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/components/customizable_dashboard/dashboard_layout.vue)
-component provides an easy way to render dashboards using a configuration. This is
-part of our broader effort to standardize dashboards across the platform
+The dashboard layout framework is part of a broader effort to standardize dashboards across the platform
 as described in [Epic #13801](https://gitlab.com/groups/gitlab-org/-/epics/13801).
 
 For more in depth details on the dashboard layout framework, see the [architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/dashboard_layout_framework/).
 
-## Interactive examples
+## Rendering dashboards
 
-Try it in your browser using our interactive examples:
+To render dashboard layouts it's recommended to use the [GlDashboardLayout](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-layout--docs)
+component. It provides an easy way to render dashboards using
+a configuration which aligns with our [Pajamas guidelines](https://design.gitlab.com/patterns/dashboards/).
 
-- [dashboard_layout](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-dashboard-layout--docs)
-- [extended_dashboard_panel](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-extended-dashboard-panel--docs)
+Note that GlDashboardLayout supplants the deprecated `dashboard_layout.vue` component in the vue shared directory.
 
-## When to use this component
+### Panel guidelines
 
-This component should be used when:
-
-- You want an easy way to create a dashboard interface.
-- You want your dashboard to align with our [Pajamas guidelines](https://design.gitlab.com/patterns/dashboards).
-- You want to benefit from future add-on features such as customizable layouts with resizable, draggable elements.
-
-For existing dashboards, follow the [migration guide](#migration-guide) below.
-
-## Current limitations
-
-The component is limited to rendering dashboards. As defined in our architecture design document
-it does not provide:
-
-- Data exploration outside defined panel visualizations
-- User-driven customization and management of dashboards
-- Navigation placement for dashboards
-
-While user customization is not supported yet, the foundation has been developed
-and we plan to release an upgrade path from a static dashboard layout to a
-customizable dashboard layout as part of GitLab issue [#546201](https://gitlab.com/gitlab-org/gitlab/-/issues/546201).
-
-## The component
-
-The `dashboard_layout.vue` component takes a dashboard configuration object as input
-and renders a dashboard layout with title, description, actions, and panels in a
-cross-browser 12-column grid system. The grid is responsive and collapses down
-to a single column at the [medium breakpoint](https://design.gitlab.com/product-foundations/layout/#breakpoints).
-
-### Dashboard panels
-
-The component is not opinionated about the panel component used. You are free to
+You are free to
 choose whichever panel component best suits your needs. However, to ensure consistency
 with our design patterns, it's strongly recommended that you use one of the
 following components:
@@ -72,127 +41,25 @@ following components:
 - [GlDashboardPanel](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/dashboards-dashboards-panel--docs): The official Pajamas dashboard panel
 - [`extended_dashboard_panel.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-extended-dashboard-panel--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
 
-### Filters
+## Migration guide
 
-The component provides a `#filters` slot to render your filters in the dashboard
-layout. The component does not manage or sync filters and leaves it up to the
-consumer to manage this state.
-
-We expect dashboards using the framework to implement two types of filters:
-
-- Global filters: Applied to every visualization in the dashboard
-- Per-panel filters: Applied to individual panels (future support planned)
-
-For URL synchronization, you can use the shared [`UrlSync`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/vue_shared/components/url_sync.vue) component.
-
-### Additional slots
-
-For a full list of supported slots see the [interactive examples](#interactive-examples).
-
-### Basic implementation
-
-```vue
-<script>
-// app/assets/javascripts/feature/components/dashboard.vue
-import DashboardLayout from '~/vue_shared/components/customizable_dashboard/dashboard_layout.vue';
-import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
-
-import UsersVisualization from './my_users_visualization.vue';
-import EventsVisualization from './my_events_visualization.vue';
-
-export default {
-  components: {
-    DashboardLayout,
-    ExtendedDashboardPanel,
-    UsersVisualization,
-    EventsVisualization,
-  },
-  data() {
-    return {
-      dashboard: {
-        title: __('My dashboard title'),
-        description: __('The dashboard description to render'),
-        panels: [
-          {
-            id: '1',
-            extendedDashboardPanelProps: {
-              title: __('Active users over time'),
-              // Any additional ExtendedDashboardPanel props go here
-            },
-            component: UsersVisualization,
-            componentProps: {
-              apiPath: '/example-users-api',
-              // Any props you want to pass to your component
-            },
-            gridAttributes: {
-              width: 6,
-              height: 4,
-              yPos: 0,
-              xPos: 0,
-            },
-          },
-          {
-            id: '2',
-            extendedDashboardPanelProps: {
-              title: __('Events over time'),
-              // Any additional ExtendedDashboardPanel props go here
-            },
-            component: EventsVisualization,
-            componentProps: {
-              apiPath: '/example-events-api',
-              // Any props you want to pass to your component
-            },
-            gridAttributes: {
-              width: 6,
-              height: 4,
-              yPos: 0,
-              xPos: 6,
-            },
-          },
-        ],
-      },
-    }
-  },
-}
-</script>
-
-<template>
-  <dashboard-layout :config="dashboard">
-    <template #panel="{ panel }">
-      <extended-dashboard-panel v-bind="panel.extendedDashboardPanelProps">
-        <template #body>
-          <component
-            :is="panel.component"
-            class="gl-h-full gl-overflow-hidden"
-            v-bind="panel.componentProps"
-          />
-        </template>
-      </extended-dashboard-panel>
-    </template>
-  </dashboard-layout>
-</template>
-```
-
-### Migration guide
-
-Migrating an existing dashboard to the `dashboard_layout.vue` should be relatively
+Migrating an existing dashboard to the GlDashboardLayout should be relatively
 straightforward. In most cases because you only need to replace the dashboard shell
 and can keep existing visualizations. A typical migration path could look like this:
 
 1. Create a feature flag to conditionally render your new dashboard.
-1. Create a new dashboard using `dashboard_layout.vue` and `extended_dashboard_panel.vue`.
+1. Create a new dashboard using GlDashboardLayout and `extended_dashboard_panel.vue`.
 1. Create a dashboard config object that mimics your old dashboard layout.
-1. Optionally, use `dashboard_layout.vue`'s slots to render your dashboard's
+1. Optionally, use GlDashboardLayout's slots to render your dashboard's
 filters, actions, or custom title or description.
 1. Ensure your new dashboard, panels, and visualizations render correctly.
 1. Remove the feature flag and your old dashboard.
 
-See the [basic implementation](#basic-implementation) example above on how to render
-existing visualization components using the dashboard layout component.
+See the basic implementation on [GitLab UI](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-layout--docs)
+for an example on how to render existing visualization components using the dashboard layout component.
 
 ### Example implementations
 
-Real world implementations and migrations using the `dashboard_layout.vue`
-component:
+Real world implementations and migrations using the GlDashboardLayout component:
 
 - New security dashboard added in MR [!191974](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191974)

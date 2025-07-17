@@ -2070,7 +2070,6 @@
 - './ee/spec/services/groups/schedule_bulk_repository_shard_moves_service_spec.rb'
 - './ee/spec/services/groups/seat_usage_export_service_spec.rb'
 - './ee/spec/services/groups/sync_service_spec.rb'
-- './ee/spec/services/groups/transfer_service_spec.rb'
 - './ee/spec/services/groups/update_repository_storage_service_spec.rb'
 - './ee/spec/services/groups/update_service_spec.rb'
 - './ee/spec/services/historical_user_data/csv_service_spec.rb'

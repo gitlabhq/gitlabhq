@@ -27,12 +27,12 @@ During scheduled maintenance windows, the following tasks might be performed:
 
 Maintenance is performed outside standard working hours:
 
-| Region | Day | Time (UTC) |
-|--------|-----|------------|
-| Asia Pacific | Wednesday | 13:00 - 17:00 |
-| Europe, Middle East, and Africa | Tuesday | 01:00 - 05:00 |
-| Americas (Option 1) | Tuesday | 07:00 - 11:00 |
-| Americas (Option 2) | Sunday-Monday | 21:00 - 01:00 |
+| Region                          | Day           | Time (UTC) |
+|---------------------------------|---------------|------------|
+| Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM |
+| Europe, Middle East, and Africa | Tuesday       | 1:00 AM-5:00 AM |
+| Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM |
+| Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM |
 
 View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance.
 You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.

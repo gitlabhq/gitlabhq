@@ -21,11 +21,11 @@ title: Rate limit on Groups API
 
 You can configure the per minute rate limit per IP address and per user for requests to the following [groups API](../../api/groups.md).
 
-| Limit                                                         | Default |
-|---------------------------------------------------------------|---------|
-| [GET /groups](../../api/groups.md#list-groups)                | 200     |
-| [GET /groups/:id](../../api/groups.md#get-a-single-group) | 400     |
-| [GET /groups/:id/projects](../../api/groups.md#list-projects) | 600     |
+| Limit                                                           | Default |
+|-----------------------------------------------------------------|---------|
+| [`GET /groups`](../../api/groups.md#list-groups)                | 200     |
+| [`GET /groups/:id`](../../api/groups.md#get-a-single-group)     | 400     |
+| [`GET /groups/:id/projects`](../../api/groups.md#list-projects) | 600     |
 
 To change the rate limit:
 

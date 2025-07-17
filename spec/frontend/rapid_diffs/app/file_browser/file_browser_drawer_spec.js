@@ -45,6 +45,11 @@ describe('FileBrowserDrawer', () => {
     expect(wrapper.findComponent(GlDrawer).props('open')).toBe(false);
   });
 
+  it('has sticky header for the drawer', () => {
+    createComponent();
+    expect(wrapper.findComponent(GlDrawer).props('headerSticky')).toBe(true);
+  });
+
   it('shows file browser', async () => {
     createComponent();
     useFileBrowser().fileBrowserDrawerVisible = true;

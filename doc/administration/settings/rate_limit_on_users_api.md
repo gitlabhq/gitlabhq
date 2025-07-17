@@ -24,13 +24,13 @@ You can configure the per minute rate limit per IP address and per user for requ
 
 | Limit                                                           | Default |
 |-----------------------------------------------------------------|---------|
-| [GET /users/:id/followers](../../api/user_follow_unfollow.md#list-all-accounts-that-follow-a-user) | 100 each minute |
-| [GET /users/:id/following](../../api/user_follow_unfollow.md#list-all-accounts-followed-by-a-user) | 100 each minute |
-| [GET /users/:id/status](../../api/users.md#get-the-status-of-a-user)                               | 240 each minute |
-| [GET /users/:id/keys](../../api/user_keys.md#list-all-ssh-keys-for-a-user)                         | 120 each minute |
-| [GET /users/:id/keys/:key_id](../../api/user_keys.md#get-an-ssh-key)                               | 120 each minute |
-| [GET /users/:id/gpg_keys](../../api/user_keys.md#list-all-gpg-keys-for-a-user)                     | 120 each minute |
-| [GET /users/:id/gpg_keys/:key_id](../../api/user_keys.md#get-a-gpg-key-for-a-user)                 | 120 each minute |
+| [`GET /users/:id/followers`](../../api/user_follow_unfollow.md#list-all-accounts-that-follow-a-user) | 100 each minute |
+| [`GET /users/:id/following`](../../api/user_follow_unfollow.md#list-all-accounts-followed-by-a-user) | 100 each minute |
+| [`GET /users/:id/status`](../../api/users.md#get-the-status-of-a-user)                               | 240 each minute |
+| [`GET /users/:id/keys`](../../api/user_keys.md#list-all-ssh-keys-for-a-user)                         | 120 each minute |
+| [`GET /users/:id/keys/:key_id`](../../api/user_keys.md#get-an-ssh-key)                               | 120 each minute |
+| [`GET /users/:id/gpg_keys`](../../api/user_keys.md#list-all-gpg-keys-for-a-user)                     | 120 each minute |
+| [`GET /users/:id/gpg_keys/:key_id`](../../api/user_keys.md#get-a-gpg-key-for-a-user)                 | 120 each minute |
 
 To change the rate limit:
 

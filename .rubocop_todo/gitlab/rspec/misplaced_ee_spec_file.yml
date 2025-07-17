@@ -274,7 +274,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/groups/ssh_certificates/create_service_spec.rb'
     - 'ee/spec/services/groups/ssh_certificates/destroy_service_spec.rb'
-    - 'ee/spec/services/groups/transfer_service_spec.rb'
     - 'ee/spec/services/groups/update_service_spec.rb'
     - 'ee/spec/services/ide/schemas_config_service_spec.rb'
     - 'ee/spec/services/issues/build_service_spec.rb'

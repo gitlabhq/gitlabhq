@@ -1018,16 +1018,16 @@ class Repository
 
   # If this method is not provided a set of branch names to check merge status,
   # it fetches all branches.
-  def merged_branch_names(branch_names = [])
+  def merged_branch_names(branch_names = [], include_identical: false)
     # Currently we should skip caching if requesting all branch names
     # This is only used in a few places, notably app/services/branches/delete_merged_service.rb,
     # and it could potentially result in a very large cache.
-    return raw_repository.merged_branch_names(branch_names) if branch_names.empty?
+    return raw_repository.merged_branch_names(branch_names, include_identical: include_identical) if branch_names.empty? || include_identical
 
     cache = redis_hash_cache
 
     merged_branch_names_hash = cache.fetch_and_add_missing(:merged_branch_names, branch_names) do |missing_branch_names, hash|
-      merged = raw_repository.merged_branch_names(missing_branch_names)
+      merged = raw_repository.merged_branch_names(missing_branch_names, include_identical: include_identical)
 
       missing_branch_names.each do |bn|
         # Redis only stores strings in hset keys, use a fancy encoder

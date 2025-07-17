@@ -214,3 +214,7 @@ Example response:
   }
 }
 ```
+
+## Comments on wiki pages
+
+Wiki comments are called `notes`. You can interact with them using the [Notes API](notes.md#group-wikis).

@@ -84,10 +84,16 @@ module Banzai
         end
 
         def placeholders_disabled?
-          return true unless context[:project]&.markdown_placeholders_feature_flag_enabled? ||
+          return true unless resolve_project&.markdown_placeholders_feature_flag_enabled? ||
             context[:group]&.markdown_placeholders_feature_flag_enabled?
 
           context[:disable_placeholders] || context[:broadcast_message_placeholders]
+        end
+
+        def resolve_project
+          return context[:project] unless context[:project].is_a?(Namespaces::ProjectNamespace)
+
+          context[:project].project
         end
       end
     end

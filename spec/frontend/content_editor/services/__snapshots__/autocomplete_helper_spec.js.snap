@@ -270,6 +270,33 @@ exports[`AutocompleteHelper for reference type "wiki", searches for "ho" correct
 ]
 `;
 
+exports[`AutocompleteHelper for work items filters users using apollo cache for command "/assign" 1`] = `
+[
+  "florida.schoen",
+  "root",
+  "all",
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+  "jashkenas",
+  "twitter",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters users using apollo cache for command "/unassign" 1`] = `
+[
+  "errol",
+  "evelynn_olson",
+]
+`;
+
 exports[`AutocompleteHelper returns expected results before and after updating data sources 1`] = `
 [
   "florida.schoen",

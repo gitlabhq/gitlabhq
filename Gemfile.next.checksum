@@ -293,7 +293,7 @@
 {"name":"grape_logging","version":"1.8.4","platform":"ruby","checksum":"efcc3e322dbd5d620a68f078733b7db043cf12680144cd03c982f14115c792d1"},
 {"name":"graphlyte","version":"1.0.0","platform":"ruby","checksum":"b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d"},
 {"name":"graphql","version":"2.5.11","platform":"ruby","checksum":"1169ffc6e215fd4d60056455b672c40a0cafa0607262049c2cca343b0f6bdb5c"},
-{"name":"graphql-docs","version":"5.0.0","platform":"ruby","checksum":"76baca6e5a803a4b6a9fbbbfdbf16742b7c4c546c8592b6e1a7aa4e79e562d04"},
+{"name":"graphql-docs","version":"5.2.0","platform":"ruby","checksum":"44d41724529f531adf9265ded7478b74b0c4b927cddc8b9f114337a73f32de08"},
 {"name":"grpc","version":"1.63.0","platform":"aarch64-linux","checksum":"dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee"},
 {"name":"grpc","version":"1.63.0","platform":"arm64-darwin","checksum":"91b93a354508a9d1772f095554f2e4c04358c2b32d7a670e3705b7fc4695c996"},
 {"name":"grpc","version":"1.63.0","platform":"ruby","checksum":"5f4383c4ee2886e92c31b90422261b7527f26e3baa585d877e9804e715983686"},

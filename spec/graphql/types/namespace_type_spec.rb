@@ -28,7 +28,7 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id fullPath workItem workItems].each do |field_name|
+    %w[id name description fullPath workItem workItems webUrl].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

@@ -488,18 +488,18 @@ module Gitlab
         gitaly_commit_client.ancestor?(from, to)
       end
 
-      def merged_branch_names(branch_names = [])
+      def merged_branch_names(branch_names = [], include_identical: false)
         return [] unless root_ref
 
-        root_sha = find_branch(root_ref)&.target
+        root_branch = find_branch(root_ref)
+        return [] unless root_branch
 
-        return [] unless root_sha
+        root_sha = root_branch.target
+        root_branch_name = root_branch.name
 
-        branches = wrapped_gitaly_errors do
-          gitaly_merged_branch_names(branch_names, root_sha)
+        wrapped_gitaly_errors do
+          Set.new(gitaly_merged_branch_names(branch_names, root_sha, root_branch_name, include_identical: include_identical))
         end
-
-        Set.new(branches)
       end
 
       # Returns an array of DiffBlob objects that represent a diff between
@@ -1280,12 +1280,13 @@ module Gitlab
         end
       end
 
-      def gitaly_merged_branch_names(branch_names, root_sha)
+      def gitaly_merged_branch_names(branch_names, root_sha, root_branch_name, include_identical: false)
         qualified_branch_names = branch_names.map { |b| "refs/heads/#{b}" }
+        merged_branches = gitaly_ref_client.merged_branches(qualified_branch_names)
 
-        gitaly_ref_client.merged_branches(qualified_branch_names)
-          .reject { |b| b.target == root_sha }
-          .map(&:name)
+        return merged_branches.reject { |b| b.name == root_branch_name }.map(&:name) if include_identical
+
+        merged_branches.reject { |b| b.target == root_sha }.map(&:name)
       end
 
       def process_count_commits_options(options)

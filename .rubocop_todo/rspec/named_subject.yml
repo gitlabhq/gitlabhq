@@ -892,7 +892,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/groups/compliance_report_csv_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/groups/epics_count_service_spec.rb'
-    - 'ee/spec/services/groups/transfer_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/groups/update_service_spec.rb'
     - 'ee/spec/services/ide/schemas_config_service_spec.rb'

@@ -84,7 +84,15 @@ module Ci
       inverse_of: :job
     # rubocop:enable Cop/ActiveRecordDependent
 
+    has_many :inputs,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobInput',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
+
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
+
     has_many :job_annotations,
       ->(build) { in_partition(build) },
       class_name: 'Ci::JobAnnotation',

@@ -14,7 +14,7 @@ title: Rate limits on issue and epic creation
 
 Rate limits control the pace at which new epics and issues can be created.
 For example, if you set the limit to `300`, the
-[Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/projects/issues_controller.rb)
+[`Projects::IssuesController#create`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/projects/issues_controller.rb)
 action blocks requests that exceed a rate of 300 per minute. Access to the endpoint is available after one minute.
 
 ## Set the rate limit

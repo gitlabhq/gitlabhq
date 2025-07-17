@@ -51,7 +51,7 @@ The following are GitLab upgrade validation tests we performed.
 - Outcome: Partial success because we observed downtime during the upgrade of the primary and secondary sites.
 - Follow up issues/actions:
   - [Fix zero-downtime upgrade process/instructions for multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/225684)
-  - [Geo:check Rake task: Exclude AuthorizedKeysCommand check if node not running Puma](https://gitlab.com/gitlab-org/gitlab/-/issues/225454)
+  - [`Geo:check` Rake task: Exclude AuthorizedKeysCommand check if node not running Puma](https://gitlab.com/gitlab-org/gitlab/-/issues/225454)
   - [Update instructions in the next upgrade issue to include monitoring HAProxy dashboards](https://gitlab.com/gitlab-org/gitlab/-/issues/225359)
 
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/208104):
