@@ -146,10 +146,10 @@ sequenceDiagram
     Trial Frontend Forms ->>TrialsController#create_lead: GitLab.com frontend sends [lead] to backend
     TrialsController#create->>CreateLeadService: [lead]
     TrialsController#create->>ApplyTrialService: [lead] Apply the trial
-    CreateLeadService->>SubscriptionPortalClient#generate_trial(sync_to_gl=false): [lead] Creates customer account on CustomersDot
-    ApplyTrialService->>SubscriptionPortalClient#generate_trial(sync_to_gl=true): [lead] Asks CustomersDot to apply the trial on namespace
-    SubscriptionPortalClient#generate_trial(sync_to_gl=false)->>CustomersDot|TrialsController#create(sync_to_gl=false): GitLab.com sends [lead] to CustomersDot
-    SubscriptionPortalClient#generate_trial(sync_to_gl=true)->>CustomersDot|TrialsController#create(sync_to_gl=true): GitLab.com asks CustomersDot to apply the trial
+    CreateLeadService->>SubscriptionPortalClient#generate_trial(sync_to_gl#61;false): [lead] Creates customer account on CustomersDot
+    ApplyTrialService->>SubscriptionPortalClient#generate_trial(sync_to_gl#61;true): [lead] Asks CustomersDot to apply the trial on namespace
+    SubscriptionPortalClient#generate_trial(sync_to_gl#61;false)->>CustomersDot|TrialsController#create(sync_to_gl#61;false): GitLab.com sends [lead] to CustomersDot
+    SubscriptionPortalClient#generate_trial(sync_to_gl#61;true)->>CustomersDot|TrialsController#create(sync_to_gl#61;true): GitLab.com asks CustomersDot to apply the trial
 
 
 ```

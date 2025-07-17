@@ -21,7 +21,6 @@ module Gitlab
           Feature.enabled?(:bitbucket_server_notes_separate_worker, current_user)
 
         user_contribution_mapping_enabled =
-          Feature.enabled?(:importer_user_mapping, current_user) &&
           Feature.enabled?(:bitbucket_server_user_mapping, current_user)
 
         ::Projects::CreateService.new(

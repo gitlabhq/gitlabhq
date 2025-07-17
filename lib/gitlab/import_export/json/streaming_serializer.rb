@@ -279,10 +279,7 @@ module Gitlab
         end
 
         def after_read_callback(record)
-          if Feature.enabled?(:importer_user_mapping, current_user)
-            user_contributions_export_mapper.cache_user_contributions_on_record(record)
-          end
-
+          user_contributions_export_mapper.cache_user_contributions_on_record(record)
           remove_cached_external_diff(record)
         end
 

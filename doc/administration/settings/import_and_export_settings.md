@@ -108,6 +108,7 @@ To enable silent admin project and group file exports:
 
 - Introduced in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `importer_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175371) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508944) in GitLab 18.3. Feature flag `importer_user_mapping` removed.
 
 {{< /history >}}
 

@@ -103,8 +103,8 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
 {{< /history >}}
 
 This method of user contribution and membership mapping is available for
-GitLab Self-Managed when `importer_user_mapping` and `bulk_import_importer_user_mapping` are disabled.
-These feature flags are enabled by default.
+GitLab Self-Managed when `bulk_import_importer_user_mapping` is disabled.
+This feature flag is enabled by default.
 For information on the default method available for GitLab Self-Managed and GitLab.com,
 see [user contribution and membership mapping](../../project/import/_index.md#user-contribution-and-membership-mapping).
 

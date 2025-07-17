@@ -1923,3 +1923,9 @@ geo_* @gitlab-org/geo-team/geo-backend
 ^[Geo Frontend]
 app/assets/**/geo_* @zcuddy
 frontend/**/geo_* @zcuddy
+
+[DAST Generated]
+# File is generated but there is no verification job, so requires approval to prevent drift
+/doc/user/application_security/dast/browser/checks @gitlab-org/secure/dynamic-analysis @gitlab-org/secure/vulnerability-research @phillipwells
+# File is used as SSOT for site profiles and DAST docs
+/lib/gitlab/security/dast_variables.rb @gitlab-org/secure/dynamic-analysis @gitlab-org/security-risk-management/security-platform-management-group @phillipwells

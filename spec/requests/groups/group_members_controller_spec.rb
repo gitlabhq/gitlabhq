@@ -10,18 +10,6 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
 
   let(:membershipable_path) { group_path(membershipable) }
 
-  describe 'GET /groups/*group_id/-/group_members' do
-    subject(:request) do
-      get group_group_members_path(group_id: membershipable)
-    end
-
-    it 'pushes feature flag to frontend' do
-      request
-
-      expect(response.body).to have_pushed_frontend_feature_flags(importerUserMapping: true)
-    end
-  end
-
   describe 'GET /groups/*group_id/-/group_members/request_access' do
     subject(:request) do
       get request_access_group_group_members_path(group_id: membershipable)

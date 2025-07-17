@@ -102,11 +102,15 @@ flowchart TD
     B -->|No| C[Cannot use GitLab Duo]
     B -->|Yes| D{Has Duo Pro/Enterprise license?}
     D -->|No| E[Cannot use GitLab Duo]
-    D -->|Yes| F{Using Duo with specific\ngroup/project resource?}
+    D -->|Yes| F{Using Duo with specific
+                 group/project resource?}
     F -->|No| G[Can use GitLab Duo]
-    F -->|Yes| H{Group/Project has\nDuo features enabled?}
-    H -->|No| I[Cannot use Duo with\nthis resource]
-    H -->|Yes| J[Can use Duo with\nthis resource]
+    F -->|Yes| H{Group/Project has
+                 Duo features enabled?}
+    H -->|No| I[Cannot use Duo with
+                this resource]
+    H -->|Yes| J[Can use Duo with
+                 this resource]
 ```
 
 #### GitLab.com with Duo Core, Duo Pro, and Duo Enterprise
@@ -143,15 +147,21 @@ flowchart TD
     B -->|No| C[Cannot use GitLab Duo]
     B -->|Yes| D{Has Duo Pro/Enterprise license?}
     D -->|Yes| E[Can use GitLab Duo]
-    D -->|No| F{Any Premium/Ultimate group has\nDuo Core enabled?}
+    D -->|No| F{Any Premium/Ultimate group has
+                Duo Core enabled?}
     F -->|No| G[Cannot use GitLab Duo]
-    F -->|Yes| H{Using Chat or\nCode Suggestions in IDE?}
+    F -->|Yes| H{Using Chat or
+                 Code Suggestions in IDE?}
     H -->|No| I[Cannot use GitLab Duo]
-    H -->|Yes| J{Using Duo with specific\ngroup/project resource?}
+    H -->|Yes| J{Using Duo with specific
+                 group/project resource?}
     J -->|No| K[Can use GitLab Duo]
-    J -->|Yes| L{Group/Project has\nDuo features enabled?}
-    L -->|Yes| M[Can use Duo with\nthis resource]
-    L -->|No| N[Cannot use Duo with\nthis resource]
+    J -->|Yes| L{Group/Project has
+                 Duo features enabled?}
+    L -->|Yes| M[Can use Duo with
+                 this resource]
+    L -->|No| N[Cannot use Duo with
+                this resource]
 ```
 
 ### Configuration Locations
@@ -193,15 +203,20 @@ Instance administrators have the ability to set GitLab Duo features to "Always o
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{Instance has Duo features\nset to 'Always off'?}
+    A[Start] --> B{Instance has Duo features
+                   set to 'Always off'?}
     B -->|Yes| C[Cannot use GitLab Duo]
     B -->|No| D{Has Duo Pro/Enterprise license?}
     D -->|No| E[Cannot use GitLab Duo]
-    D -->|Yes| F{Using Duo with specific\ngroup/project resource?}
+    D -->|Yes| F{Using Duo with specific
+                 group/project resource?}
     F -->|No| G[Can use GitLab Duo]
-    F -->|Yes| H{Group/Project has\nDuo features enabled?}
-    H -->|No| I[Cannot use Duo with\nthis resource]
-    H -->|Yes| J[Can use Duo with\nthis resource]
+    F -->|Yes| H{Group/Project has
+                 Duo features enabled?}
+    H -->|No| I[Cannot use Duo with
+                this resource]
+    H -->|Yes| J[Can use Duo with
+                 this resource]
 ```
 
 #### GitLab Self-Managed and Dedicated with Duo Core, Duo Pro, and Duo Enterprise
@@ -231,19 +246,25 @@ instances with Duo Core settings taken into consideration:
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{Instance has Duo features\nset to 'Always off'?}
+    A[Start] --> B{Instance has Duo features
+                   set to 'Always off'?}
     B -->|Yes| C[Cannot use GitLab Duo]
     B -->|No| D{Has Duo Pro/Enterprise license?}
     D -->|Yes| E[Can use GitLab Duo]
     D -->|No| F{Instance has Duo Core enabled?}
     F -->|No| G[Cannot use GitLab Duo]
-    F -->|Yes| H{Using Chat or\nCode Suggestions in IDE?}
+    F -->|Yes| H{Using Chat or
+                 Code Suggestions in IDE?}
     H -->|No| I[Cannot use GitLab Duo]
-    H -->|Yes| J{Using Duo with specific\ngroup/project resource?}
+    H -->|Yes| J{Using Duo with specific
+                 group/project resource?}
     J -->|No| K[Can use GitLab Duo]
-    J -->|Yes| L{Group/Project has\nDuo features enabled?}
-    L -->|Yes| M[Can use Duo with\nthis resource]
-    L -->|No| N[Cannot use Duo with\nthis resource]
+    J -->|Yes| L{Group/Project has
+                 Duo features enabled?}
+    L -->|Yes| M[Can use Duo with
+                 this resource]
+    L -->|No| N[Cannot use Duo with
+                this resource]
 ```
 
 #### GitLab Self-Managed and Dedicated Settings Pages

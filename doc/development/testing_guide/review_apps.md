@@ -106,7 +106,7 @@ graph TD
   A["build-qa-image, compile-production-assets<br/>(canonical default refs only)"];
   B1[start-review-app-pipeline];
   B[review-build-cng];
-  C["review-deploy<br><br>Helm deploys the review app using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."];
+  C["review-deploy<br><br>Helm deploys the review app using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the #96;review-apps#96;<br>Kubernetes (GKE) cluster, in the GCP #96;gitlab-review-apps#96; project."];
   D[CNG-mirror];
 
   A --> B1
@@ -115,12 +115,12 @@ graph TD
   D -.->|depends on the multi-project pipeline| B
   B --> C
 
-subgraph "1. gitlab-org/gitlab parent pipeline"
+subgraph "1#46; gitlab-org/gitlab parent pipeline"
   A
   B1
   end
 
-subgraph "2. gitlab-org/gitlab child pipeline"
+subgraph "2#46; gitlab-org/gitlab child pipeline"
   B
   C
   end

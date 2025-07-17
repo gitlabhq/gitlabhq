@@ -392,8 +392,8 @@ describe('CI Variable Drawer', () => {
           createComponent({ props: { areHiddenVariablesAvailable: true } });
         });
 
-        it('is set to visible by default', () => {
-          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
+        it('is set to masked by default', () => {
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_MASKED);
         });
 
         it.each`
@@ -423,16 +423,15 @@ describe('CI Variable Drawer', () => {
             props: {
               selectedVariable: {
                 ...mockProjectVariableFileType,
-                masked: true,
-                hidden: true,
+                masked: false,
               },
             },
           });
 
-          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_HIDDEN);
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
           await wrapper.setProps({ mutationResponse: { message: 'Success', hasError: false } });
 
-          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_MASKED);
         });
       });
 

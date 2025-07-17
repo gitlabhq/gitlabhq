@@ -12,7 +12,7 @@
     .js-gitlab-version-check-badge{ data: { "size": "md", "actionable": "true", "version": gitlab_version_check.to_json } }
 
 - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-  %p.slead
+  %p.gl-mb-4.gl-leading-24
     = _('GitLab is open source software to collaborate on code.')
     %br
     = _('Manage git repositories with fine-grained access controls that keep your code secure.')

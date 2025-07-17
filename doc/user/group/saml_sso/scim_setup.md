@@ -251,7 +251,8 @@ accDescr: How GitLab determines whether or not to associate a SCIM identity with
   B -->|Yes| D(GitLab: Is the user part of the group?)
   D -->|No| E(GitLab: Is SSO enforcement enabled?)
   E -->|No| G
-  E -->|Yes| F[GitLab sends message back:\nThe member's email address is not linked to a SAML account]
+  E -->|Yes| F[GitLab sends message back:
+               The member's email address is not linked to a SAML account]
   D -->|Yes| G[Associate SCIM identity to user]
 ```
 

@@ -188,7 +188,7 @@ export default {
     return {
       isMutationAlertVisible: false,
       variable: { ...defaultVariableState, ...this.selectedVariable },
-      visibility: VISIBILITY_VISIBLE,
+      visibility: VISIBILITY_MASKED,
       trackedValidationErrorProperty: undefined,
     };
   },
@@ -403,7 +403,7 @@ export default {
     resetForm() {
       this.variable = { ...this.defaultVariableState };
 
-      this.visibility = VISIBILITY_VISIBLE;
+      this.visibility = VISIBILITY_MASKED;
     },
     setEnvironmentScope(scope) {
       this.variable = { ...this.variable, environmentScope: scope };

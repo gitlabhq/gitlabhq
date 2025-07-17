@@ -81,14 +81,6 @@
 
 .light { @apply gl-text-default; }
 
-.slead {
-  @apply gl-text-default;
-  font-size: 14px;
-  margin-bottom: 12px;
-  font-weight: $gl-font-weight-normal;
-  line-height: 24px;
-}
-
 .tab-content {
   overflow: visible;
   @include media-breakpoint-down(sm) {

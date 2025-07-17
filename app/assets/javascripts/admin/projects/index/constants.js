@@ -100,5 +100,5 @@ export const BASE_ROUTE = '/admin/projects';
 export const ADMIN_PROJECTS_ROUTE_NAME = 'admin-projects';
 export const FIRST_TAB_ROUTE_NAMES = [ADMIN_PROJECTS_ROUTE_NAME];
 
-export const FILTERED_SEARCH_NAMESPACE = 'admin';
+export const FILTERED_SEARCH_NAMESPACE = 'admin-projects';
 export const FILTERED_SEARCH_TERM_KEY = 'search';

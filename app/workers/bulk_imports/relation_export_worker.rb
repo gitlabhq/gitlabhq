@@ -52,8 +52,6 @@ module BulkImports
         log_extra_metadata_on_done(:batched, true)
         BatchedRelationExportService.new(user, portable, relation, jid).execute
       elsif config.user_contributions_relation?(relation)
-        return if Feature.disabled?(:importer_user_mapping, user)
-
         log_extra_metadata_on_done(:batched, false)
         UserContributionsExportWorker.perform_async(portable_id, portable_class, user_id)
       else
