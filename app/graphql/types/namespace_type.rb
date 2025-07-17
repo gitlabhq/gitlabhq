@@ -113,6 +113,14 @@ module Types
       experiment: { milestone: '18.1' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
+    field :work_item_state_counts,
+      Types::WorkItemStateCountsType,
+      null: true,
+      experiment: { milestone: '18.3' },
+      description: 'Counts of work items by state for the namespace (project or group). Returns `null` for user ' \
+        'namespaces.',
+      resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
+
     field :work_items_widgets,
       null: true,
       description: 'List of available widgets for the given work items.',

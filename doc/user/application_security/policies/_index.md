@@ -227,9 +227,9 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 
 | Organization unit | Group owner or group `manage_security_policy_link` permission | Subgroup owner or subgroup `manage_security_policy_link` permission | Project owner or project `manage_security_policy_link` permission |
 |-------------------|---------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
-| Group             | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="dotted-circle" >}} No                                              | {{< icon name="dotted-circle" >}} No                                            |
-| Subgroup          | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="check-circle" >}} Yes                                              | {{< icon name="dotted-circle" >}} No                                            |
-| Project           | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="check-circle" >}} Yes                                              | {{< icon name="check-circle" >}} Yes                                            |
+| Group             | {{< icon name="check-circle" >}} Yes                          | {{< icon name="dotted-circle" >}} No                                | {{< icon name="dotted-circle" >}} No                              |
+| Subgroup          | {{< icon name="check-circle" >}} Yes                          | {{< icon name="check-circle" >}} Yes                                | {{< icon name="dotted-circle" >}} No                              |
+| Project           | {{< icon name="check-circle" >}} Yes                          | {{< icon name="check-circle" >}} Yes                                | {{< icon name="check-circle" >}} Yes                              |
 
 #### Required permissions
 

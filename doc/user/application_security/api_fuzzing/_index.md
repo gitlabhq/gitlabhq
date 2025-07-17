@@ -23,7 +23,7 @@ and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.m
 you can run fuzz tests as part your CI/CD workflow.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Web API Fuzzing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
+For an overview, see [WebAPI Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
 
 ## Getting started
 

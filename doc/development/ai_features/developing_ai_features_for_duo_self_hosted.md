@@ -94,7 +94,7 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 
 Next, we need to configure a new model for use in the GitLab instance.
 
-1. On your GDK instance, go to `/admin/ai/duo_self_hosted/new`.
+1. On your GDK instance, go to `/admin/gitlab_duo/self_hosted/models/new`.
 1. For **Deployment name**, enter a name for the deployment for identification purposes. For example, `Claude 3.5 Sonnet on Bedrock`.
 1. Under **Platform**, select **Amazon Bedrock**.
 1. For **Model Family**, select **Claude 3*, as Claude 3.5 Sonnet falls under this family.
@@ -114,7 +114,7 @@ Next, we need to configure a new model for use in the GitLab instance.
 
 To use the created self-hosted model to power AI-native features:
 
-1. On your GDK instance, go to `admin/ai/duo_self_hosted/features`.
+1. On your GDK instance, go to `/admin/gitlab_duo/self_hosted`.
 1. For each AI feature you want to use with your self-hosted model (for example, Code Generation, Code Completion, General Chat, Explain Code, and so on), select your newly created self-hosted model (for example, **Claude 3.5 Sonnet on Bedrock**) from the corresponding dropdown list.
 1. Optional. To copy the configuration to all features under a specific category, select the copy icon next to it.
 1. After making your selections, the changes are usually saved automatically.

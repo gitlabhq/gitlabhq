@@ -34,7 +34,7 @@ and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.m
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Coverage Fuzzing](https://www.youtube.com/watch?v=bbIenVVcjW0).
+For an overview, see [Coverage-guided Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=bbIenVVcjW0).
 
 ### Confirm status of coverage-guided fuzz testing
 

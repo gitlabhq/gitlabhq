@@ -383,11 +383,13 @@ module Keeps
     end
 
     def each_feature_flag
-      all_feature_flag_files.map do |f|
-        feature_definition = Feature::Definition.new(f,
+      feature_definitions = all_feature_flag_files.map do |f|
+        Feature::Definition.new(f,
           YAML.safe_load_file(f, permitted_classes: [Symbol], symbolize_names: true))
+      end
 
-        yield(feature_definition)
+      feature_definitions.reject { |f| f.milestone.nil? }.sort_by { |f| Gem::Version.new(f.milestone) }.each do |f|
+        yield(f)
       end
     end
 

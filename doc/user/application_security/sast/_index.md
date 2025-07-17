@@ -95,17 +95,17 @@ To enable SAST:
 
 Using a template:
 
-   ```yaml
-   include:
-     - template: Jobs/SAST.gitlab-ci.yml
-   ```
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+```
 
 Or using a CI component:
 
-   ```yaml
-   include:
-     - component: gitlab.com/components/sast/sast@main
-   ```
+```yaml
+include:
+  - component: gitlab.com/components/sast/sast@main
+```
 
 At this point, SAST is enabled in your pipeline.
 If supported source code is present, the appropriate analyzers and default rules automatically scan for vulnerabilities when a pipeline runs.
