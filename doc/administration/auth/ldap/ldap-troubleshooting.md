@@ -192,7 +192,7 @@ may see the following message: `Access denied for your LDAP account`.
 We have a workaround, based on toggling the access level of affected users:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select the name of the affected user.
 1. In the upper-right corner, select **Edit**.
 1. Change the user's access level from `Regular` to `Administrator` (or vice versa).
@@ -249,7 +249,7 @@ field contains no data:
 To resolve this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand both of the following:
    - **Account and limit**.
    - **Sign-up restrictions**.
@@ -413,14 +413,14 @@ things to debug the situation.
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Overview > Users**.
+  1. On the left sidebar, select **Overview** > **Users**.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the `Identifier`. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
-  the group to sync. To speed up the process, either go to the GitLab group **Manage > Members**
+  the group to sync. To speed up the process, either go to the GitLab group **Manage** > **Members**
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
 
@@ -465,7 +465,7 @@ GitLab syncs the `admin_group`.
 
 #### Sync now button stuck in the UI
 
-The **Sync now** button on the **Group > Members** page of a group can become stuck. The button becomes stuck after it is pressed and the page is reloaded. The button then
+The **Sync now** button on the **Group** > **Members** page of a group can become stuck. The button becomes stuck after it is pressed and the page is reloaded. The button then
 cannot be selected again.
 
 The **Sync now** button can become stuck for many reasons and requires debugging for specific cases. The following are two possible causes and possible solutions to the problem.
@@ -734,7 +734,7 @@ This issue occurs when both of the following are true:
 
 You would receive both LDAP and Azure metadata in the logs, which generates the error in Azure.
 
-The workaround for a single user is to remove the LDAP identity from the user in **Admin > Identities**.
+The workaround for a single user is to remove the LDAP identity from the user in **Admin** > **Identities**.
 
 To remove multiple LDAP identities, use either of the workarounds for the [`Could not authenticate you from Ldapmain because "Unknown provider"` error](#could-not-authenticate-you-from-ldapmain-because-unknown-provider).
 

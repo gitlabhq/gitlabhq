@@ -208,6 +208,11 @@
     }
   }
 
+  // Fix border bleed.
+  .gl-table-shadow:not(:has(+ .glql-load-more)) {
+    clip-path: inset(0 round 0 0 1px 1px);
+  }
+
   .gl-table-shadow {
     overflow-x: auto;
     overflow-y: hidden;

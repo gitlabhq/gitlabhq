@@ -14,6 +14,7 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
   let_it_be(:failed_build) { create(:ci_build, :failed, :with_build_name, name: 'Build Three', pipeline: pipeline) }
   let_it_be(:pending_build) { create(:ci_build, :pending, :with_build_name, name: 'Build Three', pipeline: pipeline) }
   let_it_be(:irrelevant_build) { create(:ci_build, name: 'Irrelevant Build', pipeline: irrelevant_pipeline) }
+  let_it_be(:bridge_job) { create(:ci_bridge, :success, name: 'Bridge Job', pipeline: pipeline) }
 
   describe '#resolve' do
     let(:args) { {} }
@@ -23,20 +24,22 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
     context 'with authorized user' do
       let_it_be(:current_user) { create(:user, developer_of: project) }
 
-      context 'with statuses argument' do
-        let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS')] } }
+      context 'when filtering by status' do
+        context 'with statuses argument' do
+          let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS')] } }
 
-        it { is_expected.to contain_exactly(successful_build, successful_build_two) }
-      end
+          it { is_expected.to contain_exactly(successful_build, successful_build_two) }
+        end
 
-      context 'with multiple statuses' do
-        let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS'), Types::Ci::JobStatusEnum.coerce_isolated_input('FAILED')] } }
+        context 'with multiple statuses' do
+          let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS'), Types::Ci::JobStatusEnum.coerce_isolated_input('FAILED')] } }
 
-        it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build) }
-      end
+          it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build) }
+        end
 
-      context 'without statuses argument' do
-        it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
+        context 'without statuses argument' do
+          it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
+        end
       end
 
       context 'when filtering by source' do
@@ -130,6 +133,24 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
               expect(parsed_response).to include('Please provide a valid cursor')
             end
           end
+        end
+      end
+
+      context 'when filtering by job kind' do
+        context 'when filtering for bridge jobs' do
+          let(:args) { { kind: 'BRIDGE' } }
+
+          it { is_expected.to contain_exactly(bridge_job) }
+        end
+
+        context 'when filtering for build jobs' do
+          let(:args) { { kind: 'BUILD' } }
+
+          it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
+        end
+
+        context 'without kind argument' do
+          it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
         end
       end
     end

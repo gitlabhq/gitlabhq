@@ -277,6 +277,8 @@ module Gitlab
                   strategy.increment(cache_key, expiry)
                 end
 
+        return false if value.nil?
+
         report_metrics(key, value, threshold_value, peek)
 
         value > threshold_value

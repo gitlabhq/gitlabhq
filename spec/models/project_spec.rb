@@ -124,6 +124,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:bridges) }
     it { is_expected.to have_many(:build_report_results) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }

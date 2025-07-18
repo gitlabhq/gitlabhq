@@ -34,7 +34,8 @@ verification methods:
 |:---------------------|:------------------------------------------------|:---------------------------------------------|:------------------------------|
 | Database             | Application data in PostgreSQL                  | Native                                       | Native                        |
 | Database             | Redis                                           | Not applicable <sup>1</sup>                  | Not applicable                |
-| Database             | Elasticsearch                                   | Native                                       | Native                        |
+| Database             | Advanced search (Elasticsearch or OpenSearch)   | Native                                       | Native                        |
+| Database             | Exact code search (Zoekt)                       | Native                                       | Native                        |
 | Database             | SSH public keys                                 | PostgreSQL Replication                       | PostgreSQL Replication        |
 | Git                  | Project repository                              | Geo with Gitaly                              | Gitaly Checksum               |
 | Git                  | Project wiki repository                         | Geo with Gitaly                              | Gitaly Checksum               |

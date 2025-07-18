@@ -28,6 +28,21 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   describe '.throttled?' do
+    context 'when redis is unavailable' do
+      before do
+        broken_redis = Redis.new(
+          url: 'redis://127.0.0.0:0',
+          custom: { instrumentation_class: Gitlab::Redis::RateLimiting.instrumentation_class }
+        )
+        allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(broken_redis)
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+      end
+
+      it 'returns false' do
+        expect(subject.throttled?(:test_action, scope: [user])).to eq(false)
+      end
+    end
+
     context 'when the key is invalid' do
       context 'is provided as a Symbol' do
         context 'but is not defined in the rate_limits Hash' do

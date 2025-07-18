@@ -303,7 +303,7 @@ export default {
           is-collapsible
           :collapsed="isCollapsed"
           persist-collapsed-state
-          class="!gl-mt-5"
+          class="!gl-mt-5 !gl-overflow-hidden"
           :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview }"
           @collapsed="isCollapsed = true"
           @expanded="isCollapsed = false"
@@ -323,7 +323,7 @@ export default {
           <component :is="previewPresenter.component" v-else-if="previewPresenter && !hasError" />
           <div
             v-if="data.count && data.nodes.length < data.count"
-            class="gl-border-t gl-border-section gl-p-3"
+            class="glql-load-more gl-border-t gl-border-section gl-p-3"
           >
             <glql-pagination :count="data.nodes.length" :total-count="data.count" />
           </div>
@@ -331,11 +331,8 @@ export default {
           <template v-if="showEmptyState" #empty>
             {{ __('No data found for this query.') }}
           </template>
-
-          <template #footer>
-            <glql-footnote />
-          </template>
         </crud-component>
+        <glql-footnote v-if="!isCollapsed" />
       </template>
       <div v-else-if="hasError" class="markdown-code-block gl-relative">
         <pre :class="preClasses"><code>{{ query }}</code></pre>

@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle">
+  <div class="gl-mb-5 gl-mt-2 gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle">
     <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
     <gl-sprintf :message="__('%{linkStart}Embedded view%{linkEnd} powered by GLQL')">
       <template #link="{ content }">

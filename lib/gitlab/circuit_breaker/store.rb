@@ -40,11 +40,7 @@ module Gitlab
       private
 
       def with(&block)
-        Gitlab::Redis::RateLimiting.with(&block)
-      rescue ::Redis::BaseConnectionError
-        # Do not raise an error if we cannot connect to Redis. If
-        # Redis::RateLimiting is unavailable it should not take the site down.
-        nil
+        Gitlab::Redis::RateLimiting.with_suppressed_errors(&block)
       end
     end
   end

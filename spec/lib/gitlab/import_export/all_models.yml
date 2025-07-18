@@ -716,6 +716,7 @@ project:
 - stages
 - ci_refs
 - builds
+- bridges
 - processables
 - runner_projects
 - runners

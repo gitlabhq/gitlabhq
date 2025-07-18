@@ -139,7 +139,7 @@ It acts the same as `setActivePinia(createPinia())` but also allows us to spy on
 A basic test could look like this:
 
 ```javascript
-import { createTestingPinia } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { useMyStore } from '~/my_store.js';
 
 describe('MyStore', () => {

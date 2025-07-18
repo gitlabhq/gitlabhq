@@ -38,15 +38,7 @@ module Gitlab
       private
 
       def with(&block)
-        # rubocop: disable CodeReuse/ActiveRecord
-        Gitlab::Redis::RateLimiting.with(&block)
-        # rubocop: enable CodeReuse/ActiveRecord
-      rescue ::Redis::BaseConnectionError
-        # Following the example of
-        # https://github.com/rack/rack-attack/blob/v6.6.1/lib/rack/attack/store_proxy/redis_proxy.rb#L61-L65,
-        # do not raise an error if we cannot connect to Redis. If
-        # Redis::RateLimiting is unavailable it should not take the site down.
-        nil
+        Gitlab::Redis::RateLimiting.with_suppressed_errors(&block)
       end
 
       def namespace(key)
