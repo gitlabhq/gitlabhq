@@ -14,12 +14,12 @@ import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
-import { pipelineEditorTrackingOptions } from '../../constants';
+import { pipelineEditorTrackingOptions, CI_CONFIG_STATUS_VALID } from '../../constants';
 import ValidatePipelinePopover from '../popovers/validate_pipeline_popover.vue';
 import CiLintResults from '../lint/ci_lint_results.vue';
 import getBlobContent from '../../graphql/queries/blob_content.query.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.query.graphql';
-import lintCiMutation from '../../graphql/mutations/client/lint_ci.mutation.graphql';
+import ciLintMutation from '../../graphql/mutations/ci_lint.mutation.graphql';
 
 export const i18n = {
   alertDesc: s__(
@@ -159,25 +159,29 @@ export default {
       this.state = VALIDATE_TAB_LOADING;
 
       try {
-        const {
-          data: {
-            lintCI: { errors, jobs, valid, warnings },
-          },
-        } = await this.$apollo.mutate({
-          mutation: lintCiMutation,
+        const { data } = await this.$apollo.mutate({
+          mutation: ciLintMutation,
           variables: {
-            dry: true,
+            projectPath: this.projectFullPath,
             content: this.yaml,
-            endpoint: this.ciLintPath,
+            ref: this.currentBranch,
+            dryRun: true,
           },
         });
 
+        const ciConfigData = data?.ciLint?.config || {};
+
         // only save the result if the user did not cancel the simulation
         if (this.state === VALIDATE_TAB_LOADING) {
+          const { errors, stages, warnings, status } = ciConfigData;
+
           this.errors = errors;
+          const jobs = stages.flatMap((stage) =>
+            (stage.groups || []).flatMap((group) => group.jobs || []),
+          );
           this.jobs = jobs;
           this.warnings = warnings;
-          this.isValid = valid;
+          this.isValid = status === CI_CONFIG_STATUS_VALID;
           this.state = VALIDATE_TAB_RESULTS;
           this.hasCiContentChanged = false;
         }

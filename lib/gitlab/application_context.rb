@@ -36,7 +36,8 @@ module Gitlab
       :auth_fail_token_id,
       :auth_fail_requested_scopes,
       :http_router_rule_action,
-      :http_router_rule_type
+      :http_router_rule_type,
+      :kubernetes_agent_id
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -73,7 +74,8 @@ module Gitlab
       Attribute.new(:auth_fail_token_id, String),
       Attribute.new(:auth_fail_requested_scopes, String),
       Attribute.new(:http_router_rule_action, String),
-      Attribute.new(:http_router_rule_type, String)
+      Attribute.new(:http_router_rule_type, String),
+      Attribute.new(:kubernetes_agent, ::Clusters::Agent)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -163,6 +165,7 @@ module Gitlab
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
         hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
+        hash[:kubernetes_agent_id] = -> { kubernetes_agent&.id } if set_values.include?(:kubernetes_agent)
       end
     end
     # rubocop: enable Metrics/CyclomaticComplexity

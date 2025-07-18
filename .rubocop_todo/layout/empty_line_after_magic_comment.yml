@@ -279,7 +279,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/services/ee/design_management/save_designs_service_spec.rb'
     - 'ee/spec/services/ee/notes/quick_actions_service_spec.rb'
     - 'ee/spec/services/ee/users/update_service_spec.rb'
-    - 'ee/spec/services/epics/close_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/issue_feature_flags/list_service_spec.rb'
     - 'ee/spec/services/milestones/update_service_spec.rb'

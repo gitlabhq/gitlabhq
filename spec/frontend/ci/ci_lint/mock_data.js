@@ -1,42 +1,47 @@
-import { mockJobs } from 'jest/ci/pipeline_editor/mock_data';
-import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
-
-export const mockLintDataError = {
-  data: {
-    lintCI: {
-      errors: ['Error message'],
-      warnings: ['Warning message'],
-      valid: false,
-      jobs: mockJobs.map((j) => {
-        const job = { ...j, tags: j.tagList };
-        delete job.tagList;
-        return job;
-      }),
-    },
+export const mockCiLintJobs = [
+  {
+    beforeScript: [],
+    afterScript: [],
+    environment: null,
+    allowFailure: false,
+    tags: [],
+    when: 'on_success',
+    only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
+    except: null,
+    needs: [{ name: 'test', __typename: 'CiConfigNeed' }],
+    __typename: 'CiConfigJobV2',
+    name: 'job_test_1',
+    script: ['echo "test 1"'],
+    stage: 'test',
   },
-};
-
-export const mockLintDataValid = {
-  data: {
-    lintCI: {
-      errors: [],
-      warnings: [],
-      valid: true,
-      jobs: mockJobs.map((j) => {
-        const job = { ...j, tags: j.tagList };
-        delete job.tagList;
-        return job;
-      }),
-    },
+  {
+    name: 'job_test_2',
+    script: ['echo "test 2"'],
+    stage: 'test',
+    beforeScript: [],
+    afterScript: [],
+    environment: null,
+    allowFailure: false,
+    tags: [],
+    when: 'on_success',
+    only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
+    except: null,
+    needs: [{ name: 'test', __typename: 'CiConfigNeed' }],
+    __typename: 'CiConfigJobV2',
   },
-};
-
-export const mockLintDataErrorRest = {
-  ...mockLintDataError.data.lintCI,
-  jobs: mockJobs.map((j) => convertObjectPropsToSnakeCase(j)),
-};
-
-export const mockLintDataValidRest = {
-  ...mockLintDataValid.data.lintCI,
-  jobs: mockJobs.map((j) => convertObjectPropsToSnakeCase(j)),
-};
+  {
+    name: 'job_build',
+    script: ['echo "build"'],
+    stage: 'build',
+    beforeScript: [],
+    afterScript: [],
+    environment: null,
+    allowFailure: false,
+    tags: [],
+    when: 'on_success',
+    only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
+    except: null,
+    needs: [{ name: 'test', __typename: 'CiConfigNeed' }],
+    __typename: 'CiConfigJobV2',
+  },
+];

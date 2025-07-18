@@ -543,7 +543,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/ee/two_factor/destroy_service_spec.rb'
     - 'ee/spec/services/ee/work_items/import_csv_service_spec.rb'
     - 'ee/spec/services/epic_issues/update_service_spec.rb'
-    - 'ee/spec/services/epics/close_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/epics/related_epic_links/list_service_spec.rb'
     - 'ee/spec/services/epics/transfer_service_spec.rb'

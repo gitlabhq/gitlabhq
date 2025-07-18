@@ -11,7 +11,6 @@ RSpec/ExpectInLet:
     - 'ee/spec/services/ee/merge_requests/reopen_service_spec.rb'
     - 'ee/spec/services/ee/notes/create_service_spec.rb'
     - 'ee/spec/services/ee/users/migrate_records_to_ghost_user_service_spec.rb'
-    - 'ee/spec/services/epics/close_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/projects/destroy_service_spec.rb'
     - 'ee/spec/services/projects/group_links/destroy_service_spec.rb'

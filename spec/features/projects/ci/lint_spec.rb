@@ -44,11 +44,22 @@ RSpec.describe 'CI Lint', :js, feature_category: :pipeline_composition do
       end
 
       context 'YAML is incorrect' do
-        let(:yaml_content) { 'value: cannot have :' }
+        let(:yaml_content) do
+          <<~YAML.strip
+            invalid: yaml content
+            that: has
+            multiple: lines
+            value: cannot have :
+            more: content
+          YAML
+        end
 
         it 'displays information about an error' do
           expect(page).to have_content('Status: Syntax is incorrect')
-          expect(page).to have_selector(content_selector, text: yaml_content)
+
+          expect(page).to have_selector(content_selector)
+          rendered_content = find(content_selector).text
+          expect(rendered_content.strip).to eq(yaml_content.strip)
         end
       end
     end

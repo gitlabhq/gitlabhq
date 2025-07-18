@@ -9,6 +9,22 @@ RSpec.describe QA::Runtime::Namespace do
     described_class.instance_variable_set(:@time, nil)
   end
 
+  shared_examples "sandbox naming for live environments" do
+    context "when the job does not use parallel" do
+      it "returns a random sandbox name 1-8" do
+        expect(described_class.sandbox_name).to match(%r{gitlab-e2e-sandbox-group-[1-8]})
+      end
+    end
+
+    context "when the job uses parallel" do
+      it "returns sandbox name based on CI_NODE_INDEX" do
+        stub_env('CI_NODE_INDEX', '3')
+
+        expect(described_class.sandbox_name).to match('gitlab-e2e-sandbox-group-3')
+      end
+    end
+  end
+
   describe '.group_name' do
     it "returns unique name with predefined pattern" do
       expect(described_class.group_name).to match(/e2e-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-[a-f0-9]{16}/)
@@ -30,17 +46,13 @@ RSpec.describe QA::Runtime::Namespace do
     context "when running on .com environment" do
       let(:dot_com) { true }
 
-      it "returns day specific sandbox name" do
-        expect(described_class.sandbox_name).to match(%r{gitlab-e2e-sandbox-group-#{time.wday + 1}})
-      end
+      it_behaves_like "sandbox naming for live environments"
     end
 
     context "when running on release environment" do
       let(:release) { true }
 
-      it "returns day specific sandbox name" do
-        expect(described_class.sandbox_name).to match(%r{gitlab-e2e-sandbox-group-#{time.wday + 1}})
-      end
+      it_behaves_like "sandbox naming for live environments"
     end
 
     context "when running on ephemeral environment" do

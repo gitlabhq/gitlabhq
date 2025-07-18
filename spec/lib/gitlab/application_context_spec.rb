@@ -250,6 +250,16 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         expect(result(context)).to include(organization_id: organization.id)
       end
     end
+
+    context 'when using kubernetes agent context' do
+      let_it_be(:cluster_agent) {  create(:cluster_agent) }
+
+      it 'sets the kubernetes_agent_id value' do
+        context = described_class.new(kubernetes_agent: cluster_agent)
+
+        expect(result(context)).to include(kubernetes_agent_id: cluster_agent.id)
+      end
+    end
   end
 
   describe '#use' do
