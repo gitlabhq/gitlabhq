@@ -349,6 +349,34 @@ To add OpenTelemetry instrumentation to your applications:
 
 Refer to the [OpenTelemetry documentation](https://opentelemetry.io/docs/instrumentation/) for language-specific guidelines.
 
+## GitLab Observability Templates
+
+GitLab provides pre-built dashboard templates to help you get started with observability quickly. These templates are available at [Experimental Observability O11y Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/).
+
+### Available templates
+
+**Standard OpenTelemetry dashboards**: If you instrument your application with standard OpenTelemetry libraries, you can use these plug-and-play dashboard templates:
+
+- Application performance monitoring dashboards
+- Service dependency visualizations
+- Error rate and latency tracking
+
+**GitLab-specific dashboards**: When you send GitLab OpenTelemetry data to your GitLab O11y instance, use these dashboards for out-of-the-box insights:
+
+- GitLab application performance metrics
+- GitLab service health monitoring
+- GitLab-specific trace analysis
+
+**CI/CD observability**: The repository includes an example GitLab CI/CD pipeline with OpenTelemetry instrumentation that works with the GitLab O11y CI/CD dashboard template JSON file. This helps you monitor your CI/CD pipeline performance and identify bottlenecks.
+
+### Using the templates
+
+1. Clone or download the templates from the repository.
+1. Update the service name in the example application dashboards to match your service name.
+1. Import the JSON files into your GitLab O11y instance.
+1. Configure your applications to send telemetry data using standard OpenTelemetry libraries as described in the [Instrument your application](#instrument-your-application) section.
+1. The dashboards are now available with your application's telemetry data in GitLab O11y.
+
 ## Troubleshooting
 
 ### GitLab Observability instance issues

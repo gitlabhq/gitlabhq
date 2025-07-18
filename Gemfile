@@ -220,7 +220,7 @@ gem 'gitlab-fog-azure-rm', '~> 2.2.0', require: 'fog/azurerm', feature_category:
 gem 'google-apis-storage_v1', '~> 0.29', feature_category: :shared
 gem 'google-cloud-storage', '~> 1.45.0', feature_category: :shared
 # We need >= 0.11.1 because that's when match_glob support is added to list_objects
-gem 'google-apis-core', '~> 0.11.0', '>= 0.11.1', feature_category: :shared
+gem 'google-apis-core', '~> 0.18.0', '>= 0.18.0', feature_category: :shared
 gem 'google-apis-compute_v1', '~> 0.57.0', feature_category: :shared
 gem 'google-apis-container_v1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-container_v1beta1', '~> 0.43.0', feature_category: :shared
@@ -752,4 +752,4 @@ gem 'paper_trail', '~> 16.0', feature_category: :shared
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.21", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.22", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning

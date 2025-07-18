@@ -2544,6 +2544,9 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
+msgid "AICatalog|cannot be changed from public to private as it has catalog consumers"
+msgstr ""
+
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
@@ -6000,7 +6003,7 @@ msgstr ""
 msgid "AiPowered|Amazon Q Setup"
 msgstr ""
 
-msgid "AiPowered|Are you sure you want to turn off GitLab Duo Workflow?"
+msgid "AiPowered|Are you sure you want to turn off GitLab Duo Agent Platform?"
 msgstr ""
 
 msgid "AiPowered|Assign models to AI-native features."
@@ -6099,7 +6102,7 @@ msgstr ""
 msgid "AiPowered|Explore GitLab Duo Core"
 msgstr ""
 
-msgid "AiPowered|Failed to disable GitLab Duo Workflow."
+msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
 msgstr ""
 
 msgid "AiPowered|Failed to enable GitLab Duo Agent Platform."
@@ -6123,6 +6126,12 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agent Platform has successfully been turned off."
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent in the Visual Studio Code (VS Code) IDE."
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance and the service account (%{accountId}) was created. To use Agent Platform in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
@@ -6142,9 +6151,6 @@ msgid "AiPowered|GitLab Duo Pro or Enterprise"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Self-Hosted"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Workflow has successfully been turned off."
 msgstr ""
 
 msgid "AiPowered|GitLab Duo availability"
@@ -6231,13 +6237,10 @@ msgstr ""
 msgid "AiPowered|This setting requires GitLab Duo availability to be on or off by default."
 msgstr ""
 
-msgid "AiPowered|Turn off GitLab Duo Workflow"
+msgid "AiPowered|Turn off GitLab Duo Agent Platform"
 msgstr ""
 
-msgid "AiPowered|Turn off Workflow"
-msgstr ""
-
-msgid "AiPowered|Turn on GitLab Duo Workflow"
+msgid "AiPowered|Turn on GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "AiPowered|Turn on IDE features"
@@ -6267,7 +6270,7 @@ msgstr ""
 msgid "AiPowered|View configuration"
 msgstr ""
 
-msgid "AiPowered|What is this service account?"
+msgid "AiPowered|What is the Duo Agent Platform service account?"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
@@ -6282,13 +6285,10 @@ msgstr ""
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
-msgid "AiPowered|When you turn off Workflow, users can no longer use it to solve coding tasks. Are you sure?"
+msgid "AiPowered|When you turn off GitLab Duo Agent Platform, users can no longer use it to solve coding tasks. Are you sure?"
 msgstr ""
 
-msgid "AiPowered|When you turn on GitLab Duo Workflow, a service account is created."
-msgstr ""
-
-msgid "AiPowered|Workflow is an AI-native coding agent in the Visual Studio Code (VS Code) IDE."
+msgid "AiPowered|When you turn on GitLab Duo Agent Platform, a service account is created."
 msgstr ""
 
 msgid "AiPowered|You now have access to GitLab Duo Chat and Code Suggestions in supported IDEs. To start using these features, %{link1Start}install the GitLab extension in your IDE%{link1End}. If you already have this extension installed, %{link2Start}explore what you can do with GitLab Duo Core%{link2End}."
@@ -16169,6 +16169,9 @@ msgstr ""
 msgid "ComplianceReport|Action"
 msgstr ""
 
+msgid "ComplianceReport|Activity"
+msgstr ""
+
 msgid "ComplianceReport|All frameworks"
 msgstr ""
 
@@ -22863,7 +22866,7 @@ msgstr ""
 msgid "Details block"
 msgstr ""
 
-msgid "Details of vio-%{violationId}"
+msgid "Details of violation-%{violationId}"
 msgstr ""
 
 msgid "Detect host keys"
@@ -24263,7 +24266,7 @@ msgstr ""
 msgid "DuoWorkflowSettings|Model Context Protocol"
 msgstr ""
 
-msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Agentic Chat and GitLab Duo Workflow"
+msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Agentic Chat and GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoWorkflowSettings|Turn on Model Context Protocol (MCP) support"
@@ -35678,6 +35681,9 @@ msgstr ""
 msgid "JobSource|Container Registry Push"
 msgstr ""
 
+msgid "JobSource|Duo Agent Platform"
+msgstr ""
+
 msgid "JobSource|Duo Workflow"
 msgstr ""
 
@@ -45990,7 +45996,7 @@ msgstr ""
 msgid "PipelineSource|Container Registry Push"
 msgstr ""
 
-msgid "PipelineSource|Duo Workflow"
+msgid "PipelineSource|Duo Agent Platform"
 msgstr ""
 
 msgid "PipelineSource|External"

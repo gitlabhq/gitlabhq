@@ -20,7 +20,6 @@ RSpec.shared_examples 'every metric definition' do
 
   let(:ignored_metric_files_key_patterns) do
     %w[
-      ci_runners_online
       mock_ci
       mock_monitoring
       user_auth_by_provider
