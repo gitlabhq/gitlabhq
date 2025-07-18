@@ -250,8 +250,25 @@ export const config = {
                     const items = resultNodes
                       .filter((node) => node.workItem)
                       // normally we would only get a `__ref` for nested properties but we need to extract the full work item
-                      // eslint-disable-next-line no-underscore-dangle
-                      .map((node) => context.cache.extract()[node.workItem.__ref]);
+                      .map((node) => {
+                        /* eslint-disable no-underscore-dangle */
+                        const itemRef = context.cache.extract()[node.workItem.__ref];
+                        const { __typename, id, name, iconName } =
+                          context.cache.extract()[itemRef.workItemType.__ref];
+                        /* eslint-enable no-underscore-dangle */
+
+                        const workItem = {
+                          ...itemRef,
+                          workItemType: {
+                            __typename,
+                            id,
+                            name,
+                            iconName,
+                          },
+                        };
+
+                        return workItem;
+                      });
 
                     // Ensure that any existing linked items are retained
                     const existingLinkedItems = linkedItems();

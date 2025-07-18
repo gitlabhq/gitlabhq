@@ -53,9 +53,11 @@ export default {
       if (!this.hasAdminNotePermission) {
         return;
       }
-      this.$el.querySelectorAll('.task-list-item-checkbox').forEach((checkbox) => {
-        checkbox.disabled = disabled; // eslint-disable-line no-param-reassign
-      });
+      this.$el
+        .querySelectorAll('.task-list-item-checkbox:not([data-inapplicable])')
+        .forEach((checkbox) => {
+          checkbox.disabled = disabled; // eslint-disable-line no-param-reassign
+        });
     },
     toggleCheckboxes(event) {
       if (!this.hasAdminNotePermission) {

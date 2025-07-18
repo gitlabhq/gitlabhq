@@ -69,19 +69,20 @@ export default {
           <th-resizable
             v-for="(field, fieldIndex) in fields"
             :key="field.key"
-            class="gl-whitespace-nowrap !gl-border-section !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle gl-text-subtle dark:!gl-bg-strong"
+            class="gl-relative !gl-border-section !gl-bg-subtle !gl-p-0 !gl-text-subtle gl-text-subtle dark:!gl-bg-strong"
           >
             <div
               :data-testid="`column-${fieldIndex}`"
-              class="gl-cursor-pointer"
+              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-px-5 gl-py-3 gl-transition-colors hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
               @click="sorter.sortBy(field.key)"
             >
-              {{ field.label }}
               <gl-icon
                 v-if="sorter.options.fieldName === field.key"
                 :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
               />
+              {{ field.label }}
             </div>
+            <div class="gl-pointer-events-none gl-py-3">&nbsp;</div>
           </th-resizable>
         </tr>
       </thead>

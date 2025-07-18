@@ -10,12 +10,23 @@ const states = {
   merged: 3,
 };
 
+const statusCategories = {
+  triage: 1,
+  to_do: 2,
+  in_progress: 3,
+  done: 4,
+  canceled: 5,
+};
+
 const sortFieldsByType = {
   Issue: 'title',
   Epic: 'title',
-  Milestone: 'title',
   Label: 'title',
   UserCore: 'username',
+  MergeRequestAuthor: 'username',
+  MergeRequestReviewer: 'username',
+  MergeRequestAssignee: 'username',
+  Project: 'nameWithNamespace',
 };
 
 function valueByType(field, type) {
@@ -28,6 +39,11 @@ function valueByFieldName(fieldValue, fieldName) {
       return healthStatuses[fieldValue];
     case 'state':
       return states[fieldValue];
+    case 'status':
+      return statusCategories[fieldValue.category];
+    case 'milestone':
+    case 'iteration':
+      return new Date(fieldValue.dueDate);
     default:
       return null;
   }

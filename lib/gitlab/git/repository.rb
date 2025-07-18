@@ -1119,6 +1119,8 @@ module Gitlab
         gitaly_repository_client.search_files_by_regexp(ref, filter, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
+      rescue GRPC::NotFound
+        raise NoRepository
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)

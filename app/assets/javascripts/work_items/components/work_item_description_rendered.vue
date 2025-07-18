@@ -219,7 +219,9 @@ export default {
       return container.firstChild;
     },
     initCheckboxes() {
-      this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
+      this.checkboxes = this.$el.querySelectorAll(
+        '.task-list-item-checkbox:not([data-inapplicable])',
+      );
 
       // enable boxes, disabled by default in markdown
       this.disableCheckboxes(false);

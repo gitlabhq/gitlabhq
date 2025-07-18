@@ -748,7 +748,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
-    context 'when sending an ivalid regexp' do
+    context 'when sending an invalid regexp' do
       let(:filter) { '*.rb' }
 
       it 'raises error' do
@@ -763,6 +763,18 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'returns an empty array' do
         expect(result).to eq([])
+      end
+    end
+
+    context 'when client raises an exception GRPC::NotFound' do
+      let(:filter) { 'files\/.*\/.*\.rb' }
+
+      before do
+        allow(mutable_repository.gitaly_repository_client).to receive(:search_files_by_regexp).and_raise(GRPC::NotFound)
+      end
+
+      it 'raises an exception NoRepository' do
+        expect { result }.to raise_error(Gitlab::Git::Repository::NoRepository)
       end
     end
   end

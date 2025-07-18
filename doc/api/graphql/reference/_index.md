@@ -2168,7 +2168,6 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiondescriptioncomposer"></a>`descriptionComposer` | [`AiDescriptionComposerInput`](#aidescriptioncomposerinput) | Input for description_composer AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
-| <a id="mutationaiactiongeneratecubequery"></a>`generateCubeQuery` | [`AiGenerateCubeQueryInput`](#aigeneratecubequeryinput) | Input for generate_cube_query AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactionmeasurecommenttemperature"></a>`measureCommentTemperature` | [`AiMeasureCommentTemperatureInput`](#aimeasurecommenttemperatureinput) | Input for measure_comment_temperature AI action. |
 | <a id="mutationaiactionplatformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
@@ -51965,15 +51964,6 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aigeneratecommitmessageinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-
-### `AiGenerateCubeQueryInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aigeneratecubequeryinputquestion"></a>`question` | [`String!`](#string) | Question to ask a project's data. |
-| <a id="aigeneratecubequeryinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiGenerateDescriptionInput`
 

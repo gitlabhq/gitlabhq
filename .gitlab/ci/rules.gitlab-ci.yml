@@ -45,8 +45,9 @@
       || $FORCE_GITLAB_CI
       '
 
+# weekly pipeline is opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly"'
 
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.

@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       eventHub: eventHubByKey(this.queryKey),
-      crudComponentId: uniqueId('glql-crud-'),
+      crudComponentId: `glql-${this.queryKey}`,
 
       queryModalSettings: {
         id: uniqueId('glql-modal-'),
@@ -302,6 +302,7 @@ export default {
           :count="data.count"
           is-collapsible
           :collapsed="isCollapsed"
+          persist-collapsed-state
           class="!gl-mt-5"
           :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview }"
           @collapsed="isCollapsed = true"

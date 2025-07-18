@@ -146,7 +146,7 @@ describe('CRUD Component', () => {
   });
 
   describe('with persistCollapsedState=true', () => {
-    describe('when the localStorage key is false or undefined', () => {
+    describe('when the localStorage key is undefined', () => {
       beforeEach(() => {
         createComponent(
           {
@@ -170,6 +170,11 @@ describe('CRUD Component', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith('crud-collapse-test-anchor', true);
         expect(findBody().exists()).toBe(false);
       });
+
+      it('does not emit an event on mounted when no local storage key is set', () => {
+        expect(wrapper.emitted('collapsed')).toBeUndefined();
+        expect(wrapper.emitted('expanded')).toBeUndefined();
+      });
     });
 
     describe('when the localStorage key is true', () => {
@@ -190,12 +195,37 @@ describe('CRUD Component', () => {
         expect(findBody().exists()).toBe(false);
       });
 
+      it('emits an event on mounted', () => {
+        expect(wrapper.emitted('collapsed').at(0)).toEqual([]);
+        expect(wrapper.emitted('expanded')).toBeUndefined();
+      });
+
       it('toggles the collapsible area and sets the localStorage key to false', async () => {
         findCollapseToggle().vm.$emit('click');
         await nextTick();
 
         expect(localStorage.setItem).toHaveBeenCalledWith('crud-collapse-test-anchor', false);
         expect(findBody().text()).toBe('Body slot');
+      });
+    });
+
+    describe('when the localStorage key is false', () => {
+      beforeEach(() => {
+        localStorage.setItem('crud-collapse-test-anchor', 'false');
+        createComponent(
+          {
+            isCollapsible: true,
+            persistCollapsedState: true,
+            anchorId: 'test-anchor',
+            toggleText: 'Form action toggle',
+          },
+          { default: '<p>Body slot</p>' },
+        );
+      });
+
+      it('emits an event on mounted', () => {
+        expect(wrapper.emitted('collapsed')).toBeUndefined();
+        expect(wrapper.emitted('expanded').at(0)).toEqual([]);
       });
     });
   });

@@ -336,3 +336,53 @@ For more information, see:
 
 - [Functional patterns](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#functional-patterns)
 - [Railway-oriented programming and the `Result` class](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#railway-oriented-programming-and-the-result-class)
+
+## ApplicationRecord / ActiveRecord model scopes
+
+When creating a new scope, consider the following prefixes.
+
+### `for_` 
+
+For scopes which filter `where(belongs_to: record)`.
+For example:
+
+```ruby
+scope :for_project, ->(project) { where(project: project) }
+Timelogs.for_project(project)
+```
+
+### `with_`
+
+For scopes which `joins`, `includes`, or filters `where(has_one: record)` or `where(has_many: record)` or `where(boolean condition)`
+For example:
+
+```ruby
+scope :with_labels, -> { includes(:labels) }
+AbuseReport.with_labels
+
+scope :with_status, ->(status) { where(status: status) }
+Clusters::AgentToken.with_status(:active)
+
+scope :with_due_date, -> { where.not(due_date: nil) }
+Issue.with_due_date
+```
+
+It is also fine to use custom scope names, for example:
+
+```ruby
+scope :undeleted, -> { where('policy_index >= 0') }
+Security::Policy.undeleted
+```
+
+### `order_by_`
+
+For scopes which `order`.
+For example:
+
+```ruby
+scope :order_by_name, -> { order(:name) }
+Namespace.order_by_name
+
+scope :order_by_updated_at, ->(direction = :asc) { order(updated_at: direction) }
+Project.order_by_updated_at(:desc)
+```

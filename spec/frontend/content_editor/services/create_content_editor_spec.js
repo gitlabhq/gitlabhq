@@ -7,6 +7,7 @@ jest.mock('~/emoji');
 jest.mock('~/content_editor/services/gl_api_markdown_deserializer');
 jest.mock('~/graphql_shared/issuable_client', () => ({
   currentAssignees: jest.fn().mockReturnValue({}),
+  linkedItems: jest.fn().mockReturnValue({}),
 }));
 
 describe('content_editor/services/create_content_editor', () => {

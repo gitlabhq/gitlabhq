@@ -70,6 +70,7 @@ Prerequisites:
 
 To use Agentic Chat in the GitLab UI:
 
+1. Go to a project in a group that meets the prerequisites.
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.

@@ -297,6 +297,13 @@ exports[`AutocompleteHelper for work items filters users using apollo cache for 
 ]
 `;
 
+exports[`AutocompleteHelper for work items filters work items using apollo cache for command "/unlink" 1`] = `
+[
+  31,
+  30,
+]
+`;
+
 exports[`AutocompleteHelper returns expected results before and after updating data sources 1`] = `
 [
   "florida.schoen",

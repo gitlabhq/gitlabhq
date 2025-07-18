@@ -128,7 +128,9 @@ export default {
     },
     enableCheckboxes() {
       if (this.canUpdate) {
-        const checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
+        const checkboxes = this.$el.querySelectorAll(
+          '.task-list-item-checkbox:not([data-inapplicable])',
+        );
 
         // enable boxes, disabled by default in markdown
         checkboxes.forEach((checkbox) => {

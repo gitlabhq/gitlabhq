@@ -2430,7 +2430,13 @@ msgstr ""
 msgid "AICatalog|Agent"
 msgstr ""
 
+msgid "AICatalog|Agent deleted successfully."
+msgstr ""
+
 msgid "AICatalog|Agents"
+msgstr ""
+
+msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
@@ -2451,6 +2457,9 @@ msgstr ""
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
 msgstr ""
 
+msgid "AICatalog|Delete agent"
+msgstr ""
+
 msgid "AICatalog|Description is required."
 msgstr ""
 
@@ -2458,6 +2467,9 @@ msgid "AICatalog|Edit"
 msgstr ""
 
 msgid "AICatalog|Edit agent"
+msgstr ""
+
+msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to run agent."
@@ -6108,6 +6120,9 @@ msgstr ""
 msgid "AiPowered|Get started with GitLab Duo Core"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance and the service account (%{accountId}) was created. To use Agent Platform in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
@@ -6127,9 +6142,6 @@ msgid "AiPowered|GitLab Duo Pro or Enterprise"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Self-Hosted"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Workflow"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Workflow has successfully been turned off."
@@ -7725,9 +7737,6 @@ msgstr ""
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
-msgid "Analytics|Create with GitLab Duo (optional)"
-msgstr ""
-
 msgid "Analytics|Create your dashboard"
 msgstr ""
 
@@ -7802,9 +7811,6 @@ msgstr ""
 msgid "Analytics|Enter a dashboard title"
 msgstr ""
 
-msgid "Analytics|Enter a prompt to continue."
-msgstr ""
-
 msgid "Analytics|Enter a visualization title"
 msgstr ""
 
@@ -7815,9 +7821,6 @@ msgid "Analytics|Error while saving visualization."
 msgstr ""
 
 msgid "Analytics|Events received since %{date}"
-msgstr ""
-
-msgid "Analytics|Example: Number of users over time, grouped weekly"
 msgstr ""
 
 msgid "Analytics|Exclude anonymous users"
@@ -7833,12 +7836,6 @@ msgid "Analytics|Failed to load dashboard"
 msgstr ""
 
 msgid "Analytics|Failed to update project-level settings. Please try again."
-msgstr ""
-
-msgid "Analytics|Generate with Duo"
-msgstr ""
-
-msgid "Analytics|GitLab Duo may be used to help generate your visualization. You can prompt Duo with your desired data, as well as any dimensions or additional groupings of that data. You may also edit the result as needed."
 msgstr ""
 
 msgid "Analytics|Invalid dashboard configuration"
@@ -7919,9 +7916,6 @@ msgstr ""
 msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
 msgstr ""
 
-msgid "Analytics|There was a problem generating your query. Please try again."
-msgstr ""
-
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr ""
 
@@ -7959,9 +7953,6 @@ msgid "Analytics|Visualization title"
 msgstr ""
 
 msgid "Analytics|Visualization was saved successfully"
-msgstr ""
-
-msgid "Analytics|Would you like to replace your existing selection with a new visualization generated through GitLab Duo?"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -18236,9 +18227,6 @@ msgid "Continue review"
 msgstr ""
 
 msgid "Continue to the next step"
-msgstr ""
-
-msgid "Continue with GitLab Duo"
 msgstr ""
 
 msgid "Continue with overages"
@@ -47707,9 +47695,6 @@ msgstr ""
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
-msgid "ProductAnalytics|By providing feedback on AI-generated content, you acknowledge that GitLab may review the prompts you submitted alongside this feedback."
-msgstr ""
-
 msgid "ProductAnalytics|Collector host"
 msgstr ""
 
@@ -47755,9 +47740,6 @@ msgstr ""
 msgid "ProductAnalytics|Events"
 msgstr ""
 
-msgid "ProductAnalytics|Feedback acknowledgement"
-msgstr ""
-
 msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
 msgstr ""
 
@@ -47780,12 +47762,6 @@ msgid "ProductAnalytics|Group by"
 msgstr ""
 
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
-msgstr ""
-
-msgid "ProductAnalytics|Helpful"
-msgstr ""
-
-msgid "ProductAnalytics|How was the result?"
 msgstr ""
 
 msgid "ProductAnalytics|I agree to event collection and processing in this region."
@@ -47860,9 +47836,6 @@ msgstr ""
 msgid "ProductAnalytics|Tell us what you think!"
 msgstr ""
 
-msgid "ProductAnalytics|Thank you for your feedback."
-msgstr ""
-
 msgid "ProductAnalytics|The Product Analytics Beta on GitLab.com is offered only in the Google Cloud Platform zone %{zone}."
 msgstr ""
 
@@ -47911,9 +47884,6 @@ msgstr ""
 msgid "ProductAnalytics|Uncheck if you would like to configure a different provider for this project."
 msgstr ""
 
-msgid "ProductAnalytics|Unhelpful"
-msgstr ""
-
 msgid "ProductAnalytics|Usage by month"
 msgstr ""
 
@@ -47939,9 +47909,6 @@ msgid "ProductAnalytics|Valid project settings."
 msgstr ""
 
 msgid "ProductAnalytics|Waiting for events"
-msgstr ""
-
-msgid "ProductAnalytics|Wrong"
 msgstr ""
 
 msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."

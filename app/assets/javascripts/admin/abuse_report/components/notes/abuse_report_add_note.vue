@@ -129,7 +129,6 @@ export default {
         <div :class="commentFormWrapperClasses" data-testid="abuse-report-comment-form-wrapper">
           <abuse-report-comment-form
             v-if="isEditing"
-            :abuse-report-id="abuseReportId"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
             :comment-button-text="commentButtonText"

@@ -144,15 +144,17 @@ export default {
     },
   },
   mounted() {
+    const localStorageValue = localStorage.getItem(this.getLocalStorageKeyName());
+
     if (this.persistCollapsedState) {
       // If collapsed by default and not yet toggled.
-      if (this.collapsed && localStorage.getItem(this.getLocalStorageKeyName()) === null) {
+      if (this.collapsed && localStorageValue === null) {
         this.isCollapsed = true;
       }
 
-      if (localStorage.getItem(this.getLocalStorageKeyName()) === 'true') {
+      if (localStorageValue === 'true') {
         this.$emit('collapsed');
-      } else {
+      } else if (localStorageValue) {
         this.$emit('expanded');
       }
     }

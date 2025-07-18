@@ -302,8 +302,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   describe '.resource_usage_throttled?', :request_store do
-    let(:resource_key) { 'throttled_resource_duration' }
-    let(:resource_key_2) { 'another_throttled_resource_duration' }
+    let(:resource_key) { :throttled_resource_duration }
+    let(:resource_key_2) { :another_throttled_resource_duration }
 
     let(:threshold) { 100 }
     let(:interval) { 60 }

@@ -206,6 +206,15 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:bot_namespace).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bot_namespace=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:email_otp).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_required_after).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_required_after=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_at).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_at=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_to).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_to=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do

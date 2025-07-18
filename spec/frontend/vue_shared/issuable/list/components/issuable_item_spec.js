@@ -26,6 +26,7 @@ const createComponent = ({
   preventRedirect = false,
   fullPath = 'gitlab-org/issuable-project-path',
   hiddenMetadataKeys = [],
+  provide = {},
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -50,6 +51,7 @@ const createComponent = ({
         queries: { childItemLinkedItems: { loading: false } },
       },
     },
+    provide,
   });
 
 const MOCK_GITLAB_URL = TEST_HOST;
@@ -953,8 +955,14 @@ describe('IssuableItem', () => {
   });
 
   it('renders draft status for draft merge requests', () => {
+    // Note: this is gated by the `showMergeRequestStatusDraft` feature flag currently
     wrapper = createComponent({
       issuable: mockDraftIssuable,
+      provide: {
+        glFeatures: {
+          showMergeRequestStatusDraft: true,
+        },
+      },
     });
 
     expect(findDraftStatusBadge().exists()).toBe(true);

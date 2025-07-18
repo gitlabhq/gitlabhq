@@ -478,6 +478,10 @@ class User < ApplicationRecord
   delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
+  delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
+  delegate :email_otp_required_after, :email_otp_required_after=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_at, :email_otp_last_sent_at=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_to, :email_otp_last_sent_to=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true

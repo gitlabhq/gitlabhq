@@ -6,7 +6,7 @@ RSpec.describe Gitlab::FileFinder, feature_category: :global_search do
   describe '#find' do
     let_it_be(:project) { create(:project, :public, :repository) }
 
-    subject(:file_finder) { described_class.new(project, project.default_branch) }
+    subject(:file_finder) { described_class.new(project, project.default_branch_or_main) }
 
     it_behaves_like 'file finder' do
       let(:expected_file_by_path) { 'files/images/wm.svg' }
@@ -97,6 +97,18 @@ RSpec.describe Gitlab::FileFinder, feature_category: :global_search do
 
         expect(::Gitlab::UntrustedRegexp).to receive(:new).with(expected_regex_value).twice.and_call_original
         file_finder.find(query)
+      end
+    end
+
+    context 'when there is an exception Gitlab::Git::Repository::NoRepository' do
+      let_it_be(:project) { create(:project, :public, :empty_repo) }
+
+      before do
+        allow(project.repository).to receive(:search_files_by_regexp).and_raise(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'returns empty array' do
+        expect(file_finder.find('foo')).to be_empty
       end
     end
   end

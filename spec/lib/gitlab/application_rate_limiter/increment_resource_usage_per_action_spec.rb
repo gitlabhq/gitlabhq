@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, :freeze_time,
   :clean_gitlab_redis_rate_limiting, feature_category: :shared do
-  let(:resource_key) { 'usage_duration_s' }
+  let(:resource_key) { :usage_duration_s }
   let(:usage) { 100 }
   let(:cache_key) { 'test' }
   let(:expiry) { 60 }
@@ -50,6 +50,18 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
         expect(ttl).to eq key_does_not_exist
         expect { increment }.to change { ttl }.by(a_value > 0)
         expect { increment(expiry + 1) }.to change { ttl }.by(a_value > 0)
+      end
+    end
+
+    context 'when usage value is 0' do
+      let(:usage) { 0 }
+
+      it 'does not store the value in Redis' do
+        expect(increment).to eq usage
+
+        Gitlab::Redis::RateLimiting.with do |r|
+          expect(r.get(cache_key)).to be_nil
+        end
       end
     end
   end

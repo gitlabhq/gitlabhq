@@ -278,7 +278,12 @@ export default {
       );
     },
     showDraftStatusBadge() {
-      return Boolean(this.isMergeRequest && this.isOpen && this.issuable.draft);
+      return Boolean(
+        this.isMergeRequest &&
+          this.isOpen &&
+          this.issuable.draft &&
+          this.glFeatures.showMergeRequestStatusDraft,
+      );
     },
     statusBadgeVariant() {
       if (this.isMergeRequest && this.isClosed) {

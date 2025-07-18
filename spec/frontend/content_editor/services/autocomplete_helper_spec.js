@@ -50,6 +50,32 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
       },
     ],
   }),
+  linkedItems: jest.fn().mockReturnValue({
+    'gitlab-org/gitlab-test:1': [
+      {
+        iid: 31,
+        title: 'rdfhdfj',
+        id: null,
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: 'Issue',
+          iconName: 'issue-type-issue',
+        },
+      },
+      {
+        iid: 30,
+        title: 'incident1',
+        id: null,
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: 'Issue',
+          iconName: 'issue-type-issue',
+        },
+      },
+    ],
+  }),
 }));
 
 describe('defaultSorter', () => {
@@ -258,7 +284,17 @@ describe('AutocompleteHelper', () => {
       });
 
       autocompleteHelper.tiptapEditor = {
-        view: { dom: { closest: () => ({ dataset: { workItemId: 1 } }) } },
+        view: {
+          dom: {
+            closest: () => ({
+              dataset: {
+                workItemFullPath: 'gitlab-org/gitlab-test',
+                workItemId: 1,
+                workItemIid: 1,
+              },
+            }),
+          },
+        },
       };
     });
 
@@ -271,6 +307,16 @@ describe('AutocompleteHelper', () => {
       const results = await dataSource.search();
 
       expect(results.map(({ username }) => username)).toMatchSnapshot();
+    });
+
+    it.each`
+      command
+      ${'/unlink'}
+    `('filters work items using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('issue', { command });
+      const results = await dataSource.search();
+
+      expect(results.map(({ iid }) => iid)).toMatchSnapshot();
     });
   });
 

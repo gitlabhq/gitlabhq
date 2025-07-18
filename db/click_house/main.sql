@@ -335,12 +335,12 @@ CREATE TABLE hierarchy_work_items
     `work_item_type_id` Int64,
     `namespace_id` Int64,
     `start_date` Nullable(Date32),
-    `label_ids` Array(Int64) DEFAULT [],
-    `assignee_ids` Array(Int64) DEFAULT [],
     `custom_status_id` Int64,
     `system_defined_status_id` Int64,
     `version` DateTime64(6, 'UTC') DEFAULT now(),
-    `deleted` Bool DEFAULT false
+    `deleted` Bool DEFAULT false,
+    `label_ids` String DEFAULT '',
+    `assignee_ids` String DEFAULT ''
 )
 ENGINE = ReplacingMergeTree(version, deleted)
 PRIMARY KEY (traversal_path, work_item_type_id, id)
@@ -1263,8 +1263,8 @@ CREATE MATERIALIZED VIEW hierarchy_work_items_mv TO hierarchy_work_items
     `work_item_type_id` Int64,
     `namespace_id` Int64,
     `start_date` Nullable(Date32),
-    `label_ids` Array(Int64),
-    `assignee_ids` Array(Int64),
+    `label_ids` String,
+    `assignee_ids` String,
     `custom_status_id` Int64,
     `system_defined_status_id` Int64,
     `version` DateTime64(6, 'UTC'),
@@ -1298,7 +1298,7 @@ AS WITH
     (
         SELECT
             work_item_id,
-            arraySort(groupArray(label_id)) AS label_ids
+            concat('/', arrayStringConcat(arraySort(groupArray(label_id)), '/'), '/') AS label_ids
         FROM
         (
             SELECT
@@ -1323,7 +1323,7 @@ AS WITH
     (
         SELECT
             issue_id,
-            arraySort(groupArray(user_id)) AS user_ids
+            concat('/', arrayStringConcat(arraySort(groupArray(user_id)), '/'), '/') AS user_ids
         FROM
         (
             SELECT

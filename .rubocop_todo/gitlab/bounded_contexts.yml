@@ -3284,7 +3284,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/llm/internal/completion_service.rb'
     - 'ee/app/services/llm/merge_requests/summarize_review_service.rb'
     - 'ee/app/services/llm/notes/measure_comment_temperature_service.rb'
-    - 'ee/app/services/llm/product_analytics/generate_cube_query_service.rb'
     - 'ee/app/services/llm/resolve_vulnerability_service.rb'
     - 'ee/app/services/llm/review_merge_request_service.rb'
     - 'ee/app/services/llm/summarize_new_merge_request_service.rb'

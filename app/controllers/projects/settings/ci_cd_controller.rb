@@ -13,7 +13,7 @@ module Projects
       before_action :authorize_update_cicd_settings!, only: :update
       before_action :authorize_reset_cache!, only: :reset_cache
       before_action :check_builds_available!
-      before_action :define_variables
+      before_action :define_variables, only: :show
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
