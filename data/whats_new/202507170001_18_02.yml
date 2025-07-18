@@ -1,0 +1,108 @@
+# What's New entries for GitLab 18.2
+# File name 202507170001_18_02.yml
+# Generated on Thu Jul 17 20:22:46 UTC 2025
+
+- name: Duo Agent Platform in the IDE (Beta)
+  description: |
+    The Duo Agent Platform brings agentic chat and agent flows directly into VS Code and JetBrains IDEs, enabling natural conversation-based interaction with your codebase and GitLab projects.
+
+    Agentic chat is designed for quick, conversational tasks like creating and editing files, searching across your codebase with pattern matching and grep, and getting immediate answers about your code.
+    Agent flows handle larger implementations and comprehensive planning, taking high-level ideas from concept to architecture while accessing GitLab resources including issues, merge requests, commits, CI/CD pipelines, and security vulnerabilities.
+    Both provide intelligent search capabilities for documentation, code patterns, and project discovery to help you accomplish everything from quick edits to complex project analysis.
+
+    The platform also supports Model Context Protocol (MCP) for connecting to external data sources and tools, allowing AI features to leverage context beyond GitLab.
+
+    To get started, see the [Duo Agent Platform documentation](https://docs.gitlab.com/user/duo_agent_platform/),
+    [VS Code setup guide](https://docs.gitlab.com/user/gitlab_duo_chat/agentic_chat/#use-agentic-chat-in-vs-code),
+    and [JetBrains setup guide](https://docs.gitlab.com/user/gitlab_duo_chat/agentic_chat/#use-agentic-chat-in-jetbrains-ides).
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
+  image_url: https://img.youtube.com/vi/GPewPbqlFDE/hqdefault.jpg
+  published_at: 2025-07-17
+  release: 18.2
+
+- name: Custom workflow statuses for issues and tasks
+  description: |
+    Move beyond the basic open/closed system with configurable status that lets you track work items through
+    your team's actual workflow stages.
+
+    Instead of relying on labels, you can now define custom statuses that accurately
+    reflect your process. With configurable statuses, you can:
+
+    - **Define custom workflows** that match your team's actual process.
+    - **Replace workflow labels** with proper statuses that are easier to find, update, and report on.
+    - **Clarify completion outcomes** beyond closing an issue using "Done" or "Canceled".
+    - **Filter and report accurately** on work item status for better project insights.
+    - **Use status in issue boards** with automatic updates when issues move between columns.
+    - **Bulk update status** across multiple work items for efficient workflow management.
+    - **Track dependencies** with status visibility for linked work items.
+
+    Custom workflow statuses also support **quick actions in comments** and automatically syncs with GitLab's
+    open/closed system.
+
+    Help us improve this feature by sharing your thoughts and suggestions in our
+    [feedback issue](https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/35235).
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/work_items/status/
+  image_url: https://img.youtube.com/vi/oxN95MSo6UU/hqdefault.jpg
+  published_at: 2025-07-17
+  release: 18.2
+
+- name: New merge request homepage
+  description: |
+    Managing code reviews across multiple projects can be overwhelming when you're juggling dozens of merge requests
+    as both an author and reviewer.
+
+    The new merge request homepage transforms how you navigate your review workload
+    by intelligently prioritizing what needs your attention right now, with two powerful viewing modes:
+
+    - **Workflow view** organizes merge requests by their review state, grouping work by its stage in the code review workflow.
+    - **Role view** groups your merge requests by whether you're the author or reviewer, giving you a clear separation of responsibilities.
+
+    The **Active** tab shows merge requests requiring attention, **Merged** displays recently completed work,
+    and **Search** provides comprehensive filtering capabilities.
+
+    The new homepage also expands your visibility by combining both authored and assigned merge requests,
+    ensuring you never miss work that's been delegated to you.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/homepage/
+  image_url: https://about.gitlab.com/images/18_2/create-action-focused-mr-homepage.png
+  published_at: 2025-07-17
+  release: 18.2
+
+- name: Improve security with immutable container tags
+  description: |
+    Container registries are critical infrastructure for modern DevSecOps teams.
+    However, even with protected container tags, organizations still face a challenge:
+    After a tag is created, users with sufficient permissions can alter it.
+    This creates risks for teams that rely on specific tagged versions of container images for production stability.
+    Any modification—even by authorized users—can introduce unintended changes or compromise deployment integrity.
+
+    With immutable container tags, you can protect container images from unintended changes.
+    After a tag is created that matches an immutable rule, no one can modify the container image.
+    You can now:
+
+    - Create up to 5 total protection rules per project (combining both protected and immutable rules) using RE2 regex patterns.
+    - Protect critical tags like latest, semantic versions (for example, v1.0.0), or release candidates from any modification.
+    - Ensure immutable tags are automatically excluded from cleanup policies.
+
+    Immutable container tags require the next-generation container registry, which is enabled by default on GitLab.com.
+    For GitLab Self-Managed instances, you must enable the [metadata database](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/)
+    to use immutable container tags.
+  stage: package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/packages/container_registry/immutable_container_tags/
+  image_url: https://about.gitlab.com/images/18_2/immutable_tags_18_1.png
+  published_at: 2025-07-17
+  release: 18.2

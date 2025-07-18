@@ -23827,7 +23827,8 @@ CREATE TABLE snippet_user_mentions (
     mentioned_groups_ids bigint[],
     note_id bigint,
     snippet_project_id bigint,
-    snippet_organization_id bigint
+    snippet_organization_id bigint,
+    CONSTRAINT check_25b8666c20 CHECK ((num_nonnulls(snippet_organization_id, snippet_project_id) = 1))
 );
 
 CREATE SEQUENCE snippet_user_mentions_id_seq

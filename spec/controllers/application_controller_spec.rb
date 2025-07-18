@@ -74,6 +74,18 @@ RSpec.describe ApplicationController, feature_category: :shared do
       expect(Current.organization).to eq(current_organization)
     end
 
+    context 'when X-GitLab-Organization-ID header is provided' do
+      let_it_be(:header_organization) { create(:organization) }
+
+      it 'sets the organization from header' do
+        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+
+        get :index, format: :json
+
+        expect(Current.organization).to eq(header_organization)
+      end
+    end
+
     context 'when multiple calls in one example are done' do
       it 'does not update the organization' do
         expect(Current).to receive(:organization=).once.and_call_original

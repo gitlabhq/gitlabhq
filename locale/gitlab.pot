@@ -38211,6 +38211,9 @@ msgstr ""
 msgid "Maximum number of actions per scan execution policy"
 msgstr ""
 
+msgid "Maximum number of approval policies allowed per security policy configuration"
+msgstr ""
+
 msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3). Setting to 0 does not disable throttling."
 msgstr ""
 
@@ -38250,6 +38253,9 @@ msgstr ""
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr ""
 
+msgid "Maximum number of scan execution policies allowed per security policy configuration"
+msgstr ""
+
 msgid "Maximum number of schedule rules per scan execution policy"
 msgstr ""
 
@@ -38263,6 +38269,9 @@ msgid "Maximum number of value streams per namespace exceeded"
 msgstr ""
 
 msgid "Maximum number of variables loaded (2000)"
+msgstr ""
+
+msgid "Maximum number of vulnerability management policies allowed per security policy configuration"
 msgstr ""
 
 msgid "Maximum of 255 characters"
@@ -63185,10 +63194,19 @@ msgstr ""
 msgid "The maximum file size is %{size}."
 msgstr ""
 
+msgid "The maximum number of approval policies allowed per security policy configuration can exceed the limit for the instance. Set to 0 to use instance limit."
+msgstr ""
+
 msgid "The maximum number of pipeline execution policies allowed per security policy configuration can exceed the limit for the instance. Set to 0 to use instance limit."
 msgstr ""
 
+msgid "The maximum number of scan execution policies allowed per security policy configuration can exceed the limit for the instance. Set to 0 to use instance limit."
+msgstr ""
+
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
+msgstr ""
+
+msgid "The maximum number of vulnerability management policies allowed per security policy configuration can exceed the limit for the instance. Set to 0 to use instance limit."
 msgstr ""
 
 msgid "The merge checks are incomplete because the latest pipeline failed, the pipeline status cannot be verified, or the merge request target branch was changed. You should run a new pipeline before merging."
