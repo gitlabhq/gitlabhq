@@ -90,6 +90,15 @@ module API
           forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
         end
 
+        def authenticate_disable_runner!(runner_project)
+          not_found!('Runner') unless runner_project
+
+          return if current_user.can_admin_all_resources?
+
+          forbidden!("Runner is locked") if runner_project.runner.locked?
+          forbidden!("No access granted") unless can?(current_user, :unassign_runner, runner_project)
+        end
+
         def authenticate_list_runners_jobs!(runner)
           return if current_user.can_read_all_resources?
 
@@ -357,10 +366,8 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         delete ':id/runners/:runner_id' do
-          authorize! :admin_runners, user_project
-
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
-          not_found!('Runner') unless runner_project
+          authenticate_disable_runner!(runner_project)
 
           destroy_conditionally!(runner_project) do
             response = ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute

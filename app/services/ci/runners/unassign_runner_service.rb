@@ -28,11 +28,9 @@ module Ci
       attr_reader :runner, :project, :user
 
       def authorize
-        unless user.present? && user.can?(:assign_runner, runner)
-          return ServiceResponse.error(message: 'User not allowed to unassign runner')
-        end
+        return ServiceResponse.success if Ability.allowed?(user, :unassign_runner, @runner_project)
 
-        unless user.can?(:admin_runners, project)
+        unless Ability.allowed?(user, :admin_runners, project)
           return ServiceResponse.error(message: "User not allowed to manage project's runners")
         end
 
@@ -42,7 +40,9 @@ module Ci
           )
         end
 
-        ServiceResponse.success
+        return ServiceResponse.error(message: 'Runner is locked') if runner.locked && !user&.can_admin_all_resources?
+
+        ServiceResponse.error(message: 'User not allowed to unassign runner')
       end
     end
   end

@@ -21,7 +21,7 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
       expect { execute }.not_to change { runner.runner_projects.count }.from(2)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('User not allowed to unassign runner')
+      expect(execute.message).to eq("User not allowed to manage project's runners")
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
       expect(runner_project).not_to receive(:destroy)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('User not allowed to unassign runner')
+      expect(execute.message).to eq("User not allowed to manage project's runners")
     end
   end
 

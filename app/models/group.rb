@@ -1113,7 +1113,7 @@ class Group < Namespace
   end
 
   def glql_load_on_click_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
+    feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click, type: :ops)
   end
 
   def work_items_bulk_edit_feature_flag_enabled?

@@ -183,7 +183,7 @@ module API
         success File
       end
       params do
-        requires :file_path, type: String, file_path: true,
+        requires :file_path, type: String, file_path: { allow_initial_path_separator: true },
           desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         optional :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }

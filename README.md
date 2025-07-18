@@ -59,7 +59,7 @@ The recommended way to install GitLab is with the [Omnibus packages](https://abo
 Compared to [a self-compiled installation](https://docs.gitlab.com/install/installation/), this is faster and less error prone.
 Just select your operating system, download the respective package (Debian or RPM) and install it using the system's package manager.
 
-There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
+For more information about other installation methods, see [install GitLab](https://about.gitlab.com/install/).
 
 ## Contributing
 

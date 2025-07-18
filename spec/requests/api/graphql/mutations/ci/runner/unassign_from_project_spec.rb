@@ -31,7 +31,7 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
 
   let(:mutation_response) { graphql_mutation_response(:runner_unassign_from_project) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_runners) }
+  specify { expect(described_class).to require_graphql_authorizations(:unassign_runner) }
 
   context 'with invalid parameters' do
     context 'when project_path is missing' do
@@ -85,7 +85,8 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
 
       it 'returns an error' do
         post_graphql_mutation(mutation, current_user: group_owner)
-        expect_graphql_errors_to_include("Runner does not exist or is not assigned to this project")
+        expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you " \
+          "don't have permission to perform this action")
       end
     end
   end
@@ -94,8 +95,8 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
     context 'when user does not have necessary permissions' do
       it 'does not allow non-accessible user to unassign a runner from a project' do
         post_graphql_mutation(mutation, current_user: non_accessible_user)
-        expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you " \
-          "don't have permission to perform this action")
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to include("User not allowed to manage project's runners")
         expect(runner.reload.projects).to include(project)
       end
     end
@@ -139,8 +140,9 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
 
       it 'returns an error' do
         post_graphql_mutation(mutation, current_user: group_owner)
-        expect(response).to have_gitlab_http_status(:success)
-        expect_graphql_errors_to_include("Runner does not exist or is not assigned to this project")
+        expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you " \
+          "don't have permission to perform this action")
+        expect(runner.reload.projects).to include(project)
       end
     end
 

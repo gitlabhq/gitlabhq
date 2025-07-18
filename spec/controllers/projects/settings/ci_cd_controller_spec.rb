@@ -39,77 +39,83 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         end
       end
 
-      context 'with assignable project runners' do
-        let(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
-
+      context 'when vue_project_runners_settings is disabled' do
         before do
-          group.add_maintainer(user)
+          stub_feature_flags(vue_project_runners_settings: false)
         end
 
-        it 'sets assignable project runners' do
-          request
+        context 'with assignable project runners' do
+          let(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
 
-          expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
-        end
-      end
+          before do
+            group.add_maintainer(user)
+          end
 
-      context 'with project runners' do
-        let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+          it 'sets assignable project runners' do
+            request
 
-        it 'sets project runners' do
-          request
-
-          expect(assigns(:project_runners)).to contain_exactly(project_runner)
-        end
-      end
-
-      context 'with group runners' do
-        let(:project) { other_project }
-        let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-
-        it 'sets group runners' do
-          request
-
-          expect(assigns(:group_runners_count)).to be(1)
-          expect(assigns(:group_runners)).to contain_exactly(group_runner)
-        end
-      end
-
-      context 'with instance runners' do
-        let_it_be(:shared_runner) { create(:ci_runner, :instance) }
-
-        it 'sets shared runners' do
-          request
-
-          expect(assigns(:shared_runners_count)).to be(1)
-          expect(assigns(:shared_runners)).to contain_exactly(shared_runner)
-        end
-      end
-
-      context 'prevents N+1 queries for tags' do
-        render_views
-
-        def show
-          get :show, params: { namespace_id: project.namespace, project_id: project }
+            expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
+          end
         end
 
-        it 'has the same number of queries with one tag or with many tags', :request_store do
-          group.add_maintainer(user)
+        context 'with project runners' do
+          let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
-          show # warmup
+          it 'sets project runners' do
+            request
 
-          # with one tag
-          create(:ci_runner, :instance, tag_list: %w[shared_runner])
-          create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner])
-          create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner])
-          control = ActiveRecord::QueryRecorder.new { show }
+            expect(assigns(:project_runners)).to contain_exactly(project_runner)
+          end
+        end
 
-          # with several tags
-          create(:ci_runner, :instance, tag_list: %w[shared_runner tag2 tag3])
-          create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner tag2 tag3])
-          create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner tag2 tag3])
+        context 'with group runners' do
+          let(:project) { other_project }
+          let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
-          expect { show }.not_to exceed_query_limit(control)
+          it 'sets group runners' do
+            request
+
+            expect(assigns(:group_runners_count)).to be(1)
+            expect(assigns(:group_runners)).to contain_exactly(group_runner)
+          end
+        end
+
+        context 'with instance runners' do
+          let_it_be(:shared_runner) { create(:ci_runner, :instance) }
+
+          it 'sets shared runners' do
+            request
+
+            expect(assigns(:shared_runners_count)).to be(1)
+            expect(assigns(:shared_runners)).to contain_exactly(shared_runner)
+          end
+        end
+
+        context 'prevents N+1 queries for tags' do
+          render_views
+
+          def show
+            get :show, params: { namespace_id: project.namespace, project_id: project }
+          end
+
+          it 'has the same number of queries with one tag or with many tags', :request_store do
+            group.add_maintainer(user)
+
+            show # warmup
+
+            # with one tag
+            create(:ci_runner, :instance, tag_list: %w[shared_runner])
+            create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner])
+            create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner])
+            control = ActiveRecord::QueryRecorder.new { show }
+
+            # with several tags
+            create(:ci_runner, :instance, tag_list: %w[shared_runner tag2 tag3])
+            create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner tag2 tag3])
+            create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner tag2 tag3])
+
+            expect { show }.not_to exceed_query_limit(control)
+          end
         end
       end
 

@@ -122,6 +122,10 @@
         = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
         .form-text.gl-text-subtle
           = s_('Preferences|Choose what content you want to see on a project’s overview page.')
+
+
+      = render_if_exists 'profiles/preferences/default_duo_group', f: f # EE-specific
+
       .form-group
         = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
       .form-group

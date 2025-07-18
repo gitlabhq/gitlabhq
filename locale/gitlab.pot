@@ -9133,10 +9133,16 @@ msgstr ""
 msgid "Attempted to update the pipeline trigger token but failed"
 msgstr ""
 
+msgid "Attribute"
+msgstr ""
+
 msgid "Attribute 'container-overrides' is not yet supported"
 msgstr ""
 
 msgid "Attribute 'pod-overrides' is not yet supported"
+msgstr ""
+
+msgid "Attributes"
 msgstr ""
 
 msgid "Audit events"
@@ -47365,6 +47371,9 @@ msgstr ""
 msgid "Preferences|Dark color scheme"
 msgstr ""
 
+msgid "Preferences|Default GitLab Duo namespace"
+msgstr ""
+
 msgid "Preferences|Default text editor"
 msgstr ""
 
@@ -47411,6 +47420,9 @@ msgid "Preferences|Gitpod"
 msgstr ""
 
 msgid "Preferences|Homepage"
+msgstr ""
+
+msgid "Preferences|If you are assigned a GitLab Duo seat in multiple namespaces, you must select a default namespace."
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
@@ -55883,6 +55895,102 @@ msgstr ""
 msgid "SecurityApprovals|Requires approval for decreases in test coverage."
 msgstr ""
 
+msgid "SecurityAttributes|Add attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Add security attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Cancel"
+msgstr ""
+
+msgid "SecurityAttributes|Categories"
+msgstr ""
+
+msgid "SecurityAttributes|Category details"
+msgstr ""
+
+msgid "SecurityAttributes|Category locked"
+msgstr ""
+
+msgid "SecurityAttributes|Color"
+msgstr ""
+
+msgid "SecurityAttributes|Create attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Create category"
+msgstr ""
+
+msgid "SecurityAttributes|Delete"
+msgstr ""
+
+msgid "SecurityAttributes|Delete security attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Delete security attribute?"
+msgstr ""
+
+msgid "SecurityAttributes|Deleting the \"%{attributeName}\" Security Attribute will permanently remove it from its category and any projects where it is applied. This action cannot be undone."
+msgstr ""
+
+msgid "SecurityAttributes|Description"
+msgstr ""
+
+msgid "SecurityAttributes|Description is required"
+msgstr ""
+
+msgid "SecurityAttributes|Edit security attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Limited edits allowed"
+msgstr ""
+
+msgid "SecurityAttributes|Multiple selection"
+msgstr ""
+
+msgid "SecurityAttributes|Name"
+msgstr ""
+
+msgid "SecurityAttributes|Name is required"
+msgstr ""
+
+msgid "SecurityAttributes|Save changes"
+msgstr ""
+
+msgid "SecurityAttributes|Security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Security attributes help classify and organize your projects. Attributes are managed at the group level. You can add or remove attributes to this project as needed."
+msgstr ""
+
+msgid "SecurityAttributes|Selection type"
+msgstr ""
+
+msgid "SecurityAttributes|Single selection"
+msgstr ""
+
+msgid "SecurityAttributes|Update attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Use security attributes to categorize projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These attributes can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
+msgstr ""
+
+msgid "SecurityAttributes|View category settings and associated attributes."
+msgstr ""
+
+msgid "SecurityAttributes|View the attributes available in this category"
+msgstr ""
+
+msgid "SecurityAttributes|You cannot change the selection type after the category is created. To use a different selection type, create a new category."
+msgstr ""
+
+msgid "SecurityAttributes|You cannot delete or edit this category. You cannot modify the attributes."
+msgstr ""
+
+msgid "SecurityAttributes|You cannot delete this category, but you can edit the attributes."
+msgstr ""
+
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
 msgstr ""
 
@@ -56281,102 +56389,6 @@ msgid "SecurityInventory|View vulnerability report"
 msgstr ""
 
 msgid "SecurityInventory|You're already viewing this subgroup"
-msgstr ""
-
-msgid "SecurityLabels|Add label"
-msgstr ""
-
-msgid "SecurityLabels|Add security label"
-msgstr ""
-
-msgid "SecurityLabels|Cancel"
-msgstr ""
-
-msgid "SecurityLabels|Categories"
-msgstr ""
-
-msgid "SecurityLabels|Category details"
-msgstr ""
-
-msgid "SecurityLabels|Category locked"
-msgstr ""
-
-msgid "SecurityLabels|Color"
-msgstr ""
-
-msgid "SecurityLabels|Create category"
-msgstr ""
-
-msgid "SecurityLabels|Create label"
-msgstr ""
-
-msgid "SecurityLabels|Delete"
-msgstr ""
-
-msgid "SecurityLabels|Delete security label"
-msgstr ""
-
-msgid "SecurityLabels|Delete security label?"
-msgstr ""
-
-msgid "SecurityLabels|Deleting the \"%{labelName}\" Security Label will permanently remove it from its category and any projects where it is applied. This action cannot be undone."
-msgstr ""
-
-msgid "SecurityLabels|Description"
-msgstr ""
-
-msgid "SecurityLabels|Description is required"
-msgstr ""
-
-msgid "SecurityLabels|Edit security label"
-msgstr ""
-
-msgid "SecurityLabels|Limited edits allowed"
-msgstr ""
-
-msgid "SecurityLabels|Multiple selection"
-msgstr ""
-
-msgid "SecurityLabels|Name"
-msgstr ""
-
-msgid "SecurityLabels|Name is required"
-msgstr ""
-
-msgid "SecurityLabels|Save changes"
-msgstr ""
-
-msgid "SecurityLabels|Security labels"
-msgstr ""
-
-msgid "SecurityLabels|Security labels help classify and organize your projects. Labels are managed at the group level. You can add or remove labels to this project as needed."
-msgstr ""
-
-msgid "SecurityLabels|Selection type"
-msgstr ""
-
-msgid "SecurityLabels|Single selection"
-msgstr ""
-
-msgid "SecurityLabels|Update label"
-msgstr ""
-
-msgid "SecurityLabels|Use security labels to categorize projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These labels can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
-msgstr ""
-
-msgid "SecurityLabels|View category settings and associated labels."
-msgstr ""
-
-msgid "SecurityLabels|View the labels available in this category"
-msgstr ""
-
-msgid "SecurityLabels|You cannot change the selection type after the category is created. To use a different selection type, create a new category."
-msgstr ""
-
-msgid "SecurityLabels|You cannot delete or edit this category. You cannot modify the labels."
-msgstr ""
-
-msgid "SecurityLabels|You cannot delete this category, but you can edit the labels."
 msgstr ""
 
 msgid "SecurityOrchestration| and "

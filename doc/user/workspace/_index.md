@@ -177,6 +177,13 @@ You can define a devfile in the following locations, relative to your project's 
 - /.devfile/{devfile_name}.yml
 ```
 
+{{< alert type="note" >}}
+
+Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
+For example, `.devfile/subfolder/devfile.yaml` is not recognized.
+
+{{< /alert >}}
+
 ### Validation rules
 
 - `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).

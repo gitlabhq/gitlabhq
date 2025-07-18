@@ -31,7 +31,7 @@
     "admin_runners": {
       "type": "boolean"
     },
-    "admin_security_labels": {
+    "admin_security_attributes": {
       "type": "boolean"
     },
     "admin_security_testing": {

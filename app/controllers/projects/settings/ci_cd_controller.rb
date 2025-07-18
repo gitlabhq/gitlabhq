@@ -180,6 +180,8 @@ module Projects
       end
 
       def define_runners_variables
+        return if Feature.enabled?(:vue_project_runners_settings, @project)
+
         @project_runners = @project.runners.ordered.page(params[:project_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
 
         @assignable_runners = current_user
