@@ -756,6 +756,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 {{< history >}}
 
 - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+- `ci_max_artifact_size_jacoco` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159696) in GitLab 17.3
 - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
 {{< /history >}}
@@ -787,6 +788,7 @@ setting is used:
 | `ci_max_artifact_size_dast`                 | 0             |
 | `ci_max_artifact_size_dependency_scanning`  | 0             |
 | `ci_max_artifact_size_dotenv`               | 0             |
+| `ci_max_artifact_size_jacoco`               | 0             |
 | `ci_max_artifact_size_junit`                | 0             |
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |

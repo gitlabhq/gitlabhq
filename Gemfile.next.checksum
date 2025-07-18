@@ -310,7 +310,7 @@
 {"name":"guard-compat","version":"1.2.1","platform":"ruby","checksum":"3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe"},
 {"name":"guard-rspec","version":"4.7.3","platform":"ruby","checksum":"a47ba03cbd1e3c71e6ae8645cea97e203098a248aede507461a43e906e2f75ca"},
 {"name":"haml","version":"5.2.2","platform":"ruby","checksum":"6e759246556145642ef832d670fc06f9bd8539159a0e600847a00291dd7aae0c"},
-{"name":"haml_lint","version":"0.62.0","platform":"ruby","checksum":"e5262eee682848b9bd89cd3d20eb0efdaf3126762ad93e6707c9858eb3abef61"},
+{"name":"haml_lint","version":"0.64.0","platform":"ruby","checksum":"0b9738a9fff57bf7478c72b34d7f4b45d0721239270625939b7cda88c28273bf"},
 {"name":"hamlit","version":"3.0.3","platform":"java","checksum":"a34ec87be4ec7525ffc50e8ae7b3b3140a3906eb10bae2ee26eba97f4d7e9089"},
 {"name":"hamlit","version":"3.0.3","platform":"ruby","checksum":"5beafd7834a0f99fd3c041a7dfd3cfa3688159bddc905083c1866f2519f5ceea"},
 {"name":"hana","version":"1.3.7","platform":"ruby","checksum":"5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d"},
