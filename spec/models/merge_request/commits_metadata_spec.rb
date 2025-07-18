@@ -7,5 +7,200 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:commit_author) }
     it { is_expected.to belong_to(:committer) }
+    it { is_expected.to have_many(:merge_request_diff_commits) }
+  end
+
+  describe '.bulk_find' do
+    it 'finds records matching project_id and SHAs' do
+      project = create(:project)
+      another_project = create(:project)
+
+      matching_metadata_1 = create(
+        :merge_request_commits_metadata,
+        project_id: project.id,
+        sha: 'abc123'
+      )
+
+      matching_metadata_2 = create(
+        :merge_request_commits_metadata,
+        project_id: project.id,
+        sha: 'def456'
+      )
+
+      non_matching_metadata = create(
+        :merge_request_commits_metadata,
+        project_id: another_project.id,
+        sha: 'def456'
+      )
+
+      results = described_class.bulk_find(project.id, %w[abc123 def456])
+
+      expect(results).to match_array(
+        [
+          [matching_metadata_1.id, matching_metadata_1.sha],
+          [matching_metadata_2.id, matching_metadata_2.sha]
+        ]
+      )
+      expect(results).not_to include([non_matching_metadata.id, non_matching_metadata.sha])
+    end
+  end
+
+  describe '.bulk_find_or_create' do
+    let_it_be(:project) { create(:project) }
+
+    let_it_be(:existing_commit_metadata) do
+      create(
+        :merge_request_commits_metadata,
+        project_id: project.id,
+        sha: 'abc123',
+        commit_author_id: 1,
+        committer_id: 2,
+        authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+        committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00")
+      )
+    end
+
+    it 'bulk creates missing rows and reuses existing rows' do
+      commits_rows = [
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'abc123',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'First commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        },
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'def456',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'Second commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        }
+      ]
+
+      commits_metadata_mapping = described_class.bulk_find_or_create(project.id, commits_rows)
+      new_commit_metadata = described_class.find_by(project_id: project.id, sha: 'def456')
+
+      expect(commits_metadata_mapping['abc123']).to eq(existing_commit_metadata.id)
+      expect(commits_metadata_mapping['def456']).to eq(new_commit_metadata.id)
+    end
+
+    it 'bulk creates missing rows and reuses existing rows even if first bulk_find returns empty' do
+      allow(described_class).to receive(:bulk_find).and_call_original
+
+      # First call: initial bulk_find
+      expect(described_class)
+        .to receive(:bulk_find)
+        .with(project.id, %w[abc123 def456])
+        .and_return([])
+
+      commits_rows = [
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'abc123',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'First commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        },
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'def456',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'Second commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        }
+      ]
+
+      commits_metadata_mapping = described_class.bulk_find_or_create(project.id, commits_rows)
+      new_commit_metadata = described_class.find_by(project_id: project.id, sha: 'def456')
+
+      expect(commits_metadata_mapping['abc123']).to eq(existing_commit_metadata.id)
+      expect(commits_metadata_mapping['def456']).to eq(new_commit_metadata.id)
+    end
+
+    it 'inserts new data when matching SHA is for a different project_id' do
+      another_project = create(:project)
+
+      commits_rows = [
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'abc123',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'First commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        }
+      ]
+
+      commits_metadata_mapping = described_class.bulk_find_or_create(another_project.id, commits_rows)
+      new_commit_metadata = described_class.find_by(project_id: another_project.id, sha: 'abc123')
+
+      expect(commits_metadata_mapping['abc123']).to eq(new_commit_metadata.id)
+    end
+
+    it 'does not insert any data when all commits metadata exist' do
+      commits_rows = [
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'abc123',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'First commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        }
+      ]
+
+      # Mock to verify insert_all isn't called
+      expect(described_class).not_to receive(:insert_all)
+
+      commits_metadata_mapping = described_class.bulk_find_or_create(project.id, commits_rows)
+
+      expect(commits_metadata_mapping['abc123']).to eq(existing_commit_metadata.id)
+    end
+
+    it 'handles concurrently inserted rows' do
+      commits_rows = [
+        {
+          commit_author_id: 1,
+          committer_id: 2,
+          raw_sha: 'abc123',
+          authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+          message: 'First commit',
+          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+        }
+      ]
+
+      # First call: initial bulk_find
+      expect(described_class)
+        .to receive(:bulk_find)
+        .with(project.id, ['abc123'])
+        .and_return([])
+
+      # Mock insert_all to return empty array (simulating concurrent insert happened)
+      expect(described_class)
+        .to receive(:insert_all)
+        .and_return([])
+
+      # Final call: checking for concurrent inserts with with_organization: true
+      expect(described_class)
+        .to receive(:bulk_find)
+        .with(project.id, ['abc123'])
+        .and_return([[existing_commit_metadata.id, 'abc123']])
+
+      commits_metadata_mapping = described_class.bulk_find_or_create(project.id, commits_rows)
+
+      expect(commits_metadata_mapping['abc123']).to eq(existing_commit_metadata.id)
+    end
   end
 end

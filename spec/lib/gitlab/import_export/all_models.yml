@@ -299,6 +299,7 @@ merge_request_diff_commits:
 - merge_request_diff
 - commit_author
 - committer
+- merge_request_commits_metadata
 merge_request_diff_detail:
 - merge_request_diff
 merge_request_diff_files:

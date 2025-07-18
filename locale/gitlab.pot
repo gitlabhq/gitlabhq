@@ -1715,10 +1715,40 @@ msgstr ""
 msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr ""
 
+msgid "'Attributes' must be a Hash"
+msgstr ""
+
+msgid "'Commands' must be an Array"
+msgstr ""
+
+msgid "'Component name' must be a String"
+msgstr ""
+
+msgid "'Components' must be an Array"
+msgstr ""
+
 msgid "'ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. To re-enable the link to the GitLab wiki, disable this integration."
 msgstr ""
 
+msgid "'Endpoints' must be an Array"
+msgstr ""
+
+msgid "'Events' must be a Hash"
+msgstr ""
+
+msgid "'Variables' must be a Hash"
+msgstr ""
+
 msgid "'allow: %{allow}' must be a string"
+msgstr ""
+
+msgid "'attributes' for component '%{component_name}' must be a Hash"
+msgstr ""
+
+msgid "'command' must be a Hash"
+msgstr ""
+
+msgid "'container' in component '%{component}' must be a Hash"
 msgstr ""
 
 msgid "'cpu: %{cpu}' must be a string"
@@ -1740,6 +1770,9 @@ msgid "'projects' is not yet supported"
 msgstr ""
 
 msgid "'schemaVersion' '%{given_version}' is not supported, it must be '%{required_version}'"
+msgstr ""
+
+msgid "'schemaVersion' must be a String"
 msgstr ""
 
 msgid "'starterProjects' is not yet supported"
@@ -2164,6 +2197,9 @@ msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gatewa
 msgstr ""
 
 msgid "A basic template for developing Linux programs using Kotlin Native"
+msgstr ""
+
+msgid "A component must have a 'name'"
 msgstr ""
 
 msgid "A confidential issue must have only confidential children. Make any child items confidential and try again."
@@ -15162,10 +15198,10 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-msgid "ColorMode|Auto (Beta)"
+msgid "ColorMode|Auto"
 msgstr ""
 
-msgid "ColorMode|Dark (Beta)"
+msgid "ColorMode|Dark"
 msgstr ""
 
 msgid "ColorMode|Light"
@@ -17186,9 +17222,6 @@ msgid "Component name '%{component}' must not start with '%{prefix}'"
 msgstr ""
 
 msgid "Component type '%{type}' is not yet supported"
-msgstr ""
-
-msgid "Components must have a 'name'"
 msgstr ""
 
 msgid "CompromisedPasswordDetection|Change GitLab Password"
@@ -24302,6 +24335,9 @@ msgid "E-mail:"
 msgstr ""
 
 msgid "ERROR: %{error}"
+msgstr ""
+
+msgid "Each element in 'components' must be a Hash"
 msgstr ""
 
 msgid "Each project can also have an issue tracker and a wiki."
@@ -50451,7 +50487,7 @@ msgstr ""
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
-msgid "Property 'dedicatedPod' of component '%{name}' is not yet supported"
+msgid "Property 'dedicatedPod' of component '%{component}' is not yet supported"
 msgstr ""
 
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"

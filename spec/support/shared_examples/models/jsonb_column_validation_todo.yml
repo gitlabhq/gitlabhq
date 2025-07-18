@@ -23,7 +23,6 @@
 - Geo::Event#payload
 - Geo::SecondaryUsageData#payload
 - GitlabSubscriptions::UserAddOnAssignmentVersion#object
-- MergeRequest::CommitsMetadata#trailers
 - Operations::FeatureFlags::Strategy#parameters
 - Packages::Composer::Metadatum#composer_json
 - RawUsageData#payload
