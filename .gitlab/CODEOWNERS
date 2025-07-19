@@ -782,7 +782,7 @@ lib/gitlab/checks/
 /doc/api/group_push_rules.md @brendan777
 /doc/api/group_relations_export.md @ashrafkhamis
 /doc/api/group_repository_storage_moves.md @brendan777
-/doc/api/group_service_accounts.md @idurham
+/doc/api/group_security_settings.md @rlehmann1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
 /doc/api/group_wikis.md @msedlakjakubowski
@@ -866,6 +866,7 @@ lib/gitlab/checks/
 /doc/api/search.md @ashrafkhamis
 /doc/api/search_admin.md @ashrafkhamis
 /doc/api/secure_files.md @marcel.amirault
+/doc/api/service_accounts.md @idurham
 /doc/api/settings.md @idurham
 /doc/api/sidekiq_metrics.md @axil @eread
 /doc/api/snippet_repository_storage_moves.md @brendan777
@@ -885,7 +886,6 @@ lib/gitlab/checks/
 /doc/api/user_follow_unfollow.md @idurham
 /doc/api/user_keys.md @idurham
 /doc/api/user_moderation.md @idurham
-/doc/api/user_service_accounts.md @idurham
 /doc/api/user_tokens.md @idurham
 /doc/api/users.md @idurham
 /doc/api/vulnerabilities.md @rlehmann1
@@ -945,7 +945,7 @@ lib/gitlab/checks/
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
-/doc/development/audit_event_guide/ @gitlab-org/security-risk-management/security-policies/frontend @gitlab-org/security-risk-management/security-insights/frontend @gitlab-org/security-risk-management/security-insights/backend
+/doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
@@ -1009,8 +1009,9 @@ lib/gitlab/checks/
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
+/doc/security/compliance_security_policy_management.md @rlehmann1
 /doc/security/user_file_uploads.md @msedlakjakubowski
-/doc/solutions/ @jfullam @DarwinJS @sbrightwell
+/doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
@@ -1061,11 +1062,13 @@ lib/gitlab/checks/
 /doc/user/application_security/cve_id_request.md @rlehmann1
 /doc/user/application_security/dast/ @phillipwells
 /doc/user/application_security/dependency_list/ @rlehmann1
+/doc/user/application_security/detect/security_configuration.md @rlehmann1
 /doc/user/application_security/detect/security_scanning_results.md @rlehmann1
 /doc/user/application_security/get-started-security.md @phillipwells
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @phillipwells
 /doc/user/application_security/security_dashboard/ @rlehmann1
+/doc/user/application_security/security_inventory/ @rlehmann1
 /doc/user/application_security/vulnerabilities/_index.md @rlehmann1
 /doc/user/application_security/vulnerabilities/risk_assessment_data.md @rdickenson
 /doc/user/application_security/vulnerabilities/severities.md @rlehmann1
@@ -1083,11 +1086,14 @@ lib/gitlab/checks/
 /doc/user/duo_amazon_q/ @sselhorn
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
+/doc/user/free_user_limit.md @lciutacu
 /doc/user/get_started/get_started_managing_code.md @brendan777
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @phillipwells
+/doc/user/get_started/get_started_runner.md @rsarangadharan
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
+/doc/user/gitlab_duo/context_exclusion.md @scawood
 /doc/user/gitlab_duo/model_selection.md @jglassman1
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1

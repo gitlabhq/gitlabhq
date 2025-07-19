@@ -117,6 +117,10 @@ RSpec.shared_examples "redis_shared_examples" do
       expect(params1.object_id).to eq(params2.object_id)
     end
 
+    it 'contains reconnect_attempts with random delay' do
+      expect(subject[:reconnect_attempts].first).to be_between(0, 0.25).inclusive
+    end
+
     context 'with command to generate extra config specified' do
       let(:config_file_name) { 'spec/fixtures/config/redis_config_with_extra_config_command.yml' }
 

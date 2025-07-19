@@ -99,6 +99,22 @@ describe('FormErrorTracker', () => {
     });
   });
 
+  describe('formattedLabel', () => {
+    it('returns correct sanitized label for $fieldName', () => {
+      expect(FormErrorTracker.formattedLabel('something')).toBe('something_is_invalid');
+    });
+  });
+
+  describe('formattedAction', () => {
+    it('returns formatted action', () => {
+      expect(FormErrorTracker.formattedAction(trackAction)).toBe(`track_${trackAction}_error`);
+    });
+
+    it('returns formatted action for different base action names', () => {
+      expect(FormErrorTracker.formattedAction('user_signup')).toBe('track_user_signup_error');
+    });
+  });
+
   describe('action', () => {
     it('returns action', () => {
       expect(
