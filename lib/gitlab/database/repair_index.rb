@@ -15,6 +15,7 @@ module Gitlab
       FIND_DUPLICATE_SETS_SQL = <<~SQL
         SELECT ARRAY_AGG(id ORDER BY id ASC) as ids
         FROM %{table_name}
+        WHERE %{not_null_conditions}
         GROUP BY %{column_list}
         HAVING COUNT(*) > 1
       SQL
@@ -323,10 +324,15 @@ module Gitlab
       def find_duplicate_sets(table_name, columns)
         logger.info("Checking for duplicates in '#{table_name}' for columns: #{columns.join(',')}...")
 
+        not_null_conditions = columns.map do |col|
+          "#{connection.quote_column_name(col)} IS NOT NULL"
+        end.join(' AND ')
+
         sql = format(
           FIND_DUPLICATE_SETS_SQL,
           table_name: connection.quote_table_name(table_name),
-          column_list: columns.map { |col| connection.quote_column_name(col) }.join(', ')
+          column_list: columns.map { |col| connection.quote_column_name(col) }.join(', '),
+          not_null_conditions: not_null_conditions
         )
 
         execute_local(sql, read_only: true) do
