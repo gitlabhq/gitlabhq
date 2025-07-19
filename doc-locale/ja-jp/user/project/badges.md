@@ -211,7 +211,7 @@ URLに `style=style_name` パラメーターを追加すると、パイプライ
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
   ```
 
-  ![バッジフラットスタイル](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat)
+  ![バッジフラットスタイル](img/badge_flat.svg)
 
 - フラットスクエア:
 
@@ -219,7 +219,7 @@ URLに `style=style_name` パラメーターを追加すると、パイプライ
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
   ```
 
-  ![バッジフラットスクエアスタイル](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat-square)
+  ![バッジフラットスクエアスタイル](img/badge_flat_square.svg)
 
 ### バッジテキストのカスタマイズ
 
@@ -229,7 +229,7 @@ URLに `style=style_name` パラメーターを追加すると、パイプライ
 https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
-![カスタムテキストと幅のバッジ](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
+![カスタムテキストと幅のバッジ](img/badge_custom_text.svg)
 
 ### バッジ画像のカスタマイズ
 
