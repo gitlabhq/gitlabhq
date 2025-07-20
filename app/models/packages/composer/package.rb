@@ -7,7 +7,7 @@ module Packages
 
       has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
 
-      delegate :target_sha, to: :composer_metadatum
+      delegate :target_sha, :composer_json, to: :composer_metadatum, allow_nil: true
 
       validate :valid_composer_global_name
       validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },

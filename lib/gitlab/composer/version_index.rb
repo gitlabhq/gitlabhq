@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def package_metadata(package)
-        json = package.composer_metadatum.composer_json
+        json = package.composer_json
 
         json.merge(
           'dist' => package_dist(package),
