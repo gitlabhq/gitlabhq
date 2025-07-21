@@ -457,7 +457,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/banzai/filter/truncate_visible_filter_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/design_bundle_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/repository_bundle_pipeline_spec.rb'
-    - 'spec/lib/click_house/query_builder_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/issue_spec.rb'
     - 'spec/lib/feature/definition_spec.rb'
     - 'spec/lib/gitlab/audit/auditor_spec.rb'

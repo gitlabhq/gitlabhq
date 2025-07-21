@@ -61,6 +61,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[fabricate_via_api!].freeze
 
+        # @!method const_receiver(node)
         def_node_matcher :const_receiver, <<~PATTERN
           (send $const ...)
         PATTERN

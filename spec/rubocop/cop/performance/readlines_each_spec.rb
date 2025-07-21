@@ -13,10 +13,10 @@ RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
         padding = " " * leading_readline.length
         node = "#{leading_readline}each { |line| puts line }"
 
-        expect_offense(<<~CODE, node: node)
+        expect_offense(<<~RUBY, node: node)
           %{node}
           #{padding}^^^^ Avoid `IO.readlines.each`, since it reads contents into memory in full. [...]
-        CODE
+        RUBY
       end
     end
 
@@ -34,41 +34,41 @@ RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
 
     context 'and it is called as an instance method on a return value' do
       it 'flags it as an offense' do
-        expect_offense <<~SOURCE
+        expect_offense <<~RUBY
           get_file.readlines.each { |line| puts line }
                              ^^^^ #{message}
-        SOURCE
+        RUBY
       end
     end
 
     context 'and it is called as an instance method on an assigned variable' do
       it 'flags it as an offense' do
-        expect_offense <<~SOURCE
+        expect_offense <<~RUBY
           file = File.new(path)
           file.readlines.each { |line| puts line }
                          ^^^^ #{message}
-        SOURCE
+        RUBY
       end
     end
 
     context 'and it is called as an instance method on a new object' do
       it 'flags it as an offense' do
-        expect_offense <<~SOURCE
+        expect_offense <<~RUBY
           File.new(path).readlines.each { |line| puts line }
                                    ^^^^ #{message}
-        SOURCE
+        RUBY
       end
     end
 
     it 'autocorrects `readlines.each` to `each_line`' do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         obj.readlines.each { |line| line }
                       ^^^^ Avoid `IO.readlines.each`, since it reads contents into memory in full. [...]
-      CODE
+      RUBY
 
-      expect_correction(<<~CODE)
+      expect_correction(<<~RUBY)
         obj.each_line { |line| line }
-      CODE
+      RUBY
     end
   end
 

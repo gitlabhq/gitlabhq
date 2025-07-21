@@ -16,66 +16,66 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
     context 'with drop_table DSL method' do
       context 'when in down method' do
         it 'does not register an offense' do
-          expect_no_offenses(<<~PATTERN)
+          expect_no_offenses(<<~RUBY)
             def down
               drop_table :table
             end
-          PATTERN
+          RUBY
         end
       end
 
       context 'when in up method' do
         it 'registers an offense' do
-          expect_offense(<<~PATTERN)
+          expect_offense(<<~RUBY)
             def up
               drop_table :table
               ^^^^^^^^^^  #{msg}
             end
-          PATTERN
+          RUBY
         end
       end
 
       context 'when in change method' do
         it 'registers an offense' do
-          expect_offense(<<~PATTERN)
+          expect_offense(<<~RUBY)
             def change
               drop_table :table
               ^^^^^^^^^^  #{msg}
             end
-          PATTERN
+          RUBY
         end
       end
     end
 
     context 'with DROP TABLE SQL literal' do
       it 'does not register an offense' do
-        expect_no_offenses(<<~PATTERN)
+        expect_no_offenses(<<~RUBY)
           def down
             execute "DROP TABLE table"
           end
-        PATTERN
+        RUBY
       end
     end
 
     context 'when in up method' do
       it 'registers an offense' do
-        expect_offense(<<~PATTERN)
+        expect_offense(<<~RUBY)
           def up
             execute "DROP TABLE table"
             ^^^^^^^  #{msg}
           end
-        PATTERN
+        RUBY
       end
     end
 
     context 'when in change method' do
       it 'registers an offense' do
-        expect_offense(<<~PATTERN)
+        expect_offense(<<~RUBY)
           def change
             execute "DROP TABLE table"
             ^^^^^^^  #{msg}
           end
-        PATTERN
+        RUBY
       end
     end
   end
@@ -86,23 +86,23 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
     end
 
     it 'registers no offense' do
-      expect_no_offenses(<<~PATTERN)
+      expect_no_offenses(<<~RUBY)
         def change
           drop_table :table
           execute "DROP TABLE table"
         end
-      PATTERN
+      RUBY
     end
   end
 
   context 'when outside of migration' do
     it 'registers no offense' do
-      expect_no_offenses(<<~PATTERN)
+      expect_no_offenses(<<~RUBY)
         def change
           drop_table :table
           execute "DROP TABLE table"
         end
-      PATTERN
+      RUBY
     end
   end
 end

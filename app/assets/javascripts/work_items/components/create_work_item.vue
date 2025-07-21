@@ -1063,6 +1063,7 @@ export default {
           :is-valid="isTitleValid"
           :title="workItemTitle"
           @updateDraft="updateDraftData('title', $event)"
+          @isTitleValid="isTitleValid = $event"
         />
         <title-suggestions
           :project-path="selectedProjectFullPath"
@@ -1291,20 +1292,11 @@ export default {
               <div>{{ noMetadataSetPermissionMessage }}</div>
             </template>
           </aside>
-          <div v-if="!stickyFormSubmit" class="gl-col-start-1 gl-py-3" data-testid="form-buttons">
-            <div class="gl-mb-2 gl-flex gl-gap-3">
-              <gl-button
-                variant="confirm"
-                :loading="loading"
-                data-testid="create-button"
-                @click="createWorkItem"
-              >
-                {{ createWorkItemText }}
-              </gl-button>
-              <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-                {{ __('Cancel') }}
-              </gl-button>
-            </div>
+          <div
+            v-if="!stickyFormSubmit"
+            class="gl-col-start-1 gl-mt-3 gl-py-3 gl-text-sm md:gl-text-base"
+            data-testid="form-buttons"
+          >
             <gl-sprintf
               v-if="contributionGuidePath"
               :message="$options.i18n.contributionGuidelinesText"
@@ -1315,29 +1307,30 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
+            <div class="gl-mb-2 gl-flex gl-gap-3" :class="{ 'gl-mt-5': contributionGuidePath }">
+              <gl-button
+                variant="confirm"
+                :loading="loading"
+                :disabled="!isTitleValid"
+                data-testid="create-button"
+                @click="createWorkItem"
+              >
+                {{ createWorkItemText }}
+              </gl-button>
+              <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+                {{ __('Cancel') }}
+              </gl-button>
+            </div>
           </div>
         </div>
         <!-- stick to bottom and put the Confirm button on the right -->
         <!-- bg-overlap to match modal bg -->
         <div
           v-if="stickyFormSubmit"
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-items-end gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3 sm:gl-flex-row sm:gl-items-center"
           data-testid="form-buttons"
         >
-          <div class="gl-flex gl-gap-3">
-            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-              {{ __('Cancel') }}
-            </gl-button>
-            <gl-button
-              variant="confirm"
-              :loading="loading"
-              data-testid="create-button"
-              @click="createWorkItem"
-            >
-              {{ createWorkItemText }}
-            </gl-button>
-          </div>
-          <div v-if="contributionGuidePath">
+          <div v-if="contributionGuidePath" class="gl-text-sm">
             <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
               <template #link="{ content }">
                 <gl-link class="gl-font-bold" :href="contributionGuidePath">
@@ -1345,6 +1338,20 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
+          </div>
+          <div class="gl-flex gl-justify-end gl-gap-3">
+            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+              {{ __('Cancel') }}
+            </gl-button>
+            <gl-button
+              variant="confirm"
+              :disabled="!isTitleValid"
+              :loading="loading"
+              data-testid="create-button"
+              @click="createWorkItem"
+            >
+              {{ createWorkItemText }}
+            </gl-button>
           </div>
         </div>
       </template>

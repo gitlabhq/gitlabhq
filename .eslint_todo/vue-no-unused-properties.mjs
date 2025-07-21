@@ -100,7 +100,6 @@ export default {
     'app/assets/javascripts/jira_import/components/jira_import_form.vue',
     'app/assets/javascripts/members/components/filter_sort/sort_dropdown.vue',
     'app/assets/javascripts/merge_request_dashboard/components/status_badge.vue',
-    'app/assets/javascripts/merge_requests/components/reviewers/reviewer_drawer.vue',
     'app/assets/javascripts/ml/experiment_tracking/components/candidate_list.vue',
     'app/assets/javascripts/ml/experiment_tracking/components/delete_button.vue',
     'app/assets/javascripts/ml/experiment_tracking/routes/candidates/promote/model_selection_dropdown.vue',

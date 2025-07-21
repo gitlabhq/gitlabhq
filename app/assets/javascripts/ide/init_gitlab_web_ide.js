@@ -81,6 +81,7 @@ export const initGitlabWebIDE = async (el) => {
       },
       featureFlags: {
         languageServerWebIDE,
+        additionalSourceControlOperations: true,
       },
       editorFont,
       extensionsGallerySettings: extensionMarketplaceSettings,

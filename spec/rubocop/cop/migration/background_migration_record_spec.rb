@@ -6,12 +6,12 @@ require_relative '../../../../rubocop/cop/migration/background_migration_record'
 RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationRecord do
   context 'outside of a migration' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<~SOURCE)
+      expect_no_offenses(<<~RUBY)
         class MigrateProjectRecords
           class Project < ActiveRecord::Base
           end
         end
-      SOURCE
+      RUBY
     end
   end
 

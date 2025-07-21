@@ -150,9 +150,33 @@ To commit changes in the Web IDE:
 1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
-1. Commit to the current branch or [create a new branch](#create-a-branch).
+1. Select one of the following commit options:
+   - **Commit to current branch** - Commits changes to the current branch
+   - **[Create a new branch](#create-a-branch)** - Creates a new branch and commits changes
+   - **[Commit and force push](#commit-and-force-push)** - Force pushes changes to the remote branch
+   - **[Amend commit and force push](#amend-commit-and-force-push)** - Modifies the last commit and force pushes
 
-### Create a merge request
+### Commit and force push
+
+To commit and force push your changes:
+
+1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
+1. Select **Commit and Force push**.
+
+{{< alert type="warning" >}}
+This action overwrites the remote history of the current branch. Use with caution.
+{{< /alert >}}
+
+### Amend commit and force push
+
+To amend the last commit and force push:
+
+1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
+1. Select **Amend commit and Force push**.
+
+This updates the last commit and force pushes it to the remote repository. Use this to fix recent commits without creating new ones.
+
+## Create a merge request
 
 To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 

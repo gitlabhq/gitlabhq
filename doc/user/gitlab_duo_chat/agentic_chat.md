@@ -134,6 +134,7 @@ Agentic Chat to follow in every conversation, you can create custom rules.
 Prerequisites:
 
 - For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
 
 {{< alert type="note" >}}
 
@@ -141,9 +142,7 @@ Conversations that existed before you created any custom rules do not follow tho
 
 {{< /alert >}}
 
-1. Create a custom rules file:
-   - For VS Code, create a `.gitlab/duo/chat-rules.md` file.
-   - For JetBrains IDEs, create a `.gitlab/rules/chat.md` file.
+1. In your IDE workspace, create a custom rules file: `.gitlab/duo/chat-rules.md`.
 1. Enter the custom rules into the file. For example:
 
    ```markdown

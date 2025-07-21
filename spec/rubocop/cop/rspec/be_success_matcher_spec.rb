@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher, feature_category: :shared 
   shared_examples 'cop' do |good:, bad:|
     context "using #{bad} call" do
       it 'registers an offense and corrects', :aggregate_failures do
-        expect_offense(<<~CODE, node: bad)
+        expect_offense(<<~RUBY, node: bad)
           %{node}
           ^{node} Do not use `be_success` (wraps deprecated `success?`); use `be_successful` instead.
-        CODE
+        RUBY
 
-        expect_correction(<<~CODE)
+        expect_correction(<<~RUBY)
           #{good}
-        CODE
+        RUBY
       end
     end
 

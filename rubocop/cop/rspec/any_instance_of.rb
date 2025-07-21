@@ -36,9 +36,12 @@ module RuboCop
         MESSAGE_EXPECT = 'Do not use `expect_any_instance_of` method, use `expect_next_instance_of` instead.'
         MESSAGE_ALLOW = 'Do not use `allow_any_instance_of` method, use `allow_next_instance_of` instead.'
 
+        # @!method expect_any_instance_of?(node)
         def_node_search :expect_any_instance_of?, <<~PATTERN
           (send (send nil? :expect_any_instance_of ...) ...)
         PATTERN
+
+        # @!method allow_any_instance_of?(node)
         def_node_search :allow_any_instance_of?, <<~PATTERN
           (send (send nil? :allow_any_instance_of ...) ...)
         PATTERN

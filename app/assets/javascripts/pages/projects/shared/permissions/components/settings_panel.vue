@@ -310,6 +310,11 @@ export default {
       required: false,
       default: false,
     },
+    projectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const defaults = {
@@ -1123,6 +1128,7 @@ export default {
       <secret-manager-settings
         v-if="isSecretsManagerAvailable"
         :can-manage-secrets-manager="canManageSecretManager"
+        :project-id="projectId"
         :full-path="confirmationPhrase"
       />
       <other-project-settings />

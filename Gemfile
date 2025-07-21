@@ -378,7 +378,7 @@ gem 'rack-proxy', '~> 0.7.7', feature_category: :shared
 gem 'cssbundling-rails', '1.4.3', feature_category: :shared
 gem 'terser', '1.0.2', feature_category: :shared
 
-gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client', feature_category: :database
+gem 'click_house-client', '0.3.1', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared
 gem 'gon', '~> 6.4.0', feature_category: :shared
 gem 'request_store', '~> 1.7.0', feature_category: :shared
@@ -466,7 +466,7 @@ end
 gem 'warning', '~> 1.5.0', feature_category: :shared
 
 group :development do
-  gem 'lefthook', '~> 1.11.0', require: false, feature_category: :tooling
+  gem 'lefthook', '~> 1.12.0', require: false, feature_category: :tooling
   gem 'rubocop', feature_category: :tooling
 
   gem 'solargraph', '~> 0.54.0', require: false, feature_category: :shared

@@ -34,6 +34,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[before].freeze
 
+        # @!method before_all_block?(node)
         def_node_matcher :before_all_block?, <<~PATTERN
           (send nil? :before (sym :all) ...)
         PATTERN

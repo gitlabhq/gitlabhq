@@ -135,7 +135,6 @@ Rails/Date:
     - 'spec/initializers/rails_yaml_safe_load_spec.rb'
     - 'spec/lib/bitbucket/representation/comment_spec.rb'
     - 'spec/lib/bitbucket/representation/issue_spec.rb'
-    - 'spec/lib/click_house/query_builder_spec.rb'
     - 'spec/lib/forever_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/aggregated/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/aggregated/records_fetcher_spec.rb'

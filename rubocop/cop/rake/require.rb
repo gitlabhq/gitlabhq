@@ -73,6 +73,7 @@ module RuboCop
 
         EAGER_EVALUATED_BLOCKS = %i[namespace].freeze
 
+        # @!method require_method(node)
         def_node_matcher :require_method, <<~PATTERN
           (send nil? ${#{METHODS.map(&:inspect).join(' ')}} $_)
         PATTERN

@@ -151,7 +151,7 @@ detect-tests:
           --frontend-fixtures-mapping-path $FRONTEND_FIXTURES_MAPPING_PATH \
           --matching-foss-rspec-test-files-path $RSPEC_MATCHING_TESTS_FOSS_PATH \
           --matching-ee-rspec-test-files-path $RSPEC_MATCHING_TESTS_EE_PATH \
-          --matching-jest-test-files-path $RSPEC_MATCHING_JS_FILES_PATH \
+          --matching-js-files-path $RSPEC_MATCHING_JS_FILES_PATH \
           --changed-files-path $RSPEC_CHANGED_FILES_PATH
       fi
   artifacts:

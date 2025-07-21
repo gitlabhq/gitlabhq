@@ -7,10 +7,12 @@ module RuboCop
         MSG = 'Subtransactions should not be used. ' \
           'For more information see: https://gitlab.com/gitlab-org/gitlab/-/issues/338346'
 
+        # @!method match_transaction_with_options(node)
         def_node_matcher :match_transaction_with_options, <<~PATTERN
           (send _ :transaction (hash $...))
         PATTERN
 
+        # @!method subtransaction_option?(node)
         def_node_matcher :subtransaction_option?, <<~PATTERN
           (pair (:sym :requires_new) (true))
         PATTERN

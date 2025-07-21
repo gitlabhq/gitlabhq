@@ -27,6 +27,8 @@ module Tooling
         end
 
         files_to_scan = filter_files + partials
+        return [] if files_to_scan.flatten.empty?
+
         js_tags = files_to_scan.flat_map do |file|
           find_pattern_in_file(file, HTML_ATTRIBUTE_VALUE_REGEXP)
         end

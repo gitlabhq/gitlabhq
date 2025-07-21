@@ -10,7 +10,9 @@ require_relative "../find_changes"
 
 require "logger"
 require "tmpdir"
+require "open3"
 
+# rubocop:disable Gitlab/Json -- non-rails
 module Tooling
   module PredictiveTests
     # Class responsible for running through the whole flow of creating a list of predictive tests
@@ -20,50 +22,98 @@ module Tooling
     class MetricsExporter
       include Helpers::FileHandler
 
+      # @return [String] script path for jest predictive tests list generation
+      JEST_PREDICTIVE_TESTS_SCRIPT_PATH = "scripts/frontend/find_jest_predictive_tests.js"
+      # @return [String] event name used by internal events
       PREDICTIVE_TEST_METRICS_EVENT = "glci_predictive_tests_metrics"
-      STRATEGIES = [:coverage, :described_class].freeze
-      TEST_TYPE = "backend"
+      # @return [Hash] Supported test types with strategies
+      TEST_TYPES = {
+        backend: [:coverage, :described_class],
+        frontend: [:jest_built_in]
+      }.freeze
 
-      def initialize(rspec_all_failed_tests_file:, output_dir: nil)
-        @rspec_all_failed_tests_file = rspec_all_failed_tests_file
-        @output_dir = output_dir
-        @logger = Logger.new($stdout, progname: "rspec predictive testing")
+      def initialize(test_type:, all_failed_tests_file:, log_level: :info, output_dir: nil)
+        @test_type = test_type.tap do |type|
+          raise "Unknown test type '#{type}'" unless TEST_TYPES.key?(type.to_sym)
+        end
+
+        @failed_test_files = read_array_from_file(all_failed_tests_file)
+        @output_dir = output_dir || File.join(project_root, "tmp", "predictive_tests")
+
+        @logger = Logger.new($stdout, level: log_level).tap do |l|
+          l.formatter = proc do |severity, _datetime, _progname, msg|
+            # remove datetime to keep more neat cli like output
+            "[Metrics Export - #{test_type}] #{severity}: #{msg}\n"
+          end
+        end
       end
 
       # Execute metrics export
       #
-      # @return [void]
+      # @return [Boolean]
       def execute
-        STRATEGIES.each do |strategy|
-          logger.info("Running metrics export for '#{strategy}' strategy ...")
-          generate_and_record_metrics(strategy)
-        rescue StandardError => e
-          logger.error("Failed to export test metrics for strategy '#{strategy}': #{e.message}")
-          logger.error(e.backtrace.select { |entry| entry.include?(project_root) }) if e.backtrace
+        logger.info("Running metrics export for test type: #{test_type}")
+
+        case test_type
+        when :backend
+          export_rspec_metrics
+        when :frontend
+          export_jest_metrics
         end
       end
 
       private
 
-      attr_reader :rspec_all_failed_tests_file, :logger
+      attr_reader :failed_test_files, :test_type, :logger
+
+      # Export rspec test metrics
+      #
+      # @return [Boolean]
+      def export_rspec_metrics
+        export_all_strategies(TEST_TYPES[:backend]) do |strategy|
+          generate_and_record_metrics(strategy, rspec_matching_tests(strategy))
+        end
+      end
+
+      # Export jest test metrics
+      #
+      # @return [Boolean]
+      def export_jest_metrics
+        export_all_strategies(TEST_TYPES[:frontend]) do |strategy|
+          generate_and_record_metrics(strategy, jest_matching_tests)
+        end
+      end
+
+      # Export metrics for all defined strategies
+      #
+      # @param strategies [Array]
+      # @return [Boolean]
+      def export_all_strategies(strategies)
+        results = strategies.map do |strategy|
+          logger.info("Running export for '#{strategy}' strategy")
+          yield(strategy)
+          true
+        rescue StandardError => e
+          logger.error("Failed to export test metrics for strategy '#{strategy}': #{e.message}")
+          logger.error(e.backtrace.select { |entry| entry.include?(project_root) }.join("\n")) if e.backtrace
+          false
+        end
+
+        results.all?(true)
+      end
 
       # Project root folder
       #
       # @return [String]
       def project_root
-        @project_root ||= File.expand_path("../../..", __dir__)
+        @project_root ||= File.expand_path("../../../..", __dir__)
       end
 
-      # Path for all output created by metrics exporter
+      # Path for specific test type output
       #
       # @return [String]
       def output_path
-        return @output_path if @output_path
-
-        path = @output_dir || ENV.fetch(OUTPUT_PATH_VAR, File.join(project_root, "tmp", "predictive_tests"))
-        STRATEGIES.each { |strategy| FileUtils.mkdir_p(File.join(path, strategy.to_s)) }
-
-        @output_path = path
+        @output_path ||= File.join(@output_dir, test_type.to_s).tap { |path| FileUtils.mkdir_p(path) }
       end
 
       # Internal event tracker
@@ -101,20 +151,56 @@ module Tooling
         end
       end
 
+      # Matching rspec tests generated via test selector
+      #
+      # @param strategy [Symbol]
+      # @return [Array]
+      def rspec_matching_tests(strategy)
+        mapping_file = fetch_crystalball_mappings(strategy)
+        test_selector(mapping_file).rspec_spec_list
+      end
+
+      # Matching jest tests generated via native js script
+      #
+      # @return [Array]
+      def jest_matching_tests
+        return @jest_matching_tests if @jest_matching_tests
+
+        script = File.join(project_root, JEST_PREDICTIVE_TESTS_SCRIPT_PATH)
+        result_path = File.join(Dir.tmpdir, "predictive_jest_matching_tests.txt")
+        ruby_files = changed_files.reject do |f|
+          Tooling::PredictiveTests::ChangedFiles::JS_FILE_FILTER_REGEX.match?(f)
+        end
+        js_files = changed_files - ruby_files
+
+        logger.debug("Creating inputs for js predictive tests script")
+        changed_ruby_files_path = File.join(Dir.tmpdir, "changed_files.txt").tap do |f|
+          File.write(f, ruby_files.join("\n"))
+        end
+        matching_js_files_path = File.join(Dir.tmpdir, "matching_js_files.txt").tap do |f|
+          File.write(f, js_files.join("\n"))
+        end
+
+        logger.info("Generating predictive jest test file list via '#{script}'")
+        out, status = Open3.capture2e({
+          "RSPEC_CHANGED_FILES_PATH" => changed_ruby_files_path,
+          'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files_path,
+          'JEST_MATCHING_TEST_FILES_PATH' => result_path
+        }, script)
+        raise "Failed to generate jest matching tests via #{script}, output: #{out}" unless status.success?
+
+        logger.debug("Jest predictive test creation script output:\n#{out}")
+        @jest_matching_tests = read_array_from_file(result_path).tap do |list|
+          logger.info("Generated following jest predictive test file list: #{JSON.pretty_generate(list)}")
+        end
+      end
+
       # Mapping file path for specific strategy
       #
       # @param strategy [Symbol]
       # @return [String]
-      def mapping_file_path(strategy)
-        File.join(Dir.tmpdir, strategy.to_s, "mapping.json")
-      end
-
-      # Strategy specific matching rspec tests file path
-      #
-      # @param strategy [Symbol]
-      # @return [String]
-      def matching_rspec_test_files_path(strategy)
-        path_for_strategy(strategy, "rspec_matching_test_files.txt")
+      def backend_mapping_file_path(strategy)
+        File.join(Dir.tmpdir, "#{strategy}_mapping.json")
       end
 
       # Full path within strategy specific folder
@@ -130,11 +216,12 @@ module Tooling
       #
       # @param strategy [Symbol]
       # @return [TestSelector]
-      def test_selector(strategy)
+      def test_selector(rspec_test_mapping_path = nil)
         Tooling::PredictiveTests::TestSelector.new(
           changed_files: changed_files,
-          rspec_test_mapping_path: mapping_file_path(strategy),
-          rspec_mappings_limit_percentage: nil # always return all tests in the mapping
+          rspec_test_mapping_path: rspec_test_mapping_path,
+          logger: logger,
+          rspec_mappings_limit_percentage: nil # always return all tests in the mapping,
         )
       end
 
@@ -142,23 +229,12 @@ module Tooling
       #
       # @param strategy [Symbol]
       # @return [void]
-      def generate_and_record_metrics(strategy)
+      def generate_and_record_metrics(strategy, predicted_test_files)
         logger.info("Generating metrics for mapping strategy '#{strategy}' ...")
-
-        # fetch crystalball mappings for specific strategy
-        fetch_crystalball_mappings!(strategy)
-        # based on the predictive test selection strategy
-        predicted_test_files = test_selector(strategy).rspec_spec_list
-        # actual failed tests from tier-3 run
-        failed_test_files = read_array_from_file(rspec_all_failed_tests_file)
-        # crystalball mapping file
-        crystalball_mapping = JSON.parse(File.read(mapping_file_path(strategy))) # rubocop:disable Gitlab/Json -- not in Rails environment
 
         metrics = generate_metrics_data(
           changed_files,
           predicted_test_files,
-          failed_test_files,
-          crystalball_mapping,
           strategy
         )
 
@@ -168,42 +244,32 @@ module Tooling
         logger.info("Metrics generation completed for strategy '#{strategy}'")
       end
 
-      # Fetch crystalball mappings
+      # Fetch crystalball mappings and return file location
       #
       # @param strategy [Symbol]
-      # @return [void]
-      def fetch_crystalball_mappings!(strategy)
-        mapping_fetcher.fetch_rspec_mappings(mapping_file_path(strategy), type: strategy)
+      # @return [String]
+      def fetch_crystalball_mappings(strategy)
+        backend_mapping_file_path(strategy).tap do |file|
+          mapping_fetcher.fetch_rspec_mappings(file, type: strategy)
+        end
       end
 
-      # Create metrics hash with all calculated metrics based on crystalball mapping and selected test strategy
+      # Create metrics hash with all calculated metrics
       #
       # @param changed_files [Array]
       # @param predicted_test_files [Array]
-      # @param failed_test_files [Array]
-      # @param crystalball_mapping [Hash]
       # @param strategy [Symbol]
       # @return [Hash]
-      def generate_metrics_data(changed_files, predicted_test_files, failed_test_files, crystalball_mapping, strategy)
-        all_test_files_from_mapping = crystalball_mapping.values.flatten.uniq
-        test_files_selected_by_crystalball = changed_files
-          .filter_map { |file| crystalball_mapping[file] }
-          .flatten
-
+      def generate_metrics_data(changed_files, predicted_test_files, strategy)
         {
           timestamp: Time.now.iso8601,
+          test_type: test_type,
           strategy: strategy,
           core_metrics: {
             changed_files_count: changed_files.size,
             predicted_test_files_count: predicted_test_files.size,
             missed_failing_test_files: (failed_test_files - predicted_test_files).size,
-            changed_files_in_mapping: changed_files.count { |file| crystalball_mapping[file]&.any? },
             failed_test_files_count: failed_test_files.size
-          },
-          mapping_metrics: {
-            total_test_files_in_mapping: all_test_files_from_mapping.size,
-            test_files_selected_by_crystalball: test_files_selected_by_crystalball.size,
-            failed_test_files_in_mapping: (failed_test_files & all_test_files_from_mapping).size
           }
         }
       end
@@ -214,7 +280,7 @@ module Tooling
       # @param strategy [Symbol]
       # @return [void]
       def save_metrics(metrics, strategy)
-        File.write(File.join(output_path, "metrics_#{strategy}.json"), JSON.pretty_generate(metrics)) # rubocop:disable Gitlab/Json -- not in Rails environment
+        File.write(File.join(output_path, "metrics_#{strategy}.json"), JSON.pretty_generate(metrics))
       end
 
       # Send events containing calculated predictive tests metrics
@@ -224,7 +290,7 @@ module Tooling
       # @return [void]
       def send_metrics_events(metrics, strategy)
         core = metrics[:core_metrics]
-        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: TEST_TYPE }
+        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: test_type }
 
         tracker.send_event(
           PREDICTIVE_TEST_METRICS_EVENT,
@@ -253,3 +319,4 @@ module Tooling
     end
   end
 end
+# rubocop:enable Gitlab/Json

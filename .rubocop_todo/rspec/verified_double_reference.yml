@@ -119,7 +119,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/lib/bulk_imports/projects/pipelines/design_bundle_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/repository_bundle_pipeline_spec.rb'
     - 'spec/lib/click_house/models/base_model_spec.rb'
-    - 'spec/lib/click_house/redactor_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/base_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/generic_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/prometheus_spec.rb'

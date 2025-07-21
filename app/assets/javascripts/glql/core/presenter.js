@@ -1,9 +1,9 @@
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
+import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import BoolPresenter from '../components/presenters/bool.vue';
 import CodePresenter from '../components/presenters/code.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
-import HealthPresenter from '../components/presenters/health.vue';
 import IssuablePresenter from '../components/presenters/issuable.vue';
 import LabelPresenter from '../components/presenters/label.vue';
 import LinkPresenter from '../components/presenters/link.vue';
@@ -35,6 +35,7 @@ const presentersByObjectType = {
 };
 
 const presentersByFieldName = {
+  health: HealthPresenter,
   healthStatus: HealthPresenter,
   state: StatePresenter,
   description: HtmlPresenter,

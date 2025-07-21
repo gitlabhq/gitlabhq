@@ -74,7 +74,7 @@ module ClickHouse
       end
 
       def iterator
-        builder = ClickHouse::QueryBuilder.new(table.to_s)
+        builder = ClickHouse::Client::QueryBuilder.new(table.to_s)
         ClickHouse::Iterator.new(query_builder: builder, connection: connection, min_value: previous_id)
       end
 

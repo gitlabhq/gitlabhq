@@ -3,6 +3,7 @@
 
 require 'bundler/inline'
 require 'optparse'
+require 'fileutils'
 
 gemfile do
   source 'https://rubygems.org'
@@ -28,16 +29,20 @@ OptionParser.new do |opts|
     options[:export_frontend_metrics] = true
   end
 
+  opts.on('--failed-backend-tests-file [string]', String, 'File with list of failed rspec tests') do |value|
+    options[:failed_backend_tests_file] = value
+  end
+
+  opts.on('--failed-frontend-tests-file [string]', String, 'File with list of failed jest tests') do |value|
+    options[:failed_frontend_tests_file] = value
+  end
+
   opts.on('--output-dir [string]', String, 'Output directory for generated metrics files') do |value|
     options[:output_dir] = value
   end
 
-  opts.on('--failed-backend-tests-file', String, 'File with list of failed rspec tests') do |value|
-    options[:failed_backend_tests_file] = value
-  end
-
-  opts.on('--failed-frontend-tests-file', String, 'File with list of failed jest tests') do |value|
-    options[:failed_frontend_tests_file] = value
+  opts.on('--debug', 'Enable debug logging') do
+    options[:debug] = true
   end
 
   opts.on('-h', '--help', 'Show this help message') do
@@ -46,8 +51,20 @@ OptionParser.new do |opts|
   end
 end.parse!
 
+results = []
+log_level = options[:debug] ? :debug : :info
+
+def empty_arg?(arg)
+  arg.nil? || arg.empty?
+end
+
+export_backend = options[:export_backend_metrics]
+failed_backend_tests_file = options[:failed_backend_tests_file]
+export_frontend = options[:export_frontend_metrics]
+failed_frontend_tests_file = options[:failed_frontend_tests_file]
+
 # Validate at least one option is provided
-if [options[:export_backend_metrics], options[:export_frontend_metrics]].all?(&:nil?)
+if [export_backend, export_frontend].all?(&:nil?)
   puts <<~MSG
     Error: Please specify at least one of these flags:
       1. --export-backend-metrics
@@ -57,27 +74,38 @@ if [options[:export_backend_metrics], options[:export_frontend_metrics]].all?(&:
   exit 1
 end
 
-if options[:export_backend_metrics]
-  options[:failed_backend_tests_file].tap do |file|
-    next unless file.nil? || file.empty?
-
-    warn "[predictive tests] Missing argument: --failed-backend-tests-file"
-    exit 1
+if export_backend
+  if empty_arg?(failed_backend_tests_file)
+    puts "[predictive tests] Error: Missing argument: --failed-backend-tests-file"
+    puts "[predictive tests] skipping backend metrics export"
+    results << false
+  else
+    # scripts that fetch failed tests do not create empty file when no failures were detected
+    FileUtils.touch(failed_backend_tests_file) unless File.exist?(failed_backend_tests_file)
+    results << Tooling::PredictiveTests::MetricsExporter.new(
+      test_type: :backend,
+      output_dir: options[:output_dir],
+      all_failed_tests_file: failed_backend_tests_file,
+      log_level: log_level
+    ).execute
   end
-
-  Tooling::PredictiveTests::MetricsExporter.new(
-    output_dir: options[:output_dir] || 'tmp/predictive_test_metrics',
-    rspec_all_failed_tests_file: options[:failed_backend_tests_file]
-  ).execute
 end
 
-if options[:export_frontend_metrics]
-  options[:failed_frontend_tests_file].tap do |file|
-    next unless file.nil? || file.empty?
-
-    warn "[predictive tests] Missing argument: --failed-frontend-tests-file"
-    exit 1
+if export_frontend
+  if empty_arg?(failed_frontend_tests_file)
+    puts "[predictive tests] Error: Missing argument: --failed-frontend-tests-file"
+    puts "[predictive tests] skipping frontend metrics export"
+    results << false
+  else
+    # scripts that fetch failed tests do not create empty file when no failures were detected
+    FileUtils.touch(failed_frontend_tests_file) unless File.exist?(failed_frontend_tests_file)
+    results << Tooling::PredictiveTests::MetricsExporter.new(
+      test_type: :frontend,
+      output_dir: options[:output_dir],
+      all_failed_tests_file: options[:failed_frontend_tests_file],
+      log_level: log_level
+    ).execute
   end
-
-  # TODO: Move the logic of exporting metrics of frontend tests to MetricsExporter in a follow up mr
 end
+
+results.include?(false) ? exit(1) : exit(0)

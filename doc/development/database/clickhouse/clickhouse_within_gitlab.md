@@ -199,10 +199,10 @@ In case there are placeholders with the same name but different values the query
 
 ### Writing query conditions
 
-When working with complex forms where multiple filter conditions are present, building queries by concatenating query fragments as string can get out of hands very quickly. For queries with several conditions you may use the `ClickHouse::QueryBuilder` class. The class uses the `Arel` gem to generate queries and provides a similar query interface like `ActiveRecord`.
+When working with complex forms where multiple filter conditions are present, building queries by concatenating query fragments as string can get out of hands very quickly. For queries with several conditions you may use the `ClickHouse::Client::QueryBuilder` class. The class uses the `Arel` gem to generate queries and provides a similar query interface like `ActiveRecord`.
 
 ```ruby
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 query = builder
   .where(builder.table[:created_at].lteq(Date.today))
@@ -267,7 +267,7 @@ Usage:
 
 ```ruby
 connection = ClickHouse::Connection.new(:main)
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
 iterator.each_batch(column: :id, of: 100_000) do |scope|
@@ -279,7 +279,7 @@ In case you want to iterate over specific rows, you could add filters to the que
 
 ```ruby
 connection = ClickHouse::Connection.new(:main)
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 # filtering by target type and stringified traversal ids/path
 builder = builder.where(target_type: 'Issue')

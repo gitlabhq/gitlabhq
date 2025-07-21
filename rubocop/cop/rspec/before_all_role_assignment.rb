@@ -41,6 +41,7 @@ module RuboCop
           (block (send nil? :before ...) ...)
         PATTERN
 
+        # @!method object_calling_add_role_method(node)
         def_node_matcher :object_calling_add_role_method, <<~PATTERN
           (send (send nil? $_) %ROLE_METHODS ...)
         PATTERN

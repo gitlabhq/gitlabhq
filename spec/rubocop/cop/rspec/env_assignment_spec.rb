@@ -12,14 +12,14 @@ RSpec.describe RuboCop::Cop::RSpec::EnvAssignment, feature_category: :shared do
 
   shared_examples 'an offensive and correction ENV#[]= call' do |content, autocorrected_content|
     it "registers an offense for `#{content}` and corrects", :aggregate_failures do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         #{content}
         ^^^^^^^^^^^^^^^^^^ Don't assign to ENV, use `stub_env` instead.
-      CODE
+      RUBY
 
-      expect_correction(<<~CODE)
+      expect_correction(<<~RUBY)
         #{autocorrected_content}
-      CODE
+      RUBY
     end
   end
 

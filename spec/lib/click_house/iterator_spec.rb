@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database do
-  let(:query_builder) { ClickHouse::QueryBuilder.new('event_authors') }
+  let(:query_builder) { ClickHouse::Client::QueryBuilder.new('event_authors') }
   let(:connection) { ClickHouse::Connection.new(:main) }
   let(:min_max_strategy) { :min_max }
   let(:iterator) do
@@ -82,7 +82,7 @@ RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database d
 
   context 'when there are no records for the given query' do
     let(:query_builder) do
-      ClickHouse::QueryBuilder
+      ClickHouse::Client::QueryBuilder
         .new('event_authors')
         .where(author_id: 0)
     end

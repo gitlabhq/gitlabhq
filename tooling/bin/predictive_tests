@@ -36,7 +36,7 @@ class PredictiveTests
     @changed_files_path = options[:changed_files_path]
     @matching_foss_rspec_test_files_path = options[:matching_foss_rspec_test_files_path]
     @matching_ee_rspec_test_files_path = options[:matching_ee_rspec_test_files_path]
-    @matching_jest_test_files_path = options[:matching_jest_test_files_path]
+    @matching_js_files_path = options[:matching_js_files_path]
     @ci = options[:ci]
     @debug = options[:debug]
 
@@ -51,7 +51,7 @@ class PredictiveTests
     create_output_files
     return if @ci
 
-    puts (rspec_spec_list + js_spec_list).join(' ')
+    puts rspec_spec_list.join(' ')
   end
 
   private
@@ -99,9 +99,11 @@ class PredictiveTests
 
   def test_selector
     @test_selector ||= begin
-      logger.info("Generating predictive test list based on changed files: #{JSON.pretty_generate(changed_files)}")
+      all_changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(changes: changed_files)
+
+      logger.info("Generating predictive test list based on changed files: #{JSON.pretty_generate(all_changed_files)}")
       Tooling::PredictiveTests::TestSelector.new(
-        changed_files: changed_files,
+        changed_files: all_changed_files,
         rspec_test_mapping_path: test_mapping_file,
         logger: logger
       )
@@ -155,9 +157,13 @@ class PredictiveTests
       logger.info("Following ee rspec tests saved: #{JSON.pretty_generate(list)}")
     end
 
-    return unless valid_file_path?(@matching_jest_test_files_path)
+    return unless valid_file_path?(@matching_js_files_path)
 
-    save_output(js_spec_list.join(" "), @matching_jest_test_files_path)
+    js_changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
+      changes: changed_files, with_views: true, with_js_files: true
+    ).select { |f| Tooling::PredictiveTests::ChangedFiles::JS_FILE_FILTER_REGEX.match?(f) }
+    logger.info("Following matching js files saved: #{JSON.pretty_generate(js_changed_files)}")
+    save_output(js_changed_files.join("\n"), @matching_js_files_path)
   end
 
   def save_output(output, file_path)
@@ -219,8 +225,8 @@ if __FILE__ == $PROGRAM_NAME
       options[:matching_ee_rspec_test_files_path] = value
     end
 
-    opts.on('--matching-jest-test-files-path [string]', String, 'File to save list of matching rspec tests') do |value|
-      options[:matching_jest_test_files_path] = value
+    opts.on('--matching-js-files-path [string]', String, 'File to save list of view related js files') do |value|
+      options[:matching_js_files_path] = value
     end
 
     opts.on('-h', '--help', 'Show this help message') do
@@ -232,7 +238,7 @@ if __FILE__ == $PROGRAM_NAME
   begin
     PredictiveTests.new(options).execute
   rescue StandardError => e
-    warn "[predictive tests] ERROR: #{e.message}"
+    puts "[predictive tests] ERROR: #{e.message}"
     exit 1
   end
 end

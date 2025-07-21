@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CommitSignatures
   class GpgSignature < ApplicationRecord
     include CommitSignature

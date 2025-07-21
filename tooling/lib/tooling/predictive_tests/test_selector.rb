@@ -7,7 +7,6 @@ require_relative '../find_tests'
 require_relative '../find_files_using_feature_flags'
 require_relative '../mappings/graphql_base_type_mappings'
 require_relative '../mappings/js_to_system_specs_mappings'
-require_relative '../mappings/view_to_js_mappings'
 require_relative '../mappings/view_to_system_specs_mappings'
 
 # rubocop:disable Gitlab/Json -- not rails
@@ -41,16 +40,6 @@ module Tooling
 
         logger.info("Generated following rspec specs list: #{JSON.pretty_generate(specs)}")
         specs.values.flatten
-      end
-
-      # Predictive js test files specs list
-      #
-      # @return [Array]
-      def js_spec_list
-        logger.info "Creating predictive js test files specs list ..."
-        Tooling::Mappings::ViewToJsMappings.new(changed_files).execute.tap do |specs|
-          logger.info "Generated following jest spec list: #{JSON.pretty_generate(specs)}"
-        end
       end
 
       private

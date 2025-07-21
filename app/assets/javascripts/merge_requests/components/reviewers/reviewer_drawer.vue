@@ -44,9 +44,6 @@ export default {
       if (!this.open) return '0';
       return getContentWrapperHeight();
     },
-    loadingReviewers() {
-      return this.$apollo.queries.reviewers.loading;
-    },
   },
   DRAWER_Z_INDEX,
 };

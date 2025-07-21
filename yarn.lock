@@ -1449,10 +1449,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.141.0.tgz#0be316b5dfdcbac0796c9b71b941740bccb89ec6"
   integrity sha512-xLrEY14dc1jGknP4tZ5SgrGojDsmkI7S2sii83MBqwdqy9QQ3DWxdreeClQkBDXC/A6wDTbJAN0U4ebGBX7Y7w==
 
-"@gitlab/ui@115.6.0":
-  version "115.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.6.0.tgz#9a43ac939c9d09984bf37b54c68d2444ba03b6f7"
-  integrity sha512-YEYk2ySGKwTSfzGAiODLYYaOrSEc7LnotEGMdpfd8fQfoYESem/EO7IrAI7k7JOpouM99V17B1stWh9XPbYPSw==
+"@gitlab/ui@115.6.1":
+  version "115.6.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.6.1.tgz#df0f5f84666d1e2c3d518c14b59c06cffbd6ae88"
+  integrity sha512-zbK5jNkIYYqXEAqbwniRgGWbBhOdGUvOvg+StshEfy2+OeNydKMeoydJy19LYp+/1uOHb/JwAZZmdIwug4UXwQ==
   dependencies:
     "@floating-ui/dom" "1.7.2"
     echarts "^5.6.0"
@@ -1460,7 +1460,7 @@
     iframe-resizer "^4.4.5"
     lodash "^4.17.21"
     popper.js "^1.16.1"
-    portal-vue "^2.1.7"
+    portal-vue "2.1.7"
     vue-functional-data-merge "^3.1.0"
     vue-runtime-helpers "^1.1.2"
 
@@ -12086,7 +12086,7 @@ popper.js@^1.16.1:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
-portal-vue@^2.1.7:
+portal-vue@2.1.7, portal-vue@^2.1.7:
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
   integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==

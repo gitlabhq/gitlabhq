@@ -1674,8 +1674,6 @@ Style/InlineDisableAnnotation:
     - 'lib/bulk_imports/groups/transformers/group_attributes_transformer.rb'
     - 'lib/bulk_imports/uniquify.rb'
     - 'lib/click_house/models/base_model.rb'
-    - 'lib/click_house/query_builder.rb'
-    - 'lib/click_house/redactor.rb'
     - 'lib/container_registry/path.rb'
     - 'lib/declarative_enum.rb'
     - 'lib/event_filter.rb'

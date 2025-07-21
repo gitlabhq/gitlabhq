@@ -35,7 +35,12 @@ module API
       end
 
       def track_commit_events
-        return unless find_user_from_warden
+        token = find_oauth_access_token
+        web_ide_oauth_app_id = WebIde::DefaultOauthApplication.oauth_application_id
+
+        return unless token
+        return unless web_ide_oauth_app_id
+        return unless token.application.id == web_ide_oauth_app_id
 
         Gitlab::InternalEvents.track_event('create_commit_from_web_ide', user: current_user, project: user_project)
         Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)

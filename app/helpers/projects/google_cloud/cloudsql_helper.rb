@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Projects
   module GoogleCloud
     module CloudsqlHelper

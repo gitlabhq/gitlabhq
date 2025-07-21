@@ -537,6 +537,12 @@ The table below provides an overview of all available query fields and their spe
 
 ### Health status
 
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
 {{< history >}}
 
 - Alias `healthStatus` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
@@ -1232,10 +1238,10 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Description      | `description`                         | Issues, epics, merge requests | Display the description of the object |
 | Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |
-| Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available for Premium and Ultimate tiers |
-| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object |
+| Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available in the Premium and Ultimate tier |
+| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object. Available in the Ultimate tier |
 | ID               | `id`                                  | Issues, epics, merge requests | Display the ID of the object |
-| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available for Premium and Ultimate tiers |
+| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available in the Premium and Ultimate tier |
 | Labels           | `label`, `labels`                     | Issues, epics, merge requests | Display labels associated with the object. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
 | Last comment     | `lastComment`                         | Issues, epics, merge requests | Display the last comment made on the object |
 | Merged at        | `merged`, `mergedAt`                  | Merge requests                | Display time since the merge request was merged |

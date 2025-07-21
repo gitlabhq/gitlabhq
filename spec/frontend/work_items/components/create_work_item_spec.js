@@ -886,7 +886,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
-      expect(findFormButtons().classes('gl-items-end')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
@@ -896,7 +896,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-items-end')).toBe(false);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(false);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });

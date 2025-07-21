@@ -12,7 +12,6 @@ RSpec.describe Tooling::PredictiveTests::TestSelector, :aggregate_failures, feat
   let(:rspec_mappings_limit_percentage) { 50 }
 
   let(:find_tests) { instance_double(Tooling::FindTests, execute: ["specs_from_mapping"]) }
-  let(:view_to_js_mappings) { instance_double(Tooling::Mappings::ViewToJsMappings, execute: ["jest_spec_list"]) }
 
   let(:graphql_mappings) do
     instance_double(Tooling::Mappings::GraphqlBaseTypeMappings, execute: ["specs_from_graphql"])
@@ -31,7 +30,6 @@ RSpec.describe Tooling::PredictiveTests::TestSelector, :aggregate_failures, feat
     allow(Tooling::Mappings::GraphqlBaseTypeMappings).to receive(:new).and_return(graphql_mappings)
     allow(Tooling::Mappings::ViewToSystemSpecsMappings).to receive(:new).and_return(view_to_system_mappings)
     allow(Tooling::Mappings::JsToSystemSpecsMappings).to receive(:new).and_return(js_to_system_mappings)
-    allow(Tooling::Mappings::ViewToJsMappings).to receive(:new).and_return(view_to_js_mappings)
 
     allow(Logger).to receive(:new).and_return(Logger.new(StringIO.new))
   end
@@ -52,10 +50,5 @@ RSpec.describe Tooling::PredictiveTests::TestSelector, :aggregate_failures, feat
       mappings_file: crystalball_mapping_path,
       mappings_limit_percentage: rspec_mappings_limit_percentage
     )
-  end
-
-  it "generates predictive js test" do
-    expect(test_selector.js_spec_list).to match_array(["jest_spec_list"])
-    expect(Tooling::Mappings::ViewToJsMappings).to have_received(:new).with(changed_files)
   end
 end

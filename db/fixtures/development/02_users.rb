@@ -30,7 +30,7 @@ class Gitlab::Seeder::Users
 
     Gitlab::Seeder.with_mass_insert(MASS_USERS_COUNT, User) do
       ActiveRecord::Base.connection.execute <<~SQL
-        INSERT INTO users (username, name, email, state, confirmed_at, projects_limit, encrypted_password)
+        INSERT INTO users (username, name, email, state, confirmed_at, projects_limit, encrypted_password, organization_id)
         SELECT
           '#{Gitlab::Seeder::MASS_INSERT_USER_START}' || seq,
           'Seed user ' || seq,
@@ -38,7 +38,8 @@ class Gitlab::Seeder::Users
           'active',
           to_timestamp(seq),
           #{MASS_USERS_COUNT},
-          '#{encrypted_password}'
+          '#{encrypted_password}',
+          '#{organization.id}'
         FROM generate_series(1, #{MASS_USERS_COUNT}) AS seq
         ON CONFLICT DO NOTHING;
       SQL
@@ -81,9 +82,10 @@ class Gitlab::Seeder::Users
           name: FFaker::Name.name,
           email: FFaker::Internet.email,
           confirmed_at: DateTime.now,
-          password: random_password
+          password: random_password,
+          organization: organization
         ) do |user|
-          user.assign_personal_namespace(organization)
+          user.assign_personal_namespace(user.organization)
         end
 
         print '.'

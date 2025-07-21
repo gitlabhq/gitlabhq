@@ -9,28 +9,28 @@ RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do
       offense = "#{route_method} :notes"
       marker = '^' * offense.size
 
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
         scope(path: 'groups/*group_id/-', module: :groups) do
           resource :issues
         end
 
         #{offense}
         #{marker} Put new group routes under /-/ scope
-      PATTERN
+      RUBY
     end
   end
 
   it 'does not register an offense when resource inside the scope' do
-    expect_no_offenses(<<~PATTERN)
+    expect_no_offenses(<<~RUBY)
       scope(path: 'groups/*group_id/-', module: :groups) do
         resource :issues
         resource :notes
       end
-    PATTERN
+    RUBY
   end
 
   it 'does not register an offense when resource is deep inside the scope' do
-    expect_no_offenses(<<~PATTERN)
+    expect_no_offenses(<<~RUBY)
       scope(path: 'groups/*group_id/-', module: :groups) do
         resource :issues
         resource :projects do
@@ -39,20 +39,20 @@ RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do
           end
         end
       end
-    PATTERN
+    RUBY
   end
 
   it 'does not register an offense for the root route' do
-    expect_no_offenses(<<~PATTERN)
+    expect_no_offenses(<<~RUBY)
       get '/'
-    PATTERN
+    RUBY
   end
 
   it 'does not register an offense for the root route within scope' do
-    expect_no_offenses(<<~PATTERN)
+    expect_no_offenses(<<~RUBY)
       scope(path: 'groups/*group_id/-', module: :groups) do
         get '/'
       end
-    PATTERN
+    RUBY
   end
 end

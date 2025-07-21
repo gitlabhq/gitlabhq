@@ -53,6 +53,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[params].freeze
 
         # params is only permitted if require or permit are called on it
+        # @!method safe_params?(node)
         def_node_matcher :safe_params?, <<~PATTERN
           (send
             (send nil? :params) {:require :required :permit}
@@ -60,6 +61,7 @@ module RuboCop
           )
         PATTERN
 
+        # @!method unsafe_hash_access?(node)
         def_node_matcher :unsafe_hash_access?, <<~PATTERN
           (send
             (send nil? :params) :[]

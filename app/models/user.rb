@@ -34,6 +34,9 @@ class User < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
   include Gitlab::InternalEventsTracking
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :organization_id
 
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 

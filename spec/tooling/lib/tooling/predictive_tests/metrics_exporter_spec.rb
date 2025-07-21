@@ -13,14 +13,14 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
   subject(:exporter) do
     described_class.new(
-      rspec_all_failed_tests_file: failed_tests_file,
-      output_dir: output_dir
+      test_type: test_type,
+      all_failed_tests_file: failed_tests_file,
+      output_dir: output_dir,
+      log_level: :fatal
     )
   end
 
   let(:event_tracker) { instance_double(Tooling::Events::TrackPipelineEvents, send_event: nil) }
-  let(:logger) { Logger.new(log_output) }
-  let(:log_output) { StringIO.new } # useful for debugging to print out all log output
 
   let(:mapping_fetcher) do
     instance_double(
@@ -35,29 +35,26 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   let(:test_selector_described) do
-    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_described_class_specs)
+    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: [mappings.dig(:user, :spec)])
   end
 
   let(:test_selector_coverage) do
-    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: matching_tests_coverage_specs)
+    instance_double(Tooling::PredictiveTests::TestSelector, rspec_spec_list: mappings.values.pluck(:spec))
   end
 
   let(:event_name) { "glci_predictive_tests_metrics" }
-  let(:extra_properties) { { ci_job_id: "123", test_type: "backend" } }
+  let(:test_type) { :backend }
+  let(:extra_properties) { { ci_job_id: "123", test_type: test_type } }
 
   # temporary folder for inputs and outputs
   let(:input_dir) { Dir.mktmpdir("predictive-tests-input") }
   let(:output_dir) { Dir.mktmpdir("predictive-tests-output") }
   # various input files used by MetricsExporter to create metrics output
   let(:failed_tests_file) { File.join(input_dir, "failed_test.txt") }
-  let(:coverage_mapping_file) { File.join(Dir.tmpdir, "coverage", "mapping.json") }
-  let(:described_class_mapping_file) { File.join(Dir.tmpdir, "described_class", "mapping.json") }
+  let(:coverage_mapping_file) { File.join(Dir.tmpdir, "coverage_mapping.json") }
+  let(:described_class_mapping_file) { File.join(Dir.tmpdir, "described_class_mapping.json") }
   let(:frontend_fixtures_file) { File.join(Dir.tmpdir, "frontend_fixtures_mapping.json") }
-  # output files created by TestSelector and used by MetricsExporter to create metrics output
-  let(:matching_tests_coverage_file) { File.join(output_dir, "coverage", "rspec_matching_test_files.txt") }
-  let(:matching_tests_described_class_file) do
-    File.join(output_dir, "described_class", "rspec_matching_test_files.txt")
-  end
+  let(:jest_matching_tests_file) { File.join(Dir.tmpdir, "predictive_jest_matching_tests.txt") }
 
   let(:mappings) do
     {
@@ -67,10 +64,10 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     }
   end
 
-  let(:changed_files) { mappings.values.pluck(:model) }
-  let(:matching_tests_described_class_specs) { [mappings.dig(:user, :spec)] }
-  let(:matching_tests_coverage_specs) { mappings.values.pluck(:spec) }
-  let(:failed_tests_content) { "#{mappings.dig(:user, :spec)}\n#{mappings.dig(:todo, :spec)}" }
+  let(:changed_files) { mappings.values.pluck(:model) + changed_js_files }
+  let(:changed_js_files) { ["some_changed_file.js"] }
+  let(:jest_matching_tests) { ["spec/frontend/project_spec.js", "spec/frontend/todo_spec.js"] }
+  let(:failed_tests_content) { "" }
 
   let(:described_class_mapping_content) do
     { mappings.dig(:user, :model) => [mappings.dig(:user, :spec)] }.to_json
@@ -81,7 +78,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   def read_metrics(strategy)
-    JSON.parse(File.read(File.join(output_dir, "metrics_#{strategy}.json"))).except("timestamp")
+    JSON.parse(File.read(File.join(output_dir, test_type.to_s, "metrics_#{strategy}.json"))).except("timestamp")
   end
 
   def expect_events_sent(strategy, changed_files_count:, predicted_test_files_count:, missed_failing_test_files:)
@@ -111,24 +108,26 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   before do
     stub_env({ "CI_JOB_ID" => extra_properties[:ci_job_id] })
 
-    # create folders for mocked input files
-    [coverage_mapping_file, described_class_mapping_file, failed_tests_file].each do |file|
+    # create folders and files used as input
+    {
+      coverage_mapping_file => coverage_mapping_content,
+      described_class_mapping_file => described_class_mapping_content,
+      failed_tests_file => failed_tests_content
+    }.each do |file, content|
+      next if file.nil?
+
       FileUtils.mkdir_p(File.dirname(file))
+      File.write(file, content)
     end
-
-    # create files used as input for exporting selected test metrics
-    File.write(failed_tests_file, failed_tests_content)
-    File.write(coverage_mapping_file, coverage_mapping_content)
-    File.write(described_class_mapping_file, described_class_mapping_content)
-
-    allow(Logger).to receive(:new).with($stdout, progname: "rspec predictive testing").and_return(logger)
-    allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
 
     allow(Tooling::FindChanges).to receive(:new).with(
       from: :api,
       frontend_fixtures_mapping_pathname: frontend_fixtures_file
     ).and_return(find_changes)
-    allow(Tooling::PredictiveTests::MappingFetcher).to receive(:new).with(logger: logger).and_return(mapping_fetcher)
+    allow(Tooling::Events::TrackPipelineEvents).to receive(:new).with(logger: kind_of(Logger)).and_return(event_tracker)
+    allow(Tooling::PredictiveTests::MappingFetcher).to receive(:new).with(
+      logger: kind_of(Logger)
+    ).and_return(mapping_fetcher)
     allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch).with(
       changes: ["base_changes"]
     ).and_return(changed_files)
@@ -136,17 +135,22 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
       changed_files: changed_files,
       rspec_test_mapping_path: coverage_mapping_file,
+      logger: kind_of(Logger),
       rspec_mappings_limit_percentage: nil
     ).and_return(test_selector_coverage)
 
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
       changed_files: changed_files,
       rspec_test_mapping_path: described_class_mapping_file,
+      logger: kind_of(Logger),
       rspec_mappings_limit_percentage: nil
     ).and_return(test_selector_described)
   end
 
-  describe "#execute" do
+  context "when test_type is :backend" do
+    let(:test_type) { :backend }
+    let(:failed_tests_content) { "#{mappings.dig(:user, :spec)}\n#{mappings.dig(:todo, :spec)}" }
+
     it "uses mapping fetcher to get mapping json files" do
       exporter.execute
 
@@ -163,7 +167,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
       expect_events_sent(
         "described_class",
-        changed_files_count: 3,
+        changed_files_count: 4,
         predicted_test_files_count: 1,
         missed_failing_test_files: 1
       )
@@ -174,7 +178,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
       expect_events_sent(
         "coverage",
-        changed_files_count: 3,
+        changed_files_count: 4,
         predicted_test_files_count: 3,
         missed_failing_test_files: 0
       )
@@ -184,35 +188,85 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       exporter.execute
 
       expect(read_metrics("coverage")).to eq({
+        "test_type" => "backend",
         "strategy" => "coverage",
         "core_metrics" => {
-          "changed_files_count" => 3,
-          "changed_files_in_mapping" => 3,
+          "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 0,
           "predicted_test_files_count" => 3
-        },
-        "mapping_metrics" => {
-          "failed_test_files_in_mapping" => 2,
-          "test_files_selected_by_crystalball" => 3,
-          "total_test_files_in_mapping" => 3
         }
       })
       expect(read_metrics("described_class")).to eq({
+        "test_type" => "backend",
         "strategy" => "described_class",
         "core_metrics" => {
-          "changed_files_count" => 3,
-          "changed_files_in_mapping" => 1,
+          "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 1,
           "predicted_test_files_count" => 1
-        },
-        "mapping_metrics" => {
-          "failed_test_files_in_mapping" => 1,
-          "test_files_selected_by_crystalball" => 1,
-          "total_test_files_in_mapping" => 1
         }
       })
+    end
+  end
+
+  context "when test_type is :frontend" do
+    let(:test_type) { :frontend }
+    let(:failed_tests_content) { "spec/frontend/project_spec.js\nspec/frontend/group_spec.js" }
+    let(:changed_files_path) { File.join(Dir.tmpdir, "changed_files.txt") }
+    let(:matching_js_files_path) { File.join(Dir.tmpdir, "matching_js_files.txt") }
+
+    before do
+      File.write(jest_matching_tests_file, jest_matching_tests.join(" "))
+
+      allow(Open3).to receive(:capture2e).with({
+        "RSPEC_CHANGED_FILES_PATH" => changed_files_path,
+        'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files_path,
+        'JEST_MATCHING_TEST_FILES_PATH' => jest_matching_tests_file
+      }, %r{scripts/frontend/find_jest_predictive_tests.js})
+      .and_return(["", instance_double(Process::Status, success?: true)])
+    end
+
+    it "creates inputs for predictive jest script" do
+      exporter.execute
+
+      # js predictive script has separate input for additional js files mapped from rails views
+      expect(File.read(matching_js_files_path)).to eq(changed_js_files.join("\n"))
+      expect(File.read(changed_files_path)).to eq(changed_files.select { |f| f.ends_with?(".rb") }.join("\n"))
+    end
+
+    it "exports metrics for jest_built_in strategy", :aggregate_failures do
+      exporter.execute
+
+      expect_events_sent(
+        "jest_built_in",
+        changed_files_count: 4,
+        predicted_test_files_count: 2,
+        missed_failing_test_files: 1
+      )
+    end
+
+    it "creates metrics output files", :aggregate_failures do
+      exporter.execute
+
+      expect(read_metrics("jest_built_in")).to eq({
+        "test_type" => "frontend",
+        "strategy" => "jest_built_in",
+        "core_metrics" => {
+          "changed_files_count" => 4,
+          "failed_test_files_count" => 2,
+          "missed_failing_test_files" => 1,
+          "predicted_test_files_count" => 2
+        }
+      })
+    end
+  end
+
+  context "when test_type is invalid" do
+    let(:test_type) { :invalid }
+
+    it "raises an error" do
+      expect { exporter }.to raise_error("Unknown test type 'invalid'")
     end
   end
 end
