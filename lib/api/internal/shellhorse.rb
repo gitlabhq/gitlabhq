@@ -32,6 +32,7 @@ module API
             requires :action, type: String
             requires :protocol, type: String
             requires :gl_repository, type: String # repository identifier, such as project-7
+            requires :changes, type: String
             optional :check_ip, type: String
             optional :packfile_stats, type: Hash do
               # wants is the number of objects the client announced it wants.

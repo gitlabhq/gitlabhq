@@ -269,7 +269,8 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
             it 'schedules the group for deletion' do
               gitlab_request
 
-              message = format("'%{group_name}' has been scheduled for removal on", group_name: group.name)
+              message = format("'%{group_name}' has been scheduled for deletion and will be deleted on",
+                group_name: group.reload.name)
               expect(response).to have_gitlab_http_status(:ok)
               expect(json_response['message']).to include(message)
             end
@@ -280,7 +281,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
             before do
               allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute)
-                                                           .and_return({ status: :error, message: error })
+                                                           .and_return(ServiceResponse.error(message: error))
             end
 
             it 'does not mark the group for deletion' do

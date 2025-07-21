@@ -13,7 +13,6 @@ additional_properties:
     description: Registration type, which can be `registration_token` or `authenticated_user`
 product_group: runner
 product_categories:
-- fleet_visibility
 - runner
 milestone: '17.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179876

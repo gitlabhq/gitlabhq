@@ -2285,6 +2285,7 @@ Input type: `AiCatalogAgentCreateInput`
 | <a id="mutationaicatalogagentcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the agent. |
 | <a id="mutationaicatalogagentcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the agent is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentcreatesystemprompt"></a>`systemPrompt` | [`String!`](#string) | System prompt for the agent. |
+| <a id="mutationaicatalogagentcreatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab-defined tools for the agent. |
 | <a id="mutationaicatalogagentcreateuserprompt"></a>`userPrompt` | [`String!`](#string) | User prompt for the agent. |
 
 #### Fields
@@ -2338,6 +2339,7 @@ Input type: `AiCatalogAgentUpdateInput`
 | <a id="mutationaicatalogagentupdatename"></a>`name` | [`String`](#string) | Name for the agent. |
 | <a id="mutationaicatalogagentupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the item is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab-defined tools for the agent. |
 | <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 
 #### Fields
@@ -11247,6 +11249,46 @@ Input type: `SetGroupSecretPushProtectionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsetgroupsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.setPagesForceHttps`
+
+Input type: `SetPagesForceHttpsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesforcehttpsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesforcehttpsprojectpath"></a>`projectPath` | [`ID!`](#id) | Path of the project to set the pages force HTTPS. |
+| <a id="mutationsetpagesforcehttpsvalue"></a>`value` | [`Boolean!`](#boolean) | Indicates user wants to enforce HTTPS on their pages. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesforcehttpsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesforcehttpserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetpagesforcehttpsproject"></a>`project` | [`Project`](#project) | Project that was updated. |
+
+### `Mutation.setPagesUseUniqueDomain`
+
+Input type: `SetPagesUseUniqueDomainInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesuseuniquedomainclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesuseuniquedomainprojectpath"></a>`projectPath` | [`ID!`](#id) | Path of the project to set the pages to use unique domains. |
+| <a id="mutationsetpagesuseuniquedomainvalue"></a>`value` | [`Boolean!`](#boolean) | Indicates user wants to use unique subdomains for their pages. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesuseuniquedomainclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesuseuniquedomainerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetpagesuseuniquedomainproject"></a>`project` | [`Project`](#project) | Project that was updated. |
 
 ### `Mutation.setPreReceiveSecretDetection`
 
@@ -22232,6 +22274,7 @@ An AI catalog agent version.
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogagentversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
 | <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="aicatalogagentversiontools"></a>`tools` | [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection) | GitLab-defined tools belonging to the agent. (see [Connections](#connections)) |
 | <a id="aicatalogagentversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
 | <a id="aicatalogagentversionuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 | <a id="aicatalogagentversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |

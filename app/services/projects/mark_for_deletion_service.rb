@@ -1,47 +1,58 @@
 # frozen_string_literal: true
 
 module Projects
-  class MarkForDeletionService < BaseService
-    def execute
-      return success if project.marked_for_deletion_at?
-
-      result = ::Projects::UpdateService.new(
-        project,
-        current_user,
-        project_update_service_params
-      ).execute
-      log_error(result[:message]) if result[:status] == :error
-
-      if result[:status] == :success
-        log_event
-        send_project_deletion_notification
-
-        ## Trigger root statistics refresh, to skip project_statistics of
-        ## projects marked for deletion
-        ::Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
-      end
-
-      result
-    end
-
+  class MarkForDeletionService < ::Namespaces::MarkForDeletionBaseService
     private
 
-    def send_project_deletion_notification
-      ::NotificationService.new.project_scheduled_for_deletion(project)
+    def remove_permission
+      :remove_project
     end
 
-    def log_event
-      log_info("User #{current_user.id} marked project #{project.full_path} for deletion")
+    def notification_method
+      :project_scheduled_for_deletion
     end
 
-    def project_update_service_params
+    def resource_name
+      'project'
+    end
+
+    def execute_deletion
+      ServiceResponse.from_legacy_hash(
+        ::Projects::UpdateService.new(
+          resource,
+          current_user,
+          update_service_params
+        ).execute
+      )
+    end
+
+    def update_service_params
       {
         archived: true,
-        name: "#{project.name}-deleted-#{project.id}",
-        path: "#{project.path}-deleted-#{project.id}",
-        marked_for_deletion_at: Time.current.utc,
+        name: suffixed_identifier(resource.name),
+        path: suffixed_identifier(resource.path),
+        marked_for_deletion_at: Time.current,
         deleting_user: current_user
       }
+    end
+
+    def post_success
+      super
+
+      ## Trigger root statistics refresh, to skip project_statistics of
+      ## projects marked for deletion
+      ::Namespaces::ScheduleAggregationWorker.perform_async(resource.namespace_id)
+    end
+
+    def suffixed_identifier(original_identifier)
+      if Feature.enabled?(:rename_group_path_upon_deletion_scheduling, resource.root_ancestor)
+        super
+      else
+        # Legacy support for projects
+        "#{original_identifier}-" \
+          "#{LEGACY_DELETION_SCHEDULED_PATH_INFIX}-" \
+          "#{resource.id}"
+      end
     end
   end
 end

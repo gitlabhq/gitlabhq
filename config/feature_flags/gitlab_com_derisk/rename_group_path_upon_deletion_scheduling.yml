@@ -1,0 +1,10 @@
+---
+name: rename_group_path_upon_deletion_scheduling
+description: Rename group path with a suffix upon deletion scheduling of groups/projects
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/526081
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197431
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555008
+milestone: '18.3'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

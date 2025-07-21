@@ -257,6 +257,8 @@ module Types
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
     mount_mutation Mutations::Pages::MarkOnboardingComplete
+    mount_mutation Mutations::Pages::SetPagesForceHttps
+    mount_mutation Mutations::Pages::SetPagesUseUniqueDomain
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }

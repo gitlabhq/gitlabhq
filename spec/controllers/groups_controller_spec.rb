@@ -578,7 +578,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
           it 'redirects to group path' do
             subject
 
-            expect(response).to redirect_to(group_path(group))
+            expect(response).to redirect_to(group_path(group.reload))
           end
         end
 
@@ -590,7 +590,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
             expect(json_response['message'])
             .to eq(
-              "'#{group.name}' has been scheduled for deletion and will be deleted on " \
+              "'#{group.reload.name}' has been scheduled for deletion and will be deleted on " \
                 "#{permanent_deletion_date_formatted(group)}.")
           end
         end
@@ -598,7 +598,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       context 'failure' do
         before do
-          allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+          allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: 'error'))
         end
 
         it 'does not mark the group for deletion' do
@@ -723,7 +723,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       context 'when the restore fails' do
         before do
-          allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+          allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: 'error'))
         end
 
         it 'does not restore the group' do

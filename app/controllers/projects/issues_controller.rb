@@ -451,6 +451,7 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
+    options[:include_subepics] = true if action_name == 'export_csv'
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }

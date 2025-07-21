@@ -108,3 +108,12 @@ To buy seats for a subscription:
 
 You receive the payment receipt by email.
 You can also access the receipt in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
+
+## Reduce seats
+
+You can reduce seats only during subscription renewal.
+If you want to reduce the number of seats in your subscription, you can [renew for fewer seats](manage_subscription.md#renew-for-fewer-seats).
+
+If you want to reduce seats after you have renewed or purchased a subscription,
+open a ticket with the Billing team or contact your GitLab sales representative.
+For assistance, visit the [Contact us] page in your Customers Portal account.

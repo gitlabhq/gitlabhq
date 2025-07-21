@@ -51,7 +51,7 @@ milestone bar or title, a popover appears with its title, start date, and due
 date. You can also select the chevron ({{< icon name="chevron-down" >}}) next to the **Milestones**
 heading to toggle the list of the milestone bars.
 
-![roadmap view](img/roadmap_view_v14_3.png)
+![The roadmap view with epics and milestones.](img/roadmap_view_v14_3.png)
 
 From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
 

@@ -191,14 +191,14 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    return destroy_immediately if @project.marked_for_deletion_at? && params[:permanently_delete].present?
+    return destroy_immediately if @project.self_deletion_scheduled? && params[:permanently_delete].present?
 
-    result = ::Projects::MarkForDeletionService.new(@project, current_user, {}).execute
+    result = ::Projects::MarkForDeletionService.new(@project, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       redirect_to project_path(@project), status: :found
     else
-      flash.now[:alert] = result[:message]
+      flash.now[:alert] = result.message
 
       render_edit
     end
@@ -209,14 +209,14 @@ class ProjectsController < Projects::ApplicationController
 
     result = ::Projects::RestoreService.new(@project, current_user, {}).execute
 
-    if result[:status] == :success
+    if result.success?
       flash[:notice] = format(
         _("Project '%{project_name}' has been successfully restored."), project_name: @project.full_name
       )
 
       redirect_to(edit_project_path(@project))
     else
-      flash.now[:alert] = result[:message]
+      flash.now[:alert] = result.message
 
       render_edit
     end

@@ -22,7 +22,7 @@ and help ensure that the code deployed to production complies with your establis
 
 This process is part of a larger workflow:
 
-![A typical software development workflow](img/get_started_cicd_v16_11.png)
+![GitLab DevSecOps lifecycle with stages for Plan, Create, Verify, Secure, Release, and Monitor.](img/get_started_cicd_v16_11.png)
 
 ## Step 1: Create a `.gitlab-ci.yml` file
 
