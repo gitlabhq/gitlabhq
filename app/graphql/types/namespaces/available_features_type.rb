@@ -2,8 +2,8 @@
 
 module Types
   module Namespaces
-    class LicensedFeaturesType < BaseObject # rubocop:disable Graphql/AuthorizeTypes -- parent is already authorized
-      graphql_name 'NamespaceLicensedFeatures'
+    class AvailableFeaturesType < BaseObject # rubocop:disable Graphql/AuthorizeTypes -- parent is already authorized
+      graphql_name 'NamespaceAvailableFeatures'
 
       include IssuesHelper
 

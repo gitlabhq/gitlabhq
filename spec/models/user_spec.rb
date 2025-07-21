@@ -6611,6 +6611,58 @@ RSpec.describe User, feature_category: :user_profile do
         is_expected.to eq 3
       end
     end
+
+    context 'when the query times out' do
+      context 'with ActiveRecord::StatementTimeout' do
+        before do
+          finder_double = instance_double(MergeRequestsFinder)
+          allow(MergeRequestsFinder).to receive(:new).and_return(finder_double)
+          allow(finder_double).to receive_message_chain(:execute, :count)
+            .and_raise(ActiveRecord::StatementTimeout)
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: 'Timeout counting assigned merge requests',
+              user_id: user.id,
+              error: anything
+            )
+          )
+
+          user.assigned_open_merge_requests_count
+        end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'with ActiveRecord::QueryCanceled' do
+        before do
+          finder_double = instance_double(MergeRequestsFinder)
+          allow(MergeRequestsFinder).to receive(:new).and_return(finder_double)
+          allow(finder_double).to receive_message_chain(:execute, :count)
+            .and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: 'Timeout counting assigned merge requests',
+              user_id: user.id,
+              error: anything
+            )
+          )
+
+          user.assigned_open_merge_requests_count
+        end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
   end
 
   describe '#review_requested_open_merge_requests_count' do

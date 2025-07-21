@@ -2175,7 +2175,7 @@ class User < ApplicationRecord
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       params = { state: 'opened', non_archived: true }
 
       if merge_request_dashboard_enabled?
@@ -2184,7 +2184,19 @@ class User < ApplicationRecord
         params[:assignee_id] = id
       end
 
-      MergeRequestsFinder.new(self, params).execute.count
+      begin
+        MergeRequestsFinder.new(self, params).execute.count
+      # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Expensive query can throw 500 error, temporary while the query gets improved
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
+        # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
+        Gitlab::AppLogger.error(
+          message: 'Timeout counting assigned merge requests',
+          user_id: id,
+          error: e.message
+        )
+
+        nil
+      end
     end
   end
 

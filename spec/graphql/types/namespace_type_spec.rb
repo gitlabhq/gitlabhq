@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
       lfs_enabled request_access_enabled projects root_storage_statistics shared_runners_setting
       timelog_categories achievements work_item pages_deployments import_source_users work_item_types
       work_items_widgets sidebar work_item_description_templates ci_cd_settings avatar_url link_paths
-      licensed_features
+      licensed_features available_features
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

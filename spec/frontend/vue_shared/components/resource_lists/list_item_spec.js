@@ -145,33 +145,10 @@ describe('ListItem', () => {
   });
 
   describe('when avatar-default slot is not provided', () => {
-    describe('when resource has a description', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+    it('renders description', () => {
+      createComponent();
 
-      it('renders description', () => {
-        expect(findDescription().props('descriptionHtml')).toBe(
-          defaultPropsData.resource.descriptionHtml,
-        );
-      });
-    });
-
-    describe('when resource does not have a description', () => {
-      beforeEach(() => {
-        createComponent({
-          propsData: {
-            resource: {
-              ...group,
-              descriptionHtml: null,
-            },
-          },
-        });
-      });
-
-      it('does not render description', () => {
-        expect(findDescription().exists()).toBe(false);
-      });
+      expect(findDescription().exists()).toBe(true);
     });
   });
 

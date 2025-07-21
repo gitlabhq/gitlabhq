@@ -50211,9 +50211,6 @@ msgstr ""
 msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
 msgstr ""
 
-msgid "Projects|Scheduled for deletion on %{date}"
-msgstr ""
-
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
 msgstr ""
 
@@ -52820,6 +52817,9 @@ msgid "Resolved by %{name}"
 msgstr ""
 
 msgid "Resource link added"
+msgstr ""
+
+msgid "ResourceListItem|Scheduled for deletion on %{date}"
 msgstr ""
 
 msgid "Resources"

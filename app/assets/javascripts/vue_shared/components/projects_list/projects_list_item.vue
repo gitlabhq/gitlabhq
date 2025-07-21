@@ -5,7 +5,6 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
 } from '~/vue_shared/components/projects_list/utils';
-import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
@@ -25,6 +24,7 @@ import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 
 export default {
@@ -49,7 +49,7 @@ export default {
     ListItem,
     ListItemStat,
     DeleteModal,
-    ProjectListItemDescription,
+    ListItemDescription,
     ProjectListItemActions,
     ProjectListItemInactiveBadge,
     CiIcon,
@@ -287,7 +287,7 @@ export default {
     </template>
 
     <template #avatar-default>
-      <project-list-item-description :project="project" />
+      <list-item-description :resource="project" />
       <topic-badges
         v-if="hasTopics"
         :topics="project.topics"

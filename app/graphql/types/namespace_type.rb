@@ -176,12 +176,21 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    # TODO: Remove once the frontend switches to using available_features.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/555803
     field :licensed_features,
-      Types::Namespaces::LicensedFeaturesType,
+      Types::Namespaces::AvailableFeaturesType,
       null: false,
       description: 'Licensed features available on the namespace.',
       method: :itself,
       experiment: { milestone: '18.1' }
+
+    field :available_features,
+      Types::Namespaces::AvailableFeaturesType,
+      null: false,
+      description: 'Features available on the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.3' }
 
     field :web_url,
       GraphQL::Types::String,

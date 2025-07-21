@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.shared_examples "expose all licensed feature fields for the namespace" do
+RSpec.shared_examples "expose all available feature fields for the namespace" do
   include GraphqlHelpers
 
   specify do

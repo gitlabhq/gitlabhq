@@ -1,25 +1,25 @@
-import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 
 export default {
-  component: ProjectListItemDescription,
-  title: 'vue_shared/projects_list/projects_list_item_description',
+  component: ListItemDescription,
+  title: 'vue_shared/resource_lists/list_item_description',
   argTypes: {
-    project: {
+    resource: {
       control: { type: 'object' },
-      description: 'Project data',
+      description: 'Resource data',
     },
   },
 };
 
 const Template = (args, { argTypes }) => ({
-  components: { ProjectListItemDescription },
+  components: { ListItemDescription },
   props: Object.keys(argTypes),
-  template: '<project-list-item-description v-bind="$props" />',
+  template: '<list-item-description v-bind="$props" />',
 });
 
 export const Default = Template.bind({});
 Default.args = {
-  project: {
+  resource: {
     id: 1,
     archived: false,
     descriptionHtml: `<p>Eco-Track: A mobile application designed to help users reduce their carbon footprint.
@@ -29,11 +29,11 @@ Default.args = {
   },
 };
 
-export const PendingDeletionProject = Template.bind({});
-PendingDeletionProject.args = {
+export const PendingDeletion = Template.bind({});
+PendingDeletion.args = {
   ...Default.args,
-  project: {
-    ...Default.args.project,
+  resource: {
+    ...Default.args.resource,
     markedForDeletionOn: '2024-12-01',
     permanentDeletionDate: '2024-12-07',
   },

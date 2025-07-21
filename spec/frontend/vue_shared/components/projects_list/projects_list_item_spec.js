@@ -3,7 +3,7 @@ import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
@@ -83,7 +83,7 @@ describe('ProjectsListItem', () => {
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
-  const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
+  const findProjectDescription = () => wrapper.findComponent(ListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
