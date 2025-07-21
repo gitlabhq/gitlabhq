@@ -5,6 +5,5 @@ feature_categories:
 description: Store MR ids for exclusion during migrations
 introduced_by_url:
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 table_size: small

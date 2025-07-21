@@ -116,10 +116,11 @@ To prepare the new server:
    sudo gitlab-backup create
    ```
 
-1. Disable the following GitLab services and prevent unintentional restarts by adding the following to the bottom of `/etc/gitlab/gitlab.rb`:
+1. After the backup is complete, disable the following GitLab services and prevent unintentional restarts by adding the following to the bottom of `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    alertmanager['enable'] = false
+   gitaly['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_pages['enable'] = false
    gitlab_workhorse['enable'] = false

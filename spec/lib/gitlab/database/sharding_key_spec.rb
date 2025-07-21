@@ -9,7 +9,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'web_hook_logs_daily' # temporary copy of web_hook_logs
+      'web_hook_logs_daily', # temporary copy of web_hook_logs
+      'ci_gitlab_hosted_runner_monthly_usages', # Dedicated only table, to be sharded
+      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
     ]
   end
 
@@ -381,6 +383,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     end
   end
 
+  it 'does not allow tables in sharded schemas to be permanently exempted', :aggregate_failures do
+    sharded_schemas = Gitlab::Database
+      .all_gitlab_schemas
+      .select { |s| Gitlab::Database::GitlabSchema.require_sharding_key?(s) }
+
+    tables_exempted_from_sharding.each do |entry|
+      expect(entry.gitlab_schema).not_to be_in(sharded_schemas),
+        "#{entry.table_name} is in a schema (#{entry.gitlab_schema}) " \
+          "that requires sharding so is not allowed to be exempted from sharding"
+    end
+  end
+
   it 'does not allow tables with FK references to be permanently exempted', :aggregate_failures do
     tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
 
@@ -460,7 +474,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   def tables_missing_sharding_key(starting_from_milestone:)
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        !entry.exempt_from_sharding? &&
         entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
@@ -469,10 +482,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   def tables_missing_sharding_key_or_sharding_in_progress
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        !entry.exempt_from_sharding? &&
-        ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema) &&
         entry.sharding_key_issue_url.blank? &&
-        entry.desired_sharding_key.blank?
+        entry.desired_sharding_key.blank? &&
+        ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
   end
 
