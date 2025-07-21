@@ -106,8 +106,8 @@ Unfortunately, the larger the database, the longer it takes `pg_dump` to execute
 
 ### Git repositories
 
-A GitLab instance can have one or more repository shards. Each shard is a Gitaly instance or Gitaly Cluster that
-is responsible for allowing access and operations on the locally stored Git repositories. Gitaly can run
+A GitLab instance can have one or more repository shards. Each shard is a Gitaly instance or Gitaly Cluster (Praefect)
+that is responsible for allowing access and operations on the locally stored Git repositories. Gitaly can run
 on a machine:
 
 - With a single disk.
@@ -1517,7 +1517,7 @@ In the following cases, consider using file system data transfer or snapshots as
 
 {{< alert type="warning" >}}
 
-Gitaly Cluster [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
+Gitaly Cluster (Praefect) [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
 
 {{< /alert >}}
 

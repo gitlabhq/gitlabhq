@@ -202,7 +202,7 @@ it might affect one of the following projects:
 ## Further reading
 
 - [Documentation: Database required stops](database/required_stops.md)
-- [Documentation: Upgrading GitLab](../update/_index.md)
+- [Documentation: Upgrade GitLab](../update/_index.md)
   - [Package (Omnibus) upgrade](../update/package/_index.md)
   - [Docker upgrade](../install/docker/upgrade.md)
   - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)

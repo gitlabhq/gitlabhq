@@ -743,9 +743,8 @@ For more information, see the following documentation:
 
 ### Upgrades
 
-Upgrading a reference architecture environment is same as any other GitLab environment.
-The main [Upgrade GitLab](../../update/_index.md) section has detailed steps on how to approach this.
-[Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
+Upgrading a reference architecture environment is the same as any other GitLab environment. For more information, see
+[upgrade GitLab](../../update/_index.md). [Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
 
 {{< alert type="note" >}}
 

@@ -718,7 +718,7 @@ module ApplicationSettingsHelper
       minimum_password_length_min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH,
       minimum_password_length_max: Devise.password_length.max,
       minimum_password_length_help_link:
-        'https://about.gitlab.com/handbook/security/#gitlab-password-policy-guidelines',
+        promo_url(path: '/handbook/security/', anchor: 'gitlab-password-policy-guidelines'),
       domain_allowlist_raw: @application_setting.domain_allowlist_raw,
       new_user_signups_cap: @application_setting[:new_user_signups_cap].to_s,
       domain_denylist_enabled: @application_setting[:domain_denylist_enabled].to_s,

@@ -26,7 +26,7 @@
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://gitlab.cn/saasmigration/') do
       Take me to JiHu (去极狐)
 
-    = render Pajamas::ButtonComponent.new(href: 'https://about.gitlab.com/pricing/faq-jihu/') do
+    = render Pajamas::ButtonComponent.new(href: promo_pricing_url(path: '/faq-jihu/')) do
       Learn more about JiHu (了解更多有关极狐)
 
   .gl-flex.gl-justify-center.gl-items-center.gl-my-6

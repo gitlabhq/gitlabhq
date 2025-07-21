@@ -132,6 +132,131 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
         end
       end
     end
+
+    describe 'PKCE validation for dynamic applications' do
+      let_it_be(:user) { create(:user) }
+
+      context 'with dynamic OAuth application' do
+        let_it_be(:oauth_application) { create(:oauth_application, :dynamic) }
+        let_it_be(:oauth_access_grant) do
+          create(:oauth_access_grant,
+            application: oauth_application,
+            redirect_uri: oauth_application.redirect_uri,
+            resource_owner_id: user.id)
+        end
+
+        let(:base_params) do
+          {
+            grant_type: 'authorization_code',
+            client_id: oauth_application.uid,
+            client_secret: oauth_application.secret,
+            redirect_uri: oauth_application.redirect_uri,
+            code: oauth_access_grant.token
+          }
+        end
+
+        context 'when code_verifier is missing' do
+          it 'returns bad request with PKCE error' do
+            post('/oauth/token', params: base_params)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.parsed_body).to eq({
+              'error' => 'invalid_request',
+              'error_description' => 'PKCE code_verifier is required for dynamic OAuth applications'
+            })
+          end
+        end
+
+        context 'when code_verifier is blank' do
+          it 'returns bad request with PKCE error' do
+            post('/oauth/token', params: base_params.merge(code_verifier: ''))
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.parsed_body).to eq({
+              'error' => 'invalid_request',
+              'error_description' => 'PKCE code_verifier is required for dynamic OAuth applications'
+            })
+          end
+        end
+
+        context 'when code_verifier is present' do
+          it 'allows the request to proceed past PKCE validation' do
+            post('/oauth/token', params: base_params.merge(code_verifier: 'valid_code_verifier'))
+
+            expect(response.parsed_body['error']).not_to eq('invalid_request')
+            expect(response.parsed_body['error_description']).not_to include('PKCE code_verifier is required')
+          end
+        end
+      end
+
+      context 'with non-dynamic OAuth application' do
+        let_it_be(:oauth_application) { create(:oauth_application) }
+        let_it_be(:oauth_access_grant) do
+          create(:oauth_access_grant,
+            application: oauth_application,
+            redirect_uri: oauth_application.redirect_uri,
+            resource_owner_id: user.id)
+        end
+
+        let(:base_params) do
+          {
+            grant_type: 'authorization_code',
+            client_id: oauth_application.uid,
+            client_secret: oauth_application.secret,
+            redirect_uri: oauth_application.redirect_uri,
+            code: oauth_access_grant.token
+          }
+        end
+
+        context 'when code_verifier is missing' do
+          it 'does not enforce PKCE validation' do
+            post('/oauth/token', params: base_params)
+
+            # Should not be rejected due to missing code_verifier
+            expect(response.parsed_body['error']).not_to eq('invalid_request')
+
+            if response.parsed_body['error_description']
+              expect(
+                response.parsed_body['error_description']
+              ).not_to include('PKCE')
+            end
+          end
+        end
+      end
+
+      context 'with application that is explicitly not dynamic' do
+        let_it_be(:oauth_application) { create(:oauth_application, :without_owner) }
+        let_it_be(:oauth_access_grant) do
+          create(:oauth_access_grant,
+            application: oauth_application,
+            redirect_uri: oauth_application.redirect_uri,
+            resource_owner_id: user.id)
+        end
+
+        let(:base_params) do
+          {
+            grant_type: 'authorization_code',
+            client_id: oauth_application.uid,
+            client_secret: oauth_application.secret,
+            redirect_uri: oauth_application.redirect_uri,
+            code: oauth_access_grant.token
+          }
+        end
+
+        context 'when code_verifier is missing' do
+          it 'does not enforce PKCE validation' do
+            post('/oauth/token', params: base_params)
+
+            expect(response.parsed_body['error']).not_to eq('invalid_request')
+
+            if response.parsed_body['error_description']
+              expect(response.parsed_body['error_description'])
+                .not_to include('PKCE')
+            end
+          end
+        end
+      end
+    end
   end
 
   context 'for CORS requests' do

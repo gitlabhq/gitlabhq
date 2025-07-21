@@ -31,6 +31,8 @@ InitializerConnections.raise_if_new_database_connection do
         tokens: 'oauth/tokens'
     end
     put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
+    get '/.well-known/oauth-protected-resource' => 'oauth/protected_resource_metadata#show', as: :oauth_protected_resource_metadata
+    post '/oauth/register(.:format)' => 'oauth/dynamic_registrations#create', as: :oauth_register
 
     draw :oauth
 
@@ -46,6 +48,7 @@ InitializerConnections.raise_if_new_database_connection do
     match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
     match '/oauth/discovery/keys' => 'jwks#keys', via: :options
     match '/.well-known/openid-configuration' => 'jwks#provider', via: :options
+    match '/.well-known/oauth-protected-resource' => 'oauth_protected_resource_metadata#show', via: :options
     match '/.well-known/webfinger' => 'jwks#webfinger', via: :options
 
     match '/oauth/token' => 'oauth/tokens#create', via: :options

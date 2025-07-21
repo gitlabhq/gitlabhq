@@ -176,7 +176,7 @@ describe('RevisionDropdown component', () => {
         searchPlaceholder: 'Filter by Git revision',
         searchable: true,
         searching: false,
-        toggleClass: 'form-control compare-dropdown-toggle gl-min-w-0',
+        toggleClass: 'compare-dropdown-toggle gl-font-monospace',
         toggleText: 'Select branch/tag',
       });
     });

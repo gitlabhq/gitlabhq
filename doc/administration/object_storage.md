@@ -802,7 +802,7 @@ gitlab_rails['object_store']['connection'] = {
 }
 ```
 
-The signature version must be `2`. Using v4 results in a HTTP 411 Length Required error.
+The signature version must be `2`. Using v4 results in an HTTP 411 Length Required error.
 For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/issues/4419).
 
 ### Hitachi Vantara HCP

@@ -107,7 +107,7 @@ For more information, see [upgrading operating systems for PostgreSQL](../admini
 ### GitLab schemas
 
 You should create or use databases exclusively for GitLab, [Geo](../administration/geo/_index.md),
-[Gitaly Cluster](../administration/gitaly/praefect/_index.md), or other components.
+[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md), or other components.
 Do not create or modify databases, schemas, users, or other properties except when you follow:
 
 - Procedures in the GitLab documentation

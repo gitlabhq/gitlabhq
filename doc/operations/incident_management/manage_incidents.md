@@ -271,7 +271,7 @@ You are then credited with the alert's status change.
 ### Automatically close incidents via recovery alerts
 
 Turn on closing an incident automatically when GitLab receives a recovery alert
-from a HTTP or Prometheus webhook.
+from an HTTP or Prometheus webhook.
 
 Prerequisites:
 

@@ -3,6 +3,7 @@ stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab release and maintenance policy
+description: Version support, release cadence, and backporting polices.
 ---
 
 The Delivery Group are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.

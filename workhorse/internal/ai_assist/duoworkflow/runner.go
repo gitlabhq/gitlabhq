@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
@@ -39,6 +40,7 @@ type runner struct {
 	originalReq *http.Request
 	conn        websocketConn
 	wf          workflowStream
+	sendMu      sync.Mutex
 }
 
 func (r *runner) Execute(ctx context.Context) error {
@@ -86,7 +88,7 @@ func (r *runner) handleWebSocketMessage() error {
 		return fmt.Errorf("handleWebSocketMessage: failed to unmarshal a WS message: %v", err)
 	}
 
-	if err = r.wf.Send(response); err != nil {
+	if err = r.threadSafeSend(response); err != nil {
 		if err == io.EOF {
 			// ignore EOF to let Recv() fail and return a meaningful message
 			return nil
@@ -113,7 +115,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
 		}
 
-		if err := r.wf.Send(event); err != nil {
+		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
 		}
 	default:
@@ -128,4 +130,10 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 	}
 
 	return nil
+}
+
+func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
+	r.sendMu.Lock()
+	defer r.sendMu.Unlock()
+	return r.wf.Send(event)
 }

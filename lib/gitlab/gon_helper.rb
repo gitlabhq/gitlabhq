@@ -34,7 +34,7 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
-      gon.promo_url              = ApplicationHelper.promo_url
+      gon.promo_url              = Gitlab::Routing.url_helpers.promo_url
       gon.forum_url              = Gitlab::Saas.community_forum_url
       gon.docs_url               = Gitlab::Saas.doc_url
       gon.revision               = Gitlab.revision

@@ -8,6 +8,7 @@ RSpec.describe JwksController, feature_category: :system_access do
       [
         "/oauth/discovery/keys",
         "/.well-known/openid-configuration",
+        "/.well-known/oauth-authorization-server",
         "/.well-known/webfinger?resource=#{create(:user).email}"
       ].each do |endpoint|
         get endpoint

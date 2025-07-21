@@ -216,7 +216,7 @@ module SidebarsHelper
   end
 
   def compare_plans_url(*)
-    "#{promo_url}/pricing"
+    promo_pricing_url
   end
 
   private

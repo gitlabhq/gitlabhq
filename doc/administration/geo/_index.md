@@ -117,10 +117,10 @@ Geo replicates corruption on the primary site to all secondary sites. To protect
 
 Geo is designed to be an active-passive, high-availability solution. It operates an eventually consistent synchronization model which means that secondary sites are not tightly synchronized with the primary site. Secondary sites follow the primary with a small delay, which can result in a small amount of data loss after a disaster. Failover to a secondary site in the event of a disaster requires human intervention. However, large parts of the process of promoting a secondary site to become a primary is automated by the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit), provided you deploy all your sites using GET.
 
-## Gitaly Cluster
+## Gitaly Cluster (Praefect)
 
-Geo should not be confused with [Gitaly Cluster](../gitaly/praefect/_index.md). For more information about
-the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/praefect/_index.md#comparison-to-geo).
+Geo should not be confused with [Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md). For more information about
+the difference between Geo and Gitaly Cluster (Praefect), see [Comparison to Geo](../gitaly/praefect/_index.md#comparison-to-geo).
 
 ## How Geo works
 

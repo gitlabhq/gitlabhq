@@ -29,8 +29,6 @@ To render dashboard layouts it's recommended to use the [GlDashboardLayout](http
 component. It provides an easy way to render dashboards using
 a configuration which aligns with our [Pajamas guidelines](https://design.gitlab.com/patterns/dashboards/).
 
-Note that GlDashboardLayout supplants the deprecated `dashboard_layout.vue` component in the vue shared directory.
-
 ### Panel guidelines
 
 You are free to
@@ -51,7 +49,7 @@ and can keep existing visualizations. A typical migration path could look like t
 1. Create a new dashboard using GlDashboardLayout and `extended_dashboard_panel.vue`.
 1. Create a dashboard config object that mimics your old dashboard layout.
 1. Optionally, use GlDashboardLayout's slots to render your dashboard's
-filters, actions, or custom title or description.
+   filters, actions, or custom title or description.
 1. Ensure your new dashboard, panels, and visualizations render correctly.
 1. Remove the feature flag and your old dashboard.
 
@@ -62,4 +60,6 @@ for an example on how to render existing visualization components using the dash
 
 Real world implementations and migrations using the GlDashboardLayout component:
 
-- New security dashboard added in MR [!191974](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191974)
+- New group security dashboard added in MR [!191974](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191974)
+- New project security dashboard added in MR [!197626](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197626)
+- New compliance center added in MR [!195759](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195759)

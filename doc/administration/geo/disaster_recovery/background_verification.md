@@ -96,7 +96,7 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
    1. On the project administration page, get the values in the **Storage name** and **Relative path** fields.
 
 1. On a **Gitaly node on the primary** site and a **Gitaly node on the secondary** site, go to the project's repository
-   directory. If using Gitaly Cluster,
+   directory. If using Gitaly Cluster (Praefect),
    [check that it is in a healthy state](../../gitaly/praefect/troubleshooting.md#check-cluster-health) before
    running these commands.
 

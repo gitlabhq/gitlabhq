@@ -51,13 +51,11 @@ To use the same name for the replacement node, use [repository verifier](configu
 
 #### With a node with a different name
 
-The steps use a different name for the replacement node for a Gitaly Cluster depend on if a [replication factor](configure.md#configure-replication-factor)
-is set.
+The steps to replace a node with a node with a different name for Gitaly Cluster (Praefect) depend on if a
+[replication factor](configure.md#configure-replication-factor) is set.
 
-##### Replication factor set
-
-If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor) to set the replication factor per repository again to get
-new storage assigned.
+If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor)
+to set the replication factor per repository again to get new storage assigned.
 
 For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you should increase the replication
 factor to 3:
@@ -70,8 +68,8 @@ current assignments: gitaly-1, gitaly-2, gitaly-3
 
 This ensures that the repository is replicated to the new node and the `repository_assignments` table gets updated with the name of new Gitaly node.
 
-If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not automatically included in replication.
-You must follow the steps described previously.
+If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not
+automatically included in replication. You must follow the steps described previously.
 
 After you [verify](#check-for-data-loss) that repository is successfully replicated to the new node:
 
@@ -104,8 +102,8 @@ This would trigger appropriate replication jobs to bring the system back into th
 
 ## Primary node failure
 
-Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary. Gitaly
-Cluster:
+Gitaly Cluster (Praefect) recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary.
+Gitaly Cluster (Praefect):
 
 - Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
 - If no fully up to date secondary is available, elects the secondary with the least unreplicated writes from the primary as the new primary.
@@ -473,7 +471,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
   @hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git
   ```
 
-- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../../repository_storage_paths.md#gitaly-cluster-storage).
+- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../../repository_storage_paths.md#gitaly-cluster-praefect-storage).
 - `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
   [per-repository replication](configure.md#configure-replication-factor) is set as the replication strategy.
 - `-replicate-immediately` causes the command to replicate the repository to its secondaries immediately.

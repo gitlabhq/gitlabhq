@@ -16637,7 +16637,8 @@ ALTER SEQUENCE issuable_slas_id_seq OWNED BY issuable_slas.id;
 CREATE TABLE issue_assignees (
     user_id bigint NOT NULL,
     issue_id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_d88fe18cfa CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE TABLE issue_assignment_events (
@@ -18866,7 +18867,8 @@ CREATE TABLE oauth_applications (
     trusted boolean DEFAULT false NOT NULL,
     confidential boolean DEFAULT true NOT NULL,
     expire_access_tokens boolean DEFAULT false NOT NULL,
-    ropc_enabled boolean DEFAULT true NOT NULL
+    ropc_enabled boolean DEFAULT true NOT NULL,
+    dynamic boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE oauth_applications_id_seq
@@ -38018,6 +38020,8 @@ CREATE INDEX index_sbom_components_on_organization_id ON sbom_components USING b
 CREATE INDEX index_sbom_graph_paths_on_ancestor_id ON sbom_graph_paths USING btree (ancestor_id);
 
 CREATE INDEX index_sbom_graph_paths_on_descendant_id ON sbom_graph_paths USING btree (descendant_id);
+
+CREATE INDEX index_sbom_graph_paths_on_descendant_id_created_at_top_level ON sbom_graph_paths USING btree (descendant_id, created_at) WHERE (top_level_ancestor = true);
 
 CREATE INDEX index_sbom_graph_paths_on_project_id_and_descendant_id ON sbom_graph_paths USING btree (project_id, descendant_id);
 

@@ -13781,6 +13781,34 @@ Input type: `workItemsHierarchyReorderInput`
 | <a id="mutationworkitemshierarchyreorderparentworkitem"></a>`parentWorkItem` | [`WorkItem`](#workitem) | Work item's parent after mutation. |
 | <a id="mutationworkitemshierarchyreorderworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
+### `Mutation.workItemsReorder`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Reorders a project level work item.
+
+Input type: `workItemsReorderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsreorderid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to be reordered. |
+| <a id="mutationworkitemsreordermoveafterid"></a>`moveAfterId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed after the work item. |
+| <a id="mutationworkitemsreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed before the work item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsreordererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsreorderworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
+
 ### `Mutation.workspaceCreate`
 
 Input type: `WorkspaceCreateInput`

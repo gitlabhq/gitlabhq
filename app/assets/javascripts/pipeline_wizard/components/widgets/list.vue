@@ -51,11 +51,6 @@ export default {
       required: false,
       default: i18n.invalidFeedback,
     },
-    id: {
-      type: String,
-      required: false,
-      default: () => uniqueId('listWidget-'),
-    },
     pattern: {
       type: String,
       required: false,
@@ -87,9 +82,6 @@ export default {
     sanitizedValue() {
       // Filter out empty steps
       return this.value.filter(({ value }) => Boolean(value)).map(({ value }) => value) || [];
-    },
-    hasAnyValue() {
-      return this.value.some(({ value }) => Boolean(value));
     },
     needsAnyValue() {
       return this.required && !this.value.some(({ value }) => Boolean(value));

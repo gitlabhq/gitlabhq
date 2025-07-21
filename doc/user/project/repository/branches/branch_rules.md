@@ -223,7 +223,7 @@ To add a status check service:
 1. Enter the **Service name**.
 1. In the **API to check** field, enter the URL.
 
-   You should use a HTTPS URL to protect your merge request data in transit.
+   You should use an HTTPS URL to protect your merge request data in transit.
 
 ![Branch rules status checks](img/branch_rule_status_check_v17_4.png)
 

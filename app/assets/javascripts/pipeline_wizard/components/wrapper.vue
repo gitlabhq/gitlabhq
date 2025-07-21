@@ -86,6 +86,7 @@ export default {
         template: this.steps.get(i).get('template', true),
       }));
     },
+    // eslint-disable-next-line vue/no-unused-properties -- used indirectly by tracking mixin or external analytics utility
     tracking() {
       return {
         category: `pipeline_wizard:${this.templateId}`,

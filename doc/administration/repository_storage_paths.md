@@ -17,7 +17,7 @@ GitLab stores [repositories](../user/project/repository/_index.md) on repository
 storage is either:
 
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
-- [Virtual storage](gitaly/praefect/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
+- [Virtual storage](gitaly/praefect/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster (Praefect).
 
 {{< alert type="warning" >}}
 
@@ -30,7 +30,7 @@ access repositories through a physical or virtual storage.
 For more information on:
 
 - Configuring Gitaly, see [Configure Gitaly](gitaly/configure_gitaly.md).
-- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](gitaly/praefect/_index.md).
+- Configuring Gitaly Cluster (Praefect), see [Configure Gitaly Cluster (Praefect)](gitaly/praefect/configure.md).
 
 ## Hashed storage
 
@@ -178,7 +178,7 @@ For example:
 "@groups/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
 ```
 
-### Gitaly Cluster storage
+### Gitaly Cluster (Praefect) storage
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
@@ -325,4 +325,4 @@ See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) fo
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).
+same process as [migrating to Gitaly Cluster (Praefect)](gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).

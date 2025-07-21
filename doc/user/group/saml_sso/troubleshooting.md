@@ -455,7 +455,7 @@ If all users are receiving a `404` after signing in to the identity provider (Id
 
 - Verify the clocks on the IdP server and GitLab are synced to the same time.
 
-If a subset of users recieve a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
+If a subset of users receive a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
 
 - Ensure the user has been [added to the SAML identity provider](_index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
 - Ensure the user's SCIM identity's `active` attribute is `true` using the [SCIM API](../../../api/scim.md).

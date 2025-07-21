@@ -320,32 +320,45 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   describe '#auth_app_owner_text' do
     shared_examples 'generates text with the correct info' do
       it 'includes the name of the application owner' do
-        auth_app_owner_text = helper.auth_app_owner_text(owner)
+        auth_app_owner_text = helper.auth_app_owner_text(application)
 
-        expect(auth_app_owner_text).to include(owner.name)
+        expect(auth_app_owner_text).to include(application.owner.name)
         expect(auth_app_owner_text).to include(path_to_owner)
       end
     end
 
     context 'when owner is a user' do
-      let_it_be(:owner) { create(:user) }
+      let_it_be(:application) { create(:oauth_application) }
 
-      let(:path_to_owner) { user_path(owner) }
+      let(:path_to_owner) { user_path(application.owner) }
 
       it_behaves_like 'generates text with the correct info'
     end
 
     context 'when owner is a group' do
-      let_it_be(:owner) { create(:group) }
+      let_it_be(:application) { create(:oauth_application, :group_owned) }
 
-      let(:path_to_owner) { user_path(owner) }
+      let(:path_to_owner) { user_path(application.owner) }
 
       it_behaves_like 'generates text with the correct info'
     end
 
     context 'when the user is missing' do
-      it 'returns nil' do
-        expect(helper.auth_app_owner_text(nil)).to be('An administrator added this OAuth application ')
+      let_it_be(:application) { create(:oauth_application, :without_owner) }
+
+      context 'when the application is dynamically created' do
+        let_it_be(:application) { create(:oauth_application, :dynamic) }
+
+        it 'returns a warning' do
+          expect(helper.auth_app_owner_text(application))
+            .to be('An anonymous service added this dynamically created OAuth application ')
+        end
+      end
+
+      context 'when the application is not dynamically generated' do
+        it 'returns nil' do
+          expect(helper.auth_app_owner_text(application)).to be('An administrator added this OAuth application ')
+        end
       end
     end
   end

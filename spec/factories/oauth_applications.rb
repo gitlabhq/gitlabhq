@@ -8,4 +8,21 @@ FactoryBot.define do
     owner
     owner_type { 'User' }
   end
+
+  trait :group_owned do
+    owner_type { 'Group' }
+    owner { association(:group) }
+  end
+
+  trait :dynamic do
+    owner { nil }
+    owner_type { nil }
+    dynamic { true }
+  end
+
+  trait :without_owner do
+    owner { nil }
+    owner_type { nil }
+    dynamic { false }
+  end
 end

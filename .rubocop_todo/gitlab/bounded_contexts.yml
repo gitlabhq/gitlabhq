@@ -2136,6 +2136,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/finders/iterations/cadences_finder.rb'
     - 'ee/app/finders/iterations_finder.rb'
     - 'ee/app/finders/licenses_finder.rb'
+    - 'ee/app/finders/push_rule_finder.rb'
     - 'ee/app/finders/llm/extra_resource_finder.rb'
     - 'ee/app/finders/member_roles/roles_finder.rb'
     - 'ee/app/finders/okrs/checkin_reminder_key_result_finder.rb'

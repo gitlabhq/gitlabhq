@@ -60,7 +60,7 @@ from [owasp.org](https://owasp.org/).
 ### How do the end-users interact with the application?
 
 - **Secondary** sites provide all the interfaces a **primary** site does
-  (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
+  (notably an HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
   access), but is constrained to read-only activities. The principal use case is
   envisioned to be cloning Git repositories from the **secondary** site in favor of the
   **primary** site, but end-users may use the GitLab web interface to view information like projects,

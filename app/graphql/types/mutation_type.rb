@@ -251,6 +251,7 @@ module Types
     mount_mutation Mutations::WorkItems::Hierarchy::AddChildrenItems, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::BulkUpdate, experiment: { milestone: '17.4' }
     mount_mutation Mutations::WorkItems::BulkMove, experiment: { milestone: '18.2' }
+    mount_mutation Mutations::WorkItems::Reorder, experiment: { milestone: '18.3' }
     mount_mutation Mutations::WorkItems::UserPreference::Update, experiment: { milestone: '17.10' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update

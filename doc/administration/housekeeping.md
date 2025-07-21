@@ -194,7 +194,7 @@ duration of 10 minutes.
 
 You can change this default in Gitaly configuration.
 
-For environments with Gitaly Cluster, the scheduled housekeeping start time can be
+For environments with Gitaly Cluster (Praefect), the scheduled housekeeping start time can be
 staggered across Gitaly nodes so the scheduled housekeeping is not running
 simultaneously on multiple nodes.
 

@@ -180,8 +180,9 @@ export default {
       ref="collapsibleDropdown"
       block
       searchable
-      class="gl-w-full gl-font-monospace"
-      toggle-class="form-control compare-dropdown-toggle gl-min-w-0"
+      class="gl-w-full"
+      toggle-class="compare-dropdown-toggle gl-font-monospace"
+      :selected="selectedRevision"
       :items="dropdownItems"
       :toggle-text="selectedRevision"
       :header-text="s__('CompareRevisions|Select Git revision')"
@@ -193,6 +194,12 @@ export default {
       @hidden="onHidden"
       @search="searchTerm = $event"
       @select="onClick"
-    />
+    >
+      <template #list-item="{ item }">
+        <span class="gl-break-all gl-font-monospace">
+          {{ item.text }}
+        </span>
+      </template>
+    </gl-collapsible-listbox>
   </div>
 </template>

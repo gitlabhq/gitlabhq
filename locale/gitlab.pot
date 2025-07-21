@@ -7207,6 +7207,9 @@ msgstr ""
 msgid "An alert has been triggered in %{project_path}."
 msgstr ""
 
+msgid "An anonymous service added this dynamically created OAuth application "
+msgstr ""
+
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
 msgstr ""
 
@@ -15525,6 +15528,9 @@ msgid "Compare with previous version"
 msgstr ""
 
 msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
+msgstr ""
+
+msgid "CompareRevisions|An error occurred while retrieving target projects."
 msgstr ""
 
 msgid "CompareRevisions|Branches"

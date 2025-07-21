@@ -225,16 +225,6 @@ module ApplicationHelper
   end
 
   # This needs to be used outside of Rails
-  def self.promo_host
-    'about.gitlab.com'
-  end
-
-  # Convenient method for Rails helper
-  def promo_host
-    ApplicationHelper.promo_host
-  end
-
-  # This needs to be used outside of Rails
   def self.community_forum
     'https://forum.gitlab.com'
   end
@@ -244,16 +234,8 @@ module ApplicationHelper
     ApplicationHelper.community_forum
   end
 
-  def self.promo_url
-    "https://#{promo_host}"
-  end
-
-  def promo_url
-    ApplicationHelper.promo_url
-  end
-
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/get-help/"
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url(path: '/get-help/')
   end
 
   def instance_review_permitted?

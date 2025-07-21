@@ -1376,7 +1376,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
     context 'Nav bar', :js do
       it 'shows default help links in nav' do
-        default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
+        default_support_url = Gitlab::Routing.url_helpers.promo_url(path: '/get-help/')
 
         visit root_dashboard_path
 

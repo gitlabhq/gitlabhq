@@ -821,12 +821,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#compare_plans_url' do
-    before do
-      allow(helper).to receive(:promo_url).and_return('https://about.gitlab.com')
-    end
-
     it 'always returns the pricing page URL' do
-      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq('https://about.gitlab.com/pricing')
+      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq(promo_pricing_url)
     end
   end
 

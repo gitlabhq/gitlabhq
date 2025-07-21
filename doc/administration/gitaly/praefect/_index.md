@@ -162,7 +162,7 @@ These atomicity issues have caused multiple problems in the past with:
 - Backup restoration.
 - Repository moves between repository storages.
 
-Gitaly Cluster provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
+Gitaly Cluster (Praefect) provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
 conflicts that could occur due to partially applied operations.
 
 ### Client-generated replica paths
@@ -332,8 +332,8 @@ Strong consistency is the primary replication method. A subset of operations sti
 (eventual consistency) instead of strong consistency. Refer to the
 [strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189) for more information.
 
-If strong consistency is unavailable, Gitaly Cluster (Praefect) guarantees eventual consistency. In this case. Gitaly Cluster
-(Praefect) replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
+If strong consistency is unavailable, Gitaly Cluster (Praefect) guarantees eventual consistency. In this case,
+Gitaly Cluster (Praefect) replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
 
 For more information on monitoring strong consistency, see
 [Monitoring Gitaly Cluster (Praefect)](monitoring.md).
@@ -353,7 +353,7 @@ For configuration information, see [Configure replication factor](configure.md#c
 
 ## Upgrade Gitaly Cluster (Praefect)
 
-To upgrade a Gitaly Cluster, follow the documentation for
+To upgrade a Gitaly Cluster (Praefect), follow the documentation for
 [zero-downtime upgrades](../../../update/zero_downtime.md).
 
 ## Downgrade Gitaly Cluster (Praefect) to a previous version
@@ -449,7 +449,7 @@ Contact your Customer Success Manager or customer support if you have any questi
 
 ### Known issues
 
-The following table outlines current known issues impacting the use of Gitaly Cluster. For
+The following table outlines current known issues impacting the use of Gitaly Cluster (Praefect). For
 the current status of these issues, refer to the referenced issues and epics.
 
 | Issue                                                                                                 | Summary                                                                                                                                                                                                                                    | How to avoid                                                                                                                                                                                                                                                                                                                                                                                                               |

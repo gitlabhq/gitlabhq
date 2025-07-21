@@ -1,4 +1,5 @@
 - @html_class = 'gl-dark'
+- content_for :hide_empty_navbar, true
 = content_for :meta_tags do
   %meta{ 'http-equiv': 'refresh', content: "3; url=#{@redirect_url}" }
 

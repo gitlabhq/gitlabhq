@@ -13,6 +13,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
+  before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
   # rubocop: enable Rails/LexicallyScopedActionFilter
 
@@ -146,6 +147,21 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
       *::Gitlab::Auth::ADMIN_SCOPES, *::Gitlab::Auth::REPOSITORY_SCOPES,
       *::Gitlab::Auth::REGISTRY_SCOPES
     ) && !doorkeeper_application&.trusted?
+  end
+
+  def validate_pkce_for_dynamic_applications
+    return unless doorkeeper_application&.dynamic?
+
+    if params[:code_challenge].blank?
+      pre_auth.error = :pkce_required_for_dynamic_applications
+      render "doorkeeper/authorizations/error"
+      return
+    end
+
+    return unless params[:code_challenge_method].present? && params[:code_challenge_method] != 'S256'
+
+    pre_auth.error = :invalid_code_challenge_method
+    render "doorkeeper/authorizations/error"
   end
 
   # Used by `set_current_organization` in BaseActionController

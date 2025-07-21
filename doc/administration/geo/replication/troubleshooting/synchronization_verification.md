@@ -904,7 +904,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl tail sidekiq
    ```
 
-1. Clear Gitaly/Gitaly Cluster data.
+1. Clear Gitaly and Gitaly Cluster (Praefect) data.
 
    {{< tabs >}}
 
@@ -917,7 +917,7 @@ to start again from scratch, there are a few steps that can help you:
 
    {{< /tab >}}
 
-   {{< tab title="Gitaly Cluster" >}}
+   {{< tab title="Gitaly Cluster (Praefect)" >}}
 
    1. Optional. Disable the Praefect internal load balancer.
    1. Stop Praefect on each Praefect server:

@@ -52,7 +52,8 @@ To use Code Suggestions, you need:
 
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results, [upgrade to GitLab 18.0 or later](../../../../update/_index.md#upgrade-gitlab). Earlier versions might continue to work, however the experience might be degraded.
+GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
+[upgrade to GitLab 18.0 or later](../../../../update/_index.md). Earlier versions might continue to work, however the experience might be degraded.
 
 {{< /alert >}}
 

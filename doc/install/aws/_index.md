@@ -30,13 +30,13 @@ It's highly recommended to use the [GitLab Environment Toolkit (GET)](https://gi
 
 {{< /alert >}}
 
-Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [40 RPS or 2,000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [60 RPS or 3,000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster to achieve HA for Git repository storage and specifies triple redundancy.
+Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [40 RPS or 2,000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [60 RPS or 3,000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster (Praefect) to achieve HA for Git repository storage and specifies triple redundancy.
 
 GitLab maintains and tests two main types of Reference Architectures. The **Linux package architectures** are implemented on instance compute while **Cloud Native Hybrid architectures** maximize the use of a Kubernetes cluster. Cloud Native Hybrid reference architecture specifications are addendum sections to the Reference Architecture size pages that start by describing the Linux package architecture. For example, the 60 RPS or 3,000 User Cloud Native Reference Architecture is in the subsection titled [Cloud Native Hybrid reference architecture with Helm Charts (alternative)](../../administration/reference_architectures/3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) in the 60 RPS or 3,000 User Reference Architecture page.
 
 ### Getting started for production-grade Linux package installations
 
-The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) is the best place to start for building using the Linux package on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster for you. GET is open source so anyone can build on top of it and contribute improvements to it.
+The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) is the best place to start for building using the Linux package on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster (Praefect) for you. GET is open source so anyone can build on top of it and contribute improvements to it.
 
 ### Getting started for production-grade Cloud Native Hybrid GitLab
 
@@ -640,7 +640,7 @@ gitlab=# \q
 {{< alert type="warning" >}}
 
 In this architecture, having a single Gitaly server creates a single point of failure. Use
-[Gitaly Cluster](../../administration/gitaly/praefect/_index.md) to remove this limitation.
+[Gitaly Cluster (Praefect)](../../administration/gitaly/praefect/_index.md) to remove this limitation.
 
 {{< /alert >}}
 

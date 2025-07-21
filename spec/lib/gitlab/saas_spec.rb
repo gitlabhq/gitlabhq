@@ -17,4 +17,12 @@ RSpec.describe Gitlab::Saas, feature_category: :shared do
 
     it { is_expected.to eq(get_next_url) }
   end
+
+  describe '.promo_host' do
+    subject { described_class.promo_host }
+
+    it 'returns the url' do
+      is_expected.to eq('about.gitlab.com')
+    end
+  end
 end
