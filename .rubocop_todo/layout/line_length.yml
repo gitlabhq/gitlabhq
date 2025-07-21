@@ -1521,7 +1521,6 @@ Layout/LineLength:
     - 'ee/spec/requests/api/vulnerability_issue_links_spec.rb'
     - 'ee/spec/requests/git_http_geo_spec.rb'
     - 'ee/spec/requests/git_http_spec.rb'
-    - 'ee/spec/requests/groups/epics/related_epic_links_controller_spec.rb'
     - 'ee/spec/requests/groups/group_members_controller_spec.rb'
     - 'ee/spec/requests/groups/roadmap_controller_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'

@@ -39,3 +39,5 @@ module Projects
     end
   end
 end
+
+Projects::ArchiveService.prepend_mod

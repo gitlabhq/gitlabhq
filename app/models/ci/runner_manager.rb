@@ -52,8 +52,6 @@ module Ci
     belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
 
-    before_validation :ensure_organization_id, on: :update, if: :runner
-
     validates :runner, presence: true
     validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
@@ -201,11 +199,6 @@ module Ci
 
     def no_organization_id
       errors.add(:runner_manager, 'cannot have organization_id assigned') if organization_id
-    end
-
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
-    def ensure_organization_id
-      self.organization_id = runner.organization_id
     end
 
     def self.version_regex_expression_for_version(version)

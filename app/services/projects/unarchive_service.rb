@@ -37,3 +37,5 @@ module Projects
     end
   end
 end
+
+Projects::UnarchiveService.prepend_mod

@@ -1844,48 +1844,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#ensure_organization_id' do
-    context 'with group runner' do
-      let(:runner) { build(:ci_runner, :group, groups: [group]) }
-
-      specify { expect(runner).to be_valid }
-
-      context 'when organization_id is not present' do
-        before do
-          runner.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from owner on save', :aggregate_failures do
-          expect { runner.save! }
-            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
-        end
-      end
-    end
-
-    context 'with project runner' do
-      let(:runner) { build(:ci_runner, :project, projects: [project]) }
-
-      specify { expect(runner).to be_valid }
-
-      context 'when organization_id is not present' do
-        before do
-          runner.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from owner on save', :aggregate_failures do
-          expect { runner.save! }
-            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
-        end
-      end
-    end
-  end
-
   describe '#ensure_manager' do
     subject(:ensure_manager) { runner.ensure_manager(system_xid) }
 
@@ -1906,19 +1864,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect { ensure_manager }
           .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
             .from([]).to([runner.organization_id])
-      end
-
-      context 'when organization_id is not present' do
-        before do
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from owner' do
-          expect { ensure_manager }
-            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
-              .from([]).to([runner.owner.organization_id])
-        end
       end
     end
 

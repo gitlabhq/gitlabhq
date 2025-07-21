@@ -131,6 +131,8 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |
 | <kbd>v</kbd>                      |                                   | Mark file as viewed or unviewed. |
+| <kbd>;</kbd>                      |                                   | Expand all files. |
+| <kbd>Shift</kbd> + <kbd>;</kbd>   |                                   | Collapse all files. |
 
 ### Project files
 

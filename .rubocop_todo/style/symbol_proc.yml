@@ -53,7 +53,6 @@ Style/SymbolProc:
     - 'ee/app/serializers/ee/issue_sidebar_basic_entity.rb'
     - 'ee/app/serializers/ee/member_entity.rb'
     - 'ee/app/serializers/ee/merge_request_widget_entity.rb'
-    - 'ee/app/serializers/epics/related_epic_entity.rb'
     - 'ee/app/serializers/integrations/jira_serializers/issue_entity.rb'
     - 'ee/app/serializers/linked_epic_entity.rb'
     - 'ee/app/services/analytics/cycle_analytics/data_loader_service.rb'

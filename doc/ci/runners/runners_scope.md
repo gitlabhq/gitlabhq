@@ -768,7 +768,7 @@ To determine the IP address of an instance runner:
 1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![Screenshot showing the IP address column for an instance runner in the GitLab Admin area](img/shared_runner_ip_address_v14_5.png)
+![Admin area showing the IP address column for an instance runner](img/shared_runner_ip_address_v14_5.png)
 
 ### Determine the IP address of a project runner
 
@@ -779,7 +779,7 @@ project.
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Select the runner name and find the **IP Address** row.
 
-![Screenshot showing where to find the IP address for a project runner in the runner details](img/project_runner_ip_address_v17_6.png)
+![Runner details page showing the IP address field for a project runner](img/project_runner_ip_address_v17_6.png)
 
 ## Add maintenance notes to runner configuration
 

@@ -362,7 +362,6 @@ RSpec/BeEq:
     - 'ee/spec/serializers/environment_entity_spec.rb'
     - 'ee/spec/serializers/epic_note_entity_spec.rb'
     - 'ee/spec/serializers/epics/discussion_entity_spec.rb'
-    - 'ee/spec/serializers/epics/related_epic_entity_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'
     - 'ee/spec/serializers/merge_request_widget_entity_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/value_streams/create_service_spec.rb'

@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '../graphql/queries/work_items_widget_metadata.query.graphql';
@@ -11,6 +11,7 @@ export default {
     GlIcon,
     GlLink,
     GlBadge,
+    GlSprintf,
     VisibilityChangeDetector,
   },
   mixins: [timeagoMixin],
@@ -27,6 +28,7 @@ export default {
   data() {
     return {
       metadata: {},
+      hasError: false,
     };
   },
   apollo: {
@@ -39,7 +41,7 @@ export default {
         return currentUser;
       },
       error(error) {
-        this.$emit('fetch-metadata-error');
+        this.hasError = true;
         Sentry.captureException(error);
       },
     },
@@ -60,6 +62,7 @@ export default {
   },
   methods: {
     reload() {
+      this.hasError = false;
       this.$apollo.queries.metadata.refetch();
     },
   },
@@ -71,7 +74,20 @@ export default {
     <h4 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
       <gl-icon name="issues" :size="16" />{{ __('Issues') }}
     </h4>
-    <ul class="gl-list-none gl-p-0">
+    <p v-if="hasError" data-testid="error-message">
+      <gl-sprintf
+        :message="
+          s__(
+            'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the %{linkStart}issue list%{linkEnd}.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="assignedToYouPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <ul v-else class="gl-list-none gl-p-0" data-testid="links-list">
       <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"

@@ -55,7 +55,6 @@ RSpec/ExpectChange:
     - 'ee/spec/requests/api/groups_spec.rb'
     - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/api/provider_identity_spec.rb'
-    - 'ee/spec/requests/groups/epics/related_epic_links_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/services/app_sec/dast/scanner_profiles/create_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/scans/run_service_spec.rb'

@@ -23,12 +23,6 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
   let_it_be(:other_runner) { create(:ci_runner, :project, projects: new_projects, tag_list: %w[tag1 tag2]) }
   let_it_be(:orphaned_runner) { create(:ci_runner, :project, :without_projects, tag_list: %w[tag1 tag2]) }
 
-  let_it_be(:runner_without_org_id) do
-    create(:ci_runner, :project, projects: [owner_project, new_projects.first], tag_list: %w[tag3])
-  end
-
-  let_it_be(:runner_manager_without_org_id) { create(:ci_runner_machine, runner: runner_without_org_id) }
-
   let_it_be(:owned_runner1_manager) { create(:ci_runner_machine, runner: owned_runner1) }
   let_it_be(:owned_runner2_manager) { create(:ci_runner_machine, runner: owned_runner2) }
   let_it_be(:owned_runner3_manager) { create(:ci_runner_machine, runner: owned_runner3) }
@@ -39,11 +33,6 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
   subject(:execute) { service.execute }
 
   before_all do
-    # Simulate a pre-existing record with a NULL organization_id value
-    runner_without_org_id.update_columns(organization_id: nil)
-    runner_manager_without_org_id.update_columns(organization_id: nil)
-    runner_without_org_id.taggings.update_all(organization_id: nil)
-
     owner_project.destroy!
   end
 
@@ -69,10 +58,6 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
       .and change { owned_runner4.reload.sharding_key_id }.from(owner_project.id).to(new_projects.first.id)
       .and change { owned_runner4_manager.reload.sharding_key_id }.from(owner_project.id).to(new_projects.first.id)
       .and change { tagging_sharding_key_id_for_runner(owned_runner4) }.from(owner_project.id).to(new_projects.first.id)
-      # runners which had no organization_id
-      .and change { runner_without_org_id.reload.organization_id }.from(nil).to(owner_group.organization_id)
-      .and change { runner_manager_without_org_id.reload.organization_id }.from(nil).to(owner_group.organization_id)
-      .and change { tagging_org_id_for_runner(runner_without_org_id) }.from(nil).to(owner_group.organization_id)
       # runners whose owner project was not affected
       .and not_change { other_runner.reload.sharding_key_id }.from(new_projects.first.id)
       .and not_change { orphaned_runner.reload.sharding_key_id }
@@ -85,9 +70,5 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
 
   def tagging_sharding_key_id_for_runner(runner)
     runner.taggings.pluck(:sharding_key_id).uniq.sole
-  end
-
-  def tagging_org_id_for_runner(runner)
-    runner.taggings.pluck(:organization_id).uniq.sole
   end
 end

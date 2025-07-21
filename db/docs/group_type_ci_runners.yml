@@ -10,5 +10,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166308
 milestone: '17.6'
 gitlab_schema: gitlab_ci
 sharding_key:
-  sharding_key_id: namespaces
+  organization_id: organizations
 table_size: small
