@@ -2168,7 +2168,8 @@ Example response:
 Delete a project. This endpoint:
 
 - Deletes a project including all associated resources, including issues and merge requests.
-- Marks the project for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+- Marks the project for deletion. On GitLab.com, by default, the deletion happens 30 days later. On GitLab Self-Managed,
+  the retention period depends on the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 - Deletes project immediately if the project is marked for deletion (GitLab 15.11 and later).
 
 {{< alert type="warning" >}}

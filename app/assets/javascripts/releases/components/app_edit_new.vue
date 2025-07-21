@@ -67,7 +67,6 @@ export default {
       'projectPath',
       'groupId',
       'groupMilestonesAvailable',
-      'tagNotes',
       'isFetchingTagNotes',
     ]),
     ...mapGetters('editNew', ['isValid', 'formattedReleaseNotes']),

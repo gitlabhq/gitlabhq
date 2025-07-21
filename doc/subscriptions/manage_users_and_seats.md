@@ -116,4 +116,4 @@ If you want to reduce the number of seats in your subscription, you can [renew f
 
 If you want to reduce seats after you have renewed or purchased a subscription,
 open a ticket with the Billing team or contact your GitLab sales representative.
-For assistance, visit the [Contact us] page in your Customers Portal account.
+For assistance, visit the [Contact us](https://customers.gitlab.com/contact_us) page in your Customers Portal account.

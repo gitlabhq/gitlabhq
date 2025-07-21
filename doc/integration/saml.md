@@ -3088,8 +3088,14 @@ This makes the key file one long string with no line feeds.
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-               certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
-               private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+               certificate:|
+               -----BEGIN CERTIFICATE-----
+               <redacted>
+               -----END CERTIFICATE-----,
+               private_key:|
+               -----BEGIN PRIVATE KEY-----
+               <redacted>
+               -----END PRIVATE KEY-----
        }
      }
    ]
@@ -3119,8 +3125,14 @@ This makes the key file one long string with no line feeds.
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-     certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----'
-     private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+     certificate:|
+     -----BEGIN CERTIFICATE-----
+     <redacted>
+     ----END CERTIFICATE-----,
+     private_key:|
+     -----BEGIN PRIVATE KEY-----
+     <redacted>
+     -----END PRIVATE KEY-----
    ```
 
 1. Create the Kubernetes Secret:
@@ -3174,8 +3186,14 @@ This makes the key file one long string with no line feeds.
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                        certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
-                        private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+                        certificate:|
+                        -----BEGIN CERTIFICATE-----
+                        <redacted>
+                        -----END CERTIFICATE-----,
+                        private_key:|
+                        -----BEGIN PRIVATE KEY-----
+                        <redacted>
+                        -----END PRIVATE KEY-----
                 }
               }
            ]

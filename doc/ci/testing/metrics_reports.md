@@ -16,7 +16,7 @@ GitLab provides a lot of great reporting tools for things like [merge requests](
 
 You can configure your job to use custom Metrics Reports, and GitLab displays a report on the merge request so that it's easier and faster to identify changes without having to check the entire log.
 
-![Metrics Reports](img/metrics_reports_v13_0.png)
+![Merge request widget showing comparison of metrics between source and target branches.](img/metrics_reports_v13_0.png)
 
 ## Use cases
 
@@ -60,7 +60,7 @@ For OpenMetrics text format specifications and examples, see the
 
 Metrics display in the merge request widget as:
 
-![Metrics Reports Advanced](img/metrics_reports_advanced_v13_0.png)
+![Advanced metrics report in a merge request widget highlighting newly detected metric changes.](img/metrics_reports_advanced_v13_0.png)
 
 ## Troubleshooting
 

@@ -24,9 +24,6 @@ export default {
       default: '',
     },
   },
-  data() {
-    return { tagName: '' };
-  },
   computed: {
     ...mapState('ref', ['matches']),
     ...mapState('editNew', ['projectId', 'release']),
