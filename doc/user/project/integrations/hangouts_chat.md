@@ -42,7 +42,7 @@ For more information about webhooks, see the
 To configure the integration in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Google Chat**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In **Webhook**, [paste the URL you copied from Google Chat](#in-google-chat).

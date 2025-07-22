@@ -106,3 +106,15 @@
   image_url: https://about.gitlab.com/images/18_2/immutable_tags_18_1.png
   published_at: 2025-07-17
   release: 18.2
+
+- name: Group and project controls for Premium and Ultimate with GitLab Duo
+  description: |
+    GitLab Premium and Ultimate users can now change the availability of Code Suggestions and GitLab Duo Chat in the IDE for groups and projects. Previously, you could change the availability for the instance or top-level group only.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/turn_on_off/
+  image_url: https://about.gitlab.com/images/18_2/Duo_Controls1.png
+  published_at: 2025-07-17
+  release: 18.2

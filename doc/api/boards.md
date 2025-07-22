@@ -30,7 +30,9 @@ GET /projects/:id/boards
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards"
 ```
 
 Example response:
@@ -117,7 +119,9 @@ GET /projects/:id/boards/:board_id
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
 Example response:
@@ -196,7 +200,9 @@ POST /projects/:id/boards
 | `name` | string | yes | The name of the new board. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards?name=newboard"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards?name=newboard"
 ```
 
 Example response:
@@ -246,7 +252,9 @@ PUT /projects/:id/boards/:board_id
 | `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to. Premium and Ultimate only. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
 ```
 
 Example response:
@@ -323,7 +331,9 @@ DELETE /projects/:id/boards/:board_id
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
 ## List board lists in a project issue board
@@ -341,7 +351,9 @@ GET /projects/:id/boards/:board_id/lists
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists"
 ```
 
 Example response:
@@ -402,7 +414,9 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 | `list_id`| integer | yes | The ID of a board's list. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
 ```
 
 Example response:
@@ -449,7 +463,9 @@ for more information regarding the required license for each list type.
 {{< /alert >}}
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5"
 ```
 
 Example response:
@@ -485,7 +501,9 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 | `position` | integer | yes | The position of the list. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2"
 ```
 
 Example response:
@@ -520,5 +538,7 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
 ```
