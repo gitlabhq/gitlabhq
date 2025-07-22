@@ -71,25 +71,25 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       it { is_expected.to eq(server_info) }
     end
 
-    describe '#get_connected_agents_by_agent_ids' do
+    describe '#get_connected_agentks_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
-      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest) }
-      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsResponse, agents: connected_agents) }
+      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest) }
+      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsResponse, agents: connected_agents) }
 
       let(:connected_agents) { [double] }
 
-      subject { client.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
+      subject { client.get_connected_agentks_by_agent_ids(agent_ids: [agent.id]) }
 
       before do
         expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
           .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
-        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest).to receive(:new)
+        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest).to receive(:new)
           .with(agent_ids: [agent.id])
           .and_return(request)
 
-        expect(stub).to receive(:get_connected_agents_by_agent_i_ds)
+        expect(stub).to receive(:get_connected_agentks_by_agent_i_ds)
           .with(request, metadata: { 'authorization' => 'bearer test-token' })
           .and_return(response)
       end

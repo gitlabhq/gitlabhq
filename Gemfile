@@ -639,7 +639,7 @@ gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 gem 'gitaly', '~> 18.2.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 18.1.0', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 18.2.0', feature_category: :deployment_management
 
 # Lock until 1.74.0 is available
 # https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20067

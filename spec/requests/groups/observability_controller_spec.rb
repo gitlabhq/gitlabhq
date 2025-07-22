@@ -27,9 +27,10 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
     context 'when feature flag is enabled' do
       before do
         stub_feature_flags(observability_sass_features: group)
+        allow(Observability::O11yToken).to receive(:generate_tokens).and_return({ 'testToken' => 'value' })
       end
 
-      context 'with incorrect permissons' do
+      context 'with incorrect permissions' do
         let(:user) { create(:user) }
 
         before do
@@ -52,8 +53,9 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         it 'sets the o11y url from group settings' do
           services_page
           expect(response).to render_template(:show)
-          expect(assigns(:path)).to eq('services')
-          expect(assigns(:o11y_url)).to eq('https://observability.example.com')
+          expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
+          expect(assigns(:data).to_h[:path]).to eq('services')
+          expect(assigns(:data).to_h[:o11y_url]).to eq('https://observability.example.com')
         end
       end
 
@@ -63,12 +65,17 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         it 'sets the o11y url to nil' do
           services_page
           expect(response).to render_template(:show)
-          expect(assigns(:path)).to eq('services')
-          expect(assigns(:o11y_url)).to be_nil
+          expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
+          expect(assigns(:data).to_h[:path]).to eq('services')
+          expect(assigns(:data).to_h[:o11y_url]).to be_nil
         end
       end
 
       context 'with a valid path parameter' do
+        let!(:observability_setting) do
+          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://o11y.gitlab.com')
+        end
+
         Groups::ObservabilityController::VALID_PATHS.each do |path|
           context "with path=#{path}" do
             subject(:observability_page) { get group_observability_path(group, path) }
@@ -77,7 +84,12 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
               observability_page
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect(assigns(:path)).to eq(path)
+              expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
+              expect(assigns(:data).to_h[:path]).to eq(path)
+              expect(assigns(:data).to_h[:o11y_url]).to eq('https://o11y.gitlab.com')
+              expect(assigns(:data).title).to eq(Observability::ObservabilityPresenter::PATHS.fetch(path,
+                'Observability'))
+              expect(assigns(:data).auth_tokens).to eq({ 'test_token' => 'value' })
             end
           end
         end
@@ -154,6 +166,7 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         group_with_different_o11y.add_maintainer(user)
         stub_feature_flags(observability_sass_features: group_with_different_o11y)
         create(:observability_group_o11y_setting, group: group_with_different_o11y, o11y_service_url: o11y_url_2)
+        allow(Observability::O11yToken).to receive(:generate_tokens).and_return({ 'testToken' => 'value' })
 
         get group_observability_path(group_with_different_o11y, 'services')
       end

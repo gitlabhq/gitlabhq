@@ -2427,6 +2427,9 @@ msgstr ""
 msgid "AICatalog|Agent"
 msgstr ""
 
+msgid "AICatalog|Agent created successfully."
+msgstr ""
+
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
@@ -66466,6 +66469,9 @@ msgid "Ultimate"
 msgstr ""
 
 msgid "Unable to apply suggestions to a deleted line."
+msgstr ""
+
+msgid "Unable to authenticate with the observability service. Please check your configuration and try again."
 msgstr ""
 
 msgid "Unable to build Slack link."

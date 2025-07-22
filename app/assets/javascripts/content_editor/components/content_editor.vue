@@ -188,9 +188,13 @@ export default {
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
     markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
 
-    // Set Aria label
+    // Set Aria label and add class
     if (this.contentEditor?.tiptapEditor?.view?.dom) {
-      this.contentEditor.tiptapEditor.view.dom.setAttribute('aria-label', __('Rich text editor'));
+      const { dom } = this.contentEditor.tiptapEditor.view;
+      if (dom) {
+        dom.setAttribute('aria-label', __('Rich text editor'));
+        dom.classList.add('rte-text-box');
+      }
     }
   },
   beforeDestroy() {

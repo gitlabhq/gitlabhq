@@ -1055,25 +1055,30 @@ export default {
           />
         </gl-form-group>
       </div>
-      <template v-if="selectedWorkItemTypeId">
-        <work-item-title
-          ref="title"
-          data-testid="title-input"
-          is-editing
-          :is-valid="isTitleValid"
-          :title="workItemTitle"
-          @updateDraft="updateDraftData('title', $event)"
-          @isTitleValid="isTitleValid = $event"
-        />
-        <title-suggestions
-          :project-path="selectedProjectFullPath"
-          :search="workItemTitle"
-          :help-text="$options.i18n.similarWorkItemHelpText"
-          :title="$options.i18n.suggestionTitle"
-        />
-        <div data-testid="work-item-overview" class="work-item-overview">
+      <div
+        data-testid="work-item-overview"
+        class="work-item-overview"
+        :class="{ 'gl-mb-3': stickyFormSubmit }"
+      >
+        <template v-if="selectedWorkItemTypeId">
+          <work-item-title
+            ref="title"
+            data-testid="title-input"
+            is-editing
+            :is-valid="isTitleValid"
+            :title="workItemTitle"
+            @updateDraft="updateDraftData('title', $event)"
+          />
+          <title-suggestions
+            :project-path="selectedProjectFullPath"
+            :search="workItemTitle"
+            :help-text="$options.i18n.similarWorkItemHelpText"
+            :title="$options.i18n.suggestionTitle"
+          />
+
           <section>
             <work-item-description
+              class="create-work-item-description"
               edit-mode
               is-create-flow
               :autofocus="false"
@@ -1322,39 +1327,40 @@ export default {
               </gl-button>
             </div>
           </div>
+
+          <!-- stick to bottom and put the Confirm button on the right -->
+          <!-- bg-overlap to match modal bg -->
+        </template>
+      </div>
+      <div
+        v-if="stickyFormSubmit"
+        class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3 sm:gl-flex-row sm:gl-items-center"
+        data-testid="form-buttons"
+      >
+        <div v-if="contributionGuidePath" class="gl-text-sm">
+          <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
+            <template #link="{ content }">
+              <gl-link class="gl-font-bold" :href="contributionGuidePath">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
         </div>
-        <!-- stick to bottom and put the Confirm button on the right -->
-        <!-- bg-overlap to match modal bg -->
-        <div
-          v-if="stickyFormSubmit"
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3 sm:gl-flex-row sm:gl-items-center"
-          data-testid="form-buttons"
-        >
-          <div v-if="contributionGuidePath" class="gl-text-sm">
-            <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
-              <template #link="{ content }">
-                <gl-link class="gl-font-bold" :href="contributionGuidePath">
-                  {{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </div>
-          <div class="gl-flex gl-justify-end gl-gap-3">
-            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-              {{ __('Cancel') }}
-            </gl-button>
-            <gl-button
-              variant="confirm"
-              :disabled="!isTitleValid"
-              :loading="loading"
-              data-testid="create-button"
-              @click="createWorkItem"
-            >
-              {{ createWorkItemText }}
-            </gl-button>
-          </div>
+        <div class="gl-flex gl-justify-end gl-gap-3">
+          <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+            {{ __('Cancel') }}
+          </gl-button>
+          <gl-button
+            variant="confirm"
+            :disabled="!isTitleValid"
+            :loading="loading"
+            data-testid="create-button"
+            @click="createWorkItem"
+          >
+            {{ createWorkItemText }}
+          </gl-button>
         </div>
-      </template>
+      </div>
     </template>
   </form>
 </template>

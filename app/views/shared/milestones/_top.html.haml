@@ -3,10 +3,12 @@
 
 - group = local_assigns[:group]
 
-= render 'shared/milestones/header', milestone: milestone
-= render 'shared/milestones/description', milestone: milestone
 = render 'shared/milestones/milestone_complete_alert', milestone: milestone do
   = _('All issues for this milestone are closed.')
   = group ? _('You may close the milestone now.') : _('Navigate to the project to close the milestone.')
+
+= render 'shared/milestones/header', milestone: milestone
+
+= render 'shared/milestones/description', milestone: milestone
 
 = render_if_exists 'shared/milestones/burndown', milestone: milestone, project: @project
