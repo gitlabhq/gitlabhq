@@ -9,7 +9,7 @@
 
 .js-service-desk-issues.service-desk-issues{ data: { support_bot: support_bot_attrs } }
   .js-service-desk-list{ data: { project_data: project_issues_list_data(@project, current_user),
-    service_desk_email_address: ::ServiceDesk::Emails.new(@project).address,
+    service_desk_email_address: can?(current_user, :admin_issue, @project) ? ::ServiceDesk::Emails.new(@project).address : nil,
     can_admin_issues: can?(current_user, :admin_issue, @project).to_s,
     can_edit_project_settings: can?(current_user, :admin_project, @project).to_s,
     service_desk_callout_svg_path: image_path('illustrations/service-desk-sm.svg'),
