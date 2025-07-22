@@ -10,10 +10,9 @@ RSpec.describe Banzai::ReferenceParser::SnippetParser, feature_category: :markdo
   let(:user) { create(:user) }
   let(:external_user) { create(:user, :external) }
   let(:project_member) { create(:user) }
+  let(:link) { empty_html_link }
 
   subject { described_class.new(Banzai::RenderContext.new(project, user)) }
-
-  let(:link) { empty_html_link }
 
   def visible_references(snippet_visibility, user = nil)
     snippet = create(:project_snippet, snippet_visibility, project: project)

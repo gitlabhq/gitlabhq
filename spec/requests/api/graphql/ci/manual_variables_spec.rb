@@ -53,7 +53,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
     expect(variables_data).to be_empty
   end
 
-  it 'does not fetch job variables for bridges' do
+  it 'does not fetch job variables for generic commit statuses or bridges' do
+    create(:generic_commit_status, pipeline: pipeline)
     create(:ci_bridge, :manual, pipeline: pipeline)
 
     post_graphql(query, current_user: user)

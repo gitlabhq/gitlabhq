@@ -1067,6 +1067,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect { namespace.self_or_ancestors_archived? }.not_to raise_error
           expect(namespace.self_or_ancestors_archived?).to be false
         end
+
+        context 'when ancestor is archived' do
+          before do
+            parent.update!(archived: true)
+          end
+
+          it 'does not raise an error and returns true' do
+            expect { namespace.self_or_ancestors_archived? }.not_to raise_error
+            expect(namespace.self_or_ancestors_archived?).to be true
+          end
+        end
       end
     end
   end

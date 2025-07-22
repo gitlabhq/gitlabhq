@@ -10,7 +10,6 @@ module Ci
       end
 
       def execute
-        return unless Feature.enabled?(:ci_create_dynamic_partitions, :instance)
         return unless partition
 
         Ci::Partition.create_next! if should_create_next?

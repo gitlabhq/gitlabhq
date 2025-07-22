@@ -653,6 +653,10 @@ sbom_sources:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+security_categories:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 security_scans:
   - table: p_ci_builds
     column: build_id

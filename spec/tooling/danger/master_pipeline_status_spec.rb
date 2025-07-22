@@ -164,7 +164,7 @@ RSpec.describe Tooling::Danger::MasterPipelineStatus, feature_category: :tooling
         let(:expected_output) do
           <<~MSG
             Failed to parse JSON for #{expected_status_url}. Ignoring. Full error:
-            expected object key, got '
+            expected object key, got EOF at line 1 column 2
           MSG
         end
 

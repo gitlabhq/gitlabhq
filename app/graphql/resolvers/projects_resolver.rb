@@ -87,8 +87,9 @@ module Resolvers
         :group,
         :invited_groups,
         :project_setting,
+        :project_namespace,
         {
-          project_namespace: [:namespace_settings_with_ancestors_inherited_settings]
+          namespace: [:namespace_settings_with_ancestors_inherited_settings]
         }
       ]
     end

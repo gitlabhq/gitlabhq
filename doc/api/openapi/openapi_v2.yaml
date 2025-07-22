@@ -46760,16 +46760,16 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked_and_hidden:
-        type: string
+        type: boolean
         description: Whether the variable is masked and hidden
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string
@@ -46794,13 +46794,13 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string

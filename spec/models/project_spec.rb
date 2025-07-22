@@ -1313,33 +1313,38 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#self_or_ancestors_archived?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:user_namespace_project) { create(:project) }
-
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project) }
     let_it_be_with_reload(:group_project) { create(:project, group: group) }
     let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     context 'when project itself is archived' do
-      it 'returns true' do
+      before do
         group_project.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent group is archived' do
-      it 'returns true' do
-        group.archive
+      before do
+        group.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent subgroup is archived' do
-      it 'returns true' do
-        subgroup.archive
+      before do
+        subgroup.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
       end
     end
@@ -1353,6 +1358,55 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
         expect(user_namespace_project.self_or_ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when namespace_settings_with_ancestors_inherited_settings is preload' do
+      context 'when project itself is archived' do
+        before do
+          group_project.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before do
+          group.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent subgroup is archived' do
+        before do
+          subgroup.update!(archived: true)
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns true' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when neither project nor any ancestor group is archived' do
+        before do
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns false' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+        end
       end
     end
   end

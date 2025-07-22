@@ -256,7 +256,7 @@ module Types
       end
 
       def manual_variables
-        if object.action?
+        if object.try(:action?) && !object.is_a?(GenericCommitStatus)
           BatchLoader::GraphQL.for(object.id).batch do |job_ids, loader|
             variables_by_job_id = ::Ci::JobVariable.for_jobs(job_ids).group_by(&:job_id)
 

@@ -29,7 +29,7 @@ Analytics dashboards is intended for Premium and Ultimate subscriptions.
 
 {{< /history >}}
 
-Analytics dashboards utilizes a deprecated component, [customizable_dashboard.vue](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/vue_shared/components/customizable_dashboard), 
+Analytics dashboards utilizes a deprecated component, [analytics_customizable_dashboard.vue](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components),
 to render the dashboard layout. As part the dashboard foundations epic [#18072](https://gitlab.com/groups/gitlab-org/-/epics/18072)
 we are updating Analytics dashboards to utilize a new customizable dashboard component that uses
 the new [dashboard layout framework](dashboard_layout_framework.md) in issue [#542166](https://gitlab.com/gitlab-org/gitlab/-/issues/542166).

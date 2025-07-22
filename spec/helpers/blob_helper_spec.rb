@@ -84,10 +84,6 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   context 'viewer related' do
     let_it_be(:project) { create(:project, lfs_enabled: true) }
 
-    before do
-      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
-    end
-
     let(:viewer_class) do
       Class.new(BlobViewer::Base) do
         include BlobViewer::ServerSide
@@ -100,6 +96,10 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
     let(:viewer) { viewer_class.new(blob) }
     let(:blob) { fake_blob }
+
+    before do
+      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+    end
 
     describe '#blob_render_error_reason' do
       context 'for error :too_large' do

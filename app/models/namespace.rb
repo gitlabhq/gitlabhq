@@ -431,8 +431,9 @@ class Namespace < ApplicationRecord
   end
 
   def self_or_ancestors_archived?
-    if association(:namespace_settings_with_ancestors_inherited_settings).loaded?
-      return !!namespace_settings_with_ancestors_inherited_settings&.archived
+    if association(:namespace_settings_with_ancestors_inherited_settings).loaded? &&
+        namespace_settings_with_ancestors_inherited_settings
+      return namespace_settings_with_ancestors_inherited_settings.archived
     end
 
     self_and_ancestors(skope: Namespace).archived.exists?

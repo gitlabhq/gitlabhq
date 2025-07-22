@@ -64,7 +64,11 @@ module Labels
 
     def find_or_create_label!(label)
       params    = label.attributes.slice('title', 'description', 'color')
-      new_label = FindOrCreateService.new(current_user, project, params.merge(include_ancestor_groups: true)).execute
+      new_label = FindOrCreateService.new(
+        current_user,
+        project,
+        params.merge(include_ancestor_groups: true)
+      ).execute(skip_authorization: true)
 
       new_label.id
     end

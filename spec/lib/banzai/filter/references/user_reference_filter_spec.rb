@@ -9,12 +9,12 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     user.to_reference
   end
 
-  let(:project)   { create(:project, :public) }
-  let(:user)      { create(:user) }
-  subject { user }
-
+  let(:project) { create(:project, :public) }
+  let(:user) { create(:user) }
   let(:subject_name) { "user" }
   let(:reference) { get_reference(user) }
+
+  subject { user }
 
   it_behaves_like 'user reference or project reference'
 
@@ -173,12 +173,11 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
   context 'in group context' do
     let(:group) { create(:group) }
     let(:group_member) { create(:user) }
+    let(:context) { { author: group_member, project: nil, group: group } }
 
     before do
       group.add_developer(group_member)
     end
-
-    let(:context) { { author: group_member, project: nil, group: group } }
 
     it 'supports a special @all mention' do
       stub_feature_flags(disable_all_mention: false)
