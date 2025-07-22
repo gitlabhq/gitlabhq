@@ -262,12 +262,15 @@ module QA
       end
 
       def get_full_path(resource, type)
-        # We need to get the full path of the project again since marking it for deletion changes the name
-        if type == 'project'
+        # Get the full path of the project or group again since marking it for deletion changes the name
+        if type == 'project' || type == 'group'
           response = get_resource(resource['api_path'])
-          if success?(response&.code)
+          if success?(response&.code) && type == 'project'
             project = parse_body(response)
             project[:path_with_namespace]
+          elsif success?(response&.code) && type == 'group'
+            group = parse_body(response)
+            group[:full_path]
           end
         else
           resource['info'].split("'").last

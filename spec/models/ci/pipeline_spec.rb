@@ -260,6 +260,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    context 'from running to manual' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+
+      it 'schedules CoverageReportWorker' do
+        expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
+
+        pipeline.block!
+      end
+    end
+
     describe 'to completed' do
       # need pre-created object to avoid another InternalEvent being triggers in the models create hook
       let!(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
@@ -4504,24 +4514,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         expect(pipeline.ci_ref).to be_present
       end
-    end
-  end
-
-  describe '#self_and_project_descendants_complete?' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :success) }
-    let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
-    let_it_be_with_reload(:grandchild_pipeline) { create(:ci_pipeline, :success, child_of: child_pipeline) }
-
-    context 'when all pipelines in the hierarchy is complete' do
-      it { expect(pipeline.self_and_project_descendants_complete?).to be(true) }
-    end
-
-    context 'when a pipeline in the hierarchy is not complete' do
-      before do
-        grandchild_pipeline.update!(status: :running)
-      end
-
-      it { expect(pipeline.self_and_project_descendants_complete?).to be(false) }
     end
   end
 

@@ -157,7 +157,11 @@ def method
 end
 ```
 
-## Avoid ActiveRecord callbacks
+## Rails / ActiveRecord
+
+This section contains GitLab-specific guidelines for Rails and ActiveRecord usage.
+
+### Avoid ActiveRecord callbacks
 
 [ActiveRecord callbacks](https://guides.rubyonrails.org/active_record_callbacks.html) allow
 you to "trigger logic before or after an alteration of an object's state."
@@ -168,7 +172,7 @@ thoroughly understand the reasons for doing so.
 When adding new lifecycle events for ActiveRecord objects, it is preferable to
 add the logic to a service class instead of a callback.
 
-## Why callbacks should be avoided
+#### Why callbacks should be avoided
 
 In general, callbacks should be avoided because:
 
@@ -193,7 +197,7 @@ The GitLab codebase relies heavily on callbacks and it is hard to refactor them
 once added due to invisible dependencies. As a result, this guideline does not
 call for removing all existing callbacks.
 
-### When to use callbacks
+#### When to use callbacks
 
 Callbacks can be used in special cases. Some examples of cases where adding a
 callback makes sense:
@@ -203,7 +207,7 @@ callback makes sense:
 - Incrementing cache counts.
 - Data normalization that only relates to data on the current model.
 
-### Example of moving from a callback to a service
+#### Example of moving from a callback to a service
 
 There is a project with the following basic data model:
 
@@ -296,6 +300,56 @@ approach. But we already some benefits:
   than needing to refactor to `Project` and `Repository` classes.
 - Each instance of a `Project` factory does not create a second (`Repository`) object.
 
+### ApplicationRecord / ActiveRecord model scopes
+
+When creating a new scope, consider the following prefixes.
+
+#### `for_`
+
+For scopes which filter `where(belongs_to: record)`.
+For example:
+
+```ruby
+scope :for_project, ->(project) { where(project: project) }
+Timelogs.for_project(project)
+```
+
+#### `with_`
+
+For scopes which `joins`, `includes`, or filters `where(has_one: record)` or `where(has_many: record)` or `where(boolean condition)`
+For example:
+
+```ruby
+scope :with_labels, -> { includes(:labels) }
+AbuseReport.with_labels
+
+scope :with_status, ->(status) { where(status: status) }
+Clusters::AgentToken.with_status(:active)
+
+scope :with_due_date, -> { where.not(due_date: nil) }
+Issue.with_due_date
+```
+
+It is also fine to use custom scope names, for example:
+
+```ruby
+scope :undeleted, -> { where('policy_index >= 0') }
+Security::Policy.undeleted
+```
+
+#### `order_by_`
+
+For scopes which `order`.
+For example:
+
+```ruby
+scope :order_by_name, -> { order(:name) }
+Namespace.order_by_name
+
+scope :order_by_updated_at, ->(direction = :asc) { order(updated_at: direction) }
+Project.order_by_updated_at(:desc)
+```
+
 ## Styles we have no opinion on
 
 If a RuboCop rule is proposed and we choose not to add it, we should document that decision in this guide so it is more discoverable and link the relevant discussion as a reference.
@@ -336,53 +390,3 @@ For more information, see:
 
 - [Functional patterns](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#functional-patterns)
 - [Railway-oriented programming and the `Result` class](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#railway-oriented-programming-and-the-result-class)
-
-## ApplicationRecord / ActiveRecord model scopes
-
-When creating a new scope, consider the following prefixes.
-
-### `for_` 
-
-For scopes which filter `where(belongs_to: record)`.
-For example:
-
-```ruby
-scope :for_project, ->(project) { where(project: project) }
-Timelogs.for_project(project)
-```
-
-### `with_`
-
-For scopes which `joins`, `includes`, or filters `where(has_one: record)` or `where(has_many: record)` or `where(boolean condition)`
-For example:
-
-```ruby
-scope :with_labels, -> { includes(:labels) }
-AbuseReport.with_labels
-
-scope :with_status, ->(status) { where(status: status) }
-Clusters::AgentToken.with_status(:active)
-
-scope :with_due_date, -> { where.not(due_date: nil) }
-Issue.with_due_date
-```
-
-It is also fine to use custom scope names, for example:
-
-```ruby
-scope :undeleted, -> { where('policy_index >= 0') }
-Security::Policy.undeleted
-```
-
-### `order_by_`
-
-For scopes which `order`.
-For example:
-
-```ruby
-scope :order_by_name, -> { order(:name) }
-Namespace.order_by_name
-
-scope :order_by_updated_at, ->(direction = :asc) { order(updated_at: direction) }
-Project.order_by_updated_at(:desc)
-```

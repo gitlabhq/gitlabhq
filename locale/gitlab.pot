@@ -1619,9 +1619,6 @@ msgstr ""
 msgid "%{url} (optional)"
 msgstr ""
 
-msgid "%{userName}'s avatar"
-msgstr ""
-
 msgid "%{user_link} added this OAuth application "
 msgstr ""
 
@@ -69525,6 +69522,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Identifier code and URL are required fields"
 msgstr ""
 
+msgid "VulnerabilityManagement|Last checked:"
+msgstr ""
+
 msgid "VulnerabilityManagement|Manually add a vulnerability entry into the vulnerability report."
 msgstr ""
 
@@ -69541,6 +69541,9 @@ msgid "VulnerabilityManagement|Related Jira issues"
 msgstr ""
 
 msgid "VulnerabilityManagement|Requires assessment"
+msgstr ""
+
+msgid "VulnerabilityManagement|Retry"
 msgstr ""
 
 msgid "VulnerabilityManagement|Select a method"
@@ -69616,6 +69619,9 @@ msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
 
 msgid "VulnerabilityManagement|invalid issue link or ID"
+msgstr ""
+
+msgid "VulnerabilityManagement|not available"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Confirmed"

@@ -50,14 +50,11 @@ export default {
     };
   },
   computed: {
-    isTitleValid() {
-      return this.workItemTitle.length <= TITLE_LENGTH_MAX;
-    },
     workItemTitle() {
       return this.titleHtml || this.title;
     },
     invalidFeedback() {
-      return this.isTitleValid ? this.$options.i18n.requiredFieldFeedback : '';
+      return this.workItemTitle ? '' : this.$options.i18n.requiredFieldFeedback;
     },
   },
   methods: {
@@ -66,7 +63,11 @@ export default {
     },
     emitField($event) {
       this.$emit('updateDraft', $event);
-      this.$emit('isTitleValid', this.isTitleValid);
+    },
+    // Used in ./create_work_item.vue
+    // eslint-disable-next-line vue/no-unused-properties
+    focusInput() {
+      this.$refs.workitemTitleField.focus();
     },
   },
   TITLE_LENGTH_MAX,

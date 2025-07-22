@@ -1153,6 +1153,9 @@
 .build-images:rules:build-gdk-image:
   rules:
     - !reference [".qa:rules:e2e-test-never-run", rules]
+    # E2E tests are already executed against cng deployment so gdk is skipped
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-dot-com-gitlab-org-schedule
@@ -2019,6 +2022,9 @@
       when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
+    # Full suite is already executed against cng deployment which is a proper release environment
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
@@ -2038,9 +2044,6 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    # TODO: Enable for stable branches once cng is fully enabled in mr pipelines
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
     # TODO: Check security fork is able to build cng images before enabling
     - <<: *if-security-merge-request
       when: never

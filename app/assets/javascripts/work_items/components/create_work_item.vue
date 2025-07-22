@@ -68,6 +68,7 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_STATUS,
 } from '../constants';
+import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -659,6 +660,15 @@ export default {
     this.setNumberOfDiscussionsResolved();
     addShortcutsExtension(ShortcutsWorkItems);
     new ZenMode(); // eslint-disable-line no-new
+
+    // Set focus on title field
+    this.$nextTick(async () => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
+
+      this.$refs.title?.focusInput?.();
+    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -692,7 +702,9 @@ export default {
       return widgetDefinitions.indexOf(widgetType) !== -1;
     },
     validate() {
-      this.isTitleValid = Boolean(String(this.workItemTitle).trim());
+      this.isTitleValid =
+        Boolean(String(this.workItemTitle).trim()) &&
+        String(this.workItemTitle).trim().length <= TITLE_LENGTH_MAX;
     },
     setNumberOfDiscussionsResolved() {
       if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
@@ -739,6 +751,7 @@ export default {
     async updateDraftData(type, value) {
       if (type === 'title') {
         this.localTitle = value;
+        this.validate();
       }
 
       try {

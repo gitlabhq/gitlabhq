@@ -39,8 +39,8 @@ module QA
       # @param [Hash] resource
       # @return [Array<String, Hash>] results
       def delete_permanently(resource)
-        # We need to get the path_with_namespace of the project again since marking it for deletion changes the name
-        resource = get_resource(resource) if @type.include?('project')
+        # Get the path of the project or group again since marking it for deletion changes the name
+        resource = get_resource(resource) if @type.include?('project') || @type.include?('group')
         return unless resource
 
         path = resource_path(resource)

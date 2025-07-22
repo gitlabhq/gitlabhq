@@ -34,7 +34,7 @@ When you have any of these resources open, GitLab Duo knows about them.
 - Code selected in a file
 - Issues (GitLab Duo Enterprise only)
 - Epics (GitLab Duo Enterprise only)
-- Work items (GitLab Duo Enterprise only)
+- [Other work item types](../work_items/_index.md#work-item-types) (GitLab Duo Enterprise only)
 
 {{< alert type="note" >}}
 

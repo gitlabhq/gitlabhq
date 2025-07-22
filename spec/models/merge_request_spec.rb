@@ -332,14 +332,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    describe '.recently_unprepared' do
-      it 'only returns the recently unprepared mrs' do
-        merge_request5 = create(:merge_request, :unprepared, :unique_branches, created_at: merge_request3.created_at)
-
-        expect(described_class.recently_unprepared).to eq([merge_request3, merge_request5])
-      end
-    end
-
     describe '.distinct_source_branches' do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:mr1) { create(:merge_request, source_branch: 'feature-1', source_project: project) }

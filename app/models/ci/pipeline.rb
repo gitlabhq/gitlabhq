@@ -350,10 +350,9 @@ module Ci
         end
       end
 
-      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::PipelineArtifacts::CoverageReportWorker.perform_async(pipeline.id)
-          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
         end
       end
 
@@ -367,6 +366,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
+          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
           ::Ci::TestFailureHistoryService.new(pipeline).async.perform_if_needed # rubocop: disable CodeReuse/ServiceClass
         end
       end
@@ -1098,10 +1098,6 @@ module Ci
     # With only parent-child pipelines
     def all_child_pipelines
       object_hierarchy(project_condition: :same).descendants
-    end
-
-    def self_and_project_descendants_complete?
-      self_and_project_descendants.all?(&:complete?)
     end
 
     # Follow the parent-child relationships and return the top-level parent

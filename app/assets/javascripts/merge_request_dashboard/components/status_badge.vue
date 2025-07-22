@@ -26,6 +26,7 @@ export default {
     currentUserId() {
       return convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
     },
+    // eslint-disable-next-line vue/no-unused-properties -- currentUserAsReviewer is accessed by badge methods when 'this' component instance is passed to them.
     currentUserAsReviewer() {
       return this.mergeRequest.reviewers.nodes.find((r) => r.id === this.currentUserId);
     },
