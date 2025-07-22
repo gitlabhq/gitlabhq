@@ -7,6 +7,6 @@ feature_categories:
 description: Records the change of state of issues between opened and closed
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28926
 milestone: '13.0'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514592
 table_size: medium

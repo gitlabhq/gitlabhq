@@ -85,7 +85,7 @@ To view a list of licenses that detected for your project's dependencies,
 configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/_index.md)
 for your project.
 
-![Merge request pipeline](img/license_compliance_widget_v15_3.png)
+![Example of the license compliance information shown on a merge request.](img/license_compliance_widget_v15_3.png)
 
 ## External status checks
 

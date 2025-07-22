@@ -29,7 +29,6 @@ module WorkItemsHelper
       project_namespace_full_path:
         resource_parent.is_a?(Project) ? resource_parent.namespace.full_path : resource_parent.full_path,
       group_id: group&.id,
-      has_issue_date_filter_feature: has_issue_date_filter_feature?(resource_parent, current_user).to_s,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
     }
   end

@@ -96,7 +96,7 @@ operation of the pipeline.
 To execute a pipeline manually:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. (Optional) Enter any:
@@ -251,7 +251,7 @@ The `ci.skip` push option does not skip merge request pipelines.
 Users with the Owner role for a project can delete a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
 1. In the top right of the pipeline details page, select **Delete**.
@@ -326,7 +326,7 @@ Prerequisites:
 To trigger the pipeline when the upstream project is rebuilt:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
@@ -391,7 +391,7 @@ running time is:
 To view all the pipelines that ran for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:
 
