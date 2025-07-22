@@ -10,7 +10,7 @@ module Integrations
 
       class_methods do
         def valid_recipients(recipients)
-          recipients.split.grep(Devise.email_regexp).uniq(&:downcase)
+          recipients.delete('<>').split.grep(Devise.email_regexp).uniq(&:downcase)
         end
 
         def title

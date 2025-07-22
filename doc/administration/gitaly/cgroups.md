@@ -98,20 +98,20 @@ the storage.
 Because repository cgroups enforce additional limits on top of the parent cgroup, if we configured them by dividing the
 parent limits by the number of groups, we'd end up with overly restrictive limits. For example:
 
-- Our parent memory limit is 32GiB.
+- Our parent memory limit is 32 GiB.
 - We have roughly 100 active repositories.
 - We've configured `cgroups.repositories.count = 100`.
 
-If we divide 32GiB by 100, we would allocate a mere 0.32GiB per repository cgroup. This setting would lead to extremely
+If we divide 32 GiB by 100, we would allocate a mere 0.32 GiB per repository cgroup. This setting would lead to extremely
 poor performance and significant underutilization.
 
 You can use oversubscription to maintain a baseline level of performance during normal operations, while allowing a
 small number of high-workload repositories to "burst" when necessary, without impacting unrelated requests.
 Oversubscription refers to assigning more resources than what is technically available on the system.
 
-Using the previous example, we can oversubscribe our repository cgroups by allocating 10GiB of memory each, despite the system
-not having 10GiB * 100 of system memory. These values assume that 10GiB is sufficient for normal operations against any
-one repository, but also allows two repositories to burst to 10GiB each while leaving a third bucket of resources to
+Using the previous example, we can oversubscribe our repository cgroups by allocating 10 GiB of memory each, despite the system
+not having 10 GiB * 100 of system memory. These values assume that 10 GiB is sufficient for normal operations against any
+one repository, but also allows two repositories to burst to 10 GiB each while leaving a third bucket of resources to
 maintain baseline performance.
 
 A similar rule applies for CPU time. We purposely allocate repository cgroups with more CPU cores than available in the
@@ -140,7 +140,7 @@ server:
 
 Based on the utilization you observe over a representative period of time (for example, a typical work week), you can
 determine the baseline resource requirements for normal operations. To come up with the configuration in the previous
-example, we would've observed consistent memory usage of 10GiB across the work week, and a 4-core load on the CPU.
+example, we would've observed consistent memory usage of 10 GiB across the work week, and a 4-core load on the CPU.
 
 As your workload changes, you should revisit the metrics and make adjustments to the cgroups configuration. You should
 also tune the configuration if you notice significantly degraded performance after enabling cgroups, because this could be
@@ -150,8 +150,6 @@ an indicator of limits that are too restrictive.
 
 {{< history >}}
 
-- This method of configuring repository cgroups was introduced in GitLab 15.1.
-- `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
 - `max_cgroups_per_repo` [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5689) in GitLab 16.7.
 - Documentation for the legacy method was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176694) in GitLab 17.8.
 

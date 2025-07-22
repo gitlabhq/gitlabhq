@@ -546,6 +546,27 @@ RSpec.shared_examples 'work items parent' do |type|
       expect(page).not_to have_link(work_item_parent.title)
     end
   end
+
+  it 'adds and removes parent from the breadcrumb', :aggregate_failures do
+    within_testid 'work-item-parent' do
+      click_button 'Edit'
+      send_keys(work_item_parent.title)
+      select_listbox_item(work_item_parent.title)
+    end
+
+    within_testid 'ancestors-breadcrumb' do
+      expect(page).to have_link(work_item_parent.title)
+    end
+
+    page.refresh
+
+    within_testid 'work-item-parent' do
+      click_button 'Edit'
+      click_button 'Clear'
+    end
+
+    expect(page).not_to have_selector('[data-testid="ancestors-breadcrumb"]')
+  end
 end
 
 def find_and_click_edit(selector)

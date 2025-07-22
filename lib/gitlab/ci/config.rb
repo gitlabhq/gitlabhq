@@ -87,6 +87,7 @@ module Gitlab
           root.variables_value
         end
       end
+      # :nocov:
       # rubocop:enable Gitlab/NoCodeCoverageComment
 
       def variables_with_data
@@ -187,7 +188,7 @@ module Gitlab
         return initial_config unless inject_edge_stages
 
         logger.instrument(:config_stages_inject, once: true) do
-          Config::EdgeStagesInjector.new(initial_config).to_hash
+          Config::Stages.new(initial_config).inject_edge_stages!
         end
       end
 

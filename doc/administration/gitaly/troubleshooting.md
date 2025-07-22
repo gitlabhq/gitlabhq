@@ -130,7 +130,7 @@ environment variable. To set this in a Linux package installation:
 Sometimes you need to find out which Gitaly RPC created a particular Git process.
 
 One method for doing this is by using `DEBUG` logging. However, this needs to be enabled
-ahead of time and the logs produced are quite verbose.
+ahead of time and the logs produced are verbose.
 
 A lightweight method for doing this correlation is by inspecting the environment
 of the Git process (using its `PID`) and looking at the `CORRELATION_ID` variable:

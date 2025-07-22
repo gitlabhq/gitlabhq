@@ -12,6 +12,10 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
   let_it_be(:authored_issue) { create(:issue, project: project, author: user) }
   let_it_be(:confidential_issue) { create(:issue, :confidential, project: project) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   context 'when user has permission to update' do
     before do
       group.add_owner(user)
@@ -21,36 +25,17 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
     context 'within the issue actions dropdown menu' do
       before do
         visit project_issue_path(project, issue)
-
-        # Click on the ellipsis icon
-        click_button 'Issue actions'
       end
 
-      it 'shows the "New related issue", "Report abuse", and "Delete issue" items', :aggregate_failures do
-        expect(page).to have_link 'New related issue'
-        expect(page).to have_button 'Report abuse'
-        expect(page).to have_button 'Delete issue'
-        expect(page).not_to have_link 'Submit as spam'
-      end
-    end
+      it 'shows the "New related item", "Report abuse", and "Delete issue" items', :aggregate_failures do
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
 
-    context 'when the issue is open' do
-      before do
-        visit project_issue_path(project, issue)
-      end
-
-      it 'has a "Close issue" button' do
-        expect(page).to have_button 'Close issue'
-      end
-    end
-
-    context 'when the issue is closed' do
-      before do
-        visit project_issue_path(project, closed_issue)
-      end
-
-      it 'has a "Reopen issue" button' do
-        expect(page).to have_button 'Reopen issue'
+          expect(page).to have_button 'New related item'
+          expect(page).to have_button 'Report abuse'
+          expect(page).to have_button 'Delete issue'
+          expect(page).not_to have_link 'Submit as spam'
+        end
       end
     end
 
@@ -60,7 +45,11 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
       end
 
       it 'does not have a "Reopen issue" button' do
-        expect(page).not_to have_button 'Reopen issue'
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
+
+          expect(page).not_to have_button 'Reopen issue'
+        end
       end
     end
 
@@ -70,35 +59,39 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
       end
 
       it 'does not show "Report abuse" button in dropdown' do
-        click_button 'Issue actions'
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
 
-        expect(page).not_to have_button 'Report abuse'
+          expect(page).not_to have_button 'Report abuse'
+        end
       end
     end
 
     context 'when the issue is not confidential' do
       before do
         visit project_issue_path(project, issue)
-        wait_for_requests
       end
 
       it 'shows "Turn on confidentiality" button in dropdown' do
-        click_button 'Issue actions'
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
 
-        expect(page).to have_button 'Turn on confidentiality'
+          expect(page).to have_button 'Turn on confidentiality'
+        end
       end
     end
 
     context 'when the issue is confidential' do
       before do
         visit project_issue_path(project, confidential_issue)
-        wait_for_requests
       end
 
       it 'shows "Turn off confidentiality" button in dropdown' do
-        click_button 'Issue actions'
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
 
-        expect(page).to have_button 'Turn off confidentiality'
+          expect(page).to have_button 'Turn off confidentiality'
+        end
       end
     end
   end
@@ -116,13 +109,14 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
     context 'within the issue actions dropdown menu' do
       before do
         visit project_issue_path(project, issue)
-
-        # Click on the ellipsis icon
-        click_button 'Issue actions'
       end
 
       it 'has "Submit as spam" item' do
-        expect(page).to have_link 'Submit as spam'
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
+
+          expect(page).to have_link 'Submit as spam'
+        end
       end
     end
   end
@@ -136,37 +130,18 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
     context 'within the issue actions dropdown menu' do
       before do
         visit project_issue_path(project, issue)
-
-        # Click on the ellipsis icon
-        click_button 'Issue actions'
       end
 
-      it 'only shows the "New related issue" and "Report abuse" items', :aggregate_failures do
-        expect(page).to have_link 'New related issue'
-        expect(page).to have_button 'Report abuse'
-        expect(page).not_to have_link 'Submit as spam'
-        expect(page).not_to have_button 'Delete issue'
-        expect(page).not_to have_button 'Turn on confidentiality'
-      end
-    end
+      it 'only shows the "Report abuse" items', :aggregate_failures do
+        within_testid('work-item-actions-dropdown') do
+          click_button 'More actions'
 
-    context 'when the issue is open' do
-      before do
-        visit project_issue_path(project, issue)
-      end
-
-      it 'does not have a "Close issue" button' do
-        expect(page).not_to have_button 'Close issue'
-      end
-    end
-
-    context 'when the issue is closed' do
-      before do
-        visit project_issue_path(project, closed_issue)
-      end
-
-      it 'does not have a "Reopen issue" button' do
-        expect(page).not_to have_button 'Reopen issue'
+          expect(page).to have_button 'Report abuse'
+          expect(page).not_to have_button 'New related item'
+          expect(page).not_to have_link 'Submit as spam'
+          expect(page).not_to have_button 'Delete issue'
+          expect(page).not_to have_button 'Turn on confidentiality'
+        end
       end
     end
 
@@ -177,18 +152,6 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
 
       it 'does not have a "Reopen issue" button' do
         expect(page).not_to have_button 'Reopen issue'
-      end
-    end
-
-    context 'when the current user is the issue author' do
-      before do
-        visit project_issue_path(project, authored_issue)
-      end
-
-      it 'does not show "Report abuse" button in dropdown' do
-        click_button 'Issue actions'
-
-        expect(page).not_to have_button 'Report abuse'
       end
     end
   end

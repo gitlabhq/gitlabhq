@@ -625,12 +625,6 @@ end
 If a migration fails or is halted on GitLab.com, we prefer to revert the change that introduced the migration. This
 prevents self-managed customers from receiving a broken migration and reduces the need for backports.
 
-### When to merge
-
-We prefer not to merge migrations within 1 week of the release. This allows time for a revert if a migration fails or
-doesn't work as expected. Migrations still in development or review during the final week of the release should be pushed
-to the next milestone.
-
 ### Multi-version compatibility
 
 Advanced search migrations, like any other GitLab changes, need to support the case where

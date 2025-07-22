@@ -914,12 +914,6 @@ For self-compiled installations:
 
 #### Service discovery
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
-
-{{< /history >}}
-
 Prerequisites:
 
 - A DNS server.
@@ -1462,8 +1456,10 @@ Particular attention should be shown to:
    ```
 
 1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml
+   ```
 
 1. Verify that GitLab can reach Praefect:
 
@@ -1632,12 +1628,6 @@ For a replication factor:
   should include any planned future growth.
 
 ## Repository verification
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
-
-{{< /history >}}
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
 without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is

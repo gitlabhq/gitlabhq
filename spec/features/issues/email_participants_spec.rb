@@ -11,26 +11,25 @@ RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
   let_it_be(:participants) { create_list(:issue_email_participant, 4, issue: issue) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_reporter(user)
-  end
-
-  shared_examples 'email participants warning' do |selector|
-    it 'shows the correct message' do
-      expect(find(selector)).to have_content(", and 1 more will be notified of your comment")
-    end
   end
 
   shared_examples 'email participants warning in all editors' do
     context 'for a new note' do
-      it_behaves_like 'email participants warning', '.new-note'
+      it 'shows the correct message' do
+        expect(page).to have_content(", and 1 more will be notified of your comment")
+      end
     end
 
     context 'for a reply form' do
       before do
-        find('.js-reply-button').click
+        click_button 'Reply to comment'
       end
 
-      it_behaves_like 'email participants warning', '.note-edit-form'
+      it 'shows the correct message' do
+        expect(page).to have_content(", and 1 more will be notified of your comment")
+      end
     end
   end
 

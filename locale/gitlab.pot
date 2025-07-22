@@ -28961,9 +28961,6 @@ msgstr ""
 msgid "GitLab Duo Core is now enabled."
 msgstr ""
 
-msgid "GitLab Duo Pro seats"
-msgstr ""
-
 msgid "GitLab Duo code features"
 msgstr ""
 
@@ -30996,12 +30993,6 @@ msgid "GroupSettings|Applied to all subgroups unless overridden by a group owner
 msgstr ""
 
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
-msgstr ""
-
-msgid "GroupSettings|Automatic assignment of GitLab Duo Pro seats"
-msgstr ""
-
-msgid "GroupSettings|Automatically assign newly added billable users to GitLab Duo seats."
 msgstr ""
 
 msgid "GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually."

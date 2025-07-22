@@ -344,7 +344,7 @@ be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/_index.md) on the **primary** site.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background jobs**.
+1. Select **Monitoring** > **Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
 1. Select `Enable` for the following cronjobs:

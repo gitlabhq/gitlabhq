@@ -26,6 +26,7 @@ To set up emails on push:
 1. Select **Emails on push**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In **Recipients**, enter a list of email addresses separated by spaces or newlines.
+   Invalid email addresses are automatically filtered out and will not receive notifications.
 1. Configure the following options:
 
    - **Push events** - Email is triggered when a push event is received.

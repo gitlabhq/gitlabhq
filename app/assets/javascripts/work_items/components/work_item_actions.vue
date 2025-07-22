@@ -27,6 +27,7 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
+  STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -368,6 +369,9 @@ export default {
     showChangeType() {
       return !this.isEpic && this.canUpdateMetadata;
     },
+    showStateItem() {
+      return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);
+    },
     allowedWorkItemTypes() {
       if (this.isGroup) {
         return [];
@@ -595,7 +599,7 @@ export default {
       </template>
 
       <work-item-state-toggle
-        v-if="canUpdate"
+        v-if="showStateItem"
         data-testid="state-toggle-action"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"

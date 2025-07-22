@@ -5,10 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning do
   let(:user) { create(:user) }
 
-  def submit_comment(text)
-    fill_in 'note[note]', with: text
-    click_button 'Comment'
-    wait_for_requests
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   shared_examples 'notes with reference' do
@@ -20,20 +18,21 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
       sign_in(user)
       visit project_issue_path(project, issue)
 
-      submit_comment(note_text)
+      fill_in 'Add a reply', with: note_text
+      click_button 'Comment'
     end
 
     it 'creates a note with reference and cross references the issue', :sidekiq_might_not_need_inline do
-      page.within('div#notes li.note div.note-text') do
-        expect(page).to have_content(note_text)
-        expect(page.find('a')).to have_content(mention.to_reference)
+      page.within('.note') do
+        expect(page).to have_text(note_text)
+        expect(page).to have_link(mention.to_reference)
       end
 
-      find('div#notes li.note div.note-text a').click
+      click_link(mention.to_reference)
 
-      page.within('div#notes li.system-note .system-note-message') do
-        expect(page).to have_content('mentioned in issue')
-        expect(page.find('a')).to have_content(issue.to_reference)
+      page.within('.system-note') do
+        expect(page).to have_text('mentioned in issue')
+        expect(page).to have_link(issue.to_reference)
       end
     end
   end
@@ -85,11 +84,14 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
     issue = create(:issue, project: project)
     project.add_developer(user)
     sign_in(user)
-
     visit project_issue_path(project, issue)
-    submit_comment("@#{user.username} note to self")
 
-    expect(page).to have_selector '.gfm-project_member.current-user', text: user.username
+    fill_in 'Add a reply', with: "@#{user.username} note to self"
+    click_button 'Comment'
+
+    within('.note') do
+      expect(page).to have_link "@#{user.username}"
+    end
   end
 
   shared_examples "when reference belongs to a private project" do
@@ -120,9 +122,9 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
       it 'shows the user the reference' do
         visit project_issue_path(project, issue)
 
-        page.within('div#notes li.system-note .system-note-message') do
-          expect(page).to have_content('closed with')
-          expect(page.find('a')).to have_content(reference_content)
+        page.within('.system-note') do
+          expect(page).to have_text('closed with')
+          expect(page).to have_link(reference_content)
         end
       end
     end

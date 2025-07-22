@@ -9,13 +9,29 @@ This document outlines the process for developing AI features for GitLab Duo Sel
 
 ## Gaining access to a hosted model
 
-While GitLab Duo Self-Hosted supports a [wide range of models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models), only the following models are currently available to GitLab team members for development purposes as of June, 2025:
+The following models are currently available to GitLab team members for development purposes as of July, 2025:
 
-- `Claude 3.5 Sonnet` on AWS Bedrock
-- `Claude 3.5 Sonnet v2` on AWS Bedrock
-- `Claude 3.7 Sonnet` on AWS Bedrock
+- `Claude Sonnet 3.5` on AWS Bedrock
+- `Claude Sonnet 3.5 v2` on AWS Bedrock
+- `Claude Sonnet 3.7` on AWS Bedrock
+- `Claude Sonnet 4` on AWS Bedrock
+- `Claude Haiku 3.5` on AWS Bedrock
+- `Llama 3.3 70b` on AWS Bedrock
+- `Llama 3.1 8b` on AWS Bedrock
+- `Llama 3.1 70b` on AWS Bedrock
+- `Mistral Small` on FireworksAI
+- `Mixtral 8x22b` on FireworksAI
+- `Llama 3.1 70b` on FireworksAI
+- `Llama 3.3 70b` on FireworksAI
 
-To gain access to these models, create an [access request using the `aws_services_account_iam_update` template](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/new?description_template=aws_services_account_iam_update). See [this example access request](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/949) if you aren't sure what information to fill in.
+### Gaining access to models on FireworksAI
+
+To gain access to FireworksAI, first create an [Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests). See [this example access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37505) if you aren't sure what information to fill in.
+Our FireworksAI account is managed by `Create::Code Creation`. Once access is granted, navigate to `https://fireworks.ai/` to create an API key.
+
+### Gaining access to models on AWS Bedrock
+
+To gain access to models in AWS Bedrock, create an [access request using the `aws_services_account_iam_update` template](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/new?description_template=aws_services_account_iam_update). See [this example access request](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/949) if you aren't sure what information to fill in.
 
 Once your access request is approved, you can gain access to AWS credentials by visiting [https://gitlabsandbox.cloud/login](https://gitlabsandbox.cloud/login).
 
@@ -24,8 +40,6 @@ After logging into `gitlabsandbox.cloud`, perform the following steps:
 1. Select the `cstm-mdls-dev-bedrock` AWS account.
 1. On the top right corner of the page, select **View IAM Credentials**.
 1. In the model that opens up, you should be able to see `AWS Console URL`, `Username` and `Password`. Visit this AWS Console URL and input the obtained username and password to sign in.
-
-### Gaining access to models on AWS Bedrock
 
 On AWS Bedrock, you must gain access to the models you want to use. To do this:
 
@@ -67,6 +81,7 @@ To use the hosted models, set the following environment variables on your AI gat
    AWS_ACCESS_KEY_ID=your-access-key-id
    AWS_SECRET_ACCESS_KEY=your-secret-access-key
    AWS_REGION=us-east-1
+   FIREWORKS_AI_API_KEY=your-fireworks-api-key
    AIGW_CUSTOM_MODELS__ENABLED=true
    # useful for debugging
    AIGW_LOGGING__ENABLE_REQUEST_LOGGING=true
@@ -79,6 +94,10 @@ To use the hosted models, set the following environment variables on your AI gat
    export GITLAB_SIMULATE_SAAS=0
    ```
 
+1. Seed your Duo self-hosted models using `bundle exec gitlab:duo:seed_self_hosted_models`.
+
+1. Running `bundle exec gitlab:duo:list_self_hosted_models` should output the list of created models
+
 1. Restart your GDK for the changes to take effect using `gdk restart`.
 
 ## Configuring the custom model in the UI
@@ -89,22 +108,6 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 1. Select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. For **Local AI Gateway URL**, enter the URL of your AI gateway instance. In most cases, this will be `http://localhost:5052`.
 1. Save the changes.
-
-### Creating a new self-hosted model
-
-Next, we need to configure a new model for use in the GitLab instance.
-
-1. On your GDK instance, go to `/admin/gitlab_duo/self_hosted/models/new`.
-1. For **Deployment name**, enter a name for the deployment for identification purposes. For example, `Claude 3.5 Sonnet on Bedrock`.
-1. Under **Platform**, select **Amazon Bedrock**.
-1. For **Model Family**, select **Claude 3*, as Claude 3.5 Sonnet falls under this family.
-1. For **Model Identifier**, use the model name from the [AWS Model Catalog Console](https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/model-catalog?region=us-east-1), based on the model you want to use.
-
-   | Model Name | Model Identifier |
-   |------------|------------------|
-   | Claude 3.5 Sonnet | `bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0` |
-   | Claude 3.5 Sonnet v2 | `bedrock/us.anthropic.claude-3-5-sonnet-20241022-v2:0` |
-   | Claude 3.7 Sonnet | `bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0` |
 
 1. To save your changes, select **Create self-hosted model**.
 

@@ -29,7 +29,7 @@ module Banzai
 
       ELEMENT_CLASSES_ALLOWLIST = {
         span: %w[big small underline overline line-through].freeze,
-        div: ALIGNMENT_BUILTINS_CLASSES + %w[openblock exampleblock sidebarblock admonitionblock].freeze,
+        div: ALIGNMENT_BUILTINS_CLASSES + %w[openblock exampleblock sidebarblock admonitionblock toc].freeze,
         td: ['icon'].freeze,
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
         ul: LIST_CLASSES,

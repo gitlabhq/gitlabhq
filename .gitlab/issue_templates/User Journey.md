@@ -61,7 +61,7 @@
 
 ## Research
 
-<!-- Determine if new research needs to be conducted. Select the best approach to gather needed data from the various [Research Methods](ADDLINK) available. -->
+<!-- Determine if new research needs to be conducted. Select the best approach to gather needed data from the various [Research Methods](https://handbook.gitlab.com/handbook/product/ux/user-journeys/#research-methodologies) available. -->
 
 * ...
 * ...

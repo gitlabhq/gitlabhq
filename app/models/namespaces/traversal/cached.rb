@@ -15,7 +15,6 @@ module Namespaces
         # Cache only works for descendants
         # of the same type as the caller.
         return super unless skope == self.class
-        return super unless attempt_to_use_cached_data?
 
         scope_with_cached_ids(
           super,
@@ -26,8 +25,6 @@ module Namespaces
 
       override :all_project_ids
       def all_project_ids
-        return super unless attempt_to_use_cached_data?
-
         scope_with_cached_ids(
           all_projects.select(:id),
           Project,
@@ -37,8 +34,6 @@ module Namespaces
 
       override :all_unarchived_project_ids
       def all_unarchived_project_ids
-        return super unless attempt_to_use_cached_data?
-
         scope_with_cached_ids(
           all_projects.self_and_ancestors_non_archived.select(:id),
           Project,
@@ -74,10 +69,6 @@ module Namespaces
           .from(from)
           .unscope(where: :type)
           .select(:id)
-      end
-
-      def attempt_to_use_cached_data?
-        Feature.enabled?(:group_hierarchy_optimization, self, type: :beta)
       end
 
       override :sync_traversal_ids

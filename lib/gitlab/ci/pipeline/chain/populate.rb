@@ -45,7 +45,7 @@ module Gitlab
             # We filter out `.pre/.post` stages, as they alone are not considered
             # a complete pipeline:
             # https://gitlab.com/gitlab-org/gitlab/issues/198518
-            pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::EdgeStagesInjector::EDGES
+            pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::Stages::EDGES
           end
         end
       end

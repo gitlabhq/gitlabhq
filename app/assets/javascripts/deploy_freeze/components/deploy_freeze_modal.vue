@@ -35,7 +35,6 @@ export default {
   },
   computed: {
     ...mapState([
-      'projectId',
       'selectedId',
       'selectedTimezone',
       'timezoneData',

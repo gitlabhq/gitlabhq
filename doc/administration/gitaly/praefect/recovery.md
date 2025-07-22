@@ -322,12 +322,6 @@ praefect['configuration'] = {
 
 ### Manually remove repositories
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from the Praefect tracking database.
-
-{{< /history >}}
-
 The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster (Praefect), and all state associated with a given repository including:
 
 - On-disk repositories on all relevant Gitaly nodes.
@@ -341,7 +335,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 - Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
 - Replace `<repository>` with the relative path of the repository to remove.
-- In GitLab 15.3 and later, add `-db-only` to remove the Praefect tracking database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
+- Add `-db-only` to remove the Praefect tracking database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
   protect on-disk repository data from deletion when a valid repository is accidentally specified. If the database entry is accidentally deleted, re-track the repository with the
   [`track-repository` command](#manually-add-a-single-repository-to-the-tracking-database).
 - Add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
@@ -389,12 +383,6 @@ If this occurs, run `remove-repository` again.
 Common maintenance tasks on the Praefect tracking database are documented in this section.
 
 ### List untracked repositories
-
-{{< history >}}
-
-- `older-than` option added in GitLab 15.0.
-
-{{< /history >}}
 
 The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster (Praefect) that both:
 
@@ -489,12 +477,6 @@ This command fails if:
 
 ### Manually add many repositories to the tracking database
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
-
-{{< /history >}}
-
 {{< alert type="warning" >}}
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
@@ -540,12 +522,6 @@ If any entry fails these checks, the command aborts prior to attempting to track
   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 
 ### List virtual storage details
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
-
-{{< /history >}}
 
 The `list-storages` Praefect sub-command lists virtual storages and their associated storage nodes. If a virtual storage is:
 

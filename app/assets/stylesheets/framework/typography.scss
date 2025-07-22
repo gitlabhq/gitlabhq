@@ -791,6 +791,12 @@
     text-align: justify !important;
   }
 
+  /* AsciiDoc(tor) table of contents */
+
+  .toc > div {
+    @apply gl-font-bold;
+  }
+
   @include email-code-block;
 
   &.md-child-content-text-subtle {

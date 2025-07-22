@@ -173,15 +173,6 @@ follow the [hashed storage](../../repository_storage_paths.md#hashed-storage) sc
 
 ### Praefect-generated replica paths
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../../feature_flags/_index.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4809) in GitLab 15.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4941) in GitLab 15.6. Feature flag `gitaly_praefect_generated_replica_paths` removed.
-
-{{< /history >}}
-
 When Gitaly Cluster (Praefect) creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
 internal to Gitaly Cluster (Praefect) and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster (Praefect) and later moved
 back, the repository is assigned a new repository ID and is a different repository from the perspective of Gitaly Cluster (Praefect). The sequence of repository IDs

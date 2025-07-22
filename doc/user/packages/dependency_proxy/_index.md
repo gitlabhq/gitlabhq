@@ -103,6 +103,7 @@ echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username
 You can authenticate using:
 
 - Your GitLab username and password.
+- The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md#use-the-cli-as-a-docker-credential-helper).
 - A [personal access token](../../profile/personal_access_tokens.md).
 - A [group deploy token](../../project/deploy_tokens/_index.md).
 - A [group access token](../../group/settings/group_access_tokens.md) for the group.
