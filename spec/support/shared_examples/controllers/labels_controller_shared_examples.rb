@@ -36,3 +36,49 @@ RSpec.shared_examples 'lock_on_merge when creating labels' do
     expect(page).not_to have_content(label_lock_on_merge_help_text)
   end
 end
+
+RSpec.shared_examples 'handles archived labels' do
+  subject(:list_labels_with_archive) do
+    get :index, params: params.merge({ archived: archived })
+  end
+
+  context 'with archived true' do
+    let(:archived) { 'true' }
+
+    it 'returns labels that are archived' do
+      list_labels_with_archive
+      expect(assigns(:labels)).to contain_exactly archived_label
+    end
+  end
+
+  context 'with archived false' do
+    let(:archived) { 'false' }
+
+    it 'returns labels that are not archived' do
+      list_labels_with_archive
+      expect(assigns(:labels)).to match_array unarchived_labels
+    end
+  end
+
+  context 'with archived not set' do
+    let(:archived) { nil }
+
+    it 'returns all labels' do
+      list_labels_with_archive
+      expect(assigns(:labels)).to match_array all_labels
+    end
+  end
+
+  context 'with feature flag labels_archive disabled' do
+    let(:archived) { true }
+
+    before do
+      stub_feature_flags(labels_archive: false)
+    end
+
+    it 'returns all labels' do
+      list_labels_with_archive
+      expect(assigns(:labels)).to match_array all_labels
+    end
+  end
+end

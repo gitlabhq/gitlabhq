@@ -86,7 +86,6 @@ Style/IfUnlessModifier:
     - 'app/services/ci/update_build_state_service.rb'
     - 'app/services/cloud_seed/google_cloud/generate_pipeline_service.rb'
     - 'app/services/clusters/update_service.rb'
-    - 'app/services/commits/commit_patch_service.rb'
     - 'app/services/commits/create_service.rb'
     - 'app/services/commits/tag_service.rb'
     - 'app/services/concerns/merge_requests/assigns_merge_params.rb'

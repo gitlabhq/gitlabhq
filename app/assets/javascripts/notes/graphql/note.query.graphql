@@ -41,8 +41,6 @@ query snakeCaseNote($id: NoteID!) {
           userPermissions {
             awardEmoji
             adminNote
-            readNote
-            createNote
             resolveNote
           }
         }

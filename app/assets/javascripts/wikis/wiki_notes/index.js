@@ -5,6 +5,9 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
+import resolvers from '../graphql/notes/resolvers';
+import typeDefs from '../graphql/notes/typedefs.graphql';
+import initCache from '../graphql/notes/cache_init';
 import WikiNotesApp from './components/wiki_notes_app.vue';
 
 export default () => {
@@ -32,7 +35,11 @@ export default () => {
   if (!pageInfo) return false;
 
   Vue.use(VueApollo);
-  const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+  const apolloProvider = new VueApollo({
+    defaultClient: createApolloClient(resolvers, { typeDefs }),
+  });
+
+  initCache(apolloProvider.defaultClient.cache);
 
   const pageInfoData = convertObjectPropsToCamelCase(JSON.parse(pageInfo));
   const queryVariables = {

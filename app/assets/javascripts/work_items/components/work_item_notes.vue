@@ -602,6 +602,7 @@ export default {
               :markdown-preview-path="markdownPreviewPath"
               :new-comment-template-paths="newCommentTemplatePaths"
               :assignees="assignees"
+              :can-reply="canCreateNote"
               :can-set-work-item-metadata="canSetWorkItemMetadata"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="isWorkItemConfidential"

@@ -484,7 +484,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/gitlab/database/no_overrides_for_through_associations_spec.rb'
     - 'spec/lib/gitlab/diff/char_diff_spec.rb'
     - 'spec/lib/gitlab/git_access_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/single_endpoint_issue_events_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/markdown_text_spec.rb'
     - 'spec/lib/gitlab/import_export/group/relation_tree_restorer_spec.rb'
     - 'spec/lib/gitlab/insecure_key_fingerprint_spec.rb'

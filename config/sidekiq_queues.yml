@@ -235,8 +235,6 @@
   - 1
 - - ci_runners_process_runner_version_update
   - 1
-- - ci_runners_update_project_runners_owner
-  - 1
 - - ci_safe_disable_pipeline_variables
   - 1
 - - ci_slsa_publish_statement

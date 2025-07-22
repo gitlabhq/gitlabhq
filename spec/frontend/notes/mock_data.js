@@ -1360,8 +1360,6 @@ export const singleNoteResponseFactory = ({ urlHash, authorId = 1 } = {}) => {
                 userPermissions: {
                   awardEmoji: true,
                   adminNote: true,
-                  readNote: true,
-                  createNote: true,
                   resolveNote: true,
                 },
               },

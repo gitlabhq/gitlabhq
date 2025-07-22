@@ -41,7 +41,6 @@ Lint/AssignmentInCondition:
     - 'app/serializers/fork_namespace_entity.rb'
     - 'app/serializers/merge_request_poll_cached_widget_entity.rb'
     - 'app/services/ci/create_pipeline_service.rb'
-    - 'app/services/ci/find_exposed_artifacts_service.rb'
     - 'app/services/ci/runners/register_runner_service.rb'
     - 'app/services/deployments/create_service.rb'
     - 'app/services/deployments/link_merge_requests_service.rb'

@@ -24,6 +24,11 @@
       .form-text.gl-text-subtle
         = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
+  - if Feature.enabled?(:labels_archive, :instance)
+    .form-group.row
+      .col-12
+        = f.label :archived, _("Archived")
+        = f.gitlab_ui_checkbox_component :archived
   - if show_lock_on_merge
     .form-group.row
       .col-12

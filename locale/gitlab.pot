@@ -19108,6 +19108,9 @@ msgstr ""
 msgid "Create custom type"
 msgstr ""
 
+msgid "Create dynamic tables and lists powered by GitLab Query Language (GLQL) to track issues, epics, and merge requests in real time."
+msgstr ""
+
 msgid "Create empty repository"
 msgstr ""
 
@@ -28778,6 +28781,9 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
+msgid "Get started with embedded views"
+msgstr ""
+
 msgid "Get started with error tracking"
 msgstr ""
 
@@ -34035,6 +34041,9 @@ msgid "Internal users cannot be deactivated"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Introducing embedded views"
 msgstr ""
 
 msgid "Introducing your DevOps adoption analytics"
@@ -41580,6 +41589,9 @@ msgid "No agents available to create workspaces. Please consult %{linkStart}Work
 msgstr ""
 
 msgid "No approvers"
+msgstr ""
+
+msgid "No archived labels"
 msgstr ""
 
 msgid "No artifacts found"

@@ -30,7 +30,6 @@ fragment WorkItemNote on Note {
   userPermissions {
     adminNote
     awardEmoji
-    createNote
     resolveNote
   }
   systemNoteMetadata {

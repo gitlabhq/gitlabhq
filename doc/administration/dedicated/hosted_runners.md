@@ -137,7 +137,7 @@ Compute usage visualizations are not available, but an [epic](https://gitlab.com
 To view hosted runners in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Optional. Select **Fleet dashboard**.
 
 #### Configure hosted runners in GitLab

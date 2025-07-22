@@ -554,7 +554,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/projects/lfs_pointers/lfs_import_service_spec.rb'
     - 'spec/services/projects/lfs_pointers/lfs_link_service_spec.rb'
     - 'spec/services/projects/lfs_pointers/lfs_object_download_list_service_spec.rb'
-    - 'spec/services/projects/update_service_spec.rb'
     - 'spec/services/protected_branches/cache_service_spec.rb'
     - 'spec/services/submodules/update_service_spec.rb'
     - 'spec/services/wikis/create_attachment_service_spec.rb'

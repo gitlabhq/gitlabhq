@@ -1,0 +1,3 @@
+mutation SortWikiDiscussion($sortOrder: WikiDiscussionSortOrder) {
+  sortWikiDiscussion(by: $sortOrder) @client
+}

@@ -92,6 +92,11 @@ export default {
       required: false,
       default: () => [],
     },
+    canReply: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canSetWorkItemMetadata: {
       type: Boolean,
       required: false,
@@ -164,7 +169,7 @@ export default {
       };
     },
     showReply() {
-      return this.note.userPermissions.createNote && this.isFirstNote;
+      return this.canReply && this.isFirstNote;
     },
     canResolve() {
       return this.note.userPermissions.resolveNote && this.isFirstNote && this.hasReplies;

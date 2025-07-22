@@ -1,0 +1,12 @@
+enum WikiDiscussionSortOrder {
+  CREATED_ASC
+  CREATED_DESC
+}
+
+extend type Query {
+  wikiDiscussionSortOrder: WikiDiscussionSortOrder
+}
+
+extend type Mutation {
+  sortWikiDiscussion(by: WikiDiscussionSortOrder): WikiDiscussionSortOrder
+}

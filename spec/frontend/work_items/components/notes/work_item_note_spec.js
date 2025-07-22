@@ -90,6 +90,7 @@ describe('Work Item Note', () => {
   const createComponent = ({
     note = mockWorkItemCommentNote,
     isFirstNote = false,
+    canReply = false,
     updateNoteMutationHandler = successHandler,
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
@@ -102,6 +103,7 @@ describe('Work Item Note', () => {
         workItemId,
         workItemIid: '1',
         note,
+        canReply,
         isFirstNote,
         workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
@@ -277,7 +279,7 @@ end`;
 
     describe('main comment', () => {
       beforeEach(async () => {
-        createComponent({ isFirstNote: true });
+        createComponent({ isFirstNote: true, canReply: true });
         await waitForPromises();
       });
 

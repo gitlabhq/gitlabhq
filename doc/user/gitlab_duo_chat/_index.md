@@ -55,59 +55,12 @@ If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for t
 
 {{< /alert >}}
 
-## The context Chat is aware of
-
-GitLab Duo Chat is sometimes aware of the context you're working in.
-Other times, you must be more specific with your request.
-
-Duo Chat always has access to:
-
-- GitLab documentation.
-- General programming and coding knowledge.
-
-In addition, Chat is aware of different information, depending on where you use it.
-
-### In the GitLab UI
-
-| Area and available context          | GitLab Duo Core                    | GitLab Duo Pro                              | GitLab Duo Enterprise                       | Instructions |
-|-------------------------------------|------------------------------------|---------------------------------------------|---------------------------------------------|--------------|
-| Code files and file content         | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
-| Epics and epic details              | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
-| Issues and issue details            | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Merge requests (MRs) and MR details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits and commit details          | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
-| Pipeline jobs and job details       | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
-| Work items and work item details    | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | From the work item, ask about `this work item`, `this`, or the URL. From any UI area, ask about the URL. |
-
-### In IDEs
-
-| Area and available context                 | GitLab Duo Core                             | GitLab Duo Pro                              | GitLab Duo Enterprise                       | Instructions |
-|--------------------------------------------|---------------------------------------------|---------------------------------------------|---------------------------------------------|--------------|
-| Selected lines in editor and selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Files and file content                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
-| Epics and epic details                     | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Issues and issue details                   | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Work items and work item details           | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-
-In addition, in the IDEs, when you use any of the slash commands,
-like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
-code you selected.
-
-### Additional features
-
-[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches
-code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md).
-If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands
-also have access to the latest Repository X-Ray report, and include that report as context for Duo.
-
-The extensions for GitLab Duo scan for secrets and sensitive values matching known formats. The extensions
-redact this sensitive content locally before sending it to Duo Chat, or using it for code generation.
-This applies to files added via `/include`, and all generation commands.
-
 ## Use GitLab Duo Chat in the GitLab UI
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. Enter your question in the chat text box and press **Enter** or select **Send**.
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
 The 25 most recent messages are retained in the chat history.
@@ -432,7 +385,7 @@ For each Chat conversation, input and output length is limited:
 
 - Input is limited to 200,000 tokens (roughly 680,000 characters). The input tokens
   include:
-  - All the [context that Chat is aware of](#the-context-chat-is-aware-of).
+  - All the [context that Chat is aware of](../gitlab_duo/context.md#gitlab-duo-chat).
   - All the previous questions and answers in that conversation.
 - Output is limited to 8,192 tokens (roughly 28,600 characters).
 

@@ -226,7 +226,7 @@ gem 'google-apis-container_v1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-container_v1beta1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-cloudbilling_v1', '~> 0.22.0', feature_category: :shared
 gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :shared
-gem 'google-apis-iam_v1', '~> 0.36.0', feature_category: :shared
+gem 'google-apis-iam_v1', '~> 0.72.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared
 gem 'google-apis-androidpublisher_v3', '~> 0.83.0', feature_category: :shared
@@ -345,7 +345,7 @@ gem 'atlassian-jwt', '~> 0.2.1', feature_category: :integrations
 gem 'slack-messenger', '~> 2.3.5', feature_category: :integrations
 
 # Kubernetes integration
-gem 'kubeclient', '~> 4.11.0', feature_category: :shared
+gem 'kubeclient', '~> 4.12.0', feature_category: :shared
 
 # AI
 gem 'circuitbox', '2.0.0', feature_category: :shared

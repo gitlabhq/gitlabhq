@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  trait :archived do
+    archived { true }
+  end
+
   trait :base_label do
     title { generate(:label_title) }
     color { "#990000" }

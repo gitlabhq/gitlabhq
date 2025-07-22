@@ -6,3 +6,12 @@ export const WIKI_CONTAINER_TYPE = {
   PROJECT: 'project',
   GROUP: 'group',
 };
+
+export const WIKI_NOTES_SORT_ORDER = {
+  CREATED_ASC: 'created_asc',
+  CREATED_DESC: 'created_desc',
+};
+
+export const WIKI_NOTES_DEFAULT_SORT_ORDER = WIKI_NOTES_SORT_ORDER.CREATED_ASC;
+
+export const WIKI_SORT_ORDER_STORAGE_KEY = 'sort_direction_wiki';

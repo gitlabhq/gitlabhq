@@ -242,7 +242,6 @@ describe('Work Item Discussion', () => {
             userPermissions: {
               adminNote: true,
               awardEmoji: true,
-              createNote: true,
               resolveNote: false,
               __typename: 'NotePermissions',
             },

@@ -20,6 +20,8 @@ module Ci
 
     self.primary_key = :id
 
+    ignore_column :sharding_key_id, remove_with: '18.5', remove_after: '2025-09-22'
+
     add_authentication_token_field :token,
       encrypted: :optional,
       expires_at: :compute_token_expiration,
@@ -28,8 +30,8 @@ module Ci
         if: ->(token_owner_record) { token_owner_record.owner },
         payload: {
           o: ->(token_owner_record) { token_owner_record.owner.try(:organization_id) },
-          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
-          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
+          g: ->(token_owner_record) { token_owner_record.runner_namespaces.first&.namespace_id },
+          p: ->(token_owner_record) { token_owner_record.runner_projects.first&.project_id },
           u: ->(token_owner_record) { token_owner_record.creator_id },
           t: ->(token_owner_record) { token_owner_record.partition_id }
         }
@@ -151,7 +153,6 @@ module Ci
     scope :created_by_admins, -> { with_creator_id(User.admins.ids) }
 
     scope :with_creator_id, ->(value) { where(creator_id: value) }
-    scope :with_sharding_key, ->(value) { where(sharding_key_id: value) }
 
     scope :belonging_to_group_or_project_descendants, ->(group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
@@ -242,7 +243,6 @@ module Ci
     scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints
-    validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
@@ -251,7 +251,6 @@ module Ci
     validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
@@ -382,11 +381,6 @@ module Ci
 
       begin
         transaction do
-          if projects.id_in(sharding_key_id).empty? && !update_project_id
-            self.errors.add(:assign_to, 'Runner is orphaned and no fallback owner exists')
-            next false
-          end
-
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
           self.save!
         end
@@ -550,7 +544,6 @@ module Ci
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
-        m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
@@ -590,20 +583,6 @@ module Ci
       project_ids = runner_projects.order(:id).pluck(:project_id)
       projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
       Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
-    end
-
-    # Ensure we have a valid sharding_key_id. Logic is similar to the one used in
-    # Ci::Runners::UpdateProjectRunnersOwnerService when a project is deleted
-    def update_project_id
-      project_id = fallback_owner_project&.id
-
-      return if project_id.nil?
-
-      self.clear_memoization(:owner)
-      self.sharding_key_id = project_id
-
-      runner_managers.where(runner_type: :project_type).each_batch { |batch| batch.update_all(sharding_key_id: project_id) }
-      taggings.where(runner_type: :project_type).update_all(sharding_key_id: project_id)
     end
 
     def compute_token_expiration_instance
@@ -651,10 +630,6 @@ module Ci
         errors.add(:tags_list,
           "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
       end
-    end
-
-    def no_sharding_key_id
-      errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
     end
 
     def no_organization_id

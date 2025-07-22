@@ -101,7 +101,7 @@ Notification emails continue to arrive, but emails that require database writes,
 
 ### REST API
 
-For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and the API returns a 403 response with the error message: `You cannot perform write operations on a read-only instance`. Only the following requests are allowed:
+For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and the API returns a `503` response with the error message: `GitLab Maintenance: system is in maintenance mode`. Only the following requests are allowed:
 
 |HTTP request | Allowed routes |  Notes |
 |:----:|:--------------------------------------:|:----:|

@@ -35,30 +35,30 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
   # The following tables are work in progress as part of
   # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-  # TODO: Remove these excepttions once the issue is closed.
+  # TODO: Remove these exceptions once the issue is closed.
   let(:uploads_and_partitions) do
-    [
-      "achievement_uploads.namespace_id",
-      "ai_vectorizable_file_uploads.project_id",
-      "alert_management_alert_metric_image_uploads.project_id",
-      "bulk_import_export_upload_uploads.project_id", "bulk_import_export_upload_uploads.namespace_id",
-      "dependency_list_export_part_uploads.organization_id",
-      "dependency_list_export_uploads.organization_id", "dependency_list_export_uploads.namespace_id",
-      "dependency_list_export_uploads.project_id",
-      "design_management_action_uploads.namespace_id",
-      "import_export_upload_uploads.project_id", "import_export_upload_uploads.namespace_id",
-      "issuable_metric_image_uploads.namespace_id",
-      "namespace_uploads.namespace_id",
-      "note_uploads.namespace_id",
-      "organization_detail_uploads.organization_id",
-      "project_import_export_relation_export_upload_uploads.project_id",
-      "project_topic_uploads.organization_id",
-      "project_uploads.project_id",
-      "snippet_uploads.organization_id",
-      "vulnerability_export_part_uploads.organization_id",
-      "vulnerability_export_uploads.organization_id",
-      "vulnerability_archive_export_uploads.project_id",
-      "vulnerability_remediation_uploads.project_id"
+    %w[
+      achievement_uploads.namespace_id
+      ai_vectorizable_file_uploads.project_id
+      alert_management_alert_metric_image_uploads.project_id
+      bulk_import_export_upload_uploads.project_id bulk_import_export_upload_uploads.namespace_id
+      dependency_list_export_part_uploads.organization_id
+      dependency_list_export_uploads.organization_id dependency_list_export_uploads.namespace_id
+      dependency_list_export_uploads.project_id
+      design_management_action_uploads.namespace_id
+      import_export_upload_uploads.project_id import_export_upload_uploads.namespace_id
+      issuable_metric_image_uploads.namespace_id
+      namespace_uploads.namespace_id
+      note_uploads.namespace_id
+      organization_detail_uploads.organization_id
+      project_import_export_relation_export_upload_uploads.project_id
+      project_topic_uploads.organization_id
+      project_uploads.project_id
+      snippet_uploads.organization_id
+      vulnerability_export_part_uploads.organization_id
+      vulnerability_export_uploads.organization_id
+      vulnerability_archive_export_uploads.project_id
+      vulnerability_remediation_uploads.project_id
     ]
   end
 

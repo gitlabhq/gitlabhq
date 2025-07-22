@@ -5,10 +5,12 @@ require 'spec_helper'
 RSpec.describe Projects::LabelsController, feature_category: :team_planning do
   let_it_be(:group)   { create(:group) }
   let_it_be(:project, reload: true) { create(:project, namespace: group) }
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:project_2) { create(:project, namespace: group) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)
+    project_2.add_maintainer(user)
 
     sign_in(user)
   end
@@ -56,6 +58,17 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         list_labels
 
         expect(assigns(:labels)).to eq [group_label_3, group_label_4, label_4, label_5]
+      end
+
+      context 'with archived labels' do
+        let_it_be(:archived_label) { create(:label, :archived, project: project_2, title: 'Archived Label') }
+        let_it_be(:unarchived_label) { create(:label, project: project_2, title: 'Unarchived Label') }
+        let_it_be(:params) { { namespace_id: project_2.namespace.to_param, project_id: project_2 } }
+
+        let_it_be(:unarchived_labels) { [unarchived_label, group_label_1, group_label_2, group_label_3, group_label_4] }
+        let_it_be(:all_labels) { [archived_label, unarchived_label, group_label_1, group_label_2, group_label_3, group_label_4] }
+
+        it_behaves_like 'handles archived labels'
       end
 
       it 'does not include labels with priority' do

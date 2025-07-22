@@ -24,7 +24,7 @@ RSpec.shared_context 'with a mocked GitLab instance' do
 
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
-  subject do
+  subject(:readonly_middleware) do
     Gitlab::Middleware::ReadOnly.new(fake_app).tap do |app|
       app.extend(observe_env)
     end

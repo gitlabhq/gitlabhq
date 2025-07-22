@@ -309,7 +309,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/gitaly_client/with_feature_flag_actors_spec.rb'
     - 'spec/lib/gitlab/gitaly_client_spec.rb'
     - 'spec/lib/gitlab/github_gists_import/importer/gist_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/client_spec.rb'
     - 'spec/lib/gitlab/github_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/gon_helper_spec.rb'
     - 'spec/lib/gitlab/import_export/importer_spec.rb'

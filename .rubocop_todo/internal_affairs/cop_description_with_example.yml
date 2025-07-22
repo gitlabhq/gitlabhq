@@ -120,7 +120,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/qa/feature_flags.rb'
     - 'rubocop/cop/qa/selector_usage.rb'
     - 'rubocop/cop/redis_queue_usage.rb'
-    - 'rubocop/cop/rspec/expect_gitlab_tracking.rb'
     - 'rubocop/cop/rspec/factories_in_migration_specs.rb'
     - 'rubocop/cop/rspec/factory_bot/avoid_create.rb'
     - 'rubocop/cop/rspec/factory_bot/inline_association.rb'

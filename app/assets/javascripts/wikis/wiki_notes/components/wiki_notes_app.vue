@@ -5,6 +5,8 @@ import { produce } from 'immer';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
+import wikiDiscussionSortOrder from '~/wikis/graphql/notes/wiki_discussion_sort_order.query.graphql';
+import { WIKI_NOTES_SORT_ORDER } from '~/wikis/constants';
 import OrderedLayout from './ordered_layout.vue';
 import PlaceholderNote from './placeholder_note.vue';
 import WikiNotesActivityHeader from './wiki_notes_activity_header.vue';
@@ -30,6 +32,7 @@ export default {
   },
   inject: ['containerId', 'noteCount', 'queryVariables'],
   apollo: {
+    wikiDiscussionSortOrder,
     wikiPage: {
       query: wikiPageQuery,
       variables() {
@@ -56,14 +59,23 @@ export default {
       userPermissions: {},
       loadingFailed: false,
       placeholderNote: {},
-      slotKeys: ['comments', 'place-holder-note', 'form'],
       discussions: Array.from({ length: this.noteCount }, (_, index) => ({
         id: index,
         isSkeletonNote: true,
       })),
+      wikiDiscussionSortOrder: null,
     };
   },
   computed: {
+    slotKeys() {
+      switch (this.wikiDiscussionSortOrder) {
+        case WIKI_NOTES_SORT_ORDER.CREATED_DESC:
+          return ['form', 'place-holder-note', 'comments'];
+        case WIKI_NOTES_SORT_ORDER.CREATED_ASC:
+        default:
+          return ['comments', 'place-holder-note', 'form'];
+      }
+    },
     wikiPageData() {
       return this.$apollo.queries.wikiPage;
     },
@@ -76,6 +88,23 @@ export default {
       return cache.readQuery({
         query: wikiPageQuery,
         variables: this.queryVariables,
+      });
+    },
+    sortedDiscussions() {
+      if (!this.wikiDiscussionSortOrder) return this.discussions;
+      return [...this.discussions].sort((a, b) => {
+        const [minuend, subtrahend] =
+          this.wikiDiscussionSortOrder === WIKI_NOTES_SORT_ORDER.CREATED_ASC ? [a, b] : [b, a];
+        const minuendFirstNoteDate = minuend.notes?.nodes[0]?.createdAt;
+        const subtrahendFirstNoteDate = subtrahend.notes?.nodes[0]?.createdAt;
+
+        if (!minuendFirstNoteDate || !subtrahendFirstNoteDate) {
+          return 0; // Keep original order for items without valid dates
+        }
+
+        return (
+          new Date(minuendFirstNoteDate).getTime() - new Date(subtrahendFirstNoteDate).getTime()
+        );
       });
     },
   },
@@ -199,7 +228,7 @@ export default {
           {{ $options.i18n.loadingFailedErrText }}
         </gl-alert>
         <ul v-else id="notes-list" class="notes main-notes-list timeline">
-          <template v-for="discussion in discussions">
+          <template v-for="discussion in sortedDiscussions">
             <skeleton-note
               v-if="discussion.isSkeletonNote"
               :key="getDiscussionKey(discussion.id, 'skeleton')"

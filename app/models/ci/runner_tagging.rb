@@ -7,6 +7,8 @@ module Ci
     self.table_name = :ci_runner_taggings
     self.primary_key = :id
 
+    ignore_column :sharding_key_id, remove_with: '18.5', remove_after: '2025-09-22'
+
     query_constraints :runner_id, :runner_type
 
     before_validation :set_runner_type, on: :create, if: -> { runner_type.nil? && runner }
@@ -19,10 +21,8 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :runner_type, presence: true
-    validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
 
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
 
     scope :scoped_runners, -> do
@@ -35,12 +35,6 @@ module Ci
 
     def set_runner_type
       self.runner_type = runner.runner_type
-    end
-
-    def no_sharding_key_id
-      return if sharding_key_id.nil?
-
-      errors.add(:sharding_key_id, 'instance_type runners must not have a sharding_key_id')
     end
 
     def no_organization_id

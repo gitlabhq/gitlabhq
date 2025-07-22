@@ -369,5 +369,45 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
         let(:project_execute) { described_class.new(user, project_id: project.id).execute }
       end
     end
+
+    context 'filter by archived' do
+      let_it_be(:archived_label) { create(:label, :archived, project: project_1, title: 'Archived Label') }
+
+      it 'returns labels that are archived' do
+        finder = described_class.new(user, archived: 'true')
+
+        expect(finder.execute).to match_array([archived_label])
+      end
+
+      it 'returns labels that are not archived' do
+        finder = described_class.new(user, archived: 'false')
+
+        expect(finder.execute).to match_array([group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
+      end
+
+      it 'returns all labels if archived is not set' do
+        finder = described_class.new(user)
+
+        expect(finder.execute).to match_array([archived_label, group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
+      end
+
+      it 'returns all labels if archived is nil' do
+        finder = described_class.new(user, archived: nil)
+
+        expect(finder.execute).to match_array([archived_label, group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
+      end
+
+      context 'with feature flag labels_archive disabled' do
+        before do
+          stub_feature_flags(labels_archive: false)
+        end
+
+        it 'returns all labels' do
+          finder = described_class.new(user, archived: 'true')
+
+          expect(finder.execute).to match_array([archived_label, group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
+        end
+      end
+    end
   end
 end

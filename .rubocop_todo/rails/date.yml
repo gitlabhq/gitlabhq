@@ -112,7 +112,6 @@ Rails/Date:
     - 'qa/qa/specs/features/ee/browser_ui/12_systems/geo/ssh_push_to_secondary_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/12_systems/geo/wiki_ssh_push_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/12_systems/geo/wiki_ssh_push_to_secondary_spec.rb'
-    - 'qa/qa/tools/delete_resource_base.rb'
     - 'qa/qa/tools/revoke_user_personal_access_tokens.rb'
     - 'spec/controllers/admin/users_controller_spec.rb'
     - 'spec/controllers/groups/milestones_controller_spec.rb'

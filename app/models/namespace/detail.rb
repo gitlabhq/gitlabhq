@@ -7,7 +7,7 @@ class Namespace::Detail < ApplicationRecord
   belongs_to :namespace, inverse_of: :namespace_details
   belongs_to :creator, class_name: "User", optional: true
   validates :namespace, presence: true
-  validates :description, length: { maximum: 500 }
+  validates :description, length: { maximum: 2000 }
 
   cache_markdown_field :description, pipeline: :description
 

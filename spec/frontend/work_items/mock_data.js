@@ -4153,7 +4153,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
                         resolveNote: true,
                         __typename: 'NotePermissions',
                       },
@@ -4204,7 +4203,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
                         resolveNote: true,
                         __typename: 'NotePermissions',
                       },
@@ -4254,7 +4252,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
                         resolveNote: true,
                         __typename: 'NotePermissions',
                       },
@@ -4343,7 +4340,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4397,7 +4393,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4451,7 +4446,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4542,7 +4536,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4596,7 +4589,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4649,7 +4641,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -4735,7 +4726,6 @@ export const createWorkItemNoteResponse = ({
                 userPermissions: {
                   adminNote: true,
                   awardEmoji: true,
-                  createNote: true,
                   resolveNote: true,
                   __typename: 'NotePermissions',
                 },
@@ -4780,7 +4770,6 @@ export const mockWorkItemCommentNote = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    createNote: true,
     resolveNote: true,
     __typename: 'NotePermissions',
   },
@@ -4880,7 +4869,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            createNote: true,
                             resolveNote: true,
                             __typename: 'NotePermissions',
                           },
@@ -4918,7 +4906,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            createNote: true,
                             resolveNote: true,
                             __typename: 'NotePermissions',
                           },
@@ -4957,7 +4944,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: false,
                             awardEmoji: true,
-                            createNote: true,
                             resolveNote: true,
                             __typename: 'NotePermissions',
                           },
@@ -5034,7 +5020,6 @@ export const workItemNotesCreateSubscriptionResponse = {
               userPermissions: {
                 adminNote: false,
                 awardEmoji: true,
-                createNote: true,
                 resolveNote: true,
                 __typename: 'NotePermissions',
               },
@@ -5063,7 +5048,6 @@ export const workItemNotesCreateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        createNote: true,
         resolveNote: true,
         __typename: 'NotePermissions',
       },
@@ -5109,7 +5093,6 @@ export const workItemNotesUpdateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        createNote: true,
         resolveNote: true,
         __typename: 'NotePermissions',
       },
@@ -5173,7 +5156,6 @@ export const workItemSystemNoteWithMetadata = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    createNote: true,
     resolveNote: true,
     __typename: 'NotePermissions',
   },
@@ -5255,7 +5237,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -5319,7 +5300,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -5383,7 +5363,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
                           resolveNote: true,
                           __typename: 'NotePermissions',
                         },
@@ -6553,7 +6532,6 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                createNote: true,
                 resolveNote: true,
                 __typename: 'NotePermissions',
               },
@@ -6591,7 +6569,6 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                createNote: true,
                 resolveNote: true,
                 __typename: 'NotePermissions',
               },

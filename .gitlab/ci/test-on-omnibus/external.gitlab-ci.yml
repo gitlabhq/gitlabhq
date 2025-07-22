@@ -37,3 +37,9 @@ cache-gitlab-qa:
   variables:
     GIT_STRATEGY: none
   allow_failure: true
+
+# only run full "instance" suite when pipeline is added in external project
+instance:
+  rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/

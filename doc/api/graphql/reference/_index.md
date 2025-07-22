@@ -30214,6 +30214,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouplabelsarchived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
 | <a id="grouplabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="grouplabelsincludedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
@@ -32398,6 +32399,7 @@ Label to apply to associated Kubernetes objects of a workspace.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="labelarchived"></a>`archived` | [`Boolean!`](#boolean) | Indicates the label is archived. |
 | <a id="labelcolor"></a>`color` | [`String!`](#string) | Background color of the label. |
 | <a id="labelcreatedat"></a>`createdAt` | [`Time!`](#time) | When the label was created. |
 | <a id="labeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
@@ -38434,6 +38436,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectlabelsarchived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
 | <a id="projectlabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="projectlabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. Ignored if using `title`. |
 | <a id="projectlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
