@@ -65664,8 +65664,6 @@ definitions:
         type: string
       created_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
-      email_reset_offered_at:
-        type: string
       using_license_seat:
         type: string
       is_auditor:

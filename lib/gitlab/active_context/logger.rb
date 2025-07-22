@@ -4,7 +4,7 @@ module Gitlab
   module ActiveContext
     class Logger < ::Gitlab::JsonLogger
       def self.file_name_noext
-        'activecontext'
+        'active_context'
       end
     end
   end

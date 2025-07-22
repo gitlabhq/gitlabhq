@@ -1185,7 +1185,7 @@ export default {
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
-                  :class="{ 'gl-top-11': isDrawer }"
+                  :class="{ 'gl-top-5': isDrawer }"
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"

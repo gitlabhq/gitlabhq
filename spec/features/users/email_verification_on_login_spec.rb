@@ -384,28 +384,6 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
   end
 
-  def expect_user_to_be_confirmed
-    aggregate_failures do
-      expect(user.email).to eq(new_email)
-      expect(user.unconfirmed_email).to be_nil
-    end
-  end
-
-  def expect_email_changed_notification_to_old_address_and_instructions_email_to_new_address
-    changed_email = ActionMailer::Base.deliveries[0]
-    instructions_email = ActionMailer::Base.deliveries[1]
-
-    expect(changed_email.to).to match_array([user.email])
-    expect(changed_email.subject).to eq('Email Changed')
-
-    expect(instructions_email.to).to match_array([new_email])
-    expect(instructions_email.subject).to eq(s_('IdentityVerification|Verify your identity'))
-
-    reset_delivered_emails!
-
-    instructions_email.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
-  end
-
   def expect_instructions_email_and_extract_code(email: nil)
     mail = find_email_for(email || user)
     expect(mail.to).to match_array([email || user.email])

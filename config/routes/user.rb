@@ -55,7 +55,6 @@ devise_scope :user do
   get '/users/almost_there' => 'confirmations#almost_there'
   post '/users/resend_verification_code', to: 'sessions#resend_verification_code'
   get '/users/successful_verification', to: 'sessions#successful_verification'
-  patch '/users/update_email', to: 'sessions#update_email'
 
   # Redirect on GitHub authorization request errors. E.g. it could happen when user:
   # 1. cancel authorization the GitLab OAuth app via GitHub to import GitHub repos

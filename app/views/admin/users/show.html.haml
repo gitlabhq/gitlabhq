@@ -158,11 +158,6 @@
               %strong= Gitlab::Access.human_access_with_none(@user.highest_role)
 
           %li{ class: list_item_classes }
-            %span.gl-text-subtle= _("Email reset removed at:")
-            .gl-col-span-2
-              %strong= @user.email_reset_offered_at || _('never')
-
-          %li{ class: list_item_classes }
             %span.gl-text-subtle= s_("Profiles|Support Pin:")
             .gl-col-span-2
               %strong

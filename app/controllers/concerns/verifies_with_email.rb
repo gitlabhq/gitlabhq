@@ -51,22 +51,6 @@ module VerifiesWithEmail
     end
   end
 
-  def update_email
-    return unless user = find_verification_user
-    return render json: { status: :error, message: 'Feature not available' } unless offer_email_reset_enabled?(user)
-
-    log_verification(user, :email_update_requested)
-    result = Users::EmailVerification::UpdateEmailService.new(user: user).execute(email: email_params[:email])
-
-    if result[:status] == :success
-      send_verification_instructions(user)
-    else
-      handle_verification_failure(user, result[:reason], result[:message])
-    end
-
-    render json: result
-  end
-
   def successful_verification
     session.delete(:verification_user_id)
     @redirect_url = after_sign_in_path_for(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -95,7 +79,7 @@ module VerifiesWithEmail
   end
 
   def send_verification_instructions_email(user, token, secondary_email)
-    email = secondary_email || verification_email(user)
+    email = secondary_email || user.email
     Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
@@ -152,7 +136,6 @@ module VerifiesWithEmail
   end
 
   def handle_verification_success(user)
-    handle_email_reset_on_verification(user)
     user.unlock_access!
     log_verification(user, :successful)
 
@@ -161,13 +144,6 @@ module VerifiesWithEmail
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
-  end
-
-  def handle_email_reset_on_verification(user)
-    return unless offer_email_reset_enabled?(user)
-
-    user.confirm if unconfirmed_verification_email?(user)
-    user.email_reset_offered_at = Time.current
   end
 
   def trusted_ip_address?(user)

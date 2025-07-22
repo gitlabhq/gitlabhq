@@ -1,5 +1,14 @@
 - merge_request = local_assigns.fetch(:issuable)
 
+- popover_title = s_("What is squashing?")
+- popover_content = capture do
+  %p.gl-mb-0
+    = s_("Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.")
+
+  = link_to s_("Learn more"), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
+
+- popover_data = { container: 'body', toggle: 'popover', placement: "top", html: 'true', triggers: 'hover focus', title: popover_title, content: popover_content }
+
 - return if !merge_request.is_a?(MergeRequest) || merge_request.closed_or_merged_without_fork?
 
 .form-group.row.gl-mb-7
@@ -28,4 +37,4 @@
           = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: merge_request_squash_option?(merge_request), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
             - c.with_label do
               = _("Squash commits when merge request is accepted.")
-              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
+              = render Pajamas::ButtonComponent.new(variant: :link, icon: 'question-o', button_options: { class: '-gl-mt-1', data: popover_data })

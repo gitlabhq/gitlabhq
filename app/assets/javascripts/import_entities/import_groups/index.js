@@ -19,6 +19,7 @@ export function mountImportGroupsApp(mountElement) {
     defaultTargetNamespace,
     sourceUrl,
     groupPathRegex,
+    importGroupPath,
   } = mountElement.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createApolloClient({
@@ -43,6 +44,7 @@ export function mountImportGroupsApp(mountElement) {
           historyPath,
           historyShowPath,
           defaultTargetNamespace: parseInt(defaultTargetNamespace, 10) || null,
+          importGroupPath,
         },
       });
     },

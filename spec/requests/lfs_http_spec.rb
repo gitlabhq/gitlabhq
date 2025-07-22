@@ -92,14 +92,6 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 it_behaves_like 'LFS http 404 response'
               end
             end
-
-            context 'when validate_lfs_object_access FF is disabled' do
-              before do
-                stub_feature_flags(validate_lfs_object_access: false)
-              end
-
-              it_behaves_like 'LFS http 200 blob response'
-            end
           end
         end
       end

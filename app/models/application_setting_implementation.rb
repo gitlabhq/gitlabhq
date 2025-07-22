@@ -336,6 +336,7 @@ module ApplicationSettingImplementation
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
+        pages_unique_domain_default_enabled: true,
         scan_execution_policies_action_limit: 0,
         scan_execution_policies_schedule_limit: 0,
         seat_control: 0,

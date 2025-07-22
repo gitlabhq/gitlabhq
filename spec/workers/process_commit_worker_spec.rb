@@ -73,11 +73,12 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
       end
 
       context 'when commit is not a merge request merge commit' do
-        context 'when commit has work_item reference' do
+        context 'when commit has work_item reference', :clean_gitlab_redis_cache do
           let(:work_item) { create(:work_item, :task, project: project) }
           let(:work_item_url) { Gitlab::UrlBuilder.build(work_item) }
 
           before do
+            # markdown cache from CacheMarkdownField needs to be cleared otherwise cached references are used
             allow(commit).to receive_messages(
               safe_message: "Ref #{work_item_url}",
               author: author

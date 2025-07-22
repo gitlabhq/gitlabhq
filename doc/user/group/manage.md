@@ -386,6 +386,12 @@ When the number of billable members reaches the user cap, the group Owner must a
 Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 disabled for the group and its subgroups.
 
+{{< alert type="warning" >}}
+
+When you specify a user cap, any members added through group sharing lose access to the group.
+
+{{< /alert >}}
+
 ### Specify a user cap for a group
 
 Prerequisites:

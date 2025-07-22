@@ -4833,6 +4833,12 @@ msgstr ""
 msgid "AdminSettings|Enable the external redirect warning page for job artifacts"
 msgstr ""
 
+msgid "AdminSettings|Enable unique domains by default"
+msgstr ""
+
+msgid "AdminSettings|Enable unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace."
+msgstr ""
+
 msgid "AdminSettings|Enabled"
 msgstr ""
 
@@ -11754,10 +11760,16 @@ msgstr ""
 msgid "BulkImport|Placeholder reassignments completed with errors"
 msgstr ""
 
+msgid "BulkImport|Please re-enter your credentials to reconnect."
+msgstr ""
+
 msgid "BulkImport|Project import history"
 msgstr ""
 
 msgid "BulkImport|Re-import creates a new group and does not sync with the existing group."
+msgstr ""
+
+msgid "BulkImport|Reconnect to instance"
 msgstr ""
 
 msgid "BulkImport|Review results"
@@ -11776,6 +11788,9 @@ msgid "BulkImport|Showing %{start} - %{end} of %{total}"
 msgstr ""
 
 msgid "BulkImport|Some groups are imported without projects."
+msgstr ""
+
+msgid "BulkImport|Something went wrong"
 msgstr ""
 
 msgid "BulkImport|Source"
@@ -24646,9 +24661,6 @@ msgstr ""
 msgid "Email patch"
 msgstr ""
 
-msgid "Email reset removed at:"
-msgstr ""
-
 msgid "Email sent"
 msgstr ""
 
@@ -32234,9 +32246,6 @@ msgid_plural "IdentityVerification|%d countries found"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "IdentityVerification|A code has already been sent to this email address. Check your spam folder or enter another email address."
-msgstr ""
-
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
@@ -32268,9 +32277,6 @@ msgid "IdentityVerification|Country or region"
 msgstr ""
 
 msgid "IdentityVerification|Email Verification"
-msgstr ""
-
-msgid "IdentityVerification|Email update is only offered once."
 msgstr ""
 
 msgid "IdentityVerification|Enter a code."
@@ -60907,6 +60913,9 @@ msgid "SquashTmIntegration|Squash TM webhook URL"
 msgstr ""
 
 msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified."
+msgstr ""
+
+msgid "Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes."
 msgstr ""
 
 msgid "Stack trace"

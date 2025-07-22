@@ -398,6 +398,7 @@ module ApplicationSettingsHelper
       :notify_on_unknown_sign_in,
       :organization_cluster_agent_authorization_enabled,
       :pages_domain_verification_enabled,
+      :pages_unique_domain_default_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_path,

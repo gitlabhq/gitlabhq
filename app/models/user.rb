@@ -282,7 +282,6 @@ class User < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user # deprecated
   has_many :organization_user_details, class_name: 'Organizations::OrganizationUserDetail', inverse_of: :user
 
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
@@ -478,7 +477,6 @@ class User < ApplicationRecord
   delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
-  delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
   delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true

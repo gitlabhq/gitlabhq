@@ -658,7 +658,6 @@ RSpec/BeEq:
     - 'spec/lib/click_house/migration_support/exclusive_lock_spec.rb'
     - 'spec/lib/click_house/models/ci/finished_pipelines_daily_spec.rb'
     - 'spec/lib/click_house/models/ci/finished_pipelines_hourly_spec.rb'
-    - 'spec/lib/cloud_connector/connected_service_spec.rb'
     - 'spec/lib/constraints/jira_encoded_url_constrainer_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/event_filter_spec.rb'

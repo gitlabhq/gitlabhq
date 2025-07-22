@@ -84,6 +84,10 @@ func (m *mockWorkflowStream) Recv() (*pb.Action, error) {
 	return action, nil
 }
 
+func (m *mockWorkflowStream) CloseSend() error {
+	return nil
+}
+
 func TestRunner_Execute(t *testing.T) {
 	tests := []struct {
 		name            string

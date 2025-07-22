@@ -32,6 +32,7 @@ type websocketConn interface {
 type workflowStream interface {
 	Send(*pb.ClientEvent) error
 	Recv() (*pb.Action, error)
+	CloseSend() error
 }
 
 type runner struct {
@@ -136,4 +137,10 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
+}
+
+func (r *runner) threadSafeCloseSend() error {
+	r.sendMu.Lock()
+	defer r.sendMu.Unlock()
+	return r.wf.CloseSend()
 }

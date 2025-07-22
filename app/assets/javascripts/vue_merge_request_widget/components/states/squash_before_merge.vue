@@ -1,16 +1,18 @@
 <script>
 import { GlTooltipDirective, GlFormCheckbox, GlLink } from '@gitlab/ui';
-import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { SQUASH_BEFORE_MERGE } from '../../i18n';
 
 export default {
   components: {
     GlFormCheckbox,
     GlLink,
-    HelpIcon,
+    HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   i18n: {
     ...SQUASH_BEFORE_MERGE,
@@ -35,6 +37,9 @@ export default {
     tooltipTitle() {
       return this.isDisabled ? this.$options.i18n.tooltipTitle : null;
     },
+    popoverOptions() {
+      return this.$options.i18n.popoverOptions;
+    },
   },
 };
 </script>
@@ -53,15 +58,26 @@ export default {
     >
       {{ $options.i18n.checkboxLabel }}
     </gl-form-checkbox>
-    <gl-link
+    <help-popover
       v-if="helpPath"
-      v-gl-tooltip
-      :href="helpPath"
-      :title="$options.i18n.helpLabel"
-      class="gl-leading-1"
-      target="_blank"
+      class="gl-flex gl-items-start"
+      :options="popoverOptions"
+      :aria-label="$options.i18n.helpLabel"
     >
-      <help-icon :aria-label="$options.i18n.helpLabel" />
-    </gl-link>
+      <template v-if="popoverOptions.content">
+        <p
+          v-if="popoverOptions.content.text"
+          v-safe-html="popoverOptions.content.text"
+          class="gl-mb-0"
+        ></p>
+        <gl-link
+          v-if="popoverOptions.content.learnMorePath"
+          :href="popoverOptions.content.learnMorePath"
+          target="_blank"
+          class="gl-text-sm"
+          >{{ $options.i18n.learnMore }}</gl-link
+        >
+      </template>
+    </help-popover>
   </div>
 </template>

@@ -191,6 +191,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         package_registry_cleanup_policies_worker_capacity: 2,
         packages_cleanup_package_file_worker_capacity: 2,
         pages_extra_deployments_default_expiry_seconds: 86400,
+        pages_unique_domain_default_enabled: true,
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         personal_access_token_prefix: 'glpat-',
@@ -496,6 +497,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }
 
     context 'for validating the group_settings jsonb_column`s atrributes' do
       it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }

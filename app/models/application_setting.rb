@@ -860,7 +860,8 @@ class ApplicationSetting < ApplicationRecord
       :pypi_package_requests_forwarding,
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
-      :lock_maven_package_requests_forwarding
+      :lock_maven_package_requests_forwarding,
+      :pages_unique_domain_default_enabled
     )
   end
 
@@ -871,7 +872,10 @@ class ApplicationSetting < ApplicationRecord
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
 
-  jsonb_accessor :pages, pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
+  jsonb_accessor :pages,
+    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }],
+    pages_unique_domain_default_enabled: [:boolean, { default: true }]
+
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
   jsonb_accessor :anti_abuse_settings,

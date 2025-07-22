@@ -224,12 +224,13 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   end
 
   shared_examples 'Allowed endpoints' do
-    let(:allowed_endpoints) do
-      ['http://127.0.0.1:9000']
-    end
+    let(:enabled_endpoint_uris) { [URI('192.168.1.1')] }
+    let(:outbound_local_requests_allowlist) { ['127.0.0.1'] }
+    let(:allowed_endpoints) { enabled_endpoint_uris.map(&:to_s) + outbound_local_requests_allowlist }
 
     before do
-      allow(ObjectStoreSettings).to receive(:enabled_endpoint_uris).and_return(allowed_endpoints)
+      allow(ObjectStoreSettings).to receive(:enabled_endpoint_uris).and_return(enabled_endpoint_uris)
+      stub_application_setting(outbound_local_requests_whitelist: outbound_local_requests_allowlist)
     end
 
     it 'sets AllowedEndpoints' do

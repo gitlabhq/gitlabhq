@@ -1,4 +1,5 @@
 import { __, s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const MR_WIDGET_PREPARING_ASYNCHRONOUSLY = s__(
   'mrWidget|Your merge request is almost ready!',
@@ -18,6 +19,16 @@ export const SQUASH_BEFORE_MERGE = {
   tooltipTitle: __('Required in this project.'),
   checkboxLabel: __('Squash commits'),
   helpLabel: __('What is squashing?'),
+  popoverOptions: {
+    title: __('What is squashing?'),
+    content: {
+      text: __(
+        'Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.',
+      ),
+      learnMorePath: helpPagePath('user/project/merge_requests/squash_and_merge'),
+    },
+  },
+  learnMore: __('Learn more'),
 };
 
 export const I18N_SHA_MISMATCH = {

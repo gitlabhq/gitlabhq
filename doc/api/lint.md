@@ -36,7 +36,29 @@ POST /projects/:id/ci/lint
 Example request:
 
 ```shell
-curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"stages\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
+curl --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint" \
+  --data @- <<'EOF'
+{
+  "content": "{
+    \"image\": \"ruby:2.6\",
+    \"services\": [\"postgres\"],
+    \"before_script\": [
+      \"bundle install\",
+      \"bundle exec rake db:create\"
+    ],
+    \"variables\": {
+      \"DB_NAME\": \"postgres\"
+    },
+    \"stages\": [\"test\", \"deploy\", \"notify\"],
+    \"rspec\": {
+      \"script\": \"rake spec\",
+      \"tags\": [\"ruby\", \"postgres\"],
+      \"only\": [\"branches\"]
+    }
+  }"
+}
+EOF
 ```
 
 Example responses:
@@ -99,7 +121,7 @@ GET /projects/:id/ci/lint
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+curl --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 ```
 
 Example responses:
@@ -217,9 +239,9 @@ GitLab API using `curl` and `jq` in a one-line command:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
---header 'Content-Type: application/json' \
---data @-
+| curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+    --header 'Content-Type: application/json' \
+    --data @-
 ```
 
 ### Parse a CI Lint response
@@ -264,7 +286,8 @@ With a one-line command, you can:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
---header 'Content-Type: application/json' --data @- \
+| curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+    --header 'Content-Type: application/json' \
+    --data @- \
 | jq --raw-output '.merged_yaml | fromjson'
 ```

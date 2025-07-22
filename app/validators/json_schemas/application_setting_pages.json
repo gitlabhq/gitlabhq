@@ -8,6 +8,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Default expiration for extra deployments in seconds."
+    },
+    "pages_unique_domain_default_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable unique domains by default in Pages."
     }
   }
 }
