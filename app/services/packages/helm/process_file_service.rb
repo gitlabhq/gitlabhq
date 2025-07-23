@@ -83,12 +83,11 @@ module Packages
       strong_memoize_attr :temp_package
 
       def package
-        project_packages = package_file.package.project.packages
-        package = project_packages.with_package_type(:helm)
-                                  .with_name(chart_name)
-                                  .with_version(chart_version)
-                                  .not_pending_destruction
-                                  .last
+        package = ::Packages::Helm::Package.for_projects(package_file.package.project)
+                                           .with_name(chart_name)
+                                           .with_version(chart_version)
+                                           .not_pending_destruction
+                                           .last
         package || temp_package
       end
       strong_memoize_attr :package

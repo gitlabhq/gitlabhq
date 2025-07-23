@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 498
+- Number of attributes: 499
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 294 (59.0%)
-- Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 498 (100.0%)
-- Number of attributes with `clusterwide: true` set: 131 (26.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
+- Number of attributes with `clusterwide` set: 499 (100.0%)
+- Number of attributes with `clusterwide: true` set: 132 (26.0%)
 
 ## Individual columns
 
@@ -376,6 +376,7 @@ title: Application Settings analysis
 | `require_personal_access_token_expiry` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `require_two_factor_authentication` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `required_instance_ci_template` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `resource_access_tokens_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `restricted_visibility_levels` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `false`| `true` |
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |

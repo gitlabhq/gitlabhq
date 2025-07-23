@@ -122,7 +122,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
-| Pester    | PowerShell | None    | `/Covered (\d+\.\d+%)/` |
+| Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.|,)?\d{0,2}%)/` |
 
 {{< /tab >}}
 

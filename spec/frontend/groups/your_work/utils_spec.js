@@ -10,7 +10,7 @@ describe('formatGroups', () => {
     expect(formatGroups(graphQLGroups)).toEqual(
       formatGraphQLGroups(graphQLGroups).map((group) => ({
         ...group,
-        editPath: `${group.webUrl}/-/edit`,
+        editPath: group.editPath,
         avatarLabel: group.name,
         children: expect.any(Object),
       })),

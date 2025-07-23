@@ -353,6 +353,8 @@
   - 1
 - - cronjob
   - 1
+- - database_collation_checker
+  - 1
 - - database_lock_tables
   - 1
 - - default

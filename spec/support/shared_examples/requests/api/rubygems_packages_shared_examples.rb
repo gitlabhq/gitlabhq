@@ -46,10 +46,10 @@ RSpec.shared_examples 'process rubygems upload' do |user_type, status, add_membe
       expect(::Packages::Rubygems::ExtractionWorker).to receive(:perform_async).with(an_instance_of(Integer)).once
 
       expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { ::Packages::Rubygems::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
 
-      package = project.packages.last
+      package = ::Packages::Rubygems::Package.for_projects(project).last
       expect(package).not_to be_nil
 
       package_file = package.package_files.reload.last

@@ -6,8 +6,7 @@ RSpec.describe ProjectClusterablePresenter, feature_category: :environment_manag
   include Gitlab::Routing.url_helpers
 
   let(:presenter) { described_class.new(project) }
-  let(:project_namespace) { build_stubbed(:project_namespace) }
-  let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+  let(:project) { build_stubbed(:project) }
   let(:cluster) { build_stubbed(:cluster, :provided_by_gcp, projects: [project]) }
 
   describe '#can_create_cluster?' do

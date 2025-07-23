@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navigation do
-  let(:project_namespace) { build_stubbed(:project_namespace) }
-  let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+  let(:project) { build_stubbed(:project) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }

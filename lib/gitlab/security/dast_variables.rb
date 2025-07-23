@@ -528,7 +528,7 @@ module Gitlab
               example: "/builds/project/urls.txt",
               name: s_("DastProfiles|Target paths file"),
               description: s_(
-                "DastProfiles|Ensures that the provided paths are always scanned. " \
+                "DastProfiles|Scan only these paths instead of crawling the whole site. " \
                   "Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. " \
                   "The file must be plain text with one path per line. When this is set, " \
                   "`DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`."
@@ -540,7 +540,7 @@ module Gitlab
               example: "/page1.html,/category1/page3.html",
               name: s_("DastProfiles|Target paths"),
               description: s_(
-                "DastProfiles|Ensures that the provided paths are always scanned. " \
+                "DastProfiles|Scan only these paths instead of crawling the whole site. " \
                   "Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. When this is set, " \
                   "`DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`."
               )

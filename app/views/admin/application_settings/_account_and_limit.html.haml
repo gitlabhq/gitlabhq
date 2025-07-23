@@ -54,6 +54,8 @@
       = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
 
+    = render 'admin/application_settings/project_and_group_access_tokens', form: f
+
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
 
     .form-group

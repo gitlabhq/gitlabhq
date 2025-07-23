@@ -122,6 +122,7 @@ Example response:
   "first_day_of_week": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
+  "inactive_resource_access_tokens_delete_after_days": 30,
   "performance_bar_allowed_group_id": 42,
   "user_show_add_ssh_key_message": true,
   "allow_account_deletion": true,
@@ -322,6 +323,7 @@ Example response:
   "first_day_of_week": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
+  "inactive_resource_access_tokens_delete_after_days": 30,
   "performance_bar_allowed_group_id": 42,
   "user_show_add_ssh_key_message": true,
   "file_template_project_id": 1,
@@ -672,6 +674,7 @@ to configure other related settings. These requirements are
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
 | `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires**: `gitpod_url`) Enable [Gitpod integration](../integration/gitpod.md). Default is `false`. |
 | `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Gitpod instance URL for integration. |
+| `inactive_resource_access_tokens_delete_after_days`| integer | no                                   | Specifies retention period for inactive project and group access tokens. Default is `30`. |
 | `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires**: `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
 | `kroki_url`                              | string           | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
 | `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, and `excalidraw` in the format `<format>: true` or `<format>: false`. |

@@ -14,6 +14,10 @@ module ResourceAccessTokens
     MAX_RUNTIME = 3.minutes
 
     def perform(cursor = nil)
+      cut_off =
+        Gitlab::CurrentSettings.inactive_resource_access_tokens_delete_after_days&.days&.ago
+      return unless cut_off
+
       runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
 
       # rubocop:disable CodeReuse/ActiveRecord -- each_batch
@@ -60,10 +64,6 @@ module ResourceAccessTokens
                         },
         context_proc: ->(user) { { user: user } }
       )
-    end
-
-    def cut_off
-      ApplicationSetting::INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS.days.ago
     end
 
     def admin_bot_id

@@ -365,6 +365,7 @@ module ApplicationSettingsHelper
       :housekeeping_optimize_repository_period,
       :html_emails_enabled,
       :import_sources,
+      :inactive_resource_access_tokens_delete_after_days,
       :inactive_projects_delete_after_months,
       :inactive_projects_min_size_mb,
       :inactive_projects_send_warning_email_after_months,

@@ -17,10 +17,16 @@ module Types
       description: 'Most-recently viewed issues for the current user.',
       experiment: { milestone: '17.9' }
 
-    field :recently_viewed_merge_requests, # rubocop:disable GraphQL/ExtractType -- To be refactored
+    field :recently_viewed_merge_requests,
       resolver: Resolvers::Users::RecentlyViewedMergeRequestsResolver,
       description: 'Most-recently viewed merge requests for the current user.',
       experiment: { milestone: '17.10' }
+
+    field :recently_viewed_items, # rubocop:disable GraphQL/ExtractType -- This is the extract type
+      [Types::Users::RecentlyViewedItemType],
+      null: true,
+      description: 'Most-recently viewed items for the current user.',
+      resolver: Resolvers::Users::RecentlyViewedItemsResolver
 
     field :work_items,
       null: true,

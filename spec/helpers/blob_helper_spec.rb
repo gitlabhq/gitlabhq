@@ -438,8 +438,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#edit_blob_app_data' do
-    let(:project_namespace) { build_stubbed(:project_namespace) }
-    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+    let(:project) { build_stubbed(:project) }
     let(:user) { build_stubbed(:user) }
     let(:blob) { fake_blob(path: 'test.rb', size: 100.bytes) }
     let(:ref) { 'main' }

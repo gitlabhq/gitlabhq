@@ -82,7 +82,7 @@ RSpec.describe Packages::Debian::CleanupDanglingPackageFilesWorker, type: :worke
           expect { subject }
             .to not_change { distribution.project.package_files.count }
             .and change { distribution.project.package_files.pending_destruction.count }.from(0).to(1)
-            .and not_change { distribution.project.packages.count }
+            .and not_change { ::Packages::Debian::Package.for_projects(distribution.project).count }
         end
       end
     end

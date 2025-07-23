@@ -3588,6 +3588,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: database_collation_checker
+  :worker_name: Database::CollationCheckerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: database_lock_tables
   :worker_name: Database::LockTablesWorker
   :feature_category: :cell

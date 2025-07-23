@@ -6,8 +6,7 @@ RSpec.describe 'projects/empty', feature_category: :groups_and_projects do
   let(:user) { build(:user) }
   let(:project) do
     project_statistics = build(:project_statistics)
-    project_namespace = build_stubbed(:project_namespace)
-    project = build_stubbed(:project, :empty_repo, statistics: project_statistics, project_namespace: project_namespace)
+    project = build_stubbed(:project, :empty_repo, statistics: project_statistics)
     ProjectPresenter.new(project, current_user: user)
   end
 

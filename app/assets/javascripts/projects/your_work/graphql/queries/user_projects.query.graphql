@@ -24,6 +24,7 @@ query getYourWorkUserProjects(
       search: $search
       minAccessLevel: $minAccessLevel
       programmingLanguageName: $programmingLanguageName
+      includePersonal: true
     ) @include(if: $contributed) {
       nodes {
         ...Project

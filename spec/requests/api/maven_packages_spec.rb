@@ -1164,7 +1164,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it 'creates package and stores package file' do
         expect_use_primary
 
-        expect { upload_file_with_token(params: params) }.to change { project.packages.count }.by(1)
+        expect { upload_file_with_token(params: params) }.to change { ::Packages::Maven::Package.for_projects(project).count }.by(1)
           .and change { Packages::Maven::Metadatum.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
 
@@ -1232,7 +1232,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:file_name) { 'a' * (Packages::Maven::FindOrCreatePackageService::MAX_FILE_NAME_LENGTH + 1) }
 
         it 'rejects request' do
-          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { project.packages.count }
+          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { ::Packages::Maven::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to include('File name is too long')
@@ -1243,7 +1243,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:version) { '$%123' }
 
         it 'rejects request' do
-          expect { upload_file_with_token(params: params) }.not_to change { project.packages.count }
+          expect { upload_file_with_token(params: params) }.not_to change { ::Packages::Maven::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to include('Validation failed')

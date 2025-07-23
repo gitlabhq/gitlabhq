@@ -37,8 +37,6 @@ class ApplicationSetting < ApplicationRecord
 
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
 
-  INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
-
   DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
@@ -697,6 +695,11 @@ class ApplicationSetting < ApplicationRecord
 
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
+
+  jsonb_accessor :resource_access_tokens_settings,
+    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }]
+
+  validates :resource_access_tokens_settings, json_schema: { filename: 'resource_access_tokens_settings' }
 
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],

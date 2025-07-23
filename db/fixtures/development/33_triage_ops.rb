@@ -83,13 +83,13 @@ class Gitlab::Seeder::TriageOps
     pipeline:run-all-rspec
     pipeline:run-as-if-foss
     pipeline:run-as-if-jh
-    pipeline:run-e2e-omnibus-once
     pipeline:run-flaky-tests
     pipeline:run-praefect-with-db
     pipeline:run-review-app
     pipeline:run-single-db
     pipeline:skip-undercoverage
     pipeline:update-cache
+    pipeline:run-as-if-foss-once
   LABELS
 
   attr_reader :organization

@@ -1050,12 +1050,12 @@ RSpec.shared_examples 'uploads a package file' do
     context 'when params from workhorse are correct' do
       it 'creates package and stores package file' do
         expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        package_file = project.packages.last.package_files.reload.last
+        package_file = ::Packages::Conan::Package.for_projects(project).last.package_files.reload.last
         expect(package_file.file_name).to eq(params[:file].original_filename)
         expect(package_file.conan_file_metadatum.recipe_revision_value).to eq(recipe_revision)
         expect(package_file.conan_file_metadatum.package_reference_value).to eq(
@@ -1074,7 +1074,7 @@ RSpec.shared_examples 'uploads a package file' do
 
           it 'returns not found without creating package or package file' do
             expect { subject }
-              .to not_change { project.packages.count }
+              .to not_change { ::Packages::Conan::Package.for_projects(project).count }
               .and not_change { Packages::PackageFile.count }
 
             expect(response).to have_gitlab_http_status(:not_found)
@@ -1089,7 +1089,7 @@ RSpec.shared_examples 'uploads a package file' do
 
           it 'creates package and stores package file' do
             expect { subject }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -1109,7 +1109,7 @@ RSpec.shared_examples 'uploads a package file' do
 
         it 'does not create a new package' do
           expect { subject }
-            .to not_change { project.packages.count }
+            .to not_change { ::Packages::Conan::Package.for_projects(project).count }
             .and not_change { Packages::Conan::Metadatum.count }
             .and change { Packages::PackageFile.count }.by(1)
         end
@@ -1119,7 +1119,7 @@ RSpec.shared_examples 'uploads a package file' do
             existing_package.pending_destruction!
 
             expect { subject }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
               .and change { Packages::Conan::Metadatum.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
           end
@@ -1170,12 +1170,12 @@ RSpec.shared_examples 'uploads a package file' do
 
         it 'creates package and stores package file' do
           expect { subject }
-            .to change { project.packages.count }.by(1)
+            .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:ok)
 
-          package_file = project.packages.last.package_files.reload.last
+          package_file = ::Packages::Conan::Package.for_projects(project).last.package_files.reload.last
           expect(package_file.file_name).to eq(params[:file].original_filename)
           expect(package_file.file.read).to eq('content')
         end

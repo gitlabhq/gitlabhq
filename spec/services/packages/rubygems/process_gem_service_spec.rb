@@ -102,7 +102,7 @@ RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package
 
       it 'reuses the processing package' do
         expect { subject }
-          .to not_change { package.project.packages.count }
+          .to not_change { ::Packages::Rubygems::Package.for_projects(package.project).count }
           .and not_change { existing_package.package_files.count }
       end
     end

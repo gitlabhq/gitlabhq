@@ -43,7 +43,7 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
     let!(:tag2) { create(:packages_tag, package: package2) }
     let!(:tag3) { create(:packages_tag, package: package3) }
 
-    subject { described_class.for_package_ids(project.packages) }
+    subject { described_class.for_package_ids(::Packages::Npm::Package.for_projects(project)) }
 
     it { is_expected.to match_array([tag1, tag2, tag3]) }
 
@@ -56,7 +56,7 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
     end
 
     context 'with package ids' do
-      subject { described_class.for_package_ids(project.packages.select(:id)) }
+      subject { described_class.for_package_ids(::Packages::Npm::Package.for_projects(project).select(:id)) }
 
       it { is_expected.to match_array([tag1, tag2, tag3]) }
     end

@@ -442,7 +442,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               aggregate_failures do
                 expect(response).to have_gitlab_http_status(:created)
 
-                package = project.packages.find_by(name: 'mypackage')
+                package = ::Packages::Generic::Package.for_projects(project).find_by(name: 'mypackage')
                 expect(package).to be_hidden
               end
             end

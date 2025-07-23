@@ -438,7 +438,7 @@ The [minimum wait time between pull refreshes](../user/project/repository/mirror
 defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
 This setting applies in the context of pull refreshes invoked by using the [projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
-or when forcing an update by selecting **Update now** ({{< icon name="retry" >}}) in **Settings > Repository > Mirroring repositories**.
+or when forcing an update by selecting **Update now** ({{< icon name="retry" >}}) in **Settings** > **Repository** > **Mirroring repositories**.
 This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
 To change this limit for a GitLab Self-Managed instance, run the following in the

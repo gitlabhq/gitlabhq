@@ -91,9 +91,7 @@ module Banzai
         end
 
         def resolve_project
-          return context[:project] unless context[:project].is_a?(Namespaces::ProjectNamespace)
-
-          context[:project].project
+          context[:project].respond_to?(:project) ? context[:project].project : context[:project]
         end
       end
     end

@@ -20,7 +20,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       :freeze_time,
       :sidekiq_inline
     ) do
-      cut_off = ApplicationSetting::INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS.days.ago
+      cut_off = Gitlab::CurrentSettings.inactive_resource_access_tokens_delete_after_days.days.ago
       admin_bot = Users::Internal.admin_bot
 
       active_personal_access_token =
@@ -153,6 +153,30 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
             initiator_user: admin_bot
           )
         ).to be_present
+      end
+    end
+
+    context 'when inactive_resource_access_tokens_delete_after_days application setting is blank' do
+      before do
+        stub_application_setting(inactive_resource_access_tokens_delete_after_days: nil)
+      end
+
+      it(
+        'does not initiate deletion for project_bot users whose tokens are all inactive',
+        :aggregate_failures,
+        :freeze_time,
+        :sidekiq_inline
+      ) do
+        expired_resource_access_token =
+          create(:resource_access_token, expires_at: 42.years.ago)
+
+        worker.perform
+
+        expect(
+          Users::GhostUserMigration.find_by(
+            user: expired_resource_access_token.user
+          )
+        ).not_to be_present
       end
     end
 

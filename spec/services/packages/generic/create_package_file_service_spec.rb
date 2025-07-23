@@ -66,7 +66,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
 
       it 'does not add new package file' do
         expect { response }.to not_change { project.package_files.count }
-                           .and not_change { project.packages.count }
+                           .and not_change { ::Packages::Generic::Package.for_projects(project).count }
       end
     end
 
