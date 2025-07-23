@@ -30755,6 +30755,33 @@ msgstr ""
 msgid "GroupPage|Group settings"
 msgstr ""
 
+msgid "GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page an try again."
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page an try again."
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|Archive"
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|Archive group"
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|Archive project"
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|How do I archive a group?"
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|How do I archive a project?"
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|Make your group read-only while preserving all data and access to its repository, issues, and merge requests."
+msgstr ""
+
+msgid "GroupProjectArchiveSettings|Make your project read-only while preserving all data and access to its repository, issues, and merge requests."
+msgstr ""
+
 msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
@@ -35920,6 +35947,9 @@ msgstr ""
 msgid "Job|Browse"
 msgstr ""
 
+msgid "Job|Build"
+msgstr ""
+
 msgid "Job|Cancel"
 msgstr ""
 
@@ -35978,6 +36008,9 @@ msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
 msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|Kind"
 msgstr ""
 
 msgid "Job|Log timestamps in UTC."
@@ -36080,6 +36113,9 @@ msgid "Job|This job is stuck because the project doesn't have any runners online
 msgstr ""
 
 msgid "Job|This job is stuck because you don't have any active runners that can run this job."
+msgstr ""
+
+msgid "Job|Trigger"
 msgstr ""
 
 msgid "Job|Update CI/CD variables"

@@ -15,6 +15,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     described_class.new(
       test_type: test_type,
       all_failed_tests_file: failed_tests_file,
+      test_runtime_report_file: knapsack_report_file,
       output_dir: output_dir,
       log_level: :fatal
     )
@@ -51,16 +52,29 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   let(:output_dir) { Dir.mktmpdir("predictive-tests-output") }
   # various input files used by MetricsExporter to create metrics output
   let(:failed_tests_file) { File.join(input_dir, "failed_test.txt") }
-  let(:coverage_mapping_file) { File.join(Dir.tmpdir, "coverage_mapping.json") }
-  let(:described_class_mapping_file) { File.join(Dir.tmpdir, "described_class_mapping.json") }
-  let(:frontend_fixtures_file) { File.join(Dir.tmpdir, "frontend_fixtures_mapping.json") }
-  let(:jest_matching_tests_file) { File.join(Dir.tmpdir, "predictive_jest_matching_tests.txt") }
+  let(:knapsack_report_file) { File.join(input_dir, "knapsack_report.json") }
+
+  let(:temp_files) do
+    {
+      coverage_mapping: File.join(Dir.tmpdir, "coverage_mapping.json"),
+      described_class_mapping: File.join(Dir.tmpdir, "described_class_mapping.json"),
+      frontend_fixtures: File.join(Dir.tmpdir, "frontend_fixtures_mapping.json"),
+      jest_matching_tests: File.join(Dir.tmpdir, "predictive_jest_matching_tests.txt")
+    }
+  end
 
   let(:mappings) do
     {
       user: { model: "app/models/user.rb", spec: "spec/models/user_spec.rb" },
       todo: { model: "app/models/todo.rb", spec: "spec/models/todo_spec.rb" },
       project: { model: "app/models/project.rb", spec: "spec/models/project_spec.rb" }
+    }
+  end
+
+  let(:knapsack_report_json) do
+    {
+      mappings.dig(:user, :spec) => 2,
+      mappings.dig(:todo, :spec) => 1
     }
   end
 
@@ -81,7 +95,10 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     JSON.parse(File.read(File.join(output_dir, test_type.to_s, "metrics_#{strategy}.json"))).except("timestamp")
   end
 
-  def expect_events_sent(strategy, changed_files_count:, predicted_test_files_count:, missed_failing_test_files:)
+  def expect_events_sent(
+    strategy, changed_files_count:, predicted_test_files_count:, missed_failing_test_files:,
+    projected_test_runtime_seconds: nil,
+    test_files_missing_runtime_count: nil)
     expect(event_tracker).to have_received(:send_event).with(
       event_name,
       label: "changed_files_count",
@@ -103,6 +120,23 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       property: strategy,
       extra_properties: extra_properties
     )
+
+    return unless projected_test_runtime_seconds && test_files_missing_runtime_count
+
+    expect(event_tracker).to have_received(:send_event).with(
+      event_name,
+      label: "projected_test_runtime_seconds",
+      value: projected_test_runtime_seconds,
+      property: strategy,
+      extra_properties: extra_properties
+    )
+    expect(event_tracker).to have_received(:send_event).with(
+      event_name,
+      label: "test_files_missing_runtime_count",
+      value: test_files_missing_runtime_count,
+      property: strategy,
+      extra_properties: extra_properties
+    )
   end
 
   before do
@@ -110,9 +144,10 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
     # create folders and files used as input
     {
-      coverage_mapping_file => coverage_mapping_content,
-      described_class_mapping_file => described_class_mapping_content,
-      failed_tests_file => failed_tests_content
+      temp_files[:coverage_mapping] => coverage_mapping_content,
+      temp_files[:described_class_mapping] => described_class_mapping_content,
+      failed_tests_file => failed_tests_content,
+      knapsack_report_file => knapsack_report_json.to_json
     }.each do |file, content|
       next if file.nil?
 
@@ -122,7 +157,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
     allow(Tooling::FindChanges).to receive(:new).with(
       from: :api,
-      frontend_fixtures_mapping_pathname: frontend_fixtures_file
+      frontend_fixtures_mapping_pathname: temp_files[:frontend_fixtures]
     ).and_return(find_changes)
     allow(Tooling::Events::TrackPipelineEvents).to receive(:new).with(logger: kind_of(Logger)).and_return(event_tracker)
     allow(Tooling::PredictiveTests::MappingFetcher).to receive(:new).with(
@@ -134,14 +169,14 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
       changed_files: changed_files,
-      rspec_test_mapping_path: coverage_mapping_file,
+      rspec_test_mapping_path: temp_files[:coverage_mapping],
       logger: kind_of(Logger),
       rspec_mappings_limit_percentage: nil
     ).and_return(test_selector_coverage)
 
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).with(
       changed_files: changed_files,
-      rspec_test_mapping_path: described_class_mapping_file,
+      rspec_test_mapping_path: temp_files[:described_class_mapping],
       logger: kind_of(Logger),
       rspec_mappings_limit_percentage: nil
     ).and_return(test_selector_described)
@@ -155,11 +190,11 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       exporter.execute
 
       expect(mapping_fetcher).to have_received(:fetch_rspec_mappings)
-        .with(coverage_mapping_file, type: :coverage)
+        .with(temp_files[:coverage_mapping], type: :coverage)
       expect(mapping_fetcher).to have_received(:fetch_rspec_mappings)
-        .with(described_class_mapping_file, type: :described_class)
+        .with(temp_files[:described_class_mapping], type: :described_class)
       expect(mapping_fetcher).to have_received(:fetch_frontend_fixtures_mappings)
-        .with(frontend_fixtures_file)
+        .with(temp_files[:frontend_fixtures])
     end
 
     it "exports metrics for described_class strategy", :aggregate_failures do
@@ -169,7 +204,9 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         "described_class",
         changed_files_count: 4,
         predicted_test_files_count: 1,
-        missed_failing_test_files: 1
+        missed_failing_test_files: 1,
+        projected_test_runtime_seconds: 2,
+        test_files_missing_runtime_count: 0
       )
     end
 
@@ -180,7 +217,9 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         "coverage",
         changed_files_count: 4,
         predicted_test_files_count: 3,
-        missed_failing_test_files: 0
+        missed_failing_test_files: 0,
+        projected_test_runtime_seconds: 3,
+        test_files_missing_runtime_count: 1
       )
     end
 
@@ -194,7 +233,11 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
           "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 0,
-          "predicted_test_files_count" => 3
+          "predicted_test_files_count" => 3,
+          "runtime_metrics" => {
+            "projected_test_runtime_seconds" => 3,
+            "test_files_missing_runtime_count" => 1
+          }
         }
       })
       expect(read_metrics("described_class")).to eq({
@@ -204,7 +247,11 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
           "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 1,
-          "predicted_test_files_count" => 1
+          "predicted_test_files_count" => 1,
+          "runtime_metrics" => {
+            "projected_test_runtime_seconds" => 2,
+            "test_files_missing_runtime_count" => 0
+          }
         }
       })
     end
@@ -217,12 +264,12 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     let(:matching_js_files_path) { File.join(Dir.tmpdir, "matching_js_files.txt") }
 
     before do
-      File.write(jest_matching_tests_file, jest_matching_tests.join(" "))
+      File.write(temp_files[:jest_matching_tests], jest_matching_tests.join(" "))
 
       allow(Open3).to receive(:capture2e).with({
         "RSPEC_CHANGED_FILES_PATH" => changed_files_path,
         'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files_path,
-        'JEST_MATCHING_TEST_FILES_PATH' => jest_matching_tests_file
+        'JEST_MATCHING_TEST_FILES_PATH' => temp_files[:jest_matching_tests]
       }, %r{scripts/frontend/find_jest_predictive_tests.js})
       .and_return(["", instance_double(Process::Status, success?: true)])
     end

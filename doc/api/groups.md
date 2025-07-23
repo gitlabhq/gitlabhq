@@ -1483,7 +1483,7 @@ Prerequisites:
 Marks a group for deletion. Groups are deleted at the end of the retention period:
 
 - On GitLab.com, groups are retained for 30 days.
-- On GitLab Self-Managed, the retention period is controlled by the 
+- On GitLab Self-Managed, the retention period is controlled by the
   [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 This endpoint can also immediately delete a subgroup that was previously marked for deletion.
@@ -1922,8 +1922,8 @@ PUT /groups/:id
 | `unique_project_download_limit_allowlist`            | array of strings  | no       | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. Ultimate only. |
 | `unique_project_download_limit_alertlist`            | array of integers | no       | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. Ultimate only. |
 | `auto_ban_user_on_excessive_projects_download`       | boolean           | no       | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. Ultimate only. |
-| `ip_restriction_ranges`                              | string            | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. Premium and Ultimate only. |
-| `allowed_email_domains_list`                         | string            | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only. |
+| `ip_restriction_ranges`                              | string      | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. Premium and Ultimate only. |
+| `allowed_email_domains_list`                         | string      | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only. |
 | `wiki_access_level`                                  | string            | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
 | `duo_availability`                                   | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled`                        | boolean | no | Enable experiment features for this group. |

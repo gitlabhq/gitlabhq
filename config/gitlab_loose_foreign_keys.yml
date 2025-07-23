@@ -175,6 +175,9 @@ ci_runner_taggings:
   - table: tags
     column: tag_id
     on_delete: async_delete
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 ci_runner_taggings_group_type:
   - table: namespaces
     column: sharding_key_id

@@ -37,6 +37,10 @@ OptionParser.new do |opts|
     options[:failed_frontend_tests_file] = value
   end
 
+  opts.on('--knapsack-report-file [string]', String, 'Knapsack report JSON file with specs runtimes') do |value|
+    options[:knapsack_report_file] = value
+  end
+
   opts.on('--output-dir [string]', String, 'Output directory for generated metrics files') do |value|
     options[:output_dir] = value
   end
@@ -62,6 +66,7 @@ export_backend = options[:export_backend_metrics]
 failed_backend_tests_file = options[:failed_backend_tests_file]
 export_frontend = options[:export_frontend_metrics]
 failed_frontend_tests_file = options[:failed_frontend_tests_file]
+knapsack_report_file = options[:knapsack_report_file]
 
 # Validate at least one option is provided
 if [export_backend, export_frontend].all?(&:nil?)
@@ -86,6 +91,7 @@ if export_backend
       test_type: :backend,
       output_dir: options[:output_dir],
       all_failed_tests_file: failed_backend_tests_file,
+      test_runtime_report_file: knapsack_report_file,
       log_level: log_level
     ).execute
   end

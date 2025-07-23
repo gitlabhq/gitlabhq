@@ -12,6 +12,7 @@ import { TEST_HOST } from 'spec/test_constants';
 import {
   TOKEN_TYPE_STATUS,
   TOKEN_TYPE_JOBS_SOURCE,
+  TOKEN_TYPE_JOB_KIND,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 const threeWeeksAgo = new Date();
@@ -1400,6 +1401,16 @@ export const mockFailedSearchToken = {
 export const mockPushSourceToken = {
   type: TOKEN_TYPE_JOBS_SOURCE,
   value: { data: 'PUSH', operator: '=' },
+};
+
+export const mockBridgeKindToken = {
+  type: TOKEN_TYPE_JOB_KIND,
+  value: { data: 'BRIDGE', operator: '=' },
+};
+
+export const mockBuildKindToken = {
+  type: TOKEN_TYPE_JOB_KIND,
+  value: { data: 'BUILD', operator: '=' },
 };
 
 export const retryMutationResponse = {

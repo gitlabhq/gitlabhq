@@ -308,6 +308,52 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
+  describe 'archive', :js do
+    let(:parent) { group }
+    let(:subgroup) { create(:group, parent: group) }
+
+    context 'when group is archived' do
+      before do
+        subgroup.archive
+
+        visit edit_group_path(subgroup)
+      end
+
+      specify { expect(page).not_to have_button(_('Archive')) }
+    end
+
+    context 'when parent is archived' do
+      before do
+        parent.archive
+
+        visit edit_group_path(subgroup)
+      end
+
+      specify { expect(page).not_to have_button(_('Archive')) }
+    end
+
+    context 'when group and parent is not archived' do
+      it 'can archive group' do
+        visit edit_group_path(subgroup)
+
+        click_button _('Archive')
+
+        expect(page).to have_current_path(group_path(subgroup))
+        expect(subgroup.reload.archived).to be(true)
+      end
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+
+          visit edit_group_path(subgroup)
+        end
+
+        specify { expect(page).not_to have_button(_('Archive')) }
+      end
+    end
+  end
+
   describe 'delayed project deletion' do
     let(:form_group_selector) { '[data-testid="delayed-project-removal-form-group"]' }
 

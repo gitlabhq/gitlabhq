@@ -12,6 +12,7 @@ const PROJECT_TRANSFER_LOCATIONS_PATH = 'api/:version/projects/:id/transfer_loca
 const PROJECT_SHARE_LOCATIONS_PATH = 'api/:version/projects/:id/share_locations';
 const PROJECT_UPLOADS_PATH = '/api/:version/projects/:id/uploads';
 const PROJECT_RESTORE_PATH = '/api/:version/projects/:id/restore';
+const PROJECT_ARCHIVE_PATH = '/api/:version/projects/:id/archive';
 
 export function getProjects(query, options, callback = () => {}) {
   const url = buildApiUrl(PROJECTS_PATH);
@@ -60,6 +61,12 @@ export function deleteProject(projectId, params) {
 
 export function restoreProject(projectId) {
   const url = buildApiUrl(PROJECT_RESTORE_PATH).replace(':id', projectId);
+
+  return axios.post(url);
+}
+
+export function archiveProject(projectId) {
+  const url = buildApiUrl(PROJECT_ARCHIVE_PATH).replace(':id', projectId);
 
   return axios.post(url);
 }

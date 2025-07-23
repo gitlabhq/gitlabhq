@@ -84,6 +84,8 @@ export-predictive-test-metrics:
   dependencies:
     # required to generate predictive jest test list
     - graphql-schema-dump
+    # required to fetch knapsack report and get the projected test runtime metric
+    - retrieve-tests-metadata
   before_script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
@@ -95,7 +97,8 @@ export-predictive-test-metrics:
         --export-backend-metrics \
         --failed-backend-tests-file ${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt \
         --export-frontend-metrics \
-        --failed-frontend-tests-file ${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/jest_failed_tests.txt
+        --failed-frontend-tests-file ${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/jest_failed_tests.txt \
+        --knapsack-report-file ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}
   artifacts:
     expire_in: 7d
     paths:

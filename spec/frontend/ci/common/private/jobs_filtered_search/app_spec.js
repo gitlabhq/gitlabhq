@@ -8,6 +8,8 @@ import {
   TOKEN_TITLE_JOBS_RUNNER_TYPE,
   TOKEN_TITLE_JOBS_SOURCE,
   TOKEN_TYPE_JOBS_SOURCE,
+  TOKEN_TYPE_JOB_KIND,
+  TOKEN_TITLE_JOB_KIND,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import { mockFailedSearchToken } from 'jest/ci/jobs_mock_data';
@@ -24,6 +26,7 @@ describe('Jobs filtered search', () => {
   const findStatusToken = () => getSearchToken('status');
   const findRunnerTypeToken = () => getSearchToken('jobs-runner-type');
   const findJobSourceToken = () => getSearchToken('jobs-source');
+  const findJobKindToken = () => getSearchToken('kind');
 
   const createComponent = (props, provideOptions = {}) => {
     wrapper = shallowMount(JobsFilteredSearch, {
@@ -83,6 +86,24 @@ describe('Jobs filtered search', () => {
       unique: true,
       operators: OPERATORS_IS,
     });
+  });
+
+  it('displays job kind token', () => {
+    createComponent();
+
+    expect(findJobKindToken()).toMatchObject({
+      type: TOKEN_TYPE_JOB_KIND,
+      icon: 'preferences',
+      title: TOKEN_TITLE_JOB_KIND,
+      unique: true,
+      operators: OPERATORS_IS,
+    });
+  });
+
+  it('does not display job kind token for admin instance', () => {
+    createComponent({ admin: true });
+
+    expect(findJobKindToken()).toBeUndefined();
   });
 
   it('displays token for runner type', () => {

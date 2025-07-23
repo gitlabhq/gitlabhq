@@ -271,24 +271,48 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   end
 
   describe '.prepare_commits_for_bulk_insert' do
-    it 'returns the commit hashes and unique user triples' do
-      organization_id = create(:organization).id
-      commit = double(:commit, to_hash: {
-        parent_ids: %w[foo bar],
-        author_name: 'a' * 1000,
-        author_email: 'a' * 1000,
-        committer_name: 'Alice',
-        committer_email: 'alice@example.com'
-      })
-      hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id)
-      expect(hashes).to eq([{
-        author_name: 'a' * 512,
-        author_email: 'a' * 512,
-        committer_name: 'Alice',
-        committer_email: 'alice@example.com'
-      }])
-      expect(triples)
-        .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
+    context 'when with_organization is true' do
+      it 'returns the commit hashes and unique user triples' do
+        organization_id = create(:organization).id
+        commit = double(:commit, to_hash: {
+          parent_ids: %w[foo bar],
+          author_name: 'a' * 1000,
+          author_email: 'a' * 1000,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        })
+        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, true)
+        expect(hashes).to eq([{
+          author_name: 'a' * 512,
+          author_email: 'a' * 512,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        }])
+        expect(triples)
+          .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
+      end
+    end
+
+    context 'when with_organization is false' do
+      it 'returns the commit hashes and unique user triples' do
+        organization_id = create(:organization).id
+        commit = double(:commit, to_hash: {
+          parent_ids: %w[foo bar],
+          author_name: 'a' * 1000,
+          author_email: 'a' * 1000,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        })
+        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, false)
+        expect(hashes).to eq([{
+          author_name: 'a' * 512,
+          author_email: 'a' * 512,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        }])
+        expect(triples)
+          .to include(['a' * 512, 'a' * 512], ['Alice', 'alice@example.com'])
+      end
     end
   end
 

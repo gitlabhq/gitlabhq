@@ -31,14 +31,23 @@ module Tooling
         backend: [:coverage, :described_class],
         frontend: [:jest_built_in]
       }.freeze
+      # @return [Integer] default spec runtime for tracking purposes
+      DEFAULT_SPEC_RUNTIME_SECONDS = 0
 
-      def initialize(test_type:, all_failed_tests_file:, log_level: :info, output_dir: nil)
+      def initialize(
+        test_type:,
+        all_failed_tests_file:,
+        test_runtime_report_file: nil,
+        log_level: :info,
+        output_dir: nil
+      )
         @test_type = test_type.tap do |type|
           raise "Unknown test type '#{type}'" unless TEST_TYPES.key?(type.to_sym)
         end
 
         @failed_test_files = read_array_from_file(all_failed_tests_file)
         @output_dir = output_dir || File.join(project_root, "tmp", "predictive_tests")
+        @test_runtime_report_file = test_runtime_report_file
 
         @logger = Logger.new($stdout, level: log_level).tap do |l|
           l.formatter = proc do |severity, _datetime, _progname, msg|
@@ -64,7 +73,7 @@ module Tooling
 
       private
 
-      attr_reader :failed_test_files, :test_type, :logger
+      attr_reader :failed_test_files, :test_runtime_report_file, :test_type, :logger
 
       # Export rspec test metrics
       #
@@ -269,8 +278,11 @@ module Tooling
             changed_files_count: changed_files.size,
             predicted_test_files_count: predicted_test_files.size,
             missed_failing_test_files: (failed_test_files - predicted_test_files).size,
-            failed_test_files_count: failed_test_files.size
-          }
+            failed_test_files_count: failed_test_files.size,
+            # rspec tests have runtime information provided via knapsack report
+            # frontend tests don't have a runtime report yet, so we skip them
+            runtime_metrics: runtime_metrics(predicted_test_files)
+          }.compact
         }
       end
 
@@ -283,6 +295,21 @@ module Tooling
         File.write(File.join(output_path, "metrics_#{strategy}.json"), JSON.pretty_generate(metrics))
       end
 
+      # Send event with specific metrics via internal events
+      # @param label [String]
+      # @param value [Integer|Float]
+      # @param strategy [Symbol]
+      def send_event(label, value, strategy)
+        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: test_type }
+        tracker.send_event(
+          PREDICTIVE_TEST_METRICS_EVENT,
+          label: label,
+          value: value,
+          property: strategy.to_s,
+          extra_properties: extra_properties
+        )
+      end
+
       # Send events containing calculated predictive tests metrics
       #
       # @param metrics [Hash]
@@ -290,31 +317,56 @@ module Tooling
       # @return [void]
       def send_metrics_events(metrics, strategy)
         core = metrics[:core_metrics]
-        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: test_type }
 
-        tracker.send_event(
-          PREDICTIVE_TEST_METRICS_EVENT,
-          label: "changed_files_count",
-          value: core[:changed_files_count],
-          property: strategy.to_s,
-          extra_properties: extra_properties
-        )
+        send_event("changed_files_count", core[:changed_files_count], strategy)
+        send_event("predicted_test_files_count", core[:predicted_test_files_count], strategy)
+        send_event("missed_failing_test_files", core[:missed_failing_test_files], strategy)
 
-        tracker.send_event(
-          PREDICTIVE_TEST_METRICS_EVENT,
-          label: "predicted_test_files_count",
-          value: core[:predicted_test_files_count],
-          property: strategy.to_s,
-          extra_properties: extra_properties
-        )
+        return unless test_type == :backend
 
-        tracker.send_event(
-          PREDICTIVE_TEST_METRICS_EVENT,
-          label: "missed_failing_test_files",
-          value: core[:missed_failing_test_files],
-          property: strategy.to_s,
-          extra_properties: extra_properties
-        )
+        runtime = core[:runtime_metrics]
+
+        send_event("projected_test_runtime_seconds", runtime[:projected_test_runtime_seconds], strategy)
+        send_event("test_files_missing_runtime_count", runtime[:test_files_missing_runtime_count], strategy)
+      end
+
+      # Create projected test runtime metrics hash for rspec tests based on knapsack report
+      #
+      # @param predicted_test_files [Array]
+      # @return [Hash]
+      def runtime_metrics(predicted_test_files)
+        return if knapsack_report.empty? || test_type == :frontend
+
+        specs_missing_runtime = []
+        predicted_test_runtime_seconds = predicted_test_files.sum do |spec|
+          if knapsack_report[spec]
+            # round the value to 4 digits after to avoid very big floats in the output
+            knapsack_report[spec].round(4)
+          else
+            specs_missing_runtime << spec
+            DEFAULT_SPEC_RUNTIME_SECONDS
+          end
+        end
+
+        {
+          projected_test_runtime_seconds: predicted_test_runtime_seconds,
+          test_files_missing_runtime_count: specs_missing_runtime.size
+        }
+      end
+
+      # Knapsack report from CI environment which maps specs to runtime
+      # Used to create project test runtime metric for predictive rspec tests
+      #
+      # @return [Hash]
+      def knapsack_report
+        return @knapsack_report if @knapsack_report
+        return @knapsack_report = {} unless test_runtime_report_file && File.exist?(test_runtime_report_file)
+
+        @knapsack_report = JSON.parse(File.read(test_runtime_report_file)) # rubocop:disable Gitlab/Json -- not in Rails environment
+      rescue JSON::ParserError, Errno::ENOENT, Errno::EACCES => e
+        logger.error("Failed to parse knapsack report #{e.message}")
+        logger.error(e.backtrace.select { |entry| entry.include?(project_root) }) if e.backtrace
+        @knapsack_report = {}
       end
     end
   end

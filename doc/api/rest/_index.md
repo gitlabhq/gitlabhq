@@ -256,7 +256,7 @@ In boolean arguments, you should only set `true` or `false` values (not `null`).
 {{< /history >}}
 
 After [path changes](../../user/project/repository/_index.md#repository-path-changes) the
-REST API might respond with a message noting that the endpoint has moved. When this happens, used
+REST API might respond with a message noting that the endpoint has moved. When this happens, use
 the endpoint specified in the `Location` header.
 
 Example of a project moved to a different path:
