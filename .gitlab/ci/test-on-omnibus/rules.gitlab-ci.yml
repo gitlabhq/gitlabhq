@@ -1,7 +1,3 @@
-.rules:test:dependency-update:
-  rules:
-    - if: '$DEPENDENCY_UPDATE == "true"'
-
 .rules:test:omnibus-base:
   rules:
     - if: '$DEPENDENCY_UPDATE == "true"'
