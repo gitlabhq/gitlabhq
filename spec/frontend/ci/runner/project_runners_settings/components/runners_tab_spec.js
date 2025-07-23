@@ -29,6 +29,7 @@ describe('RunnersTab', () => {
   let wrapper;
   let projectRunnersHandler;
   let runnerJobCountHandler;
+  const showToast = jest.fn();
 
   const createComponent = ({ props, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnersTab, {
@@ -42,6 +43,11 @@ describe('RunnersTab', () => {
         [projectRunnersQuery, projectRunnersHandler],
         [runnerJobCountQuery, runnerJobCountHandler],
       ]),
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
+      },
       stubs: {
         GlTab,
       },
@@ -58,6 +64,10 @@ describe('RunnersTab', () => {
   beforeEach(() => {
     projectRunnersHandler = jest.fn().mockResolvedValue(projectRunnersData);
     runnerJobCountHandler = jest.fn().mockResolvedValue(runnerJobCountData);
+  });
+
+  afterEach(() => {
+    showToast.mockReset();
   });
 
   const findTab = () => wrapper.findComponent(GlTab);
@@ -150,6 +160,15 @@ describe('RunnersTab', () => {
         runner: mockRunners[0].node,
         editUrl: mockRunners[0].editUrl,
       });
+    });
+
+    it('When runner is deleted, a toast message is shown', async () => {
+      await createComponent({ mountFn: mountExtended });
+
+      findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
+
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Runner deleted');
     });
 
     describe('pagination', () => {

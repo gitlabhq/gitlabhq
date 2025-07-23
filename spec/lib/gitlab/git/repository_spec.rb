@@ -1132,6 +1132,33 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         expect(commits.size).to eq(50)
       end
     end
+
+    context 'with message_regex' do
+      context 'which is valid' do
+        it 'returns a filtered list of commits' do
+          commits = repository.log(message_regex: 'changelog$')
+
+          expect(commits.size).to eq(2)
+          expect(commits.first).to eq(commit_with_new_name)
+          expect(commits.last).to eq(commit_with_old_name)
+        end
+      end
+
+      context 'which is invalid' do
+        it 'raises an argument error' do
+          expect { repository.log(message_regex: '[') }
+            .to raise_error(ArgumentError, 'Invalid message_regex pattern')
+        end
+      end
+
+      context 'which does not match any commits' do
+        it 'does not raise an error and returns an empty list' do
+          commits = repository.log(message_regex: 'fizz buzz fizzbuzz')
+
+          expect(commits.size).to eq(0)
+        end
+      end
+    end
   end
 
   describe '#blobs' do

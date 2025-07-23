@@ -1008,7 +1008,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def non_latest_diffs
-    merge_request_diffs.where.not(id: merge_request_diff.id)
+    merge_request_diffs.id_not_in(merge_request_diff.id)
   end
 
   def note_positions_for_paths(paths, user = nil)

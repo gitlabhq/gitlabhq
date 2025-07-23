@@ -1045,7 +1045,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
-      when: always
+      when: never # Disable job due to preventing critical MRs from being merged
 
 ################
 # Shared rules #

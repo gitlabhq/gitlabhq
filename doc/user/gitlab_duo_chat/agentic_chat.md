@@ -90,10 +90,11 @@ You can only use Agentic Chat in a project:
 To use Agentic Chat:
 <!-- markdownlint-disable MD044 -->
 1. In VS Code, go to **Settings > Settings**.
-1. Search for `gitlab agentic`.
-1. Under **Gitlab › Duo Agentic Chat: Enabled**, select the
-   **Enable GitLab Duo Agentic Chat** checkbox.
-1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
+1. Search for `agent platform`.
+1. Under **Gitlab › Duo Agent Platform: Enabled**, select the
+   **Enable GitLab Duo Agent Platform** checkbox.
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
 1. Select **Refresh page** if prompted.
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
@@ -113,9 +114,10 @@ To use Agentic Chat in a project, it must be:
 To use Agentic Chat:
 <!-- markdownlint-disable MD044 -->
 1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
-1. Under **Features**, select the **Enable GitLab Duo Agentic Chat** checkbox.
+1. Under **GitLab Duo Agent Platform (Beta)**, select the **Enable GitLab Duo Agent Platform** checkbox.
 1. Restart your IDE if prompted.
-1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.

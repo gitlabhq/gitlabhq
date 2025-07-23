@@ -101,7 +101,8 @@ The software development flow is one flow in the Agent Platform.
 
 To use the software development flow:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform**.
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The software development flow is aware of all files available to Git in the project branch.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.

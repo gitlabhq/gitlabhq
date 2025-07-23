@@ -131,6 +131,7 @@ module Ci
         can?(current_user, :create_runners, project.group) || can?(current_user, :register_group_runners, project.group)
 
       data = {
+        project_id: project.id,
         can_create_runner: can?(current_user, :create_runners, project).to_s,
         allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
         registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,

@@ -79,6 +79,7 @@ export default {
     label-position="left"
     :is-loading="isLoading"
     :value="groupRunnersEnabled"
+    data-testid="group-runners-toggle"
     @change="toggleGroupRunners"
   >
     <template #label>

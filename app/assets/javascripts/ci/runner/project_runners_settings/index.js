@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
 import ProjectRunnersSettingsApp from './project_runners_settings_app.vue';
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 export const initProjectRunnersSettings = (selector = '#js-project-runners-settings') => {
   showAlertFromLocalStorage();
@@ -21,6 +23,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
   });
 
   const {
+    projectId,
     canCreateRunner,
     canCreateRunnerForGroup,
     groupRunnersPath,
@@ -40,6 +43,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
     el,
     apolloProvider,
     provide: {
+      projectId,
       canCreateRunnerForGroup: parseBoolean(canCreateRunnerForGroup),
       groupRunnersPath,
     },
