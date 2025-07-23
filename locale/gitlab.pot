@@ -58856,6 +58856,9 @@ msgstr ""
 msgid "Service accounts"
 msgstr ""
 
+msgid "ServiceAccounts|%{email} - unconfirmed"
+msgstr ""
+
 msgid "ServiceAccounts|Add service account"
 msgstr ""
 

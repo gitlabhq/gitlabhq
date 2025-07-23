@@ -34,15 +34,8 @@ fragment WikiPageNote on Note {
     adminNote
     awardEmoji
     createNote
-    resolveNote
   }
   discussion {
     id
-    resolved
-    resolvable
-    resolvedBy {
-      id
-      name
-    }
   }
 }

@@ -1323,6 +1323,9 @@ export const singleNoteResponseFactory = ({ urlHash, authorId = 1 } = {}) => {
         id: `gid://gitlab/Note/${id}`,
         discussion: {
           id: 'gid://gitlab/Discussion/1',
+          userPermissions: {
+            resolveNote: true,
+          },
           notes: {
             nodes: [
               {
@@ -1360,7 +1363,6 @@ export const singleNoteResponseFactory = ({ urlHash, authorId = 1 } = {}) => {
                 userPermissions: {
                   awardEmoji: true,
                   adminNote: true,
-                  resolveNote: true,
                 },
               },
             ],

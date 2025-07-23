@@ -230,6 +230,22 @@ module Projects
           end
         end
       end
+
+      if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+        loop do
+          inner_query = MergeRequest::CommitsMetadata
+            .select(:id)
+            .where(project_id: project.id)
+            .limit(delete_batch_size)
+
+          deleted_rows = MergeRequest::CommitsMetadata
+            .where(project_id: project.id)
+            .where(id: inner_query)
+            .delete_all
+
+          break if deleted_rows == 0
+        end
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

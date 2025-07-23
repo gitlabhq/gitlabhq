@@ -198,7 +198,7 @@ following these rules:
 - Slash (`/`) is replaced with double underscores (`__`) and the primary alias
   is created.
 - Slash (`/`) is replaced with a single dash (`-`) and the secondary alias is
-  created (requires GitLab Runner v1.1.0 or later).
+  created.
 
 To override the default behavior, you can
 [specify one or more service aliases](#available-settings-for-services).

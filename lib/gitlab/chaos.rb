@@ -43,6 +43,13 @@ module Gitlab
       Kernel.sleep(duration_s)
     end
 
+    def self.db_sleep(duration_s)
+      raise ArgumentError, "Duration must be a positive number" unless duration_s.is_a?(Numeric) && duration_s > 0
+      raise ArgumentError, "Duration cannot exceed 300 seconds" if duration_s > 300
+
+      ApplicationRecord.connection.execute(ApplicationRecord.sanitize_sql_array(["SELECT PG_SLEEP(?)", duration_s]))
+    end
+
     # Kill will send the given signal to the current process.
     def self.kill(signal)
       Process.kill(signal, Process.pid)

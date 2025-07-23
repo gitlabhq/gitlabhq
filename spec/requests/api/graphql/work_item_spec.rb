@@ -960,7 +960,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'id' => note.discussion.to_global_id.to_s,
                   'resolvable' => false,
                   'userPermissions' => {
-                    'resolveNote' => true
+                    'resolveNote' => false
                   }
                 ),
                 hash_including(

@@ -22,6 +22,9 @@ fragment WorkItemDiscussionNote on Note {
       id
       name
     }
+    userPermissions {
+      resolveNote
+    }
     notes {
       nodes {
         ...WorkItemNote

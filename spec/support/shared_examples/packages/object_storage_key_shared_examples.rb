@@ -24,8 +24,8 @@ RSpec.shared_examples 'object_storage_key callbacks' do
 
   context 'when the record is updated' do
     it 'does not update object_storage_key' do
-      existing_object_storage_key = model.object_storage_key
       model.save!
+      existing_object_storage_key = model.object_storage_key
 
       model.touch
 

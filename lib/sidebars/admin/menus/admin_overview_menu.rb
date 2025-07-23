@@ -54,7 +54,7 @@ module Sidebars
             link: admin_projects_path,
             active_routes: { controller: 'admin/projects' },
             item_id: :projects
-          ) { can?(current_user, :admin_all_resources) }
+          ) { can?(current_user, :read_admin_projects) }
         end
 
         def users_menu_item
@@ -74,7 +74,7 @@ module Sidebars
             active_routes: { controller: 'groups' },
             item_id: :groups,
             container_html_options: { 'data-testid': 'admin-overview-groups-link' }
-          ) { can?(current_user, :admin_all_resources) }
+          ) { can?(current_user, :read_admin_groups) }
         end
 
         def organizations_menu_item
@@ -111,4 +111,4 @@ module Sidebars
   end
 end
 
-Sidebars::Admin::Menus::AdminOverviewMenu.prepend_mod_with('Sidebars::Admin::Menus::AdminOverviewMenu')
+Sidebars::Admin::Menus::AdminOverviewMenu.prepend_mod

@@ -14,10 +14,6 @@ export default {
       type: String,
       required: true,
     },
-    emptyIllustrationUrl: {
-      type: String,
-      required: true,
-    },
   },
   tableFields: [
     { key: 'environment', label: __('Environment'), sortable: true, isRowHeader: true },

@@ -80,7 +80,6 @@ export default {
     'app/assets/javascripts/feature_flags/components/feature_flags_table.vue',
     'app/assets/javascripts/feature_flags/components/form.vue',
     'app/assets/javascripts/feature_flags/components/strategies/gitlab_user_list.vue',
-    'app/assets/javascripts/google_cloud/gcp_regions/list.vue',
     'app/assets/javascripts/groups/components/group_item.vue',
     'app/assets/javascripts/groups/components/invite_members_banner.vue',
     'app/assets/javascripts/import_entities/import_groups/components/import_actions_cell.vue',
@@ -242,9 +241,6 @@ export default {
     'ee/app/assets/javascripts/roadmap/components/roadmap_filters.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_timeline_section.vue',
-    'ee/app/assets/javascripts/sidebar/components/health_status/health_status_dropdown.vue',
-    'ee/app/assets/javascripts/sidebar/components/incidents/escalation_status.vue',
-    'ee/app/assets/javascripts/sidebar/components/weight/sidebar_weight_widget.vue',
     'ee/app/assets/javascripts/tracing/details/tracing_details.vue',
   ],
   rules: {

@@ -4,9 +4,11 @@ classes:
 - Ai::ModelSelection::NamespaceFeatureSetting
 feature_categories:
 - self-hosted_models
-description: This table associates namespaces with AI features for model selection and Duo Self-Hosted configuration
+description: This table associates namespaces with AI features for model selection
+  and Duo Self-Hosted configuration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190194
 milestone: '18.1'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
+table_size: small

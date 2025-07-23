@@ -1613,7 +1613,10 @@ module Ci
     end
 
     def protected_for_merge_request?
-      return false unless merge_request?
+      # we do not allow exposing protected variables to merge request pipelines that run against source branches and not merge request refs
+      # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196304#note_2611964312
+
+      return false unless merge_request? && merge_request_ref?
       return false unless project.protect_merge_request_pipelines?
 
       # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs

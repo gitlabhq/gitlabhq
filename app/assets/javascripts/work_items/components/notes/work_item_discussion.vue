@@ -147,7 +147,7 @@ export default {
       return this.discussion.resolved;
     },
     isDiscussionResolvable() {
-      return this.discussion.resolvable && this.firstNote?.userPermissions?.resolveNote;
+      return this.discussion.resolvable && this.discussion.userPermissions.resolveNote;
     },
   },
   watch: {

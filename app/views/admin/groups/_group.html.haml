@@ -30,9 +30,10 @@
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level)
 
-  .controls.gl-flex.gl-shrink-0.gl-ml-5
-    = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(group), button_options: { id: "edit_#{dom_id(group)}" }) do
-      = _('Edit')
+  - if current_user.can_admin_all_resources?
+    .controls.gl-flex.gl-shrink-0.gl-ml-5
+      = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(group), button_options: { id: "edit_#{dom_id(group)}" }) do
+        = _('Edit')
 
-    = form_tag([:admin, group], method: :delete, id: remove_form_id) do
-      .js-confirm-danger{ data: group_confirm_modal_data(group: group, remove_form_id: remove_form_id, permanently_remove: true, button_text: _('Delete')) }
+      = form_tag([:admin, group], method: :delete, id: remove_form_id) do
+        .js-confirm-danger{ data: group_confirm_modal_data(group: group, remove_form_id: remove_form_id, permanently_remove: true, button_text: _('Delete')) }

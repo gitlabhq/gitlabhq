@@ -73,7 +73,6 @@ export const note = {
     adminNote: false,
     awardEmoji: false,
     createNote: true,
-    resolveNote: false,
   },
   discussion: {
     __typename: 'Discussion',
@@ -81,6 +80,9 @@ export const note = {
     resolved: false,
     resolvable: true,
     resolvedBy: null,
+    userPermissions: {
+      resolveNote: false,
+    },
   },
   awardEmoji: {
     nodes: [],

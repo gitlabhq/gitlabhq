@@ -902,27 +902,58 @@ RSpec.shared_examples 'work items status' do
 end
 
 RSpec.shared_examples 'work items health status' do
-  it 'updates and clears a health status', :aggregate_failures do
+  it 'shows default state with no status' do
+    within_testid 'work-item-health-status' do
+      expect(page).to have_text('None')
+    end
+  end
+
+  it 'shows available statuses in the dropdown' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      expect(page).to have_text('Needs attention')
+      expect(page).to have_text('On track')
+      expect(page).to have_text('At risk')
+    end
+  end
+
+  it 'selects a health status' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'At risk'
+      expect(page).to have_text('At risk')
+      expect(page).not_to have_text('None')
+    end
+  end
+
+  it 'clears the selected health status' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'At risk'
+      expect(page).to have_text('At risk')
+      click_button 'Edit'
+      click_button 'Clear'
+      expect(page).to have_text('None')
+    end
+  end
+
+  it 'shows selected status correctly' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'Needs attention'
+      expect(page).to have_text('Needs attention')
+    end
+  end
+
+  it 'changes health status' do
     within_testid 'work-item-health-status' do
       click_button 'Edit'
       select_listbox_item 'On track'
-
-      expect(page).to have_text 'On track'
-
-      click_button 'Edit'
-      select_listbox_item 'Needs attention'
-
-      expect(page).to have_text 'Needs attention'
-
+      expect(page).to have_text('On track')
       click_button 'Edit'
       select_listbox_item 'At risk'
-
-      expect(page).to have_text 'At risk'
-
-      click_button 'Edit'
-      click_button 'Clear'
-
-      expect(page).to have_text('None')
+      expect(page).to have_text('At risk')
+      expect(page).not_to have_text('On track')
     end
   end
 end
@@ -942,7 +973,6 @@ RSpec.shared_examples 'work items color' do
 
       click_button 'Edit'
       click_button 'Reset'
-
       expect(page).to have_text('Blue')
     end
   end

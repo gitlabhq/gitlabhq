@@ -233,21 +233,12 @@ describe('Work Item Discussion', () => {
     });
 
     it('should pass `isDiscussionResolvable` prop as false when user does not have resolveNote permission', () => {
-      const resolvedDiscussionWithoutPermissions = { ...resolvedDiscussion };
-
-      resolvedDiscussionWithoutPermissions.notes.nodes = resolvedDiscussion.notes.nodes.map(
-        (note) => {
-          return {
-            ...note,
-            userPermissions: {
-              adminNote: true,
-              awardEmoji: true,
-              resolveNote: false,
-              __typename: 'NotePermissions',
-            },
-          };
+      const resolvedDiscussionWithoutPermissions = {
+        ...resolvedDiscussion,
+        userPermissions: {
+          resolveNote: false,
         },
-      );
+      };
 
       createComponent({
         discussion: resolvedDiscussionWithoutPermissions,

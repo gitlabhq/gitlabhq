@@ -1604,7 +1604,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a merge request' do
-      let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner, ref: merge_request.ref_path) }
 
       let_it_be(:merge_request) do
         create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master')
@@ -1652,6 +1652,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
 
           is_expected.to be_falsey
+        end
+
+        context 'when the merge request is run against the source branch and NOT the merge request ref' do
+          let(:pipeline) { build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner) }
+
+          it 'returns false even if both source and target branches are protected' do
+            create(:protected_branch, name: 'feature', project: project)
+            create(:protected_branch, name: 'master', project: project)
+
+            expect(pipeline).to receive(:merge_request_ref?).and_call_original
+            expect(project).not_to receive(:protected_for?)
+
+            is_expected.to be_falsey
+          end
         end
 
         context 'when the merge request is from a forked project' do

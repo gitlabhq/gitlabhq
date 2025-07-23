@@ -23,6 +23,9 @@ const mockDiscussion = (...children) => {
     resolved: false,
     resolvedAt: null,
     resolvedBy: null,
+    userPermissions: {
+      resolveNote: false,
+    },
     notes: {
       nodes: children.map((c) => ({
         __typename: 'Note',
@@ -41,7 +44,6 @@ const mockDiscussion = (...children) => {
           adminNote: true,
           awardEmoji: true,
           createNote: true,
-          resolveNote: true,
         },
         discussion: null,
       })),

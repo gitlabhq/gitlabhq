@@ -24,6 +24,7 @@ title: Merge requests API
 - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
 - `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 - `merge_after` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092) in GitLab 17.5.
+- `security_policy_violations` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/473704) in GitLab 18.4. Feature flag `policy_mergability_check` removed.
 
 {{< /history >}}
 
@@ -923,7 +924,6 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `preparing`: Merge request diff is being created.
   - `requested_changes`: The merge request has reviewers who have requested changes.
   - `security_policy_violations`: All security policies must be satisfied.
-    Requires the `policy_mergability_check` feature flag to be enabled.
   - `status_checks_must_pass`: All status checks must pass before merge.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `locked_paths`: Paths locked by other users must be unlocked before merging to default branch.

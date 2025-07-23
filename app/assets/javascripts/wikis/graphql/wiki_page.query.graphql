@@ -24,6 +24,9 @@ query wikiPageQuery(
           id
           name
         }
+        userPermissions {
+          resolveNote
+        }
         notes {
           nodes {
             ...WikiPageNote

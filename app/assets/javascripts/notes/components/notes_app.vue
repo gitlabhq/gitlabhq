@@ -129,7 +129,7 @@ export default {
             current_user: {
               can_award_emoji: note.userPermissions.awardEmoji,
               can_edit: note.userPermissions.adminNote,
-              can_resolve_discussions: note.userPermissions.resolveNote,
+              can_resolve_discussions: data.note.discussion.userPermissions.resolveNote,
             },
             last_edited_by: {
               ...note.last_edited_by,

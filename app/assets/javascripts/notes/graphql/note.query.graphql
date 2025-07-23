@@ -3,6 +3,9 @@ query snakeCaseNote($id: NoteID!) {
     id
     discussion {
       id
+      userPermissions {
+        resolveNote
+      }
       notes {
         nodes {
           id
@@ -41,7 +44,6 @@ query snakeCaseNote($id: NoteID!) {
           userPermissions {
             awardEmoji
             adminNote
-            resolveNote
           }
         }
       }

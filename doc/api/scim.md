@@ -80,8 +80,9 @@ Example response:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/identities" \
---header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
+curl --location --request GET \
+  --url "https://gitlab.example.com/api/v4/groups/33/scim/identities" \
+  --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
 ## Get a single SCIM identity
@@ -106,7 +107,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
+curl --location --request GET \
+  --url "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" \
+  --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:
@@ -147,9 +150,10 @@ Parameters:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" \
---header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=yrnZW46BrtBFqM7xDzE7dddd"
+curl --location --request PATCH \
+  --url "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" \
+  --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
+  --form "extern_uid=yrnZW46BrtBFqM7xDzE7dddd"
 ```
 
 ## Delete a single SCIM identity
@@ -174,7 +178,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request DELETE "https://gitlab.example.com/api/v4/groups/33/scim/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <your_access_token>"
+curl --location --request DELETE \
+  --url "https://gitlab.example.com/api/v4/groups/33/scim/yrnZW46BrtBFqM7xDzE7dddd" \
+  --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
 Example response:

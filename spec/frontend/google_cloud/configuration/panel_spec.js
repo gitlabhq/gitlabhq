@@ -51,7 +51,6 @@ describe('google_cloud/configuration/panel', () => {
     const target = wrapper.findComponent(GcpRegionsList);
     expect(target.props('list')).toBe(props.gcpRegions);
     expect(target.props('createUrl')).toBe(props.configureGcpRegionsUrl);
-    expect(target.props('emptyIllustrationUrl')).toBe(props.emptyIllustrationUrl);
   });
 
   it('contains revoke oauth', () => {

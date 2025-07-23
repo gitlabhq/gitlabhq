@@ -58,6 +58,7 @@ module Types
 
     field :job,
       Types::Ci::JobType,
+      authorize: :read_build,
       description: 'Pipeline job of the deployment.'
 
     field :triggerer,

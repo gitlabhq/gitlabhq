@@ -25915,7 +25915,10 @@ CREATE TABLE vulnerability_namespace_statistics (
     low integer DEFAULT 0 NOT NULL,
     unknown integer DEFAULT 0 NOT NULL,
     info integer DEFAULT 0 NOT NULL,
-    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    age_average double precision DEFAULT 0.0 NOT NULL,
+    age_standard_deviation double precision DEFAULT 0.0 NOT NULL,
+    risk_score double precision DEFAULT 0.0 NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_namespace_statistics_id_seq

@@ -868,6 +868,9 @@ class ProjectPolicy < BasePolicy
     prevent :update_deployment
     prevent :admin_deployment
     prevent :destroy_deployment
+
+    prevent :read_resource_group
+    prevent :update_resource_group
   end
 
   # There's two separate cases when builds_disabled is true:

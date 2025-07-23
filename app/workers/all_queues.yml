@@ -143,6 +143,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :chaos
+- :name: chaos:chaos_db_sleep
+  :worker_name: Chaos::DbSleepWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_db_spin
   :worker_name: Chaos::DbSpinWorker
   :feature_category: :not_owned

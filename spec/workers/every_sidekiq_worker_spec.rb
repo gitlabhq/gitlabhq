@@ -150,6 +150,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'BulkImports::FinishProjectImportWorker' => 3,
         'BulkImports::TransformReferencesWorker' => 3,
         'Chaos::CpuSpinWorker' => 3,
+        'Chaos::DbSleepWorker' => false,
         'Chaos::DbSpinWorker' => 3,
         'Chaos::KillWorker' => false,
         'Chaos::LeakMemWorker' => 3,
