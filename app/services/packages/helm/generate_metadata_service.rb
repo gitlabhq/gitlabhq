@@ -2,12 +2,12 @@
 
 module Packages
   module Helm
-    class IndexPresenter
+    class GenerateMetadataService
       include API::Helpers::RelatedResourcesHelpers
 
       API_VERSION = 'v1'
       CHANNEL = 'channel'
-      INDEX_YAML_SUFFIX = "/#{CHANNEL}/index.yaml"
+      INDEX_YAML_SUFFIX = "/#{CHANNEL}/index.yaml".freeze
       EMPTY_HASH = {}.freeze
 
       def initialize(project_id_param, channel, packages)
@@ -16,12 +16,27 @@ module Packages
         @packages = packages
       end
 
+      def execute
+        metadata = {
+          api_version: api_version,
+          entries: entries,
+          generated: generated,
+          server_info: server_info
+        }
+
+        ServiceResponse.success(payload: metadata)
+      end
+
+      private
+
+      attr_reader :project_id_param, :channel, :packages
+
       def api_version
         API_VERSION
       end
 
       def entries
-        return EMPTY_HASH unless @channel.present?
+        return EMPTY_HASH unless channel.present?
 
         result = Hash.new { |h, k| h[k] = [] }
 
@@ -44,7 +59,7 @@ module Packages
 
       def server_info
         path = api_v4_projects_packages_helm_index_yaml_path(
-          id: ERB::Util.url_encode(@project_id_param),
+          id: ERB::Util.url_encode(project_id_param),
           channel: CHANNEL
         )
         {
@@ -52,13 +67,11 @@ module Packages
         }
       end
 
-      private
-
       def most_recent_package_files
         ::Packages::PackageFile.most_recent_for(
-          @packages,
+          packages,
           extra_join: :helm_file_metadatum,
-          extra_where: { packages_helm_file_metadata: { channel: @channel } }
+          extra_where: { packages_helm_file_metadata: { channel: channel } }
         ).preload_helm_file_metadata
       end
     end

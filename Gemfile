@@ -684,7 +684,7 @@ gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: f
 gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer', feature_category: :shared
 
 # File encryption
-gem 'lockbox', '~> 1.3.0', feature_category: :shared
+gem 'lockbox', '~> 1.4.0', feature_category: :shared
 
 # Email validation
 gem 'valid_email', '~> 0.1', feature_category: :shared

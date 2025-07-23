@@ -3420,7 +3420,6 @@ Layout/LineLength:
     - 'spec/presenters/packages/composer/packages_presenter_spec.rb'
     - 'spec/presenters/packages/conan/package_presenter_spec.rb'
     - 'spec/presenters/packages/detail/package_presenter_spec.rb'
-    - 'spec/presenters/packages/helm/index_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/package_metadata_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_metadata_presenter_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'

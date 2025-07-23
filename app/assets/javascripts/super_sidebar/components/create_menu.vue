@@ -9,17 +9,16 @@ import {
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
 import {
   BASE_ALLOWED_CREATE_TYPES,
-  WORK_ITEM_TYPE_NAME_EPIC,
   CREATE_NEW_WORK_ITEM_MODAL,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  sprintfWorkItem,
+  NAME_TO_TEXT_MAP,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
@@ -109,10 +108,10 @@ export default {
       // before we can capture the event data
       this.showCreateWorkItemModal = false;
 
-      const workItemType = NAME_TO_TEXT_LOWERCASE_MAP[workItem?.workItemType?.name];
-      const message = sprintfWorkItem(s__('WorkItem|%{workItemType} created'), workItemType);
+      const message = sprintf(s__('WorkItem|%{workItemType} created'), {
+        workItemType: NAME_TO_TEXT_MAP[workItem?.workItemType?.name],
+      });
 
-      // Display the toast
       this.$toast.show(message, {
         autoHideDelay: 10000,
         action: {

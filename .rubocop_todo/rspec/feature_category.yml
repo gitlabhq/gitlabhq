@@ -3342,7 +3342,6 @@ RSpec/FeatureCategory:
     - 'spec/presenters/merge_request_presenter_spec.rb'
     - 'spec/presenters/milestone_presenter_spec.rb'
     - 'spec/presenters/packages/composer/packages_presenter_spec.rb'
-    - 'spec/presenters/packages/helm/index_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_versions_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/service_index_presenter_spec.rb'
     - 'spec/presenters/packages/pypi/simple_package_versions_presenter_spec.rb'

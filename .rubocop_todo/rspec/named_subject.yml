@@ -2508,7 +2508,6 @@ RSpec/NamedSubject:
     - 'spec/presenters/ml/candidate_details_presenter_spec.rb'
     - 'spec/presenters/ml/candidates_csv_presenter_spec.rb'
     - 'spec/presenters/packages/composer/packages_presenter_spec.rb'
-    - 'spec/presenters/packages/helm/index_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/package_metadata_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_metadata_presenter_spec.rb'
     - 'spec/presenters/projects/import_export/project_export_presenter_spec.rb'

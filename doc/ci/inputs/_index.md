@@ -214,7 +214,10 @@ test_job:
 {{< /history >}}
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
-like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used.
+like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. When using the value of an array
+input in a string (for example `echo "My rules: $[[ inputs.rules-config ]]"` in your `script:` section), you might
+see unexpected results. The array input is converted to its string representation, which might not match your
+expectations for complex YAML structures such as maps.
 
 ```yaml
 spec:
