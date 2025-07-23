@@ -11,9 +11,9 @@ title: Code Suggestions
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501). For code generation, Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4).
-- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
-- LLM for Amazon Q: Amazon Q Developer
+- LLMs for code completion: Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501).
+- LLMs for code generation: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4).
+- LLM For Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -30,6 +30,7 @@ title: Code Suggestions
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
+- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
 
 {{< /history >}}

@@ -31,6 +31,7 @@ module Gitlab
             {
               runner_id: runner.id,
               runner_type: runner.runner_type,
+              sharding_key_id: runner.sharding_key_id,
               organization_id: runner.organization_id
             }
           end

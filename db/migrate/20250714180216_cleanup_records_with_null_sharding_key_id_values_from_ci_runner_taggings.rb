@@ -16,12 +16,10 @@ class CleanupRecordsWithNullShardingKeyIdValuesFromCiRunnerTaggings < Gitlab::Da
   end
 
   def up
-    # no-op - this migration is required to allow a rollback of `RemoveShardingKeyCheckConstraintFromCiRunnerTaggings`
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20245
   end
 
   def down
-    CiRunnerTagging.each_batch(of: BATCH_SIZE) do |relation|
-      relation.where.not(runner_type: 1).where(sharding_key_id: nil).delete_all
-    end
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20245
   end
 end

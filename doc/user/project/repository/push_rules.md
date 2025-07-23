@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Use push rules to control the content and format of Git commits your repository will accept. Set standards for commit messages, and block secrets or credentials from being added accidentally.
+description: Use push rules to control the content and format of Git commits your repository accepts. Set standards for commit messages, and block secrets or credentials from being added accidentally.
 title: Push rules
 ---
 

@@ -121,6 +121,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager.contacted_at).to be_nil
         expect(current_runner_manager.runner).to eq(runner)
         expect(current_runner_manager.runner_type).to eq(runner.runner_type)
+        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
 
         # Verify that a second call doesn't raise an error
         expect { helper.current_runner_manager }.not_to raise_error
@@ -136,6 +137,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
         expect(current_runner_manager.runner).to eq(runner)
         expect(current_runner_manager.runner_type).to eq(runner.runner_type)
+        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
       end
     end
   end

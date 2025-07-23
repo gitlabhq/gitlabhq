@@ -38,14 +38,20 @@ export default {
       return this.isDisabled ? this.$options.i18n.tooltipTitle : null;
     },
     popoverOptions() {
-      return this.$options.i18n.popoverOptions;
+      return {
+        ...this.$options.i18n.popoverOptions,
+        container: this.popoverContainerId,
+      };
+    },
+    popoverContainerId() {
+      return 'squash-commits-popover';
     },
   },
 };
 </script>
 
 <template>
-  <div class="gl-flex">
+  <div :id="popoverContainerId" class="gl-flex">
     <gl-form-checkbox
       v-gl-tooltip
       :checked="value"
@@ -65,14 +71,10 @@ export default {
       :aria-label="$options.i18n.helpLabel"
     >
       <template v-if="popoverOptions.content">
-        <p
-          v-if="popoverOptions.content.text"
-          v-safe-html="popoverOptions.content.text"
-          class="gl-mb-0"
-        ></p>
+        <p v-if="popoverOptions.content" v-safe-html="popoverOptions.content" class="gl-mb-0"></p>
         <gl-link
-          v-if="popoverOptions.content.learnMorePath"
-          :href="popoverOptions.content.learnMorePath"
+          v-if="popoverOptions.learnMorePath"
+          :href="popoverOptions.learnMorePath"
           target="_blank"
           class="gl-text-sm"
           >{{ $options.i18n.learnMore }}</gl-link

@@ -21,11 +21,13 @@ FactoryBot.define do
 
     after(:build) do |runner, evaluator|
       runner.organization_id ||= evaluator.projects.first&.organization_id if runner.project_type?
+      runner.sharding_key_id ||= evaluator.projects.first&.id if runner.project_type?
       evaluator.projects.each do |proj|
         runner.runner_projects << build(:ci_runner_project, runner: runner, project: proj)
       end
 
       runner.organization_id ||= evaluator.groups.first&.organization_id if runner.group_type?
+      runner.sharding_key_id ||= evaluator.groups.first&.id if runner.group_type?
       evaluator.groups.each do |group|
         runner.runner_namespaces << build(:ci_runner_namespace, runner: runner, namespace: group)
       end
@@ -119,6 +121,12 @@ FactoryBot.define do
       end
 
       after(:build) do |runner, evaluator|
+        next if runner.sharding_key_id
+
+        # Point to a "no longer existing" project ID, as a project runner must always have been created
+        # with a sharding key id
+        runner.sharding_key_id = (2**63) - 1
+
         runner.organization_id = ::Organizations::Organization::DEFAULT_ORGANIZATION_ID
       end
 

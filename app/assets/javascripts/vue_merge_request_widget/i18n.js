@@ -21,12 +21,10 @@ export const SQUASH_BEFORE_MERGE = {
   helpLabel: __('What is squashing?'),
   popoverOptions: {
     title: __('What is squashing?'),
-    content: {
-      text: __(
-        'Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.',
-      ),
-      learnMorePath: helpPagePath('user/project/merge_requests/squash_and_merge'),
-    },
+    content: __(
+      'Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.',
+    ),
+    learnMorePath: helpPagePath('user/project/merge_requests/squash_and_merge'),
   },
   learnMore: __('Learn more'),
 };

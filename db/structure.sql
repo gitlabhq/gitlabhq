@@ -12311,7 +12311,8 @@ CREATE TABLE ci_runner_taggings_group_type (
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_runner_taggings_id_seq
@@ -12329,7 +12330,8 @@ CREATE TABLE ci_runner_taggings_instance_type (
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NULL))
 );
 
 CREATE TABLE ci_runner_taggings_project_type (
@@ -12338,7 +12340,8 @@ CREATE TABLE ci_runner_taggings_project_type (
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE TABLE ci_runner_versions (
@@ -15734,7 +15737,8 @@ CREATE TABLE group_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE TABLE group_type_ci_runners (
@@ -15767,7 +15771,8 @@ CREATE TABLE group_type_ci_runners (
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE TABLE group_wiki_repositories (
@@ -16407,7 +16412,8 @@ CREATE TABLE instance_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NULL))
 );
 
 CREATE TABLE instance_type_ci_runners (
@@ -16440,7 +16446,8 @@ CREATE TABLE instance_type_ci_runners (
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NULL))
 );
 
 CREATE TABLE integrations (
@@ -22139,7 +22146,8 @@ CREATE TABLE project_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE TABLE project_type_ci_runners (
@@ -22172,7 +22180,8 @@ CREATE TABLE project_type_ci_runners (
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
+    CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
 CREATE TABLE project_uploads (
@@ -23335,6 +23344,45 @@ CREATE SEQUENCE security_findings_id_seq
     CACHE 1;
 
 ALTER SEQUENCE security_findings_id_seq OWNED BY security_findings.id;
+
+CREATE TABLE security_inventory_filters (
+    id bigint NOT NULL,
+    archived boolean DEFAULT false NOT NULL,
+    sast smallint DEFAULT 0 NOT NULL,
+    sast_advanced smallint DEFAULT 0 NOT NULL,
+    sast_iac smallint DEFAULT 0 NOT NULL,
+    dast smallint DEFAULT 0 NOT NULL,
+    dependency_scanning smallint DEFAULT 0 NOT NULL,
+    coverage_fuzzing smallint DEFAULT 0 NOT NULL,
+    api_fuzzing smallint DEFAULT 0 NOT NULL,
+    cluster_image_scanning smallint DEFAULT 0 NOT NULL,
+    secret_detection_secret_push_protection smallint DEFAULT 0 NOT NULL,
+    container_scanning_for_registry smallint DEFAULT 0 NOT NULL,
+    secret_detection_pipeline_based smallint DEFAULT 0 NOT NULL,
+    container_scanning_pipeline_based smallint DEFAULT 0 NOT NULL,
+    secret_detection smallint DEFAULT 0 NOT NULL,
+    container_scanning smallint DEFAULT 0 NOT NULL,
+    total integer DEFAULT 0 NOT NULL,
+    critical integer DEFAULT 0 NOT NULL,
+    high integer DEFAULT 0 NOT NULL,
+    medium integer DEFAULT 0 NOT NULL,
+    low integer DEFAULT 0 NOT NULL,
+    info integer DEFAULT 0 NOT NULL,
+    unknown integer DEFAULT 0 NOT NULL,
+    project_id bigint NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    project_name text NOT NULL,
+    CONSTRAINT check_aeacee81ba CHECK ((char_length(project_name) <= 255))
+);
+
+CREATE SEQUENCE security_inventory_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_inventory_filters_id_seq OWNED BY security_inventory_filters.id;
 
 CREATE TABLE security_orchestration_policy_configurations (
     id bigint NOT NULL,
@@ -28673,6 +28721,8 @@ ALTER TABLE ONLY security_categories ALTER COLUMN id SET DEFAULT nextval('securi
 
 ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security_findings_id_seq'::regclass);
 
+ALTER TABLE ONLY security_inventory_filters ALTER COLUMN id SET DEFAULT nextval('security_inventory_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
@@ -31750,6 +31800,9 @@ ALTER TABLE ONLY security_categories
 
 ALTER TABLE ONLY security_findings
     ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id, partition_number);
+
+ALTER TABLE ONLY security_inventory_filters
+    ADD CONSTRAINT security_inventory_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT security_orchestration_policy_configurations_pkey PRIMARY KEY (id);
@@ -38088,6 +38141,8 @@ CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identi
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
 
 CREATE UNIQUE INDEX index_security_categories_namespace_name ON security_categories USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX index_security_inventory_filters_on_project_id ON security_inventory_filters USING btree (project_id);
 
 CREATE INDEX index_security_orchestration_policy_rule_schedules_on_namespace ON security_orchestration_policy_rule_schedules USING btree (namespace_id);
 

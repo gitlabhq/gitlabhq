@@ -175,8 +175,13 @@ ci_runner_taggings:
   - table: tags
     column: tag_id
     on_delete: async_delete
-  - table: organizations
-    column: organization_id
+ci_runner_taggings_group_type:
+  - table: namespaces
+    column: sharding_key_id
+    on_delete: async_delete
+ci_runner_taggings_project_type:
+  - table: projects
+    column: sharding_key_id
     on_delete: async_delete
 ci_runners:
   - table: users
@@ -656,6 +661,10 @@ sbom_sources:
 security_categories:
   - table: namespaces
     column: namespace_id
+    on_delete: async_delete
+security_inventory_filters:
+  - table: projects
+    column: project_id
     on_delete: async_delete
 security_scans:
   - table: p_ci_builds

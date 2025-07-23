@@ -2377,6 +2377,33 @@ Input type: `AiCatalogFlowCreateInput`
 | <a id="mutationaicatalogflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogflowcreateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Item created. |
 
+### `Mutation.aiCatalogFlowUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogFlowUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowupdatedescription"></a>`description` | [`String`](#string) | Description for the flow. |
+| <a id="mutationaicatalogflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to update. |
+| <a id="mutationaicatalogflowupdatename"></a>`name` | [`String`](#string) | Name for the flow. |
+| <a id="mutationaicatalogflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the flow is publicly visible in the catalog. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogflowupdateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Flow that was updated. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}

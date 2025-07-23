@@ -537,7 +537,7 @@ Example response, with line breaks added for readability:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220) in GitLab 17.10. Guarded behind the
-  [project_repositories_health](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
+  [`project_repositories_health`](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
 - New fields [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191263) in GitLab 18.1.
 
 {{< /history >}}

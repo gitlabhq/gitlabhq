@@ -95,7 +95,10 @@ describe('Squash before merge component', () => {
 
       const helpPopover = wrapper.findComponent(HelpPopover);
 
-      expect(helpPopover.props('options')).toEqual(SQUASH_BEFORE_MERGE.popoverOptions);
+      expect(helpPopover.props('options')).toEqual({
+        container: 'squash-commits-popover',
+        ...SQUASH_BEFORE_MERGE.popoverOptions,
+      });
     });
 
     it('should have correct aria-label', () => {

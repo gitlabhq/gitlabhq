@@ -19,6 +19,7 @@ describe('IssuePopover component', () => {
   Vue.use(VueApollo);
 
   const { workItem } = issueQueryResponse.data.namespace;
+  const cachedTitle = 'Cached title';
 
   const queryResponseHandler = jest.fn().mockResolvedValue(issueQueryResponse);
 
@@ -32,7 +33,7 @@ describe('IssuePopover component', () => {
         target: document.createElement('a'),
         namespacePath: 'foo/bar',
         iid: '1',
-        cachedTitle: 'Cached title',
+        cachedTitle,
       },
     });
   };
@@ -107,6 +108,24 @@ describe('IssuePopover component', () => {
         startDate: '2020-07-01',
         dueDate: '2020-07-30',
       });
+    });
+  });
+
+  describe('when request returns null', () => {
+    const emptyResponseHandler = jest.fn().mockResolvedValue({ data: { namespace: null } });
+
+    beforeEach(async () => {
+      mountComponent({ queryResponse: emptyResponseHandler });
+      findGlPopover().vm.$emit('show');
+      await waitForPromises();
+    });
+
+    it('shows cached title', () => {
+      expect(wrapper.find('[data-testid="popover-title"]').text()).toBe(cachedTitle);
+    });
+
+    it('does not show status badge', () => {
+      expect(wrapper.findComponent(StatusBadge).exists()).toBe(false);
     });
   });
 });

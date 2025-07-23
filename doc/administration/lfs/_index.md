@@ -21,7 +21,7 @@ For user documentation about Git LFS, see [Git Large File Storage](../../topics/
 
 Prerequisites:
 
-- Users must install [Git LFS client](https://git-lfs.com/) version 1.0.1 or later.
+- Users must install [Git LFS client](https://git-lfs.com/) version 1.1.0 and later, or 1.0.2.
 
 ## Enable or disable LFS
 
@@ -520,6 +520,12 @@ You can see the total storage used for LFS objects for groups and projects in:
 - The **Admin** area
 - The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
+{{< alert type="note" >}}
+
+The storage statistics count each LFS object for every project linking to it.
+
+{{< /alert >}}
+
 ## Related topics
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
@@ -699,9 +705,3 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 If you are using GitLab Helm Chart, use [extraEnv](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
 
 {{< /alert >}}
-
-## Known limitations
-
-- Only compatible with the Git LFS client versions 1.1.0 and later, or 1.0.2.
-- The storage statistics count each LFS object for
-  every project linking to it.

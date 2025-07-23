@@ -7,14 +7,10 @@ class RemoveShardingKeyCheckConstraintFromCiRunnerMachines < Gitlab::Database::M
   CONSTRAINT_NAME = 'check_sharding_key_id_nullness'
 
   def up
-    remove_check_constraint(:instance_type_ci_runner_machines, CONSTRAINT_NAME)
-    remove_check_constraint(:group_type_ci_runner_machines, CONSTRAINT_NAME)
-    remove_check_constraint(:project_type_ci_runner_machines, CONSTRAINT_NAME)
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20245
   end
 
   def down
-    add_check_constraint(:instance_type_ci_runner_machines, 'sharding_key_id IS NULL', CONSTRAINT_NAME)
-    add_check_constraint(:group_type_ci_runner_machines, 'sharding_key_id IS NOT NULL', CONSTRAINT_NAME)
-    add_check_constraint(:project_type_ci_runner_machines, 'sharding_key_id IS NOT NULL', CONSTRAINT_NAME)
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20245
   end
 end

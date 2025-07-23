@@ -3487,6 +3487,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_runners_update_project_runners_owner
+  :worker_name: Ci::Runners::UpdateProjectRunnersOwnerWorker
+  :feature_category: :runner
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_safe_disable_pipeline_variables
   :worker_name: Ci::SafeDisablePipelineVariablesWorker
   :feature_category: :ci_variables

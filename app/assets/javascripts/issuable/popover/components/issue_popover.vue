@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       shouldFetch: false,
-      workItem: {},
+      workItem: null,
     };
   },
   apollo: {
@@ -69,7 +69,7 @@ export default {
           iid: this.iid,
         };
       },
-      update: (data) => data.namespace?.workItem || {},
+      update: (data) => data.namespace?.workItem,
       skip() {
         return !this.shouldFetch;
       },
@@ -87,9 +87,6 @@ export default {
       return this.type === WORK_ITEM_TYPE_NAME_EPIC
         ? this.workItem.fullReference?.replaceAll('#', '&')
         : this.workItem.fullReference;
-    },
-    title() {
-      return this.workItem.title || this.cachedTitle;
     },
     type() {
       return this.workItem.workItemType?.name;
@@ -116,7 +113,7 @@ export default {
     @show="shouldFetch = true"
   >
     <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :width="150" />
-    <template v-else>
+    <template v-else-if="workItem">
       <div class="gl-flex gl-items-center gl-gap-2">
         <status-badge :state="workItem.state" />
         <gl-icon
@@ -131,7 +128,7 @@ export default {
           {{ __('Opened') }} <time :datetime="workItem.createdAt">{{ formattedTime }}</time>
         </span>
       </div>
-      <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ title }}</div>
+      <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ workItem.title }}</div>
       <div>
         <work-item-type-icon :work-item-type="type" />
         <span class="gl-text-subtle">{{ reference }}</span>
@@ -148,6 +145,9 @@ export default {
         <issue-weight v-if="weightWidget.weight" :weight="weightWidget.weight" />
         <issue-milestone v-if="milestoneWidget.milestone" :milestone="milestoneWidget.milestone" />
       </div>
+    </template>
+    <template v-else>
+      <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ cachedTitle }}</div>
     </template>
   </gl-popover>
 </template>
