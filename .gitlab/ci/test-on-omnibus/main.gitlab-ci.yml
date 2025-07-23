@@ -62,11 +62,13 @@ _quarantine:
 health-check:
   extends:
     - .omnibus-e2e
-    - .rules:test:dependency-update
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
     QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - if: $RUN_ALL_TESTS == "true"
+    - if: $QA_SUITES =~ /Test::Instance::HealthCheck/
 
 # ========== instance ===========
 instance:
@@ -77,9 +79,9 @@ instance:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
   rules:
-    - !reference [.rules:test:omnibus-base, rules]
-    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
+    # gitlab-org/gitlab pipelines run instance suite in both gdk and cng deployments
+    - when: manual
+      allow_failure: true
 
 # ========== praefect ===========
 praefect:
