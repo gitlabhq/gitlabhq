@@ -82,7 +82,6 @@ describe('BoardContent', () => {
         isGroupBoard: true,
         disabled: false,
         fullPath: 'project-path',
-        commentTemplatePaths: [],
       },
       stubs: {
         BoardContentSidebar: stubComponent(BoardContentSidebar, {

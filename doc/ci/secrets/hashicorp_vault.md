@@ -137,6 +137,9 @@ JWTs are credentials, which can grant access to resources. Be careful where you 
 {{< /alert >}}
 
 Consider a scenario where you store passwords for your staging and production databases in a Vault server.
+This scenario assumes you use the [KV v2](https://developer.hashicorp.com/vault/docs/secrets/kv#kv-version-2) secret engine.
+If you are using [KV v1](https://developer.hashicorp.com/vault/docs/secrets/kv#version-comparison),
+remove `/data/` from the following policy paths, and see [how to configure your CI/CD jobs](convert-to-id-tokens.md#kv-secrets-engine-v1).
 
 You can retrieve the passwords with the `vault kv get` command.
 
@@ -164,8 +167,8 @@ Then create policies that allow you to read these secrets (one for each secret):
 $ vault policy write myproject-staging - <<EOF
 # Policy name: myproject-staging
 #
-# Read-only permission on 'secret/myproject/staging/*' path
-path "secret/myproject/staging/*" {
+# Read-only permission on 'secret/data/myproject/staging/*' path
+path "secret/data/myproject/staging/*" {
   capabilities = [ "read" ]
 }
 EOF
@@ -174,8 +177,8 @@ Success! Uploaded policy: myproject-staging
 $ vault policy write myproject-production - <<EOF
 # Policy name: myproject-production
 #
-# Read-only permission on 'secret/myproject/production/*' path
-path "secret/myproject/production/*" {
+# Read-only permission on 'secret/data/myproject/production/*' path
+path "secret/data/myproject/production/*" {
   capabilities = [ "read" ]
 }
 EOF

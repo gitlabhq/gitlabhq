@@ -14,6 +14,8 @@ additional_properties:
     description: test file count for the respective metric
   ci_job_id:
     description: id of the job pushing the event
+  test_type:
+    description: type of test, like frontend, backend
 product_group: development_analytics
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191286

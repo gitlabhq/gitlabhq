@@ -1413,6 +1413,12 @@ In some situations, it may be helpful to test object storage settings using the 
 
 #### Enable additional debugging
 
+{{< history >}}
+
+- `AWS_DEBUG` environment variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198651) in GitLab 18.3.
+
+{{< /history >}}
+
 You can also enable additional debugging to see the HTTP requests. You
 should do it in the [Rails Console](operations/rails_console.md) to avoid leaking credentials in
 log files. The following shows how to enable request debugging for
@@ -1427,6 +1433,27 @@ Set the `EXCON_DEBUG` environment variable:
 ```ruby
 ENV['EXCON_DEBUG'] = "1"
 ```
+
+You can also enable S3 HTTP request and response header logging in GitLab
+Workhorse logs by setting the `AWS_DEBUG` environment variable to `1`. For the
+Linux package (Omnibus):
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
+
+   ```ruby
+   gitlab_workhorse['env'] = {
+     'AWS_DEBUG' => '1'
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+   S3-compatible storage request and response headers are logged in
+   `/var/log/gitlab/gitlab-workhorse/current`.
 
 {{< /tab >}}
 

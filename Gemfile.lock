@@ -1205,7 +1205,7 @@ GEM
       uri
     net-http-persistent (4.0.5)
       connection_pool (~> 2.2)
-    net-imap (0.5.6)
+    net-imap (0.5.9)
       date
       net-protocol
     net-ldap (0.17.1)
@@ -2336,6 +2336,8 @@ DEPENDENCIES
   recaptcha (~> 5.12)
   redis (~> 5.4.0)
   redis-actionpack (~> 5.5.0)
+  redis-client (~> 0.25)
+  redis-cluster-client (~> 0.13)
   redis-clustering (~> 5.4.0)
   request_store (~> 1.7.0)
   responders (~> 3.0)

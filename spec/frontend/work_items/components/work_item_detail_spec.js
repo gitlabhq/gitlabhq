@@ -165,7 +165,6 @@ describe('WorkItemDetail component', () => {
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     hasLinkedItemsEpicsFeature = true,
     showSidebar = true,
-    newCommentTemplatePaths = [],
     lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -187,7 +186,6 @@ describe('WorkItemDetail component', () => {
         workItemIid,
         isDrawer,
         modalIsGroup,
-        newCommentTemplatePaths,
       },
       data() {
         return {
@@ -880,9 +878,6 @@ describe('WorkItemDetail component', () => {
           __typename: 'CommentTemplatePathType',
         },
       ];
-      const newCommentTemplatePaths = [
-        { text: 'Default template', href: '/groups/gitlab-org/-/comment_templates' },
-      ];
 
       it('passes fetched comment template paths to WorkItemNotes component', async () => {
         const commentTemplateQueryResponse = workItemByIidResponseFactory({
@@ -897,32 +892,6 @@ describe('WorkItemDetail component', () => {
         expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(
           mockCommentTemplatePaths,
         );
-      });
-
-      it('uses prop `newCommentTemplatePaths` value  if the query returns empty array', async () => {
-        const commentTemplateQueryResponse = workItemByIidResponseFactory({
-          commentTemplatesPaths: [],
-        });
-
-        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
-
-        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
-        await waitForPromises();
-
-        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
-      });
-
-      it('uses prop `newCommentTemplatePaths` value  if the query returns null', async () => {
-        const commentTemplateQueryResponse = workItemByIidResponseFactory({
-          commentTemplatesPaths: null,
-        });
-
-        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
-
-        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
-        await waitForPromises();
-
-        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
       });
     });
   });

@@ -1180,9 +1180,17 @@ For more information on Gitaly server configuration, see our
      1. Edit `/etc/gitlab/gitlab.rb`.
      1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
 
-        ```ruby
-        gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-        ```
+        - GitLab 17.5 and later:
+
+          ```ruby
+          gitaly['auth']['token']` = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+        - GitLab 17.4 and earlier:
+
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```  
 
 1. Configure an `internal_api_url`, which is also needed for `git push` operations:
 

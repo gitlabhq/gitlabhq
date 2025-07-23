@@ -144,7 +144,6 @@ describe('CE IssuesListApp component', () => {
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
     groupId: '',
-    commentTemplatePaths: [],
     timeTrackingLimitToHours: false,
   };
 

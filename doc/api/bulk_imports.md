@@ -60,7 +60,7 @@ POST /bulk_imports
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
 | `entities[destination_slug]`      | String | yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
 | `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
-| `entities[destination_namespace]` | String | yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. Must be an existing group in the destination instance. |
+| `entities[destination_namespace]` | String | yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. Must be an existing group in the destination instance. Personal namespaces are not supported. |
 | `entities[migrate_projects]`      | Boolean | no      | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
 | `entities[migrate_memberships]`   | Boolean | no      | Import user memberships. Defaults to `true`. |
 

@@ -44,7 +44,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['query', 'searchType', 'defaultBranchName', 'urlQuery', 'projectInitialJson']),
+    ...mapState(['query', 'searchType', 'defaultBranchName', 'projectInitialJson']),
     ...mapGetters(['currentScope']),
     search: {
       get() {

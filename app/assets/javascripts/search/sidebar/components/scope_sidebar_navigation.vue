@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       showFlyoutMenus: false,
+      // eslint-disable-next-line vue/no-unused-properties -- used in apollo query()
       blobSearchCount: null,
     };
   },

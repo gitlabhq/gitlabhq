@@ -43420,7 +43420,7 @@ ALTER TABLE ONLY operations_scopes
     ADD CONSTRAINT fk_4913f5d6a2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_compliance_violations
-    ADD CONSTRAINT fk_492a40969e FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_492a40969e FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

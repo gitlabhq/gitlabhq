@@ -208,7 +208,6 @@ export default {
     'rssPath',
     'showNewIssueLink',
     'groupId',
-    'commentTemplatePaths',
   ],
   props: {
     eeSearchTokens: {
@@ -1035,7 +1034,6 @@ export default {
       :open="isIssuableSelected"
       :active-item="activeIssuable"
       :issuable-type="$options.issuableType"
-      :new-comment-template-paths="commentTemplatePaths"
       click-outside-exclude-selector=".issuable-list"
       @close="activeIssuable = null"
       @work-item-updated="updateIssuablesCache"

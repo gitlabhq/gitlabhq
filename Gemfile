@@ -331,6 +331,8 @@ gem 'device_detector', feature_category: :shared
 
 # Redis
 gem 'redis', '~> 5.4.0', feature_category: :redis
+gem 'redis-client', '~> 0.25', feature_category: :redis
+gem 'redis-cluster-client', '~> 0.13', feature_category: :redis
 gem 'redis-clustering', '~> 5.4.0', feature_category: :redis
 gem 'connection_pool', '~> 2.5.3', feature_category: :shared
 

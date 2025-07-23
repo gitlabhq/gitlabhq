@@ -35,7 +35,7 @@ Examples:
   #{__FILE__} --mode=wall --interval=#{defaults[:mode_interval]} --limit=#{defaults[:limit]} --raw=true --output=tmp/example.dump spec/controllers/help_controller_spec.rb
   #{__FILE__} spec/policies/project_policy_spec.rb -e 'project visibility'
   #{__FILE__} --speedscope=true spec/controllers/help_controller_spec.rb
-  MODE=cpu LIMIT=5 #{__FILE__} spec/controllers/help_controller_spec.rb
+  #{__FILE__} --mode=cpu --limit=5 spec/controllers/help_controller_spec.rb
 DOCSTRING
   opt.separator ''
   opt.separator 'Options:'

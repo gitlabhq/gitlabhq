@@ -58,11 +58,6 @@ export default {
       required: false,
       default: null,
     },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     isBoard: {
       type: Boolean,
       required: false,
@@ -337,7 +332,6 @@ export default {
         :work-item-iid="activeItem.iid"
         :work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
-        :new-comment-template-paths="newCommentTemplatePaths"
         :is-board="isBoard"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
