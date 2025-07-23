@@ -62,7 +62,7 @@ InitializerConnections.raise_if_new_database_connection do
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
       Gitlab.ee do
         resource :welcome, only: [:show, :update], controller: 'welcome'
-        resource :trial_welcome, only: [:new], controller: 'trial_welcome'
+        resource :trial_welcome, only: [:new, :create], controller: 'trial_welcome'
         resource :company, only: [:new, :create], controller: 'company'
         resources :groups, only: [:new, :create]
       end
@@ -88,6 +88,8 @@ InitializerConnections.raise_if_new_database_connection do
 
     # Terraform service discovery
     get '.well-known/terraform.json' => 'terraform/services#index', as: :terraform_services
+
+    draw :organizations
 
     # Begin of the /-/ scope.
     # Use this scope for all new global routes.
@@ -173,7 +175,6 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :operations
       draw :jira_connect
-      draw :organizations
 
       Gitlab.ee do
         draw 'remote_development/resources'

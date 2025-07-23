@@ -25,14 +25,6 @@ RSpec.describe Gitlab::Auth::SessionExpireFromInitEnforcer, feature_category: :s
       end
 
       it { is_expected.to be(true) }
-
-      context 'and session_expire_from_init FF is disabled' do
-        before do
-          stub_feature_flags(session_expire_from_init: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
     end
   end
 
@@ -108,18 +100,6 @@ RSpec.describe Gitlab::Auth::SessionExpireFromInitEnforcer, feature_category: :s
         expect(session).to be_empty
       end
     end
-
-    context 'when session_expire_from_init FF is disabled' do
-      before do
-        stub_feature_flags(session_expire_from_init: false)
-      end
-
-      it 'does not set signed_in_at session info' do
-        set_login_time
-
-        expect(session).to be_empty
-      end
-    end
   end
 
   describe '#enforce!', :freeze_time do
@@ -152,18 +132,6 @@ RSpec.describe Gitlab::Auth::SessionExpireFromInitEnforcer, feature_category: :s
         expect(devise_proxy).to receive(:sign_out)
 
         expect { enforce }.to throw_symbol(:warden)
-      end
-
-      context 'when session_expire_from_init FF is disabled' do
-        before do
-          stub_feature_flags(session_expire_from_init: false)
-        end
-
-        it 'does not throw :warden symbol' do
-          expect(devise_proxy).not_to receive(:sign_out)
-
-          expect { enforce }.not_to throw_symbol
-        end
       end
 
       context 'when session has not expired yet' do

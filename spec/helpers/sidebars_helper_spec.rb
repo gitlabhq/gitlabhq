@@ -383,82 +383,220 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
+    describe '"Create new" menu groups', :use_clean_rails_memory_store_caching do
+      def menu_item(href:, text:, id:, component: nil)
         {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
+          href: href,
+          text: text,
+          component: component,
+          extraAttrs: {
+            "data-track-label": id,
+            "data-track-action": "click_link",
+            "data-track-property": "nav_create_menu",
+            "data-testid": 'create_menu_item',
+            "data-qa-create-menu-item": id
+          }
         }
-      }
+      end
 
-      expect(subject[:create_new_menu_groups]).to eq([
-        {
-          name: "",
-          items: [
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/organizations/new", text: s_('Organization|New organization'),
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_organization") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          ]
-        }
-      ])
-    end
+      context 'without headers' do
+        shared_examples '"Create new" menu groups without headers' do
+          it 'returns "Create new" menu groups without headers' do
+            expect(subject[:create_new_menu_groups]).to eq([
+              {
+                name: "",
+                items: expected_menu_item_groups
+              }
+            ])
+          end
+        end
 
-    it 'returns "Create new" menu groups with headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
-        {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
-        }
-      }
+        context 'when current Organization has scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
 
-      allow(group).to receive(:persisted?).and_return(true)
-      allow(helper).to receive(:can?).and_return(true)
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
 
-      expect(subject[:create_new_menu_groups]).to contain_exactly(
-        a_hash_including(
-          name: "In this group",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_project") },
-            { href: "/groups/new#create-group-pane", text: "New subgroup",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_subgroup") },
-            { href: nil, text: "Invite members",
-              component: 'invite_members',
-              extraAttrs: extra_attrs.call("invite") }
-          )
-        ),
-        a_hash_including(
-          name: "In GitLab",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          )
-        )
-      )
+          include_examples '"Create new" menu groups without headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups without headers'
+        end
+      end
+
+      context 'with headers' do
+        before do
+          allow(group).to receive(:persisted?).and_return(true)
+          allow(helper).to receive(:can?).and_return(true)
+        end
+
+        shared_examples '"Create new" menu groups with headers' do
+          it 'returns "Create new" menu groups with headers' do
+            expect(subject[:create_new_menu_groups]).to contain_exactly(
+              a_hash_including(
+                name: "In this group",
+                items: array_including(*in_this_group_menu_items)
+              ),
+              a_hash_including(
+                name: "In GitLab",
+                items: array_including(*in_gitlab_menu_items)
+              )
+            )
+          end
+        end
+
+        context 'when current Organization has scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+      end
     end
 
     describe 'current context' do

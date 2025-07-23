@@ -288,7 +288,6 @@ class Project < ApplicationRecord
 
   # Packages
   has_many :packages, class_name: 'Packages::Package'
-  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :rpm_repository_files,
     inverse_of: :project,

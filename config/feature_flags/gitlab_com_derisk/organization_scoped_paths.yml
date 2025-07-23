@@ -1,0 +1,10 @@
+---
+name: organization_scoped_paths
+description: Derisk rollout of Organization scoped URL paths and helpers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553914
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197425
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556359
+milestone: '18.3'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

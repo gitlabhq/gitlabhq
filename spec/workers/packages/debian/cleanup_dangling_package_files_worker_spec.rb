@@ -80,8 +80,9 @@ RSpec.describe Packages::Debian::CleanupDanglingPackageFilesWorker, type: :worke
 
           # Using subject inside this block will process the job multiple times
           expect { subject }
-            .to not_change { distribution.project.package_files.count }
-            .and change { distribution.project.package_files.pending_destruction.count }.from(0).to(1)
+            .to not_change { ::Packages::PackageFile.for_projects(distribution.project).count }
+            .and change { ::Packages::PackageFile.for_projects(distribution.project).pending_destruction.count }
+              .from(0).to(1)
             .and not_change { ::Packages::Debian::Package.for_projects(distribution.project).count }
         end
       end

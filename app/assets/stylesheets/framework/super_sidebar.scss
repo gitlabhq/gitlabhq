@@ -1,6 +1,6 @@
 $super-sidebar-transition-delay: 0.4s;
 $super-sidebar-transition-duration: 0.2s;
-$super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
+$super-sidebar-transition-hint-duration: $super-sidebar-transition-duration * 0.25;
 $command-palette-spacing: px-to-rem(14px);
 
 @mixin notification-dot($color, $size, $top, $left) {

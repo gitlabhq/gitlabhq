@@ -6,8 +6,7 @@ column: housekeeping_full_repack_period
 db_type: integer
 default: '50'
 description: Deprecated. Number of Git pushes after which an incremental `git repack`
-  is run. Use `housekeeping_optimize_repository_period` instead. For more information,
-  see [Housekeeping settings](#housekeeping-settings).
+  is run. Use `housekeeping_optimize_repository_period` instead.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

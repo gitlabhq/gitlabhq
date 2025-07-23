@@ -196,15 +196,9 @@ For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 18.0 with a [flag](../feature_flags/_index.md) named `session_expire_from_init`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198734) in GitLab 18.3. Feature flag `session_expire_from_init` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of session expiry from creation dates is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 By default, sessions expire a set amount of time after the session becomes inactive. Instead, you can configure sessions to expire a set amount of time after the session is created.
 

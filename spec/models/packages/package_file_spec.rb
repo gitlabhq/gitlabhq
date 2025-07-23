@@ -703,4 +703,24 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       package_file
     end
   end
+
+  describe '.for_projects' do
+    let_it_be(:package) { create(:generic_package) }
+    let_it_be(:package2) { create(:generic_package) }
+    let_it_be(:package_file1) { create(:package_file, package: package) }
+    let_it_be(:package_file2) { create(:package_file, package: package2) }
+    let_it_be(:package_file3) { create(:package_file) }
+
+    let(:projects) { ::Project.id_in([package_file1.project_id, package_file2.project_id]) }
+
+    subject { described_class.for_projects(projects.select(:id)) }
+
+    it { is_expected.to contain_exactly(package_file1, package_file2) }
+
+    context 'with projects' do
+      subject { described_class.for_projects(projects) }
+
+      it { is_expected.to contain_exactly(package_file1, package_file2) }
+    end
+  end
 end

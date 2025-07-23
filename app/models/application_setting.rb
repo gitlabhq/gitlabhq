@@ -1219,15 +1219,9 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def allow_user_remember_me?
-    return false if session_expire_from_init_enabled?
+    return false if session_expire_from_init?
 
     remember_me_enabled?
-  end
-
-  # check the model first, as this will be false on most instances
-  # only check Redis / FF if setting is enabled
-  def session_expire_from_init_enabled?
-    session_expire_from_init? && Feature.enabled?(:session_expire_from_init, :instance)
   end
 
   private

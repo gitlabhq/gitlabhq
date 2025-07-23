@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .color-item {
   display: flex;
 }
@@ -52,7 +54,7 @@
 
     a {
       border-radius: 0;
-      width: (100% / 7);
+      width: math.div(100%, 7);
       margin-right: 0;
       margin-bottom: -5px;
 

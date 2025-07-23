@@ -106,6 +106,13 @@ module Organizations
       Gitlab::UrlBuilder.build(self, only_path: only_path)
     end
 
+    # For example:
+    # scoped path   - /o/my-org/my-group/my-project
+    # unscoped path - /my-group/my-project
+    def scoped_paths?
+      Feature.enabled?(:organization_scoped_paths, self) && !default?
+    end
+
     private
 
     # The visibility must be broader than the visibility of any contained root groups.

@@ -5,7 +5,7 @@ clusterwide: true
 column: domain_denylist_enabled
 db_type: boolean
 default: 'false'
-description: "(**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups
+description: "(**If enabled, requires**: `domain_denylist`) Allows blocking sign-ups
   from emails from specific domains."
 encrypted: false
 gitlab_com_different_than_default: true

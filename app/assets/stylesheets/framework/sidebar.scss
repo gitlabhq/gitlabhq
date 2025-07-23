@@ -762,7 +762,10 @@
   position: absolute;
   bottom: -3px;
   right: -3px;
-  filter: drop-shadow(0 0 0.5px var(--gl-shadow-color-default)) drop-shadow(0 0 1px var(--gl-shadow-color-default)) drop-shadow(0 0 2px var(--gl-shadow-color-default));
+  filter: drop-shadow(1px 0 0 var(--gl-background-color-default))
+          drop-shadow(-1px 0 0 var(--gl-background-color-default))
+          drop-shadow(0 -1px 0 var(--gl-background-color-default))
+          drop-shadow(0 1px 0 var(--gl-background-color-default));
 }
 
 .sidebar-help-wrap {

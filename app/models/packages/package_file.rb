@@ -125,6 +125,8 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_conan_file_metadata: { package_revision_id: nil })
   end
 
+  scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
+
   def self.most_recent!
     recent.first!
   end

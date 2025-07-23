@@ -2418,6 +2418,9 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
+msgid "AICatalog|A public agent can be made private only if it is not used."
+msgstr ""
+
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2433,6 +2436,9 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Anyone can view and use the agent without authorization. Only maintainers and owners of this project can edit or delete the agent."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
@@ -2443,6 +2449,9 @@ msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and proc
 msgstr ""
 
 msgid "AICatalog|Choose a memorable name for your AI agent."
+msgstr ""
+
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
 msgstr ""
 
 msgid "AICatalog|Create agent"
@@ -2493,7 +2502,13 @@ msgstr ""
 msgid "AICatalog|New agent"
 msgstr ""
 
+msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners  of this project can edit or delete the agent."
+msgstr ""
+
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
+msgstr ""
+
+msgid "AICatalog|Private"
 msgstr ""
 
 msgid "AICatalog|Project ID"
@@ -2506,6 +2521,9 @@ msgid "AICatalog|Provide default instructions or context that will be included w
 msgstr ""
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
+msgstr ""
+
+msgid "AICatalog|Public"
 msgstr ""
 
 msgid "AICatalog|Run"
@@ -2529,6 +2547,9 @@ msgstr ""
 msgid "AICatalog|The agent could not be added. Please try again."
 msgstr ""
 
+msgid "AICatalog|This agent can be made private if it is not used."
+msgstr ""
+
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr ""
 
@@ -2536,6 +2557,9 @@ msgid "AICatalog|User Prompt"
 msgstr ""
 
 msgid "AICatalog|User Prompt is required."
+msgstr ""
+
+msgid "AICatalog|Visibility level is required."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
@@ -11586,6 +11610,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Browse files at this commit"
+msgstr ""
+
 msgid "Build a new repository or import existing work."
 msgstr ""
 
@@ -15396,6 +15423,12 @@ msgid "Commit (when editing commit message)"
 msgstr ""
 
 msgid "Commit SHA"
+msgstr ""
+
+msgid "Commit SHA copied to clipboard."
+msgstr ""
+
+msgid "Commit actions"
 msgstr ""
 
 msgid "Commit changes"
@@ -68876,6 +68909,9 @@ msgid "View changed file"
 msgstr ""
 
 msgid "View commit %{commit_id}"
+msgstr ""
+
+msgid "View commit details"
 msgstr ""
 
 msgid "View commits for tag %{tag}"

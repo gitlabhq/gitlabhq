@@ -31,13 +31,13 @@ export default {
     <commit-list-header />
     <ol class="gl-my-6 gl-list-none gl-p-0">
       <li v-for="commit in commits" :key="commit.id" data-testid="daily-commits">
-        <div class="gl-mb-3 gl-flex gl-items-center gl-gap-5">
+        <div class="gl-mb-5 gl-flex gl-items-center gl-gap-3 sm:gl-gap-5">
           <gl-icon name="commit" />
           <time class="gl-font-bold" :datetime="commit.day">
             {{ getFormattedDate(commit.day) }}
           </time>
         </div>
-        <ul class="commit-list-item gl-mb-6 gl-list-none gl-p-0">
+        <ul class="daily-commits-item gl-mb-6 gl-list-none gl-p-0">
           <commit-list-item
             v-for="dailyCommit in commit.dailyCommits"
             :key="dailyCommit.id"

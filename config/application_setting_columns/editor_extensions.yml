@@ -5,7 +5,7 @@ clusterwide: true
 column: editor_extensions
 db_type: jsonb
 default: "'{}'::jsonb"
-description: Editor Extensions restrictions and settings
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

@@ -527,7 +527,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               end.to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
 
               expect(response).to have_gitlab_http_status(:created)
-              expect(project.package_files.find_by(file_name:)).not_to be_nil
+              expect(::Packages::PackageFile.for_projects(project).find_by(file_name:)).not_to be_nil
             end
           end
         end

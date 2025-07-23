@@ -1245,6 +1245,34 @@ This log is located:
 - In the `/home/git/gitlab/log/secret_push_protection.log` file on self-compiled installations.
 - On the Webservice pods under the `subcomponent="secret_push_protection"` key on Helm chart installations.
 
+## `active_context.log`
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/554925) in GitLab 18.3.
+
+{{< /history >}}
+
+The `active_context.log` file logs information related to embedding pipelines through the
+[`ActiveContext` layer](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/).
+
+GitLab supports `ActiveContext` code embeddings.
+This pipeline handles embedding generation for project code files.
+For more information, see [architecture design](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/codebase_as_chat_context/code_embeddings/).
+
+This log is located:
+
+- In the `/var/log/gitlab/gitlab-rails/active_context.log` file on Linux package installations.
+- In the `/home/git/gitlab/log/active_context.log` file on self-compiled installations.
+- On the Sidekiq pods under the `subcomponent="activecontext"` key on Helm chart installations.
+
 ## Registry logs
 
 For Linux package installations, container registry logs are in `/var/log/gitlab/registry/current`.

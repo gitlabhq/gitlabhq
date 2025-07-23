@@ -156,7 +156,7 @@ curl --request POST \
 
 ```
 
-## Fetch direct connection information
+## Fetch direct connection details for the AI gateway
 
 {{< history >}}
 
@@ -175,7 +175,8 @@ This endpoint rate-limits each user to 10 requests per 5-minute window.
 
 {{< /alert >}}
 
-Returns user-specific connection details which can be used by IDEs/clients to send completion requests directly to AI gateway.
+Returns user-specific connection details which can be used by IDEs/clients to send `completion` requests directly to
+AI gateway, including headers that must be proxied to the AI gateway as well as the required authentication token.
 
 Example request:
 
@@ -198,5 +199,48 @@ Example response:
     "X-Gitlab-Global-User-Id": "Df0Jhs9xlbetQR8YoZCKDZJflhxO0ZBI8uoRzmpnd1w=",
     "X-Gitlab-Host-Name": "gitlab.example.com"
   }
+}
+```
+
+## Fetch connection details
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/555060) in GitLab 18.3.
+
+{{< /history >}}
+
+```plaintext
+POST /code_suggestions/connection_details
+```
+
+{{< alert type="note" >}}
+
+This endpoint rate-limits each user to 10 requests per 1-minute window.
+
+{{< /alert >}}
+
+Returns user-specific connection details which can be used by IDEs/clients for telemetry, including metadata about
+the GitLab instance the user is connected to.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/connection_details"
+```
+
+Example response:
+
+```json
+{
+  "instance_id": "292c3c7c-c5d5-48ec-b4bf-f00b724ce560",
+  "instance_version": "18.2",
+  "realm": "saas",
+  "global_user_id": "Df0Jhs9xlbetQR8YoZCKDZJflhxO0ZBI8uoRzmpnd1w=",
+  "host_name": "gitlab.example.com",
+  "feature_enablement_type": "duo_pro",
+  "saas_duo_pro_namespace_ids": "1000000"
 }
 ```

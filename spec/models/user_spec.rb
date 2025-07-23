@@ -2749,20 +2749,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(user.remember_created_at).to be_nil
       end
-
-      context 'when session_expire_from_init FF is disabled' do
-        before do
-          stub_feature_flags(session_expire_from_init: false)
-        end
-
-        it 'sets rememberable attributes' do
-          expect(user.remember_created_at).to be_nil
-
-          user.remember_me!
-
-          expect(user.remember_created_at).not_to be_nil
-        end
-      end
     end
   end
 
