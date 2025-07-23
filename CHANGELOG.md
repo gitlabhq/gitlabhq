@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.1 (2025-07-22)
+
+### Fixed (1 change)
+
+- [Fix S3 compatibility in Workhorse uploads for non-AWS S3 providers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/053528b7e6e451f7b7e41e3ea1be98fc79bdc98a)
+
+### Changed (1 change)
+
+- [Preserve workflowID when canceling duo agentic chat](https://gitlab.com/gitlab-org/security/gitlab/-/commit/974f1b29a43b61f1644d1f0e89152921fa6e093a) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Sensitive Information Disclosure via resource_group API Despite Repository and...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8715e494fd33d7ba6ce94f8e3cb059d37fc509ae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5155))
+- [Prevent Duo Code Review from Showing Internal Notes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49eb66cb6c57e074077f6e48e09e8e3699dd5937) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5143))
+- [Restrict Service Desk email visibility to reporter+ role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ea29f809e2bb029e18506afa58d2f0eea337c4d2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5150))
+- [Add authorization to job field on deployment type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56e86a993e0954d7bb1b5883872f3016ed451550) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5140))
+
 ## 18.2.0 (2025-07-16)
 
 ### Added (203 changes)
