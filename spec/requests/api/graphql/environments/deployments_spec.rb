@@ -442,6 +442,35 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
           expect(deployment_in_record.job.to_global_id.to_s).to eq(deployment['job']['id'])
         end
       end
+
+      context 'when the project is public with private builds and the user is not a member' do
+        let(:user) { create(:user) }
+        let(:query) do
+          %(
+            query {
+              project(fullPath: "#{project.full_path}") {
+                deployment(iid: "#{finished_deployment_new.iid}") {
+                  id
+                  job {
+                    id
+                  }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC, public_builds: false)
+        end
+
+        it 'does not include job information' do
+          response = subject.dig('data', 'project', 'deployment')
+
+          expect(response['id']).to eq(finished_deployment_new.to_global_id.to_s)
+          expect(response['job']).to be_nil
+        end
+      end
     end
 
     context 'when requesting user permissions' do
