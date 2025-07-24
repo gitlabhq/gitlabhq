@@ -43,6 +43,11 @@ module Types
       null: true,
       method: :lfs_enabled?,
       description: 'Indicates if Large File Storage (LFS) is enabled for namespace.'
+    field :merge_requests_enabled,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if merge requests are enabled for the namespace.',
+      experiment: { milestone: '18.3' }
     field :request_access_enabled,
       GraphQL::Types::Boolean,
       null: true,
@@ -212,6 +217,12 @@ module Types
 
     def cross_project_pipeline_available?
       object.licensed_feature_available?(:cross_project_pipelines)
+    end
+
+    def merge_requests_enabled
+      return object.project.merge_requests_enabled? if object.is_a?(::Namespaces::ProjectNamespace)
+
+      true
     end
 
     def root_storage_statistics

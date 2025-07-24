@@ -607,6 +607,7 @@ Mattermost
 mbox
 mebibyte
 mebibytes
+megarepo
 memoization
 memoize
 memoized
@@ -1203,6 +1204,7 @@ unstashing
 unsynced
 unsynchronized
 untarred
+untrack
 untracked
 untrusted
 unverified

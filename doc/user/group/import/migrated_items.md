@@ -82,17 +82,12 @@ Some group items are excluded from migration because they:
 
 ## Migrated project items
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
-- Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+- Project migrations through the API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 18.3.
 
 {{< /history >}}
 

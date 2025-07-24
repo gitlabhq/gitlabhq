@@ -79,9 +79,15 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Cannot be achieved with a before_action hook, due to the execution order.
     downgrade_scopes! if action_name == 'new'
 
+    # Force scope to `mcp` when resource is present, and the MCP server API
+    params[:scope] = Gitlab::Auth::MCP_SCOPE.to_s if params[:resource].present? && resource_is_mcp_server?
     params[:organization_id] = ::Current.organization.id
 
     super
+  end
+
+  def resource_is_mcp_server?
+    params[:resource].end_with?('/api/v4/mcp')
   end
 
   # limit scopes when signing in with GitLab

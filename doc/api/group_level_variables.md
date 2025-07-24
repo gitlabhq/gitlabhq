@@ -16,7 +16,8 @@ Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-
 
 ## List group variables
 
-Get list of a group's variables.
+Get list of a group's variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
+parameters to control the pagination of results.
 
 ```plaintext
 GET /groups/:id/variables

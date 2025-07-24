@@ -214,5 +214,58 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
     end
+
+    describe 'MCP server usage with resource params' do
+      context 'when resource param ends with /api/v4/mcp' do
+        it 'forces scope to mcp regardless of original scope param' do
+          get oauth_authorization_path, params: params.merge(
+            resource: 'https://gitlab.example.com/api/v4/mcp',
+            scope: 'read_user'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp"')
+          expect(response.body).not_to include('value="read_user"')
+        end
+      end
+
+      context 'when resource param does not end with /api/v4/mcp' do
+        it 'does not force scope to mcp' do
+          get oauth_authorization_path, params: params.merge(
+            resource: 'https://gitlab.example.com/api/v4/projects',
+            scope: 'read_user'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="read_user"')
+          expect(response.body).not_to include('value="mcp"')
+        end
+
+        it 'does not force scope when resource ends with different path' do
+          get oauth_authorization_path, params: params.merge(
+            resource: 'https://gitlab.example.com/api/v4/user',
+            scope: 'api'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="api"')
+          expect(response.body).not_to include('value="mcp"')
+        end
+      end
+
+      context 'when resource param is not present' do
+        it 'uses the original scope param' do
+          get oauth_authorization_path, params: params.merge(scope: 'read_user')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="read_user"')
+          expect(response.body).not_to include('value="mcp"')
+        end
+      end
+    end
   end
 end

@@ -25,6 +25,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to have_many(:runner_namespaces).inverse_of(:runner) }
     it { is_expected.to have_many(:groups).through(:runner_namespaces) }
     it { is_expected.to have_one(:owner_runner_namespace).class_name('Ci::RunnerNamespace') }
+    it { is_expected.to have_one(:owner_runner_project).class_name('Ci::RunnerProject') }
 
     it { is_expected.to have_many(:taggings).class_name('Ci::RunnerTagging').inverse_of(:runner) }
     it { is_expected.to have_many(:tags).class_name('Ci::Tag') }
@@ -60,11 +61,41 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#owner_runner_namespace' do
-    it 'considers the first group' do
-      runner = create(:ci_runner, :group, groups: [group])
+    let!(:runner) { build(:ci_runner, :group, groups: [group]) }
 
-      with_cross_joins_prevented do
-        expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
+    subject { runner.owner_runner_namespace }
+
+    context 'when not persisted' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when persisted' do
+      before do
+        runner.save!
+      end
+
+      it 'returns the first runner_namespace association' do
+        is_expected.to have_attributes(runner_id: runner.id, namespace_id: runner.groups.first.id)
+      end
+    end
+  end
+
+  describe '#owner_runner_project' do
+    let!(:runner) { build(:ci_runner, :project, projects: [project, other_project]) }
+
+    subject { runner.owner_runner_project }
+
+    context 'when not persisted' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when persisted' do
+      before do
+        runner.save!
+      end
+
+      it 'returns the first runner_project' do
+        is_expected.to have_attributes(runner_id: runner.id, project_id: runner.projects.first.id)
       end
     end
   end
@@ -320,9 +351,13 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     context 'when runner has creator' do
       let(:creator) { create(:user) }
-      let(:runner) { build(:ci_runner, creator: creator) }
+      let!(:runner) { build(:ci_runner, creator: creator) }
 
       it { is_expected.to eq creator }
+
+      it 'memoizes the result' do
+        expect(ActiveRecord::QueryRecorder.new { 2.times { owner } }.count).to eq(1)
+      end
     end
   end
 
@@ -969,7 +1004,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     let_it_be(:projects) { create_list(:project, 2, group: group) }
 
     describe '#owner' do
-      let(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
+      let!(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
 
       subject(:owner) { project_runner.owner }
 
@@ -977,6 +1012,13 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         let(:associated_projects) { projects }
 
         it { is_expected.to eq projects.first }
+
+        it 'memoizes the result' do
+          # loads runner_projects and project
+          expect(ActiveRecord::QueryRecorder
+                    .new { 4.times { owner } }
+                    .count).to eq(2)
+        end
       end
 
       context 'with project2 as first project associated with runner' do
@@ -1013,6 +1055,17 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
               is_expected.to eq projects.last
             end
           end
+        end
+      end
+
+      context 'when not persisted' do
+        let!(:project_runner) { build(:ci_runner, :project, projects: [project]) }
+
+        it 'returns the project from in-memory runner_projects collection' do
+          expect(project_runner).not_to receive(:owner_runner_project)
+          expect(project_runner).to receive(:runner_projects).and_call_original
+
+          expect(owner).to eq(project)
         end
       end
     end
@@ -1481,24 +1534,34 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       context 'with runner assigned to group' do
         let(:owner_group) { create(:group) }
-        let(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
+        let!(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
 
         it { is_expected.to eq owner_group }
 
-        context 'and owner group is deleted' do
+        context 'and owner group and runner_namespaces are deleted' do
           before do
             owner_group.destroy!
-          end
-
-          it { is_expected.to eq owner_group }
-
-          it "becomes nil when corresponding runner namespace is deleted" do
             runner.runner_namespaces.where(namespace_id: group.id).delete_all
             runner.clear_memoization(:owner)
-            runner.reload
-
-            is_expected.to be_nil
           end
+
+          it { is_expected.to be_nil }
+        end
+
+        it 'memoizes the result' do
+          # loads runner_namespaces & namespace
+          expect(ActiveRecord::QueryRecorder.new { 4.times { owner } }.count).to eq(2)
+        end
+      end
+
+      context 'when not persisted' do
+        let!(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+        it 'returns the group from in-memory runner_namespaces collection' do
+          expect(runner).not_to receive(:owner_runner_namespace)
+          expect(runner).to receive(:runner_namespaces).and_call_original
+
+          expect(owner).to eq(group)
         end
       end
 

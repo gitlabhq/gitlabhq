@@ -9,7 +9,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
     {
       client_name: 'Test Application',
       redirect_uris: ['http://example.com/callback'],
-      scope: 'api read_user'
+      scope: 'mcp'
     }
   end
 
@@ -65,9 +65,9 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             'client_id' => application.uid,
             'client_id_issued_at' => application.created_at.to_i,
             'redirect_uris' => ['http://example.com/callback'],
-            'grant_types' => 'authorization_code',
+            'grant_types' => ['authorization_code'],
             'client_name' => '[Unverified Dynamic Application] Test Application',
-            'scope' => 'api read_user',
+            'scope' => 'mcp',
             'dynamic' => true
           )
         end
@@ -82,7 +82,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             confidential: false,
             dynamic: true
           )
-          expect(application.scopes.to_s).to eq('api read_user')
+          expect(application.scopes.to_s).to eq('mcp')
         end
 
         it 'sets content type to JSON' do
@@ -208,12 +208,12 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             create_registration
           end
 
-          it 'uses default api scope' do
-            expect(created_application.scopes.to_s).to eq('api')
+          it 'uses default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
           end
 
           it 'returns default scope in response' do
-            expect(response.parsed_body['scope']).to eq('api')
+            expect(response.parsed_body['scope']).to eq('mcp')
           end
         end
 
@@ -225,8 +225,8 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             create_registration
           end
 
-          it 'uses default api scope' do
-            expect(created_application.scopes.to_s).to eq('api')
+          it 'uses default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
           end
         end
 
@@ -238,40 +238,13 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             create_registration
           end
 
-          it 'uses default api scope' do
-            expect(created_application.scopes.to_s).to eq('api')
+          it 'uses default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
           end
         end
 
-        context 'with whitespace-only scope' do
-          let(:request_body) { valid_request_body.merge(scope: '   ') }
-          let(:created_application) { Doorkeeper::Application.last }
-
-          before do
-            create_registration
-          end
-
-          it 'uses default api scope' do
-            expect(created_application.scopes.to_s).to eq('api')
-          end
-        end
-
-        context 'with multiple spaces in scope' do
-          let(:request_body) { valid_request_body.merge(scope: 'api    read_user') }
-          let(:created_application) { Doorkeeper::Application.last }
-
-          before do
-            create_registration
-          end
-
-          it 'handles multiple spaces correctly' do
-            expect(response).to have_gitlab_http_status(:created)
-            expect(created_application.scopes.to_s).to eq('api read_user')
-          end
-        end
-
-        context 'with single scope' do
-          let(:request_body) { valid_request_body.merge(scope: 'read_user') }
+        context 'with mcp scope' do
+          let(:request_body) { valid_request_body.merge(scope: 'mcp') }
           let(:created_application) { Doorkeeper::Application.last }
 
           before do
@@ -279,20 +252,20 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           end
 
           it 'uses provided scope' do
-            expect(created_application.scopes.to_s).to eq('read_user')
+            expect(created_application.scopes.to_s).to eq('mcp')
           end
         end
 
-        context 'with multiple scopes' do
-          let(:request_body) { valid_request_body.merge(scope: 'api read_user read_repository') }
+        context 'with different scope' do
+          let(:request_body) { valid_request_body.merge(scope: 'api') }
           let(:created_application) { Doorkeeper::Application.last }
 
           before do
             create_registration
           end
 
-          it 'uses all provided scopes' do
-            expect(created_application.scopes.to_s).to eq('api read_user read_repository')
+          it 'uses default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
           end
         end
       end
@@ -314,7 +287,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             application = Doorkeeper::Application.last
             expect(application.name).to eq('[Unverified Dynamic Application] Minimal App')
             expect(application.redirect_uri).to eq('http://example.com/callback')
-            expect(application.scopes.to_s).to eq('api')
+            expect(application.scopes.to_s).to eq('mcp')
           end
         end
 

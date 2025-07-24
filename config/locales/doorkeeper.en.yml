@@ -81,6 +81,7 @@ en:
       admin_mode: Admin Mode is a functionality designed to limit the access level of administrator's personal access tokens.
       create_runner: Grants create access to the runners
       manage_runner: Grants access to manage the runners
+      mcp: Grants read-write access to MCP server
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       ai_features: Access to API endpoints needed for GitLab Duo features
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
@@ -106,6 +107,7 @@ en:
       admin_mode: Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
       create_runner: Grants create access to the runners.
       manage_runner: Grants access to manage the runners.
+      mcp: Grants read-write access to remote Model Context Protocol (MCP) server for tools execution.
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
       self_rotate: Grants permission for token to rotate itself.

@@ -187,25 +187,18 @@ class Repository
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
-    unless exists? && has_visible_content? && query.present?
-      return []
-    end
+    return [] unless exists? && has_visible_content? && query.present?
 
-    commits = raw_repository.find_commits_by_message(query.strip, ref, path, limit, offset).map do |c|
-      commit(c)
-    end
+    raw_commits = raw_repository.find_commits_by_message(query.strip, ref, path, limit, offset)
+    commits = raw_commits.map { |c| commit(c) }
     CommitCollection.new(container, commits, ref)
   end
 
   def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
-    return [] unless exists?
-    return [] unless has_visible_content?
-    return [] unless ref.present?
+    return [] unless exists? && has_visible_content? && ref.present?
 
-    commits = raw_repository.list_commits_by(
-      query, ref, author: author, before: before, after: after, limit: limit).map do |c|
-      commit(c)
-    end
+    raw_commits = raw_repository.list_commits_by(query, ref, author: author, before: before, after: after, limit: limit)
+    commits = raw_commits.map { |c| commit(c) }
     CommitCollection.new(container, commits, ref)
   end
 

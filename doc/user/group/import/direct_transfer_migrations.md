@@ -181,12 +181,6 @@ If you do not want to import all user memberships from the source instance, ensu
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
-{{< alert type="warning" >}}
-
-Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not ready for production use.
-
-{{< /alert >}}
-
 ## Review results of the import
 
 {{< history >}}

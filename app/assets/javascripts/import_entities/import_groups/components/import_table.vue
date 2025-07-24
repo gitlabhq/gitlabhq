@@ -651,9 +651,6 @@ export default {
 
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
-    anchor: 'beta-features',
-  }),
   placeholderUserLimitsHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'placeholder-user-limits',
   }),

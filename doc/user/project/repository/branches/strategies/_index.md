@@ -17,7 +17,7 @@ you might want to consider a different branching strategy.
 
 We want to demystify some of the more common strategies available.
 Not everyone has a Git (or version control) specialist on staff. If you know
-your team is working at the far edges of its Git skillset, this information is for you.
+your team is working at the far edges of its Git skill set, this information is for you.
 
 When you use GitLab to replace multiple, disparate tools, the decisions you
 make about your Git branching strategy matter. With careful planning, you can establish clear
@@ -68,9 +68,9 @@ prepared to do:
   across repositories.
 
 {{< alert type="note" >}}
-Does your organization use a large monorepo or a megarepo? The
+If your organization uses a large monorepo or a megarepo, the
 [Professional Services](https://about.gitlab.com/services/) team at GitLab can help you construct a
-custom branching solution that meets your monorepo's needs.
+custom branching solution that meets your needs.
 {{< /alert >}}
 
 ## Major types of branching strategies
@@ -78,14 +78,14 @@ custom branching solution that meets your monorepo's needs.
 Branching and code management strategies depend on your product's needs.
 No pre-existing strategy can cover them all, but we've identified some major categories:
 
-- [Webservices](#webservices)
+- [Web services](#web-services)
 - [Long-lived release branches](#long-lived-release-branches)
 - [A branch per environment](#branch-per-environment)
 
-### Webservices
+### Web services
 
 This strategy follows standard Git practices. The `main` branch is your production branch, which
-is great for a single webservice: there's one canonical production version, and no support for
+is great for a single web service: there's one canonical production version, and no support for
 previous revisions.
 
 For this configuration, [`git-flow`](https://nvie.com/posts/a-successful-git-branching-model/)

@@ -70,8 +70,24 @@ module Pajamas
       "#{src} 1x, #{retina_src} 2x"
     end
 
+    def aria_hide?
+      return true if !@alt && !src
+
+      aria_hidden = @avatar_options[:aria]&.dig(:hidden)
+      aria_hidden.to_s == "true"
+    end
+
     def alt
+      return if aria_hide?
+
       @alt || @item.try(:name)
+    end
+
+    def avatar_attributes
+      attributes = @avatar_options.dup
+      attributes[:alt] = alt if alt
+      attributes[:aria] = (attributes[:aria] || {}).merge(hidden: "true") if aria_hide?
+      attributes
     end
 
     def initial

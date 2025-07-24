@@ -37,13 +37,8 @@ module API
         'tools/call' => Handlers::CallToolRequest
       }.freeze
 
-      # TODO: feature_category :mcp_server
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/555043
-      feature_category :api
-
-      # TODO: allow_access_with_scope :mcp
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/554826
-
+      feature_category :mcp_server
+      allow_access_with_scope :mcp
       urgency :low
 
       before do

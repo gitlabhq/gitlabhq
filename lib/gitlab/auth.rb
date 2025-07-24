@@ -16,12 +16,14 @@ module Gitlab
     READ_USER_SCOPE = :read_user
     CREATE_RUNNER_SCOPE = :create_runner
     MANAGE_RUNNER_SCOPE = :manage_runner
+    MCP_SCOPE = :mcp
     API_SCOPES = [
       API_SCOPE, READ_API_SCOPE,
       READ_USER_SCOPE,
       CREATE_RUNNER_SCOPE, MANAGE_RUNNER_SCOPE,
       K8S_PROXY_SCOPE,
-      SELF_ROTATE_SCOPE
+      SELF_ROTATE_SCOPE,
+      MCP_SCOPE
     ].freeze
 
     # Scopes for Duo
@@ -338,7 +340,8 @@ module Gitlab
           write_repository: %i[download_code push_code],
           create_runner: %i[create_instance_runners create_runners],
           manage_runner: %i[assign_runner update_runner delete_runner],
-          ai_workflows: %i[push_code download_code]
+          ai_workflows: %i[push_code download_code],
+          mcp: %i[execute_mcp_tool] # This ability doesn't exist yet
         }
 
         scopes.flat_map do |scope|

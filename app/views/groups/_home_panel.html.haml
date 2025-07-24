@@ -14,7 +14,7 @@
 
   .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-my-5
     .home-panel-title-row.gl-flex
-      = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, class: 'float-none gl-self-start gl-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
+      = render Pajamas::AvatarComponent.new(@group, size: 48, class: 'float-none gl-self-start gl-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ itemprop: 'name' }
         = @group.name
         %span.visibility-icon.gl-text-subtle.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }

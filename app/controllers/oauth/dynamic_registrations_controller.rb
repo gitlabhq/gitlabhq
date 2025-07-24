@@ -13,9 +13,7 @@ module Oauth
     def create
       client_metadata = Gitlab::Json.parse(request.body.read).symbolize_keys
 
-      allowed_params = [
-        :redirect_uris, :client_name, :scope
-      ]
+      allowed_params = [:redirect_uris, :client_name]
 
       client_metadata = client_metadata.slice(*allowed_params)
 
@@ -26,8 +24,9 @@ module Oauth
         return
       end
 
-      # TODO: Change this to MCP once the mcp scope has been created.
-      scopes = client_metadata[:scope].presence || "api"
+      # All dynamically created OAuth applications can only
+      # create mcp scoped access tokens. Disregard any other requests.
+      scopes = "mcp"
 
       redirect_uris = client_metadata[:redirect_uris]
       redirect_uris = [redirect_uris] if redirect_uris.is_a?(String)
@@ -46,7 +45,7 @@ module Oauth
           client_id_issued_at: application.created_at.to_i,
           redirect_uris: application.redirect_uri.split("\n"),
           token_endpoint_auth_method: "none",
-          grant_types: "authorization_code",
+          grant_types: ["authorization_code"],
           require_pkce: true,
           client_name: application.name,
           scope: scopes,

@@ -28,7 +28,7 @@ secondary Geo site, you can:
 
 ### Resync and reverify individual components
 
-On the secondary site, visit **Admin > Geo > Replication** to force a resync or reverify of individual items. 
+On the secondary site, visit **Admin** > **Geo** > **Replication** to force a resync or reverify of individual items. 
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
 following sections describe how to use internal application commands in the
@@ -266,7 +266,7 @@ replication or verification.
 You can schedule a full resync of all resources of one component from the UI:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Resync all**.
 
@@ -312,7 +312,7 @@ end; nil
 
 If the **primary** site's checksums are in question, then you need to make the **primary** site recalculate checksums. A "full re-verification" is then achieved, because after each checksum is recalculated on a **primary** site, events are generated which propagate to all **secondary** sites, causing them to recalculate their checksums and compare values. Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
 
-The UI does not provide a button to do a full re-verification. You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin > Geo > Nodes > Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
+The UI does not provide a button to do a full re-verification. You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin** > **Geo** > **Nodes** > **Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
 
 Optionally, you can do this manually:
 
@@ -352,7 +352,7 @@ If you believe the **primary** site checksums are correct, you can schedule a re
 component on one **secondary** site from the UI:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Reverify all**.
 
@@ -404,7 +404,7 @@ When missing files or inconsistencies are present, you can encounter entries in 
 }
 ```
 
-The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific upload is missing:
+The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific upload is missing:
 
 ![The Geo Uploads replicable dashboard displaying all failed errors.](img/geo_uploads_file_missing_v17_11.png)
 

@@ -105,6 +105,7 @@ module Ci
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
+    has_one :owner_runner_project, -> { order(:id) }, class_name: 'Ci::RunnerProject'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -419,16 +420,14 @@ module Ci
     def owner
       case runner_type
       when 'instance_type'
-        ::User.find_by_id(creator_id)
+        memoize_owner { ::User.find_by_id(creator_id) }
       when 'group_type'
-        runner_namespaces.first&.namespace
+        persisted? ? memoize_owner { owner_runner_namespace&.namespace } : runner_namespaces.first&.namespace
       when 'project_type'
         # If runner projects are not yet saved (e.g. when calculating `routable_token`), use in-memory collection
-        candidates = persisted? ? runner_projects.order(:id) : runner_projects
-        candidates.first&.project
+        persisted? ? memoize_owner { owner_runner_project&.project } : runner_projects.first&.project
       end
     end
-    strong_memoize_attr :owner
 
     def belongs_to_one_project?
       runner_projects.one?
@@ -692,6 +691,12 @@ module Ci
       return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
       CREATED_RUNNER_TOKEN_PREFIX
+    end
+
+    def memoize_owner
+      strong_memoize(:owner) do # rubocop: disable Gitlab/StrongMemoizeAttr -- need to memoize with conditions
+        yield
+      end
     end
   end
 end

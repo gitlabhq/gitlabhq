@@ -96,7 +96,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 
   def schema_path
-    @schema_path ||= Rails.root.join(*base_directory, filename_with_extension).to_s
+    Rails.root.join(*base_directory, filename_with_extension).to_s
   end
 
   def filename_with_extension
