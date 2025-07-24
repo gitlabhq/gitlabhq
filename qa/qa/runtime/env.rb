@@ -159,8 +159,10 @@ module QA
         gitlab_host.include?('.com')
       end
 
+      # This method can be removed after decommissioning `release` instance
+      # https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1571
       def running_on_release?
-        gitlab_host.include?('release.gitlab.net')
+        gitlab_host == 'release.gitlab.net'
       end
 
       def running_on_dev?
