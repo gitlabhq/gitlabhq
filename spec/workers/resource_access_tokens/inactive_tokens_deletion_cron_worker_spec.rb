@@ -10,8 +10,11 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 
   describe '#perform' do
+    let(:cut_off_days) { 42 }
+
     before do
       stub_application_setting(require_personal_access_token_expiry: false)
+      stub_application_setting(inactive_resource_access_tokens_delete_after_days: cut_off_days)
     end
 
     it(
@@ -20,7 +23,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       :freeze_time,
       :sidekiq_inline
     ) do
-      cut_off = Gitlab::CurrentSettings.inactive_resource_access_tokens_delete_after_days.days.ago
+      cut_off = cut_off_days.days.ago
       admin_bot = Users::Internal.admin_bot
 
       active_personal_access_token =

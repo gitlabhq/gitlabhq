@@ -329,7 +329,7 @@ export default {
     :update-in-progress="updateInProgress"
     :reset-button-label="s__('WorkItem|Clear')"
     :toggle-dropdown-text="listboxText"
-    :search-placeholder="s__('WorkItem|Search or paste URL')"
+    :search-placeholder="s__('WorkItem|Search or enter URL')"
     data-testid="work-item-parent"
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"

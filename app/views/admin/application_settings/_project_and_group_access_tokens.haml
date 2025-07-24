@@ -2,7 +2,7 @@
 
 .form-group
   = form.label :inactive_resource_access_tokens_delete_after_days, s_('ResourceAccessTokensInstanceSettings|Inactive project and group access token retention period'), class: 'label-light'
-  = form.number_field :inactive_resource_access_tokens_delete_after_days, class: 'form-control gl-form-input'
+  = form.number_field :inactive_resource_access_tokens_delete_after_days, class: 'form-control gl-form-input', min: 1, max: Gitlab::Database::MAX_INT_VALUE
   %span.form-text.gl-text-subtle#inactive_resource_access_tokens_delete_after_days
     = format(s_('ResourceAccessTokensInstanceSettings|Defines how long, in days, to wait before deleting inactive project and group access tokens. If blank, inactive project and group access tokens are not deleted.'))
     = link_to _('Learn more.'), help_page_path('user/project/settings/project_access_tokens.md', anchor: 'inactive-token-retention'), target: '_blank', rel: 'noopener noreferrer'

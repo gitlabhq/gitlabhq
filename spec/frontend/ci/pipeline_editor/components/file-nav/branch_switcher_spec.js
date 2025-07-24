@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BranchSwitcher from '~/ci/pipeline_editor/components/file_nav/branch_switcher.vue';
@@ -22,6 +23,11 @@ import {
   mockTotalBranchResults,
   mockTotalSearchResults,
 } from '../../mock_data';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+}));
 
 describe('Pipeline editor branch switcher', () => {
   let wrapper;
@@ -153,52 +159,26 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when switching branches', () => {
     beforeEach(async () => {
-      jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
       setAvailableBranchesMock(generateMockProjectBranches());
       await createComponent();
     });
 
-    it('updates session history when selecting a different branch', async () => {
+    it('reloads the page with the correct branch when selecting a different branch', async () => {
       const branch = findGlListboxItems().at(1);
       findGlCollapsibleListbox().vm.$emit('select', branch.text());
       await waitForPromises();
 
-      expect(window.history.pushState).toHaveBeenCalled();
-      expect(window.history.pushState.mock.calls[0][2]).toContain(`?branch_name=${branch.text()}`);
+      expect(visitUrl).toHaveBeenCalled();
+      expect(visitUrl.mock.calls[0][0]).toContain(`?branch_name=${branch.text()}`);
     });
 
-    it('does not update session history when selecting current branch', async () => {
+    it('does not reload the page when selecting current branch', async () => {
       const branch = findGlListboxItems().at(0);
       branch.vm.$emit('click');
       await waitForPromises();
 
       expect(branch.text()).toBe(mockDefaultBranch);
-      expect(window.history.pushState).not.toHaveBeenCalled();
-    });
-
-    it('emits the `refetchContent` event when selecting a different branch', async () => {
-      const branch = findGlListboxItems().at(1);
-
-      expect(branch.text()).not.toBe(mockDefaultBranch);
-      expect(wrapper.emitted('refetchContent')).toBeUndefined();
-
-      findGlCollapsibleListbox().vm.$emit('select', branch.text());
-      await waitForPromises();
-
-      expect(wrapper.emitted('refetchContent')).toBeDefined();
-      expect(wrapper.emitted('refetchContent')).toHaveLength(1);
-    });
-
-    it('does not emit the `refetchContent` event when selecting the current branch', async () => {
-      const branch = findGlListboxItems().at(0);
-
-      expect(branch.text()).toBe(mockDefaultBranch);
-      expect(wrapper.emitted('refetchContent')).toBeUndefined();
-
-      branch.vm.$emit('click');
-      await waitForPromises();
-
-      expect(wrapper.emitted('refetchContent')).toBeUndefined();
+      expect(visitUrl).not.toHaveBeenCalled();
     });
 
     describe('with unsaved changes', () => {

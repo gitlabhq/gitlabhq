@@ -94,9 +94,9 @@ To use the hosted models, set the following environment variables on your AI gat
    export GITLAB_SIMULATE_SAAS=0
    ```
 
-1. Seed your Duo self-hosted models using `bundle exec gitlab:duo:seed_self_hosted_models`.
+1. Seed your Duo self-hosted models using `bundle exec rake gitlab:duo:seed_self_hosted_models`.
 
-1. Running `bundle exec gitlab:duo:list_self_hosted_models` should output the list of created models
+1. Running `bundle exec rake gitlab:duo:list_self_hosted_models` should output the list of created models
 
 1. Restart your GDK for the changes to take effect using `gdk restart`.
 

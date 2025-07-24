@@ -2285,7 +2285,7 @@ Input type: `AiCatalogAgentCreateInput`
 | <a id="mutationaicatalogagentcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the agent. |
 | <a id="mutationaicatalogagentcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the agent is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentcreatesystemprompt"></a>`systemPrompt` | [`String!`](#string) | System prompt for the agent. |
-| <a id="mutationaicatalogagentcreatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab-defined tools for the agent. |
+| <a id="mutationaicatalogagentcreatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
 | <a id="mutationaicatalogagentcreateuserprompt"></a>`userPrompt` | [`String!`](#string) | User prompt for the agent. |
 
 #### Fields
@@ -2339,7 +2339,7 @@ Input type: `AiCatalogAgentUpdateInput`
 | <a id="mutationaicatalogagentupdatename"></a>`name` | [`String`](#string) | Name for the agent. |
 | <a id="mutationaicatalogagentupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the item is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
-| <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab-defined tools for the agent. |
+| <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
 | <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 
 #### Fields
@@ -22328,7 +22328,7 @@ An AI catalog agent version.
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogagentversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
 | <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
-| <a id="aicatalogagentversiontools"></a>`tools` | [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection) | GitLab-defined tools belonging to the agent. (see [Connections](#connections)) |
+| <a id="aicatalogagentversiontools"></a>`tools` | [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection) | List of GitLab tools enabled for the agent. (see [Connections](#connections)) |
 | <a id="aicatalogagentversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
 | <a id="aicatalogagentversionuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 | <a id="aicatalogagentversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |

@@ -1,4 +1,4 @@
-import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
+import { engineeringNotation } from '@gitlab/ui/dist/utils/number_utils';
 import { s__ } from '~/locale';
 
 import {

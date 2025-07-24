@@ -36,7 +36,7 @@ module Gitlab
           format(_("Set %{parent_ref} as this item's parent item."), parent_ref: parent_param)
         end
         types WorkItem, Issue
-        params 'Parent item\'s #IID, reference, or URL'
+        params 'Parent item\'s URL or reference ID'
         condition do
           quick_action_target.supports_parent? && can_admin_set_relation?
         end
@@ -70,7 +70,7 @@ module Gitlab
           format(_("Add %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
-        params 'Child items\' #IIDs, references, or URLs'
+        params 'Child items\' URL or reference ID'
         condition { supports_children? && can_admin_link? }
         command :add_child do |child_param|
           @updates[:add_child] = extract_work_items(child_param)
@@ -82,7 +82,7 @@ module Gitlab
           format(_("Remove %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
-        params 'Child item\'s #IID, reference, or URL'
+        params 'Child item\'s URL or reference ID'
         condition { has_children? && can_admin_link? }
         command :remove_child do |child_param|
           @updates[:remove_child] = extract_work_items(child_param).first

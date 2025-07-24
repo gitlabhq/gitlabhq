@@ -65,17 +65,50 @@ To turn MCP on or off for your group:
 
 To specify the MCP servers you want the GitLab Duo feature to connect to:
 
-1. In VS Code, create an `mcp.json` file:
+1. In VS Code, create a MCP server configuration file:
 
-   - If you are not on Windows, create the file in `~/.gitlab/duo/`.
-   - If you are on Windows, create the file in `C:\Users\<username>\AppData\Roaming\GitLab\duo\`.
+   - If you are not on Windows, create the file in `~/.gitlab/duo/mcp.json`.
+   - If you are on Windows, create the file in `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`.
 
 1. Populate this file with the MCP servers you want the feature to connect to.
 
-   For more information and examples, see the [MCP example servers documentation](https://modelcontextprotocol.io/examples). You can also find other example servers at [Smithery.ai](https://smithery.ai/)
-   and [Awesome MCP Servers](https://mcpservers.org/).
-
 1. Save the file.
+
+### Example MCP server configuration files
+
+Use the following code examples to help you create your MCP server configuration file.
+
+For more information and examples, see the [MCP example servers documentation](https://modelcontextprotocol.io/examples). You can also find other example servers at [Smithery.ai](https://smithery.ai/) and [Awesome MCP Servers](https://mcpservers.org/).
+
+#### Local
+
+```json
+{
+  "mcpServers": {
+    "enterprise-data-v2": {
+      "command": "node",
+      "args": ["src/server.js"],
+      "cwd": "</path/to/your-mcp-server>"
+    }
+  }
+}
+```
+
+#### Remote
+
+```json
+{
+  "mcpServers": {
+    "aws-knowledge": {
+      "command": "npx",
+      "args": [
+        "mcp-remote", 
+        "https://knowledge-mcp.global.api.aws"
+      ]
+    }
+  }
+}
+```
 
 ## Use GitLab Duo features with MCP
 

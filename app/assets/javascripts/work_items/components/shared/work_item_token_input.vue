@@ -129,7 +129,7 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
-        'aria-label': s__('WorkItem|Search existing items, paste URL, or enter reference ID'),
+        'aria-label': s__("WorkItem|Search existing items or enter an item's URL or reference ID"),
       },
     };
   },
@@ -242,7 +242,7 @@ export default {
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
-      :placeholder="s__('WorkItem|Search existing items, paste URL, or enter reference ID')"
+      :placeholder="s__('WorkItem|Search existing items or enter an item\'s URL or reference ID')"
       menu-class="gl-dropdown-menu-wide dropdown-reduced-height !gl-min-h-7"
       :container-class="tokenSelectorContainerClass"
       data-testid="work-item-token-select-input"

@@ -71765,10 +71765,10 @@ msgstr ""
 msgid "WorkItem|Save and overwrite"
 msgstr ""
 
-msgid "WorkItem|Search existing items, paste URL, or enter reference ID"
+msgid "WorkItem|Search existing items or enter an item's URL or reference ID"
 msgstr ""
 
-msgid "WorkItem|Search or paste URL"
+msgid "WorkItem|Search or enter URL"
 msgstr ""
 
 msgid "WorkItem|Search status"

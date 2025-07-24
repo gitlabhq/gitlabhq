@@ -1732,6 +1732,18 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         is_expected.to allow_value({ inactive_resource_access_tokens_delete_after_days: 1 })
           .for(:resource_access_tokens_settings)
       end
+
+      it 'allows inactive_resource_access_tokens_delete_after_days with maximum integer value' do
+        is_expected.to allow_value(
+          { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE }
+        ).for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow inactive_resource_access_tokens_delete_after_days with greater than maximum integer value' do
+        is_expected.not_to allow_value(
+          { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE + 1 }
+        ).for(:resource_access_tokens_settings)
+      end
     end
   end
 

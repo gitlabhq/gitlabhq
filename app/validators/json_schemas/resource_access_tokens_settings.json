@@ -10,6 +10,7 @@
         "null"
       ],
       "minimum": 1,
+      "maximum": 2147483647,
       "description": "Retention period for inactive project and group access tokens"
     }
   }
