@@ -5,14 +5,7 @@ import JiraImportApp from '~/jira_import/components/jira_import_app.vue';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
-import {
-  imports,
-  issuesPath,
-  jiraIntegrationPath,
-  jiraProjects,
-  projectId,
-  projectPath,
-} from '../mock_data';
+import { imports, issuesPath, jiraIntegrationPath, jiraProjects, projectPath } from '../mock_data';
 
 describe('JiraImportApp', () => {
   let wrapper;
@@ -41,7 +34,6 @@ describe('JiraImportApp', () => {
         isJiraConfigured,
         issuesPath,
         jiraIntegrationPath,
-        projectId,
         projectPath,
         setupIllustration,
       },
@@ -207,10 +199,6 @@ describe('JiraImportApp', () => {
 
     it('receives the name of the most recent imported project', () => {
       expect(getFormComponent().props('jiraProjects')).toEqual(jiraProjects);
-    });
-
-    it('receives the project ID', () => {
-      expect(getFormComponent().props('projectId')).toBe(projectId);
     });
 
     it('receives the project path', () => {

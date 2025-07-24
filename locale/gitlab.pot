@@ -2433,6 +2433,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
+msgid "AICatalog|Agent updated successfully."
+msgstr ""
+
 msgid "AICatalog|Agents"
 msgstr ""
 
@@ -2545,6 +2548,9 @@ msgid "AICatalog|System Prompt is required."
 msgstr ""
 
 msgid "AICatalog|The agent could not be added. Please try again."
+msgstr ""
+
+msgid "AICatalog|The agent could not be updated. Please try again."
 msgstr ""
 
 msgid "AICatalog|This agent can be made private if it is not used."

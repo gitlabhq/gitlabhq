@@ -92,7 +92,6 @@ export default {
     'app/assets/javascripts/invite_members/components/project_select.vue',
     'app/assets/javascripts/invite_members/components/user_limit_notification.vue',
     'app/assets/javascripts/jira_connect/branches/components/new_branch_form.vue',
-    'app/assets/javascripts/jira_import/components/jira_import_form.vue',
     'app/assets/javascripts/members/components/filter_sort/sort_dropdown.vue',
     'app/assets/javascripts/ml/experiment_tracking/components/candidate_list.vue',
     'app/assets/javascripts/ml/experiment_tracking/components/delete_button.vue',

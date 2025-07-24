@@ -21,7 +21,6 @@ import {
   issuesPath,
   jiraProjects,
   jiraUsersResponse,
-  projectId,
   projectPath,
   userMappings as defaultUserMappings,
 } from '../mock_data';
@@ -66,7 +65,6 @@ describe('JiraImportForm', () => {
         issuesPath,
         jiraImports: imports,
         jiraProjects,
-        projectId,
         projectPath,
       },
       data: () => ({
