@@ -123,9 +123,6 @@ module Gitlab
         # we use strings to look up Gitlab::Instrumentation::Redis.storage_hash as a bypass
         options[:custom] = { instrumentation_class: self.class.store_name }
 
-        # Reconnect 1 time with jitter to avoid CPU saturation.
-        options[:reconnect_attempts] = [Random.rand(0.25)]
-
         if options[:sentinels]
           # name is required in RedisClient::SentinelConfig
           # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/sentinel_config.rb#L17
