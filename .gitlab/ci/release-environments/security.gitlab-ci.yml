@@ -172,6 +172,29 @@ release-environments-qa:
     max: 2
     when: always
 
+release-environments-get-qa:
+  stage: qa
+  extends:
+    - .qa-base
+  timeout: 30m
+  parallel: 3
+  variables:
+    QA_SCENARIO: "Test::Instance::Smoke"
+    RELEASE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+    GITLAB_QA_OPTS: --address "https://gitlab.${ENVIRONMENT}-get.env.release.gitlab.net"
+    GITLAB_ADMIN_PASSWORD: "${RELEASE_ENVIRONMENTS_GET_ROOT_PASSWORD}"
+    QA_PRAEFECT_REPOSITORY_STORAGE: "default"
+    SIGNUP_DISABLED: "true"
+  before_script:
+    - !reference [.qa-base, before_script]
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+  retry:
+    max: 2
+    when: always
+  # As we are testing, QA on the GET env is allowed to fail
+  # https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21320
+  allow_failure: true
+
 release-environments-notification-failure:
   stage: finish
   extends: .inherit_variables
