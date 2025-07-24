@@ -1,0 +1,8 @@
+---
+name: o11y_settings_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198201
+rollout_issue_url:
+milestone: '18.3'
+type: experiment
+group: group::embody
+default_enabled: false

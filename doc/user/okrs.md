@@ -784,7 +784,7 @@ To link an item to an objective or key result:
 When you have finished adding all linked items, you can see
 them categorized so their relationships can be better understood visually.
 
-![Linked items block](img/linked_items_list_v16_5.png)
+![Linked work items categorized as blocking, blocked by, or related to, with status indicators to visualize progress, and dependencies.](img/linked_items_list_v16_5.png)
 
 ### Remove a linked item
 

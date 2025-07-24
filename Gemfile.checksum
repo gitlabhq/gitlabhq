@@ -372,7 +372,7 @@
 {"name":"libyajl2","version":"2.1.0","platform":"ruby","checksum":"aa5df6c725776fc050c8418450de0f7c129cb7200b811907c4c0b3b5c0aea0ef"},
 {"name":"license_finder","version":"7.2.1","platform":"ruby","checksum":"179ead19b64b170638b72fd16024233813673ac9d20d5ba75ae0b4444887ef14"},
 {"name":"licensee","version":"9.18.0","platform":"ruby","checksum":"3e83db984fb7e4e51c98fea0e434138dcb6112f8c26dc7693734a4f8df99df77"},
-{"name":"listen","version":"3.7.1","platform":"ruby","checksum":"3b80caa7aa77fae836916c2f9e3fbcafbd15f5d695dd487c1f5b5e7e465efe29"},
+{"name":"listen","version":"3.9.0","platform":"ruby","checksum":"db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67"},
 {"name":"llhttp-ffi","version":"0.4.0","platform":"ruby","checksum":"e5f7327db3cf8007e648342ef76347d6e0ae545a8402e519cca9c886eb37b001"},
 {"name":"locale","version":"2.1.4","platform":"ruby","checksum":"522f9973ef3eee64aac9bca06d21db2fba675fa3d2cf61d21f42d1ca18a9f780"},
 {"name":"lockbox","version":"1.4.1","platform":"ruby","checksum":"92a5aad33bd3da8ee0ce5b2ddde4c343e98f644e3b0dbc06157661acbc597260"},

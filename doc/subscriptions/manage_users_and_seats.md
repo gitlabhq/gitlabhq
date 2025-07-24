@@ -117,3 +117,315 @@ If you want to reduce the number of seats in your subscription, you can [renew f
 If you want to reduce seats after you have renewed or purchased a subscription,
 open a ticket with the Billing team or contact your GitLab sales representative.
 For assistance, visit the [Contact us](https://customers.gitlab.com/contact_us) page in your Customers Portal account.
+
+## Self-Managed billing and usage
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+A GitLab Self-Managed subscription uses a hybrid model. You pay for a subscription
+according to the maximum number of users enabled during the
+subscription period.
+
+For instances that are not offline or on a closed network, the maximum number of
+simultaneous users in the GitLab Self-Managed instance is checked each quarter.
+
+If an instance is unable to generate a quarterly usage report, the existing
+true up model is used. Prorated charges are not
+possible without a quarterly usage report.
+
+The number of users in subscription represents the number of users included in your current license,
+based on what you've paid for.
+This number remains the same throughout your subscription period unless you purchase more seats.
+
+The number of maximum users reflects the highest number of billable users on your system for the current license period.
+
+### Users over subscription
+
+A GitLab subscription is valid for a specific number of seats.
+The number of users over subscription shows how many users are in excess of the
+number allowed by the subscription, in the current subscription period.
+
+Calculated as `Maximum users` - `Users in subscription` for the current license
+term. For example, you purchase a subscription for 10 users.
+
+| Event                                              | Billable users   | Maximum users |
+|:---------------------------------------------------|:-----------------|:--------------|
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are blocked.  | 9                | 12            |
+| Four new users join.                               | 13               | 13            |
+
+Users over subscription = 13 - 10 (Maximum users - users in license)
+
+The users over subscription value is always zero for trial license.
+
+If users over subscription value is above zero, then you have more users in your
+GitLab instance than you are licensed for. You must pay for the additional users
+[before or at the time of renewal](quarterly_reconciliation.md). This is
+called the "true up" process. If you do not do this, your license key does not work.
+
+To view the number of users over subscription, go to the **Admin** area.
+
+### View users
+
+View the lists of users in your instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Users**.
+
+Select a user to view their account information.
+
+#### Check daily and historical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can get a list of daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+#### Update daily and historical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```
+
+### Manage users and subscription seats
+
+Managing the number of users against the number of subscription seats can be difficult:
+
+- If [LDAP is integrated with GitLab](../administration/auth/ldap/_index.md), anyone
+  in the configured domain can sign up for a GitLab account. This can result in
+  an unexpected bill at time of renewal.
+- If sign-up is turned on in your instance, anyone who can access the instance can
+  sign up for an account.
+
+GitLab has several features to help you manage the number of users. You can:
+
+- [Require administrator approval for new sign ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Automatically block new users, either through
+  [LDAP](../administration/auth/ldap/_index.md#basic-configuration-settings) or
+  [OmniAuth](../integration/omniauth.md#configure-common-settings).
+- [Limit the number of billable users](../administration/settings/sign_up_restrictions.md#user-cap)
+  who can sign up or be added to a subscription without administrator approval.
+- [Disable new sign-ups](../administration/settings/sign_up_restrictions.md),
+  and instead manage new users manually.
+- View a breakdown of users by role in the
+  [Users statistics](../administration/admin_area.md#users-statistics) page.
+
+To increase the number of users covered by your license, [buy more seats](#buy-more-seats)
+during the subscription period. The cost of seats added during the subscription
+period is prorated from the date of purchase through to the end of the subscription
+period. You can continue to add users even if you reach the number of users in
+license count. GitLab [bills you for the overage](quarterly_reconciliation.md).
+
+If your subscription was activated with an activation code, the additional seats are reflected in
+your instance immediately. If you're using a license file, you receive an updated file.
+To add the seats, [add the license file](../administration/license_file.md)
+to your instance.
+
+### Export license usage
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can export your license usage into a CSV file.
+
+This file contains the information GitLab uses to manually process
+[quarterly reconciliations](quarterly_reconciliation.md)
+and [renewals](manage_subscription.md#renew-subscription). If your instance is firewalled or an
+offline environment, you must provide GitLab with this information.
+
+{{< alert type="warning" >}}
+
+Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../administration/license_file.md#submit-license-usage-data).
+
+{{< /alert >}}
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Subscription**.
+1. In the upper-right corner, select **Export license usage file**.
+
+#### License usage file contents
+
+The license usage file includes the following information:
+
+- License key
+- Licensee email
+- License start date (UTC)
+- License end date (UTC)
+- Company
+- Timestamp the file was generated at and exported (UTC)
+- Table of historical user counts for each day in the period:
+  - Timestamp the count was recorded (UTC)
+  - Billable user count
+
+{{< alert type="note" >}}
+
+A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
+
+{{< /alert >}}
+
+## GitLab.com billing and usage
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+A GitLab.com subscription uses a concurrent (_seat_) model.
+You pay for a subscription according to the maximum number of users assigned to the top-level group,
+its subgroups and projects during the billing period.
+You can add and remove users during the subscription period without incurring additional charges,
+as long as the total users at any given time doesn't exceed the subscription count.
+If the total users exceeds your subscription count, you will incur an overage,
+which must be paid at your next [reconciliation](quarterly_reconciliation.md).
+
+A top-level group can be [changed](../user/group/manage.md#change-a-groups-path) like any other group.
+
+### Seats owed
+
+If the number of billable users exceeds the number of **seats in subscription**, known
+as the number of **seats owed**, you must pay for the excess number of users.
+
+For example, if you purchase a subscription for 10 users:
+
+| Event                                              | Billable members | Maximum users |
+|:---------------------------------------------------|:-----------------|:--------------|
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are removed.  | 9                | 12            |
+
+Seats owed = 12 - 10 (Maximum users - users in subscription)
+
+To prevent charges from seats owed, you can
+[turn on restricted access](../user/group/manage.md#turn-on-restricted-access).
+This setting restricts groups from adding new billable users when there are no seats left in the subscription.
+
+### View seat usage
+
+To view a list of seats being used:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. Select the **Seats** tab.
+
+For each user, a list shows groups and projects where the user is a direct member.
+
+- **Group invite** indicates the user is a member of a [group invited to a group](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
+- **Project invite** indicates the user is a member of a [group invited to a project](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+
+The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
+The counts for **Max seats used** and **Seats owed** are updated once per day.
+
+#### View billing information
+
+To view your subscription information and a summary of seat counts:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Billing**.
+
+- The usage statistics are updated once per day, which may cause a difference between the information
+  in the **Usage Quotas** page and the **Billing page**.
+- The **Last login** field is updated when a user signs in after they have signed out. If there is an active session
+  when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
+
+### Seat usage alerts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+
+{{< /history >}}
+
+If you have the Owner role for the top-level group, an alert notifies you
+of your total seat usage.
+
+The alert displays on group, subgroup, and project
+pages, and only for top-level groups linked to subscriptions enrolled
+in [quarterly subscription reconciliations](quarterly_reconciliation.md).
+After you dismiss the alert, it doesn't display until another seat is used.
+
+The alert displays based on the following seat usage. You cannot configure the
+amounts at which the alert displays.
+
+| Seats in subscription | Alert displays when |
+|-----------------------|---------------------|
+| 0-15                  | One seat remains.   |
+| 16-25                 | Two seats remain.   |
+| 26-99                 | 10% of seats remain.|
+| 100-999               | 8% of seats remain. |
+| 1000+                 | 5% of seats remain. |
+
+### Export seat usage
+
+To export seat usage data as a CSV file:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. In the **Seats** tab, select **Export list**.
+
+### Export seat usage history
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To export seat usage history as a CSV file:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. In the **Seats** tab, select **Export seat usage history**.
+
+The generated list contains all seats being used,
+and is not affected by the current search.
+
+### Remove users from subscription
+
+To remove a billable user from your GitLab.com subscription:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Billing**.
+1. In the **Seats currently in use** section, select **See usage**.
+1. In the row for the user you want to remove, on the right side, select **Remove user**.
+1. Re-type the username and select **Remove user**.
+
+If you add a member to a group by using the [share a group with another group](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) feature, you can't remove the member by using this method. Instead, you can either:
+
+- [Remove the member from the shared group](../user/group/_index.md#remove-a-member-from-the-group).
+- [Remove the invited group](../user/project/members/sharing_projects_groups.md#remove-an-invited-group).

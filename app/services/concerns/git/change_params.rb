@@ -13,5 +13,9 @@ module Git
     def change
       @change ||= params.fetch(:change, {})
     end
+
+    def gitaly_context
+      params.fetch(:gitaly_context, {})
+    end
   end
 end

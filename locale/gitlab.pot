@@ -30997,6 +30997,9 @@ msgstr ""
 msgid "GroupSAML|SAML group link was successfully removed."
 msgstr ""
 
+msgid "GroupSAML|SCIM Identifier"
+msgstr ""
+
 msgid "GroupSAML|SCIM Token"
 msgstr ""
 
@@ -43139,16 +43142,40 @@ msgstr ""
 msgid "Observability|%{events} events"
 msgstr ""
 
+msgid "Observability|32+ character encryption key for secure communication."
+msgstr ""
+
+msgid "Observability|Are you sure you want to delete the observability service settings? This action cannot be undone."
+msgstr ""
+
+msgid "Observability|Configure your observability service connection settings."
+msgstr ""
+
 msgid "Observability|Create issues from this page to view them as related items here."
 msgstr ""
 
 msgid "Observability|Creates alerts automatically for Observability-related errors."
 msgstr ""
 
+msgid "Observability|Danger Zone"
+msgstr ""
+
+msgid "Observability|Delete settings"
+msgstr ""
+
+msgid "Observability|Email address for authentication with the observability service."
+msgstr ""
+
 msgid "Observability|Enable Observability alerts"
 msgstr ""
 
 msgid "Observability|Enable tracing, metrics, or logs on your project."
+msgstr ""
+
+msgid "Observability|Encryption Key"
+msgstr ""
+
+msgid "Observability|Failed to delete observability service settings."
 msgstr ""
 
 msgid "Observability|Failed to load observability usage data."
@@ -43193,16 +43220,40 @@ msgstr ""
 msgid "Observability|Last 7 days"
 msgstr ""
 
+msgid "Observability|O11y Service Settings"
+msgstr ""
+
 msgid "Observability|Observability Dashboard"
 msgstr ""
 
+msgid "Observability|Observability Service Configuration"
+msgstr ""
+
+msgid "Observability|Observability service settings deleted successfully."
+msgstr ""
+
+msgid "Observability|Observability service settings updated successfully."
+msgstr ""
+
+msgid "Observability|Password for authentication with the observability service."
+msgstr ""
+
+msgid "Observability|Permanently delete the observability service configuration."
+msgstr ""
+
 msgid "Observability|Related issues"
+msgstr ""
+
+msgid "Observability|Service URL"
 msgstr ""
 
 msgid "Observability|Sorry, there is no usage data for the selected period"
 msgstr ""
 
 msgid "Observability|Sorry, your filter produced no results"
+msgstr ""
+
+msgid "Observability|The URL of your observability service instance."
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"
@@ -43215,6 +43266,9 @@ msgid "Observability|Try selecting a different period."
 msgstr ""
 
 msgid "Observability|Usage by day"
+msgstr ""
+
+msgid "Observability|User Email"
 msgstr ""
 
 msgid "Observability|View our %{documentation} for further instructions on how to use these features."

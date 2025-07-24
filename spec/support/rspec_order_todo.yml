@@ -2046,7 +2046,6 @@
 - './ee/spec/services/gitlab_subscriptions/activate_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/check_future_renewal_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/create_company_lead_service_spec.rb'
-- './ee/spec/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_subscription_plans_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/preview_billable_user_change_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'

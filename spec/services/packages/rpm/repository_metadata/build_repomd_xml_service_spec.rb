@@ -1,17 +1,19 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature_category: :package_registry do
   describe '#execute' do
-    subject { described_class.new(data).execute }
+    subject(:xml) { described_class.new(data).execute }
 
+    let(:creation_timestamp) { Time.current }
     let(:data) do
       {
         filelists: {
           checksum: { type: "sha256", value: "123" },
           'open-checksum': { type: "sha256", value: "123" },
           location: { href: "repodata/123-filelists.xml.gz" },
-          timestamp: { value: 1644602784 },
+          timestamp: { value: creation_timestamp.to_i },
           size: { value: 11111 },
           'open-size': { value: 11111 }
         },
@@ -19,7 +21,7 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature
           checksum: { type: "sha256", value: "234" },
           'open-checksum': { type: "sha256", value: "234" },
           location: { href: "repodata/234-primary.xml.gz" },
-          timestamp: { value: 1644602784 },
+          timestamp: { value: creation_timestamp.to_i },
           size: { value: 22222 },
           'open-size': { value: 22222 }
         },
@@ -27,22 +29,20 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature
           checksum: { type: "sha256", value: "345" },
           'open-checksum': { type: "sha256", value: "345" },
           location: { href: "repodata/345-other.xml.gz" },
-          timestamp: { value: 1644602784 },
+          timestamp: { value: creation_timestamp.to_i },
           size: { value: 33333 },
           'open-size': { value: 33333 }
         }
       }
     end
 
-    let(:creation_timestamp) { 111111 }
-
     before do
       allow(Time).to receive(:now).and_return(creation_timestamp)
     end
 
-    it 'generate valid xml', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547357' do
+    it 'generate valid xml' do
       # Have one root attribute
-      result = Nokogiri::XML::Document.parse(subject)
+      result = Nokogiri::XML::Document.parse(xml)
       expect(result.children.count).to eq(1)
 
       # Root attribute name is 'repomd'
@@ -54,7 +54,7 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature
     end
 
     it 'has all data info' do
-      result = Nokogiri::XML::Document.parse(subject).remove_namespaces!
+      result = Nokogiri::XML::Document.parse(xml).remove_namespaces!
 
       data.each do |tag_name, tag_attributes|
         tag_attributes.each_key do |key|
@@ -73,7 +73,7 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature
       end
 
       it 'ignores wrong keys' do
-        result = Nokogiri::XML::Document.parse(subject).remove_namespaces!
+        result = Nokogiri::XML::Document.parse(xml).remove_namespaces!
 
         data.each do |tag_name, tag_attributes|
           tag_attributes.each_key do |key|

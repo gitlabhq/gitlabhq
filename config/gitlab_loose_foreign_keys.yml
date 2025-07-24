@@ -846,6 +846,9 @@ vulnerability_partial_scans:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: p_ci_pipelines
+    column: pipeline_id
+    on_delete: async_delete
 vulnerability_reads:
   - table: cluster_agents
     column: casted_cluster_agent_id

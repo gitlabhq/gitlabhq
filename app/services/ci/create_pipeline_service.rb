@@ -98,6 +98,7 @@ module Ci
         logger: @logger,
         partition_id: params[:partition_id],
         inputs: inputs,
+        gitaly_context: params[:gitaly_context],
         **extra_options(**options))
 
       @pipeline.readonly! if @command.readonly?

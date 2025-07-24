@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition do
+  let(:default_context) { Gitlab::Ci::Config::Yaml::Context.new }
+
   describe '.load!' do
     context 'with basic YAML' do
       let(:yaml) do
@@ -15,7 +17,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
         YAML
       end
 
-      subject(:config) { described_class.load!(yaml) }
+      subject(:config) { described_class.load!(yaml, default_context) }
 
       it 'loads a YAML file' do
         expect(config).to eq({
@@ -65,7 +67,11 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
         [{ key: 'COMPILER', value: 'c++' }]
       end
 
-      subject(:config) { described_class.load!(yaml, inputs, variables) }
+      let(:context) do
+        Gitlab::Ci::Config::Yaml::Context.new(variables: variables)
+      end
+
+      subject(:config) { described_class.load!(yaml, context, inputs) }
 
       it 'loads a YAML file with inputs' do
         expect(config).to eq(
@@ -103,7 +109,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
       end
 
       context 'with default parameters' do
-        subject(:config) { described_class.load!(yaml) }
+        subject(:config) { described_class.load!(yaml, default_context) }
 
         it 'works with empty inputs and variables' do
           expect(config).to eq(
@@ -115,7 +121,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
       end
 
       context 'with only inputs' do
-        subject(:config) { described_class.load!(yaml, { compiler: 'clang', optimization_level: 3 }) }
+        subject(:config) { described_class.load!(yaml, default_context, { compiler: 'clang', optimization_level: 3 }) }
 
         it 'works with only inputs parameter' do
           expect(config).to eq(

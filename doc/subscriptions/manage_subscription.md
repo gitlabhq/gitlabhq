@@ -200,7 +200,7 @@ Subscriptions purchased through the Customers Portal are set to auto-renew by de
 but you can [turn off automatic subscription renewal](#turn-on-or-turn-off-automatic-subscription-renewal).
 
 The number of user seats is adjusted to fit the number of billable users in your
-[group](gitlab_com/_index.md#view-seat-usage) or [instance](self_managed/_index.md#view-users)
+[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users)
 at the time of renewal, if that number is higher than the current subscription quantity.
 
 #### Turn on or turn off automatic subscription renewal
@@ -243,7 +243,7 @@ To manually renew your subscription:
    [overage](quarterly_reconciliation.md) is due when you renew.
 
    In the **Users over license** text box, enter the number of
-   [users over subscription](self_managed/_index.md#users-over-subscription) for the user overage incurred.
+   [users over subscription](manage_users_and_seats.md#users-over-subscription) for the user overage incurred.
 1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
 1. Optional. If upgrading the subscription tier, select the desired option.
 1. Review your renewal details and select **Renew subscription** to complete the
@@ -261,7 +261,7 @@ Subscription renewals with fewer seats must have or exceed the current number of
 Before you renew your subscription:
 
 - For GitLab.com,
-[reduce the number of billable users](gitlab_com/_index.md#remove-users-from-subscription)
+[reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
 if it exceeds the number of seats you want to renew for.
 - For GitLab Self-Managed, [block inactive or unwanted users](../administration/moderate_users.md#block-a-user).
 
@@ -402,7 +402,7 @@ Customers Portal:
   - Company name
   - Licensee name
   - Licensee email
-- Historical [maximum user count](self_managed/_index.md#maximum-users)
+- Historical [maximum user count](manage_users_and_seats.md#self-managed-billing-and-usage)
 - [Billable users count](manage_users_and_seats.md#billable-users)
 - GitLab version
 - Hostname
@@ -455,7 +455,7 @@ To change the group linked to a GitLab.com subscription:
    - If the subscription is not linked to a group, select **Link subscription to a group**.
    - If the subscription is already linked to a group, select **Subscription actions** ({{< icon name="ellipsis_v" >}}) > **Change linked group**.
 1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
-1. If the [total number of users](gitlab_com/_index.md#view-seat-usage) in your group exceeds the number of seats in your subscription,
+1. If the [total number of users](manage_users_and_seats.md#view-seat-usage) in your group exceeds the number of seats in your subscription,
    you are prompted to pay for the additional users. Subscription charges are calculated based on
    the total number of users in a group, including its subgroups and nested projects.
 

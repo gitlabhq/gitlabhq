@@ -302,7 +302,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/epics/related_epic_links/destroy_service.rb'
     - 'ee/app/services/geo/container_repository_sync.rb'
     - 'ee/app/services/geo/file_registry_removal_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service.rb'
     - 'ee/app/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service.rb'
     - 'ee/app/services/groups/sync_service.rb'
     - 'ee/app/services/incident_management/escalation_policies/update_service.rb'

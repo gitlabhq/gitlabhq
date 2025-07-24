@@ -241,7 +241,7 @@ module MergeRequests
     end
 
     def create_pipeline_for(merge_request, user, async: false, allow_duplicate: false)
-      create_pipeline_params = params.slice(:push_options).merge(allow_duplicate: allow_duplicate)
+      create_pipeline_params = params.slice(:push_options, :gitaly_context).merge(allow_duplicate: allow_duplicate)
       service = MergeRequests::CreatePipelineService.new(
         project: project, current_user: user, params: create_pipeline_params
       )

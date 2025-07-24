@@ -411,8 +411,9 @@ module Gitlab
         if build.user
           return unless build.user.can_log_in_with_non_expired_password? || bot_user_can_read_project?(build.user, build.project)
 
+          auth_context = { authentication_method: :ci_job_token, authentication_method_id: build.id }
           # If user is assigned to build, use restricted credentials of user
-          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
+          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities, auth_context)
         else
           # Otherwise use generic CI credentials (backward compatibility)
           Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities)

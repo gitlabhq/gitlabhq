@@ -14,7 +14,8 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
   let(:branch)   { 'master' }
   let(:ref)      { "refs/heads/#{branch}" }
   let(:push_options) { nil }
-  let(:params) { { change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options } }
+  let(:gitaly_context) { nil }
+  let(:params) { { change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options, gitaly_context: gitaly_context } }
 
   let(:service) do
     described_class.new(project, user, **params)
@@ -87,7 +88,8 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
           ref: ref,
           checkout_sha: SeedRepo::Commit::ID,
           variables_attributes: [],
-          push_options: an_instance_of(::Ci::PipelineCreation::PushOptions)
+          push_options: an_instance_of(::Ci::PipelineCreation::PushOptions),
+          gitaly_context: nil
         }
       ).and_call_original
 
@@ -122,7 +124,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
           allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
           expect(Sidekiq.logger).to receive(:warn) do |args|
             pipeline_params = args[:pipeline_params]
-            expect(pipeline_params.keys).to match_array(%i[before after ref variables_attributes checkout_sha])
+            expect(pipeline_params.keys).to match_array(%i[before after ref variables_attributes checkout_sha gitaly_context])
           end
 
           expect { subject }.not_to change { Ci::Pipeline.count }

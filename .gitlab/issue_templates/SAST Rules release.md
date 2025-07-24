@@ -26,9 +26,10 @@ Release the new Semgrep SAST ruleset version X.Y.Z by going through the sequence
    1. [ ] Update the SAST templates [SAST.latest.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml).
       and [SAST.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to support new file types.
    1. [ ] Update the [SAST documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/application_security/sast/_index.md).
-1. [ ] Update `SAST_RULES_VERSION` in the [sast-scanner-service .gitlab-ci.yml](https://gitlab.com/gitlab-org/secure/sast-scanner-service/-/blob/main/.gitlab-ci.yml?ref_type=heads)
-1. [ ] Update `sast-rules` submodule branch in [sast-ide-integration](https://gitlab.com/gitlab-org/secure/sast-ide-integration) to point to the `X.Y.Z` tag.
-1. [ ] Once the branch is merged, deploy the updated SAST service to the staging and/or production environments by manually triggering the `Trigger runway deployment` jobs.
+1. [ ] Update `SAST_RULES_VERSION` in the [sast-scanner-service .gitlab-ci.yml](https://gitlab.com/gitlab-org/secure/sast-scanner-service/-/blob/main/.gitlab-ci.yml?ref_type=heads) and release a new version of the sast-scanner service (`A.B.C`).
+1. [ ] Update `sast-rules` submodule in [sast-ide-integration](https://gitlab.com/gitlab-org/secure/sast-ide-integration) to point to the `X.Y.Z` tag.
+1. [ ] Update `sast-scanner-service` submodule in [sast-ide-integration](https://gitlab.com/gitlab-org/secure/sast-ide-integration) to point to the `A.B.C` tag.
+1. [ ] Once the `sast-rules` and `sast-scanner-service` bumps are merged, deploy the updated SAST service to the staging and/or production environments by manually triggering the `Trigger runway deployment` jobs.
 
 
 /label ~"group::static analysis" ~"devops::application security testing" ~"section::sec" ~"Category:SAST" ~"type::feature" ~"workflow::refinement" 

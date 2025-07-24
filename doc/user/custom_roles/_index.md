@@ -35,7 +35,7 @@ There are two types of custom roles:
 - Custom member roles:
   - Can be assigned to members of a group or project.
   - Gains the same permissions in any subgroups or projects. For more information, see [membership types](../../user/project/members/_index.md#membership-types).
-  - [Uses a seat](../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined) and becomes a [billable user](../../subscriptions/manage_users_and_seats.md#billable-users).
+  - [Uses a seat](../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage) and becomes a [billable user](../../subscriptions/manage_users_and_seats.md#billable-users).
     - A custom Guest member role that includes only the `read_code` permission does not use a seat.
 - Custom admin roles:
   - Can be assigned to any user on the instance.

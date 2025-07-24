@@ -2993,7 +2993,6 @@ RSpec/NamedSubject:
     - 'spec/services/packages/rpm/repository_metadata/build_filelist_xml_service_spec.rb'
     - 'spec/services/packages/rpm/repository_metadata/build_other_xml_service_spec.rb'
     - 'spec/services/packages/rpm/repository_metadata/build_primary_xml_service_spec.rb'
-    - 'spec/services/packages/rpm/repository_metadata/build_repomd_xml_service_spec.rb'
     - 'spec/services/packages/rubygems/create_dependencies_service_spec.rb'
     - 'spec/services/packages/rubygems/create_gemspec_service_spec.rb'
     - 'spec/services/packages/rubygems/dependency_resolver_service_spec.rb'

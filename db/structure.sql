@@ -25991,7 +25991,9 @@ CREATE TABLE vulnerability_partial_scans (
     updated_at timestamp with time zone NOT NULL,
     scan_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    mode smallint NOT NULL
+    mode smallint NOT NULL,
+    pipeline_id bigint,
+    scan_type smallint
 );
 
 CREATE TABLE vulnerability_reads (
@@ -38861,6 +38863,8 @@ CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON vulnerability_occu
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 
 CREATE INDEX index_vulnerability_occurrences_prim_iden_id_and_vuln_id ON vulnerability_occurrences USING btree (primary_identifier_id, vulnerability_id);
+
+CREATE INDEX index_vulnerability_partial_scans_on_pipeline_id ON vulnerability_partial_scans USING btree (pipeline_id);
 
 CREATE INDEX index_vulnerability_partial_scans_on_project_id ON vulnerability_partial_scans USING btree (project_id);
 
