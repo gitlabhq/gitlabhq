@@ -60,7 +60,7 @@ export default {
   methods: {
     clearTransform() {
       // FIXME: workaround for listbox issue
-      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1986
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1986 [CLOSED]
       const { listbox } = this.$refs;
       if (listbox.querySelector('.dropdown-menu')) {
         listbox.querySelector('.dropdown-menu').style.transform = '';

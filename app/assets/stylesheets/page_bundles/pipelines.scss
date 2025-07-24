@@ -25,7 +25,7 @@
   // Temporarily sets a max height for the dropdown
   // until GlDisclosureDropdown supports adding
   // a max-height value
-  // see https://gitlab.com/gitlab-org/gitlab-ui/-/issues/3010
+  // see https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2207
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-new-dropdown-inner {
     max-height: $dropdown-max-height-lg !important;

@@ -37,10 +37,29 @@ class BaseActionController < ActionController::Base
     organization = Gitlab::Current::Organization.new(
       params: organization_params,
       user: current_user,
+      session: session,
       headers: request.headers
     ).organization
 
+    store_organization_in_session!(organization)
+
     ::Current.organization = organization
+  end
+
+  private
+
+  def store_organization_in_session!(organization)
+    # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Cannot guarantee an actor is available here
+    return unless Feature.enabled?(:set_current_organization_from_session)
+    # rubocop:enable Gitlab/FeatureFlagWithoutActor
+
+    return unless organization
+    return unless request.format.html?
+
+    session_key = Gitlab::Current::Organization::SESSION_KEY
+    return if session[session_key] == organization.id
+
+    session[session_key] = organization.id
   end
 end
 # rubocop:enable Gitlab/NamespacedClass

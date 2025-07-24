@@ -72,7 +72,7 @@ export default {
       // We change the placement of the dropdown based on the breakpoint.
       // This is not an ideal solution, but rather a temporary solution
       // until we find a better solution in
-      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
+      // https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2400
       return this.isMobile ? 'bottom-start' : 'right-start';
     },
     isFailed() {

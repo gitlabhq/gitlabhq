@@ -502,7 +502,7 @@ export default {
 
     getTableRef() {
       // Acquire reference to BTable to manipulate selection
-      // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
+      // issue: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2831
       // refs are not reactive, so do not use computed here
       return this.$refs.table?.$children[0];
     },

@@ -20,7 +20,7 @@ const transform = (el, binding) => {
 };
 
 const clear = (el, binding) => {
-  // Fixes https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2455
+  // Fixes https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2452
   // eslint-disable-next-line no-param-reassign
   delete binding.oldValue;
   el.textContent = '';

@@ -30,7 +30,7 @@ Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/
 {{< alert type="note" >}}
 
 While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
-to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities)
+to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/css.md#utilities)
 utility classes, note both the classes for margin and padding differ. The size scale used at
 GitLab differs from the scale used in the Bootstrap library. For a Bootstrap padding or margin
 utility, you may need to double the size of the applied utility to achieve the same visual

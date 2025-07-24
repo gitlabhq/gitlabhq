@@ -290,7 +290,7 @@ export default {
 <style>
 /* Temporary override until we have
    * widths available in GlDisclosureDropdown
-   * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2501
+   * https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2439
    */
 .code-dropdown .gl-new-dropdown-panel {
   width: 100%;

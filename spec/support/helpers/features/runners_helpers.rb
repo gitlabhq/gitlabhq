@@ -13,7 +13,7 @@ module Features
     end
 
     # The filters must be clicked first to be able to receive events
-    # See: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1493
+    # See: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2799
     def focus_filtered_search
       page.within(search_bar_selector) do
         page.find('.gl-filtered-search-term-token').click

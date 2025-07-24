@@ -355,10 +355,6 @@ module SortingTitlesValuesHelper
     'stars_desc'
   end
 
-  def sort_value_stars_asc
-    'stars_asc'
-  end
-
   def sort_value_oldest_last_activity
     'last_activity_on_asc'
   end

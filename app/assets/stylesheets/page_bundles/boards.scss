@@ -226,7 +226,7 @@
   }
 
   // Use !important for these as top and z-index are set on style attribute
-  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1805
+  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
   ~ #js-right-sidebar-portal .boards-sidebar {
     top: 0 !important;
     z-index: calc(#{$focus-mode-z-index} + 1) !important;
