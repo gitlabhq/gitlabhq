@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: cs\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-23 05:45\n"
+"PO-Revision-Date: 2025-07-23 06:25\n"
 
 msgid " %{start} to %{end}"
 msgstr ""

@@ -94,7 +94,7 @@ If you have selected a specific LLM for a GitLab Duo AI-native feature, and that
 
 If you are assigned a seat in a project that has a specific LLM selected for [code completion](../project/repository/code_suggestions/_index.md#code-completion-and-generation):
 
-- Your IDE extension disables the [direct connection to the AI gateway](gateway.md#region-support).
+- Your IDE extension disables the [direct connection to the AI gateway](../../administration/gitlab_duo/gateway.md#region-support).
 - Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
 
 This might cause increased latency with code completion requests.

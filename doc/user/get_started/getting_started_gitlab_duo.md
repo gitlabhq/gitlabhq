@@ -31,7 +31,7 @@ For more information, see:
 - [GitLab Duo features by add-on](../gitlab_duo/feature_summary.md).
 - [How to purchase an add-on](../../subscriptions/subscription-add-ons.md).
 - [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
-- [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
+- [Health check details](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI
 

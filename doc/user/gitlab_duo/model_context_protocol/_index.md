@@ -27,8 +27,8 @@ to securely connect to different external data sources and tools.
 The following features can act as MCP clients, and connect to and run
 external tools from MCP servers:
 
-- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
-- The [software development flow](../../duo_agent_platform/software_development_flow.md)
+- [GitLab Duo Agentic Chat](../../../user/gitlab_duo_chat/agentic_chat.md)
+- The [software development flow](../../../user/duo_agent_platform/software_development_flow.md)
 
 This means that, in addition to GitLab information, these features
 can now use context and information external to GitLab to generate more powerful
@@ -47,8 +47,8 @@ Before you can use a GitLab Duo feature with MCP, you must:
 - Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). MCP requires version 6.28.2 and later.
 - Meet the feature prerequisites as required:
 
-  - [Agentic Chat prerequisites](../../gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
-  - [Software development flow prerequisites](../../duo_agent_platform/software_development_flow.md#prerequisites).
+  - [Agentic Chat prerequisites](../../../user/gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
+  - [Software development flow prerequisites](../../../user/duo_agent_platform/software_development_flow.md#prerequisites).
 
 ## Turn on MCP for your group
 

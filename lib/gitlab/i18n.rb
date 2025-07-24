@@ -53,7 +53,7 @@ module Gitlab
       'fil_PH' => 0,
       'fr' => 96,
       'gl_ES' => 0,
-      'ga_IE' => 97,
+      'ga_IE' => 98,
       'id_ID' => 0,
       'it' => 85,
       'ja' => 94,

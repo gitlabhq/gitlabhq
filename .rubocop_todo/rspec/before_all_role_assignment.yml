@@ -461,7 +461,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/git_http_spec.rb'
     - 'ee/spec/requests/groups/analytics/devops_adoption_controller_spec.rb'
     - 'ee/spec/requests/groups/dependencies_controller_spec.rb'
-    - 'ee/spec/requests/groups/epics/epic_links_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_branches_controller_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/requests/groups/settings/merge_requests_controller_spec.rb'

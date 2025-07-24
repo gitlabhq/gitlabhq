@@ -267,8 +267,8 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       File.write(temp_files[:jest_matching_tests], jest_matching_tests.join(" "))
 
       allow(Open3).to receive(:capture2e).with({
-        "RSPEC_CHANGED_FILES_PATH" => changed_files_path,
-        'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files_path,
+        "GLCI_PREDICTIVE_CHANGED_FILES_PATH" => changed_files_path,
+        'GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH' => matching_js_files_path,
         'JEST_MATCHING_TEST_FILES_PATH' => temp_files[:jest_matching_tests]
       }, %r{scripts/frontend/find_jest_predictive_tests.js})
       .and_return(["", instance_double(Process::Status, success?: true)])

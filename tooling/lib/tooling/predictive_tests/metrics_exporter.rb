@@ -192,8 +192,8 @@ module Tooling
 
         logger.info("Generating predictive jest test file list via '#{script}'")
         out, status = Open3.capture2e({
-          "RSPEC_CHANGED_FILES_PATH" => changed_ruby_files_path,
-          'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files_path,
+          "GLCI_PREDICTIVE_CHANGED_FILES_PATH" => changed_ruby_files_path,
+          'GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH' => matching_js_files_path,
           'JEST_MATCHING_TEST_FILES_PATH' => result_path
         }, script)
         raise "Failed to generate jest matching tests via #{script}, output: #{out}" unless status.success?

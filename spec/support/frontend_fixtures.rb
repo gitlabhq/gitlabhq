@@ -9,8 +9,8 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-    next unless ENV['FRONTEND_FIXTURES_MAPPING_PATH']
+    next unless ENV['GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH']
 
-    File.write(ENV['FRONTEND_FIXTURES_MAPPING_PATH'], $fixtures_mapping.to_json) # rubocop:disable Style/GlobalVars
+    File.write(ENV['GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH'], $fixtures_mapping.to_json) # rubocop:disable Style/GlobalVars
   end
 end

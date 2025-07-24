@@ -30,8 +30,8 @@ const { relative, dirname } = require('node:path');
 
 const requiredEnv = [
   'JEST_MATCHING_TEST_FILES_PATH',
-  'RSPEC_MATCHING_JS_FILES_PATH',
-  'RSPEC_CHANGED_FILES_PATH',
+  'GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH',
+  'GLCI_PREDICTIVE_CHANGED_FILES_PATH',
 ];
 
 function hasRequiredEnvironmentVariables() {
@@ -46,11 +46,12 @@ function hasRequiredEnvironmentVariables() {
 
 function getChangedFiles() {
   const files = [];
-  const { RSPEC_MATCHING_JS_FILES_PATH, RSPEC_CHANGED_FILES_PATH } = process.env;
+  const { GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH, GLCI_PREDICTIVE_CHANGED_FILES_PATH } =
+    process.env;
 
   for (const [name, filePath] of Object.entries({
-    RSPEC_CHANGED_FILES_PATH,
-    RSPEC_MATCHING_JS_FILES_PATH,
+    GLCI_PREDICTIVE_CHANGED_FILES_PATH,
+    GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH,
   })) {
     try {
       const contents = readFileSync(filePath, { encoding: 'UTF-8' });

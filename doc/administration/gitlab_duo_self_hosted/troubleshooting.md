@@ -118,7 +118,7 @@ raise an issue on the issue tracker.
 
 ## GitLab Duo health check is not working
 
-When you [run a health check for GitLab Duo](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
+When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
 
 To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to Duo Chat.
 

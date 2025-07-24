@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-23 05:56\n"
+"PO-Revision-Date: 2025-07-23 10:59\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -622,11 +622,11 @@ msgstr[4] "%d tuilleadh tráchtanna"
 
 msgid "%d open thread"
 msgid_plural "%d open threads"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
+msgstr[0] "%d snáithe oscailte"
+msgstr[1] "%d snáitheanna oscailte"
+msgstr[2] "%d snáitheanna oscailte"
+msgstr[3] "%d snáitheanna oscailte"
+msgstr[4] "%d snáitheanna oscailte"
 
 msgid "%d option"
 msgid_plural "%d options"
@@ -1528,7 +1528,7 @@ msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
 msgstr "%{linkStart}Tá cuardach casta%{linkEnd} cumasaithe."
 
 msgid "%{linkStart}Embedded view%{linkEnd} powered by GLQL"
-msgstr ""
+msgstr "%{linkStart}Radharc leabaithe%{linkEnd} faoi thiomáint ag GLQL"
 
 msgid "%{link_start}Communication Preference Center%{link_end}."
 msgstr "%{link_start}Lárionad Sainroghanna Cumarsáide%{link_end}."
@@ -2166,40 +2166,40 @@ msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr "Caithfidh laethanta neamhghníomhaíochta '%{value}' a bheith níos mó ná 90 nó cothrom le"
 
 msgid "'Attributes' must be a Hash"
-msgstr ""
+msgstr "Ní mór 'Attributes' a bheith ina Hais"
 
 msgid "'Commands' must be an Array"
-msgstr ""
+msgstr "Ní mór 'Orduithe' a bheith ina Eagar"
 
 msgid "'Component name' must be a String"
-msgstr ""
+msgstr "Ní mór 'Ainm comhpháirte' a bheith ina Teaghrán"
 
 msgid "'Components' must be an Array"
-msgstr ""
+msgstr "Ní mór do 'Components' a bheith ina Array"
 
 msgid "'ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. To re-enable the link to the GitLab wiki, disable this integration."
 msgstr "Tá do vicí GitLab fós ar fáil ag %{link_start}%{wiki_url}%{link_end}. Chun an nasc chuig an vicí GitLab a athchumasú, díchumasaigh an comhtháthú seo."
 
 msgid "'Endpoints' must be an Array"
-msgstr ""
+msgstr "Ní mór do 'Deireadhphointí' a bheith ina Eagar"
 
 msgid "'Events' must be a Hash"
-msgstr ""
+msgstr "Ní mór 'Imeachtaí' a bheith ina hais"
 
 msgid "'Variables' must be a Hash"
-msgstr ""
+msgstr "Ní mór 'Athróga' a bheith ina Hais"
 
 msgid "'allow: %{allow}' must be a string"
 msgstr "Caithfidh 'allow: %{allow}' a bheith ina theaghrán"
 
 msgid "'attributes' for component '%{component_name}' must be a Hash"
-msgstr ""
+msgstr "Ní mór 'tréithe' don chomhpháirt '%{component_name}' a bheith ina hais"
 
 msgid "'command' must be a Hash"
-msgstr ""
+msgstr "Ní mór 'ordú' a bheith ina hais"
 
 msgid "'container' in component '%{component}' must be a Hash"
-msgstr ""
+msgstr "Ní mór don 'coimeádán' sa chomhpháirt '%{component}' a bheith ina hais"
 
 msgid "'cpu: %{cpu}' must be a string"
 msgstr "Caithfidh 'cpu: %{cpu}' a bheith ina theaghrán"
@@ -2223,7 +2223,7 @@ msgid "'schemaVersion' '%{given_version}' is not supported, it must be '%{requir
 msgstr "Ní thacaítear le 'schemaVersion' '%{given_version}', caithfidh sé a bheith '%{required_version}'"
 
 msgid "'schemaVersion' must be a String"
-msgstr ""
+msgstr "Ní mór do 'schemaVersion' a bheith ina Teaghrán"
 
 msgid "'starterProjects' is not yet supported"
 msgstr "Ní thacaítear le 'StarterProjects' fós"
@@ -2728,7 +2728,7 @@ msgid "A basic template for developing Linux programs using Kotlin Native"
 msgstr "Teimpléad bunúsach chun cláir Linux a fhorbairt ag úsáid Kotlin Native"
 
 msgid "A component must have a 'name'"
-msgstr ""
+msgstr "Ní mór 'ainm' a bheith ag comhpháirt"
 
 msgid "A confidential issue must have only confidential children. Make any child items confidential and try again."
 msgstr "Ní mór ach leanaí rúnda a bheith ag saincheist rúnda. Déan aon earraí leanaí faoi rún agus déan iarracht arís."
@@ -2956,133 +2956,133 @@ msgid "AICatalog|AI Catalog"
 msgstr "Catalóg AI"
 
 msgid "AICatalog|Agent"
-msgstr ""
+msgstr "Gníomhaire"
 
 msgid "AICatalog|Agent created successfully."
-msgstr ""
+msgstr "Cruthaíodh an gníomhaire go rathúil."
 
 msgid "AICatalog|Agent deleted successfully."
-msgstr ""
+msgstr "Scriosadh an gníomhaire go rathúil."
 
 msgid "AICatalog|Agents"
 msgstr "Gníomhairí"
 
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
-msgstr ""
+msgstr "An bhfuil tú cinnte gur mian leat gníomhaire %{name} a scriosadh?"
 
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
-msgstr ""
+msgstr "Déan cur síos gairid ar a bhfuil an gníomhaire seo ceaptha a dhéanamh agus a phríomhchumais."
 
 msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and processes."
-msgstr ""
+msgstr "Tóg gníomhairí agus sreafaí AI chun tascanna agus próisis athchleachtacha a uathoibriú."
 
 msgid "AICatalog|Choose a memorable name for your AI agent."
-msgstr ""
+msgstr "Roghnaigh ainm cuimhneacháin do do ghníomhaire AI."
 
 msgid "AICatalog|Create agent"
-msgstr ""
+msgstr "Cruthaigh gníomhaire"
 
 msgid "AICatalog|Create new agent"
-msgstr ""
+msgstr "Cruthaigh gníomhaire nua"
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
-msgstr ""
+msgstr "Sainmhínigh pearsantacht, saineolas agus treoirlínte iompraíochta an ghníomhaire. Múnlaíonn sé seo an chaoi a bhfreagraíonn an gníomhaire agus a dtéann sé i ngleic le tascanna."
 
 msgid "AICatalog|Delete agent"
-msgstr ""
+msgstr "Scrios gníomhaire"
 
 msgid "AICatalog|Description is required."
-msgstr ""
+msgstr "Tá cur síos ag teastáil."
 
 msgid "AICatalog|Edit"
-msgstr ""
+msgstr "Cuir in Eagar"
 
 msgid "AICatalog|Edit agent"
 msgstr "Gníomhaire a chur in eagar"
 
 msgid "AICatalog|Failed to delete agent. %{error}"
-msgstr ""
+msgstr "Theip ar an ngníomhaire a scriosadh. %{error}"
 
 msgid "AICatalog|Failed to run agent."
-msgstr ""
+msgstr "Theip ar an ngníomhaire a rith."
 
 msgid "AICatalog|Flow"
-msgstr ""
+msgstr "Sreabhadh"
 
 msgid "AICatalog|Flows"
-msgstr ""
+msgstr "Sreafaí"
 
 msgid "AICatalog|Get started with the AI Catalog"
-msgstr ""
+msgstr "Tosaigh leis an gCatalóg AI"
 
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
-msgstr ""
+msgstr "Ní féidir níos mó ná %{value} carachtar a bheith san ionchur. Giorraigh d’ionchur le do thoil."
 
 msgid "AICatalog|Modify the agent settings and configuration."
-msgstr ""
+msgstr "Modhnaigh socruithe agus cumraíocht an ghníomhaire."
 
 msgid "AICatalog|Name is required."
-msgstr ""
+msgstr "Tá ainm ag teastáil."
 
 msgid "AICatalog|New agent"
-msgstr ""
+msgstr "Gníomhaire nua"
 
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
-msgstr ""
+msgstr "Cuir mo chúlra i gcuimhne duit... Agus coincheapa á míniú agat, bain úsáid as... Is é an fhormáid is fearr liom le haghaidh freagraí ná... Cuir san áireamh i gcónaí..."
 
 msgid "AICatalog|Project ID"
-msgstr ""
+msgstr "Aitheantas Tionscadail"
 
 msgid "AICatalog|Project ID is required."
-msgstr ""
+msgstr "Tá ID tionscadail ag teastáil."
 
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
-msgstr ""
+msgstr "Cuir treoracha nó comhthéacs réamhshocraithe ar fáil a chuirfear san áireamh le gach idirghníomhaíocht úsáideora."
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
-msgstr ""
+msgstr "Cuir treoracha nó comhthéacs ar fáil a chuirfear san áireamh don rith seo."
 
 msgid "AICatalog|Run"
-msgstr ""
+msgstr "Rith"
 
 msgid "AICatalog|Run agent"
-msgstr ""
+msgstr "Gníomhaire rith"
 
 msgid "AICatalog|Save changes"
-msgstr ""
+msgstr "Sábháil athruithe"
 
 msgid "AICatalog|Select a project for your AI agent to be associated with."
-msgstr ""
+msgstr "Roghnaigh tionscadal a mbeidh do ghníomhaire AI bainteach leis."
 
 msgid "AICatalog|System Prompt"
-msgstr ""
+msgstr "Pras Córais"
 
 msgid "AICatalog|System Prompt is required."
-msgstr ""
+msgstr "Tá Pras Córais ag teastáil."
 
 msgid "AICatalog|The agent could not be added. Please try again."
-msgstr ""
+msgstr "Níorbh fhéidir an gníomhaire a chur leis. Déan iarracht arís."
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
-msgstr ""
+msgstr "Speisialtóireacht an ghníomhaire seo i... Is féidir leis cabhrú leat le... Is fearr a oireann do..."
 
 msgid "AICatalog|User Prompt"
-msgstr ""
+msgstr "Leid Úsáideora"
 
 msgid "AICatalog|User Prompt is required."
-msgstr ""
+msgstr "Tá leid úsáideora ag teastáil."
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
-msgstr ""
+msgstr "Is saineolaí thú i [réimse]. Is é [stíl] do stíl chumarsáide. Agus tú ag cabhrú le húsáideoirí, ba chóir duit i gcónaí... I measc do phríomhláidreachtaí tá... Tugann tú aghaidh ar fhadhbanna trí..."
 
 msgid "AICatalog|cannot be changed from public to private as it has catalog consumers"
-msgstr ""
+msgstr "ní féidir é a athrú ó phoiblí go príobháideach mar go bhfuil tomhaltóirí catalóige aige"
 
 msgid "AICatalog|cannot change a released item version"
-msgstr ""
+msgstr "ní féidir leagan earra scaoilte a athrú"
 
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
-msgstr ""
+msgstr "m.sh., Cúntóir Taighde, Scríbhneoir Cruthaitheach, Cúntóir Cód"
 
 msgid "AISummary|Generates a summary of this issue"
 msgstr "Gineann achoimre ar an gceist seo"
@@ -3193,7 +3193,7 @@ msgid "AI|Thank you for your feedback."
 msgstr "Go raibh maith agat as do chuid aiseolas."
 
 msgid "AI|Thanks for your feedback!"
-msgstr ""
+msgstr "Go raibh maith agat as d'aiseolas!"
 
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr "Níor aimsíodh eilimint an choimeádáin, ag stopadh AI Genie."
@@ -3658,7 +3658,7 @@ msgid "Access denied for your LDAP account."
 msgstr "Diúltaítear rochtain do do chuntas LDAP."
 
 msgid "Access expiration date"
-msgstr ""
+msgstr "Dáta éaga rochtana"
 
 msgid "Access expires"
 msgstr "In éag an rochtain"
@@ -3670,7 +3670,7 @@ msgid "Access granted"
 msgstr "Rochtain a dheonaíodh"
 
 msgid "Access levels should both be present"
-msgstr ""
+msgstr "Ba chóir go mbeadh an dá leibhéal rochtana i láthair"
 
 msgid "Access levels should either both be present or both be nil"
 msgstr "Ba cheart go mbeadh an dá leibhéal rochtana i láthair nó an dá rud a bheith nialas"
@@ -4389,7 +4389,7 @@ msgid "Add files"
 msgstr "Cuir comhaid leis"
 
 msgid "Add group"
-msgstr ""
+msgstr "Cuir grúpa leis"
 
 msgid "Add group or project"
 msgstr "Cuir grúpa nó tionscadal leis"
@@ -4482,7 +4482,7 @@ msgid "Add request manually"
 msgstr "Cuir iarratas leis de láimh"
 
 msgid "Add role"
-msgstr ""
+msgstr "Cuir ról leis"
 
 msgid "Add search filter"
 msgstr "Cuir scagaire cuardaigh leis"
@@ -4527,7 +4527,7 @@ msgid "Add topics to projects to help users find them."
 msgstr "Cuir ábhair le tionscadail chun cabhrú le húsáideoirí iad a fháil."
 
 msgid "Add user"
-msgstr ""
+msgstr "Cuir úsáideoir leis"
 
 msgid "Add variable"
 msgstr "Cuir athróg leis"
@@ -4750,19 +4750,19 @@ msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr "Gnéithe dúchasacha AI"
 
 msgid "AdminAIPoweredFeatures|AI-native features that help users accomplish tasks during the lifecycle of a merge request. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "Gnéithe dúchasacha AI a chabhraíonn le húsáideoirí tascanna a chur i gcrích le linn saolré iarratais chumaisc. %{linkStart}Foghlaim tuilleadh.%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|AI-native features that support users outside of Chat or Code Suggestions. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "Gnéithe dúchasacha AI a thacaíonn le húsáideoirí lasmuigh de Chomhrá nó Moltaí Cóid. %{linkStart}Foghlaim tuilleadh.%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|Add self-hosted model"
 msgstr "Cuir samhail féin-óstáilte leis"
 
 msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "Cúntóir AI a chabhraíonn le húsáideoirí forbairt bogearraí a bhrostú ag baint úsáide as AI comhráiteach fíor-ama. %{linkStart}Foghlaim tuilleadh.%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|An AI-native feature that generates a summary of discussions on an issue. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "Gné dúchasach d'Intleacht Shaorga a ghineann achoimre ar phlé ar shaincheist. %{linkStart}Foghlaim tuilleadh.%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature settings. Please try again."
 msgstr "Tharla earráid agus na socruithe gné AI á luchtú. Bain triail as arís."
@@ -4771,7 +4771,7 @@ msgid "AdminAIPoweredFeatures|Apply to all sub-features"
 msgstr "Cuir i bhfeidhm ar gach fo-ghné"
 
 msgid "AdminAIPoweredFeatures|Assists developers by generating and completing code in real-time. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "Cuidíonn sé le forbróirí trí chód a ghiniúint agus a chomhlánú i bhfíor-am. %{linkStart}Foghlaim tuilleadh.%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|Code Suggestions"
 msgstr "Moltaí Cód"
@@ -4789,16 +4789,16 @@ msgid "AdminAIPoweredFeatures|Features"
 msgstr "Gnéithe"
 
 msgid "AdminAIPoweredFeatures|GitLab Default %{defaultModel}"
-msgstr ""
+msgstr "Réamhshocrú GitLab %{defaultModel}"
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Chat"
 msgstr "GitLab Duo Chat"
 
 msgid "AdminAIPoweredFeatures|GitLab Duo for issues"
-msgstr ""
+msgstr "GitLab Duo le haghaidh saincheisteanna"
 
 msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
-msgstr ""
+msgstr "GitLab Duo le haghaidh iarratais chumasc"
 
 msgid "AdminAIPoweredFeatures|Model"
 msgstr "Múnla"
@@ -5026,7 +5026,7 @@ msgid "AdminEmail|Subject is required."
 msgstr "Ábhar ag teastáil."
 
 msgid "AdminGroups|%{planTitle} Plan"
-msgstr ""
+msgstr "Plean %{planTitle}"
 
 msgid "AdminLabels|Define your default set of project labels"
 msgstr "Sainmhínigh do shraith réamhshocraithe lipéid tionscadail"
@@ -5083,7 +5083,7 @@ msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
 msgstr "Cuir i bhfeidhm ar gach %{mainFeature} fo-ghné"
 
 msgid "AdminSelfHostedModels|Assign a model to %{subFeature} before applying to all"
-msgstr ""
+msgstr "Sannadh samhail do %{subFeature} sula gcuirtear i bhfeidhm é ar gach duine"
 
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr "Sannadh samhail chun an ghné seo a chumasú"
@@ -5188,7 +5188,7 @@ msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
 msgstr "Nuashonraithe go rathúil %{mainFeature} / %{title}"
 
 msgid "AdminSelfHostedModels|Successfully updated all %{mainFeature} features"
-msgstr ""
+msgstr "Nuashonraíodh gach gné de %{mainFeature} go rathúil"
 
 msgid "AdminSelfHostedModels|Test connection"
 msgstr "Ceangal tástála"
@@ -5374,10 +5374,10 @@ msgid "AdminSettings|Enable the external redirect warning page for job artifacts
 msgstr "Cumasaigh an leathanach rabhaidh atreoraithe seachtrach le haghaidh déantáin phoist"
 
 msgid "AdminSettings|Enable unique domains by default"
-msgstr ""
+msgstr "Cumasaigh fearainn uathúla de réir réamhshocraithe"
 
 msgid "AdminSettings|Enable unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace."
-msgstr ""
+msgstr "Cumasaigh fearainn uathúla de réir réamhshocraithe do shuíomhanna Leathanaigh chun comhroinnt fianán idir suíomhanna faoi ainmspás ar leith a sheachaint."
 
 msgid "AdminSettings|Enabled"
 msgstr "Cumasaithe"
@@ -6481,7 +6481,7 @@ msgid "Agent not found for provided id."
 msgstr "Níor aimsíodh gníomhaire le haghaidh id curtha ar fáil."
 
 msgid "Agent sessions"
-msgstr ""
+msgstr "Seisiúin ghníomhaire"
 
 msgid "Agents"
 msgstr "Gníomhairí"
@@ -6499,22 +6499,22 @@ msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr "níl an stór sonraí ClickHouse ar fáil"
 
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
-msgstr ""
+msgstr "Suíochán sannta Duo a bheith á úsáid"
 
 msgid "AiImpactAnalytics|Code Suggestions: Acceptance rate"
-msgstr ""
+msgstr "Moltaí Cód: Ráta glactha"
 
 msgid "AiImpactAnalytics|Code Suggestions: Usage"
-msgstr ""
+msgstr "Moltaí Cód: Úsáid"
 
 msgid "AiImpactAnalytics|Data available after upgrade to GitLab 18.0. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
+msgstr "Sonraí ar fáil tar éis uasghrádú go GitLab 18.0. %{linkStart}Foghlaim tuilleadh%{linkEnd}"
 
 msgid "AiImpactAnalytics|Duo Chat: Usage"
-msgstr ""
+msgstr "Comhrá Duo: Úsáid"
 
 msgid "AiImpactAnalytics|Duo RCA: Usage"
-msgstr ""
+msgstr "Duo RCA: Úsáid"
 
 msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated."
 msgstr "Moltaí Cód Míosúil GitLab Duo glactha / iomlán Moltaí Cód ginte."
@@ -6532,13 +6532,13 @@ msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestion
 msgstr "Rannpháirtíocht mhíosúil úsáideoirí le Moltaí Cód GitLab Duo. Cóimheas céatadáin arna ríomh mar úsáideoirí Moltaí Cód uathúil míosúil / ranníocóirí cód uathúla míosúla iomlána."
 
 msgid "AiImpactAnalytics|Percentage ratio of total Duo seats assigned / Duo seats assigned that interacted with Duo Chat. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
+msgstr "Cóimheas céatadáin de shuíocháin Duo iomlána sannta / suíocháin Duo sannta a rinne idirghníomhú le Duo Chat. %{linkStart}Foghlaim tuilleadh%{linkEnd}."
 
 msgid "AiImpactAnalytics|Percentage ratio of total Duo seats assigned / Duo seats assigned that used at least one Duo feature. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
+msgstr "Cóimheas céatadáin de shuíocháin Duo iomlána sannta / suíocháin Duo sannta a d'úsáid gné Duo amháin ar a laghad. %{linkStart}Foghlaim tuilleadh%{linkEnd}"
 
 msgid "AiImpactAnalytics|Percentage ratio of total number of code suggestions generated / code suggestions accepted. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
+msgstr "Cóimheas céatadáin de líon iomlán na moltaí cóid a gineadh / na moltaí cóid a glacadh. %{linkStart}Foghlaim tuilleadh%{linkEnd}."
 
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
 msgstr "D'fhéadfadh go mbeadh na sonraí úsáide neamhiomlán mar gheall ar ríomhanna cúltaca a thosaíonn tar éis uasghrádú go GitLab 16.11. Le haghaidh tuilleadh faisnéise, féach %{linkStart}EPIC 12978%{linkEnd}."
@@ -6556,7 +6556,7 @@ msgid "AiPowered|AI-native features now available in IDEs"
 msgstr "Gnéithe dúchasacha AI ar fáil anois in IDEanna"
 
 msgid "AiPowered|Allow GitLab to process your code and project data for AI-powered features throughout this namespace. Your data will be sent to GitLab Duo for processing. Groups, subgroups, and projects can individually opt out if needed."
-msgstr ""
+msgstr "Lig do GitLab do chód agus do shonraí tionscadail a phróiseáil le haghaidh gnéithe atá faoi thiomáint ag AI ar fud an ainmspáis seo. Seolfar do shonraí chuig GitLab Duo lena bpróiseáil. Is féidir le grúpaí, foghrúpaí agus tionscadail rogha an diúltaithe a dhéanamh ina n-aonar más gá."
 
 msgid "AiPowered|Always off"
 msgstr "I gcónaí as"
@@ -6565,7 +6565,7 @@ msgid "AiPowered|Amazon Q Setup"
 msgstr "Socrú Amazon Q"
 
 msgid "AiPowered|Are you sure you want to turn off GitLab Duo Agent Platform?"
-msgstr ""
+msgstr "An bhfuil tú cinnte gur mian leat Ardán Gníomhaire GitLab Duo a mhúchadh?"
 
 msgid "AiPowered|Assign models to AI-native features."
 msgstr "Sannadh samhlacha do ghnéithe dúchasacha AI."
@@ -6580,7 +6580,7 @@ msgid "AiPowered|Automatic Code Reviews"
 msgstr "Léirmheasanna Cóid Uathoibríoch"
 
 msgid "AiPowered|Block GitLab from processing your code and project data for AI-powered features by default. Your data stays private unless subgroups or projects individually opt in."
-msgstr ""
+msgstr "Bac a chur ar GitLab ó do chód agus do shonraí tionscadail a phróiseáil le haghaidh gnéithe atá faoi thiomáint ag AI de réir réamhshocraithe. Fanann do shonraí príobháideach mura roghnaíonn foghrúpaí nó tionscadail isteach ina n-aonar."
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr "Trí na gnéithe seo a chur ar siúl, glacann tú le %{linkStart}Comhaontú Tástála GitLab%{linkEnd}."
@@ -6619,10 +6619,10 @@ msgid "AiPowered|Contact sales for Duo Enterprise"
 msgstr "Déan teagmháil le díolacháin le haghaidh Duo Enterprise"
 
 msgid "AiPowered|Control whether AI-powered features are available."
-msgstr ""
+msgstr "Rialú an bhfuil gnéithe faoi thiomáint ag AI ar fáil."
 
 msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
-msgstr ""
+msgstr "Rialú an féidir le GitLab do chód agus do shonraí tionscadail a phróiseáil chun comhthéacs a sholáthar do ghnéithe atá faoi thiomáint ag AI."
 
 msgid "AiPowered|Direct connections"
 msgstr "Naisc dhíreacha"
@@ -6664,10 +6664,10 @@ msgid "AiPowered|Explore GitLab Duo Core"
 msgstr "Déan iniúchadh ar GitLab Duo Core"
 
 msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
-msgstr ""
+msgstr "Theip ar Ardán Gníomhaire GitLab Duo a dhíchumasú."
 
 msgid "AiPowered|Failed to enable GitLab Duo Agent Platform."
-msgstr ""
+msgstr "Theip ar Ardán Gníomhaire GitLab Duo a chumasú."
 
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr "Tá gnéithe ar fáil. Mar sin féin, is féidir le haon ghrúpa, foghrúpa nó tionscadal iad a mhúchadh."
@@ -6685,19 +6685,19 @@ msgid "AiPowered|Get started with GitLab Duo Core"
 msgstr "Tosaigh le GitLab Duo Core"
 
 msgid "AiPowered|GitLab Duo Agent Platform"
-msgstr ""
+msgstr "Ardán Gníomhaire GitLab Duo"
 
 msgid "AiPowered|GitLab Duo Agent Platform has successfully been turned off."
-msgstr ""
+msgstr "Tá Ardán Gníomhaire GitLab Duo múchta go rathúil."
 
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent in the Visual Studio Code (VS Code) IDE."
-msgstr ""
+msgstr "Is gníomhaire códaithe dúchasach d'Intleacht Shaorga é Ardán Gníomhaire GitLab Duo sa IDE Visual Studio Code (VS Code)."
 
 msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance and the service account (%{accountId}) was created. To use Agent Platform in your groups, you must turn on AI features for specific groups."
-msgstr ""
+msgstr "Tá Ardán Gníomhaire GitLab Duo ar siúl anois don chás agus cruthaíodh an cuntas seirbhíse (%{accountId}). Chun Ardán Gníomhaire a úsáid i do ghrúpaí, ní mór duit gnéithe AI a chasadh air do ghrúpaí sonracha."
 
 msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance. To use Agent Platform in your groups, you must turn on AI features for specific groups."
-msgstr ""
+msgstr "Tá Ardán Gníomhaire GitLab Duo ar siúl anois don chás. Chun Ardán Gníomhaire a úsáid i do ghrúpaí, ní mór duit gnéithe AI a chasadh air do ghrúpaí sonracha."
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
 msgstr "Chuaigh comhrá GitLab Duo Chat in éag"
@@ -6715,7 +6715,7 @@ msgid "AiPowered|GitLab Duo Self-Hosted"
 msgstr "GitLab Duo Féin-Óstach"
 
 msgid "AiPowered|GitLab Duo availability"
-msgstr ""
+msgstr "Infhaighteacht GitLab Duo"
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
 msgstr "Tá sannadh suíocháin GitLab Duo lonnaithe anois i socruithe GitLab Duo."
@@ -6742,7 +6742,7 @@ msgid "AiPowered|Local AI gateway URL"
 msgstr "URL geata áitiúil AI"
 
 msgid "AiPowered|Lock tooltip icon"
-msgstr ""
+msgstr "Deilbhín leid ghlasála"
 
 msgid "AiPowered|Might result in requests having higher latency."
 msgstr "D'fhéadfadh go mbeadh iarratais ag déanamh níos airde mar thoradh air."
@@ -6751,10 +6751,10 @@ msgid "AiPowered|Model Selection"
 msgstr "Roghnú Múnla"
 
 msgid "AiPowered|Monitor, manage, and customize AI-powered features to ensure efficient utilization and alignment."
-msgstr ""
+msgstr "Déan monatóireacht, bainistigh agus saincheap gnéithe faoi thiomáint na hintleachta saorga chun úsáid agus ailíniú éifeachtach a chinntiú."
 
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
-msgstr ""
+msgstr "Ná lig do GitLab riamh do chód agus do shonraí tionscadail a phróiseáil le haghaidh gnéithe atá faoi thiomáint ag AI. Ní sheolfar do shonraí chuig GitLab Duo áit ar bith sa spás ainm seo."
 
 msgid "AiPowered|Not enabled"
 msgstr "Gan chumasú"
@@ -16881,7 +16881,7 @@ msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline
 msgstr "Seachain píblínte comhlíonta nua a chruthú agus bain úsáid as polasaithe forghníomhaithe píblíne ina ionad sin. %{linkStart}Cuireann polasaithe feidhmithe píblíne%{linkEnd} an cumas ar fáil chun jabanna CI/CD a chur i bhfeidhm, scanadh slándála a dhéanamh, agus bainistiú níos fearr a dhéanamh ar fhorfheidhmiú comhlíonta sna píblínte."
 
 msgid "ComplianceReport|By %{name}"
-msgstr ""
+msgstr "Le %{name}"
 
 msgid "ComplianceReport|Change status"
 msgstr "Athraigh stádas"
@@ -16890,19 +16890,19 @@ msgid "ComplianceReport|Choose one bulk action"
 msgstr "Roghnaigh mórghníomh amháin"
 
 msgid "ComplianceReport|Click to check all projects"
-msgstr ""
+msgstr "Cliceáil chun gach tionscadal a sheiceáil"
 
 msgid "ComplianceReport|Compliance framework"
 msgstr "Creat comhlíonta"
 
 msgid "ComplianceReport|Compliance framework coverage"
-msgstr ""
+msgstr "Clúdach creat comhlíontachta"
 
 msgid "ComplianceReport|Compliance pipelines are deprecated"
 msgstr "Déantar píblínte comhlíonta a dhímheas"
 
 msgid "ComplianceReport|Controls"
-msgstr ""
+msgstr "Rialuithe"
 
 msgid "ComplianceReport|Create a new framework"
 msgstr "Creat nua a chruthú"
@@ -16926,13 +16926,13 @@ msgid "ComplianceReport|Edit the framework"
 msgstr "Cuir an creat in eagar"
 
 msgid "ComplianceReport|Failed"
-msgstr ""
+msgstr "Theip air"
 
 msgid "ComplianceReport|Failed to load the compliance violation. Refresh the page and try again."
-msgstr ""
+msgstr "Theip ar an sárú comhlíontachta a lódáil. Athnuaigh an leathanach agus déan iarracht eile."
 
 msgid "ComplianceReport|Failed to update compliance violation status. Please try again later."
-msgstr ""
+msgstr "Theip ar stádas sárú comhlíontachta a nuashonrú. Déan iarracht arís ar ball."
 
 msgid "ComplianceReport|Failed to update violation status. Please try again."
 msgstr "Theip ar stádas an tsáraithe a nuashonrú. Déan iarracht arís."
@@ -16947,13 +16947,13 @@ msgid "ComplianceReport|Frameworks have been successfully updated."
 msgstr "Rinneadh frámaí a nuashonrú go rathúil."
 
 msgid "ComplianceReport|Frameworks needs attention"
-msgstr ""
+msgstr "Ní mór aird a thabhairt ar chreatlacha"
 
 msgid "ComplianceReport|Full target branch name"
 msgstr "Ainm spriocbhrainse iomlán"
 
 msgid "ComplianceReport|Generic Audit event"
-msgstr ""
+msgstr "Imeacht Iniúchta Cineálach"
 
 msgid "ComplianceReport|Have questions or thoughts on the new improvements? %{linkStart}Please provide feedback on your experience%{linkEnd}."
 msgstr "An bhfuil ceisteanna nó smaointe agat faoi na feabhsuithe nua? %{linkStart}Tabhair aiseolas duit faoi do thaithí%{linkEnd} le do thoil."
@@ -16965,13 +16965,13 @@ msgid "ComplianceReport|Less than 2 approvers"
 msgstr "Níos lú ná 2 cheadaitheoirí"
 
 msgid "ComplianceReport|Location"
-msgstr ""
+msgstr "Suíomh"
 
 msgid "ComplianceReport|Migrate pipeline to a policy"
 msgstr "Píblíne a aistriú chuig polasaí"
 
 msgid "ComplianceReport|No audit event available"
-msgstr ""
+msgstr "Níl aon imeacht iniúchta ar fáil"
 
 msgid "ComplianceReport|No frameworks"
 msgstr "Gan aon chreataí"
@@ -16995,25 +16995,25 @@ msgid "ComplianceReport|Only group owners and maintainers can view the framework
 msgstr "Ní féidir ach le húinéirí grúpa agus le coimeádaithe sonraí an chreata a fheiceáil"
 
 msgid "ComplianceReport|Passed"
-msgstr ""
+msgstr "Ritheadh"
 
 msgid "ComplianceReport|Pending"
-msgstr ""
+msgstr "Ar feitheamh"
 
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr "Bain cumraíocht na píblíne comhlíonta ón gcreat comhlíonta le do thoil ionas gur féidir leis an mbeartas nua forghníomhaithe píblíne tosaíocht a fháil."
 
 msgid "ComplianceReport|Projects covered by frameworks"
-msgstr ""
+msgstr "Tionscadail atá clúdaithe ag creatlacha"
 
 msgid "ComplianceReport|Projects not covered by frameworks"
-msgstr ""
+msgstr "Tionscadail nach bhfuil cumhdaithe ag creatlacha"
 
 msgid "ComplianceReport|Remove frameworks from selected projects"
 msgstr "Bain creataí ó thionscadail roghnaithe"
 
 msgid "ComplianceReport|Requirements"
-msgstr ""
+msgstr "Riachtanais"
 
 msgid "ComplianceReport|Search target branch"
 msgstr "Cuardaigh brainse sprice"
@@ -17028,19 +17028,19 @@ msgid "ComplianceReport|Show old report"
 msgstr "Taispeáin sean-thuairisc"
 
 msgid "ComplianceReport|Start by adding a compliance framework to your group."
-msgstr ""
+msgstr "Tosaigh trí chreat comhlíontachta a chur le do ghrúpa."
 
 msgid "ComplianceReport|Status"
-msgstr ""
+msgstr "Stádas"
 
 msgid "ComplianceReport|There are no compliance frameworks."
-msgstr ""
+msgstr "Níl aon chreatlacha comhlíontachta ann."
 
 msgid "ComplianceReport|There are no controls."
-msgstr ""
+msgstr "Níl aon rialuithe ann."
 
 msgid "ComplianceReport|There are no requirements."
-msgstr ""
+msgstr "Níl aon cheanglais ann."
 
 msgid "ComplianceReport|There was a problem fetching compliance frameworks."
 msgstr "Bhí fadhb ann creatlacha comhlíontachta a fháil."
@@ -17058,7 +17058,7 @@ msgid "ComplianceReport|Unable to load the compliance violations report. Refresh
 msgstr "Ní féidir an tuarascáil sáruithe comhlíonta a luchtú. Athnuachan an leathanach agus déan iarracht arís."
 
 msgid "ComplianceReport|Unknown author"
-msgstr ""
+msgstr "Údar anaithnid"
 
 msgid "ComplianceReport|Update filtered results?"
 msgstr "Torthaí scagtha a nuashonrú?"
@@ -17073,7 +17073,7 @@ msgid "ComplianceReport|Violated control and framework"
 msgstr "Rialú agus creat sáraithe"
 
 msgid "ComplianceReport|Violation status updated successfully."
-msgstr ""
+msgstr "Nuashonraíodh stádas an tsáraithe go rathúil."
 
 msgid "ComplianceReport|We are replacing the violations report with a new version that includes enhanced features for your compliance workflow."
 msgstr "Táimid ag athsholáthar na tuarascála sáruithe le leagan nua lena n-áirítear gnéithe feabhsaithe do do shreabhadh oibre comhlíontachta."
@@ -17082,10 +17082,10 @@ msgid "ComplianceReport|You are viewing the compliance centre for %{project}. To
 msgstr "Tá tú ag féachaint ar an ionad comhlíonta le haghaidh %{project}. Chun eolas ar gach tionscadal a fheiceáil, téigh chuig %{linkStart}group%{linkEnd}."
 
 msgid "ComplianceReport|You can add controls for requirements inside the compliance framework."
-msgstr ""
+msgstr "Is féidir leat rialuithe a chur leis le haghaidh ceanglais laistigh den chreat comhlíontachta."
 
 msgid "ComplianceReport|You can add requirements inside the compliance framework."
-msgstr ""
+msgstr "Is féidir leat ceanglais a chur leis laistigh den chreat comhlíontachta."
 
 msgid "ComplianceReport|and %{count} more"
 msgstr "agus %{count} eile"
@@ -17870,7 +17870,7 @@ msgid "ComplianceViolation|Audit event captured"
 msgstr "Gabhadh imeacht iniúchta"
 
 msgid "ComplianceViolation|Control"
-msgstr ""
+msgstr "Rialú"
 
 msgid "ComplianceViolation|Detected"
 msgstr "Braiteadh"
@@ -17879,13 +17879,13 @@ msgid "ComplianceViolation|Dismissed"
 msgstr "Díbhe"
 
 msgid "ComplianceViolation|Fix suggestion generated for this failed control"
-msgstr ""
+msgstr "Moladh ceartúcháin a gineadh don rialú teipthe seo"
 
 msgid "ComplianceViolation|Framework"
-msgstr ""
+msgstr "Creat"
 
 msgid "ComplianceViolation|Go to project settings"
-msgstr ""
+msgstr "Téigh chuig socruithe tionscadail"
 
 msgid "ComplianceViolation|In review"
 msgstr "Á athbhreithniú"
@@ -17894,13 +17894,13 @@ msgid "ComplianceViolation|Registered event IP"
 msgstr "IP imeachta cláraithe"
 
 msgid "ComplianceViolation|Requirement"
-msgstr ""
+msgstr "Riachtanas"
 
 msgid "ComplianceViolation|Resolved"
 msgstr "Réitithe"
 
 msgid "ComplianceViolation|Violation created based on associated framework"
-msgstr ""
+msgstr "Sárú cruthaithe bunaithe ar chreatlach gaolmhar"
 
 msgid "Compliance|Framework deleted successfully"
 msgstr "Scriosta an creat go rathúil"
@@ -19577,7 +19577,7 @@ msgid "Could not create wiki template"
 msgstr "Níorbh fhéidir an teimpléad vicí a chruthú"
 
 msgid "Could not delete account nickname %{chat_name}."
-msgstr ""
+msgstr "Níorbh fhéidir leasainm an chuntais %{chat_name} a scriosadh."
 
 msgid "Could not delete the label %{labelName}. Please try again."
 msgstr "Ní fhéadfaí an lipéad %{labelName} a scriosadh. Bain triail as arís."
@@ -19787,7 +19787,7 @@ msgid "Create custom type"
 msgstr "Cruthaigh cineál saincheaptha"
 
 msgid "Create dynamic tables and lists powered by GitLab Query Language (GLQL) to track issues, epics, and merge requests in real time."
-msgstr ""
+msgstr "Cruthaigh táblaí agus liostaí dinimiciúla faoi thiomáint ag GitLab Query Language (GLQL) chun fadhbanna, eipiceanna agus iarratais chumasc a rianú i bhfíor-am."
 
 msgid "Create empty repository"
 msgstr "Cruthaigh stóras folamh"
@@ -21007,7 +21007,7 @@ msgid "DPoP preference updated."
 msgstr "Rogha DPoP nuashonraithe."
 
 msgid "DSA keys are considered deprecated."
-msgstr ""
+msgstr "Meastar gur eochracha DSA atá as feidhm."
 
 msgid "DSN"
 msgstr "DSN"
@@ -21061,7 +21061,7 @@ msgid "DastProfiles|/graphql"
 msgstr "/graphql"
 
 msgid "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted. Wildcard `*` can be used to match a dynamic URL."
-msgstr ""
+msgstr "URL a dhéantar i gcomparáid leis an URL sa bhrabhsálaí chun a chinneadh an ndearna an fhíordheimhniú a bheith rathúil tar éis an fhoirm logála isteach a chur isteach. Is féidir an cárta fiáin `*` a úsáid chun meaitseáil le URL dinimiciúil."
 
 msgid "DastProfiles|A comma-separated list of actions to take after login but before login verification. Supports `click` and `select` actions. See [Taking additional actions after submitting the login form](%{documentation_link})."
 msgstr "Liosta gníomhartha atá scartha le camóga le déanamh tar éis logáil isteach ach roimh fhíorú logála isteach. Tacaíonn sé le gníomhartha `cliceáil` agus `roghnaigh`. Féach [Gníomhartha breise a dhéanamh tar éis an fhoirm logála isteach a chur isteach](%{documentation_link})."
@@ -21091,13 +21091,13 @@ msgid "DastProfiles|A selector describing the element clicked on to submit the l
 msgstr "Chliceáil roghnóir a dhéanann cur síos ar an eilimint chun an fhoirm logáil isteach le haghaidh foirm logáil isteach aon-leathanaigh a chur isteach, nó an fhoirm pasfhocail le haghaidh foirm logáil isteach illeathanaigh."
 
 msgid "DastProfiles|A selector describing the element that is clicked on to submit the OTP form when it is separate from the username."
-msgstr ""
+msgstr "Roghnóir a chuireann síos ar an eilimint a gclicítear uirthi chun an fhoirm OTP a chur isteach nuair atá sí ar leithligh ón ainm úsáideora."
 
 msgid "DastProfiles|A selector describing the element that is clicked on to submit the username form of a multi-page login process."
 msgstr "Roghnóir a dhéanann cur síos ar an eilimint a bhfuil cliceáil air chun an fhoirm ainm úsáideora de phróiseas logáil isteach il-leathanaigh a chur isteach."
 
 msgid "DastProfiles|A selector describing the element used to enter the one-time password on the login form."
-msgstr ""
+msgstr "Roghnóir ina ndéantar cur síos ar an eilimint a úsáidtear chun an pasfhocal aonuaire a iontráil ar an bhfoirm logála isteach."
 
 msgid "DastProfiles|A selector describing the element used to enter the password on the login form."
 msgstr "Roghnóir a dhéanann cur síos ar an eilimint a úsáidtear chun an focal faire a chur isteach ar an bhfoirm logáil isteach."
@@ -21421,10 +21421,10 @@ msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to
 msgstr "Líon na n-oibrithe a dhéanann scanadh éighníomhach go comhthreomhar. Réamhshocruithe le líon na LAP atá ar fáil."
 
 msgid "DastProfiles|OTP field"
-msgstr ""
+msgstr "Réimse OTP"
 
 msgid "DastProfiles|OTP secret key"
-msgstr ""
+msgstr "Eochair rúnda OTP"
 
 msgid "DastProfiles|OTP submit field"
 msgstr ""

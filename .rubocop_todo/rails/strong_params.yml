@@ -251,7 +251,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/groups/dependencies_controller.rb'
     - 'ee/app/controllers/groups/epic_boards_controller.rb'
     - 'ee/app/controllers/groups/epic_issues_controller.rb'
-    - 'ee/app/controllers/groups/epics/epic_links_controller.rb'
     - 'ee/app/controllers/groups/epics/notes_controller.rb'
     - 'ee/app/controllers/groups/epics_controller.rb'
     - 'ee/app/controllers/groups/hook_logs_controller.rb'

@@ -154,7 +154,7 @@ The file finder uses fuzzy search and highlights results as you type.
 To search for a file, press <kbd>t</kbd> anywhere in your project, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. In the upper right, select **Find file**.
 1. On the dialog, start entering the filename:
 
