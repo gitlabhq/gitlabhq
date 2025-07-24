@@ -54,9 +54,6 @@ export default {
     ciJob() {
       return this.info.ciJob;
     },
-    hasMetadata() {
-      return !isEmpty(this.candidate.metadata);
-    },
     hasParameters() {
       return !isEmpty(this.candidate.params);
     },
@@ -115,7 +112,6 @@ export default {
     performanceLabel: s__('MlExperimentTracking|Performance'),
     noParametersMessage: s__('MlExperimentTracking|No logged parameters'),
     noMetricsMessage: s__('MlExperimentTracking|No logged metrics'),
-    noMetadataMessage: s__('MlExperimentTracking|No logged metadata'),
     noCiMessage: s__('MlExperimentTracking|Run not linked to a CI build'),
     noArtifactsMessage: s__('MlExperimentTracking|No logged artifacts.'),
     copyMessage: __('Copy MLflow run ID'),

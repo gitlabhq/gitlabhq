@@ -28,3 +28,8 @@ Rails/OutputSafety:
   Details: grace period
   Exclude:
     - 'lib/gitlab/utils.rb'
+
+Gitlab/UseParamKeyForConvertingClassName:
+  Enabled: true
+  Exclude:
+    - 'lib/gitlab/utils.rb'

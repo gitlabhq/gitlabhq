@@ -1,4 +1,4 @@
-import { GlIcon, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlPopover, GlSkeletonLoader, GlAvatarsInline } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -108,6 +108,25 @@ describe('IssuePopover component', () => {
         startDate: '2020-07-01',
         dueDate: '2020-07-30',
       });
+    });
+
+    it('shows assignees', () => {
+      const workItemAssignees = workItem.widgets.find((w) => w.type === 'ASSIGNEES').assignees
+        .nodes;
+      const assignees = wrapper.findComponent(GlAvatarsInline);
+      expect(assignees.exists()).toBe(true);
+      expect(assignees.props()).toEqual(
+        expect.objectContaining({
+          avatars: expect.arrayContaining([
+            {
+              src: workItemAssignees[0].avatarUrl,
+              alt: workItemAssignees[0].name,
+            },
+          ]),
+          avatarSize: 16,
+          maxVisible: 2,
+        }),
+      );
     });
   });
 

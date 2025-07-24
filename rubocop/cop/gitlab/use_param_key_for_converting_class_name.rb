@@ -16,15 +16,14 @@ module RuboCop
       #   # good
       #   class Example
       #     def class_name
-      #       ::Gitlab::Utils::ClassNameConverter.new(self).string_representation
+      #       Gitlab::Utils.param_key(self)
       #     end
       #   end
       #
-      class UseClassNameConverter < RuboCop::Cop::Base
+      class UseParamKeyForConvertingClassName < RuboCop::Cop::Base
         extend AutoCorrector
 
-        MSG = 'Use `::Gitlab::Utils::ClassNameConverter.new(%<receiver>s).string_representation` ' \
-          'instead of `%<original>s`.'
+        MSG = 'Use `::Gitlab::Utils::param_key(%<receiver>s)` instead of `%<original>s`.'
 
         RESTRICT_ON_SEND = %i[tr].freeze
 
@@ -60,7 +59,7 @@ module RuboCop
             node,
             message: format(MSG, receiver: receiver_source, original: original_source)
           ) do |corrector|
-            replacement = "::Gitlab::Utils::ClassNameConverter.new(#{receiver_source}).string_representation"
+            replacement = "::Gitlab::Utils::param_key(#{receiver_source})"
             corrector.replace(node, replacement)
           end
         end

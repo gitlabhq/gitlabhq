@@ -411,6 +411,11 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d more assignee"
+msgid_plural "%d more assignees"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d more comment"
 msgid_plural "%d more comments"
 msgstr[0] ""
@@ -27248,9 +27253,6 @@ msgstr ""
 msgid "FeatureFlags|Inactive"
 msgstr ""
 
-msgid "FeatureFlags|Inactive flag for %{scope}"
-msgstr ""
-
 msgid "FeatureFlags|Install a %{docsLinkAnchoredStart}compatible client library%{docsLinkAnchoredEnd} and specify the API URL, application name, and instance ID during the configuration setup. %{docsLinkStart}More Information%{docsLinkEnd}"
 msgstr ""
 
@@ -40169,9 +40171,6 @@ msgid "MlExperimentTracking|No logged artifacts."
 msgstr ""
 
 msgid "MlExperimentTracking|No logged experiment metadata"
-msgstr ""
-
-msgid "MlExperimentTracking|No logged metadata"
 msgstr ""
 
 msgid "MlExperimentTracking|No logged metrics"
@@ -71759,6 +71758,9 @@ msgstr ""
 msgid "WorkItem|Reset template"
 msgstr ""
 
+msgid "WorkItem|Resources"
+msgstr ""
+
 msgid "WorkItem|Rose"
 msgstr ""
 
@@ -72090,6 +72092,9 @@ msgid "WorkItem|You don't have the necessary permission to view the ancestors."
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
+msgstr ""
+
+msgid "WorkItem|Zoom link"
 msgstr ""
 
 msgid "WorkItem|at risk"

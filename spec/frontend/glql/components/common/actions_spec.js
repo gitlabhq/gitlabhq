@@ -28,8 +28,7 @@ describe('GlqlActions', () => {
     expect(findDropdown().exists()).toBe(true);
   });
 
-  it('sets correct tooltip and text for dropdown', () => {
-    expect(findDropdown().attributes('title')).toBe('Embedded view options');
+  it('sets correct text for dropdown', () => {
     expect(findDropdown().props('toggleText')).toBe('Embedded view options');
   });
 

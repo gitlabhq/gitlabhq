@@ -1731,6 +1731,7 @@ export const workItemResponseFactory = ({
   errorTrackingWidgetPresent = true,
   hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
+  linkedResourcesWidgetPresent = true,
   crmContactsWidgetPresent = true,
   emailParticipantsWidgetPresent = true,
   colorWidgetPresent = true,
@@ -2079,6 +2080,21 @@ export const workItemResponseFactory = ({
           : { type: 'MOCK TYPE' },
         linkedItemsWidgetPresent
           ? { ...linkedItems, blockingCount, blockedByCount }
+          : { type: 'MOCK TYPE' },
+        linkedResourcesWidgetPresent
+          ? {
+              type: 'LINKED_RESOURCES',
+              linkedResources: {
+                nodes: [
+                  {
+                    url: 'http://zoom.example.com/j/1234567890?pwd=abcdefghijklmnopqrstuvwxyz',
+                    __typename: 'WorkItemLinkedResource',
+                  },
+                ],
+                __typename: 'WorkItemLinkedResourceConnection',
+              },
+              __typename: 'WorkItemWidgetLinkedResources',
+            }
           : { type: 'MOCK TYPE' },
         colorWidgetPresent
           ? {

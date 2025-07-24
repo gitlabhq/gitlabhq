@@ -1263,37 +1263,166 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
   describe '#get_commit_signatures' do
     let(:project) { create(:project, :test_repo) }
-
-    it 'returns commit signatures for specified commit ids', :aggregate_failures do
-      without_signature = "e63f41fe459e62e1228fcef60d7189127aeba95a" # has no signature
-
-      signed_by_user = [
+    let(:without_signature) { "e63f41fe459e62e1228fcef60d7189127aeba95a" } # has no signature
+    let(:signed_by_user) do
+      [
         "a17a9f66543673edf0a3d1c6b93bdda3fe600f32", # has signature
         "7b5160f9bb23a3d58a0accdbe89da13b96b1ece9"  # SSH signature
       ]
+    end
+    let(:large_signed_text) { "8cf8e80a5a0546e391823c250f2b26b9cf15ce88" } # has signature and commit message > 4MB
 
-      large_signed_text = "8cf8e80a5a0546e391823c250f2b26b9cf15ce88" # has signature and commit message > 4MB
-
-      signatures = client.get_commit_signatures(
-        [without_signature, large_signed_text, *signed_by_user]
-      )
-
-      expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
-
-      [large_signed_text, *signed_by_user].each do |commit_id|
-        expect(signatures[commit_id][:signature]).to be_present
-        expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
-        expect(signatures[commit_id][:author_email]).to be_present
+    context 'when committer_email feature flag is enabled' do
+      before do
+        stub_feature_flags(committer_email: true)
       end
 
-      signed_by_user.each do |commit_id|
-        commit = project.commit(commit_id)
-        expect(signatures[commit_id][:signed_text]).to include(commit.message)
-        expect(signatures[commit_id][:signed_text]).to include(commit.description)
-        expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
+      it 'returns commit signatures with committer email for specified commit ids', :aggregate_failures do
+        signatures = client.get_commit_signatures(
+          [without_signature, large_signed_text, *signed_by_user]
+        )
+
+        expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
+
+        [large_signed_text, *signed_by_user].each do |commit_id|
+          expect(signatures[commit_id][:signature]).to be_present
+          expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+          expect(signatures[commit_id][:author_email]).to be_present
+          expect(signatures[commit_id][:committer_email]).to be_present
+        end
+
+        signed_by_user.each do |commit_id|
+          commit = project.commit(commit_id)
+          expect(signatures[commit_id][:signed_text]).to include(commit.message)
+          expect(signatures[commit_id][:signed_text]).to include(commit.description)
+          expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
+          expect(signatures[commit_id][:committer_email]).to eq(commit.committer_email)
+        end
+
+        expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
       end
 
-      expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
+      context 'when committer email is present in Gitaly response' do
+        it 'includes committer email in the signature' do
+          # Mock Gitaly response with committer email
+          allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
+            [
+              Gitaly::GetCommitSignaturesResponse.new(
+                commit_id: signed_by_user.first,
+                signature: 'test-signature',
+                signed_text: 'test-signed-text',
+                signer: :SIGNER_USER,
+                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+                committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
+              )
+            ]
+          end
+
+          signatures = client.get_commit_signatures([signed_by_user.first])
+
+          expect(signatures[signed_by_user.first][:committer_email]).to eq('committer@example.com')
+        end
+      end
+    end
+
+    context 'when committer_email feature flag is disabled' do
+      before do
+        stub_feature_flags(committer_email: false)
+      end
+
+      it 'returns commit signatures without committer email for specified commit ids', :aggregate_failures do
+        signatures = client.get_commit_signatures(
+          [without_signature, large_signed_text, *signed_by_user]
+        )
+
+        expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
+
+        [large_signed_text, *signed_by_user].each do |commit_id|
+          expect(signatures[commit_id][:signature]).to be_present
+          expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+          expect(signatures[commit_id][:author_email]).to be_present
+          expect(signatures[commit_id][:committer_email]).to eq(''.b) # Empty binary string when feature flag is disabled
+        end
+
+        signed_by_user.each do |commit_id|
+          commit = project.commit(commit_id)
+          expect(signatures[commit_id][:signed_text]).to include(commit.message)
+          expect(signatures[commit_id][:signed_text]).to include(commit.description)
+          expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
+          expect(signatures[commit_id][:committer_email]).to eq(''.b) # Empty binary string when feature flag is disabled
+        end
+
+        expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
+      end
+
+      context 'when committer email is present in Gitaly response' do
+        it 'does not include committer email in the signature when feature flag is disabled' do
+          # Mock Gitaly response with committer email
+          allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
+            [
+              Gitaly::GetCommitSignaturesResponse.new(
+                commit_id: signed_by_user.first,
+                signature: 'test-signature',
+                signed_text: 'test-signed-text',
+                signer: :SIGNER_USER,
+                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+                committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
+              )
+            ]
+          end
+
+          signatures = client.get_commit_signatures([signed_by_user.first])
+
+          expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
+        end
+      end
+    end
+
+    describe 'presence logic edge cases' do
+      before do
+        allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
+          [
+            Gitaly::GetCommitSignaturesResponse.new(
+              commit_id: signed_by_user.first,
+              signature: 'test-signature',
+              signed_text: 'test-signed-text',
+              signer: :SIGNER_USER,
+              author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+              committer: committer
+            )
+          ]
+        end
+      end
+
+      context 'when committer is nil' do
+        let(:committer) { nil }
+
+        it 'does not populate committer email' do
+          signatures = client.get_commit_signatures([signed_by_user.first])
+
+          expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
+        end
+      end
+
+      context 'when committer email is nil' do
+        let(:committer) { Gitaly::CommitAuthor.new(email: nil) }
+
+        it 'does not populate committer email' do
+          signatures = client.get_commit_signatures([signed_by_user.first])
+
+          expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
+        end
+      end
+
+      context 'when committer email is empty string' do
+        let(:committer) { Gitaly::CommitAuthor.new(email: '') }
+
+        it 'does not populate committer email' do
+          signatures = client.get_commit_signatures([signed_by_user.first])
+
+          expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
+        end
+      end
     end
   end
 

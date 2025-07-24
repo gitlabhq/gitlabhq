@@ -47,10 +47,8 @@ module SortingHelper
   def projects_sort_options_hash
     options = {
       sort_value_latest_activity => sort_title_latest_activity,
-      sort_value_recently_created => sort_title_created_date,
       sort_value_name => sort_title_name,
       sort_value_name_desc => sort_title_name_desc,
-      sort_value_stars_desc => sort_title_stars,
       sort_value_oldest_activity => sort_title_oldest_activity,
       sort_value_oldest_created => sort_title_oldest_created,
       sort_value_recently_created => sort_title_recently_created,

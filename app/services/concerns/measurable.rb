@@ -54,6 +54,6 @@ module Measurable
   end
 
   def service_class
-    ::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation
+    ::Gitlab::Utils.param_key(self.class)
   end
 end

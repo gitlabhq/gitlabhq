@@ -141,7 +141,6 @@ describe('WorkItemActions component', () => {
     hideSubscribe = undefined,
     hasChildren = false,
     canCreateRelatedItem = true,
-    workItemsBeta = true,
     parentId = null,
     projectId = 'gid://gitlab/Project/1',
     namespaceFullName = 'GitLab.org / GitLab Test',
@@ -193,7 +192,6 @@ describe('WorkItemActions component', () => {
       provide: {
         glFeatures: {
           okrsMvc,
-          workItemsBeta,
         },
         hasOkrsFeature,
       },

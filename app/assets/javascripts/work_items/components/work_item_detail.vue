@@ -44,6 +44,7 @@ import {
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
@@ -130,6 +131,7 @@ export default {
     WorkItemNotes,
     WorkItemRelationships,
     WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
+    WorkItemLinkedResources: () => import('~/work_items/components/work_item_linked_resources.vue'),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -276,20 +278,6 @@ export default {
         },
       },
     },
-    allowedChildTypes: {
-      query: getAllowedWorkItemChildTypes,
-      variables() {
-        return {
-          id: this.workItem.id,
-        };
-      },
-      skip() {
-        return !this.workItem?.id;
-      },
-      update(data) {
-        return findHierarchyWidgetDefinition(data.workItem)?.allowedChildTypes?.nodes || [];
-      },
-    },
     workspacePermissions: {
       query: workspacePermissionsQuery,
       variables() {
@@ -415,6 +403,9 @@ export default {
     },
     workItemErrorTracking() {
       return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
+    },
+    workItemLinkedResources() {
+      return this.findWidget(WIDGET_TYPE_LINKED_RESOURCES)?.linkedResources.nodes ?? [];
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -596,6 +587,18 @@ export default {
       return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
   },
+  watch: {
+    'workItem.id': {
+      immediate: true,
+      async handler(newId) {
+        // Update allowedChildTypes using manual query instead of a smart query to prevent cache inconsistency (issue: #521771)
+        const { workItem } = await this.fetchAllowedChildTypes(newId);
+        this.allowedChildTypes = workItem
+          ? findHierarchyWidgetDefinition(workItem)?.allowedChildTypes?.nodes
+          : [];
+      },
+    },
+  },
   beforeDestroy() {
     document.removeEventListener('actioncable:reconnected', this.refetchIfStale);
   },
@@ -604,6 +607,20 @@ export default {
     document.addEventListener('actioncable:reconnected', this.refetchIfStale);
   },
   methods: {
+    async fetchAllowedChildTypes(workItemId) {
+      if (!workItemId) return { workItem: null };
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getAllowedWorkItemChildTypes,
+          variables: { id: workItemId },
+        });
+
+        return data;
+      } catch (error) {
+        return { workItem: null };
+      }
+    },
     handleWorkItemCreated() {
       this.$apollo.queries.workItem.refetch();
     },
@@ -1188,6 +1205,11 @@ export default {
                 v-if="workItemErrorTracking.identifier"
                 :full-path="workItemFullPath"
                 :iid="iid"
+              />
+
+              <work-item-linked-resources
+                v-if="workItemLinkedResources.length"
+                :linked-resources="workItemLinkedResources"
               />
 
               <design-widget

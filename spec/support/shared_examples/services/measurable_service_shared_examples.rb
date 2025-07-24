@@ -27,6 +27,6 @@ RSpec.shared_examples 'measurable service' do
   end
 
   def described_class_name
-    ::Gitlab::Utils::ClassNameConverter.new(described_class).string_representation
+    ::Gitlab::Utils.param_key(described_class)
   end
 end

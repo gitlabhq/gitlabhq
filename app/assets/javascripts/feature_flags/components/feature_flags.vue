@@ -60,7 +60,6 @@ export default {
       'pageInfo',
       'isLoading',
       'hasError',
-      'options',
       'instanceId',
       'isRotating',
       'hasRotateError',
@@ -85,9 +84,6 @@ export default {
     },
     shouldRenderErrorState() {
       return this.hasError && !this.isLoading;
-    },
-    shouldRenderFeatureFlags() {
-      return !this.isLoading && this.featureFlags.length > 0 && !this.hasError;
     },
     hasNewPath() {
       return !isEmpty(this.newFeatureFlagPath);

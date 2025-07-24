@@ -272,6 +272,6 @@ RSpec.shared_examples 'a model including Escalatable' do
   private
 
   def factory_from_class(klass)
-    ::Gitlab::Utils::ClassNameConverter.new(klass).string_representation
+    ::Gitlab::Utils.param_key(klass)
   end
 end

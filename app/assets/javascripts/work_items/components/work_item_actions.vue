@@ -724,7 +724,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="glFeatures.workItemsBeta && canReportSpam"
+          v-if="canReportSpam"
           :item="submitAsSpamItem"
           data-testid="submit-as-spam-item"
         />

@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -49,15 +50,17 @@ export default {
         },
       ].filter(identity);
     },
+    moreActionsTooltip() {
+      return !this.isDropdownVisible ? __('Embedded view options') : '';
+    },
   },
 };
 </script>
 <template>
   <div class="gl-inline-flex gl-self-start gl-align-middle">
     <gl-disclosure-dropdown
-      v-gl-tooltip
+      v-gl-tooltip.top.viewport="moreActionsTooltip"
       class="glql-actions"
-      :title="__('Embedded view options')"
       :items="items"
       :toggle-id="toggleId"
       :no-caret="true"
@@ -67,6 +70,8 @@ export default {
       :toggle-text="__('Embedded view options')"
       text-sr-only
       placement="bottom-end"
+      @shown="isDropdownVisible = true"
+      @hidden="isDropdownVisible = false"
     />
   </div>
 </template>

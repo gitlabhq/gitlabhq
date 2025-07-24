@@ -1416,10 +1416,8 @@ RSpec/Dialect:
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173889#note_2232088196
   Enabled: false
 
-Gitlab/UseClassNameConverter:
+Gitlab/UseParamKeyForConvertingClassName:
   Enabled: true
-  Exclude:
-    - 'lib/gitlab/utils/class_name_converter.rb'
 
 Gitlab/NoHelpersInPresenters:
   Enabled: true

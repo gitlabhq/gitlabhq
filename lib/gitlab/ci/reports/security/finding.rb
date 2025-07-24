@@ -8,6 +8,18 @@ module Gitlab
           include ::VulnerabilityFindingHelpers
           include Gitlab::Utils::StrongMemoize
 
+          REQUIRED_KEYS = %i[
+            identifiers
+            location
+            metadata_version
+            name
+            original_data
+            report_type
+            scanner
+            scan
+            uuid
+          ].freeze
+
           attr_reader :confidence
           attr_reader :identifiers
           attr_reader :flags
@@ -33,28 +45,34 @@ module Gitlab
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          def initialize(identifiers:, location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, flags: [], links: [], remediations: [], confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists -- TODO: Reduce number of parameters in this function
-            @confidence = confidence
-            @identifiers = identifiers
-            @flags = flags
-            @links = links
-            @location = location
-            @evidence = evidence
-            @metadata_version = metadata_version
-            @name = name
-            @original_data = original_data
-            @report_type = report_type
-            @scanner = scanner
-            @scan = scan
-            @severity = severity
-            @uuid = uuid
-            @remediations = remediations
-            @details = details
-            @signatures = signatures
-            @project_id = project_id
-            @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
-            @found_by_pipeline = found_by_pipeline
-            @cvss = cvss
+          def initialize(**args)
+            missing_keys = REQUIRED_KEYS.filter { |key| !args.key?(key) }
+
+            if missing_keys.present?
+              raise ArgumentError, "missing keys: #{missing_keys.join(', ')}"
+            end
+
+            @confidence = args[:confidence]
+            @identifiers = args[:identifiers]
+            @flags = args.fetch(:flags, [])
+            @links = args.fetch(:links, [])
+            @location = args[:location]
+            @evidence = args[:evidence]
+            @metadata_version = args[:metadata_version]
+            @name = args[:name]
+            @original_data = args[:original_data]
+            @report_type = args[:report_type]
+            @scanner = args[:scanner]
+            @scan = args[:scan]
+            @severity = args[:severity]
+            @uuid = args[:uuid]
+            @remediations = args.fetch(:remediations, [])
+            @details = args.fetch(:details, {})
+            @signatures = args.fetch(:signatures, [])
+            @project_id = args[:project_id]
+            @vulnerability_finding_signatures_enabled = args.fetch(:vulnerability_finding_signatures_enabled, false)
+            @found_by_pipeline = args[:found_by_pipeline]
+            @cvss = args.fetch(:cvss, [])
           end
 
           def to_hash

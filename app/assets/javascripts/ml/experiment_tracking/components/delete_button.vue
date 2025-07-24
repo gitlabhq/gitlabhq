@@ -39,7 +39,6 @@ export default {
   },
   data() {
     return {
-      isDeleteModalVisible: false,
       modal: {
         id: 'ml-experiments-delete-modal',
         deleteConfirmation: this.deleteConfirmationText,

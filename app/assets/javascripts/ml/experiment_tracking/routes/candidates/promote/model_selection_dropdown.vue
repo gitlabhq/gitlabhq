@@ -52,6 +52,7 @@ export default {
     return {
       term: '',
       searchModelsResult: [],
+      // eslint-disable-next-line vue/no-unused-properties -- project is part of the component's public API.
       project: null,
     };
   },

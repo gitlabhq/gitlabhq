@@ -111,14 +111,16 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     expect(badge.text()).toBe('New');
   });
 
-  it('shows a GLQL popover that is visible by default', () => {
+  it('shows a GLQL popover that is visible on editor focus', async () => {
     buildWrapper();
+    await emitEditorEvent({ event: 'focus', tiptapEditor });
 
     expect(wrapper.text()).toContain('Introducing embedded views');
   });
 
   it('saves the value in local storage when popover is hidden', async () => {
     buildWrapper();
+    await emitEditorEvent({ event: 'focus', tiptapEditor });
 
     await wrapper.findComponent(GlPopover).vm.$emit('hidden');
 
@@ -129,6 +131,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     localStorage.setItem('glql-popover-visible', 'false');
 
     buildWrapper();
+    await emitEditorEvent({ event: 'focus', tiptapEditor });
     await nextTick();
 
     expect(wrapper.text()).not.toContain('Introducing embedded views');

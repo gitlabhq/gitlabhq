@@ -10,31 +10,10 @@ class QueueBackfillPushEventPayloadsProjectId < Gitlab::Database::Migration[2.2]
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :push_event_payloads,
-      :event_id,
-      :project_id,
-      :events,
-      :project_id,
-      :event_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because the original migration failed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2425371444)
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :push_event_payloads,
-      :event_id,
-      [
-        :project_id,
-        :events,
-        :project_id,
-        :event_id
-      ]
-    )
+    # no-op because the original migration failed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2425371444)
   end
 end

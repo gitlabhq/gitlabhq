@@ -303,8 +303,8 @@ export default {
           is-collapsible
           :collapsed="isCollapsed"
           persist-collapsed-state
-          class="!gl-mt-5 !gl-overflow-hidden"
-          :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview }"
+          class="!gl-mt-5"
+          :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview, '!gl-overflow-hidden': true }"
           @collapsed="isCollapsed = true"
           @expanded="isCollapsed = false"
         >

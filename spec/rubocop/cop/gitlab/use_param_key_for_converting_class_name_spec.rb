@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require_relative '../../../../rubocop/cop/gitlab/use_class_name_converter'
+require_relative '../../../../rubocop/cop/gitlab/use_param_key_for_converting_class_name'
 
-RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_category: :shared do
+RSpec.describe RuboCop::Cop::Gitlab::UseParamKeyForConvertingClassName, :config, feature_category: :shared do
   describe 'offense detection' do
     it 'registers an offense for name.underscore.tr pattern' do
       expect_offense(<<~RUBY)
         class Example
           def class_name
             self.name.underscore.tr('/', '_')
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(self).string_representation` instead of `self.name.underscore.tr('/', '_')`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(self)` instead of `self.name.underscore.tr('/', '_')`.
           end
         end
       RUBY
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
         class Example
           def class_name
             self.class.name.underscore.tr('/', '_')
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation` instead of `self.class.name.underscore.tr('/', '_')`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(self.class)` instead of `self.class.name.underscore.tr('/', '_')`.
           end
         end
       RUBY
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
         def example
           klass = SomeClass
           klass.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(klass).string_representation` instead of `klass.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(klass)` instead of `klass.name.underscore.tr('/', '_')`.
         end
       RUBY
     end
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_offense(<<~RUBY)
         def example
           get_class.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(get_class).string_representation` instead of `get_class.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(get_class)` instead of `get_class.name.underscore.tr('/', '_')`.
         end
       RUBY
     end
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_offense(<<~RUBY)
         def example
           MyClass.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(MyClass).string_representation` instead of `MyClass.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(MyClass)` instead of `MyClass.name.underscore.tr('/', '_')`.
         end
       RUBY
     end
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_no_offenses(<<~RUBY)
         class Example
           def class_name
-            ::Gitlab::Utils::ClassNameConverter.new(self).string_representation
+            ::Gitlab::Utils::param_key(self)
           end
         end
       RUBY
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
         class Example
           def class_name
             self.name.underscore.tr('/', '_')
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(self).string_representation` instead of `self.name.underscore.tr('/', '_')`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(self)` instead of `self.name.underscore.tr('/', '_')`.
           end
         end
       RUBY
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_correction(<<~RUBY)
         class Example
           def class_name
-            ::Gitlab::Utils::ClassNameConverter.new(self).string_representation
+            ::Gitlab::Utils::param_key(self)
           end
         end
       RUBY
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
         class Example
           def class_name
             self.class.name.underscore.tr('/', '_')
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation` instead of `self.class.name.underscore.tr('/', '_')`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(self.class)` instead of `self.class.name.underscore.tr('/', '_')`.
           end
         end
       RUBY
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_correction(<<~RUBY)
         class Example
           def class_name
-            ::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation
+            ::Gitlab::Utils::param_key(self.class)
           end
         end
       RUBY
@@ -182,14 +182,14 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
         def example
           klass = SomeClass
           klass.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(klass).string_representation` instead of `klass.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(klass)` instead of `klass.name.underscore.tr('/', '_')`.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         def example
           klass = SomeClass
-          ::Gitlab::Utils::ClassNameConverter.new(klass).string_representation
+          ::Gitlab::Utils::param_key(klass)
         end
       RUBY
     end
@@ -198,13 +198,13 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_offense(<<~RUBY)
         def example
           get_class.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(get_class).string_representation` instead of `get_class.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(get_class)` instead of `get_class.name.underscore.tr('/', '_')`.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         def example
-          ::Gitlab::Utils::ClassNameConverter.new(get_class).string_representation
+          ::Gitlab::Utils::param_key(get_class)
         end
       RUBY
     end
@@ -213,13 +213,13 @@ RSpec.describe RuboCop::Cop::Gitlab::UseClassNameConverter, :config, feature_cat
       expect_offense(<<~RUBY)
         def example
           MyClass.name.underscore.tr('/', '_')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::ClassNameConverter.new(MyClass).string_representation` instead of `MyClass.name.underscore.tr('/', '_')`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `::Gitlab::Utils::param_key(MyClass)` instead of `MyClass.name.underscore.tr('/', '_')`.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         def example
-          ::Gitlab::Utils::ClassNameConverter.new(MyClass).string_representation
+          ::Gitlab::Utils::param_key(MyClass)
         end
       RUBY
     end

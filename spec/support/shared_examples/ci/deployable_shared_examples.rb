@@ -741,7 +741,7 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   def factory_type
-    ::Gitlab::Utils::ClassNameConverter.new(described_class).string_representation
+    ::Gitlab::Utils.param_key(described_class)
   end
 end
 # rubocop:enable Layout/LineLength

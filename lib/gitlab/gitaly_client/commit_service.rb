@@ -548,7 +548,8 @@ module Gitlab
             signature: +''.b,
             signed_text: +''.b,
             signer: :SIGNER_UNSPECIFIED,
-            author_email: +''.b
+            author_email: +''.b,
+            committer_email: +''.b
           }
         end
 
@@ -559,7 +560,12 @@ module Gitlab
 
           signatures[current_commit_id][:signature] << message.signature
           signatures[current_commit_id][:signed_text] << message.signed_text
-          signatures[current_commit_id][:author_email] << message.author.email if message.author.present?
+
+          signatures[current_commit_id][:author_email] << message.author.email if message.author&.email.present?
+
+          if Feature.enabled?(:committer_email, repository_container) && message.committer&.email.present?
+            signatures[current_commit_id][:committer_email] << message.committer.email
+          end
 
           # The actual value is send once. All the other chunks send SIGNER_UNSPECIFIED
           signatures[current_commit_id][:signer] = message.signer unless message.signer == :SIGNER_UNSPECIFIED

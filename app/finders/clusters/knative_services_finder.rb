@@ -80,7 +80,7 @@ module Clusters
     end
 
     def model_name
-      ::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation
+      ::Gitlab::Utils.param_key(self.class)
     end
 
     private

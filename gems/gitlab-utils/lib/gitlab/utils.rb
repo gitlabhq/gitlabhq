@@ -68,6 +68,13 @@ module Gitlab
         .gsub(/(\A[-.]+|[-.]+\z)/, '')
     end
 
+    # Converts a class into the string representation of its name, following the ActiveModel naming convention
+    # https://api.rubyonrails.org/classes/ActiveModel/Naming.html#method-c-param_key
+    # param_key(Ci::SecureFile) returns "ci_secure_file"
+    def param_key(klass)
+      klass.name.underscore.tr('/', '_')
+    end
+
     # Converts newlines into HTML line break elements
     def nlbr(str)
       ActionView::Base.full_sanitizer.sanitize(+str, tags: []).gsub(/\r?\n/, '<br>').html_safe
