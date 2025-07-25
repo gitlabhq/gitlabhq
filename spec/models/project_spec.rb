@@ -3073,10 +3073,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '.include_integration' do
     it 'avoids n + 1', :aggregate_failures do
-      create(:prometheus_integration)
-      run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
+      create(:confluence_integration)
+      run_test = -> { described_class.include_integration(:confluence_integration).map(&:confluence_integration) }
       control = ActiveRecord::QueryRecorder.new { run_test.call }
-      create(:prometheus_integration)
+      create(:confluence_integration)
 
       expect(run_test.call.count).to eq(2)
       expect { run_test.call }.not_to exceed_query_limit(control)
@@ -7624,8 +7624,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'with disabled integrations' do
       before do
-        allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover teamcity])
-        allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+        allow(Integration).to receive(:available_integration_names).and_return(%w[zentao pushover teamcity])
+        allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
       end
 
       it 'returns only enabled integrations sorted' do
@@ -7653,19 +7653,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#find_or_initialize_integration' do
     it 'avoids N+1 database queries' do
-      allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover])
+      allow(Integration).to receive(:available_integration_names).and_return(%w[asana pushover])
 
-      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('asana') }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
 
-      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control)
+      expect { subject.find_or_initialize_integration('asana') }.not_to exceed_query_limit(control)
     end
 
     it 'returns nil if integration is disabled' do
-      allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+      allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
 
-      expect(subject.find_or_initialize_integration('prometheus')).to be_nil
+      expect(subject.find_or_initialize_integration('zentao')).to be_nil
     end
 
     it 'returns nil if integration does not exist' do
@@ -7676,28 +7676,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { create(:project) }
 
       before do
-        create(:prometheus_integration, project: subject, api_url: 'https://prometheus.project.com/')
+        create(:confluence_integration, project: subject, confluence_url: 'https://project.atlassian.net/wiki')
       end
 
       it 'retrieves the integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.project.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://project.atlassian.net/wiki')
       end
     end
 
     context 'with an instance-level integration' do
       before do
-        create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
+        create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
       end
 
       it 'builds the integration from the instance integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.instance.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://instance.atlassian.net/wiki')
       end
     end
 
     context 'without an existing integration or instance-level' do
       it 'builds the integration' do
-        expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil
+        expect(subject.find_or_initialize_integration('confluence')).to be_a(::Integrations::Confluence)
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to be_nil
       end
     end
 

@@ -2377,6 +2377,30 @@ Input type: `AiCatalogFlowCreateInput`
 | <a id="mutationaicatalogflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogflowcreateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Item created. |
 
+### `Mutation.aiCatalogFlowDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogFlowDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogflowdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog flow was successfully deleted. |
+
 ### `Mutation.aiCatalogFlowUpdate`
 
 {{< details >}}

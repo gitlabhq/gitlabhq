@@ -23850,7 +23850,8 @@ CREATE TABLE snippet_statistics (
     file_count bigint DEFAULT 0 NOT NULL,
     commit_count bigint DEFAULT 0 NOT NULL,
     snippet_project_id bigint,
-    snippet_organization_id bigint
+    snippet_organization_id bigint,
+    CONSTRAINT check_4240d2eb99 CHECK ((num_nonnulls(snippet_organization_id, snippet_project_id) = 1))
 );
 
 CREATE TABLE snippet_uploads (

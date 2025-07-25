@@ -13198,6 +13198,9 @@ msgstr ""
 msgid "CiCatalog|There was an error fetching the CI/CD Catalog project count."
 msgstr ""
 
+msgid "CiCatalog|This catalog contains third-party content. Use of this content is subject to the relevant content provider's terms of use. GitLab does not control and has no liability for third-party content."
+msgstr ""
+
 msgid "CiCatalog|This component project can only be viewed by project members."
 msgstr ""
 

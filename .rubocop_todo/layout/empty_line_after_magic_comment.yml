@@ -306,7 +306,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/gitlab/spamcheck/client.rb'
     - 'lib/gitlab/tracking/destinations/snowplow_micro.rb'
     - 'lib/gitlab/utils/mime_type.rb'
-    - 'lib/gitlab/x509/commit.rb'
     - 'lib/gitlab/x509/signature.rb'
     - 'lib/gitlab/x509/tag.rb'
     - 'lib/security/report_schema_version_matcher.rb'

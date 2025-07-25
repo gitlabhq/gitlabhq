@@ -115,6 +115,20 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
     end
   end
 
+  describe 'legal disclaimer' do
+    before do
+      visit explore_catalog_index_path
+    end
+
+    it 'does not show legal disclaimer' do
+      expect(page).not_to have_content('This catalog contains third-party content')
+      expect(page).not_to have_content(
+        'Use of this content is subject to the relevant content provider\'s terms of use.'
+      )
+      expect(page).not_to have_content('GitLab does not control and has no liability for third-party content')
+    end
+  end
+
   describe 'Search and sorting' do
     before do
       visit explore_catalog_index_path

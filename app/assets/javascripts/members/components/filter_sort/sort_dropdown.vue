@@ -48,9 +48,6 @@ export default {
     },
   },
   methods: {
-    isActive(key) {
-      return this.activeOption.key === key;
-    },
     handleSortDirectionChange() {
       visitUrl(
         buildSortHref({

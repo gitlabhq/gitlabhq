@@ -15,7 +15,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
   }
 
   const { dataset } = el;
-  const { ciCatalogPath, reportAbusePath } = dataset;
+  const { ciCatalogPath, reportAbusePath, legalDisclaimer } = dataset;
 
   Vue.use(VueApollo);
 
@@ -31,6 +31,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     provide: {
       ciCatalogPath,
       reportAbusePath,
+      legalDisclaimer,
     },
     render(h) {
       return h(GlobalCatalog);
