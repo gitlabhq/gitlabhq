@@ -1646,7 +1646,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
-    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace) }
+    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:archived_ancestor).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[
@@ -1707,6 +1708,62 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           merge_trains_skip_train_allowed
           restrict_pipeline_cancellation_role
         ]
+      end
+    end
+
+    describe '#archived_ancestor' do
+      let_it_be_with_reload(:root_namespace) { create(:group) }
+      let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }
+      let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
+      let_it_be_with_reload(:project) { create(:project, namespace: child_namespace) }
+
+      context 'when no ancestors are archived' do
+        it 'returns nil' do
+          expect(project.archived_ancestor).to be_nil
+        end
+      end
+
+      context 'when one ancestor is archived' do
+        before do
+          parent_namespace.update!(archived: true)
+        end
+
+        it 'returns the archived ancestor' do
+          expect(project.archived_ancestor).to eq(parent_namespace)
+        end
+      end
+
+      context 'when multiple ancestors are archived' do
+        before do
+          root_namespace.update!(archived: true)
+          parent_namespace.update!(archived: true)
+        end
+
+        it 'returns the first archived ancestor closest to the project' do
+          expect(project.archived_ancestor).to eq(parent_namespace)
+        end
+      end
+
+      context 'when the project itself is archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it 'does not return itself, only ancestors' do
+          expect(project.archived_ancestor).to be_nil
+        end
+      end
+
+      context 'with mixed archived and non-archived ancestors' do
+        before do
+          root_namespace.update!(archived: true)
+          # parent_namespace remains non-archived
+          child_namespace.update!(archived: true)
+        end
+
+        it 'returns the first archived ancestor closest to the project' do
+          expect(project.archived_ancestor).to eq(child_namespace)
+        end
       end
     end
 
@@ -8471,30 +8528,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when project has no associated LFS objects' do
       it 'returns empty array' do
         expect(subject).to be_empty
-      end
-    end
-  end
-
-  describe '#prometheus_integration_active?' do
-    let(:project) { create(:project) }
-
-    subject { project.prometheus_integration_active? }
-
-    before do
-      create(:prometheus_integration, project: project, manual_configuration: manual_configuration)
-    end
-
-    context 'when project has an activated prometheus integration' do
-      let(:manual_configuration) { true }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when project has an inactive prometheus integration' do
-      let(:manual_configuration) { false }
-
-      it 'the integration is marked as inactive' do
-        expect(subject).to be_falsey
       end
     end
   end

@@ -125,7 +125,7 @@ title: Application Settings analysis
 | `default_syntax_highlighting_theme` | `false` | `integer` | `integer` | `true` | `1` | `false` | `false`| `true` |
 | `delete_inactive_projects` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `delete_unconfirmed_users` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
-| `deletion_adjourned_period` | `false` | `integer` | `integer` | `true` | `7` | `false` | `false`| `true` |
+| `deletion_adjourned_period` | `false` | `integer` | `integer` | `true` | `30` | `false` | `false`| `true` |
 | `deny_all_requests_except_allowed` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `dependency_proxy_ttl_group_policy_worker_capacity` | `false` | `smallint` | `` | `true` | `2` | `false` | `false`| `false` |
 | `diagramsnet_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |

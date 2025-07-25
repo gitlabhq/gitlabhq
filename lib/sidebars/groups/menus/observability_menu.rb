@@ -7,20 +7,24 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless feature_enabled?
+          return false unless feature_enabled? || o11y_settings_access_enabled?
 
-          add_item(services_menu_item)
-          add_item(traces_explorer_menu_item)
-          add_item(logs_explorer_menu_item)
-          add_item(metrics_explorer_menu_item)
-          add_item(infrastructure_monitoring_menu_item)
-          add_item(dashboard_menu_item)
-          add_item(messaging_queues_menu_item)
-          add_item(api_monitoring_menu_item)
-          add_item(alerts_menu_item)
-          add_item(exceptions_menu_item)
-          add_item(service_map_menu_item)
-          add_item(settings_menu_item)
+          if context.group.observability_group_o11y_setting&.persisted?
+            add_item(services_menu_item)
+            add_item(traces_explorer_menu_item)
+            add_item(logs_explorer_menu_item)
+            add_item(metrics_explorer_menu_item)
+            add_item(infrastructure_monitoring_menu_item)
+            add_item(dashboard_menu_item)
+            add_item(messaging_queues_menu_item)
+            add_item(api_monitoring_menu_item)
+            add_item(alerts_menu_item)
+            add_item(exceptions_menu_item)
+            add_item(service_map_menu_item)
+            add_item(settings_menu_item)
+          end
+
+          add_item(o11y_settings_menu_item) if o11y_settings_access_enabled?
 
           true
         end
@@ -61,6 +65,10 @@ module Sidebars
 
         def feature_enabled?
           ::Feature.enabled?(:observability_sass_features, context.group)
+        end
+
+        def o11y_settings_access_enabled?
+          ::Feature.enabled?(:o11y_settings_access, context.current_user)
         end
 
         def services_menu_item
@@ -204,6 +212,18 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :settings,
             container_html_options: { class: 'shortcuts-settings' }
+          )
+        end
+
+        def o11y_settings_menu_item
+          link = edit_group_observability_o11y_service_settings_path(context.group)
+          ::Sidebars::MenuItem.new(
+            title: s_('Observability|O11y Service Settings'),
+            link: link,
+            active_routes: { page: link },
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
+            item_id: :o11y_settings,
+            container_html_options: { class: 'shortcuts-o11y-settings' }
           )
         end
       end

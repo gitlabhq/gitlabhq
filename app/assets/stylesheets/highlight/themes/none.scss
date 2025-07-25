@@ -319,5 +319,12 @@ $none-code-mark: #d3e3f4;
   .vg { color: $gl-color-neutral-800; } /* Name.Variable.Global */
   .vi { color: $gl-color-neutral-800; } /* Name.Variable.Instance */
   .il { color: $gl-color-neutral-800; } /* Literal.Number.Integer.Long */
+}
 
+#conflicts {
+  .line_content.header {
+    button {
+      color: $gray-900;
+    }
+  }
 }

@@ -9,7 +9,7 @@ class ApplicationSetting < ApplicationRecord
   include Gitlab::EncryptedAttribute
   include SafelyChangeColumnDefault
 
-  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled
+  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 

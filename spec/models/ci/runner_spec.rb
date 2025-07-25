@@ -158,22 +158,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
-    it { is_expected.to validate_presence_of(:sharding_key_id) }
     it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
 
     context 'when runner is instance type' do
       let(:runner) { build(:ci_runner, :instance_type) }
 
       it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id is present' do
-        let(:runner) { build(:ci_runner, :instance_type, sharding_key_id: non_existing_record_id) }
-
-        it 'is invalid' do
-          expect(runner).to be_invalid
-          expect(runner.errors.full_messages).to contain_exactly('Runner cannot have sharding_key_id assigned')
-        end
-      end
 
       context 'when organization_id is present' do
         let(:runner) { build(:ci_runner, :instance_type, organization_id: non_existing_record_id) }
@@ -1677,7 +1667,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     shared_examples 'a group runner encrypted token' do |prefix|
       let(:runner_type) { :group_type }
-      let(:attrs) { { groups: [group], sharding_key_id: group.id } }
+      let(:attrs) { { groups: [group], organization_id: group.organization_id } }
 
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { group }
@@ -1686,7 +1676,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     shared_examples 'a project runner encrypted token' do |prefix|
       let(:runner_type) { :project_type }
-      let(:attrs) { { projects: [project], sharding_key_id: project.id } }
+      let(:attrs) { { projects: [project], organization_id: project.organization_id } }
 
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { project }
@@ -1927,6 +1917,30 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect { ensure_manager }
           .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
             .from([]).to([runner.organization_id])
+      end
+
+      context 'when runner sharding_key_id is not NULL' do
+        before do
+          runner.update!(sharding_key_id: runner.owner.id)
+        end
+
+        it "populates with runner's sharding_key_id" do
+          expect { ensure_manager }
+            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
+              .from([]).to([runner.sharding_key_id])
+        end
+      end
+
+      context 'when runner sharding_key_id is NULL' do
+        before do
+          runner.update!(sharding_key_id: nil)
+        end
+
+        it 'populates a bogus sharding_key_id' do
+          expect { ensure_manager }
+            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
+              .from([]).to([-1])
+        end
       end
     end
 

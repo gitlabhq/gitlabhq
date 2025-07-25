@@ -4,9 +4,9 @@ attr: deletion_adjourned_period
 clusterwide: false
 column: deletion_adjourned_period
 db_type: integer
-default: '7'
+default: '30'
 description: Number of days to wait before deleting a project or group that is marked
-  for deletion. Value must be between `1` and `90`. Defaults to `7`.
+  for deletion. Value must be between `1` and `90`. Defaults to `30`.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

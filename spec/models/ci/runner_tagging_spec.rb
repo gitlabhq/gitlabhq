@@ -10,40 +10,7 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:runner_type) }
-    it { is_expected.to validate_presence_of(:sharding_key_id) }
     it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
-
-    describe 'sharding_key_id' do
-      subject(:runner_tagging) { runner.taggings.first }
-
-      context 'when runner_type is instance_type' do
-        let(:runner) { create(:ci_runner, :instance, tag_list: ['postgres']) }
-
-        it { is_expected.to be_valid }
-
-        context 'and sharding_key_id is not nil' do
-          before do
-            runner_tagging.sharding_key_id = group.id
-          end
-
-          it { is_expected.to be_invalid }
-        end
-      end
-
-      context 'when runner_type is group_type' do
-        let(:runner) { create(:ci_runner, :group, groups: [group], tag_list: ['postgres']) }
-
-        it { is_expected.to be_valid }
-
-        context 'and sharding_key_id is nil' do
-          before do
-            runner_tagging.sharding_key_id = nil
-          end
-
-          it { is_expected.to be_invalid }
-        end
-      end
-    end
 
     describe 'organization_id' do
       subject(:runner_tagging) { runner.taggings.first }

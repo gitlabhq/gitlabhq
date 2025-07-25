@@ -421,3 +421,5 @@ $solarized-light-il: #2aa198;
   .vi { color: $solarized-light-vi; } /* Name.Variable.Instance */
   .il { color: $solarized-light-il; } /* Literal.Number.Integer.Long */
 }
+
+@include merge-conflicts-syntax-highlight-theme('solarized-light');

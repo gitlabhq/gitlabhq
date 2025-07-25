@@ -35,6 +35,12 @@ $bottom-padding: $gl-spacing-scale-6;
 }
 
 .tree-holder {
+  .repo-breadcrumb {
+    li {
+      min-width: $gl-spacing-scale-9;
+    }
+  } 
+
   .nav-block {
     margin: $gl-spacing-scale-2 0 $gl-spacing-scale-5;
 

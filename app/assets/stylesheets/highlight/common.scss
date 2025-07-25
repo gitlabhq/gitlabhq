@@ -142,3 +142,69 @@
     }
   }
 }
+
+/**
+* Extends values from syntax highlight themes for merge conflict view.
+*/
+@mixin merge-conflicts-syntax-highlight-theme($theme) {
+  #conflicts {
+    .header.line_content,
+    .diff-line-num {
+      &.origin {
+        background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+
+        &.selected {
+          background-color: map-get($conflict-colors, #{$theme}-header-origin-chosen);
+          border-color: map-get($conflict-colors, #{$theme}-header-origin-chosen);
+        }
+
+        &.unselected {
+          background-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+          border-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+        }
+      }
+
+      &.head {
+        background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+
+        &.selected {
+          background-color: map-get($conflict-colors, #{$theme}-header-head-chosen);
+          border-color: map-get($conflict-colors, #{$theme}-header-head-chosen);
+        }
+
+        &.unselected {
+          background-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+          border-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+        }
+      }
+    }
+
+    .line_content {
+      &.origin {
+        background-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
+
+        &.selected {
+          background-color: map-get($conflict-colors, #{$theme}-line-origin-chosen);
+        }
+
+        &.unselected {
+          background-color: map-get($conflict-colors, #{$theme}-line-not-chosen);
+        }
+      }
+
+      &.head {
+        background-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
+
+        &.selected {
+          background-color: map-get($conflict-colors, #{$theme}-line-head-chosen);
+        }
+
+        &.unselected {
+          background-color: map-get($conflict-colors, #{$theme}-line-not-chosen);
+        }
+      }
+    }
+  }
+}

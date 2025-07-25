@@ -33,6 +33,19 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     end
   end
 
+  context "with only unit test changes" do
+    let(:mr_diff) do
+      [
+        { path: "spec/features/test_spec.rb", diff: "" },
+        { path: "ee/spec/features/another_test_spec.rb", diff: "" }
+      ]
+    end
+
+    it ".only_changes_to_non_e2e_spec_files? returns true" do
+      expect(qa_changes.only_changes_to_non_e2e_spec_files?).to be(true)
+    end
+  end
+
   context "with framework changes" do
     let(:mr_diff) { [{ path: "qa/qa.rb" }] }
 
@@ -74,6 +87,10 @@ RSpec.describe QA::Tools::Ci::QaChanges do
 
     it ".qa_tests returns empty array" do
       expect(qa_changes.qa_tests).to eq([])
+    end
+
+    it ".only_changes_to_non_e2e_spec_files? returns false" do
+      expect(qa_changes.only_changes_to_non_e2e_spec_files?).to be(false)
     end
   end
 

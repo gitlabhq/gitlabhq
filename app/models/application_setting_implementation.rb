@@ -31,7 +31,7 @@ module ApplicationSettingImplementation
   ].freeze
 
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
-  DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 7
+  DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 30
 
   class_methods do
     def defaults # rubocop:disable Metrics/AbcSize

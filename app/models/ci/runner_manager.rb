@@ -55,7 +55,6 @@ module Ci
     validates :runner, presence: true
     validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
-    validates :sharding_key_id, presence: true, on: :create, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :version, length: { maximum: 2048 }
     validates :revision, length: { maximum: 255 }
@@ -65,7 +64,6 @@ module Ci
     validates :config, json_schema: { filename: 'ci_runner_config' }
     validates :runtime_features, json_schema: { filename: 'ci_runner_runtime_features' }
 
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at,
@@ -191,10 +189,6 @@ module Ci
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
-    end
-
-    def no_sharding_key_id
-      errors.add(:runner_manager, 'cannot have sharding_key_id assigned') if sharding_key_id
     end
 
     def no_organization_id

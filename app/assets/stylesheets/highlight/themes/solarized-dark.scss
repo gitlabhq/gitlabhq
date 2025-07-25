@@ -444,3 +444,5 @@ $solarized-dark-il: #2aa198;
   .vi { color: $solarized-dark-vi; } /* Name.Variable.Instance */
   .il { color: $solarized-dark-il; } /* Literal.Number.Integer.Long */
 }
+
+@include merge-conflicts-syntax-highlight-theme('solarized-dark');

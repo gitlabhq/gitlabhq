@@ -14,19 +14,6 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu, feature_c
 
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
-    expect(items.map(&:item_id)).to eq([
-      :services,
-      :traces_explorer,
-      :logs_explorer,
-      :metrics_explorer,
-      :infrastructure_monitoring,
-      :dashboard,
-      :messaging_queues,
-      :api_monitoring,
-      :alerts,
-      :exceptions,
-      :service_map,
-      :settings
-    ])
+    expect(items.map(&:item_id)).to eq([:o11y_settings])
   end
 end

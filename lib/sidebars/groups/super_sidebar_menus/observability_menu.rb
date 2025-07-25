@@ -17,20 +17,7 @@ module Sidebars
 
         override :configure_menu_items
         def configure_menu_items
-          [
-            :services,
-            :traces_explorer,
-            :logs_explorer,
-            :metrics_explorer,
-            :infrastructure_monitoring,
-            :dashboard,
-            :messaging_queues,
-            :api_monitoring,
-            :alerts,
-            :exceptions,
-            :service_map,
-            :settings
-          ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
+          add_item(::Sidebars::NilMenuItem.new(item_id: :o11y_settings))
         end
       end
     end

@@ -34,7 +34,7 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/ap
 
 ## Documentation
 
-Each new or updated API endpoint must come with documentation, unless it is internal or behind a feature flag.
+Each new or updated API endpoint must come with documentation.
 The docs should be in the same merge request, or, if strictly necessary,
 in a follow-up with the same milestone as the original merge request.
 

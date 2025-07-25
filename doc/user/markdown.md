@@ -1757,6 +1757,27 @@ This example only works when [rendered in GitLab](https://gitlab.com/gitlab-org/
 - `HSL(540,70%,50%)`
 - `HSLA(540,70%,50%,0.3)`
 
+### Escape color codes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/359069) in GitLab 18.3.
+
+{{< /history >}}
+
+To display a color code as inline code without generating a color chip, prefix it with a backslash (`` \ ``).
+
+For example:
+
+- `\#FF0000`
+- `\RGB(255,0,0)`
+- `\HSL(0,100%,50%)`
+
+In all cases, the backslash is removed, and no color chip is rendered in the output.
+
+This is especially useful when you want to include values like issue numbers in inline code
+without accidentally triggering a color chip.
+
 ## Emoji
 
 You can use emoji anywhere GitLab Flavored Markdown is supported.

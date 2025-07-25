@@ -37239,9 +37239,6 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-msgid "Legacy Prometheus integrations cannot currently be removed"
-msgstr ""
-
 msgid "Legacy Web IDE"
 msgstr ""
 

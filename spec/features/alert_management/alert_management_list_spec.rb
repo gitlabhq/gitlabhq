@@ -47,7 +47,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
     end
 
     context 'when the prometheus integration is enabled' do
-      let_it_be(:integration) { create(:prometheus_integration, project: project) }
+      let_it_be(:integration) { create(:alert_management_prometheus_integration, project: project) }
 
       it_behaves_like 'alert page with title, filtered search, and table'
     end

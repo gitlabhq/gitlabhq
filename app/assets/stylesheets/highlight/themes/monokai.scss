@@ -418,3 +418,5 @@ $monokai-gh: #75715e;
   .gi { color: $monokai-gi; } /* Generic.Inserted & Diff Inserted */
   .gh { color: $monokai-gh; } /* Generic.Heading */
 }
+
+@include merge-conflicts-syntax-highlight-theme('monokai');

@@ -1687,7 +1687,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/pagination_helper_spec.rb'
     - 'spec/helpers/preferred_language_switcher_helper_spec.rb'
     - 'spec/helpers/programming_languages_helper_spec.rb'
-    - 'spec/helpers/projects/alert_management_helper_spec.rb'
     - 'spec/helpers/projects/error_tracking_helper_spec.rb'
     - 'spec/helpers/projects/google_cloud/cloudsql_helper_spec.rb'
     - 'spec/helpers/projects/incidents_helper_spec.rb'

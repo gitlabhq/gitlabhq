@@ -83,7 +83,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_syntax_highlighting_theme: 1,
-        deletion_adjourned_period: 7,
+        deletion_adjourned_period: 30,
         deny_all_requests_except_allowed: false,
         dependency_proxy_ttl_group_policy_worker_capacity: 2,
         diagramsnet_enabled: true,

@@ -430,6 +430,10 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.archived?
   end
 
+  def archived_ancestor
+    ancestors(hierarchy_order: :asc, skope: Namespace).archived.first
+  end
+
   def self_or_ancestors_archived?
     if association(:namespace_settings_with_ancestors_inherited_settings).loaded? &&
         namespace_settings_with_ancestors_inherited_settings

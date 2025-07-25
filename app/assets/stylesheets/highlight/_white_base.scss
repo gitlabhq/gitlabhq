@@ -469,3 +469,5 @@ $white-gc-bg: #eaf2f5;
   .gc { color: $white-gc-color;
     background-color: $white-gc-bg; }
 }
+
+@include merge-conflicts-syntax-highlight-theme('white');

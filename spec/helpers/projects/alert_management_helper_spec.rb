@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AlertManagementHelper do
+RSpec.describe Projects::AlertManagementHelper, feature_category: :incident_management do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project, reload: true) { create(:project) }
@@ -44,30 +44,6 @@ RSpec.describe Projects::AlertManagementHelper do
           'text-query': nil,
           'assignee-username-query': nil
         )
-      end
-    end
-
-    context 'with prometheus integration' do
-      let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-
-      context 'when manual prometheus integration is active' do
-        it "enables alert management" do
-          prometheus_integration.update!(manual_configuration: true)
-
-          expect(data).to include(
-            'alert-management-enabled' => 'true'
-          )
-        end
-      end
-
-      context 'when prometheus service is inactive' do
-        it 'disables alert management' do
-          prometheus_integration.update!(manual_configuration: false)
-
-          expect(data).to include(
-            'alert-management-enabled' => 'false'
-          )
-        end
       end
     end
 

@@ -739,11 +739,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryduoworkflowworkflowsenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, e.g., ide or web. |
-| <a id="queryduoworkflowworkflowsprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project containing the workflows. |
-| <a id="queryduoworkflowworkflowssort"></a>`sort` | [`Sort`](#sort) | Sort workflows by the criteria. |
-| <a id="queryduoworkflowworkflowstype"></a>`type` | [`String`](#string) | Type of workflow to filter by (e.g., software_development). |
-| <a id="queryduoworkflowworkflowsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Workflow ID to filter by. |
+| <a id="queryduoworkflowworkflowsenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, for example, IDE or web. |
+| <a id="queryduoworkflowworkflowsprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project that contains the flows. |
+| <a id="queryduoworkflowworkflowssort"></a>`sort` | [`Sort`](#sort) | Sort flows by the criteria. |
+| <a id="queryduoworkflowworkflowstype"></a>`type` | [`String`](#string) | Type of flow to filter by (for example, software_development). |
+| <a id="queryduoworkflowworkflowsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Flow ID to filter by. |
 
 ### `Query.echo`
 
@@ -38104,6 +38104,26 @@ Returns [`Deployment`](#deployment).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectdeploymentiid"></a>`iid` | [`ID!`](#id) | Project-level internal ID of the Deployment. |
+
+##### `Project.duoWorkflowWorkflows`
+
+GitLab Duo Agent Platform flows for a project, for all users (remote execution only).
+
+Returns [`DuoWorkflowConnection`](#duoworkflowconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectduoworkflowworkflowsenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, for example, IDE or web. |
+| <a id="projectduoworkflowworkflowsprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project that contains the flows. |
+| <a id="projectduoworkflowworkflowssort"></a>`sort` | [`Sort`](#sort) | Sort flows by the criteria. |
+| <a id="projectduoworkflowworkflowstype"></a>`type` | [`String`](#string) | Type of flow to filter by (for example, software_development). |
+| <a id="projectduoworkflowworkflowsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Flow ID to filter by. |
 
 ##### `Project.environment`
 

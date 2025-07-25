@@ -31,34 +31,39 @@ namespace :ci do
     end
 
     diff = mr_diff
-    qa_changes = QA::Tools::Ci::QaChanges.new(diff)
+    changes = QA::Tools::Ci::QaChanges.new(diff)
     tests = []
 
     if diff.empty?
       logger.info("No changed file diff provided, full test suite will be executed")
     else
-      noop_pipeline = qa_changes.quarantine_changes? || qa_changes.only_spec_removal?
+      noop = changes.quarantine_changes? || changes.only_spec_removal? || changes.only_changes_to_non_e2e_spec_files?
 
-      if noop_pipeline && !run_all_label_present
-        if qa_changes.quarantine_changes?
+      if noop && !run_all_label_present
+        if changes.quarantine_changes?
           logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
           next pipeline_creator.create_noop(reason: "no-op run, only quarantine changes detected in merge request")
         end
 
-        if qa_changes.only_spec_removal?
+        if changes.only_spec_removal?
           logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
-          next pipeline_creator.create_noop(reason: "no-op run, only spec removal detected in merge request")
+          next pipeline_creator.create_noop(reason: "no-op run, only e2e spec removal detected in merge request")
+        end
+
+        if changes.only_changes_to_non_e2e_spec_files?
+          logger.info("Merge request contains only non e2e test changes, e2e test execution will be skipped!")
+          next pipeline_creator.create_noop(reason: "no-op run, only non e2e test changes detected in merge request")
         end
       end
 
       feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch
       # on run-all label or framework changes do not infer specific tests
-      run_all_tests = run_all_label_present || qa_changes.framework_changes? || !feature_flags_changes.nil?
-      tests = qa_changes.qa_tests unless run_all_tests
+      run_all_tests = run_all_label_present || changes.framework_changes? || !feature_flags_changes.nil?
+      tests = changes.qa_tests unless run_all_tests
 
       if run_all_label_present
         logger.info("Merge request has pipeline:run-all-e2e label, full test suite will be executed")
-      elsif qa_changes.framework_changes? # run all tests when framework changes detected
+      elsif changes.framework_changes? # run all tests when framework changes detected
         logger.info("Merge request contains qa framework changes, full test suite will be executed")
       elsif tests.any?
         logger.info("Following specs were selected for execution: '#{tests}'")
@@ -80,7 +85,7 @@ namespace :ci do
 
     pipelines_for_selective_improved = [:test_on_gdk]
     logger.warn("*** Recreating #{pipelines_for_selective_improved} using spec list based on coverage mappings ***")
-    tests_from_mapping = qa_changes.qa_tests(from_code_path_mapping: true)
+    tests_from_mapping = changes.qa_tests(from_code_path_mapping: true)
 
     logger.info("Following specs were selected for execution: '#{tests_from_mapping}'")
     begin

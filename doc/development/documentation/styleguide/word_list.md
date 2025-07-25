@@ -1905,6 +1905,22 @@ like deleting private projects, or adding users to them.
 
 - You can only create private projects.
 
+## optional
+
+If something is optional, such as a command argument, parameter value,
+or a file, use `Optional` followed by a period. For optional topics,
+append `(optional)` to the topic title.
+
+For example:
+
+```markdown
+### This is a topic (optional)
+
+- `value`: Optional. Use it to do something.
+```
+
+Follow the same guidance for [optional task steps](_index.md#optional-steps).
+
 ## override
 
 Use **override** to indicate temporary replacement.

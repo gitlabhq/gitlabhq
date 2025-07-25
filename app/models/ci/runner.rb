@@ -28,8 +28,8 @@ module Ci
         if: ->(token_owner_record) { token_owner_record.owner },
         payload: {
           o: ->(token_owner_record) { token_owner_record.owner.try(:organization_id) },
-          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
-          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
+          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.owner.id : nil },
+          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.owner.id : nil },
           u: ->(token_owner_record) { token_owner_record.creator_id },
           t: ->(token_owner_record) { token_owner_record.partition_id }
         }
@@ -243,7 +243,6 @@ module Ci
     scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints
-    validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
@@ -252,7 +251,6 @@ module Ci
     validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
@@ -549,8 +547,10 @@ module Ci
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
-        m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
+
+        # Use a bogus sharding_key_id instead of copying a potentially NULL value from the runner
+        m.sharding_key_id = instance_type? ? nil : (sharding_key_id || -1)
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
@@ -650,10 +650,6 @@ module Ci
         errors.add(:tags_list,
           "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
       end
-    end
-
-    def no_sharding_key_id
-      errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
     end
 
     def no_organization_id

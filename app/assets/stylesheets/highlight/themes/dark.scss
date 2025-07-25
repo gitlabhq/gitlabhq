@@ -432,3 +432,5 @@ $dark-il: #de935f;
   .vi { color: $dark-vi; } /* Name.Variable.Instance */
   .il { color: $dark-il; } /* Literal.Number.Integer.Long */
 }
+
+@include merge-conflicts-syntax-highlight-theme('dark');

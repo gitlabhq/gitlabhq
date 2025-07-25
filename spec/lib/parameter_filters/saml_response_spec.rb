@@ -29,7 +29,8 @@ RSpec.describe ParameterFilters::SamlResponse, feature_category: :system_access 
         session_index: "_be9967abd904ddcae3c0eb4189adbe3f71e327cf93",
         status_code: "urn:oasis:names:tc:SAML:2.0:status:Success",
         status_message: nil,
-        success: true
+        success: true,
+        session_expires_at: Time.parse("2024-07-17T09:01:48Z")
       })
 
       log_saml_values
