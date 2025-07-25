@@ -377,6 +377,23 @@ To define the retry interval for failed namespaces:
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
 1. Select **Save changes**.
 
+## Run Zoekt on a separate server
+
+{{< history >}}
+
+- Authentication for Zoekt [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389749) in GitLab 16.3.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To run Zoekt on a different server than GitLab:
+
+1. [Change the Gitaly listening interface](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface).
+1. [Install Zoekt](#install-zoekt).
+
 ## Sizing recommendations
 
 The following recommendations might be over-provisioned for some deployments.
@@ -461,22 +478,61 @@ For example, if your Gitaly storage is 1 TB, you might need approximately 500 GB
 To monitor the use of Zoekt nodes, see [check indexing status](#check-indexing-status).
 If namespaces are not being indexed due to low disk space, consider adding or scaling up nodes.
 
-## Run Zoekt on a separate server
+## Security and authentication
+
+Zoekt implements a multi-layered authentication system to secure communication
+between GitLab, Zoekt indexer, and Zoekt webserver components.
+Authentication is enforced across all communication channels.
+
+All authentication methods use the GitLab Shell secret.
+Failed authentication attempts return `401 Unauthorized` responses.
+
+### Zoekt indexer to GitLab
+
+The Zoekt indexer authenticates to GitLab with JSON web tokens (JWT)
+to retrieve indexing tasks and send completion callbacks.
+
+This method uses `.gitlab_shell_secret` for signing and verification.
+Tokens are sent in the `Gitlab-Shell-Api-Request` header.
+Endpoints include:
+
+- `GET /internal/search/zoekt/:uuid/heartbeat` for task retrieval
+- `POST /internal/search/zoekt/:uuid/callback` for status updates
+
+This method ensures secure polling for task distribution and
+status reporting between Zoekt indexer nodes and GitLab.
+
+### GitLab to the Zoekt webserver
+
+#### JWT authentication
 
 {{< history >}}
 
-- Authentication for Zoekt [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389749) in GitLab 16.3.
+- JWT authentication [introduced](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/releases/v1.0.0) in GitLab Zoekt 1.0.0.
 
 {{< /history >}}
 
-Prerequisites:
+GitLab authenticates to the Zoekt webserver with JSON web tokens (JWT)
+to execute search queries.
+JWT tokens provide time-limited, cryptographically signed authentication
+consistent with other GitLab authentication patterns.
 
-- You must have administrator access to the instance.
+This method uses `Gitlab::Shell.secret_token` and the HS256 algorithm (HMAC with SHA-256).
+Tokens are sent in the `Authorization: Bearer <jwt_token>` header
+and expire in five minutes to limit exposure.
 
-To run Zoekt on a different server than GitLab:
+Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`.
+JWT claims are the issuer (`gitlab`) and the audience (`gitlab-zoekt`).
 
-1. [Change the Gitaly listening interface](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface).
-1. [Install Zoekt](#install-zoekt).
+#### Basic authentication
+
+GitLab authenticates to the Zoekt webserver with HTTP basic authentication
+through NGINX to execute search queries.
+Basic authentication is used primarily in GitLab Helm chart and Kubernetes deployments.
+
+This method uses the username and password configured in Kubernetes secrets.
+Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`
+on the Zoekt webserver.
 
 ## Troubleshooting
 

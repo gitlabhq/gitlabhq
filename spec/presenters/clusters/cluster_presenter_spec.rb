@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::ClusterPresenter do
+RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
   let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
@@ -104,42 +104,6 @@ RSpec.describe Clusters::ClusterPresenter do
       let(:cluster) { build_stubbed(:cluster, :provided_by_gcp) }
 
       it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#health_data' do
-    shared_examples 'cluster health data' do
-      let(:user) { create(:user) }
-      let(:cluster_presenter) { cluster.present(current_user: user) }
-
-      let(:clusterable_presenter) do
-        ClusterablePresenter.fabricate(clusterable, current_user: user)
-      end
-
-      subject { cluster_presenter.health_data(clusterable_presenter) }
-
-      it do
-        is_expected.to include(
-          'clusters-path': clusterable_presenter.index_path,
-          'settings-path': '',
-          'project-path': '',
-          'tags-path': ''
-        )
-      end
-    end
-
-    context 'with project cluster' do
-      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-      let(:clusterable) { cluster.project }
-
-      it_behaves_like 'cluster health data'
-    end
-
-    context 'with group cluster' do
-      let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
-      let(:clusterable) { cluster.group }
-
-      it_behaves_like 'cluster health data'
     end
   end
 

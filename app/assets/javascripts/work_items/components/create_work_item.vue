@@ -195,11 +195,6 @@ export default {
       required: false,
       default: null,
     },
-    stickyFormSubmit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     relatedItem: {
       type: Object,
       required: false,
@@ -629,6 +624,11 @@ export default {
         return true;
       }
       return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
+    },
+    formButtonsClasses() {
+      return this.isModal
+        ? '-gl-mx-5 gl-px-5 gl-bg-overlap gl-py-3'
+        : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
     },
   },
   watch: {
@@ -1068,11 +1068,7 @@ export default {
           />
         </gl-form-group>
       </div>
-      <div
-        data-testid="work-item-overview"
-        class="work-item-overview"
-        :class="{ 'gl-mb-3': stickyFormSubmit }"
-      >
+      <div data-testid="work-item-overview" class="work-item-overview gl-mb-3">
         <template v-if="selectedWorkItemTypeId">
           <work-item-title
             ref="title"
@@ -1310,57 +1306,35 @@ export default {
               <div>{{ noMetadataSetPermissionMessage }}</div>
             </template>
           </aside>
-          <div
-            v-if="!stickyFormSubmit"
-            class="gl-col-start-1 gl-mt-3 gl-py-3 gl-text-sm md:gl-text-base"
-            data-testid="form-buttons"
-          >
-            <gl-sprintf
-              v-if="contributionGuidePath"
-              :message="$options.i18n.contributionGuidelinesText"
-            >
+        </template>
+      </div>
+      <div
+        class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 sm:gl-flex-row sm:gl-items-center"
+        :class="formButtonsClasses"
+        data-testid="form-buttons"
+      >
+        <!-- We're duplicating information here in a differnet order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
+        <!-- In modal, contribution guidelines come first; in standalone page, buttons come first -->
+        <div v-if="isModal">
+          <div v-if="contributionGuidePath" class="gl-text-sm">
+            <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
               <template #link="{ content }">
                 <gl-link class="gl-font-bold" :href="contributionGuidePath">
                   {{ content }}
                 </gl-link>
               </template>
             </gl-sprintf>
-            <div class="gl-mb-2 gl-flex gl-gap-3" :class="{ 'gl-mt-5': contributionGuidePath }">
-              <gl-button
-                variant="confirm"
-                :loading="loading"
-                :disabled="!isTitleValid"
-                data-testid="create-button"
-                @click="createWorkItem"
-              >
-                {{ createWorkItemText }}
-              </gl-button>
-              <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-                {{ __('Cancel') }}
-              </gl-button>
-            </div>
           </div>
-
-          <!-- stick to bottom and put the Confirm button on the right -->
-          <!-- bg-overlap to match modal bg -->
-        </template>
-      </div>
-      <div
-        v-if="stickyFormSubmit"
-        class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3 sm:gl-flex-row sm:gl-items-center"
-        data-testid="form-buttons"
-      >
-        <div v-if="contributionGuidePath" class="gl-text-sm">
-          <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
-            <template #link="{ content }">
-              <gl-link class="gl-font-bold" :href="contributionGuidePath">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
         </div>
+
+        <!-- In modal, "Cancel" is first; in standalone page, "Create" is first -->
         <div class="gl-flex gl-justify-end gl-gap-3">
-          <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+          <gl-button
+            v-if="isModal"
+            type="button"
+            data-testid="cancel-button"
+            @click="handleCancelClick"
+          >
             {{ __('Cancel') }}
           </gl-button>
           <gl-button
@@ -1372,6 +1346,24 @@ export default {
           >
             {{ createWorkItemText }}
           </gl-button>
+          <gl-button
+            v-if="!isModal"
+            type="button"
+            data-testid="cancel-button"
+            @click="handleCancelClick"
+          >
+            {{ __('Cancel') }}
+          </gl-button>
+        </div>
+
+        <div v-if="contributionGuidePath && !isModal" class="gl-text-sm">
+          <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
+            <template #link="{ content }">
+              <gl-link class="gl-font-bold" :href="contributionGuidePath">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
         </div>
       </div>
     </template>

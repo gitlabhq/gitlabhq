@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class SentNotificationsController < ApplicationController
+  extend ::Gitlab::Utils::Override
+  include Gitlab::Utils::StrongMemoize
+
   skip_before_action :authenticate_user!
   # Automatic unsubscribe by an email client should happen via a POST request.
   # See https://datatracker.ietf.org/doc/html/rfc8058
@@ -11,23 +14,33 @@ class SentNotificationsController < ApplicationController
   urgency :low
 
   def unsubscribe
-    @sent_notification = SentNotification.for(params[:id])
-
     return render_404 unless unsubscribe_prerequisites_met?
 
     unsubscribe_and_redirect if current_user || params[:force] || request.post?
   end
 
+  protected
+
+  override :auth_user
+  def auth_user
+    sent_notification&.recipient
+  end
+
   private
 
+  def sent_notification
+    SentNotification.for(params[:id])
+  end
+  strong_memoize_attr :sent_notification
+
   def unsubscribe_prerequisites_met?
-    @sent_notification.present? &&
-      @sent_notification.unsubscribable? &&
+    sent_notification.present? &&
+      sent_notification.unsubscribable? &&
       noteable.present?
   end
 
   def noteable
-    @sent_notification.noteable
+    sent_notification.noteable
   end
 
   def unsubscribe_and_redirect
@@ -50,10 +63,10 @@ class SentNotificationsController < ApplicationController
 
   def unsubscribe_issue_email_participant
     return unless noteable.is_a?(Issue)
-    return unless @sent_notification.recipient_id == Users::Internal.support_bot.id
+    return unless sent_notification.recipient_id == Users::Internal.support_bot.id
 
     # Unsubscribe external author for legacy reasons when no issue email participant is set
-    email = @sent_notification.issue_email_participant&.email || noteable.external_author
+    email = sent_notification.issue_email_participant&.email || noteable.external_author
 
     ::IssueEmailParticipants::DestroyService.new(
       target: noteable,

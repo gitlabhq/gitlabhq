@@ -1,6 +1,6 @@
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -77,8 +77,10 @@ describe('RecentlyViewedWidget', () => {
   };
 
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
-  const findErrorMessage = () => wrapper.findByText('Something went wrong.');
-  const findRetryButton = () => wrapper.findComponent(GlButton);
+  const findErrorMessage = () =>
+    wrapper.findByText(
+      'Your recently viewed items are not available. Please refresh the page to try again.',
+    );
   const findEmptyState = () =>
     wrapper.findByText('Issues and merge requests you visit will appear here.');
   const findItemsList = () => wrapper.find('ul');
@@ -114,24 +116,8 @@ describe('RecentlyViewedWidget', () => {
       expect(findErrorMessage().exists()).toBe(true);
     });
 
-    it('shows retry link when query fails', () => {
-      expect(findRetryButton().exists()).toBe(true);
-    });
-
     it('captures error with Sentry when query fails', () => {
       expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
-    });
-
-    it('retries query when retry link is clicked', async () => {
-      // Mock the refetch method to succeed on retry
-      const mockRefetch = jest.fn().mockResolvedValue(mockRecentlyViewedResponse);
-      wrapper.vm.$apollo.queries.items.refetch = mockRefetch;
-
-      await findRetryButton().vm.$emit('click');
-      await nextTick();
-
-      expect(mockRefetch).toHaveBeenCalled();
-      expect(findErrorMessage().exists()).toBe(false);
     });
 
     it('does not show items list during error state', () => {

@@ -139,7 +139,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/policies/project_snippet_policy_spec.rb'
     - 'ee/spec/policies/vulnerability_policy_spec.rb'
-    - 'ee/spec/presenters/ee/clusters/cluster_presenter_spec.rb'
     - 'ee/spec/requests/admin/credentials_controller_spec.rb'
     - 'ee/spec/requests/admin/geo/replicables_controller_spec.rb'
     - 'ee/spec/requests/api/graphql/audit_events/group/namespace_filters/create_spec.rb'

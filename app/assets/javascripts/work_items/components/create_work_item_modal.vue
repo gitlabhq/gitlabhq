@@ -332,7 +332,7 @@ export default {
         :description="description"
         :full-path="fullPath"
         hide-form-title
-        sticky-form-submit
+        modal-button-alignment
         :is-group="isGroup"
         :parent-id="parentId"
         :show-project-selector="showProjectSelector"

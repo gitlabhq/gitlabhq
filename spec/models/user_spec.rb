@@ -6560,11 +6560,12 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#assigned_open_merge_requests_count' do
-    subject { user.assigned_open_merge_requests_count(force: true) }
+    subject { user.assigned_open_merge_requests_count(force: true, cached_only: cached_only) }
 
     let_it_be_with_refind(:user) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :public) }
     let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
+    let(:cached_only) { false }
 
     it 'returns number of open merge requests from non-archived projects' do
       create(:merge_request, source_project: project, author: user, assignees: [user])
@@ -6572,6 +6573,14 @@ RSpec.describe User, feature_category: :user_profile do
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
       is_expected.to eq 1
+    end
+
+    context 'when fetching only cached' do
+      let(:cached_only) { true }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
 
     context 'when merge_request_dashboard_author_or_assignee feature flag is enabled' do
@@ -6649,13 +6658,14 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#review_requested_open_merge_requests_count' do
-    subject { user.review_requested_open_merge_requests_count(force: true) }
+    subject { user.review_requested_open_merge_requests_count(force: true, cached_only: cached_only) }
 
     let_it_be_with_refind(:user) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :public) }
     let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
 
     let_it_be_with_refind(:mr) { create(:merge_request, source_project: project, author: user, reviewers: [user]) }
+    let(:cached_only) { false }
 
     before_all do
       create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
@@ -6664,6 +6674,14 @@ RSpec.describe User, feature_category: :user_profile do
 
     it 'returns number of open merge requests from non-archived projects' do
       is_expected.to eq 1
+    end
+
+    context 'when fetching only cached' do
+      let(:cached_only) { true }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
 
     context 'when merge_request_dashboard feature flag is enabled' do

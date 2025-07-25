@@ -594,10 +594,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
       end
 
-      it 'disallows pipeline and commit_status permissions' do
+      it 'disallows pipeline, commit_status, and build permissions' do
         builds_permissions = [
           :create_pipeline, :update_pipeline, :cancel_pipeline, :admin_pipeline, :destroy_pipeline,
-          :create_commit_status, :update_commit_status, :admin_commit_status, :destroy_commit_status
+          :create_commit_status, :update_build, :admin_build, :destroy_commit_status
         ]
 
         expect_disallowed(*builds_permissions)

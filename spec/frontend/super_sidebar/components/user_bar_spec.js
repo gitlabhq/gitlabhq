@@ -14,6 +14,7 @@ import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { stubComponent } from 'helpers/stub_component';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
@@ -24,6 +25,7 @@ import {
   MOCK_SCOPED_SEARCH_OPTIONS,
 } from './global_search/mock_data';
 
+jest.mock('~/super_sidebar/user_counts_fetch');
 jest.mock('~/lib/utils/common_utils');
 
 describe('UserBar component', () => {
@@ -345,4 +347,36 @@ describe('UserBar component', () => {
       });
     },
   );
+
+  describe('merge request counts', () => {
+    it('calls fetchUserCounts if merge requests count are null', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          user_counts: {
+            ...mockSidebarData.user_counts,
+            review_requested_merge_requests: null,
+            assigned_merge_requests: null,
+          },
+        },
+      });
+
+      expect(fetchUserCounts).toHaveBeenCalled();
+    });
+
+    it('does not call fetchUserCounts if merge requests count exist', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          user_counts: {
+            ...mockSidebarData.user_counts,
+            review_requested_merge_requests: 3,
+            assigned_merge_requests: 3,
+          },
+        },
+      });
+
+      expect(fetchUserCounts).not.toHaveBeenCalled();
+    });
+  });
 });

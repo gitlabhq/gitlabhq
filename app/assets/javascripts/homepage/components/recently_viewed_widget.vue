@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from '../graphql/queries/recently_viewed_items.query.graphql';
@@ -8,7 +8,7 @@ import VisibilityChangeDetector from './visibility_change_detector.vue';
 const MAX_ITEMS = 10;
 
 export default {
-  components: { GlButton, GlIcon, GlSkeletonLoader, VisibilityChangeDetector, TooltipOnTruncate },
+  components: { GlIcon, GlSkeletonLoader, VisibilityChangeDetector, TooltipOnTruncate },
   data() {
     return {
       items: [],
@@ -61,10 +61,13 @@ export default {
   <visibility-change-detector @visible="reload">
     <h4 class="gl-heading-4 gl-mb-4 gl-mt-0">{{ __('Recently viewed') }}</h4>
 
-    <div v-if="error">
-      <span>{{ __('Something went wrong.') }}</span>
-      <gl-button size="small" @click="reload">{{ __('Try again') }}</gl-button>
-    </div>
+    <p v-if="error">
+      {{
+        s__(
+          'HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again.',
+        )
+      }}
+    </p>
     <template v-else-if="isLoading">
       <gl-skeleton-loader v-for="i in $options.MAX_ITEMS" :key="i" :height="24">
         <rect x="0" y="0" width="16" height="16" rx="2" ry="2" />

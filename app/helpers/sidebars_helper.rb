@@ -86,8 +86,8 @@ module SidebarsHelper
       },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
-        assigned_merge_requests: user.assigned_open_merge_requests_count,
-        review_requested_merge_requests: user.review_requested_open_merge_requests_count,
+        assigned_merge_requests: user.assigned_open_merge_requests_count(cached_only: true),
+        review_requested_merge_requests: user.review_requested_open_merge_requests_count(cached_only: true),
         todos: user.todos_pending_count,
         last_update: time_in_milliseconds
       },
@@ -216,7 +216,7 @@ module SidebarsHelper
   end
 
   def compare_plans_url(*)
-    promo_pricing_url
+    "#{promo_url}/pricing"
   end
 
   private
@@ -298,7 +298,7 @@ module SidebarsHelper
           {
             text: _('Assigned'),
             href: merge_requests_dashboard_path(assignee_username: user.username),
-            count: user.assigned_open_merge_requests_count,
+            count: user.assigned_open_merge_requests_count(cached_only: true),
             userCount: 'assigned_merge_requests',
             extraAttrs: {
               'data-track-action': 'click_link',
@@ -310,7 +310,7 @@ module SidebarsHelper
           {
             text: _('Review requests'),
             href: merge_requests_dashboard_path(reviewer_username: user.username),
-            count: user.review_requested_open_merge_requests_count,
+            count: user.review_requested_open_merge_requests_count(cached_only: true),
             userCount: 'review_requested_merge_requests',
             extraAttrs: {
               'data-track-action': 'click_link',

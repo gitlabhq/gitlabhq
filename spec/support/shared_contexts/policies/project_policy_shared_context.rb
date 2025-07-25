@@ -67,7 +67,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       create_environment create_merge_request_from
       create_pipeline create_release
       create_wiki destroy_container_image destroy_container_image_tag push_code read_pod_logs
-      read_terraform_state resolve_note update_build cancel_build update_commit_status
+      read_terraform_state resolve_note update_build cancel_build
       update_container_image update_deployment update_environment
       update_merge_request update_pipeline update_release destroy_release
       read_resource_group update_resource_group update_escalation_status
@@ -76,7 +76,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_maintainer_permissions) do
     %i[
-      add_cluster admin_build admin_commit_status admin_container_image
+      add_cluster admin_build admin_container_image
       admin_cicd_variables admin_deployment admin_environment admin_note admin_pipeline
       admin_project admin_project_member admin_push_rules admin_runners admin_snippet admin_terraform_state
       admin_wiki create_deploy_token destroy_deploy_token manage_deploy_tokens

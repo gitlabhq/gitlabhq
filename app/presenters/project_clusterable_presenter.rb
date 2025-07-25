@@ -40,5 +40,3 @@ class ProjectClusterablePresenter < ClusterablePresenter
     ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about Kubernetes.'), help_page_path('user/project/clusters/_index.md'), target: '_blank', rel: 'noopener noreferrer')
   end
 end
-
-ProjectClusterablePresenter.prepend_mod_with('ProjectClusterablePresenter')

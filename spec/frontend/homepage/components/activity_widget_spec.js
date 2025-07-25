@@ -1,4 +1,4 @@
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,7 +18,10 @@ describe('ActivityWidget', () => {
   const MOCK_CURRENT_USERNAME = 'administrator';
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findErrorMessage = () =>
+    wrapper.findByText(
+      'Your activity feed is not available. Please refresh the page to try again.',
+    );
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findEventsList = () => wrapper.findByTestId('events-list');
   const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
@@ -40,26 +43,24 @@ describe('ActivityWidget', () => {
     createWrapper();
 
     expect(findSkeletonLoader().exists()).toBe(true);
-    expect(findAlert().exists()).toBe(false);
+    expect(findErrorMessage().exists()).toBe(false);
     expect(findEmptyState().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
   });
 
-  it('shows an alert if the request errors out', async () => {
+  it('shows an error message if the request errors out', async () => {
     mockAxios
       .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
       .reply(500);
     createWrapper();
     await waitForPromises();
 
-    expect(findAlert().exists()).toBe(true);
+    expect(findErrorMessage().exists()).toBe(true);
     expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
     expect(Sentry.captureException).toHaveBeenCalled();
-    expect(findAlert().text()).toBe(
-      'The activity feed is not available. Please refresh the page to try again.',
-    );
+    expect(findErrorMessage().exists()).toBe(true);
   });
 
   it('shows an empty state if the user has no activity yet', async () => {
@@ -87,7 +88,7 @@ describe('ActivityWidget', () => {
     await waitForPromises();
 
     expect(findEventsList().exists()).toBe(true);
-    expect(findAlert().exists()).toBe(false);
+    expect(findErrorMessage().exists()).toBe(false);
     expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
 

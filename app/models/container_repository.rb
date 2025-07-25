@@ -210,8 +210,16 @@ class ContainerRepository < ApplicationRecord
   end
 
   def has_tags?
-    tags.any?
+    return tags.any? if Feature.disabled?(:optimize_container_repository_has_tags, project)
+
+    if gitlab_api_client.supports_gitlab_api?
+      page = tags_page(page_size: 1) # Fetch one tag to check existence
+      page[:tags].present?
+    else
+      manifest&.dig('tags').present?
+    end
   end
+  strong_memoize_attr :has_tags?
 
   def root_repository?
     name.empty?

@@ -77,5 +77,3 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 end
-
-ClusterablePresenter.prepend_mod_with('ClusterablePresenter')

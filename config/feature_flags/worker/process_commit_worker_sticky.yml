@@ -1,0 +1,10 @@
+---
+name: process_commit_worker_sticky
+description: Use sticky data consistency for ProcessCommitWorker when enabled
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553401
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198617
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556773
+milestone: '18.3'
+group: group::source code
+type: worker
+default_enabled: false

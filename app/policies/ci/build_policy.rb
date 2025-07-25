@@ -80,10 +80,6 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | (protected_ref & ~admin)) }.policy do
-      prevent :update_commit_status
-    end
-
     rule { ~can?(:jailbreak) & (archived | protected_ref) }.policy do
       prevent :cancel_build
       prevent :update_build
@@ -95,7 +91,6 @@ module Ci
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :cancel_build
       enable :update_build
-      enable :update_commit_status
     end
 
     rule { can?(:update_build) & terminal & owner_of_job }.enable :create_build_terminal

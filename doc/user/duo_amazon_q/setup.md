@@ -28,10 +28,11 @@ GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 {{< /alert >}}
 
-To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
+To get a subscription for GitLab Duo with Amazon Q, contact your Account Executive.
 
-If you'd prefer to set up GitLab Duo with Amazon Q on GitLab Self-Managed,
-complete the following steps.
+To request a trial, [fill out this form](https://about.gitlab.com/partners/technology-partners/aws/#form).
+
+To set up GitLab Duo with Amazon Q on GitLab Self-Managed, complete the following steps.
 
 ## Set up GitLab Duo with Amazon Q
 

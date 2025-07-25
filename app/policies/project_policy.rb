@@ -601,7 +601,6 @@ class ProjectPolicy < BasePolicy
     enable :update_merge_request
     enable :reopen_merge_request
     enable :create_commit_status
-    enable :update_commit_status
     enable :create_build
     enable :update_build
     enable :cancel_build
@@ -664,7 +663,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_wiki
     enable :admin_project
     enable :admin_integrations
-    enable :admin_commit_status
     enable :admin_build
     enable :admin_container_image
     enable :admin_pipeline
@@ -888,8 +886,6 @@ class ProjectPolicy < BasePolicy
 
     prevent :read_commit_status
     prevent :create_commit_status
-    prevent :update_commit_status
-    prevent :admin_commit_status
     prevent :destroy_commit_status
   end
 

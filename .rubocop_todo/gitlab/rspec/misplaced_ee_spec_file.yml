@@ -224,7 +224,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/presenters/label_presenter_spec.rb'
     - 'ee/spec/presenters/member_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
-    - 'ee/spec/presenters/project_clusterable_presenter_spec.rb'
     - 'ee/spec/presenters/project_member_presenter_spec.rb'
     - 'ee/spec/serializers/environment_entity_spec.rb'
     - 'ee/spec/serializers/issue_serializer_spec.rb'

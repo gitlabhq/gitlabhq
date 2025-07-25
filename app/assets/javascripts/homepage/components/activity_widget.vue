@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -10,7 +10,6 @@ const MAX_EVENTS = 10;
 
 export default {
   components: {
-    GlAlert,
     GlSkeletonLoader,
     VisibilityChangeDetector,
   },
@@ -64,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector class="gl-px-4" @visible="reload">
+  <visibility-change-detector @visible="reload">
     <h4 class="gl-heading-4 gl-my-4">{{ __('Activity') }}</h4>
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
@@ -79,11 +78,13 @@ export default {
       <rect width="160" height="3" rx="1" x="8" y="16" />
       <rect width="20" height="3" rx="1" x="180" y="16" />
     </gl-skeleton-loader>
-    <gl-alert v-else-if="hasError" variant="danger">{{
-      s__(
-        'HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again.',
-      )
-    }}</gl-alert>
+    <p v-else-if="hasError">
+      {{
+        s__(
+          'HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again.',
+        )
+      }}
+    </p>
     <p v-else-if="!activityFeedHtml" data-testid="empty-state">
       {{
         s__(

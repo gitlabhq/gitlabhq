@@ -32,7 +32,7 @@ module Tooling
       MSG
 
       BUG_ERROR_MESSAGE = <<~MSG
-      This branch is meant for backporting bug fixes. If this MR qualifies please add the `type::bug` label. #{MAINTENANCE_POLICY_MESSAGE}
+      This branch is meant for backporting bug fixes and flaky spec failures. If this MR qualifies please add the `type::bug` or `failure::flaky-test` label. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
       VERSION_WARNING_MESSAGE = <<~MSG

@@ -2175,8 +2175,10 @@ class User < ApplicationRecord
     Feature.enabled?(:merge_request_dashboard, self, type: :beta)
   end
 
-  def assigned_open_merge_requests_count(force: false)
+  def assigned_open_merge_requests_count(force: false, cached_only: false)
     Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
       params = { state: 'opened', non_archived: true }
 
       if merge_request_dashboard_enabled?
@@ -2201,8 +2203,10 @@ class User < ApplicationRecord
     end
   end
 
-  def review_requested_open_merge_requests_count(force: false)
+  def review_requested_open_merge_requests_count(force: false, cached_only: false)
     Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
       params = { reviewer_id: id, state: 'opened', non_archived: true }
       params[:review_states] = %w[unapproved unreviewed review_started] if merge_request_dashboard_enabled?
 

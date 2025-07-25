@@ -105,19 +105,57 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
 
   context "when running locally" do
     let(:ci) { false }
+    let(:local_directory_state) { "" }
 
     before do
       allow(Open3).to receive(:capture2e)
-        .with("git rev-parse --abbrev-ref HEAD")
-        .and_return(["feature-branch", instance_double(Process::Status, success?: true)])
-      allow(Open3).to receive(:capture2e)
-        .with("git diff --name-only master...HEAD")
-        .and_return([changed_files.join("\n"), instance_double(Process::Status, success?: true)])
+        .with("git status --porcelain")
+        .and_return([local_directory_state, instance_double(Process::Status, success?: true)])
     end
 
-    it "fetches changes from git and outputs to stdout" do
-      expect { predictive_tests.execute }.to output(rspec_spec_list.join(" ")).to_stdout
-      expect(find_changes).not_to have_received(:execute)
+    context "when local directory is clean" do
+      before do
+        allow(Open3).to receive(:capture2e)
+          .with("git rev-parse --abbrev-ref HEAD")
+          .and_return(["feature-branch", instance_double(Process::Status, success?: true)])
+        allow(Open3).to receive(:capture2e)
+          .with("git diff --name-only master...HEAD")
+          .and_return([changed_files.join("\n"), instance_double(Process::Status, success?: true)])
+      end
+
+      it "fetches branch diff and outputs to stdout" do
+        expect { predictive_tests.execute }.to output(rspec_spec_list.join(" ")).to_stdout
+        expect(find_changes).not_to have_received(:execute)
+      end
+    end
+
+    context "when local directory has changes" do
+      let(:local_directory_state) { "output" }
+
+      before do
+        allow(Open3).to receive(:capture2e)
+          .with("git diff --name-only HEAD")
+          .and_return([changed_files.join("\n"), instance_double(Process::Status, success?: true)])
+      end
+
+      it "fetches local changes and outputs to stdout" do
+        expect { predictive_tests.execute }.to output(rspec_spec_list.join(" ")).to_stdout
+        expect(find_changes).not_to have_received(:execute)
+      end
+    end
+
+    context "when git command fails" do
+      before do
+        allow(Open3).to receive(:capture2e)
+          .with("git status --porcelain")
+          .and_return(["some error", instance_double(Process::Status, success?: false)])
+      end
+
+      it "raises an error" do
+        expect { predictive_tests.execute }.to raise_error(
+          "git command with args 'status --porcelain' failed! Output: some error"
+        )
+      end
     end
   end
 end

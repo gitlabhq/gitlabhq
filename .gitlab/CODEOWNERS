@@ -1007,6 +1007,7 @@ lib/gitlab/checks/
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
 /doc/policy/ @axil @eread
+/doc/policy/maintenance.md @gitlab-org/delivery
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
 /doc/security/compliance_security_policy_management.md @rlehmann1

@@ -38,14 +38,15 @@ GitLab Duo with Amazon Q:
 For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
 <!-- Demo published on 2025-04-23 -->
 
-To get a subscription to GitLab Duo with Amazon Q, contact your Account Executive.
+To get a subscription for GitLab Duo with Amazon Q, contact your Account Executive.
+
+Alternatively, to request a trial,
+[fill out this form](https://about.gitlab.com/partners/technology-partners/aws/#form).
 
 ## Set up GitLab Duo with Amazon Q
 
-To access GitLab Duo with Amazon Q, request [access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
-
-Alternately, if you have GitLab 17.11 or later, you can
-[set it up on your GitLab Self-Managed instance](setup.md).
+When you have a GitLab Duo with Amazon Q subscription and GitLab 17.11 or later, you can
+[set up GitLab Duo with Amazon Q on your instance](setup.md).
 
 ## Use GitLab Duo with Amazon Q in an issue
 

@@ -8,6 +8,7 @@ import {
   createUserCountsManager,
   userCounts,
 } from '~/super_sidebar/user_counts_manager';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
@@ -93,6 +94,13 @@ export default {
   created() {
     Object.assign(userCounts, this.sidebarData.user_counts);
     createUserCountsManager();
+
+    if (
+      userCounts.assigned_merge_requests === null ||
+      userCounts.review_requested_merge_requests === null
+    ) {
+      fetchUserCounts();
+    }
   },
   beforeDestroy() {
     destroyUserCountsManager();

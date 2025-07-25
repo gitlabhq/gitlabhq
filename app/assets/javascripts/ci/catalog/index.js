@@ -3,9 +3,11 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
 import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
+import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 
 import GlobalCatalog from './global_catalog.vue';
 import CiResourcesPage from './components/pages/ci_resources_page.vue';
+import CiCatalogBreadcrumb from './components/ci_catalog_breadcrumb.vue';
 import { createRouter } from './router';
 
 export const initCatalog = (selector = '#js-ci-cd-catalog') => {
@@ -23,10 +25,14 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     defaultClient: createDefaultClient(resolvers, { cacheConfig, typeDefs }),
   });
 
+  const router = createRouter(ciCatalogPath, CiResourcesPage);
+
+  injectVueAppBreadcrumbs(router, CiCatalogBreadcrumb);
+
   return new Vue({
     el,
     name: 'GlobalCatalog',
-    router: createRouter(ciCatalogPath, CiResourcesPage),
+    router,
     apolloProvider,
     provide: {
       ciCatalogPath,

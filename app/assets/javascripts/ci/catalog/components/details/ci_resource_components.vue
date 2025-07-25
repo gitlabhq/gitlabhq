@@ -171,7 +171,12 @@ export default {
             </template>
             <template #cell(default)="{ item }">
               <code v-if="item.default" data-testid="input-default">
-                <gl-truncate :text="item.default" position="end" class="gl-max-w-34" with-tooltip />
+                <gl-truncate
+                  :text="`${item.default}`"
+                  position="end"
+                  class="gl-max-w-34"
+                  with-tooltip
+                />
               </code>
             </template>
           </gl-table-lite>

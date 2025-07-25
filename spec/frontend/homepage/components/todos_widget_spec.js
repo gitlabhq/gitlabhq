@@ -32,11 +32,14 @@ describe('TodosWidget', () => {
     });
   };
 
+  const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
   const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
   const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findErrorMessage = () =>
+    wrapper.findByText('Your to-do items are not available. Please refresh the page to try again.');
 
   describe('rendering', () => {
     it('shows a link to all todos', () => {
@@ -136,11 +139,20 @@ describe('TodosWidget', () => {
       expect(findTodoItems()).toHaveLength(0);
     });
 
-    it('captures error with Sentry when query fails', async () => {
-      createComponent({ todosQueryHandler: todosQueryErrorHandler });
-      await waitForPromises();
+    describe('when query fails', () => {
+      beforeEach(() => {
+        createComponent({ todosQueryHandler: todosQueryErrorHandler });
+        return waitForPromises();
+      });
 
-      expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      it('captures error with Sentry when query fails', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      });
+
+      it('shows an error and hides the filters dropdown when query fails', () => {
+        expect(findFilterDropdown().exists()).toBe(false);
+        expect(findErrorMessage().exists()).toBe(true);
+      });
     });
   });
 
@@ -175,7 +187,6 @@ describe('TodosWidget', () => {
   });
 
   describe('filter functionality', () => {
-    const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
     const findFilteredEmptyState = () =>
       wrapper.findByText('Sorry, your filter produced no results');
 
@@ -228,13 +239,27 @@ describe('TodosWidget', () => {
         data: {
           currentUser: {
             id: 'user-1',
-            todos: { nodes: [] },
+            todos: {
+              nodes: [],
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+              },
+            },
           },
         },
       };
 
-      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ todosQueryHandler: emptyQueryHandler });
+      const queryHandler = jest.fn((value) => {
+        // Return an empty response if the filter is provided
+        if (value.action) {
+          return emptyResponse;
+        }
+        return todosResponse;
+      });
+      createComponent({ todosQueryHandler: queryHandler });
 
       await findFilterDropdown().vm.$emit('select', 'build_failed');
       await waitForPromises();

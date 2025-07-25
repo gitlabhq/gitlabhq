@@ -881,8 +881,8 @@ describe('Create work item component', () => {
   });
 
   describe('form buttons', () => {
-    it('shows buttons on right and sticky when stickyFormSubmit', async () => {
-      createComponent({ props: { stickyFormSubmit: true } });
+    it('shows buttons on right and sticky when isModal', async () => {
+      createComponent({ props: { isModal: true } });
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
@@ -891,12 +891,12 @@ describe('Create work item component', () => {
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
 
-    it('shows buttons on left and inside the grid when not stickyFormSubmit', async () => {
-      createComponent({ props: { stickyFormSubmit: false } });
+    it('shows buttons on left and sticky when not isModal', async () => {
+      createComponent({ props: { isModal: false } });
       await waitForPromises();
 
-      expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-justify-between')).toBe(false);
+      expect(findFormButtons().classes('gl-sticky')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });

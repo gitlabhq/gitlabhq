@@ -117,15 +117,22 @@ module Tooling
       def git_diff
         logger.debug('Fetching list of changes in local git repository')
 
-        branch, status = Open3.capture2e('git rev-parse --abbrev-ref HEAD')
-        raise("Failed to fetch current branch name! Output: #{branch}") unless status.success?
+        clean = run_git_cmd('status --porcelain').strip.empty?
+        return git_local_changes_diff unless clean
 
-        # get changes for the whole feature branch when not in master
-        cmd = branch.strip != 'master' ? 'git diff --name-only master...HEAD' : 'git diff --name-only HEAD'
-        diff, status = Open3.capture2e(cmd)
-        raise("Failed to fetch changed file list from git! Output: #{diff}") unless status.success?
+        branch = run_git_cmd('rev-parse --abbrev-ref HEAD').strip
+        return git_branch_diff unless branch == 'master'
 
-        diff.split("\n")
+        logger.debug('Running on master branch without local changes, returning empty change list')
+        []
+      end
+
+      def git_branch_diff
+        run_git_cmd('diff --name-only master...HEAD').split("\n")
+      end
+
+      def git_local_changes_diff
+        run_git_cmd('diff --name-only HEAD').split("\n")
       end
 
       def create_output_files
@@ -162,6 +169,13 @@ module Tooling
 
       def valid_file_path?(file_path)
         !(file_path.nil? || file_path.empty?)
+      end
+
+      def run_git_cmd(args)
+        out, status = Open3.capture2e("git #{args}")
+        raise("git command with args '#{args}' failed! Output: #{out}") unless status.success?
+
+        out
       end
     end
     # rubocop:enable Gitlab/Json

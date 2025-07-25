@@ -10,7 +10,7 @@
 class ProcessCommitWorker
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :sticky, feature_flag: :process_commit_worker_sticky
 
   sidekiq_options retry: 3
 

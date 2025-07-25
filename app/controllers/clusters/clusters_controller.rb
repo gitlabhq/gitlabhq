@@ -44,12 +44,6 @@ class Clusters::ClustersController < ::Clusters::BaseController
     end
   end
 
-  def show
-    if safe_params[:tab] == 'integrations'
-      @prometheus_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_integration_prometheus)
-    end
-  end
-
   def update
     Clusters::UpdateService
       .new(current_user, update_params)

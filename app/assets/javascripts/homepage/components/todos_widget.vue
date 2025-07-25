@@ -65,6 +65,7 @@ export default {
       filter: null,
       todos: [],
       showLoading: true,
+      hasError: false,
     };
   },
   apollo: {
@@ -86,12 +87,14 @@ export default {
       error(error) {
         Sentry.captureException(error);
         this.showLoading = false;
+        this.hasError = true;
       },
     },
   },
   methods: {
     reload() {
       this.showLoading = true;
+      this.hasError = false;
       this.$apollo.queries.todos.refetch();
     },
   },
@@ -107,10 +110,17 @@ export default {
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
       <h4 class="gl-heading-4 gl-my-4 gl-grow">{{ __('To-do items') }}</h4>
 
-      <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
+      <gl-collapsible-listbox v-if="!hasError" v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
 
-    <div class="gl-rounded-lg gl-bg-subtle">
+    <p v-if="hasError">
+      {{
+        s__(
+          'HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again.',
+        )
+      }}
+    </p>
+    <div v-else class="gl-rounded-lg gl-bg-subtle">
       <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
         <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
           <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />

@@ -13,6 +13,11 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
 
   let(:worker) { described_class.new }
 
+  it_behaves_like 'worker with data consistency', described_class, {
+    data_consistency: :sticky,
+    feature_flag: :process_commit_worker_sticky
+  }
+
   it "is deduplicated" do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
     expect(described_class.get_deduplication_options).to include(feature_flag: :deduplicate_process_commit_worker)
