@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlCard, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
@@ -13,9 +13,6 @@ export default {
     GlCard,
     GlLink,
     GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     resourceType: {
@@ -81,6 +78,7 @@ export default {
         visitUrl(this.resourcePath);
       } catch (error) {
         createAlert({ message: this.i18n.error, error, captureError: true });
+      } finally {
         this.loading = false;
       }
     },

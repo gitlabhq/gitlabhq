@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def perform
-          return yield if Feature.disabled?(:sidekiq_throttling_middleware, Feature.current_request, type: :worker)
+          return yield if Feature.disabled?(:sidekiq_throttling_middleware, :instance, type: :worker)
 
           # TODO: Will be moved out to read from Redis. See https://gitlab.com/gitlab-com/gl-infra/data-access/durability/team/-/issues/221
           if Feature.enabled?(

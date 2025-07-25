@@ -10,7 +10,7 @@ RSpec.describe Ci::Runners::UpdateProjectRunnersOwnerWorker, '#handle_event', fe
     { project_id: project.id, namespace_id: project.namespace_id, root_namespace_id: project.root_namespace.id }
   end
 
-  it_behaves_like 'subscribes to event' do
+  it_behaves_like 'ignores the published event' do
     let(:event) { project_deleted_event }
   end
 

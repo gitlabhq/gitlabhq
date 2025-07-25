@@ -94,7 +94,7 @@ Please check that these lines have the following fields: title, type")
   end
 
   context 'when work item type column contains missing entries' do
-    let(:results) { { success: 0, parse_error: false, type_errors: { missing: [5] } } }
+    let(:results) { { success: 0, parse_error: false, type_errors: { missing: { work_item_type: [5] } } } }
 
     it 'renders with missing work item message' do
       expect(rendered).to have_content("Work item type cannot be found or is not supported.")
@@ -106,7 +106,7 @@ Please check that these lines have the following fields: title, type")
   end
 
   context 'when work item type column contains disallowed entries' do
-    let(:results) { { success: 0, parse_error: false, type_errors: { disallowed: [6] } } }
+    let(:results) { { success: 0, parse_error: false, type_errors: { disallowed: { work_item_type: [6] } } } }
 
     it 'renders with missing work item message' do
       expect(rendered).to have_content("Work item type is not available.")
@@ -118,7 +118,11 @@ Please check that these lines have the following fields: title, type")
   end
 
   context 'when CSV contains multiple kinds of work item type errors' do
-    let(:results) { { success: 0, parse_error: false, type_errors: { blank: [4], missing: [5], disallowed: [6] } } }
+    let(:results) do
+      { success: 0, parse_error: false, type_errors: { blank: [4],
+                                                       missing: { work_item_type: [5] },
+                                                       disallowed: { work_item_type: [6] } } }
+    end
 
     it 'renders with missing work item message' do
       expect(rendered).to have_content("Work item type is empty")

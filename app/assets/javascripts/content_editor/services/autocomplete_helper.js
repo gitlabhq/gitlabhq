@@ -3,6 +3,7 @@ import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
+import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 import { COMMANDS } from '../constants';
 
 export function defaultSorter(searchFields) {
@@ -142,6 +143,8 @@ export default class AutocompleteHelper {
     const sources = {
       user: this.dataSourceUrls.members,
       issue: this.dataSourceUrls.issues,
+      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: this.dataSourceUrls.issuesAlternative,
+      [REFERENCE_TYPES.WORK_ITEM]: this.dataSourceUrls.workItems,
       snippet: this.dataSourceUrls.snippets,
       label: this.dataSourceUrls.labels,
       epic: this.dataSourceUrls.epics,
@@ -156,6 +159,8 @@ export default class AutocompleteHelper {
     const searchFields = {
       user: ['username', 'name'],
       issue: ['iid', 'title'],
+      [REFERENCE_TYPES.WORK_ITEM]: ['iid', 'title'],
+      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: ['iid', 'title'],
       snippet: ['id', 'title'],
       label: ['title'],
       epic: ['iid', 'title'],

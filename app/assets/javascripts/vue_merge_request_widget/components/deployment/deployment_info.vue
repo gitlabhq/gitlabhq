@@ -16,7 +16,6 @@ export default {
   name: 'DeploymentInfo',
   components: {
     GlLink,
-    MemoryUsage: () => import('./memory_usage.vue'),
     GlTruncate,
   },
   directives: {
@@ -30,10 +29,6 @@ export default {
     },
     deployment: {
       type: Object,
-      required: true,
-    },
-    showMetrics: {
-      type: Boolean,
       required: true,
     },
   },
@@ -58,12 +53,6 @@ export default {
     },
     hasDeploymentMeta() {
       return Boolean(this.deployment.url && this.deployment.name);
-    },
-    hasMetrics() {
-      return Boolean(this.deployment.metrics_url);
-    },
-    showMemoryUsage() {
-      return this.hasMetrics && this.showMetrics;
     },
   },
 };
@@ -95,10 +84,5 @@ export default {
     >
       {{ deployTimeago }}
     </span>
-    <memory-usage
-      v-if="showMemoryUsage"
-      :metrics-url="deployment.metrics_url"
-      :metrics-monitoring-url="deployment.metrics_monitoring_url"
-    />
   </div>
 </template>

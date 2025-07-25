@@ -41,6 +41,7 @@
     "postinstall": "node ./scripts/frontend/postinstall.js",
     "storybook:install": "yarn --cwd ./storybook install",
     "storybook:doctor": "yarn --cwd ./storybook doctor",
+    "storybook:dev:test": "yarn --cwd ./storybook test",
     "storybook:build": "yarn tailwindcss:build && yarn --cwd ./storybook build --quiet",
     "storybook:start": "./scripts/frontend/start_storybook.sh",
     "storybook:start:skip-fixtures-update": "./scripts/frontend/start_storybook.sh --skip-fixtures-update",

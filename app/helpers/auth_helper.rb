@@ -274,7 +274,8 @@ module AuthHelper
     { button_text: _('Disable two-factor authentication'),
       message: message,
       path: profile_two_factor_auth_path,
-      password_required: password_required.to_s }
+      password_required: password_required.to_s,
+      size: 'small' }
   end
 
   def codes_two_factor_authentication_data(password_required)
@@ -290,6 +291,7 @@ module AuthHelper
       method: 'post',
       path: codes_profile_two_factor_auth_path,
       password_required: password_required.to_s,
+      size: 'small',
       variant: 'default' }
   end
 

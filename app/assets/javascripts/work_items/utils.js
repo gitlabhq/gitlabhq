@@ -255,27 +255,47 @@ export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup
     }),
   };
 
+  const enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;
+  const extensibleReferenceFilters = enableExtensibleReferenceFilters
+    ? {
+        issuesAlternative: autocompleteSourcesPath({
+          autocompleteType: 'issues',
+          fullPath,
+          iid,
+          isGroup,
+          workItemTypeId,
+        }),
+        workItems: autocompleteSourcesPath({
+          autocompleteType: 'issues',
+          fullPath,
+          iid,
+          isGroup,
+          workItemTypeId,
+        }),
+      }
+    : {};
+
   // contacts and snippets are only available in project scope
-  const projectOnlySources = {
-    contacts: autocompleteSourcesPath({
-      autocompleteType: 'contacts',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    snippets: autocompleteSourcesPath({
-      autocompleteType: 'snippets',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-  };
+  const projectOnlySources = !isGroup
+    ? {
+        contacts: autocompleteSourcesPath({
+          autocompleteType: 'contacts',
+          fullPath,
+          iid,
+          isGroup,
+          workItemTypeId,
+        }),
+        snippets: autocompleteSourcesPath({
+          autocompleteType: 'snippets',
+          fullPath,
+          iid,
+          isGroup,
+          workItemTypeId,
+        }),
+      }
+    : {};
 
-  if (isGroup) return sources;
-
-  return { ...sources, ...projectOnlySources };
+  return { ...sources, ...extensibleReferenceFilters, ...projectOnlySources };
 };
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {

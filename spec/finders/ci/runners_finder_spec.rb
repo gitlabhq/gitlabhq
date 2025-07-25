@@ -95,6 +95,20 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
           end
         end
 
+        context 'by assignable to project' do
+          let_it_be(:project) { create(:project) }
+          let_it_be(:other_project) { create(:project) }
+          let_it_be(:assigned_runner) { create(:ci_runner, :project, projects: [project]) }
+          let_it_be(:locked_runner) { create(:ci_runner, :project, locked: true, projects: [other_project]) }
+          let_it_be(:assignable_runner) { create(:ci_runner, :project, projects: [other_project]) }
+
+          let(:params) { { assignable_to_project: project } }
+
+          it 'returns assignable runners' do
+            expect(execute).to contain_exactly(assignable_runner)
+          end
+        end
+
         context 'by upgrade status' do
           let(:upgrade_status) {}
           let(:params) { { upgrade_status: upgrade_status } }
@@ -708,7 +722,7 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
     context 'with user as project maintainer' do
       let_it_be(:user) { create(:user, maintainer_of: project) }
 
-      context 'with project runners' do
+      context 'with project runner' do
         let_it_be(:runner_project) { create(:ci_runner, :project, :online, projects: [project]) }
 
         it 'returns runners available to project' do
@@ -833,6 +847,58 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
 
       it 'raises Gitlab::Access::AccessDeniedError' do
         expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
+
+    context 'when user is nil' do
+      let_it_be(:user) { nil }
+
+      it 'raises Gitlab::Access::AccessDeniedError' do
+        expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
+  end
+
+  context 'user' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_project) { create(:project, group: other_group) }
+
+    let(:current_user) { user }
+    let(:extra_params) { {} }
+    let(:params) { { user: user, **extra_params }.compact }
+
+    context 'with user as project maintainer' do
+      let_it_be(:user) { create(:user, maintainer_of: [project, other_project]) }
+
+      context 'with project and group runners' do
+        let_it_be(:project_runner) { create(:ci_runner, :project, :online, projects: [project]) }
+        let_it_be(:group_runner) { create(:ci_runner, :group, :online, groups: [group]) }
+
+        it 'returns project runner' do
+          is_expected.to contain_exactly(project_runner)
+        end
+      end
+
+      context 'when assignable to project is used' do
+        let_it_be(:other_project_runner) { create(:ci_runner, :project, :online, projects: [other_project]) }
+
+        let(:extra_params) { { assignable_to_project: project } }
+
+        it 'returns runners available to project' do
+          is_expected.to contain_exactly(other_project_runner)
+        end
+      end
+    end
+
+    context 'with user as group owner' do
+      let_it_be(:user) { create(:user, owner_of: [group]) }
+      let_it_be(:group_runner) { create(:ci_runner, :group, :online, groups: [group]) }
+      let_it_be(:other_group_runner) { create(:ci_runner, :group, :online, groups: [other_group]) }
+
+      it 'returns only runner of owned group' do
+        is_expected.to contain_exactly(group_runner)
       end
     end
 

@@ -114,7 +114,8 @@ module WorkItems
 
     def work_item_type_allowed?(work_item_type)
       strong_memoize_with(:work_item_type_allowed, work_item_type) do
-        create_issue_type_allowed?(project, work_item_type)
+        # .tr is needed for work items with spaces in their names (e.g. Key Result)
+        create_issue_type_allowed?(project, work_item_type.tr(' ', '_'))
       end
     end
 

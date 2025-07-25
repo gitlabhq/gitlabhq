@@ -646,7 +646,8 @@ RSpec.describe AuthHelper, feature_category: :system_access do
           message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
             'Enter your password to continue. This action cannot be undone.'),
           path: profile_two_factor_auth_path,
-          password_required: 'true'
+          password_required: 'true',
+          size: 'small'
         }))
       end
     end
@@ -673,6 +674,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
           method: 'post',
           path: codes_profile_two_factor_auth_path,
           password_required: 'true',
+          size: 'small',
           variant: 'default'
         }))
       end

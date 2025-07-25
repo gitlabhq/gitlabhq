@@ -35,24 +35,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
   end
 
   context 'for a project that has not been marked for deletion' do
-    context 'when rename_group_path_upon_deletion_scheduling feature flag is disabled' do
-      before do
-        stub_feature_flags(rename_group_path_upon_deletion_scheduling: false)
-      end
-
-      it 'renames project name' do
-        expect { result }.to change {
-          project.name
-        }.from(original_project_name).to("#{original_project_name}-deleted-#{project.id}")
-      end
-
-      it 'renames project path' do
-        expect { result }.to change {
-          project.path
-        }.from(original_project_path).to("#{original_project_path}-deleted-#{project.id}")
-      end
-    end
-
     context 'when a project under the group has a container image' do
       before do
         allow(project).to receive(:has_container_registry_tags?).and_return(true)

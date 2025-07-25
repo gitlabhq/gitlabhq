@@ -50,6 +50,9 @@ export default {
     isIssue() {
       return this.referenceType === REFERENCE_TYPES.ISSUE;
     },
+    isIssueAlternative() {
+      return this.referenceType === REFERENCE_TYPES.ISSUE_ALTERNATIVE;
+    },
     isMergeRequest() {
       return this.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
@@ -57,7 +60,13 @@ export default {
       return this.referenceType === REFERENCE_TYPES.EPIC;
     },
     isExpandable() {
-      return this.isIssue || this.isWorkItem || this.isMergeRequest || this.isEpic;
+      return (
+        this.isIssue ||
+        this.isIssueAlternative ||
+        this.isWorkItem ||
+        this.isMergeRequest ||
+        this.isEpic
+      );
     },
     showSummary() {
       return !this.isEpic;

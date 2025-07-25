@@ -40247,11 +40247,6 @@ msgid_plural "MlModelRegistry|%d models"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "MlModelRegistry|%d version"
-msgid_plural "MlModelRegistry|%d versions"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "MlModelRegistry|(Optional)"
 msgstr ""
 
@@ -46366,9 +46361,6 @@ msgstr ""
 msgid "Pipelines|By revoking a trigger token you will break any processes making use of it. Are you sure?"
 msgstr ""
 
-msgid "Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})"
-msgstr ""
-
 msgid "Pipelines|Clear runner caches"
 msgstr ""
 
@@ -46754,6 +46746,9 @@ msgid "Pipelines|Your changes have been successfully committed. Now redirecting 
 msgstr ""
 
 msgid "Pipelines|branch"
+msgstr ""
+
+msgid "Pipelines|child pipeline"
 msgstr ""
 
 msgid "Pipelines|error"
@@ -51592,6 +51587,9 @@ msgstr ""
 msgid "Recovery Codes"
 msgstr ""
 
+msgid "Recovery codes"
+msgstr ""
+
 msgid "Redirect to SAML provider to test configuration"
 msgstr ""
 
@@ -55007,6 +55005,9 @@ msgstr ""
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose which groups can bypass this policy"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
 msgstr ""
 
@@ -55245,6 +55246,9 @@ msgid "ScanResultPolicy|Select access tokens"
 msgstr ""
 
 msgid "ScanResultPolicy|Select all"
+msgstr ""
+
+msgid "ScanResultPolicy|Select group exceptions"
 msgstr ""
 
 msgid "ScanResultPolicy|Select group exceptions. Choose which groups can bypass this policy."
@@ -67744,9 +67748,6 @@ msgstr ""
 msgid "Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."
 msgstr ""
 
-msgid "Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes."
-msgstr ""
-
 msgid "Use this token to validate received payloads."
 msgstr ""
 
@@ -75326,15 +75327,6 @@ msgstr ""
 msgid "mrWidget|%{mergeError}. Try again."
 msgstr ""
 
-msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
-msgstr ""
-
-msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
-msgstr ""
-
-msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
-msgstr ""
-
 msgid "mrWidget|1 invalid rule has been approved automatically"
 msgid_plural "mrWidget|%{count} invalid rules have been approved automatically"
 msgstr[0] ""
@@ -75432,16 +75424,10 @@ msgstr[1] ""
 msgid "mrWidget|Delete source branch"
 msgstr ""
 
-msgid "mrWidget|Deployment statistics are not available currently"
-msgstr ""
-
 msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Edit merge request"
-msgstr ""
-
-msgid "mrWidget|Failed to load deployment statistics"
 msgstr ""
 
 msgid "mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file."
@@ -75457,9 +75443,6 @@ msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccura
 msgstr ""
 
 msgid "mrWidget|Information"
-msgstr ""
-
-msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
 msgid "mrWidget|Members who can merge are allowed to add commits."

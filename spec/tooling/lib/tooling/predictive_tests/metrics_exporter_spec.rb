@@ -96,9 +96,13 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   def expect_events_sent(
-    strategy, changed_files_count:, predicted_test_files_count:, missed_failing_test_files:,
+    strategy, changed_files_count:,
+    predicted_test_files_count:,
+    missed_failing_test_files:,
+    predicted_failing_test_files:,
     projected_test_runtime_seconds: nil,
-    test_files_missing_runtime_count: nil)
+    test_files_missing_runtime_count: nil
+  )
     expect(event_tracker).to have_received(:send_event).with(
       event_name,
       label: "changed_files_count",
@@ -117,6 +121,13 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       event_name,
       label: "missed_failing_test_files",
       value: missed_failing_test_files,
+      property: strategy,
+      extra_properties: extra_properties
+    )
+    expect(event_tracker).to have_received(:send_event).with(
+      event_name,
+      label: "predicted_failing_test_files",
+      value: predicted_failing_test_files,
       property: strategy,
       extra_properties: extra_properties
     )
@@ -205,6 +216,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         changed_files_count: 4,
         predicted_test_files_count: 1,
         missed_failing_test_files: 1,
+        predicted_failing_test_files: 1,
         projected_test_runtime_seconds: 2,
         test_files_missing_runtime_count: 0
       )
@@ -218,6 +230,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         changed_files_count: 4,
         predicted_test_files_count: 3,
         missed_failing_test_files: 0,
+        predicted_failing_test_files: 2,
         projected_test_runtime_seconds: 3,
         test_files_missing_runtime_count: 1
       )
@@ -233,6 +246,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
           "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 0,
+          "predicted_failing_test_files" => 2,
           "predicted_test_files_count" => 3,
           "runtime_metrics" => {
             "projected_test_runtime_seconds" => 3,
@@ -247,6 +261,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
           "changed_files_count" => 4,
           "failed_test_files_count" => 2,
           "missed_failing_test_files" => 1,
+          "predicted_failing_test_files" => 1,
           "predicted_test_files_count" => 1,
           "runtime_metrics" => {
             "projected_test_runtime_seconds" => 2,
@@ -289,6 +304,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         "jest_built_in",
         changed_files_count: 4,
         predicted_test_files_count: 2,
+        predicted_failing_test_files: 1,
         missed_failing_test_files: 1
       )
     end
@@ -302,6 +318,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         "core_metrics" => {
           "changed_files_count" => 4,
           "failed_test_files_count" => 2,
+          "predicted_failing_test_files" => 1,
           "missed_failing_test_files" => 1,
           "predicted_test_files_count" => 2
         }

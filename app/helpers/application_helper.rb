@@ -462,19 +462,25 @@ module ApplicationHelper
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 
+    extensible_reference_filters_enabled = Feature.enabled?(:extensible_reference_filters, Feature.current_request)
+
     if object.is_a?(Group)
       {
         members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_group_autocomplete_sources_path(object),
+        issuesAlternative: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
+        workItems: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
         mergeRequests: merge_requests_group_autocomplete_sources_path(object),
         labels: labels_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_group_autocomplete_sources_path(object),
         commands: commands_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
-      }
+      }.compact
     else
       {
         members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_project_autocomplete_sources_path(object),
+        issuesAlternative: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
+        workItems: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
         mergeRequests: merge_requests_project_autocomplete_sources_path(object),
         labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_project_autocomplete_sources_path(object),
@@ -482,7 +488,7 @@ module ApplicationHelper
         snippets: snippets_project_autocomplete_sources_path(object),
         contacts: contacts_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         wikis: object.feature_available?(:wiki, current_user) ? wikis_project_autocomplete_sources_path(object) : nil
-      }
+      }.compact
     end
   end
 

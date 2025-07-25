@@ -1222,6 +1222,79 @@ describe('GfmAutoComplete', () => {
     });
   });
 
+  describe('Extensible reference filters', () => {
+    const dataSources = {
+      issuesAlternative: `${TEST_HOST}/autocomplete_sources/issues`,
+      workItems: `${TEST_HOST}/autocomplete_sources/issues`,
+    };
+
+    let autocomplete;
+    let $textarea;
+
+    const issueDropdownElementId = 'at-view-issuesalternative';
+    const workItemDropdownElementId = 'at-view-workitems';
+    const getIssueDropdownItems = () => getAutocompleteDropdownItems(issueDropdownElementId);
+    const getWorkItemDropdownItems = () => getAutocompleteDropdownItems(workItemDropdownElementId);
+    const issueMatcher = (issue) => `${issue.reference} ${issue.title}`;
+
+    const setup = () => {
+      setHTMLFixture('<textarea></textarea>');
+      autocomplete = new GfmAutoComplete(dataSources);
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { issuesAlternative: true, workItems: true });
+      autocomplete.cachedData['[issue:'] = {
+        '': [...mockIssues],
+      };
+      autocomplete.cachedData['[work_item:'] = {
+        '': [...mockIssues],
+      };
+    };
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    describe('when extensible_reference_filters feature flag enabled', () => {
+      beforeEach(() => {
+        gon.features = { extensibleReferenceFilters: true };
+        setup();
+      });
+
+      it('[issue: shows issues', () => {
+        triggerDropdown($textarea, '[issue:');
+        const issues = getIssueDropdownItems();
+        expect(issues).toHaveLength(mockIssues.length);
+        expect(issues).toEqual(mockIssues.map(issueMatcher));
+      });
+
+      it('[work_item: shows work items', () => {
+        triggerDropdown($textarea, '[work_item:');
+        const workItems = getWorkItemDropdownItems();
+        expect(workItems).toHaveLength(mockIssues.length);
+        expect(workItems).toEqual(mockIssues.map(issueMatcher));
+      });
+    });
+
+    describe('when extensible_reference_filters feature flag disabled', () => {
+      beforeEach(() => {
+        gon.features = { extensibleReferenceFilters: false };
+        setup();
+      });
+
+      it('[issue: does not show issues', () => {
+        triggerDropdown($textarea, '[issue:');
+        const dropdownElement = document.getElementById(issueDropdownElementId);
+        expect(dropdownElement).toBe(null);
+      });
+
+      it('[work_item: does not show work items', () => {
+        const dropdownElement = document.getElementById(workItemDropdownElementId);
+        expect(dropdownElement).toBe(null);
+      });
+    });
+  });
+
   describe('Work Items', () => {
     let autocomplete;
     let $textarea;

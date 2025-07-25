@@ -55,8 +55,7 @@ module Groups
     end
 
     def rename_group_for_deletion?
-      Feature.enabled?(:rename_group_path_upon_deletion_scheduling, resource.root_ancestor) &&
-        !resource.has_container_repository_including_subgroups?
+      !resource.has_container_repository_including_subgroups?
     end
 
     def update_service_params

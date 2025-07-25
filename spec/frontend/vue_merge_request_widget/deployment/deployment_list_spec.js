@@ -7,7 +7,6 @@ import MrCollapsibleExtension from '~/vue_merge_request_widget/components/mr_col
 import { mockStore } from '../mock_data';
 
 const DEFAULT_PROPS = {
-  hasDeploymentMetrics: false,
   deploymentClass: 'js-pre-deployment',
 };
 
@@ -43,9 +42,7 @@ describe('~/vue_merge_request_widget/components/deployment/deployment_list.vue',
       zip(deploymentWrappers.wrappers, propsData.deployments).forEach(
         ([deploymentWrapper, deployment]) => {
           expect(deploymentWrapper.props('deployment')).toEqual(deployment);
-          expect(deploymentWrapper.props()).toMatchObject({
-            showMetrics: DEFAULT_PROPS.hasDeploymentMetrics,
-          });
+          expect(deploymentWrapper.props()).toMatchObject({});
           expect(deploymentWrapper.classes(DEFAULT_PROPS.deploymentClass)).toBe(true);
           expect(deploymentWrapper.text()).toEqual(expect.any(String));
           expect(deploymentWrapper.text()).not.toBe('');

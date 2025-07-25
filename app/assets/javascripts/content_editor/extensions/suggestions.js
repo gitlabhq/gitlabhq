@@ -4,6 +4,7 @@ import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash';
+import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
 import { COMMANDS } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
@@ -167,18 +168,26 @@ export default Node.create({
       });
 
     return [
-      createPlugin('@', 'reference', 'user', { limit: 10, filterOnBackend: true }),
-      createPlugin('#', 'reference', 'issue', { filterOnBackend: true }),
-      createPlugin('$', 'reference', 'snippet'),
-      createPlugin('~', 'referenceLabel', 'label', { limit: 20 }),
-      createPlugin('&', 'reference', 'epic'),
-      createPlugin('!', 'reference', 'merge_request'),
-      createPlugin('[vulnerability:', 'reference', 'vulnerability', { filterOnBackend: true }),
-      createPlugin('*iteration:', 'reference', 'iteration'),
-      createPlugin('%', 'reference', 'milestone'),
-      createPlugin(':', 'emoji', 'emoji'),
-      createPlugin('[[', 'link', 'wiki'),
-      createPlugin('/', 'reference', 'command', {
+      createPlugin('@', 'reference', REFERENCE_TYPES.USER, { limit: 10, filterOnBackend: true }),
+      createPlugin('#', 'reference', REFERENCE_TYPES.ISSUE, { filterOnBackend: true }),
+      createPlugin('[issue:', 'reference', REFERENCE_TYPES.ISSUE_ALTERNATIVE, {
+        filterOnBackend: true,
+      }),
+      createPlugin('[work_item:', 'reference', REFERENCE_TYPES.WORK_ITEM, {
+        filterOnBackend: true,
+      }),
+      createPlugin('$', 'reference', REFERENCE_TYPES.SNIPPET),
+      createPlugin('~', 'referenceLabel', REFERENCE_TYPES.LABEL, { limit: 20 }),
+      createPlugin('&', 'reference', REFERENCE_TYPES.EPIC),
+      createPlugin('!', 'reference', REFERENCE_TYPES.MERGE_REQUEST),
+      createPlugin('[vulnerability:', 'reference', REFERENCE_TYPES.VULNERABILITY, {
+        filterOnBackend: true,
+      }),
+      createPlugin('*iteration:', 'reference', REFERENCE_TYPES.ITERATION),
+      createPlugin('%', 'reference', REFERENCE_TYPES.MILESTONE),
+      createPlugin(':', 'emoji', REFERENCE_TYPES.EMOJI),
+      createPlugin('[[', 'link', REFERENCE_TYPES.WIKI),
+      createPlugin('/', 'reference', REFERENCE_TYPES.COMMAND, {
         cache: false,
         limit: 100,
         startOfLine: true,

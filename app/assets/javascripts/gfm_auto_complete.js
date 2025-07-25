@@ -20,6 +20,8 @@ import { renderVueComponentForLegacyJS } from './render_vue_component_for_legacy
 
 const USERS_ALIAS = 'users';
 const ISSUES_ALIAS = 'issues';
+const ISSUES_ALTERNATIVE_ALIAS = 'issuesalternative';
+const WORK_ITEMS_ALIAS = 'workitems';
 const MILESTONES_ALIAS = 'milestones';
 const MERGEREQUESTS_ALIAS = 'mergerequests';
 const LABELS_ALIAS = 'labels';
@@ -165,6 +167,8 @@ export const defaultAutocompleteConfig = {
   emojis: true,
   members: true,
   issues: true,
+  issuesAlternative: true,
+  workItems: true,
   mergeRequests: true,
   epics: true,
   iterations: true,
@@ -195,6 +199,7 @@ class GfmAutoComplete {
     this.isLoadingData = {};
     this.previousQuery = undefined;
     this.currentBackendFilterRequestController = null;
+    this.enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -224,6 +229,10 @@ class GfmAutoComplete {
     if (this.enableMap.emojis) this.setupEmoji($input);
     if (this.enableMap.members) this.setupMembers($input);
     if (this.enableMap.issues) this.setupIssues($input);
+    if (this.enableMap.issuesAlternative && this.enableExtensibleReferenceFilters)
+      this.setupIssuesAlternative($input);
+    if (this.enableMap.workItems && this.enableExtensibleReferenceFilters)
+      this.setupWorkItem($input);
     if (this.enableMap.milestones) this.setupMilestones($input);
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
@@ -608,6 +617,80 @@ class GfmAutoComplete {
       },
     });
     showAndHideHelper($input, ISSUES_ALIAS);
+  }
+
+  setupIssuesAlternative($input) {
+    $input.atwho({
+      at: '[issue:',
+      alias: ISSUES_ALTERNATIVE_ALIAS,
+      delay: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Issues.templateFunction(value);
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      insertTpl: GfmAutoComplete.Issues.alternativeReferenceInsertTemplateFunction,
+      skipSpecialCharacterTest: true,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(issues) {
+          return $.map(issues, (i) => {
+            if (i.title == null) {
+              return i;
+            }
+            return {
+              id: i.iid,
+              title: i.title,
+              reference: i.reference,
+              search: `${i.iid} ${i.title}`,
+              iconName: i.icon_name,
+            };
+          });
+        },
+      },
+    });
+    showAndHideHelper($input, ISSUES_ALTERNATIVE_ALIAS);
+  }
+
+  setupWorkItem($input) {
+    $input.atwho({
+      at: '[work_item:',
+      alias: WORK_ITEMS_ALIAS,
+      delay: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Issues.templateFunction(value);
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      insertTpl: GfmAutoComplete.Issues.alternativeReferenceInsertTemplateFunction,
+      skipSpecialCharacterTest: true,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(workItems) {
+          return $.map(workItems, (w) => {
+            if (w.title == null) {
+              return w;
+            }
+            return {
+              id: w.iid,
+              title: w.title,
+              reference: w.reference,
+              search: `${w.iid} ${w.title}`,
+              iconName: w.icon_name,
+            };
+          });
+        },
+      },
+    });
+    showAndHideHelper($input, WORK_ITEMS_ALIAS);
   }
 
   setupMilestones($input) {
@@ -1162,6 +1245,8 @@ GfmAutoComplete.atTypeMap = {
   ':': 'emojis',
   '@': 'members',
   '#': 'issues',
+  '[issue:': 'issues',
+  '[work_item:': 'issues',
   '!': 'mergeRequests',
   '&': 'epics',
   '*iteration:': 'iterations',
@@ -1252,6 +1337,10 @@ GfmAutoComplete.Issues = {
   insertTemplateFunction(value) {
     // eslint-disable-next-line no-template-curly-in-string
     return value.reference || '${atwho-at}${id}';
+  },
+  alternativeReferenceInsertTemplateFunction(value) {
+    // eslint-disable-next-line no-template-curly-in-string
+    return value.reference || '#${id}';
   },
   templateFunction({ id, title, reference, iconName }) {
     const mappedIconName =

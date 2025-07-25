@@ -18,6 +18,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :fleet_vis
 
     include_context 'runners resolver setup'
 
+    let(:user) { create_default(:user) }
     let(:obj) { group }
     let(:args) { {} }
 

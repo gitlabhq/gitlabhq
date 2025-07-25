@@ -596,4 +596,81 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
     end
   end
+
+  describe '#prohibit_key_path_changes!' do
+    subject(:prohibit_key_path_changes) { analytics_instrumentation.prohibit_key_path_changes! }
+
+    let(:metric_files) { ['config/metrics/new_metric.yml'] }
+    let(:changed_file_lines) { changed_lines.map { |line| line.delete_prefix('+') } }
+
+    before do
+      allow(fake_helper).to receive(:changed_lines).with(metric_files.first).and_return(changed_lines)
+      allow(fake_project_helper).to receive(:file_lines).with(metric_files.first).and_return(changed_file_lines)
+      allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
+    end
+
+    context 'when a metric was added' do
+      let(:changed_lines) { ['+key_path: user.email'] }
+
+      before do
+        allow(fake_helper).to receive(:added_files).and_return(metric_files)
+      end
+
+      it 'does not add warning' do
+        expect(analytics_instrumentation).not_to receive(:markdown)
+
+        prohibit_key_path_changes
+      end
+    end
+
+    context 'when a metric was removed' do
+      let(:changed_lines) { ['-key_path: user.email'] }
+
+      before do
+        allow(fake_helper).to receive(:deleted_files).and_return(metric_files)
+      end
+
+      it 'does not add warning' do
+        expect(analytics_instrumentation).not_to receive(:markdown)
+
+        prohibit_key_path_changes
+      end
+    end
+
+    context 'when a metric was modified' do
+      before do
+        allow(fake_helper).to receive(:modified_files).and_return(metric_files)
+      end
+
+      context 'when key_path is not changed' do
+        let(:changed_lines) do
+          [
+            "-source: database",
+            "+source: non_database"
+          ]
+        end
+
+        it 'does not add warning' do
+          expect(analytics_instrumentation).not_to receive(:markdown)
+
+          prohibit_key_path_changes
+        end
+      end
+
+      context 'when key_path is changed' do
+        let(:changed_lines) do
+          [
+            "-key_path: 'user.email'",
+            "+key_path: 'user.e_mail'"
+          ]
+        end
+
+        it 'adds warning' do
+          expect(analytics_instrumentation).to receive(:markdown)
+
+          prohibit_key_path_changes
+        end
+      end
+    end
+  end
 end

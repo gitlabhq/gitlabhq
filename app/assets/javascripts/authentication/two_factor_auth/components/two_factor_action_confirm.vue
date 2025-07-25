@@ -40,18 +40,23 @@ export default {
       required: false,
       default: 'delete',
     },
-    path: {
-      type: String,
-      required: true,
-    },
     passwordRequired: {
       type: Boolean,
+      required: true,
+    },
+    path: {
+      type: String,
       required: true,
     },
     variant: {
       type: String,
       required: false,
       default: 'danger',
+    },
+    size: {
+      type: String,
+      required: false,
+      default: 'medium',
     },
   },
   data() {
@@ -129,7 +134,14 @@ export default {
       data-testid="2fa-action-button"
       @click="showModal"
     />
-    <gl-button v-else :variant="variant" data-testid="2fa-action-button" block @click="showModal">
+    <gl-button
+      v-else
+      :variant="variant"
+      :size="size"
+      data-testid="2fa-action-button"
+      block
+      @click="showModal"
+    >
       {{ buttonText }}
     </gl-button>
   </div>

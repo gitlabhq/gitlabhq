@@ -45,6 +45,13 @@ module Types
       description: 'Recent user activity.',
       experiment: { milestone: '17.10' }
 
+    field :runners,
+      Types::Ci::RunnerType.connection_type,
+      null: true,
+      resolver: Resolvers::Ci::UserRunnersResolver,
+      experiment: { milestone: '18.3' },
+      description: 'List all runners the current user manages.'
+
     def activity
       object if Feature.enabled?(:activity_stream_graphql, current_user)
     end

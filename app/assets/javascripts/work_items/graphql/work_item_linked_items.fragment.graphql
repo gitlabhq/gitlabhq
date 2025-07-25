@@ -34,6 +34,14 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
             webUrl
             reference(full: true)
             widgets {
+              ... on WorkItemWidgetLinkedItems {
+                linkedItems {
+                  nodes {
+                    linkId
+                    linkType
+                  }
+                }
+              }
               ...WorkItemMetadataWidgets
               ...WorkItemMetadataWidgetsExtras
             }

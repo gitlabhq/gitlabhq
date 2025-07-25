@@ -751,54 +751,23 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       stub_config(cell: { enabled: true, id: 1 })
     end
 
-    context 'when :routable_pat feature flag is disabled' do
-      before do
-        stub_feature_flags(routable_pat: false)
-      end
-
-      it_behaves_like 'a digested token' do
+    context 'when token_digest is not set yet' do
+      it_behaves_like 'a digested routable token' do
         let(:expected_token) { token }
-        let(:expected_token_payload) { devise_token }
+        let(:expected_routing_payload) { "c:1\no:#{organization.id.to_s(36)}\nu:#{user.id.to_s(36)}" }
+        let(:expected_random_bytes) { random_bytes }
         let(:expected_token_prefix) { described_class.token_prefix }
         let(:expected_token_digest) { token_owner_record.token_digest }
       end
     end
 
-    shared_examples 'a routable token' do
-      context 'when token_digest is not set yet' do
-        it_behaves_like 'a digested routable token' do
-          let(:expected_token) { token }
-          let(:expected_routing_payload) { "c:1\no:#{organization.id.to_s(36)}\nu:#{user.id.to_s(36)}" }
-          let(:expected_random_bytes) { random_bytes }
-          let(:expected_token_prefix) { described_class.token_prefix }
-          let(:expected_token_digest) { token_owner_record.token_digest }
-        end
+    context 'with token_digest already generated' do
+      let(:token_digest) { 's3cr3t' }
+
+      it 'does not change the token' do
+        expect(token).to be_nil
+        expect(token_owner_record.token_digest).to eq(token_digest)
       end
-
-      context 'with token_digest already generated' do
-        let(:token_digest) { 's3cr3t' }
-
-        it 'does not change the token' do
-          expect(token).to be_nil
-          expect(token_owner_record.token_digest).to eq(token_digest)
-        end
-      end
-    end
-
-    context 'when :routable_pat feature flag is enabled for the user' do
-      before do
-        stub_feature_flags(routable_pat: token_owner_record.user)
-      end
-
-      it_behaves_like 'a routable token'
-    end
-
-    context 'when :routable_pat feature flag is enabled globally' do
-      before do
-        stub_feature_flags(routable_pat: true)
-      end
-
-      it_behaves_like 'a routable token'
     end
   end
 end

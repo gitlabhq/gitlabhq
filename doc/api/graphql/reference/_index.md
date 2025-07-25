@@ -26484,6 +26484,39 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
 | <a id="currentuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
+##### `CurrentUser.runners`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+List all runners the current user manages.
+
+Returns [`CiRunnerConnection`](#cirunnerconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserrunnersactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
+| <a id="currentuserrunnersassignabletoprojectpath"></a>`assignableToProjectPath` | [`ID`](#id) | Path of a project. When set, returns runners that can be assigned to a project, are not locked, and not already assigned to the project. |
+| <a id="currentuserrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
+| <a id="currentuserrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="currentuserrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="currentuserrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
+| <a id="currentuserrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
+| <a id="currentuserrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
+| <a id="currentuserrunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
+| <a id="currentuserrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
+| <a id="currentuserrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
+| <a id="currentuserrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
+| <a id="currentuserrunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+
 ##### `CurrentUser.savedReply`
 
 Saved reply authored by the user.
@@ -35663,6 +35696,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshasokrsfeature"></a>`hasOkrsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether OKRs are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasstatusesfeature"></a>`hasStatusesFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
 
 ### `NamespaceBan`

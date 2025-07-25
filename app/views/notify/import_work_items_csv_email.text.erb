@@ -16,8 +16,8 @@
 <%
   if type_errors
     blank_lines = type_errors[:blank]
-    missing_lines = type_errors[:missing]
-    disallowed_lines = type_errors[:disallowed]
+    missing_lines = type_errors[:missing]&.values&.flatten
+    disallowed_lines = type_errors[:disallowed]&.values&.flatten
 %>
   <%= s_('Notify|Some values in the "type" column could not be matched with supported work item types:') %>
 

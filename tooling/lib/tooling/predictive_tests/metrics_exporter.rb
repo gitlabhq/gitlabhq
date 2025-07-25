@@ -278,6 +278,7 @@ module Tooling
             changed_files_count: changed_files.size,
             predicted_test_files_count: predicted_test_files.size,
             missed_failing_test_files: (failed_test_files - predicted_test_files).size,
+            predicted_failing_test_files: (failed_test_files & predicted_test_files).size,
             failed_test_files_count: failed_test_files.size,
             # rspec tests have runtime information provided via knapsack report
             # frontend tests don't have a runtime report yet, so we skip them
@@ -321,6 +322,7 @@ module Tooling
         send_event("changed_files_count", core[:changed_files_count], strategy)
         send_event("predicted_test_files_count", core[:predicted_test_files_count], strategy)
         send_event("missed_failing_test_files", core[:missed_failing_test_files], strategy)
+        send_event("predicted_failing_test_files", core[:predicted_failing_test_files], strategy)
 
         return unless test_type == :backend
 

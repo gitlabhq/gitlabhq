@@ -9,6 +9,7 @@ import {
 import produce from 'immer';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
@@ -27,6 +28,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['isGroup', 'isSignedIn'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
@@ -78,7 +80,9 @@ export default {
 
     async toggleMetadataDisplaySettings(metadataKey) {
       if (this.isFieldPreferenceLoading) return;
-      const newHiddenKeys = this.hiddenMetadataKeys.includes(metadataKey)
+
+      const wasHidden = this.hiddenMetadataKeys.includes(metadataKey);
+      const newHiddenKeys = wasHidden
         ? this.hiddenMetadataKeys.filter((key) => key !== metadataKey)
         : [...this.hiddenMetadataKeys, metadataKey];
 
@@ -118,6 +122,12 @@ export default {
             );
           },
         });
+
+        if (!wasHidden) {
+          this.trackEvent('work_item_metadata_field_hidden', {
+            property: metadataKey,
+          });
+        }
       } catch (error) {
         createAlert({
           message: __('Something went wrong while saving the preference.'),
@@ -130,9 +140,11 @@ export default {
     },
 
     async toggleSidePanelPreference() {
+      const isEnabled = this.shouldOpenItemsInSidePanel;
+
       const input = {
         workItemsDisplaySettings: {
-          shouldOpenItemsInSidePanel: !this.shouldOpenItemsInSidePanel,
+          shouldOpenItemsInSidePanel: !isEnabled,
         },
       };
 
@@ -165,6 +177,10 @@ export default {
             );
           },
         });
+
+        if (isEnabled) {
+          this.trackEvent('work_item_drawer_disabled');
+        }
       } catch (error) {
         createAlert({
           message: __('Something went wrong while saving the preference.'),

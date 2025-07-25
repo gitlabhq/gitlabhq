@@ -431,28 +431,61 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#autocomplete_data_sources' do
-    context 'group' do
-      let(:group) { create(:group) }
-      let(:noteable_type) { Issue }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:noteable_type) { Issue }
+    let_it_be(:group_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands] }
+    let_it_be(:project_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts, :wikis] }
+    let_it_be(:extensible_filter_sources) { [:issuesAlternative, :workItems] }
 
-      it 'returns paths for autocomplete_sources_controller' do
-        sources = helper.autocomplete_data_sources(group, noteable_type)
-        expect(sources.keys).to include(:members, :issues, :mergeRequests, :labels, :milestones, :commands)
-        sources.keys.each do |key|
-          expect(sources[key]).not_to be_nil
+    def expect_autocomplete_data_sources_to_be(object, noteable_type, source_keys)
+      sources = helper.autocomplete_data_sources(object, noteable_type)
+      expect(sources.keys).to match_array(source_keys)
+      sources.keys.each do |key|
+        expect(sources[key]).not_to be_nil
+      end
+    end
+
+    def expect_autocomplete_data_sources_to_contain(object, noteable_type, source_keys)
+      sources = helper.autocomplete_data_sources(object, noteable_type)
+      expect(sources.keys).to include(*source_keys)
+      sources.keys.each do |key|
+        expect(sources[key]).not_to be_nil
+      end
+    end
+
+    context 'when feature flag extensible_reference_filters is enabled' do
+      before do
+        stub_feature_flags(extensible_reference_filters: true)
+      end
+
+      context 'group' do
+        it 'returns paths for autocomplete_sources_controller' do
+          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
+        end
+      end
+
+      context 'project' do
+        it 'returns paths for autocomplete_sources_controller' do
+          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
         end
       end
     end
 
-    context 'project' do
-      let(:project) { create(:project) }
-      let(:noteable_type) { Issue }
+    context 'when feature flag extensible_reference_filters is disabled' do
+      before do
+        stub_feature_flags(extensible_reference_filters: false)
+      end
 
-      it 'returns paths for autocomplete_sources_controller' do
-        sources = helper.autocomplete_data_sources(project, noteable_type)
-        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts, :wikis])
-        sources.keys.each do |key|
-          expect(sources[key]).not_to be_nil
+      context 'group' do
+        it 'returns paths for autocomplete_sources_controller' do
+          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources)
+        end
+      end
+
+      context 'project' do
+        it 'returns paths for autocomplete_sources_controller' do
+          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources)
         end
       end
     end

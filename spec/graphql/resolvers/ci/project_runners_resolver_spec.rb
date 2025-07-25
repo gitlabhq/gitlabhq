@@ -18,6 +18,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :fleet_v
 
     include_context 'runners resolver setup'
 
+    let(:user) { create_default(:user) }
     let(:obj) { project }
     let(:args) { {} }
 

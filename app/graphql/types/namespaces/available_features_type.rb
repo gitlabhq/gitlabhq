@@ -77,6 +77,13 @@ module Types
         resolver_method: :subepics_enabled?,
         experiment: { milestone: '18.1' }
 
+      field :has_statuses_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether work item statuses are enabled for the namespace.',
+        resolver_method: :work_item_statuses_enabled?,
+        experiment: { milestone: '18.3' }
+
       def epics_enabled?
         object.licensed_feature_available?(:epics)
       end
@@ -115,6 +122,10 @@ module Types
 
       def subepics_enabled?
         object.licensed_feature_available?(:subepics)
+      end
+
+      def work_item_statuses_enabled?
+        object.licensed_feature_available?(:work_item_status)
       end
     end
   end

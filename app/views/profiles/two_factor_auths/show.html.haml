@@ -116,18 +116,6 @@
           .gl-text-subtle
             = _("You don't have any WebAuthn devices registered yet.")
 
-= render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |c|
-  - c.with_description do
-    = _('Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes.')
-  - c.with_body do
-    - if current_user.two_factor_enabled?
-      %p
-        = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
-      .gl-flex.gl-flex-wrap.gl-gap-3
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
-    - else
-      %p
-        = _("Register a one-time password authenticator or a WebAuthn device first.")
+= render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |s|
+  - s.with_body do
+    = render 'recovery_codes'

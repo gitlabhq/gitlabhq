@@ -43,17 +43,6 @@ module Projects
       ## projects marked for deletion
       ::Namespaces::ScheduleAggregationWorker.perform_async(resource.namespace_id)
     end
-
-    def suffixed_identifier(original_identifier)
-      if Feature.enabled?(:rename_group_path_upon_deletion_scheduling, resource.root_ancestor)
-        super
-      else
-        # Legacy support for projects
-        "#{original_identifier}-" \
-          "#{LEGACY_DELETION_SCHEDULED_PATH_INFIX}-" \
-          "#{resource.id}"
-      end
-    end
   end
 end
 

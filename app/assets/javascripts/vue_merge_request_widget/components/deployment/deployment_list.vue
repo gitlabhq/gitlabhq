@@ -19,10 +19,6 @@ export default {
       type: String,
       required: true,
     },
-    hasDeploymentMetrics: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     showCollapsedDeployments() {
@@ -54,7 +50,6 @@ export default {
       :key="deployment.id"
       :class="deploymentClass"
       :deployment="deployment"
-      :show-metrics="hasDeploymentMetrics"
     />
   </mr-collapsible-extension>
   <div v-else class="mr-widget-extension">
@@ -63,7 +58,6 @@ export default {
       :key="deployment.id"
       :class="deploymentClass"
       :deployment="deployment"
-      :show-metrics="hasDeploymentMetrics"
     />
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script>
 import { GlAvatar, GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
-import { __, n__, s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
@@ -163,12 +163,6 @@ export default {
     },
     tabIndex() {
       return routes.findIndex(({ name }) => name === this.$route.name);
-    },
-    versionsCountLabel() {
-      return n__('MlModelRegistry|%d version', 'MlModelRegistry|%d versions', this.versionCount);
-    },
-    description() {
-      return this.model?.description || '';
     },
     isLoading() {
       return this.$apollo.queries.model.loading;

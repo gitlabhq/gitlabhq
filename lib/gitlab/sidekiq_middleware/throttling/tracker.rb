@@ -46,6 +46,12 @@ module Gitlab
           end
         end
 
+        def remove_from_throttled_list!
+          self.class.with_redis do |redis|
+            redis.srem(self.class.lookup_key, worker_name)
+          end
+        end
+
         private
 
         def period_key(time = Time.current)

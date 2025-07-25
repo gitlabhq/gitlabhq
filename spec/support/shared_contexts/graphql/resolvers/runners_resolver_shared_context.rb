@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.shared_context 'runners resolver setup' do
-  let_it_be(:user) { create_default(:user, :admin) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:subgroup) { create(:group, :public, parent: group) }
   let_it_be(:project) { create(:project, :public, group: group) }

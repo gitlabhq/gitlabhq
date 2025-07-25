@@ -388,11 +388,10 @@ scan.
 - Static Application Security Testing (SAST): Runs only if the repository contains
   [files supported by SAST](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
-  - Only rules with the default ruleset are supported.
-    [Replacing](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) or [extending](../secret_detection/pipeline/configure.md#extend-the-default-ruleset)
-    the default ruleset is not supported. Instead, you can configure a
-    [remote configuration file](../secret_detection/pipeline/configure.md#with-a-remote-ruleset) to override
-    or disable a rule from the default ruleset using the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+  - Only rules within the default ruleset are supported by default.
+  - To customize a ruleset configuration, either:
+    - Modify the default ruleset. Use a scan execution policy to specify the `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD variable. By default, this points to a [remote configuration file](../secret_detection/pipeline/configure.md#with-a-remote-ruleset) that only overrides or disables rules from the default ruleset. Using only this variable does not support extending or replacing the default set of rules.
+    - [Extend](../secret_detection/pipeline/configure.md#extend-the-default-ruleset) or [replace](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) the default ruleset. Use the scan execution policy to specify the `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD variable and a remote configuration file that uses [a Git passthrough](../secret_detection/pipeline/custom_rulesets_schema.md#passthrough-types) to extend or replace the default ruleset. For a detailed guide, see [How to set up a centrally managed pipeline secret detection configuration](https://support.gitlab.com/hc/en-us/articles/18863735262364-How-to-set-up-a-centrally-managed-pipeline-secret-detection-configuration-applied-via-Scan-Execution-Policy).
   - For `scheduled` scan execution policies, secret detection by default runs first in `historic`
     mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current

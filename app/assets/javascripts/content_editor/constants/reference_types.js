@@ -1,5 +1,6 @@
 export const REFERENCE_TYPES = {
   ISSUE: 'issue',
+  ISSUE_ALTERNATIVE: 'issue_alternative',
   MERGE_REQUEST: 'merge_request',
   EPIC: 'epic',
   WORK_ITEM: 'work_item',
@@ -10,5 +11,6 @@ export const REFERENCE_TYPES = {
   VULNERABILITY: 'vulnerability',
   MILESTONE: 'milestone',
   WIKI: 'wiki',
+  ITERATION: 'iteration',
   EMOJI: 'emoji',
 };

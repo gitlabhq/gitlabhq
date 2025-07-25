@@ -49,8 +49,7 @@ export const initClose2faSuccessMessage = () => {
 
 export const initTwoFactorConfirm = () => {
   document.querySelectorAll('.js-two-factor-action-confirm').forEach((el) => {
-    const { buttonText, classes, icon, message, method, passwordRequired, path, title, variant } =
-      el.dataset;
+    const { buttonText, icon, message, method, passwordRequired, path, size, variant } = el.dataset;
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -59,13 +58,12 @@ export const initTwoFactorConfirm = () => {
         return createElement(TwoFactorActionConfirm, {
           props: {
             buttonText,
-            classes,
             icon,
             message,
             method,
             passwordRequired: parseBoolean(passwordRequired),
             path,
-            title,
+            size,
             variant,
           },
         });

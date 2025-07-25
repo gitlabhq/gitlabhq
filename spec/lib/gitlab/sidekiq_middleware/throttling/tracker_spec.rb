@@ -86,4 +86,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::Tracker, :clean_gitlab_red
       end
     end
   end
+
+  describe '#remove_from_throttled_list!' do
+    before do
+      Gitlab::Redis::QueuesMetadata.with do |redis|
+        redis.sadd(described_class.lookup_key, worker_name)
+      end
+    end
+
+    it 'removes the worker from the throttled list' do
+      tracker.remove_from_throttled_list!
+
+      Gitlab::Redis::QueuesMetadata.with do |redis|
+        expect(redis.sismember(described_class.lookup_key, worker_name)).to be false
+      end
+    end
+  end
 end

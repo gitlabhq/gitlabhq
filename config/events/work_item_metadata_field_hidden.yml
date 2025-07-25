@@ -1,0 +1,20 @@
+---
+description: User hides a specific metadata field in work item list display preferences to reduce visual clutter
+internal_events: true
+status: active
+action: work_item_metadata_field_hidden
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  property:
+    description: The specific metadata field key that was hidden (e.g., assignee, labels, milestone, weight, health_status)
+product_group: product_planning
+product_categories:
+  - team_planning
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198482
+tiers:
+  - premium
+  - ultimate

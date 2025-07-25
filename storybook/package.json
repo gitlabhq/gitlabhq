@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "test-storybook --url http://${STORYBOOK_HOST:-localhost}:${STORYBOOK_PORT:-9002} -c config --verbose --json --outputFile storybook-results.json",
     "start": "storybook dev -p 9002 -c config",
     "build": "storybook build -c config -o public",
     "doctor": "storybook doctor  -c config --debug"
@@ -17,12 +17,12 @@
     "@storybook/addon-viewport": "^7.6.20",
     "@storybook/addons": "^7.6.20",
     "@storybook/api": "^7.6.20",
+    "@storybook/builder-webpack5": "^7.6.20",
     "@storybook/components": "^7.6.20",
     "@storybook/core-events": "^7.6.20",
+    "@storybook/test-runner": "^0.16.0",
     "@storybook/vue": "^7.6.20",
-    "@storybook/builder-webpack5": "^7.6.20",
     "@storybook/vue-webpack5": "^7.6.20",
-    "vue-loader": "^15.8.3",
     "graphql-tag": "^2.12.5",
     "postcss-loader": "^8.1.1",
     "react": "^18.2.0",
@@ -30,7 +30,9 @@
     "sass": "^1.75.0",
     "sass-loader": "^10",
     "storybook": "^7.6.20",
-    "storybook-dark-mode": "4.0.2"
+    "storybook-dark-mode": "4.0.2",
+    "vue-loader": "^15.8.3",
+    "axe-playwright": "^2.1.0"
   },
   "resolutions": {
     "chokidar": "^3.5.2"

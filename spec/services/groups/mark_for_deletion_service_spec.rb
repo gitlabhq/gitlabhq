@@ -12,24 +12,6 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
   subject(:result) { service.execute }
 
   context 'for a group that has not been marked for deletion' do
-    context 'when rename_group_path_upon_deletion_scheduling feature flag is disabled' do
-      before do
-        stub_feature_flags(rename_group_path_upon_deletion_scheduling: false)
-      end
-
-      it 'does not rename group name' do
-        expect { result }.not_to change {
-          group.name
-        }
-      end
-
-      it 'does not rename group path' do
-        expect { result }.not_to change {
-          group.path
-        }
-      end
-    end
-
     context 'when a project under the group has a container image' do
       before do
         allow(group).to receive(:has_container_repository_including_subgroups?).and_return(true)

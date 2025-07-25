@@ -12,7 +12,7 @@ class FakeWebauthnDevice
   end
 
   def respond_to_webauthn_registration
-    app_id = @page.evaluate_script('gon.webauthn.app_id')
+    app_id = WebAuthn.configuration.origin
     challenge = @page.evaluate_script('gon.webauthn.options.challenge')
 
     json_response = webauthn_device(app_id).create(challenge: challenge).to_json # rubocop:disable Rails/SaveBang

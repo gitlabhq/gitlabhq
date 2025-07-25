@@ -10,6 +10,7 @@ import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_pre
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS } from '~/work_items/constants';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 Vue.use(VueApollo);
 
@@ -36,6 +37,7 @@ const mockCacheData = {
 describe('WorkItemUserPreferences', () => {
   let wrapper;
   let mockApolloProvider;
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   // Mock handlers
   const successHandler = jest.fn().mockResolvedValue({
@@ -195,6 +197,16 @@ describe('WorkItemUserPreferences', () => {
           error,
         });
       });
+
+      it('tracks work_item_drawer_disabled event when user disables drawer', async () => {
+        const dropdownItems = findDropdownItems();
+        const sidePanelItem = dropdownItems.at(dropdownItems.length - 1);
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        sidePanelItem.vm.$emit('action');
+        await waitForPromises();
+        expect(trackEventSpy).toHaveBeenCalledWith('work_item_drawer_disabled', {}, undefined);
+      });
     });
 
     describe('metadata field toggles', () => {
@@ -284,6 +296,23 @@ describe('WorkItemUserPreferences', () => {
         const metadataToggles = allToggles;
 
         expect(metadataToggles).toHaveLength(expectedGroupFields.length + 1);
+      });
+
+      it('tracks work_item_metadata_field_hidden event when user hides field', async () => {
+        const dropdownItems = findDropdownItems();
+        const firstMetadataItem = dropdownItems.at(0);
+
+        firstMetadataItem.vm.$emit('action');
+        await waitForPromises();
+
+        const { trackEventSpy } = bindInternalEventDocument(document.body);
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'work_item_metadata_field_hidden',
+          {
+            property: 'assignee',
+          },
+          undefined,
+        );
       });
     });
   });

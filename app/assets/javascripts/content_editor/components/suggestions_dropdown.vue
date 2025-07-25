@@ -2,6 +2,7 @@
 import { GlAvatar, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 
 export default {
   components: {
@@ -70,51 +71,59 @@ export default {
     },
 
     isCommand() {
-      return this.isReference && this.nodeProps.referenceType === 'command';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.COMMAND;
     },
 
     isUser() {
-      return this.isReference && this.nodeProps.referenceType === 'user';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.USER;
     },
 
     isIssue() {
-      return this.isReference && this.nodeProps.referenceType === 'issue';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.ISSUE;
+    },
+
+    isIssueAlternative() {
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.ISSUE_ALTERNATIVE;
+    },
+
+    isWorkItem() {
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.WORK_ITEM;
     },
 
     isLabel() {
-      return this.isReference && this.nodeProps.referenceType === 'label';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.LABEL;
     },
 
     isEpic() {
-      return this.isReference && this.nodeProps.referenceType === 'epic';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.EPIC;
     },
 
     isSnippet() {
-      return this.isReference && this.nodeProps.referenceType === 'snippet';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.SNIPPET;
     },
 
     isVulnerability() {
-      return this.isReference && this.nodeProps.referenceType === 'vulnerability';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.VULNERABILITY;
     },
 
     isIteration() {
-      return this.isReference && this.nodeProps.referenceType === 'iteration';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.ITERATION;
     },
 
     isMergeRequest() {
-      return this.isReference && this.nodeProps.referenceType === 'merge_request';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
 
     isMilestone() {
-      return this.isReference && this.nodeProps.referenceType === 'milestone';
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.MILESTONE;
     },
 
     isWiki() {
-      return this.nodeProps.referenceType === 'wiki';
+      return this.nodeProps.referenceType === REFERENCE_TYPES.WIKI;
     },
 
     isEmoji() {
-      return this.nodeType === 'emoji';
+      return this.nodeType === REFERENCE_TYPES.EMOJI;
     },
 
     shouldSelectFirstItem() {
@@ -148,25 +157,28 @@ export default {
       if (this.isEmoji) return item.emoji.e;
 
       switch (this.isReference && this.nodeProps.referenceType) {
-        case 'user':
+        case REFERENCE_TYPES.USER:
           return `${this.char}${item.username}`;
-        case 'issue':
-        case 'merge_request':
+        case REFERENCE_TYPES.ISSUE:
+        case REFERENCE_TYPES.MERGE_REQUEST:
           return item.reference || `${this.char}${item.iid}`;
-        case 'snippet':
+        case REFERENCE_TYPES.ISSUE_ALTERNATIVE:
+        case REFERENCE_TYPES.WORK_ITEM:
+          return item.reference || `#${item.iid}`;
+        case REFERENCE_TYPES.SNIPPET:
           return `${this.char}${item.id}`;
-        case 'milestone':
+        case REFERENCE_TYPES.MILESTONE:
           return `${this.char}${item.title}`;
-        case 'label':
+        case REFERENCE_TYPES.LABEL:
           return item.title;
-        case 'command':
+        case REFERENCE_TYPES.COMMAND:
           return `${this.char}${item.name}`;
-        case 'epic':
+        case REFERENCE_TYPES.EPIC:
           return item.reference;
-        case 'vulnerability':
+        case REFERENCE_TYPES.VULNERABILITY:
           return `[vulnerability:${item.id}]`;
-        case 'wiki':
-        case 'iteration':
+        case REFERENCE_TYPES.WIKI:
+        case REFERENCE_TYPES.ITERATION:
           return item.title;
         default:
           return '';
@@ -282,7 +294,7 @@ export default {
         : escape(text);
     },
   },
-  safeHtmlConfig: { ALLOWED_TAGS: ['strong'] },
+  safeHtmlConfig: { ALLOWED_TAGS: ['strong'], ALLOW_DATA_ATTR: false },
 };
 </script>
 
@@ -330,7 +342,7 @@ export default {
                     ></small>
                   </span>
                 </span>
-                <span v-if="isIssue || isMergeRequest">
+                <span v-if="isIssue || isIssueAlternative || isWorkItem || isMergeRequest">
                   <gl-icon
                     v-if="item.icon_name"
                     class="gl-mr-2"

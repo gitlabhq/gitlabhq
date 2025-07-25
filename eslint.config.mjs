@@ -675,6 +675,14 @@ export default [
     },
   },
 
+  {
+    files: ['storybook/config/test-runner.js'],
+
+    rules: {
+      'unicorn/filename-case': 'off',
+    },
+  },
+
   // Jest config
   jestConfig,
 

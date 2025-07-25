@@ -228,7 +228,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           'ldap' => 4,
           'standard' => 0,
           'two-factor' => 0,
-          'two-factor-via-u2f-device' => 0,
           "two-factor-via-webauthn-device" => 0
         }
       )
@@ -242,7 +241,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           'ldap' => 2,
           'standard' => 0,
           'two-factor' => 0,
-          'two-factor-via-u2f-device' => 0,
           "two-factor-via-webauthn-device" => 0
         }
       )
