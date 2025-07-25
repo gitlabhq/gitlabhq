@@ -8,8 +8,8 @@ import {
 import { WIKI_NOTES_SORT_ORDER, WIKI_SORT_ORDER_STORAGE_KEY } from '~/wikis/constants';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import sortWikiDiscussion from '../../graphql/notes/sort_wiki_discussion.mutation.graphql';
-import wikiDiscussionSortOrder from '../../graphql/notes/wiki_discussion_sort_order.query.graphql';
+import sortWikiDiscussion from '../graphql/sort_wiki_discussion.mutation.graphql';
+import wikiDiscussionSortOrder from '../graphql/wiki_discussion_sort_order.query.graphql';
 
 const SORT_OPTIONS = [
   { key: WIKI_NOTES_SORT_ORDER.CREATED_DESC, text: __('Newest first') },

@@ -5,8 +5,8 @@ import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
-import createWikiPageNoteMuatation from '~/wikis/graphql/notes/create_wiki_page_note.mutation.graphql';
-import updateWikiPageMutation from '~/wikis/graphql/notes/update_wiki_page_note.mutation.graphql';
+import createWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/create_wiki_page_note.mutation.graphql';
+import updateWikiPageMutation from '~/wikis/wiki_notes/graphql/update_wiki_page_note.mutation.graphql';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { COMMENT_FORM } from '~/notes/i18n';
 import { __ } from '~/locale';
@@ -200,7 +200,7 @@ export default {
 
       try {
         const discussion = await this.$apollo.mutate({
-          mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMuatation,
+          mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMutation,
           variables: { input },
         });
 

@@ -5,7 +5,7 @@ import { produce } from 'immer';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
-import wikiDiscussionSortOrder from '~/wikis/graphql/notes/wiki_discussion_sort_order.query.graphql';
+import wikiDiscussionSortOrder from '~/wikis/wiki_notes/graphql/wiki_discussion_sort_order.query.graphql';
 import { WIKI_NOTES_SORT_ORDER } from '~/wikis/constants';
 import OrderedLayout from './ordered_layout.vue';
 import PlaceholderNote from './placeholder_note.vue';

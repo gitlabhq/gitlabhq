@@ -45179,10 +45179,10 @@ Type of AI usage event.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aiusageeventtypecode_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
 | <a id="aiusageeventtypecode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code Suggestion was accepted in IDE. |
-| <a id="aiusageeventtypecode_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed (old data only). |
+| <a id="aiusageeventtypecode_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
 | <a id="aiusageeventtypecode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
-| <a id="aiusageeventtypecode_suggestion_requested"></a>`CODE_SUGGESTION_REQUESTED` | Code Suggestion was requested (old data only). |
 | <a id="aiusageeventtypecode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
 | <a id="aiusageeventtyperequest_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
 | <a id="aiusageeventtypetroubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |

@@ -1,4 +1,4 @@
-#import "./notes/wiki_page_note.fragment.graphql"
+#import "../wiki_notes/graphql/wiki_page_note.fragment.graphql"
 
 query wikiPageQuery(
   $slug: String

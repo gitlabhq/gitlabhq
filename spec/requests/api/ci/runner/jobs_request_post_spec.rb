@@ -211,7 +211,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'refspecs' => ["+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
                              "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
               'depth' => project.ci_default_git_depth,
-              'repo_object_format' => 'sha1' }
+              'repo_object_format' => 'sha1',
+              'protected' => job.protected }
           end
 
           let(:expected_steps) do
@@ -517,6 +518,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['depth']).to eq(1)
               end
+            end
+          end
+
+          context 'when job is on a protected branch' do
+            before do
+              create(:protected_branch, project: project, name: job.ref)
+              job.update!(protected: true)
+            end
+
+            it 'includes protected status in git_info' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['git_info']['protected']).to be true
+            end
+          end
+
+          context 'when job is not on a protected branch' do
+            before do
+              job.update!(protected: false)
+            end
+
+            it 'includes protected status in git_info' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['git_info']['protected']).to be false
             end
           end
 

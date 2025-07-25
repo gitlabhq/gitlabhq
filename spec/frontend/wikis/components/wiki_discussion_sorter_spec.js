@@ -4,9 +4,9 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiDiscussionSorter from '~/wikis/wiki_notes/components/wiki_discussion_sorter.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import initCache from '~/wikis/graphql/notes/cache_init';
-import sortWikiDiscussion from '~/wikis/graphql/notes/sort_wiki_discussion.mutation.graphql';
-import wikiDiscussionSortOrder from '~/wikis/graphql/notes/wiki_discussion_sort_order.query.graphql';
+import initCache from '~/wikis/wiki_notes/graphql/cache_init';
+import sortWikiDiscussion from '~/wikis/wiki_notes/graphql/sort_wiki_discussion.mutation.graphql';
+import wikiDiscussionSortOrder from '~/wikis/wiki_notes/graphql/wiki_discussion_sort_order.query.graphql';
 
 Vue.use(VueApollo);
 

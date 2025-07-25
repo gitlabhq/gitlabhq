@@ -5,9 +5,9 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
-import resolvers from '../graphql/notes/resolvers';
-import typeDefs from '../graphql/notes/typedefs.graphql';
-import initCache from '../graphql/notes/cache_init';
+import resolvers from './graphql/resolvers';
+import typeDefs from './graphql/typedefs.graphql';
+import initCache from './graphql/cache_init';
 import WikiNotesApp from './components/wiki_notes_app.vue';
 
 export default () => {
