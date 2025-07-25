@@ -37,8 +37,8 @@ class NotePresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitla
 
   def obfuscate_participants_emails_in_system_note(text)
     return text unless object.try(:system?)
-    return text if can?(current_user, :read_external_emails, object.project)
     return text if object.system_note_metadata&.action != 'issue_email_participants'
+    return text if can?(current_user, :read_external_emails, object.project)
 
     Gitlab::Utils::Email.obfuscate_emails_in_text(text)
   end

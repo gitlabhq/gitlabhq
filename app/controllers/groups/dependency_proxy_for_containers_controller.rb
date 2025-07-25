@@ -196,6 +196,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def ssrf_params
+    return {} if Feature.disabled?(:dependency_proxy_for_containers_ssrf_protection, group)
+
     {
       ssrf_filter: true,
       allow_localhost: allow_localhost?,

@@ -13,7 +13,9 @@ module WorkItems
     def preloads
       {
         work_item_type: :work_item_type,
-        web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
+        web_url: { namespace: :route, project: [:project_namespace, {
+          namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
+        }] },
         widgets: { work_item_type: :enabled_widget_definitions },
         archived: :project
       }

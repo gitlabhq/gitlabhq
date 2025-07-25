@@ -88,6 +88,45 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
   end
 
+  describe 'archived' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, :public, namespace: parent_group) }
+
+    let(:project_full_path) { project.full_path }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project_full_path}") {
+            archived
+          }
+        }
+      )
+    end
+
+    subject(:project_archived_result) do
+      result = GitlabSchema.execute(query).as_json
+      result.dig('data', 'project', 'archived')
+    end
+
+    where(:project_archived, :parent_archived, :expected_result) do
+      false | false | false
+      false | true  | true
+      true  | false | true
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        parent_group.update!(archived: parent_archived)
+        project.update!(archived: project_archived)
+      end
+
+      it 'returns expected archived result' do
+        expect(project_archived_result).to eq(expected_result)
+      end
+    end
+  end
+
   describe 'container_registry_enabled' do
     let_it_be(:project, reload: true) { create(:project, :public) }
     let_it_be(:user) { create(:user) }

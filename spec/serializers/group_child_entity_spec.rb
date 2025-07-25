@@ -294,4 +294,80 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       expect(json[:can_edit]).to eq(false)
     end
   end
+
+  describe 'archived attribute' do
+    describe 'for a project' do
+      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, namespace: group) }
+
+      let(:object) { project }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      context 'when project is archived' do
+        before_all do
+          project.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when project and parent group are not archived' do
+        it 'returns archived as false' do
+          expect(json[:archived]).to be(false)
+        end
+      end
+    end
+
+    describe 'for a group' do
+      let_it_be_with_reload(:parent_group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+      let(:object) { group }
+
+      before_all do
+        group.add_owner(user)
+      end
+
+      context 'when group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when group is not archived but parent group is archived' do
+        before_all do
+          parent_group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when group and its ancestors are not archived' do
+        it 'returns archived as false' do
+          expect(json[:archived]).to be(false)
+        end
+      end
+    end
+  end
 end

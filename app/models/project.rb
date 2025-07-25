@@ -938,6 +938,10 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :with_group_child_entity_associations, -> {
+    with_route.preload(namespace: [:namespace_settings_with_ancestors_inherited_settings])
+  }
+
   scope :with_name, ->(name) { where(name: name) }
   scope :created_by, ->(user) { where(creator: user) }
   scope :imported_from, ->(type) { where(import_type: type) }

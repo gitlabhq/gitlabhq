@@ -24,6 +24,7 @@ RSpec.describe ResolvesGroups do
 
   let_it_be(:preloaded_fields) do
     <<~FIELDS
+      archived
       containerRepositoriesCount
       description
       descriptionHtml

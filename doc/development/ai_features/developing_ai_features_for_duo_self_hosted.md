@@ -24,6 +24,8 @@ The following models are currently available to GitLab team members for developm
 - `Llama 3.1 70b` on FireworksAI
 - `Llama 3.3 70b` on FireworksAI
 
+Development environments provide access to a limited set of models for cost optimization. The [complete model catalog](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) is available in production deployments.
+
 ### Gaining access to models on FireworksAI
 
 To gain access to FireworksAI, first create an [Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests). See [this example access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37505) if you aren't sure what information to fill in.

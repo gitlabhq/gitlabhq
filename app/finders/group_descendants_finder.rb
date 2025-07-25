@@ -53,7 +53,7 @@ class GroupDescendantsFinder
   def paginator
     @paginator ||= Gitlab::MultiCollectionPaginator.new(
       subgroups,
-      projects.with_route,
+      projects,
       per_page: params[:per_page]
     )
   end
@@ -140,7 +140,7 @@ class GroupDescendantsFinder
                  direct_child_projects
                end
 
-    projects.with_route.order_by(sort)
+    projects.with_group_child_entity_associations.order_by(sort)
   end
 
   def sort

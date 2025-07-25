@@ -49,7 +49,7 @@ The table below provides an overview of all available query fields and their spe
 | --------------------------------------- | -------------------------------------------- | ------------------------- | ------------- |
 | [Approved by user](#approved-by-user)   | `approver`, `approvedBy`, `approvers`        | `=`, `!=`                 | Merge requests |
 | [Assignees](#assignees)                 | `assignee`, `assignees`                      | `=`, `in`, `!=`           | Issues, merge requests |
-| [Author](#author)                       | `author`                                     | `=`, `!=`                 | Issues, epics, merge requests |
+| [Author](#author)                       | `author`                                     | `=`, `in`, `!=`           | Issues, epics, merge requests |
 | [Cadence](#cadence)                     | `cadence`                                    | `=`, `in`                 | Issues        |
 | [Closed at](#closed-at)                 | `closed`, `closedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Issues        |
 | [Confidential](#confidential)           | `confidential`                               | `=`, `!=`                 | Issues, epics |
@@ -84,6 +84,7 @@ The table below provides an overview of all available query fields and their spe
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 - Aliases `approvedBy` and `approvers` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Support for `Nullable` values [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/221) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -94,6 +95,7 @@ The table below provides an overview of all available query fields and their spe
 - `String`
 - `User` (for example, `@username`)
 - `List` (containing `String` or `User` values)
+- `Nullable` (either of `null`, `none`, or `any`)
 
 **Examples**:
 
@@ -101,6 +103,12 @@ The table below provides an overview of all available query fields and their spe
 
   ```plaintext
   type = MergeRequest and approver = (currentUser(), @johndoe)
+  ```
+
+- List all merge requests that are not yet approved
+
+  ```plaintext
+  type = MergeRequest and approver = none
   ```
 
 ### Assignees
@@ -161,6 +169,7 @@ The table below provides an overview of all available query fields and their spe
 {{< history >}}
 
 - Support for querying epics by author [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+- Support for `in` operator [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/221) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -170,6 +179,11 @@ The table below provides an overview of all available query fields and their spe
 
 - `String`
 - `User` (for example, `@username`)
+- `List` (containing `String` or `User` values)
+
+**Additional details:**
+
+- The `in` operator is not supported for `MergeRequest` types.
 
 **Examples**:
 
@@ -177,6 +191,12 @@ The table below provides an overview of all available query fields and their spe
 
   ```plaintext
   author = @johndoe
+  ```
+
+- List all epics where author is either `@johndoe` or `@janedoe`:
+
+  ```plaintext
+  type = Epic and author in (@johndoe, @janedoe)
   ```
 
 - List all merge requests where author is `@johndoe`:

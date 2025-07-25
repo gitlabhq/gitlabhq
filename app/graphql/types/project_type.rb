@@ -145,7 +145,8 @@ module Types
 
     field :archived, GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates the archived status of the project.'
+      description: 'Indicates the archived status of the project.',
+      method: :self_or_ancestors_archived?
 
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: true,

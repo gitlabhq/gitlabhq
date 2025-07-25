@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::ChildrenController, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:user) { create(:user) }
@@ -11,7 +12,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
   describe 'GET #index' do
     context 'for projects' do
-      let_it_be(:public_project) { create(:project, :public, namespace: group) }
+      let_it_be_with_reload(:public_project) { create(:project, :public, namespace: group) }
       let_it_be(:private_project) { create(:project, :private, namespace: group) }
 
       context 'as a user' do
@@ -42,6 +43,29 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
           get :index, params: { group_id: group.to_param }, format: :json
 
           expect(assigns(:children)).to contain_exactly(public_project)
+        end
+      end
+
+      describe 'archived attribute' do
+        where(:project_archived, :group_archived, :expected_archived_attribute) do
+          false | false | false
+          false | true  | true
+          true  | false | true
+          true  | true  | true
+        end
+
+        with_them do
+          before do
+            public_project.update!(archived: project_archived)
+            public_project.group.update!(archived: group_archived)
+          end
+
+          it 'returns correct archived status' do
+            get :index, params: { group_id: group.to_param }, format: :json
+
+            project_response = json_response.find { |p| p['id'] == public_project.id }
+            expect(project_response['archived']).to be(expected_archived_attribute)
+          end
         end
       end
     end
@@ -379,7 +403,8 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
             matched_group.update!(parent: public_subgroup)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies)
+            # TODO: remove + 1 after fixing https://gitlab.com/gitlab-org/gitlab/-/issues/545708
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies + 1)
           end
 
           it 'queries the expected amount when a new group match is added' do
@@ -400,9 +425,10 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
             matched_project.update!(namespace: public_subgroup)
 
-            # TODO remove + 1 after we stop manually reloading namespace_details in
+            # TODO remove + 2 after we stop manually reloading namespace_details in
             # https://gitlab.com/gitlab-org/gitlab/-/issues/545723
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies + 1)
+            # N+1 queries in https://gitlab.com/gitlab-org/gitlab/-/issues/545708
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies + 2)
           end
         end
       end

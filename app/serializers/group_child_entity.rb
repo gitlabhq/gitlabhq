@@ -51,7 +51,9 @@ class GroupChildEntity < Grape::Entity
   # Project only attributes
   expose :last_activity_at, if: ->(instance) { project? }
 
-  expose :star_count, :archived, if: ->(_instance, _options) { project? }
+  expose :star_count, if: ->(_instance, _options) { project? }
+
+  expose :self_or_ancestors_archived?, as: :archived
 
   # Group only attributes
   expose :children_count, :parent_id, unless: ->(_instance, _options) { project? }
