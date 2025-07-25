@@ -199,7 +199,10 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     {
       ssrf_filter: true,
       allow_localhost: allow_localhost?,
-      allowed_endpoints: ObjectStoreSettings.enabled_endpoint_uris
+      # rubocop:disable Naming/InclusiveLanguage -- existing setting
+      allowed_endpoints: ObjectStoreSettings.enabled_endpoint_uris +
+        Gitlab::CurrentSettings.outbound_local_requests_whitelist
+      # rubocop:enable Naming/InclusiveLanguage
     }
   end
 
