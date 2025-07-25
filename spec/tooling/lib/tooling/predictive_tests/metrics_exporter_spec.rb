@@ -45,7 +45,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
 
   let(:event_name) { "glci_predictive_tests_metrics" }
   let(:test_type) { :backend }
-  let(:extra_properties) { { ci_job_id: "123", test_type: test_type } }
+  let(:extra_properties) { { ci_job_id: "123", test_type: test_type, ci_pipeline_id: "321" } }
 
   # temporary folder for inputs and outputs
   let(:input_dir) { Dir.mktmpdir("predictive-tests-input") }
@@ -140,7 +140,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   end
 
   before do
-    stub_env({ "CI_JOB_ID" => extra_properties[:ci_job_id] })
+    stub_env({ "CI_JOB_ID" => extra_properties[:ci_job_id], "CI_PIPELINE_ID" => extra_properties[:ci_pipeline_id] })
 
     # create folders and files used as input
     {

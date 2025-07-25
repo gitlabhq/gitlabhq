@@ -74,6 +74,6 @@ internal/upload/exif/exif.go:103:10: G204: Subprocess launched with variable (go
 internal/upstream/routes.go:205:74: `(*upstream).wsRoute` - `matchers` always receives `nil` (unparam)
 internal/upstream/routes.go:265: Function 'configureRoutes' is too long (349 > 60) (funlen)
 internal/upstream/routes.go:530: internal/upstream/routes.go:530: Line contains TODO/BUG/FIXME/NOTE/OPTIMIZE/HACK: "TODO: We should probably not return a HT..." (godox)
-internal/upstream/upstream.go:116: internal/upstream/upstream.go:116: Line contains TODO/BUG/FIXME/NOTE/OPTIMIZE/HACK: "TODO: move to LabKit https://gitlab.com/..." (godox)
+internal/upstream/upstream.go:119: internal/upstream/upstream.go:119: Line contains TODO/BUG/FIXME/NOTE/OPTIMIZE/HACK: "TODO: move to LabKit https://gitlab.com/..." (godox)
 internal/zipartifacts/metadata.go:118:54: G115: integer overflow conversion int -> uint32 (gosec)
 internal/zipartifacts/open_archive.go:74:28: response body must be closed (bodyclose)

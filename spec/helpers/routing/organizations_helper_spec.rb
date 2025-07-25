@@ -90,6 +90,15 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     end
   end
 
+  describe '.install' do
+    it 'only installs once' do
+      # Has already been installed as part of Rails initialization.
+      # Second call should not reinstall
+      expect(Rails.application.routes.url_helpers).not_to receive(:prepend)
+      described_class::MappedHelpers.install
+    end
+  end
+
   describe '#new_project_path' do
     let(:helper) { :new_project }
     let(:organization_helper) { :new_organization_project }
@@ -104,12 +113,17 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     it_behaves_like 'organization aware route helper'
   end
 
-  describe '.install' do
-    it 'only installs once' do
-      # Has already been installed as part of Rails initialization.
-      # Second call should not reinstall
-      expect(Rails.application.routes.url_helpers).not_to receive(:prepend)
-      described_class::MappedHelpers.install
-    end
+  describe '#new_group_path' do
+    let(:helper) { :new_group }
+    let(:organization_helper) { :new_organization_group }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#groups_path' do
+    let(:helper) { :groups }
+    let(:organization_helper) { :organization_groups }
+
+    it_behaves_like 'organization aware route helper'
   end
 end

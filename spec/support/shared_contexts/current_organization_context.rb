@@ -10,6 +10,21 @@ RSpec.shared_context 'with current_organization setting' do
   before do
     stub_current_organization(current_organization)
   end
+
+  # Specs can run in a different thread/process. In these cases we stub Current.organization to match
+  # our stub above to align expectations. This is especially useful for URL helpers that are Organization
+  # context aware.
+  #
+  # rubocop:disable RSpec/UselessDynamicDefinition -- Type must be defined singularly
+  [:controller, :request, :feature, :system].each do |spec_type|
+    before(:each, :with_current_organization, type: spec_type) do
+      allow(Current).to receive_messages(
+        organization_assigned: true,
+        organization: current_organization
+      )
+    end
+  end
+  # rubocop:enable RSpec/UselessDynamicDefinition
 end
 
 RSpec.configure do |rspec|

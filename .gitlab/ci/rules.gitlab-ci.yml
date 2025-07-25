@@ -3264,7 +3264,7 @@
       when: never
     - !reference [".strict-ee-only-rules", rules]
     - *if-merge-request-labels-as-if-foss
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss-once/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:as-if-foss-run-once/'
       when: never
     - !reference [".prevent-tier-2-and-below", "rules"]
     - <<: *if-merge-request-labels-pipeline-expedite

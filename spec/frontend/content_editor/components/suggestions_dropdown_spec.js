@@ -7,10 +7,21 @@ import SuggestionsDropdown from '~/content_editor/components/suggestions_dropdow
 describe('~/content_editor/components/suggestions_dropdown', () => {
   let wrapper;
 
+  const mockEditor = () => {
+    return {
+      view: {
+        dom: {
+          setAttribute: jest.fn(),
+        },
+      },
+    };
+  };
+
   const buildWrapper = ({ propsData } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(SuggestionsDropdown, {
         propsData: {
+          editor: mockEditor(),
           nodeType: 'reference',
           command: jest.fn(),
           ...propsData,

@@ -420,7 +420,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
                 id: "general_new_project"
               ),
               menu_item(
-                href: "/groups/new",
+                href: "/o/#{current_organization.path}/groups/new",
                 text: "New group",
                 id: "general_new_group"
               ),
@@ -508,7 +508,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
                 id: "new_project"
               ),
               menu_item(
-                href: "/groups/new#create-group-pane",
+                href: "/o/#{current_organization.path}/groups/new#create-group-pane",
                 text: "New subgroup",
                 id: "new_subgroup"
               ),
@@ -529,7 +529,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
                 id: "general_new_project"
               ),
               menu_item(
-                href: "/groups/new",
+                href: "/o/#{current_organization.path}/groups/new",
                 text: "New group",
                 id: "general_new_group"
               ),

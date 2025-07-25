@@ -6,16 +6,18 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"os"
 	"testing"
 
-	"github.com/alicebob/miniredis/v2"
+	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+
+	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
 func TestStaticCORS(t *testing.T) {
@@ -154,15 +156,13 @@ func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 	}))
 	defer railsServer.Close()
 
-	redisConfig, cleanup := setupRedisConfig(t)
-	defer cleanup()
+	rdb := initRdb(t)
 
 	config := newUpstreamConfig(railsServer.URL)
 	config.CircuitBreakerConfig.Enabled = true
 	config.CircuitBreakerConfig.ConsecutiveFailures = consecutiveFailures
-	config.Redis = redisConfig
 
-	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil)
+	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil, rdb)
 	ws := httptest.NewServer(upstreamHandler)
 	defer ws.Close()
 
@@ -193,19 +193,15 @@ func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 	assert.Equal(t, "This endpoint has been requested too many times. Try again later.", string(body3))
 }
 
-func setupRedisConfig(t *testing.T) (*config.RedisConfig, func()) {
-	s, err := miniredis.Run()
+func initRdb(t *testing.T) *redis.Client {
+	buf, err := os.ReadFile("../../config.toml")
 	require.NoError(t, err)
-
-	redisURL, err := url.Parse("redis://" + s.Addr())
+	cfg, err := config.LoadConfig(string(buf))
 	require.NoError(t, err)
-	redisConfig := &config.RedisConfig{
-		URL: config.TomlURL{URL: *redisURL},
-	}
-
-	cleanup := func() {
-		s.Close()
-	}
-
-	return redisConfig, cleanup
+	rdb, err := configRedis.Configure(cfg)
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		assert.NoError(t, rdb.Close())
+	})
+	return rdb
 }

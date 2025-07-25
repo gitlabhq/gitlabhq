@@ -4178,12 +4178,6 @@ msgstr[1] ""
 msgid "AdherenceReport|Failed controls"
 msgstr ""
 
-msgid "AdherenceReport|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
-msgstr ""
-
-msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
-msgstr ""
-
 msgid "AdherenceReport|No statuses found."
 msgstr ""
 
@@ -4193,16 +4187,10 @@ msgstr ""
 msgid "AdherenceReport|Pending controls"
 msgstr ""
 
-msgid "AdherenceReport|Show old report"
-msgstr ""
-
 msgid "AdherenceReport|There was an error loading adherence report."
 msgstr ""
 
 msgid "AdherenceReport|To show a status here, you must %{linkStart}create a compliance framework with requirements and controls%{linkEnd} and apply it to projects in this group. New frameworks can take a few minutes to appear."
-msgstr ""
-
-msgid "AdherenceReport|We are replacing the standards adherence report with the compliance status report, which includes new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -41560,25 +41548,16 @@ msgstr ""
 msgid "NewFramework|Compliance framework created!"
 msgstr ""
 
-msgid "NewFramework|Feedback?"
-msgstr ""
-
 msgid "NewFramework|Go to the %{linkStart}compliance center%{linkEnd} to apply this framework to projects."
 msgstr ""
 
 msgid "NewFramework|Go to the %{linkStart}policy management page%{linkEnd} to scope a policy for this framework."
 msgstr ""
 
-msgid "NewFramework|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
-msgstr ""
-
 msgid "NewFramework|How do I apply the framework to projects?"
 msgstr ""
 
 msgid "NewFramework|How to scope policies?"
-msgstr ""
-
-msgid "NewFramework|New improvements to creating compliance framework."
 msgstr ""
 
 msgid "NewFramework|Policies scoped to a framework serve as solutions to specific compliance requirements and are applied to projects."
@@ -61970,6 +61949,9 @@ msgid "Suggestion is not applicable as the suggestion was not found."
 msgstr ""
 
 msgid "Suggestion(s)"
+msgstr ""
+
+msgid "Suggestions"
 msgstr ""
 
 msgid "Suggestions are not applicable as one or more suggestions were not found."

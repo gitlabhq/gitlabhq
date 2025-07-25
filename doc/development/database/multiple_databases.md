@@ -597,9 +597,7 @@ page.
 A transaction across databases can be explicitly allowed by wrapping the code in the
 `Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction` helper method.
 
-For cross-database transactions in Rails callbacks, the `cross_database_ignore_tables` method can be used.
-
-These methods should only be used for existing code.
+This method should only be used for existing code.
 
 The `temporary_ignore_tables_in_transaction` helper method can be used as follows:
 
@@ -615,17 +613,6 @@ class GroupMember < Member
        user.update_two_factor_requirement
      end
    end
-end
-```
-
-The `cross_database_ignore_tables` method can be used as follows:
-
-```ruby
-class Namespace < ApplicationRecord
-  include CrossDatabaseIgnoredTables
-
-  # To mark and ignore cross-database transactions involving namespaces and routes/redirect_routes happening within Rails callbacks.
-  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 end
 ```
 

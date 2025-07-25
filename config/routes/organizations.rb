@@ -6,6 +6,7 @@ scope(
   as: :organization
 ) do
   resources :projects, only: [:new, :create]
+  resources :groups, only: [:new, :create]
 end
 
 scope path: '-' do

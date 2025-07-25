@@ -178,6 +178,13 @@ export default {
         tiptapOptions: {
           autofocus,
           editable,
+          editorProps: {
+            attributes: {
+              'aria-controls': 'content-editor-suggestions',
+              'aria-label': __('Rich text editor'),
+              class: 'rte-text-box',
+            },
+          },
         },
       }),
     );
@@ -187,15 +194,6 @@ export default {
     await this.setSerializedContent(this.markdown);
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
     markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
-
-    // Set Aria label and add class
-    if (this.contentEditor?.tiptapEditor?.view?.dom) {
-      const { dom } = this.contentEditor.tiptapEditor.view;
-      if (dom) {
-        dom.setAttribute('aria-label', __('Rich text editor'));
-        dom.classList.add('rte-text-box');
-      }
-    }
   },
   beforeDestroy() {
     markdownEditorEventHub.$off(CONTENT_EDITOR_PASTE, this.pasteContent);

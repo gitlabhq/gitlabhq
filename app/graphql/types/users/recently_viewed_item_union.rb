@@ -20,3 +20,5 @@ module Types
     end
   end
 end
+
+Types::Users::RecentlyViewedItemUnion.prepend_mod

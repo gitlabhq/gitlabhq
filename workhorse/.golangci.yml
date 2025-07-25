@@ -155,9 +155,10 @@ linters-settings:
           - github.com/grpc-ecosystem/go-grpc-prometheus
           - github.com/mitchellh/copystructure
           - github.com/jpillora/backoff
-          - github.com/alicebob/miniredis/v2
           - github.com/sony/gobreaker/v2
           - gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb
+          - github.com/go-redsync/redsync
+          - github.com/go-redsync/redsync/v4/redis/goredis/v9
   dupl:
     # tokens count to trigger issue, 150 by default
     threshold: 100

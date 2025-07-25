@@ -644,7 +644,7 @@ func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Han
 
 func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
 	if u.Config.CircuitBreakerConfig.Enabled {
-		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.Config.Redis)
+		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.rdb)
 
 		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
 	}

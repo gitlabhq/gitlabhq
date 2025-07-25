@@ -56,6 +56,12 @@ module QA
             login.sign_in_using_credentials(user: admin_user)
           rescue Runtime::User::ExpiredPasswordError
             Support::Retrier.retry_until(retry_on_exception: true, message: "set_up_new_password failed") do
+              # Visit the homepage to be re-routed to the new password page if CSRF token authenticity error shown
+              if login.has_text?("Can't verify CSRF token authenticity", wait: 0)
+                login.visit Runtime::Scenario.gitlab_address
+                login.sign_in_using_credentials(user: admin_user)
+              end
+
               login.set_up_new_password(user: admin_user)
             end
           end

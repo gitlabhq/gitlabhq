@@ -119,6 +119,8 @@
   - 1
 - - authz_user_group_member_roles_update_for_group
   - 1
+- - authz_user_group_member_roles_update_for_shared_group
+  - 1
 - - auto_devops
   - 2
 - - auto_merge

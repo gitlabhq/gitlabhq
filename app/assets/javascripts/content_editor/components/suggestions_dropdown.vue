@@ -15,6 +15,11 @@ export default {
   },
 
   props: {
+    editor: {
+      type: Object,
+      required: true,
+    },
+
     char: {
       type: String,
       required: true,
@@ -121,10 +126,14 @@ export default {
     items() {
       this.selectedIndex = this.shouldSelectFirstItem ? 0 : -1;
     },
-    async selectedIndex() {
+    async selectedIndex(val) {
       // wait for the DOM to update before scrolling
       await this.$nextTick();
       this.scrollIntoView();
+
+      // a11y: set aria-activedescendant to the tiptap editor
+      const activeDescendantId = val >= 0 ? `suggestion-option-${val}` : '';
+      this.editor.view.dom.setAttribute('aria-activedescendant', activeDescendantId);
     },
   },
 
@@ -281,18 +290,27 @@ export default {
   <div class="gl-new-dropdown content-editor-suggestions-dropdown">
     <div v-if="!loading && items.length > 0" class="gl-new-dropdown-panel gl-absolute !gl-block">
       <div class="gl-new-dropdown-inner">
-        <ul class="gl-new-dropdown-contents" data-testid="content-editor-suggestions-dropdown">
+        <ul
+          id="content-editor-suggestions"
+          class="gl-new-dropdown-contents"
+          data-testid="content-editor-suggestions-dropdown"
+          role="listbox"
+          :aria-label="__(`Suggestions`)"
+        >
           <li
             v-for="(item, index) in items"
+            :id="`suggestion-option-${index}`"
             :key="index"
-            role="presentation"
+            role="option"
             class="gl-new-dropdown-item"
             :class="{ focused: index === selectedIndex }"
           >
             <div
+              :id="`suggestion-option-${index}`"
               ref="dropdownItems"
               type="button"
-              role="menuitem"
+              role="option"
+              :aria-selected="index === selectedIndex ? 'true' : 'false'"
               class="gl-new-dropdown-item-content"
               @click="selectItem(index)"
             >

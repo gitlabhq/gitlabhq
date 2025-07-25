@@ -30062,6 +30062,9 @@ ALTER TABLE packages_packages
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
 
+ALTER TABLE redirect_routes
+    ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE instance_type_ci_runners
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
 

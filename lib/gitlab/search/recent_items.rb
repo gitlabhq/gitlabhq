@@ -43,8 +43,8 @@ module Gitlab
 
       # Returns the most recently viewed items with their view timestamps
       #
-      # @return [Hash<Time, ActiveRecord::Base>] Hash where keys are view timestamps
-      #   and values are the corresponding items
+      # @return [Hash<ActiveRecord::Base, Time>] Hash where keys are recently viewed ActiveRecord
+      # objects and values are the timestamp of the last visit
       def latest_with_timestamps
         timestamps = latest_ids_with_timestamps
         ids = timestamps.keys.map(&:to_i)

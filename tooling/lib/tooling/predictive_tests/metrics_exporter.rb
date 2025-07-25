@@ -300,7 +300,7 @@ module Tooling
       # @param value [Integer|Float]
       # @param strategy [Symbol]
       def send_event(label, value, strategy)
-        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], test_type: test_type }
+        extra_properties = { ci_job_id: ENV["CI_JOB_ID"], ci_pipeline_id: ENV["CI_PIPELINE_ID"], test_type: test_type }
         tracker.send_event(
           PREDICTIVE_TEST_METRICS_EVENT,
           label: label,

@@ -34,3 +34,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Users::RecentlyViewedItemsResolver.prepend_mod

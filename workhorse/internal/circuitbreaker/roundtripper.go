@@ -25,7 +25,7 @@ const (
 
 type roundTripper struct {
 	delegate            http.RoundTripper
-	store               *gobreaker.RedisStore
+	store               *RedisStore
 	timeout             time.Duration // Timeout is the duration to transition to half-open when open
 	interval            time.Duration // Interval is the duration to clear consecutive failures (and other gobreaker.Counts) when closed
 	maxRequests         uint32        // MaxRequests is the number of failed requests to open the circuit breaker when half-open
@@ -33,20 +33,14 @@ type roundTripper struct {
 }
 
 // NewRoundTripper returns a new RoundTripper that wraps the provided RoundTripper with a circuit breaker
-func NewRoundTripper(delegate http.RoundTripper, circuitBreakerConfig *config.CircuitBreakerConfig, redisConfig *config.RedisConfig) http.RoundTripper {
-	if redisConfig == nil {
-		return delegate
-	}
-
-	opt, err := redis.ParseURL(redisConfig.URL.String())
-	if err != nil {
-		log.WithError(err).Info("gobreaker: failed to parse redis URL")
+func NewRoundTripper(delegate http.RoundTripper, circuitBreakerConfig *config.CircuitBreakerConfig, rdb *redis.Client) http.RoundTripper {
+	if rdb == nil {
 		return delegate
 	}
 
 	return &roundTripper{
 		delegate:            delegate,
-		store:               gobreaker.NewRedisStore(opt.Addr),
+		store:               NewRedisStore(rdb),
 		timeout:             time.Duration(circuitBreakerConfig.Timeout) * time.Second,
 		interval:            time.Duration(circuitBreakerConfig.Interval) * time.Second,
 		maxRequests:         circuitBreakerConfig.MaxRequests,
@@ -91,7 +85,7 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 	return nil, executeErr
 }
 
-func (r roundTripper) newCircuitBreaker(req *http.Request, store *gobreaker.RedisStore) (*gobreaker.DistributedCircuitBreaker[any], error) {
+func (r roundTripper) newCircuitBreaker(req *http.Request, store *RedisStore) (*gobreaker.DistributedCircuitBreaker[any], error) {
 	var st gobreaker.Settings
 
 	key, err := getRedisKey(req)
