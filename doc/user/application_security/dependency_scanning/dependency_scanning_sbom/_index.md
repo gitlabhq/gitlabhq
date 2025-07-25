@@ -52,9 +52,13 @@ Enable the Dependency Scanning using SBOM feature with one of the following opti
 - Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
   - The (deprecated) Gemnasium analyzer is used by default.
   - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+  - A [supported lock file, dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
+  or [trigger file](#trigger-files) must exist in the repository to create the `dependency-scanning` job in pipelines.
 - Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template to enable a GitLab provided analyzer.
   - The (deprecated) Gemnasium analyzer is used by default.
   - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+  - A [supported lock file, dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
+  or [trigger file](#trigger-files) must exist in the repository to create the `dependency-scanning` job in pipelines.
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
 - Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
@@ -98,6 +102,20 @@ and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `
   include:
     - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
   ```
+
+#### Trigger files
+
+Trigger files create a `dependency-scanning` CI/CD job when using the [latest Dependency Scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml).
+The analyzer does not scan these files.
+Your project can be supported if you use a trigger file to [build](#language-specific-instructions) a [supported lock file](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files).
+
+| Language | Files |
+| -------- | ------- |
+| C#/Visual Basic | `*.csproj`, `*.vbproj` |
+| Java | `pom.xml` |
+| Java/Kotlin | `build.gradle`, `build.gradle.kts` |
+| Python | `requirements.pip`, `Pipfile`, `requires.txt`, `setup.py` |
+| Scala | `build.sbt` |
 
 #### Language-specific instructions
 

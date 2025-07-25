@@ -19,6 +19,7 @@ module QA
             show.select_all_activities_filter
             show.comment('My first discussion')
             show.reply_to_comment(1, my_first_reply)
+            expect(show).to have_resolve_discussion_button
 
             show.collapse_replies
             expect(show).to have_content(one_reply)

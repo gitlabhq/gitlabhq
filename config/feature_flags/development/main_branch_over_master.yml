@@ -6,3 +6,4 @@ milestone: '13.12'
 type: development
 group: group::source code
 default_enabled: true
+intended_to_rollout_by: '2026-02-01'

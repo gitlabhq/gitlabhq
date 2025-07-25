@@ -86,7 +86,17 @@ class ReleaseEnvironmentsModel
 
   # Omnibus security stable branch has no -ee suffix
   def security_omnibus_stable_branch
-    ENV['CI_COMMIT_BRANCH'].gsub("-ee", "")
+    # Transform RC42 tags to stable branch format
+    ref_name = ENV['CI_COMMIT_REF_NAME']&.match(/^v?([\d]+)\.([\d]+)\.[\d]+-rc42-ee$/)
+
+    if ref_name
+      major = ref_name[1]
+      minor = ref_name[2]
+
+      "#{major}-#{minor}-stable"
+    else
+      ENV['CI_COMMIT_BRANCH'].gsub("-ee", "")
+    end
   end
 end
 

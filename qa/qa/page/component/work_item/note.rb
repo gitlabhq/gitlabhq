@@ -46,6 +46,10 @@ module QA
               element 'note-edit-button'
             end
 
+            base.view 'app/assets/javascripts/work_items/components/notes/work_item_add_note.vue' do
+              'resolve-discussion-button'
+            end
+
             base.view 'app/assets/javascripts/notes/components/toggle_replies_widget.vue' do
               element 'expand-replies-button'
               element 'collapse-replies-button'
@@ -87,6 +91,10 @@ module QA
               text: comment_text,
               wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
             )
+          end
+
+          def has_resolve_discussion_button?
+            has_element?('resolve-discussion-button')
           end
 
           def has_comment_author?(author_username)
