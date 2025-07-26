@@ -11,6 +11,7 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_guest(user)
     sign_in(user)
 
@@ -19,17 +20,11 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
   context "when adding comments" do
     it "adds comment" do
-      content = "XML attached"
-      target_form = ".js-main-target-form"
+      fill_in 'Add a reply', with: 'XML attached'
+      click_button 'Comment'
 
-      add_note(content)
-
-      page.within(".note") do
-        expect(page).to have_content(content)
-      end
-
-      page.within(target_form) do
-        find(".error-alert", visible: false)
+      within('.work-item-notes') do
+        expect(page).to have_content('XML attached')
       end
     end
 
@@ -37,24 +32,26 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
     it "adds comment with code block" do
       code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"
-      comment = "```\n#{code_block_content}\n```"
 
-      add_note(comment)
+      fill_in 'Add a reply', with: "```\n#{code_block_content}\n```"
+      click_button 'Comment'
 
-      expect(page.find('pre code').text).to eq code_block_content
+      within('.work-item-notes') do
+        expect(page).to have_css('code', text: code_block_content)
+      end
     end
 
     it 'opens autocomplete menu for quick actions and have `/label` first choice' do
       project.add_maintainer(user)
       create(:label, project: project, title: 'label')
 
-      fill_in 'Comment', with: '/l'
+      fill_in 'Add a reply', with: '/l'
 
       expect(find_highlighted_autocomplete_item).to have_content('/label')
     end
 
     it "switches back to edit mode if a comment is submitted in preview mode" do
-      fill_in 'Comment', with: 'just a regular comment'
+      fill_in 'Add a reply', with: 'just a regular comment'
       click_button 'Preview'
 
       expect(page).to have_content('Continue editing')
@@ -74,7 +71,9 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
       it "escapes username when mentioning user" do
         mention = "@#{xss_user.username} check this out"
 
-        expect { add_note(mention) }.not_to raise_error
+        fill_in 'Add a reply', with: mention
+
+        expect { click_button 'Comment' }.not_to raise_error
         expect(page).to have_content(mention)
       end
     end
@@ -82,40 +81,22 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
   context "when editing comments" do
     it "edits comment" do
-      add_note("# Comment with a header")
+      fill_in 'Add a reply', with: '# Comment with a header'
+      click_button 'Comment'
 
-      page.within(".note-body .note-text") do
+      within('.work-item-notes') do
         expect(page).to have_content("Comment with a header").and have_no_css("#comment-with-a-header")
-      end
 
-      page.within(".main-notes-list") do
-        note = find(".note")
+        click_button('Edit comment')
+        fill_in('Edit comment', with: '+1 Awesome!')
+        send_keys [:control, :shift, 'p']
 
-        note.hover
-        note.find(".js-note-edit").click
-      end
+        expect(page).to have_css('.md-preview-holder', text: '+1 Awesome!')
 
-      expect(page).to have_css(".current-note-edit-form textarea")
-
-      comment = "+1 Awesome!"
-
-      page.within(".current-note-edit-form") do
-        fill_in("note[note]", with: comment)
-        find('textarea').send_keys [:control, :shift, 'p']
-        expect(page).to have_selector('.current-note-edit-form .md-preview-holder')
-        expect(page.find('.current-note-edit-form .md-preview-holder p')).to have_content(comment)
-      end
-
-      expect(page).to have_selector('.new-note .note-textarea')
-
-      page.within(".current-note-edit-form") do
         click_button("Save comment")
-      end
 
-      wait_for_requests
-
-      page.within(".note") do
-        expect(page).to have_content(comment)
+        expect(page).not_to have_css('.md-preview-holder')
+        expect(page).to have_text('+1 Awesome!')
       end
     end
   end

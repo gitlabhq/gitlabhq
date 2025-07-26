@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -13,6 +15,10 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   context 'with authorized user' do
     before do
       project.add_developer(user)
@@ -20,391 +26,200 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       sign_in(user)
     end
 
-    context "from edit page" do
-      before do
-        stub_licensed_features(multiple_issue_assignees: false)
-        visit edit_project_issue_path(project, issue)
-      end
+    describe 'edit description' do
+      it 'places focus on the web editor' do
+        visit project_issue_path(project, issue)
 
-      it_behaves_like 'rich text editor - common'
+        click_button 'Edit title and description'
 
-      it "previews content", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391757' do
-        form = first(".gfm-form")
+        expect(page).to have_field('Title')
+        expect(page).to have_field('Description')
 
-        page.within(form) do
-          fill_in("Description", with: "Bug fixed :smile:")
-          click_button("Preview")
-        end
+        click_button('Switch to rich text editing', match: :first)
 
-        click_button("Continue editing")
-        fill_in("Description", with: "/confidential")
-        click_button("Preview")
+        expect(page).to have_css('[data-testid="content_editor_editablebox"]')
 
-        expect(form).to have_content('Makes this issue confidential.')
-      end
+        refresh
 
-      it 'allows user to select unassigned' do
-        visit edit_project_issue_path(project, issue)
+        click_button 'Edit title and description'
 
-        expect(page).to have_content "Assignee #{user.name}"
+        expect(page).to have_css('[data-testid="content_editor_editablebox"]')
 
-        first('.js-user-search').click
-        click_link 'Unassigned'
+        click_button('Switch to plain text editing', match: :first)
 
-        click_button _('Save changes')
-
-        page.within('.assignee') do
-          expect(page).to have_content 'None - assign yourself'
-        end
-      end
-
-      context 'with due date' do
-        before do
-          visit edit_project_issue_path(project, issue)
-        end
-
-        it 'saves with due date' do
-          date = Date.today.at_beginning_of_month.tomorrow
-
-          fill_in 'issue_title', with: 'bug 345'
-          fill_in 'issue_description', with: 'bug description'
-          find('#issuable-due-date').click
-
-          page.within '.pika-single' do
-            click_button date.day
-          end
-
-          expect(find('#issuable-due-date').value).to eq date.to_s
-
-          click_button _('Save changes')
-
-          page.within '.issuable-sidebar' do
-            expect(page).to have_content date.to_fs(:medium)
-          end
-        end
-
-        it 'warns about version conflict' do
-          issue.update!(title: "New title")
-
-          fill_in 'issue_title', with: 'bug 345'
-          fill_in 'issue_description', with: 'bug description'
-
-          click_button _('Save changes')
-
-          expect(page).to have_content(
-            format(
-              _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."),
-              model_name: _('issue'),
-              link_to_model: _('issue')
-            )
-          )
-        end
+        expect(page).to have_field('Description')
       end
     end
 
-    context "from issue#show" do
+    describe 'update labels' do
       before do
         visit project_issue_path(project, issue)
       end
 
-      describe 'edit description' do
-        def click_edit_issue_description
-          click_on 'Edit title and description'
-        end
+      it 'can add label to issue' do
+        within_testid('work-item-labels') do
+          expect(page).to have_link('verisimilitude')
+          expect(page).not_to have_link('syzygy')
 
-        it 'places focus on the web editor' do
-          content_editor_focused_selector = '[data-testid="content-editor"].is-focused'
-          markdown_field_focused_selector = 'textarea:focus'
-          click_edit_issue_description
+          click_button 'Edit'
+          select_listbox_item('syzygy')
+          send_keys(:escape)
 
-          issuable_form = find_by_testid('issuable-form')
-
-          expect(issuable_form).to have_selector(markdown_field_focused_selector)
-
-          page.within issuable_form do
-            click_button("Switch to rich text editing")
-          end
-
-          expect(issuable_form).to have_selector(content_editor_focused_selector)
-
-          refresh
-
-          click_edit_issue_description
-
-          expect(issuable_form).to have_selector(content_editor_focused_selector)
-
-          page.within issuable_form do
-            click_button("Switch to plain text editing")
-          end
-
-          expect(issuable_form).to have_selector(markdown_field_focused_selector)
+          expect(page).to have_link('verisimilitude')
+          expect(page).to have_link('syzygy')
         end
       end
 
-      describe 'update labels', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345229' do
-        it 'will not send ajax request when no data is changed' do
-          page.within '.labels' do
-            click_on 'Edit'
+      it 'can remove label from issue by clicking on the label `x` button' do
+        within_testid('work-item-labels') do
+          expect(page).to have_link('verisimilitude')
 
-            find('.dropdown-title button').click
+          click_button 'Remove label'
 
-            expect(page).not_to have_selector('.block-loading')
-            expect(page).not_to have_selector('.gl-spinner')
-          end
-        end
-
-        it 'can add label to issue' do
-          page.within '.block.labels' do
-            expect(page).to have_text('verisimilitude')
-            expect(page).not_to have_text('syzygy')
-
-            click_on 'Edit'
-
-            wait_for_requests
-
-            click_on 'syzygy'
-            find('.dropdown-header-button').click
-
-            wait_for_requests
-
-            expect(page).to have_text('verisimilitude')
-            expect(page).to have_text('syzygy')
-          end
-        end
-
-        it 'can remove label from issue by clicking on the label `x` button' do
-          page.within '.block.labels' do
-            expect(page).to have_text('verisimilitude')
-
-            within '.gl-label' do
-              click_button
-            end
-
-            wait_for_requests
-
-            expect(page).not_to have_text('verisimilitude')
-          end
-        end
-
-        it 'can remove label without removing label added via quick action', :aggregate_failures do
-          # Add `syzygy` label with a quick action
-          fill_in 'Comment', with: '/label ~syzygy'
-
-          click_button 'Comment'
-          expect(page).to have_text('added syzygy label just now')
-
-          page.within '.block.labels' do
-            # Remove `verisimilitude` label
-            within '.gl-label', text: 'verisimilitude' do
-              click_button 'Remove label'
-            end
-
-            expect(page).to have_text('syzygy')
-            expect(page).not_to have_text('verisimilitude')
-          end
-
-          expect(page).to have_text('removed verisimilitude label')
-          expect(page).not_to have_text('removed syzygy verisimilitude labels')
-          expect(issue.reload.labels.map(&:title)).to contain_exactly('syzygy')
+          expect(page).not_to have_link('verisimilitude')
         end
       end
 
-      describe 'update assignee' do
-        context 'by authorized user' do
-          it 'allows user to select unassigned' do
-            visit project_issue_path(project, issue)
+      it 'can remove label without removing label added via quick action', :aggregate_failures do
+        fill_in 'Add a reply', with: '/label ~syzygy'
+        click_button 'Comment'
 
-            page.within('.assignee') do
-              expect(page).to have_content user.name.to_s
+        expect(page).to have_text('added syzygy label just now')
 
-              click_button('Edit')
-              wait_for_requests
-
-              find_by_testid('unassign').click
-              find_by_testid('title').click
-              wait_for_requests
-
-              expect(page).to have_content 'None - assign yourself'
-            end
+        within_testid('work-item-labels') do
+          within '.gl-label', text: 'verisimilitude' do
+            click_button 'Remove label'
           end
 
-          it 'allows user to select an assignee' do
-            issue2 = create(:issue, project: project, author: user)
-            visit project_issue_path(project, issue2)
+          expect(page).not_to have_link('verisimilitude')
+          expect(page).to have_link('syzygy')
+        end
 
-            page.within('.assignee') do
-              expect(page).to have_content "None"
-              click_button('Edit')
-              wait_for_requests
-            end
+        expect(page).to have_text('removed verisimilitude label')
+        expect(page).not_to have_text('removed syzygy verisimilitude labels')
+      end
+    end
 
-            page.within '.dropdown-menu-user' do
-              click_button user.name
-            end
+    describe 'update assignee' do
+      context 'by authorized user' do
+        it 'allows user to clear assignment' do
+          visit project_issue_path(project, issue)
 
-            page.within('.assignee') do
-              find_by_testid('title').click
-              wait_for_requests
+          within_testid('work-item-assignees') do
+            expect(page).to have_link user.name
 
-              expect(page).to have_content user.name
-            end
-          end
+            click_button('Edit')
+            click_button('Clear')
 
-          it 'allows user to unselect themselves' do
-            issue2 = create(:issue, project: project, author: user, assignees: [user])
-
-            visit project_issue_path(project, issue2)
-
-            page.within '.assignee' do
-              expect(page).to have_content user.name
-
-              click_button('Edit')
-              wait_for_requests
-              click_button user.name
-
-              find_by_testid('title').click
-              wait_for_requests
-
-              expect(page).to have_content "None"
-            end
+            expect(page).to have_text 'None'
           end
         end
 
-        context 'by unauthorized user' do
-          let(:guest) { create(:user) }
+        it 'allows user to select an assignee' do
+          issue2 = create(:issue, project: project, author: user)
+          visit project_issue_path(project, issue2)
 
-          before do
-            project.add_guest(guest)
-          end
+          within_testid('work-item-assignees') do
+            expect(page).to have_text "None"
+            click_button('Edit')
+            select_listbox_item(user.name)
 
-          it 'shows assignee text' do
-            sign_out(:user)
-            sign_in(guest)
-
-            visit project_issue_path(project, issue)
-            expect(page).to have_content issue.assignees.first.name
+            expect(page).to have_link user.name
           end
         end
       end
 
-      describe 'update milestone' do
-        context 'by authorized user' do
-          it 'allows user to select no milestone' do
-            visit project_issue_path(project, issue)
-            wait_for_requests
+      context 'by unauthorized user' do
+        let(:guest) { create(:user) }
 
-            page.within('.block.milestone') do
-              expect(page).to have_content 'None'
-
-              click_button 'Edit'
-              wait_for_requests
-              click_button 'No milestone'
-              wait_for_requests
-
-              expect(page).to have_content 'None'
-            end
-          end
-
-          it 'allows user to de-select milestone' do
-            visit project_issue_path(project, issue)
-            wait_for_requests
-
-            page.within('.milestone') do
-              click_button 'Edit'
-              wait_for_requests
-              click_button milestone.title
-
-              within_testid('select-milestone') do
-                expect(page).to have_content milestone.title
-              end
-
-              click_button 'Edit'
-              wait_for_requests
-              click_button 'No milestone'
-
-              within_testid('select-milestone') do
-                expect(page).to have_content 'None'
-              end
-            end
-          end
-
-          it 'allows user to search milestone' do
-            visit project_issue_path(project_with_milestones, issue_with_milestones)
-            wait_for_requests
-
-            page.within('.milestone') do
-              click_button 'Edit'
-              wait_for_requests
-              # We need to enclose search string in quotes for exact match as all the milestone titles
-              # within tests are prefixed with `My title`.
-              find('.gl-form-input', visible: true).send_keys "\"#{milestones[0].title}\""
-              wait_for_requests
-
-              page.within '.gl-dropdown-contents' do
-                expect(page).to have_content milestones[0].title
-              end
-            end
-          end
-        end
-
-        context 'by unauthorized user' do
-          let(:guest) { create(:user) }
-
-          before do
-            project.add_guest(guest)
-            issue.milestone = milestone
-            issue.save!
-          end
-
-          it 'shows milestone text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/389287' do
-            sign_out(:user)
-            sign_in(guest)
-
-            visit project_issue_path(project, issue)
-            expect(page).to have_content milestone.title
-          end
-        end
-      end
-
-      context 'update due date' do
         before do
-          # Due date widget uses GraphQL and needs to wait for requests to come back
-          # The date picker won't be rendered before requests complete
-          wait_for_requests
+          project.add_guest(guest)
         end
 
-        it 'adds due date to issue' do
-          date = Date.today.at_beginning_of_month + 2.days
+        it 'shows assignee text' do
+          sign_out(:user)
+          sign_in(guest)
+          visit project_issue_path(project, issue)
 
-          within_testid('sidebar-due-date') do
+          within_testid('work-item-assignees') do
+            expect(page).to have_link issue.assignees.first.name
+          end
+        end
+      end
+    end
+
+    describe 'update milestone' do
+      context 'by authorized user' do
+        it 'allows user to de-select milestone' do
+          visit project_issue_path(project, issue)
+
+          within_testid 'work-item-milestone' do
             click_button 'Edit'
-            page.within '.pika-single' do
-              click_button date.day
-            end
+            select_listbox_item(milestone.title)
 
-            wait_for_requests
+            expect(page).to have_link milestone.title
 
-            expect(find_by_testid('sidebar-date-value').text).to have_content date.strftime('%b %-d, %Y')
+            click_button 'Edit'
+            click_button 'Clear'
+
+            expect(page).to have_text 'None'
           end
         end
 
-        it 'removes due date from issue' do
-          date = Date.today.at_beginning_of_month + 2.days
+        it 'allows user to search milestone' do
+          visit project_issue_path(project_with_milestones, issue_with_milestones)
 
-          within_testid('sidebar-due-date') do
+          within_testid 'work-item-milestone' do
             click_button 'Edit'
+            send_keys "\"#{milestones[0].title}\""
 
-            page.within '.pika-single' do
-              click_button date.day
-            end
-
-            wait_for_requests
-
-            expect(page).to have_no_content 'None'
-
-            click_button 'remove due date'
-            expect(page).to have_content 'None'
+            expect_listbox_item(milestones[0].title)
           end
+        end
+      end
+
+      context 'by unauthorized user' do
+        let(:guest) { create(:user) }
+
+        before do
+          project.add_guest(guest)
+          issue.milestone = milestone
+          issue.save!
+        end
+
+        it 'shows milestone text' do
+          sign_out(:user)
+          sign_in(guest)
+          visit project_issue_path(project, issue)
+
+          within_testid 'work-item-milestone' do
+            expect(page).to have_link milestone.title
+          end
+        end
+      end
+    end
+
+    context 'update date' do
+      before do
+        visit project_issue_path(project, issue)
+      end
+
+      it 'adds and removes due date from issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
+        within_testid('work-item-due-dates') do
+          click_button 'Edit'
+          fill_in 'Due', with: date.iso8601
+          send_keys :enter
+          click_button 'Apply'
+
+          expect(page).to have_text date.strftime('%b %-d, %Y')
+
+          click_button 'Edit'
+          click_button 'Clear date'
+          click_button 'Apply'
+
+          expect(page).not_to have_text date.strftime('%b %-d, %Y')
         end
       end
     end
@@ -413,26 +228,14 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
   context 'with unauthorized user' do
     before do
       sign_in(user)
+      visit project_issue_path(project, issue)
     end
 
-    context "from issue#show" do
-      before do
-        visit project_issue_path(project, issue)
-      end
-
-      describe 'updating labels' do
-        it 'cannot edit labels' do
-          page.within '.block.labels' do
-            expect(page).not_to have_button('Edit')
-          end
-        end
-
-        it 'cannot remove label with a click as it has no `x` button' do
-          page.within '.block.labels' do
-            within '.gl-label' do
-              expect(page).not_to have_button
-            end
-          end
+    describe 'updating labels' do
+      it 'cannot edit labels or remove label with a click as it has no `x` button' do
+        within_testid('work-item-labels') do
+          expect(page).not_to have_button 'Edit'
+          expect(page).not_to have_button 'Remove label'
         end
       end
     end
