@@ -100,5 +100,4 @@ spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spe
 spec/frontend/vue_shared/components/registry/code_instruction_spec.js
 spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
-spec/frontend/vue_shared/directives/track_event_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js

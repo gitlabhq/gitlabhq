@@ -14,12 +14,8 @@ RSpec.describe Ci::Runners::UpdateProjectRunnersOwnerWorker, '#handle_event', fe
     let(:event) { project_deleted_event }
   end
 
-  it 'calls Ci::Runners::UpdateProjectRunnersOwnerService' do
-    expect_next_instance_of(
-      Ci::Runners::UpdateProjectRunnersOwnerService, project.id, project.namespace_id
-    ) do |service|
-      expect(service).to receive(:execute)
-    end
+  it 'does not call Ci::Runners::UpdateProjectRunnersOwnerService' do
+    expect(Ci::Runners::UpdateProjectRunnersOwnerService).not_to receive(:new)
 
     described_class.new.handle_event(project_deleted_event)
   end

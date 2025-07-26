@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import { nextTick, defineComponent } from 'vue';
 import Tracking from '~/tracking';
 import TrackEvent from '~/vue_shared/directives/track_event';
 
@@ -10,7 +10,8 @@ describe('TrackEvent directive', () => {
 
   const clickButton = () => wrapper.find('button').trigger('click');
 
-  const DummyTrackComponent = Vue.component('DummyTrackComponent', {
+  const DummyTrackComponent = defineComponent({
+    name: 'DummyTrackComponent',
     directives: {
       TrackEvent,
     },
