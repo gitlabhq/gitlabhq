@@ -38,7 +38,7 @@ export default {
     [RESOURCE_TYPES.GROUP]: {
       header: s__('GroupProjectArchiveSettings|Archive group'),
       description: s__(
-        'GroupProjectArchiveSettings|Make your group read-only while preserving all data and access to its repository, issues, and merge requests.',
+        'GroupProjectArchiveSettings|Make your group read-only. You can still access its data, work items, and merge requests.',
       ),
       helpLink: s__('GroupProjectArchiveSettings|How do I archive a group?'),
       error: s__(
@@ -48,7 +48,7 @@ export default {
     [RESOURCE_TYPES.PROJECT]: {
       header: s__('GroupProjectArchiveSettings|Archive project'),
       description: s__(
-        'GroupProjectArchiveSettings|Make your project read-only while preserving all data and access to its repository, issues, and merge requests.',
+        'GroupProjectArchiveSettings|Make your project read-only. You can still access its data, work items, and merge requests.',
       ),
       helpLink: s__('GroupProjectArchiveSettings|How do I archive a project?'),
       error: s__(

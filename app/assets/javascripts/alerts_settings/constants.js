@@ -122,8 +122,6 @@ export const integrationToDeleteDefault = { id: null, name: '' };
 
 export const JSON_VALIDATE_DELAY = 250;
 
-export const targetPrometheusUrlPlaceholder = 'http://prometheus.example.com/';
-
 /**
  * Tracks snowplow event when user views alerts integration list
  */

@@ -291,7 +291,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
-      it_behaves_like 'workhorse authorize endpoint'
+      it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -323,7 +323,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
-      it_behaves_like 'workhorse authorize endpoint'
+      it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
   end
 

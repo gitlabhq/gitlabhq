@@ -30796,10 +30796,10 @@ msgstr ""
 msgid "GroupProjectArchiveSettings|How do I archive a project?"
 msgstr ""
 
-msgid "GroupProjectArchiveSettings|Make your group read-only while preserving all data and access to its repository, issues, and merge requests."
+msgid "GroupProjectArchiveSettings|Make your group read-only. You can still access its data, work items, and merge requests."
 msgstr ""
 
-msgid "GroupProjectArchiveSettings|Make your project read-only while preserving all data and access to its repository, issues, and merge requests."
+msgid "GroupProjectArchiveSettings|Make your project read-only. You can still access its data, work items, and merge requests."
 msgstr ""
 
 msgid "GroupRoadmap|%{dateWord} – No end date"
@@ -56683,6 +56683,9 @@ msgstr ""
 msgid "SecurityOrchestration|A new project will be created to be used to store security policies. If a project already exists with security policies, link it via the policy list page."
 msgstr ""
 
+msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxCount} actions per policy. Remove or separate out actions across multiple policies to reduce the number of actions in one policy."
+msgstr ""
+
 msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxScanExecutionPolicySchedules} scheduled rules per policy. Remove or consolidate rules across policies to reduce the total number of rules."
 msgstr ""
 
@@ -57139,7 +57142,7 @@ msgstr ""
 msgid "SecurityOrchestration|Manual pipeline run"
 msgstr ""
 
-msgid "SecurityOrchestration|Maximum action limit for scan execution policies will be enabled in 18.0"
+msgid "SecurityOrchestration|Maximum action limit for scan execution policies exceeded"
 msgstr ""
 
 msgid "SecurityOrchestration|Maximum security policy project schedule rule count exceeded"
@@ -57403,9 +57406,6 @@ msgid "SecurityOrchestration|Scan execution configuration"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
-msgstr ""
-
-msgid "SecurityOrchestration|Scan execution policies that exceed the maximum of %{maxCount} actions per policy have been detected. Those policies will not work after GitLab 18.0 (May 15, 2025). Before then you must edit these policies to reduce the number of actions."
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution policies using `custom` scan action have been detected. Policies using this action will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to remove the deprecated action. Learn more about the %{linkStart}pipeline execution policy%{linkEnd}."

@@ -3143,4 +3143,107 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
   end
+
+  describe '#list_commits' do
+    it 'returns commits when no query is passed' do
+      commit_ids = repository.list_commits(ref: 'master', pagination_params: { limit: 2 }).map(&:id)
+
+      expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6])
+    end
+
+    it 'returns commits with messages containing a given string' do
+      commit_ids = repository.list_commits(query: 'test text', ref: 'master').map(&:id)
+
+      expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6])
+    end
+
+    it 'is case insensitive' do
+      commit_ids = repository.list_commits(query: 'TEST TEXT', ref: 'master').map(&:id)
+
+      expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6])
+    end
+
+    it 'returns commits based in before filter' do
+      commit_ids = repository.list_commits(query: 'test text', ref: 'master', committed_before: 1474828200).map(&:id)
+
+      expect(commit_ids).to eq(%w[498214de67004b1da3d820901307bed2a68a8ef6])
+    end
+
+    it 'returns commits based in after filter' do
+      commit_ids = repository.list_commits(query: 'test text', ref: 'master', committed_after: 1474828200).map(&:id)
+
+      expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0])
+    end
+
+    it 'returns commits based in author filter' do
+      commit_ids = repository.list_commits(query: 'test text', ref: 'master', author: 'Job van der Voort').map(&:id)
+
+      expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0])
+    end
+
+    it 'returns the correct page' do
+      commit_ids = repository.list_commits(
+        ref: 'master', pagination_params: { limit: 1, page_token: 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+      ).map(&:id)
+
+      expect(commit_ids).to eq(%w[498214de67004b1da3d820901307bed2a68a8ef6])
+    end
+
+    describe 'pagination_params' do
+      let(:gitaly_commit_client) { repository.gitaly_commit_client }
+
+      before do
+        allow(gitaly_commit_client).to receive(:list_commits).and_call_original
+      end
+
+      context 'when a limit is supplied' do
+        it 'does not modify the limit' do
+          repository.list_commits(ref: 'master', pagination_params: { limit: 10 })
+          expect(gitaly_commit_client)
+            .to have_received(:list_commits)
+            .with(['master'], a_hash_including(pagination_params: { limit: 10 }))
+        end
+
+        context 'as nil' do
+          it 'sets the limit to 1000' do
+            repository.list_commits(ref: 'master', pagination_params: { limit: nil })
+            expect(gitaly_commit_client)
+              .to have_received(:list_commits)
+              .with(['master'], a_hash_including(pagination_params: { limit: 1000 }))
+          end
+        end
+      end
+
+      context 'when no limit is supplied' do
+        it 'sets the limit to 1000' do
+          repository.list_commits(ref: 'master')
+          expect(gitaly_commit_client)
+            .to have_received(:list_commits)
+            .with(['master'], a_hash_including(pagination_params: { page_token: nil, limit: 1000 }))
+        end
+      end
+
+      context 'when a page_token is passed' do
+        it 'does not modify it' do
+          repository.list_commits(ref: 'master', pagination_params: { page_token: 'page_token' })
+          expect(gitaly_commit_client)
+            .to have_received(:list_commits)
+            .with(['master'], a_hash_including(pagination_params: { page_token: 'page_token', limit: 1000 }))
+        end
+      end
+    end
+
+    describe 'when storage is broken', :broken_storage do
+      let(:broken_repository) { create(:project, :broken_storage).repository }
+
+      it 'raises a storage error' do
+        expect { broken_repository.list_commits(ref: 'master') }.to raise_error do |exception|
+          storage_exceptions = [Gitlab::Git::CommandError, GRPC::Unavailable]
+          known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
+
+          expect(known_exception).not_to be_nil
+        end
+      end
+    end
+  end
 end

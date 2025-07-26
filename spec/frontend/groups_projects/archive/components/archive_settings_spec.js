@@ -50,7 +50,7 @@ describe('ArchiveSettings', () => {
       createComponent({ props: { resourceType } });
 
       expect(findGlCard().text()).toContain(
-        `Make your ${resourceType} read-only while preserving all data and access to its repository, issues, and merge requests.`,
+        `Make your ${resourceType} read-only. You can still access its data, work items, and merge requests.`,
       );
     });
 

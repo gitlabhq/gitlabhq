@@ -22,7 +22,6 @@ import {
   integrationTypes,
   integrationSteps,
   JSON_VALIDATE_DELAY,
-  targetPrometheusUrlPlaceholder,
   typeSet,
   i18n,
   tabIndices,
@@ -34,9 +33,6 @@ import MappingBuilder from './alert_mapping_builder.vue';
 import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 
 export default {
-  placeholders: {
-    prometheus: targetPrometheusUrlPlaceholder,
-  },
   incidentManagementDocsLink: `${DOCS_URL_IN_EE_DIR}/operations/incident_management/integrations.html#configuration`,
   JSON_VALIDATE_DELAY,
   typeSet,

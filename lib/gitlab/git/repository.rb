@@ -1132,19 +1132,27 @@ module Gitlab
         end
       end
 
-      def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
-        params = {
-          author: author,
-          ignore_case: true,
-          commit_message_patterns: query,
-          before: before,
-          after: after,
-          reverse: false,
-          pagination_params: { limit: limit }
-        }
+      def list_commits(
+        ref:,
+        query: nil,
+        author: nil,
+        committed_before: nil,
+        committed_after: nil,
+        pagination_params: { page_token: nil, limit: 1000 }
+      )
+        pagination_params[:limit] ||= 1000
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.list_commits([ref], params)
+          gitaly_commit_client.list_commits(
+            [ref],
+            author: author,
+            ignore_case: true,
+            commit_message_patterns: query,
+            before: committed_before,
+            after: committed_after,
+            reverse: false,
+            pagination_params: pagination_params
+          )
         end
       end
 

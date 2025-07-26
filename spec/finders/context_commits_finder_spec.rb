@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContextCommitsFinder do
+RSpec.describe ContextCommitsFinder, feature_category: :code_review_workflow do
   describe "#execute" do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }

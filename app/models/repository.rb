@@ -194,10 +194,26 @@ class Repository
     CommitCollection.new(container, commits, ref)
   end
 
-  def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
+  def list_commits(
+    ref:,
+    query: nil,
+    author: nil,
+    committed_before: nil,
+    committed_after: nil,
+    pagination_params: { page_token: nil, limit: 1000 }
+  )
     return [] unless exists? && has_visible_content? && ref.present?
 
-    raw_commits = raw_repository.list_commits_by(query, ref, author: author, before: before, after: after, limit: limit)
+    pagination_params[:limit] ||= 1000
+
+    raw_commits = raw_repository.list_commits(
+      ref: ref,
+      query: query,
+      author: author,
+      committed_before: committed_before,
+      committed_after: committed_after,
+      pagination_params: pagination_params
+    )
     commits = raw_commits.map { |c| commit(c) }
     CommitCollection.new(container, commits, ref)
   end

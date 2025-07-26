@@ -114,12 +114,17 @@ module Repositories
     def proxy_download_actions(object)
       {
         download: {
-          href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}",
+          href: proxy_download_actions_download_path(object),
           header: {
             Authorization: authorization_header
           }.compact
         }
       }
+    end
+
+    # Overridden in EE
+    def proxy_download_actions_download_path(object)
+      "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}"
     end
 
     def upload_actions(object)

@@ -1,10 +1,39 @@
 # frozen_string_literal: true
 
 module WorkItemsHelpers
+  include ListboxHelpers
+
+  # Listbox helpers
   def select_work_item_type(type)
     select type.to_s.capitalize, from: 'Type'
   end
 
+  def add_labels_on_bulk_edit(items = [])
+    select_items_from_dropdown(items, 'Select labels', 'bulk-edit-add-labels')
+  end
+
+  def remove_labels_on_bulk_edit(items = [])
+    select_items_from_dropdown(items,  'Select labels', 'bulk-edit-remove-labels')
+  end
+
+  def select_items_from_dropdown(items, listbox_name, testid)
+    within_testid(testid) do
+      click_button listbox_name
+      wait_for_requests
+
+      items.each do |item|
+        select_listbox_item item
+      end
+    end
+    close_dropdown
+  end
+
+  def close_dropdown
+    # The listbox is hiding UI elements, click on body
+    page.send_keys(:escape)
+  end
+
+  # Textbox helpers
   def fill_work_item_title(title)
     find_by_testid('work-item-title-input').send_keys(title)
   end
@@ -13,6 +42,7 @@ module WorkItemsHelpers
     fill_in _('Description'), with: description
   end
 
+  # Work item widget helpers
   def assign_work_item_to_yourself
     within_testid 'work-item-assignees' do
       click_button 'assign yourself'
@@ -23,9 +53,8 @@ module WorkItemsHelpers
     within_testid 'work-item-labels' do
       click_button 'Edit'
       select_listbox_item(label_title)
-      # The listbox is hiding Apply button,
-      # click listbox to dismiss and apply label
-      find_field('Search').send_keys(:escape)
+
+      close_dropdown
     end
   end
 
@@ -36,13 +65,34 @@ module WorkItemsHelpers
     end
   end
 
+  # Action helpers
   def create_work_item_with_type(type)
     click_button "Create #{type}"
   end
 
+  def click_bulk_edit
+    click_button 'Bulk edit'
+  end
+
+  def click_update_selected
+    click_button 'Update selected'
+  end
+
+  def check_work_items(items = [])
+    # Select work items from the list
+    items.each do |item|
+      check item
+    end
+  end
+
+  # Assertion helpers
   def expect_work_item_widgets(widget_names)
     widget_names.each do |widget|
       expect(page).to have_selector("[data-testid=\"#{widget}\"]")
     end
+  end
+
+  def find_work_item_element(work_item_id)
+    find("#issuable_#{work_item_id}")
   end
 end

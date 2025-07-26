@@ -223,14 +223,16 @@ module API
             ).execute
           end
 
-          def upload_package_file(file_type)
-            authorize_upload!(project)
-
+          def verify_checksum_deploy_header!
             # conan CLI uses X-Checksum-Deploy header with empty data to check if file already exists, we do not support this feature
             # See conan source code: https://github.com/conan-io/conan/blob/048565de10232675955056fd41c9f3c4e5305eba/conan/internal/rest/file_uploader.py#L38
             if headers['X-Checksum-Deploy'] == 'true'
-              return not_found!('Non checksum storage')
+              not_found!('Non checksum storage')
             end
+          end
+
+          def upload_package_file(file_type)
+            authorize_upload!(project)
 
             bad_request!('File is too large') if project.actual_limits.exceeded?(:conan_max_file_size, params['file.size'].to_i)
 

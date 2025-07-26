@@ -832,13 +832,14 @@ RSpec.shared_examples 'project not found by project id' do
   it_behaves_like 'not found request'
 end
 
-RSpec.shared_examples 'workhorse authorize endpoint' do
+RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_header: true|
   it_behaves_like 'enforcing admin_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
   it_behaves_like 'workhorse authorization'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'handling checksum deploy header' if with_checksum_deploy_header
 end
 
 RSpec.shared_examples 'protected package main example' do
@@ -1064,37 +1065,6 @@ RSpec.shared_examples 'uploads a package file' do
         expect(package_file.conan_file_metadatum.package_revision_value).to eq(
           package_file.conan_file_metadatum.package_file? ? package_revision : nil
         )
-      end
-
-      context 'with X-Checksum-Deploy header' do
-        context 'when X-Checksum-Deploy header is "true"' do
-          before do
-            headers_with_token['X-Checksum-Deploy'] = 'true'
-          end
-
-          it 'returns not found without creating package or package file' do
-            expect { subject }
-              .to not_change { ::Packages::Conan::Package.for_projects(project).count }
-              .and not_change { Packages::PackageFile.count }
-
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(json_response['message']).to eq('404 Non checksum storage Not Found')
-          end
-        end
-
-        context 'when X-Checksum-Deploy header has other value' do
-          before do
-            headers_with_token['X-Checksum-Deploy'] = 'false'
-          end
-
-          it 'creates package and stores package file' do
-            expect { subject }
-              .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
-              .and change { Packages::PackageFile.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
       end
 
       context 'with existing package' do
@@ -1385,5 +1355,23 @@ RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe
         )
       end
     end
+  end
+end
+
+RSpec.shared_examples 'handling checksum deploy header' do
+  context 'when X-Checksum-Deploy header is "true"' do
+    before do
+      headers_with_token['X-Checksum-Deploy'] = 'true'
+    end
+
+    it_behaves_like 'returning response status', :not_found
+  end
+
+  context 'when X-Checksum-Deploy header is not "true"' do
+    before do
+      headers_with_token['X-Checksum-Deploy'] = 0
+    end
+
+    it_behaves_like 'returning response status', :ok
   end
 end
