@@ -140,6 +140,17 @@ module Ci
       exists?(ip_address:)
     end
 
+    def self.version_regex_expression_for_version(version)
+      case version
+      when /\d+\.\d+\.\d+/
+        '^\d+\.\d+\.\d+'
+      when /\d+\.\d+(\.)?/
+        '^\d+\.\d+\.'
+      else
+        '^\d+\.'
+      end
+    end
+
     def uncached_contacted_at
       read_attribute(:contacted_at)
     end
@@ -193,17 +204,6 @@ module Ci
 
     def no_organization_id
       errors.add(:runner_manager, 'cannot have organization_id assigned') if organization_id
-    end
-
-    def self.version_regex_expression_for_version(version)
-      case version
-      when /\d+\.\d+\.\d+/
-        '^\d+\.\d+\.\d+'
-      when /\d+\.\d+(\.)?/
-        '^\d+\.\d+\.'
-      else
-        '^\d+\.'
-      end
     end
   end
 end

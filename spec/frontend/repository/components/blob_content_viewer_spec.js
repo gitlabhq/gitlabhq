@@ -177,7 +177,6 @@ describe('Blob content viewer component', () => {
       expect(findBlobHeader().props('hideViewerSwitcher')).toEqual(false);
       expect(findBlobHeader().props('blob')).toEqual(simpleViewerMock);
       expect(findBlobHeader().props('showBlameToggle')).toEqual(true);
-      expect(findBlobHeader().props('projectId')).toEqual(projectMock.id);
       expect(mockRouterPush).not.toHaveBeenCalled();
     });
 

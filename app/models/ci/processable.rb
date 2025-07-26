@@ -104,10 +104,6 @@ module Ci
       end
     end
 
-    def assign_resource_from_resource_group(processable)
-      Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
-    end
-
     def self.select_with_aggregated_needs(project)
       aggregated_needs_names = Ci::BuildNeed
         .scoped_build
@@ -130,6 +126,10 @@ module Ci
          ELSE #{scheduling_types[:stage]}
          END"
       )
+    end
+
+    def assign_resource_from_resource_group(processable)
+      Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
     end
 
     validates :type, presence: true

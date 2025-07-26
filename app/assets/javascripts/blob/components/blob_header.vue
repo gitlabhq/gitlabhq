@@ -52,13 +52,6 @@ export default {
       required: false,
       default: false,
     },
-    // Used in EE component
-    // eslint-disable-next-line vue/no-unused-properties
-    projectId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     showBlameToggle: {
       type: Boolean,
       required: false,

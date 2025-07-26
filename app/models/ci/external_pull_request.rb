@@ -53,6 +53,16 @@ module Ci
       end
     end
 
+    def self.safe_find_or_initialize_and_update(find:, update:)
+      safe_ensure_unique(retries: 1) do
+        model = find_or_initialize_by(find)
+
+        yield(model) if model.update(update) && block_given?
+
+        model
+      end
+    end
+
     def actual_branch_head?
       actual_source_branch_sha == source_sha
     end
@@ -91,16 +101,6 @@ module Ci
       return unless from_fork?
 
       errors.add(:base, _('Pull requests from fork are not supported'))
-    end
-
-    def self.safe_find_or_initialize_and_update(find:, update:)
-      safe_ensure_unique(retries: 1) do
-        model = find_or_initialize_by(find)
-
-        yield(model) if model.update(update) && block_given?
-
-        model
-      end
     end
   end
 end

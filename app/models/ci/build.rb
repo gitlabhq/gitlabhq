@@ -417,6 +417,11 @@ module Ci
       ::Ci::BuildTag
     end
 
+    def self.keep_artifacts!
+      update_all(artifacts_expire_at: nil)
+      Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
+    end
+
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
     end
@@ -864,11 +869,6 @@ module Ci
 
     def has_expiring_archive_artifacts?
       has_expiring_artifacts? && job_artifacts_archive.present?
-    end
-
-    def self.keep_artifacts!
-      update_all(artifacts_expire_at: nil)
-      Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
     end
 
     def keep_artifacts!

@@ -115,12 +115,6 @@ module Ci
     #                 This is the default value.
     enum :file_location, Enums::Ci::JobArtifact.file_location
 
-    def validate_file_format!
-      unless Enums::Ci::JobArtifact.type_and_format_pairs[self.file_type&.to_sym] == self.file_format&.to_sym
-        errors.add(:base, _('Invalid file format with specified file type'))
-      end
-    end
-
     def self.of_report_type(report_type)
       file_types = file_types_for_report(report_type)
 
@@ -169,6 +163,27 @@ module Ci
       service.update_statistics
     end
 
+    def self.archived_trace_exists_for?(job_id)
+      where(job_id: job_id).trace.take&.stored?
+    end
+
+    def self.max_artifact_size(type:, project:)
+      limit_name = "#{PLAN_LIMIT_PREFIX}#{type}"
+
+      max_size = project.actual_limits.limit_for(
+        limit_name,
+        alternate_limit: -> { project.closest_setting(:max_artifacts_size) }
+      )
+
+      max_size&.megabytes.to_i
+    end
+
+    def validate_file_format!
+      unless Enums::Ci::JobArtifact.type_and_format_pairs[self.file_type&.to_sym] == self.file_format&.to_sym
+        errors.add(:base, _('Invalid file format with specified file type'))
+      end
+    end
+
     def local_store?
       [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
     end
@@ -198,21 +213,6 @@ module Ci
 
     def stored?
       file&.file&.exists?
-    end
-
-    def self.archived_trace_exists_for?(job_id)
-      where(job_id: job_id).trace.take&.stored?
-    end
-
-    def self.max_artifact_size(type:, project:)
-      limit_name = "#{PLAN_LIMIT_PREFIX}#{type}"
-
-      max_size = project.actual_limits.limit_for(
-        limit_name,
-        alternate_limit: -> { project.closest_setting(:max_artifacts_size) }
-      )
-
-      max_size&.megabytes.to_i
     end
 
     def to_deleted_object_attrs(pick_up_at = nil)

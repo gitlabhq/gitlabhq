@@ -85,12 +85,6 @@ module Ci
       end
     end
 
-    def retryable?
-      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
-
-      super
-    end
-
     def self.with_preloads
       preload(
         :metadata,
@@ -105,6 +99,12 @@ module Ci
         allow_failure stage_idx
         yaml_variables when environment description needs_attributes
         scheduling_type ci_stage partition_id].freeze
+    end
+
+    def retryable?
+      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
+
+      super
     end
 
     def has_downstream_pipeline?

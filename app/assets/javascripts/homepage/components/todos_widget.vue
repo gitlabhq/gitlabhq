@@ -131,7 +131,7 @@ export default {
 
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
         <span>
@@ -141,7 +141,7 @@ export default {
       </div>
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
         <span>{{ __('Sorry, your filter produced no results') }}</span>
