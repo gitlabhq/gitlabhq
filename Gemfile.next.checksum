@@ -285,7 +285,7 @@
 {"name":"googleapis-common-protos","version":"1.4.0","platform":"ruby","checksum":"da2380fb5ab1563580816c74e8d684ac17512c3654c829a3ee84f6d6139de382"},
 {"name":"googleapis-common-protos-types","version":"1.20.0","platform":"ruby","checksum":"5e374b06bcfc7e13556e7c0d87b99f1fa3d42de6396a1de3d8fc13aefb4dd07f"},
 {"name":"googleauth","version":"1.14.0","platform":"ruby","checksum":"62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149"},
-{"name":"gpgme","version":"2.0.24","platform":"ruby","checksum":"53eccd7042abb4fd5c78f30bc9ed075b1325e6450eab207f2f6a1e7e28ae3b64"},
+{"name":"gpgme","version":"2.0.25","platform":"ruby","checksum":"9242408b28720513145deb6150f25f5fe5149f3728ebaea635050cc3fc84dc34"},
 {"name":"grape","version":"2.0.0","platform":"ruby","checksum":"3aeff94c17e84ccead4ff98833df691e7da0c108878cc128ca31f80c1047494a"},
 {"name":"grape-entity","version":"1.0.1","platform":"ruby","checksum":"e00f9e94e407aff77aa2945d741f544d07e48501927942988799913151d02634"},
 {"name":"grape-path-helpers","version":"2.0.1","platform":"ruby","checksum":"ad5216e52c6e796738a9118087352ab4c962900dbad1d8f8c0f96e093c6702d7"},
