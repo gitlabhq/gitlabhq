@@ -2428,6 +2428,33 @@ Input type: `AiCatalogFlowUpdateInput`
 | <a id="mutationaicatalogflowupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogflowupdateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Flow that was updated. |
 
+### `Mutation.aiCatalogItemConsumerCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogItemConsumerCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumercreateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether to enable the item. |
+| <a id="mutationaicatalogitemconsumercreateitemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
+| <a id="mutationaicatalogitemconsumercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether to lock the item configuration (groups only). |
+| <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target in which the catalog item is configured. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogitemconsumercreateitemconsumer"></a>`itemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Item configuration created. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}
@@ -52645,6 +52672,15 @@ Labels for the Node Pool of a GKE cluster.
 | <a id="groupprojectrequirementcompliancestatusinputframeworkid"></a>`frameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Filter compliance requirement statuses by compliance framework. |
 | <a id="groupprojectrequirementcompliancestatusinputprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Filter compliance requirement statuses by project. |
 | <a id="groupprojectrequirementcompliancestatusinputrequirementid"></a>`requirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Filter compliance requirement statuses by compliance requirement. |
+
+### `ItemConsumerTargetInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="itemconsumertargetinputgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group in which to configure the item. |
+| <a id="itemconsumertargetinputprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project in which to configure the item. |
 
 ### `JiraUsersMappingInputType`
 
