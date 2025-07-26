@@ -211,6 +211,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Database::BatchedBackgroundMigration::MainExecutionWorker' => 0,
         'Database::BatchedBackgroundMigration::SecExecutionWorker' => 0,
         'Database::CollationCheckerWorker' => false,
+        'Database::SchemaCheckerWorker' => false,
         'DeleteDiffFilesWorker' => 3,
         'DeleteMergedBranchesWorker' => 3,
         'DeleteStoredFilesWorker' => 3,

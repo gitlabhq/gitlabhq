@@ -3618,6 +3618,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: database_schema_checker
+  :worker_name: Database::SchemaCheckerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: default
   :worker_name:
   :feature_category: :not_owned
