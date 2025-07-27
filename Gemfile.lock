@@ -1059,7 +1059,7 @@ GEM
       character_set (~> 1.4)
       regexp_parser (~> 2.10)
       regexp_property_values (~> 1.0)
-    json (2.13.0)
+    json (2.13.1)
     json-jwt (1.16.6)
       activesupport (>= 4.2)
       aes_key_wrap
