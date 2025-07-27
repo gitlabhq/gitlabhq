@@ -75,7 +75,6 @@ export default {
       'existingBranch',
       'targetProjectId',
       'targetProjectName',
-      'branchesEndpoint',
     ]),
   },
   mounted() {

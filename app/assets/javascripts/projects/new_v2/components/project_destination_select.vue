@@ -1,6 +1,5 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { PATH_SEPARATOR } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
@@ -136,9 +135,6 @@ export default {
         ];
       return [];
     },
-    dropdownPlaceholderClass() {
-      return this.selectedNamespace.id ? '' : '!gl-text-subtle';
-    },
     dropdownText() {
       if (this.selectedNamespace && this.selectedNamespace?.fullPath) {
         return this.selectedNamespace.fullPath;
@@ -171,10 +167,6 @@ export default {
         isPersonal: namespace.fullPath === this.userNamespaceFullPath,
       });
       this.setNamespace(namespace);
-    },
-    handleSelectTemplate(id, fullPath) {
-      this.groupPathToFilterBy = fullPath.split(PATH_SEPARATOR).shift();
-      this.setNamespace({ id, fullPath });
     },
     setNamespace({ id, fullPath }) {
       this.selectedNamespace = id
