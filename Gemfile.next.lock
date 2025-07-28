@@ -1033,7 +1033,7 @@ GEM
     invisible_captcha (2.1.0)
       rails (>= 5.2)
     io-console (0.8.0)
-    io-event (1.12.0)
+    io-event (1.12.1)
     ipaddress (0.8.3)
     irb (1.15.1)
       pp (>= 0.6.0)

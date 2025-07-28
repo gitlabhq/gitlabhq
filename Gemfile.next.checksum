@@ -341,7 +341,7 @@
 {"name":"invisible_captcha","version":"2.1.0","platform":"ruby","checksum":"02b452f3eb1b691d155ba3e8e97e1be0e6b6be62e8bc94957234b9cde0852b1e"},
 {"name":"io-console","version":"0.8.0","platform":"java","checksum":"3cc6fd5c66e587145c1fdf8dc40c2e3d851e90722a5d0cc3f38da352f06fe1bd"},
 {"name":"io-console","version":"0.8.0","platform":"ruby","checksum":"cd6a9facbc69871d69b2cb8b926fc6ea7ef06f06e505e81a64f14a470fddefa2"},
-{"name":"io-event","version":"1.12.0","platform":"ruby","checksum":"272dca7debaff92f4771632ee0c3a65b56dfb1d390439053682a522bf111ee26"},
+{"name":"io-event","version":"1.12.1","platform":"ruby","checksum":"3bca6df9ec535835a97733c1d93d28a194b2266c40b501d870f314d7a6cbc3cf"},
 {"name":"ipaddress","version":"0.8.3","platform":"ruby","checksum":"85640c4f9194c26937afc8c78e3074a8e7c97d5d1210358d1440f01034d006f5"},
 {"name":"irb","version":"1.15.1","platform":"ruby","checksum":"d9bca745ac4207a8b728a52b98b766ca909b86ff1a504bcde3d6f8c84faae890"},
 {"name":"jaeger-client","version":"1.1.0","platform":"ruby","checksum":"cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8"},

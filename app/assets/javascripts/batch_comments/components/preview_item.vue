@@ -106,7 +106,7 @@ export default {
       @click="$emit('click', draft)"
     >
       <gl-icon class="flex-shrink-0" :name="iconName" /><span class="text-nowrap gl-items-center">
-        <span class="review-preview-item-header-text block-truncated">{{ titleText }}</span>
+        <span class="review-preview-item-header-text gl-truncate">{{ titleText }}</span>
         <template v-if="showLinePosition">
           <template v-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>

@@ -12,7 +12,7 @@
       = gl_badge_tag s_('TagsPage|protected'), variant: :neutral, class: 'gl-ml-2'
 
     - if commit
-      .block-truncated
+      .gl-truncate
         = render 'projects/branches/commit', commit: commit, project: @project
     - else
       %p

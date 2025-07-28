@@ -118,16 +118,6 @@ hr {
   }
 }
 
-.block-truncated {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  .str-truncated {
-    display: inline;
-  }
-}
-
 .item-title { font-weight: $gl-font-weight-bold; }
 
 table {
