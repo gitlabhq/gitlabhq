@@ -58,6 +58,13 @@ git commit -m "this is my commit message. Ref projectname#xxx"
 If they are not in the same group, you can add the full URL to the issue
 (`https://gitlab.com/<username>/<projectname>/-/issues/<xxx>`).
 
+{{< alert type="note" >}}
+
+For performance reasons, GitLab processes only the first 1,000 full URLs in commit messages
+for automatic linking. Additional URLs beyond this limit are not converted to links.
+
+{{< /alert >}}
+
 ```shell
 git commit -m "this is my commit message. Related to https://gitlab.com/<username>/<projectname>/-/issues/<xxx>"
 ```

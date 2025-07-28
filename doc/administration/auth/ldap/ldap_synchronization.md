@@ -662,7 +662,7 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
        ldap:
          servers:
            main:
-           duo_add_on_groups: => ['duo_group_1', 'duo_group_2'],
+            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
 1. Save the file and apply the new values:

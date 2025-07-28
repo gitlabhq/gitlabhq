@@ -2,9 +2,9 @@
 
 require 'tmpdir'
 require 'spec_helper'
+require './keeps/rubocop_fixer'
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
+RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
   let(:todo_dir) { Dir.mktmpdir }
   let(:rubocop_fixer) { described_class.new(todo_dir_pattern: todo_dir_pattern, limit_fixes: 5) }
   let(:rule1_violating_files) do
@@ -37,9 +37,9 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
 
   before do
     Pathname.new(todo_dir)
-    FileUtils.cp('spec/fixtures/rubocop_todo1.yml', rule1_file)
-    FileUtils.cp('spec/fixtures/rubocop_todo2.yml', rule2_file)
-    FileUtils.cp('spec/fixtures/rubocop_todo_not_autocorrectable.yml', not_autocorrectable_file)
+    FileUtils.cp('spec/fixtures/keeps/rubocop_todo1.yml', rule1_file)
+    FileUtils.cp('spec/fixtures/keeps/rubocop_todo2.yml', rule2_file)
+    FileUtils.cp('spec/fixtures/keeps/rubocop_todo_not_autocorrectable.yml', not_autocorrectable_file)
   end
 
   after do
@@ -117,4 +117,3 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
     end
   end
 end
-# rubocop:enable RSpec/MultipleMemoizedHelpers

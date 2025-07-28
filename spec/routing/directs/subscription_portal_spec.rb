@@ -60,4 +60,27 @@ RSpec.describe 'Custom URLs', 'Subscription Portal', feature_category: :subscrip
 
     it { is_expected.to eq("#{staging_customers_url}/instance_review") }
   end
+
+  describe 'subscription_portal_new_trial_url' do
+    subject { subscription_portal_new_trial_url(params) }
+
+    context "without params" do
+      let(:params) { nil }
+
+      it { is_expected.to eq("#{staging_customers_url}/trials/new") }
+    end
+
+    context "with params" do
+      let(:params) do
+        {
+          return_to: "test",
+          id: "test"
+        }
+      end
+
+      it { is_expected.to include("#{staging_customers_url}/trials/new?") }
+      it { is_expected.to include("return_to=test") }
+      it { is_expected.to include("id=test") }
+    end
+  end
 end

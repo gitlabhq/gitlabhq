@@ -270,7 +270,7 @@ gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdow
 gem 'rouge', '~> 4.5.0', feature_category: :shared
 gem 'truncato', '~> 0.7.13', feature_category: :team_planning
 gem 'nokogiri', '~> 1.18', feature_category: :shared
-gem 'gitlab-glfm-markdown', '~> 0.0.31', feature_category: :markdown
+gem 'gitlab-glfm-markdown', '~> 0.0.33', feature_category: :markdown
 gem 'tanuki_emoji', '~> 0.13', feature_category: :markdown
 gem 'unicode-emoji', '~> 4.0', feature_category: :markdown
 
@@ -434,7 +434,7 @@ gem 'async', '~> 2.24.0', require: false, feature_category: :shared
 gem 'io-event', '~> 1.12', require: false, feature_category: :shared
 
 # Security report schemas used to validate CI job artifacts of security jobs
-gem 'gitlab-security_report_schemas', '0.1.3.min15.0.0.max15.2.2', feature_category: :vulnerability_management
+gem 'gitlab-security_report_schemas', '0.1.3.min15.0.0.max15.2.3', feature_category: :vulnerability_management
 
 # OpenTelemetry
 group :opentelemetry do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class InactiveProjectsDeletionWarningTracker
+  class DormantProjectsDeletionWarningTracker
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :project_id

@@ -1459,13 +1459,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#inactive_project_deletion_date' do
-    let(:tracker) { instance_double(::Gitlab::InactiveProjectsDeletionWarningTracker) }
+    let(:tracker) { instance_double(::Gitlab::DormantProjectsDeletionWarningTracker) }
 
     before do
       stub_application_setting(inactive_projects_delete_after_months: 2)
       stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
 
-      allow(::Gitlab::InactiveProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
+      allow(::Gitlab::DormantProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
       allow(tracker).to receive(:scheduled_deletion_date).and_return('2022-03-01')
     end
 

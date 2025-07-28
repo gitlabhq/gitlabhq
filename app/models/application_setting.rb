@@ -1262,7 +1262,7 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def reset_deletion_warning_redis_key
-    Gitlab::InactiveProjectsDeletionWarningTracker.reset_all
+    Gitlab::DormantProjectsDeletionWarningTracker.reset_all
   end
 
   def should_prevent_visibility_restriction?

@@ -1093,7 +1093,7 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/http.rb'
     - 'lib/gitlab/http_io.rb'
     - 'lib/gitlab/import_formatter.rb'
-    - 'lib/gitlab/inactive_projects_deletion_warning_tracker.rb'
+    - 'lib/gitlab/dormant_projects_deletion_warning_tracker.rb'
     - 'lib/gitlab/insecure_key_fingerprint.rb'
     - 'lib/gitlab/integrations_logger.rb'
     - 'lib/gitlab/issuable_metadata.rb'

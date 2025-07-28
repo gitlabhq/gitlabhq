@@ -592,7 +592,7 @@ module ProjectsHelper
   end
 
   def inactive_project_deletion_date(project)
-    Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
+    Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
   end
 
   def show_clusters_alert?(project)

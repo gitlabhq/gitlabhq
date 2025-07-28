@@ -21,3 +21,9 @@ end
 direct :subscription_portal_openid_configuration do
   Addressable::URI.join(subscription_portal_url, '/.well-known/openid-configuration').to_s
 end
+
+direct :subscription_portal_new_trial do |params|
+  uri = Addressable::URI.join(subscription_portal_url, '/trials/new')
+  uri.query_values = params if params.present?
+  uri.to_s
+end

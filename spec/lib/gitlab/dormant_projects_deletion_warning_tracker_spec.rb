@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::InactiveProjectsDeletionWarningTracker, :freeze_time do
+RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feature_category: :groups_and_projects do
   let_it_be(:project_id) { 1 }
 
   describe '.notified_projects', :clean_gitlab_redis_shared_state do

@@ -2504,7 +2504,7 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/import_export/uploads_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/wiki_repo_saver_spec.rb'
     - 'spec/lib/gitlab/import_formatter_spec.rb'
-    - 'spec/lib/gitlab/inactive_projects_deletion_warning_tracker_spec.rb'
+    - 'spec/lib/gitlab/dormant_projects_deletion_warning_tracker_spec.rb'
     - 'spec/lib/gitlab/incident_management/pager_duty/incident_issue_description_spec.rb'
     - 'spec/lib/gitlab/insecure_key_fingerprint_spec.rb'
     - 'spec/lib/gitlab/instrumentation/rate_limiting_gates_spec.rb'

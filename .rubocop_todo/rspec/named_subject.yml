@@ -184,7 +184,6 @@ RSpec/NamedSubject:
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/groups/ldap_sync_helper_spec.rb'
     - 'ee/spec/helpers/kerberos_helper_spec.rb'
-    - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/dast_profiles_helper_spec.rb'
     - 'ee/spec/helpers/secrets_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'

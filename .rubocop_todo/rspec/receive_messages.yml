@@ -28,7 +28,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/gitlab_subscriptions/trials_helper_spec.rb'
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
-    - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/license_monitoring_helper_spec.rb'
     - 'ee/spec/helpers/nav/new_dropdown_helper_spec.rb'
     - 'ee/spec/helpers/routing/pseudonymization_helper_spec.rb'

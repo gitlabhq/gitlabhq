@@ -251,7 +251,9 @@ module SystemNotes
     def cross_reference(mentioned_in)
       return if cross_reference_disallowed?(mentioned_in)
 
-      gfm_reference = mentioned_in.gfm_reference(noteable.project || noteable.group)
+      from = noteable.project || noteable.try(:group) || noteable.try(:namespace)
+
+      gfm_reference = mentioned_in.gfm_reference(from)
       body = cross_reference_note_content(gfm_reference)
 
       if noteable.is_a?(ExternalIssue)

@@ -336,7 +336,7 @@ RSpec/ExampleWithoutDescription:
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/remote_stream_upload_spec.rb'
-    - 'spec/lib/gitlab/inactive_projects_deletion_warning_tracker_spec.rb'
+    - 'spec/lib/gitlab/dormant_projects_deletion_warning_tracker_spec.rb'
     - 'spec/lib/gitlab/instrumentation/redis_base_spec.rb'
     - 'spec/lib/gitlab/instrumentation/redis_cluster_router_spec.rb'
     - 'spec/lib/gitlab/instrumentation/redis_cluster_validator_spec.rb'

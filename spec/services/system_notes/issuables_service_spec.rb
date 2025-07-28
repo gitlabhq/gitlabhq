@@ -464,6 +464,24 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         end
       end
 
+      context 'with WorkItem' do
+        context 'on project level' do
+          let(:noteable) { create(:work_item, project: project) }
+
+          it 'references the mentioning object' do
+            expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(project)}"
+          end
+        end
+
+        context 'on group level' do
+          let(:noteable) { create(:work_item, :group_level) }
+
+          it 'references the mentioning object' do
+            expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(noteable.namespace)}"
+          end
+        end
+      end
+
       context 'with external issue' do
         let(:noteable) { ExternalIssue.new('JIRA-123', project) }
         let(:mentioned_in) { project.commit }

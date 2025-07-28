@@ -13,6 +13,10 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   end
 
   describe '#work_items_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
     describe 'with project context' do
       let_it_be(:project) { build(:project) }
       let_it_be(:current_user) { build(:user, owner_of: project) }
@@ -56,6 +60,14 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           )
         end
       end
+
+      it 'returns the correct new trial path' do
+        expect(helper).to respond_to(:self_managed_new_trial_url)
+        allow(helper).to receive(:self_managed_new_trial_url).and_return('subscription_portal_trial_url')
+        expect(helper.work_items_data(project, current_user)).to include(
+          { new_trial_path: "subscription_portal_trial_url" }
+        )
+      end
     end
 
     context 'with group context' do
@@ -75,12 +87,11 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
     end
   end
 
-  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needed for querying the work item type
   describe '#add_work_item_show_breadcrumb' do
     subject(:add_work_item_show_breadcrumb) { helper.add_work_item_show_breadcrumb(resource_parent, work_item.iid) }
 
     context 'on a group' do
-      let_it_be(:resource_parent) { create(:group) }
+      let_it_be(:resource_parent) { build_stubbed(:group) }
       let_it_be(:work_item) { build(:work_item, namespace: resource_parent) }
 
       it 'adds the correct breadcrumb' do
@@ -91,7 +102,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
     end
 
     context 'on a project' do
-      let_it_be(:resource_parent) { build(:project) }
+      let_it_be(:resource_parent) { build_stubbed(:project) }
       let_it_be(:work_item) { build(:work_item, namespace: resource_parent.namespace) }
 
       it 'adds the correct breadcrumb' do
@@ -101,5 +112,4 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       end
     end
   end
-  # rubocop:enable RSpec/FactoryBot/AvoidCreate
 end

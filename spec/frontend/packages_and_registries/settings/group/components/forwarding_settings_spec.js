@@ -71,8 +71,8 @@ describe('Forwarding Settings', () => {
     it('disables both checkboxes', () => {
       mountComponent({ ...defaultProps, disabled: true });
 
-      expect(findForwardingCheckbox().attributes('disabled')).toEqual('true');
-      expect(findLockForwardingCheckbox().attributes('disabled')).toEqual('true');
+      expect(findForwardingCheckbox().attributes().disabled).toBe('true');
+      expect(findLockForwardingCheckbox().attributes().disabled).toBe('true');
     });
   });
 });

@@ -5092,7 +5092,7 @@
 - './spec/lib/gitlab/import/metrics_spec.rb'
 - './spec/lib/gitlab/import/set_async_jid_spec.rb'
 - './spec/lib/gitlab/import_sources_spec.rb'
-- './spec/lib/gitlab/inactive_projects_deletion_warning_tracker_spec.rb'
+- './spec/lib/gitlab/dormant_projects_deletion_warning_tracker_spec.rb'
 - './spec/lib/gitlab/insecure_key_fingerprint_spec.rb'
 - './spec/lib/gitlab/instrumentation_helper_spec.rb'
 - './spec/lib/gitlab/instrumentation/rate_limiting_gates_spec.rb'

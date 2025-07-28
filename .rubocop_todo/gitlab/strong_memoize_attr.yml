@@ -513,7 +513,7 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/import_export/importer.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'
     - 'lib/gitlab/import_export/project/sample/date_calculator.rb'
-    - 'lib/gitlab/inactive_projects_deletion_warning_tracker.rb'
+    - 'lib/gitlab/dormant_projects_deletion_warning_tracker.rb'
     - 'lib/gitlab/instrumentation/redis_base.rb'
     - 'lib/gitlab/instrumentation/redis_payload.rb'
     - 'lib/gitlab/issuable_metadata.rb'

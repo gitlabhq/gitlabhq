@@ -93,6 +93,7 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 If Code Suggestions are enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
+   - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
 1. On the top menu, select **View > Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.

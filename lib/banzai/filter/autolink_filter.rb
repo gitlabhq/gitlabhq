@@ -71,7 +71,11 @@ module Banzai
 
         return doc if context[:autolink] == false
 
+        @link_count = 0
+
         doc.xpath(TEXT_QUERY).each do |node|
+          break if Banzai::Filter.filter_item_limit_exceeded?(@link_count, limit: Banzai::Filter::FILTER_ITEM_LIMIT)
+
           content = node.to_html
 
           next unless content.match(LINK_PATTERN)
@@ -139,14 +143,30 @@ module Banzai
       end
 
       def autolink_filter(text)
-        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe)
-          .mark(LINK_PATTERN) do |link, _left, _right, _mode|
-            autolink_match(link).html_safe
-          end
+        regex_marker = Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe)
+        links = links(regex_marker)
+
+        regex_marker.mark_with_ranges(links) do |link, _left, _right, _mode|
+          autolink_match(link).html_safe
+        end
       end
 
       def link_options
         @link_options ||= context[:link_attr] || {}
+      end
+
+      def links(regex_marker)
+        links = regex_marker.ranges(LINK_PATTERN)
+        links_size = links.size
+
+        if Banzai::Filter.filter_item_limit_exceeded?(@link_count + links_size,
+          limit: Banzai::Filter::FILTER_ITEM_LIMIT)
+          links = links.take(Banzai::Filter::FILTER_ITEM_LIMIT - @link_count)
+        end
+
+        @link_count += links_size
+
+        links
       end
     end
   end
