@@ -959,18 +959,34 @@ RSpec.shared_examples 'work items health status' do
 end
 
 RSpec.shared_examples 'work items color' do
-  it 'updates and clears color', :aggregate_failures do
+  it 'shows default blue color state' do
+    within_testid 'work-item-color' do
+      expect(page).to have_text('Blue')
+    end
+  end
+
+  it 'shows color selection dropdown when clicked' do
     within_testid 'work-item-color' do
       click_button 'Edit'
-      click_link 'Purple'
+      expect(page).to have_css('[data-testid="color-header-title"]')
+      expect(page).to have_text('Select a color')
+      expect(page).to have_css('[data-testid="reset-color"]')
+    end
+  end
 
-      expect(page).to have_text 'Purple'
-
+  it 'allows color selection and shows selected color' do
+    within_testid 'work-item-color' do
       click_button 'Edit'
-      send_keys(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, 112233, :escape)
+      expect(page).to have_css('.suggested-colors')
+      within('.suggested-colors') do
+        find('.gl-link', match: :first).click
+      end
+      expect(page).to have_css('[data-testid="color-header-title"]')
+    end
+  end
 
-      expect(page).to have_text 'Custom'
-
+  it 'updates and clears color', :aggregate_failures do
+    within_testid 'work-item-color' do
       click_button 'Edit'
       click_button 'Reset'
       expect(page).to have_text('Blue')

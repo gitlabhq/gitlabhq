@@ -67,6 +67,11 @@ module QA
               '*': { setting: 1 }
             }
 
+            # domain name can be blocked by chrome if domain name is similar to another website
+            # https://chromeenterprise.google/policies/#LookalikeWarningAllowlistDomains
+            # https://gitlab.com/gitlab-org/quality/test-governance/request-for-help/-/issues/13
+            apply_lookalike_policy if QA::Runtime::Env.running_in_ci?
+
             # Allows chrome to consider all actions as secure when no ssl is used
             Runtime::Scenario.attributes[:gitlab_address].tap do |address|
               next unless address.start_with?('http://')
@@ -226,6 +231,25 @@ module QA
 
       def self.chrome_profile_location
         ::File.expand_path('../../tmp/qa-profile', __dir__)
+      end
+
+      # Adds GitLab host to allow list to avoid lookalike warnings
+      def self.apply_lookalike_policy
+        gitlab_host = URI.parse(Runtime::Scenario.attributes[:gitlab_address]).host
+        policy_dir = "/etc/opt/chrome/policies/managed"
+        policy_file = File.join(policy_dir, "lookalike-policy.json")
+
+        return if File.exist?(policy_file)
+
+        policy = {
+          "LookalikeWarningAllowlistDomains" => [gitlab_host]
+        }
+
+        FileUtils.mkdir_p(policy_dir)
+        File.write(policy_file, JSON.pretty_generate(policy))
+        QA::Runtime::Logger.info("Chrome LookalikeWarningAllowlistDomains policy created to allow: #{gitlab_host}")
+      rescue StandardError => e
+        QA::Runtime::Logger.info("Chrome policy creation failed: #{e.message}")
       end
 
       ##

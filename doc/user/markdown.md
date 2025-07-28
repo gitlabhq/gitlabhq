@@ -2281,6 +2281,58 @@ When rendered, the example looks similar to:
 
 GitLab Flavored Markdown doesn't support the Redcarpet superscript syntax ( `x^2` ).
 
+### HTML comments
+
+You can use HTML comments in GitLab Flavored Markdown to add notes or explanations that aren't
+visible in the rendered output.
+
+Use HTML comments to:
+
+- Add notes for other contributors.
+- Temporarily hide content without deleting it.
+- Provide context or explanations that shouldn't appear in the final document.
+- Add metadata or processing instructions.
+
+When using HTML comments, you should:
+
+- Use them sparingly to avoid cluttering the source.
+- Keep them concise and relevant.
+- Use them for temporary notes rather than permanent documentation.
+- Avoid including sensitive or confidential information. HTML comments are visible to anyone who can view the Markdown source.
+
+HTML comments use the standard HTML syntax `<!-- comment text -->` and can span single or multiple
+lines:
+
+```html
+<!-- This is a single-line comment -->
+
+<!--
+This is a multi-line comment
+that spans several lines
+and won't be visible in the rendered output
+-->
+
+This text is visible.
+<!-- This comment between paragraphs is hidden -->
+This text is also visible.
+```
+
+When rendered, only the visible text appears:
+
+> This text is visible.
+> This text is also visible.
+
+#### Comments in code blocks
+
+HTML comments inside code blocks are treated as literal text and are displayed:
+
+````markdown
+```html
+<!-- This comment will be visible in the code block -->
+<div>Content</div>
+```
+````
+
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).

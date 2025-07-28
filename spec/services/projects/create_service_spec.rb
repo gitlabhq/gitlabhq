@@ -1363,17 +1363,43 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
-  it 'adds pages unique domain', feature_category: :pages do
-    stub_pages_setting(enabled: true)
+  context 'pages unique domain default setting' do
+    before do
+      stub_pages_setting(enabled: true)
+    end
 
-    expect(Gitlab::Pages)
-    .to receive(:add_unique_domain_to)
-    .and_call_original
+    context 'when pages_unique_domain_default_enabled is true' do
+      before do
+        stub_application_setting(pages_unique_domain_default_enabled: true)
+      end
 
-    project = create_project(user, opts)
+      it 'adds pages unique domain', feature_category: :pages do
+        expect(Gitlab::Pages)
+          .to receive(:add_unique_domain_to)
+          .and_call_original
 
-    expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
-    expect(project.project_setting.pages_unique_domain).to be_present
+        project = create_project(user, opts)
+
+        expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+        expect(project.project_setting.pages_unique_domain).to be_present
+      end
+    end
+
+    context 'when pages_unique_domain_default_enabled is false' do
+      before do
+        stub_application_setting(pages_unique_domain_default_enabled: false)
+      end
+
+      it 'does not add pages unique domain', feature_category: :pages do
+        expect(Gitlab::Pages)
+          .not_to receive(:add_unique_domain_to)
+
+        project = create_project(user, opts)
+
+        expect(project.project_setting.pages_unique_domain_enabled).to eq(false)
+        expect(project.project_setting.pages_unique_domain).to be_nil
+      end
+    end
   end
 
   context 'setting protect_merge_request_pipelines settings' do

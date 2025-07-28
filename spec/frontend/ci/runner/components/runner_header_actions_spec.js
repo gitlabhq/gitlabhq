@@ -19,14 +19,23 @@ const mockRunnerEditPath = '/edit';
 describe('RunnerHeaderActions', () => {
   let wrapper;
 
-  const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
-  const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+  const findExpandedActions = () => wrapper.findByTestId('expanded-runner-actions');
+  const findRunnerEditButton = () => findExpandedActions().findComponent(RunnerEditButton);
+  const findRunnerPauseButton = () => findExpandedActions().findComponent(RunnerPauseButton);
+  const findExpandedDropdown = () => findExpandedActions().findComponent(GlDisclosureDropdown);
+  const findExpandedRunnerDeleteItem = () =>
+    findExpandedActions().findComponent(RunnerDeleteDisclosureDropdownItem);
+  const findExpandedDropdownTooltip = () =>
+    getBinding(findExpandedDropdown().element, 'gl-tooltip').value || '';
 
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDropdownTooltip = () => getBinding(findDropdown().element, 'gl-tooltip');
-  const findEditItem = () => findDropdown().findComponent(RunnerEditDisclosureDropdownItem);
-  const findPauseItem = () => findDropdown().findComponent(RunnerPauseDisclosureDropdownItem);
-  const findDeleteItem = () => findDropdown().findComponent(RunnerDeleteDisclosureDropdownItem);
+  const findCompactDropdown = () => wrapper.findByTestId('compact-runner-actions');
+  const findCompactDropdownTooltip = () =>
+    getBinding(findCompactDropdown().element, 'gl-tooltip').value || '';
+  const findEditItem = () => findCompactDropdown().findComponent(RunnerEditDisclosureDropdownItem);
+  const findPauseItem = () =>
+    findCompactDropdown().findComponent(RunnerPauseDisclosureDropdownItem);
+  const findDeleteItem = () =>
+    findCompactDropdown().findComponent(RunnerDeleteDisclosureDropdownItem);
 
   const createComponent = ({ props = {}, options = {}, mountFn = shallowMountExtended } = {}) => {
     const { runner, ...propsData } = props;
@@ -50,11 +59,13 @@ describe('RunnerHeaderActions', () => {
 
   it('renders all elements', () => {
     // visible on md and up screens
+    expect(findExpandedDropdown().exists()).toBe(true);
     expect(findRunnerEditButton().exists()).toBe(true);
     expect(findRunnerPauseButton().exists()).toBe(true);
+    expect(findExpandedRunnerDeleteItem().exists()).toBe(true);
 
     // visible on small screens
-    expect(findDropdown().exists()).toBe(true);
+    expect(findCompactDropdown().exists()).toBe(true);
     expect(findEditItem().exists()).toBe(true);
     expect(findPauseItem().exists()).toBe(true);
     expect(findDeleteItem().exists()).toBe(true);
@@ -73,23 +84,33 @@ describe('RunnerHeaderActions', () => {
     });
 
     it('renders disclosure dropdown with correct props', () => {
-      expect(findDropdown().props()).toMatchObject({
+      const props = {
         icon: 'ellipsis_v',
-        toggleText: 'Runner actions',
         textSrOnly: true,
         category: 'tertiary',
         noCaret: true,
+        toggleText: 'Runner actions',
+      };
+
+      expect(findExpandedDropdown().props()).toMatchObject({
+        ...props,
+      });
+
+      expect(findCompactDropdown().props()).toMatchObject({
+        ...props,
       });
     });
 
     it('renders the tooltip text', () => {
-      expect(findDropdownTooltip().value).toBe('More actions');
+      expect(findExpandedDropdownTooltip()).toBe('More actions');
+      expect(findCompactDropdownTooltip()).toBe('More actions');
     });
 
     it('hides tooltip text when @shown is emitted', async () => {
-      await findDropdown().vm.$emit('shown');
+      await findExpandedDropdown().vm.$emit('shown');
 
-      expect(findDropdownTooltip().value).toBe('');
+      expect(findExpandedDropdownTooltip()).toBe('');
+      expect(findCompactDropdownTooltip()).toBe('');
     });
   });
 
@@ -121,6 +142,7 @@ describe('RunnerHeaderActions', () => {
 
     it('does not render delete actions', () => {
       expect(findDeleteItem().exists()).toBe(false);
+      expect(findExpandedRunnerDeleteItem().exists()).toBe(false);
     });
   });
 

@@ -2455,6 +2455,56 @@ Input type: `AiCatalogItemConsumerCreateInput`
 | <a id="mutationaicatalogitemconsumercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogitemconsumercreateitemconsumer"></a>`itemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Item configuration created. |
 
+### `Mutation.aiCatalogItemConsumerDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogItemConsumerDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumerdeleteid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the catalog item consumer to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogitemconsumerdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog item consumer was successfully deleted. |
+
+### `Mutation.aiCatalogItemConsumerUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogItemConsumerUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumerupdateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether the flow is enabled in the group or project. |
+| <a id="mutationaicatalogitemconsumerupdateid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the catalog item consumer to update. |
+| <a id="mutationaicatalogitemconsumerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether the configuration is locked. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemconsumerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemconsumerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogitemconsumerupdateitemconsumer"></a>`itemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Item consumer that was updated. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}
@@ -25515,6 +25565,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="complianceframeworkpipelineexecutionschedulepoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="complianceframeworkpipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="complianceframeworkpipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -29608,6 +29659,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupapprovalpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="groupapprovalpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="groupapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -30585,6 +30637,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppipelineexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="grouppipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="grouppipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -30602,6 +30655,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppipelineexecutionschedulepoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="grouppipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="grouppipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -30799,6 +30853,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
+| <a id="groupscanexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="groupscanexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="groupscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -30821,6 +30876,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupscanresultpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="groupscanresultpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="groupscanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -31074,6 +31130,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupvulnerabilitymanagementpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="groupvulnerabilitymanagementpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="groupvulnerabilitymanagementpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35227,6 +35284,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceapprovalpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespaceapprovalpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespaceapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35328,6 +35386,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespacepipelineexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespacepipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacepipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35345,6 +35404,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespacepipelineexecutionschedulepoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespacepipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacepipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35414,6 +35474,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespacescanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
+| <a id="namespacescanexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespacescanexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacescanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35436,6 +35497,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespacescanresultpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespacescanresultpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacescanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -35481,6 +35543,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespacevulnerabilitymanagementpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="namespacevulnerabilitymanagementpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacevulnerabilitymanagementpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -37627,6 +37690,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectapprovalpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectapprovalpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -38982,6 +39046,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectpipelineexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectpipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectpipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -38999,6 +39064,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectpipelineexecutionschedulepoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectpipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectpipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -39223,6 +39289,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
+| <a id="projectscanexecutionpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectscanexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -39245,6 +39312,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectscanresultpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectscanresultpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectscanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -39598,6 +39666,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectvulnerabilitymanagementpoliciesdeduplicatepolicies"></a>`deduplicatePolicies` | [`Boolean`](#boolean) | Remove duplicate policies when the same policy is applied via multiple routes. |
 | <a id="projectvulnerabilitymanagementpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectvulnerabilitymanagementpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
@@ -49245,6 +49314,12 @@ An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
 A `AiCatalogBuiltInToolID` is a global ID. It is encoded as a string.
 
 An example `AiCatalogBuiltInToolID` is: `"gid://gitlab/Ai::Catalog::BuiltInTool/1"`.
+
+### `AiCatalogItemConsumerID`
+
+A `AiCatalogItemConsumerID` is a global ID. It is encoded as a string.
+
+An example `AiCatalogItemConsumerID` is: `"gid://gitlab/Ai::Catalog::ItemConsumer/1"`.
 
 ### `AiCatalogItemID`
 

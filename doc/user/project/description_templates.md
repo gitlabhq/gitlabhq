@@ -264,6 +264,7 @@ Here is an example of a bug report template:
 ```markdown
 ## Summary
 
+<!-- HTML comments are not displayed -->
 (Summarize the bug encountered concisely)
 
 ## Steps to reproduce
