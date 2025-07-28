@@ -542,11 +542,6 @@ Returns [`CiStage`](#cistage).
 
 ### `Query.ciQueueingHistory`
 
-{{< details >}}
-**Introduced** in GitLab 16.4.
-**Status**: Experiment.
-{{< /details >}}
-
 Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
@@ -1457,7 +1452,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryrunnersactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="queryrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="queryrunnerscreatorusername"></a>`creatorUsername` | [`String`](#string) | Filter runners by creator username. |
 | <a id="queryrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
@@ -1466,7 +1461,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="queryrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="queryrunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="queryrunnersversionprefix"></a>`versionPrefix` | [`String`](#string) | Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ### `Query.secretPermissions`
 
@@ -24780,7 +24775,7 @@ CI/CD variables for a project.
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner. |
 | <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the runner. |
 | <a id="cirunnercreationmethod"></a>`creationMethod` {{< icon name="warning-solid" >}} | [`CiRunnerCreationMethod`](#cirunnercreationmethod) | **Introduced** in GitLab 17.0. **Status**: Experiment. Type of runner registration. |
-| <a id="cirunnercreationstate"></a>`creationState` {{< icon name="warning-solid" >}} | [`CiRunnerCreationState`](#cirunnercreationstate) | **Introduced** in GitLab 17.11. **Status**: Experiment. Runner creation state. Used to determine if a runner has been registered and has contacted the GitLab instance. |
+| <a id="cirunnercreationstate"></a>`creationState` | [`CiRunnerCreationState`](#cirunnercreationstate) | Runner creation state. Used to determine if a runner has been registered and has contacted the GitLab instance. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
@@ -24820,7 +24815,7 @@ Returns [`Int`](#int).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerjobcountstatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`[CiJobStatus!]`](#cijobstatus) | **Introduced** in GitLab 16.2. **Status**: Experiment. Filter jobs by status. |
+| <a id="cirunnerjobcountstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
 ##### `CiRunner.jobs`
 
@@ -26585,7 +26580,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserrunnersactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="currentuserrunnersassignabletoprojectpath"></a>`assignableToProjectPath` | [`ID`](#id) | Path of a project. When set, returns runners that can be assigned to a project, are not locked, and not already assigned to the project. |
 | <a id="currentuserrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="currentuserrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="currentuserrunnerscreatorusername"></a>`creatorUsername` | [`String`](#string) | Filter runners by creator username. |
 | <a id="currentuserrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
 | <a id="currentuserrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="currentuserrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
@@ -26594,7 +26589,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="currentuserrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="currentuserrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="currentuserrunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="currentuserrunnersversionprefix"></a>`versionPrefix` | [`String`](#string) | Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `CurrentUser.savedReply`
 
@@ -29718,11 +29713,6 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.ciQueueingHistory`
 
-{{< details >}}
-**Introduced** in GitLab 16.11.
-**Status**: Experiment.
-{{< /details >}}
-
 Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
@@ -30619,10 +30609,10 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouppipelineanalyticsfromtime"></a>`fromTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
-| <a id="grouppipelineanalyticsref"></a>`ref` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
-| <a id="grouppipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineSources`](#cipipelinesources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
-| <a id="grouppipelineanalyticstotime"></a>`toTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
+| <a id="grouppipelineanalyticsfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
+| <a id="grouppipelineanalyticsref"></a>`ref` | [`String`](#string) | Branch that triggered the pipeline. |
+| <a id="grouppipelineanalyticssource"></a>`source` | [`CiPipelineSources`](#cipipelinesources) | Source of the pipeline. |
+| <a id="grouppipelineanalyticstotime"></a>`toTime` | [`Time`](#time) | End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
 
 ##### `Group.pipelineExecutionPolicies`
 
@@ -30799,7 +30789,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="grouprunnersactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="grouprunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="grouprunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="grouprunnerscreatorusername"></a>`creatorUsername` | [`String`](#string) | Filter runners by creator username. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
@@ -30809,7 +30799,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="grouprunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="grouprunnersversionprefix"></a>`versionPrefix` | [`String`](#string) | Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Group.savedReplies`
 
@@ -39017,10 +39007,10 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectpipelineanalyticsfromtime"></a>`fromTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
-| <a id="projectpipelineanalyticsref"></a>`ref` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
-| <a id="projectpipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineSources`](#cipipelinesources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
-| <a id="projectpipelineanalyticstotime"></a>`toTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
+| <a id="projectpipelineanalyticsfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
+| <a id="projectpipelineanalyticsref"></a>`ref` | [`String`](#string) | Branch that triggered the pipeline. |
+| <a id="projectpipelineanalyticssource"></a>`source` | [`CiPipelineSources`](#cipipelinesources) | Source of the pipeline. |
+| <a id="projectpipelineanalyticstotime"></a>`toTime` | [`Time`](#time) | End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
 
 ##### `Project.pipelineCounts`
 
@@ -39255,7 +39245,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectrunnersactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="projectrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="projectrunnerscreatorusername"></a>`creatorUsername` | [`String`](#string) | Filter runners by creator username. |
 | <a id="projectrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
@@ -39264,7 +39254,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="projectrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="projectrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="projectrunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="projectrunnersversionprefix"></a>`versionPrefix` | [`String`](#string) | Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Project.savedReply`
 

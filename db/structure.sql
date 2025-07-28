@@ -24928,7 +24928,6 @@ CREATE TABLE user_details (
     provisioned_by_group_id bigint,
     pronouns text,
     pronunciation text,
-    registration_objective smallint,
     phone text,
     linkedin text DEFAULT ''::text NOT NULL,
     twitter text DEFAULT ''::text NOT NULL,

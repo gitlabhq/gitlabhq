@@ -1,9 +1,0 @@
-- if viewer.valid?
-  = sprite_icon('check')
-  = _('Metrics Dashboard YAML definition is valid.')
-- else
-  = sprite_icon('warning-solid')
-  = _('Metrics Dashboard YAML definition is invalid:')
-  %ul
-    - viewer.errors.each do |error|
-      %li= error

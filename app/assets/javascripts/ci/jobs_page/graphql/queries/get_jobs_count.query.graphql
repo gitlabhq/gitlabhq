@@ -3,11 +3,10 @@ query getJobsCount(
   $statuses: [CiJobStatus!]
   $sources: [CiJobSource!]
   $name: String
-  $kind: CiJobKind! = BUILD
 ) {
   project(fullPath: $fullPath) {
     id
-    jobs(statuses: $statuses, sources: $sources, name: $name, kind: $kind) {
+    jobs(statuses: $statuses, sources: $sources, name: $name) {
       count
     }
   }

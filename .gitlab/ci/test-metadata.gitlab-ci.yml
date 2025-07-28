@@ -13,7 +13,7 @@ retrieve-tests-metadata:
     - .fast-no-clone-job
     - .test-metadata:rules:retrieve-tests-metadata
   # We use a smaller image for this job only (update-tests-metadata compiles some gems)
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.21
   stage: prepare
   needs: []
   variables:

@@ -19,7 +19,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 On either the primary or secondary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 
 ## Common settings
 
@@ -73,12 +73,12 @@ which is used by users. Internal URL does not need to be a private address.
 
 The Internal URL of a **secondary** site is used by the **primary** site to
 contact it. For example, to retrieve sync or verification tracking metadata for
-display in the Admin Area at **Geo > Sites > Project Repositories**.
+display in the Admin Area at **Geo** > **Sites** > **Project Repositories**.
 
 The internal URL defaults to external URL. To change it:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.
 1. Select **Save changes**.

@@ -16,7 +16,7 @@ class UserDetail < ApplicationRecord
 
   validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
 
-  ignore_column :registration_objective, remove_after: '2025-07-17', remove_with: '18.2'
+  ignore_column :registration_objective, remove_after: '2025-08-22', remove_with: '18.4'
   ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_FIELD_LENGTH = 500

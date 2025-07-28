@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
+RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   let(:request) { instance_double(ActionDispatch::Request, session: session) }
@@ -37,21 +37,41 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
   describe '#two_factor_authentication_required?' do
     subject { verifier.two_factor_authentication_required? }
 
-    where(:instance_level_enabled, :group_level_enabled, :should_be_required, :provider_2FA) do
-      true  | false | true | false
-      false | true  | false | true
-      false | true  | true | false
-      false | false | false | true
-    end
-
-    with_them do
-      before do
-        stub_application_setting(require_two_factor_authentication: instance_level_enabled)
-        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
-        session[:provider_2FA] = provider_2FA
+    context 'for regular users' do
+      where(:instance_level_enabled, :group_level_enabled, :should_be_required, :provider_2FA) do
+        true  | false | true | false
+        false | true  | false | true
+        false | true  | true | false
+        false | false | false | true
       end
 
-      it { is_expected.to eq(should_be_required) }
+      with_them do
+        before do
+          stub_application_setting(require_two_factor_authentication: instance_level_enabled)
+          allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
+          session[:provider_2FA] = provider_2FA
+        end
+
+        it { is_expected.to eq(should_be_required) }
+      end
+    end
+
+    context 'for users with access to admin area' do
+      where(:required_for_admins, :user_can_access_admin, :should_be_required) do
+        true | false | false
+        true | true | true
+        false | true  | false
+        false | false | false
+      end
+
+      with_them do
+        before do
+          stub_application_setting(require_admin_two_factor_authentication: required_for_admins)
+          allow(user).to receive(:can_access_admin_area?).and_return(user_can_access_admin)
+        end
+
+        it { is_expected.to eq(should_be_required) }
+      end
     end
 
     context 'when request is nil' do
@@ -162,10 +182,10 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
       expect(subject.two_factor_authentication_reason).to eq(:global)
     end
 
-    it 'returns :admin_2fa if the current user is an admin and two factor is enabled' do
+    it 'returns :admin_2fa if the current user can access admin area and two factor is enabled' do
       stub_application_setting require_admin_two_factor_authentication: true
 
-      allow(user).to receive(:admin?).and_return(true)
+      allow(user).to receive(:can_access_admin_area?).and_return(true)
 
       expect(subject.two_factor_authentication_reason).to eq(:admin_2fa)
     end

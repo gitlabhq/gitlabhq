@@ -60,7 +60,7 @@ and is planned for removal in 18.2.
 
 {{< /alert >}}
 
-You can [create custom dashboards](#create-a-dashboard-by-configuration-deprecated) to visualize the metrics that are most relevant to your case.
+You can [create custom dashboards](#create-a-dashboard-by-configuration) to visualize the metrics that are most relevant to your case.
 
 - Each project can have an unlimited number of dashboards.
   The only limitation might be the [repository size limit](../project/repository/repository_size.md#size-and-storage-limits).
@@ -154,14 +154,7 @@ To change the location of project dashboards:
 
 <!--- start_remove The following content will be removed on remove_date: '2025-07-31' -->
 
-## Create a dashboard by configuration (deprecated)
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7
-and is planned for removal in 18.2.
-
-{{< /alert >}}
+## Create a dashboard by configuration
 
 You can create dashboards manually by configuration.
 

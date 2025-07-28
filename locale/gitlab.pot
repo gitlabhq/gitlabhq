@@ -39695,15 +39695,6 @@ msgstr ""
 msgid "Metrics Dashboard"
 msgstr ""
 
-msgid "Metrics Dashboard YAML definition"
-msgstr ""
-
-msgid "Metrics Dashboard YAML definition is invalid:"
-msgstr ""
-
-msgid "Metrics Dashboard YAML definition is valid."
-msgstr ""
-
 msgid "Metrics Explorer"
 msgstr ""
 

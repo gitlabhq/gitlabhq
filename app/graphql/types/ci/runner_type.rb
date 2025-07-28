@@ -41,8 +41,7 @@ module Types
         experiment: { milestone: '17.0' }
       field :creation_state, Types::Ci::RunnerCreationStateEnum, null: true,
         description: 'Runner creation state. Used to determine if a runner has been registered ' \
-          'and has contacted the GitLab instance.',
-        experiment: { milestone: '17.11' }
+          'and has contacted the GitLab instance.'
       field :description, GraphQL::Types::String, null: true,
         description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,

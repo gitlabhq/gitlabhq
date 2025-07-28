@@ -74,7 +74,7 @@ GitLab calculates the deployment frequency from the number of finished deploymen
 
 The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
 
-You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#insights-configuration-file).
+You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#configuration).
 
 {{< alert type="note" >}}
 

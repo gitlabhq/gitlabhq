@@ -216,7 +216,7 @@ module QA
               delete_response = delete_resource(resource['api_path'])
             end
 
-            if success?(delete_response&.code)
+            if success?(delete_response&.code) || delete_response&.code == HTTP_STATUS_NOT_FOUND
               logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
             else
               logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
@@ -300,7 +300,7 @@ module QA
       end
 
       def group_or_project_resource?(key)
-        key == 'QA::Resource::Group' || key == 'QA::Resource::Project'
+        key == 'QA::Resource::Group' || key == 'QA::Resource::Project' || key == 'QA::Resource::Sandbox'
       end
 
       # Path to GCS service account json key file

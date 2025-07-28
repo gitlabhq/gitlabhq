@@ -967,6 +967,10 @@
   - 1
 - - security_policies_failed_pipelines_audit
   - 1
+- - security_policies_group_project_transfer
+  - 1
+- - security_policies_group_transfer
+  - 1
 - - security_policies_project_transfer
   - 1
 - - security_policies_skip_pipelines_audit
