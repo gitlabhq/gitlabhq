@@ -44,6 +44,15 @@ You can replace an existing Gitaly node with a new node with either the same nam
 - If a replication factor is set, it must be greater than 1 to prevent data loss.
 - If no replication factor is set, repositories are replicated on every node under the virtual storage.
 
+When a primary Gitaly node is removed, repositories managed by that node become unavailable until either:
+
+- The node is replaced and replicated.
+- A new replacement node becomes available that contains the data from the replaced primary node.
+
+While the node is unavailable, read requests to affected repositories fail with `404` errors. Gitaly resolves this
+situation automatically on the next write attempt to the affected repositories by triggering a failover to establish a
+new primary node.
+
 #### With a node with the same name
 
 To use the same name for the replacement node, use [repository verifier](configure.md#enable-deletions) to scan the storage and remove dangling metadata records.

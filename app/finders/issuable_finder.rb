@@ -424,6 +424,7 @@ class IssuableFinder
   def assignee_filter
     strong_memoize(:assignee_filter) do
       Issuables::AssigneeFilter.new(
+        current_user: current_user,
         params: original_params
       )
     end
