@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to evaluate GitLab SAST by selecting a test codebase, configuring scans, interpreting results, and comparing features with other security tools.
 title: Evaluate GitLab SAST
 ---
 
