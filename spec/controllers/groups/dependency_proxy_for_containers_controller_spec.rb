@@ -223,7 +223,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
   end
 
-  shared_examples 'Allowed endpoints' do
+  shared_examples 'Allowed endpoints' do |empty: false|
     let(:enabled_endpoint_uris) { [URI('192.168.1.1')] }
     let(:outbound_local_requests_allowlist) { ['127.0.0.1'] }
     let(:allowed_endpoints) { enabled_endpoint_uris.map(&:to_s) + outbound_local_requests_allowlist }
@@ -239,6 +239,24 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       _, send_data = workhorse_send_data
 
       expect(send_data['AllowedEndpoints']).to eq(allowed_endpoints)
+    end
+
+    context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+      before do
+        stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+      end
+
+      it 'does not include or sets to an empty array AllowedEndpoints in the Workhorse send-dependency instructions' do
+        subject
+
+        _, send_data = workhorse_send_data
+
+        if empty
+          expect(send_data['AllowedEndpoints']).to eq([])
+        else
+          expect(send_data).not_to include('AllowedEndpoints')
+        end
+      end
     end
   end
 
@@ -257,6 +275,20 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         expect(send_data['AllowLocalhost']).to be(false)
       else
         expect(send_data).not_to include('AllowLocalhost')
+      end
+    end
+
+    context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+      before do
+        stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+      end
+
+      it 'sets AllowLocalhost to true' do
+        subject
+
+        _, send_data = workhorse_send_data
+
+        expect(send_data['AllowLocalhost']).to be(true)
       end
     end
   end
@@ -365,12 +397,20 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(allowed_endpoints).to eq([])
           end
 
+          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+            before do
+              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+            end
+
+            it_behaves_like 'SSRFFilter', disabled: true
+          end
+
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed endpoints'
+            it_behaves_like 'Allowed endpoints', empty: true
           end
         end
 
@@ -399,6 +439,14 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(response.headers['Content-Disposition']).to eq(
               ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: manifest.file_name)
             )
+          end
+
+          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+            before do
+              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+            end
+
+            it_behaves_like 'SSRFFilter'
           end
 
           context 'when local requests are not allowed' do
@@ -490,12 +538,20 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(allowed_endpoints).to eq([])
           end
 
+          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+            before do
+              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+            end
+
+            it_behaves_like 'SSRFFilter', disabled: true
+          end
+
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed endpoints'
+            it_behaves_like 'Allowed endpoints', empty: true
           end
         end
 
@@ -516,6 +572,14 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(response.headers['Content-Disposition']).to eq(
               ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: blob.file_name)
             )
+          end
+
+          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
+            before do
+              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
+            end
+
+            it_behaves_like 'SSRFFilter'
           end
 
           context 'when local requests are not allowed' do
