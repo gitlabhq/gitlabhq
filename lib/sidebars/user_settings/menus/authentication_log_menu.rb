@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          _('Authentication Log')
+          _('Authentication log')
         end
 
         override :sprite_icon

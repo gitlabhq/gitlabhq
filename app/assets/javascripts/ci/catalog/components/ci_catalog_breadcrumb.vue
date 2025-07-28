@@ -12,13 +12,11 @@ export default {
       required: true,
     },
   },
+  rootRoute: {
+    text: CI_RESOURCES_BREADCRUMB,
+    to: `/`,
+  },
   computed: {
-    rootRoute() {
-      return {
-        text: CI_RESOURCES_BREADCRUMB,
-        to: `/`,
-      };
-    },
     componentRoute() {
       const resourceName = this.resourceId?.split('/').pop();
       return {
@@ -36,7 +34,7 @@ export default {
       return Boolean(this.isRootRoute || this.resourceId);
     },
     breadcrumbs() {
-      const breadCrumbs = [...this.staticBreadcrumbs, this.rootRoute];
+      const breadCrumbs = [...this.staticBreadcrumbs, this.$options.rootRoute];
 
       if (!this.isRootRoute) {
         breadCrumbs.push(this.componentRoute);

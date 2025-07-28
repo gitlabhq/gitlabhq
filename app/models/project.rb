@@ -535,8 +535,6 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
-  accepts_nested_attributes_for :prometheus_integration, update_only: true
-  accepts_nested_attributes_for :alerting_setting, update_only: true
 
   with_options to: :project_namespace, allow_nil: true do
     delegate :deletion_schedule

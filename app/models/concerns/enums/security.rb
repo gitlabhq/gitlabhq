@@ -23,6 +23,12 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       failed: 2
     }.freeze
 
+    EDITABLE_STATES = {
+      locked: 0,
+      cloneable: 10,
+      editable: 20
+    }.freeze
+
     CONFIGURATION_SOURCE_TYPES = {
       sbom: 0,
       pmdb: 1
@@ -43,6 +49,10 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def self.analyzer_statuses
       ANALYZER_STATUSES
+    end
+
+    def self.editable_states
+      EDITABLE_STATES
     end
 
     def self.configuration_source_types

@@ -47,6 +47,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
@@ -111,6 +112,7 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
+  const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 
   const mountComponent = ({
     provide = {},
@@ -218,6 +220,17 @@ describeSkipVue3(skipReason, () => {
         recentSearchesStorageKey: 'issues',
         showWorkItemTypeIcon: true,
         tabs: WorkItemsListApp.issuableListTabs,
+      });
+    });
+
+    it('renders the WorkItemUserPreferences component', () => {
+      expect(findWorkItemUserPreferences().props()).toMatchObject({
+        isEpicsList: false, // default work item is null so not an epics list
+        fullPath: 'full/path',
+        displaySettings: {
+          commonPreferences: { shouldOpenItemsInSidePanel: true },
+          namespacePreferences: {},
+        },
       });
     });
 

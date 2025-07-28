@@ -1052,6 +1052,7 @@ export default {
           <work-item-user-preferences
             :display-settings="displaySettings"
             :full-path="rootPageFullPath"
+            :is-epics-list="isEpicsList"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
@@ -1172,6 +1173,13 @@ export default {
             v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.HEALTH)"
             :issue="issuable"
           />
+        </template>
+        <template #custom-status="{ issuable }">
+          <slot
+            v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.STATUS)"
+            name="custom-status"
+            :issuable="issuable"
+          ></slot>
         </template>
       </issuable-list>
     </template>

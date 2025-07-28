@@ -21,12 +21,8 @@ module WorkItems
       }
     end
 
-    def self.required_headers
-      %w[title type].freeze
-    end
-
     def execute
-      raise FeatureNotAvailableError if ::Feature.disabled?(:import_export_work_items_csv, project)
+      raise FeatureNotAvailableError unless project.work_items_project_issues_list_feature_flag_enabled?
       raise NotAuthorizedError unless Ability.allowed?(user, :import_work_items, project)
 
       super
@@ -51,17 +47,6 @@ module WorkItems
     override :attributes_for
     def attributes_for(row)
       super.merge({ work_item_type: match_work_item_type(csv_work_item_type_symbol(row)) })
-    end
-
-    override :validate_headers_presence!
-    def validate_headers_presence!(headers)
-      required_headers = self.class.required_headers
-
-      headers.downcase!
-      return if headers && required_headers.all? { |rh| headers.include?(rh) }
-
-      required_headers_message = "Required headers are missing. Required headers are #{required_headers.join(', ')}"
-      raise CSV::MalformedCSVError.new(required_headers_message, 1)
     end
 
     def match_work_item_type(work_item_type)
@@ -104,7 +89,8 @@ module WorkItems
       row_type = row[:type]
 
       strong_memoize_with(:csv_work_item_type_symbol, row_type) do
-        row_type&.strip&.downcase
+        # If the row type wasn't provided at all or is blank, fallback to issue
+        row_type.blank? ? 'issue' : row_type.strip.downcase
       end
     end
 
@@ -129,5 +115,15 @@ module WorkItems
       finder_params[:group_ids] = project.group.self_and_ancestors.select(:id) if project.group
       @available_milestones = MilestonesFinder.new(finder_params).execute
     end
+
+    def extra_create_service_params
+      { perform_spam_check: perform_spam_check? }
+    end
+
+    def perform_spam_check?
+      !user.can_admin_all_resources?
+    end
   end
 end
+
+WorkItems::ImportCsvService.prepend_mod

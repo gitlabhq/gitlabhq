@@ -28,9 +28,9 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
     Users::Internal.support_bot_id
   end
 
-  context 'when import_export_work_items_csv flag is not enabled' do
+  context 'when work_items_project_issues_list flag is not enabled' do
     before do
-      stub_feature_flags(import_export_work_items_csv: false)
+      stub_feature_flags(work_items_project_issues_list: false)
     end
 
     it 'renders an error' do
@@ -104,7 +104,7 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   specify 'base metadata' do
     expect(csv[1]['State']).to eq(task.closed? ? "Closed" : "Open")
     expect(csv[1]['Confidential']).to eq("No")
-    expect(csv[1]['Locked']).to eq(false.to_s)
+    expect(csv[1]['Locked']).to eq("No")
   end
 
   specify 'start_and_due_date' do

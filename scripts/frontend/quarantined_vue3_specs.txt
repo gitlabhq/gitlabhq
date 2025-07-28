@@ -76,7 +76,6 @@ spec/frontend/members/components/app_spec.js
 spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
-spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/pypi_installation_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js

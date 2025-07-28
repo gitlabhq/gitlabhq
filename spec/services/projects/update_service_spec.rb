@@ -852,67 +852,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
-    context 'when updating nested attributes for prometheus integration' do
-      context 'prometheus integration exists' do
-        let(:prometheus_integration_attributes) do
-          attributes_for(
-            :prometheus_integration,
-            project: project,
-            properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-          )
-        end
-
-        let!(:prometheus_integration) do
-          create(
-            :prometheus_integration,
-            project: project,
-            properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-          )
-        end
-
-        it 'updates existing record' do
-          expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-            .to change { prometheus_integration.reload.api_url }
-            .from("http://old.prometheus.com")
-            .to("http://new.prometheus.com")
-        end
-      end
-
-      context 'prometheus integration does not exist' do
-        context 'valid parameters' do
-          let(:prometheus_integration_attributes) do
-            attributes_for(
-              :prometheus_integration,
-              project: project,
-              properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-            )
-          end
-
-          it 'creates new record' do
-            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-              .to change { ::Integrations::Prometheus.where(project: project).count }
-              .from(0)
-              .to(1)
-          end
-        end
-
-        context 'invalid parameters' do
-          let(:prometheus_integration_attributes) do
-            attributes_for(
-              :prometheus_integration,
-              project: project,
-              properties: { api_url: 'invalid-url', manual_configuration: "1" }
-            )
-          end
-
-          it 'does not create new record' do
-            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-              .not_to change { ::Integrations::Prometheus.where(project: project).count }
-          end
-        end
-      end
-    end
-
     describe 'when changing repository_storage' do
       let(:repository_read_only) { false }
       let(:project) { create(:project, :repository, repository_read_only: repository_read_only) }

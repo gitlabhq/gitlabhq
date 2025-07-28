@@ -13,26 +13,7 @@ module Projects
 
       def project_update_params
         error_tracking_params
-          .merge(alerting_setting_params)
-          .merge(prometheus_integration_params)
           .merge(incident_management_setting_params)
-      end
-
-      def alerting_setting_params
-        return {} unless can?(current_user, :admin_operations, project)
-
-        attr = params[:alerting_setting_attributes]
-        return {} unless attr
-
-        regenerate_token = attr.delete(:regenerate_token)
-
-        if regenerate_token
-          attr[:token] = nil
-        else
-          attr = attr.except(:token)
-        end
-
-        { alerting_setting_attributes: attr }
       end
 
       def error_tracking_params
@@ -86,19 +67,6 @@ module Projects
         params[:error_tracking_setting_attributes][:integrated] = settings[:integrated] unless settings[:integrated].nil?
 
         params
-      end
-
-      def prometheus_integration_params
-        return {} unless attrs = params[:prometheus_integration_attributes]
-
-        integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
-
-        return {} unless integration
-
-        integration.assign_attributes(attrs)
-        attrs = integration.to_database_hash
-
-        { prometheus_integration_attributes: attrs }
       end
 
       def incident_management_setting_params

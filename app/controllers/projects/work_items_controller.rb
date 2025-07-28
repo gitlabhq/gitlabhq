@@ -57,7 +57,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
 
   def authorize_import_access!
     can_import = can?(current_user, :import_work_items, project)
-    import_csv_feature_available = Feature.enabled?(:import_export_work_items_csv, project)
+    import_csv_feature_available = project&.work_items_project_issues_list_feature_flag_enabled?
     return if can_import && import_csv_feature_available
 
     if current_user || action_name == 'authorize'

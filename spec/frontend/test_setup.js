@@ -12,6 +12,7 @@ Dexie.dependencies.indexedDB = indexedDB;
 Dexie.dependencies.IDBKeyRange = IDBKeyRange;
 
 process.env.PDF_JS_WORKER_PUBLIC_PATH = 'mock/path/v4/pdf.worker.js';
+process.env.PDF_JS_CMAPS_PUBLIC_PATH = '/assets/webpack/pdfjs/v4/cmaps/';
 
 afterEach(() =>
   // give Promises a bit more time so they fail the right test

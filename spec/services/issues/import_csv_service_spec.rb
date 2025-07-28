@@ -26,7 +26,7 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
 
     it_behaves_like 'performs a spam check', true
 
-    it 'sets all issueable attributes and executes quick actions' do
+    it 'sets all issuable attributes and executes quick actions' do
       project.add_developer(user)
       project.add_developer(assignee)
 

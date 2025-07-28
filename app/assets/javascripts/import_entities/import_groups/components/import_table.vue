@@ -21,7 +21,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__, __, n__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import { getGroupPathAvailability } from '~/rest_api';
@@ -244,28 +244,12 @@ export default {
       return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && !g.flags.isInvalid);
     },
 
-    humanizedTotal() {
-      return this.paginationInfo.total >= 1000 ? __('1000+') : this.paginationInfo.total;
-    },
-
     hasGroups() {
       return this.groups.length > 0;
     },
 
     hasEmptyFilter() {
       return this.filter.length > 0 && !this.hasGroups;
-    },
-
-    paginationInfo() {
-      const { page, perPage, total } = this.bulkImportSourceGroups?.pageInfo ?? {
-        page: 1,
-        perPage: 0,
-        total: 0,
-      };
-      const start = (page - 1) * perPage + 1;
-      const end = start + this.groups.length - 1;
-
-      return { start, end, total };
     },
 
     unavailableFeatures() {
@@ -363,10 +347,6 @@ export default {
       }
 
       return {};
-    },
-
-    groupsCount(count) {
-      return n__('%d group', '%d groups', count);
     },
 
     setPage(page) {
@@ -900,7 +880,6 @@ export default {
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
-              :id="group.id"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"

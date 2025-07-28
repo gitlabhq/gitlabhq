@@ -20,15 +20,15 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
     it_behaves_like 'a mutation that returns a top-level access error'
   end
 
-  context 'when import_export_work_items_csv feature flag is disabled' do
+  context 'when work_items_project_issues_list feature flag is disabled' do
     let(:current_user) { reporter }
 
     before do
-      stub_feature_flags(import_export_work_items_csv: false)
+      stub_feature_flags(work_items_project_issues_list: false)
     end
 
     it_behaves_like 'a mutation that returns top-level errors',
-      errors: ['`import_export_work_items_csv` feature flag is disabled.']
+      errors: ['`work_items_project_issues_list` feature flag is disabled.']
   end
 
   context 'when user has permissions to export work items' do

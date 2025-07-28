@@ -65,7 +65,7 @@ RSpec.describe 'notify/import_work_items_csv_email.html.haml', feature_category:
 
     it 'renders correctly' do
       expect(rendered).to have_content("Errors found on lines: #{results[:error_lines].join(', ')}. \
-Please check that these lines have the following fields: title, type")
+Please check that these lines have the following fields: title, description")
     end
 
     it_behaves_like 'contains project link'

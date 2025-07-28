@@ -113,6 +113,12 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | A user downloads a job artifact from a project | {{< icon name="dotted-circle" >}} No | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) | Project |
 
+### Ci variables
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`variable_viewed_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197385) | A CI/CD variable is accessed with the API | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555960) | Project, Group |
+
 ### Code review
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

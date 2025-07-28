@@ -47,10 +47,10 @@ export default {
   },
 
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- used via template ref in import_table.vue to focus input
     focusNewName() {
       this.$refs.newName.$el.focus();
     },
-
     onImportTargetSelect(namespace) {
       this.$emit('update-target-namespace', namespace);
     },

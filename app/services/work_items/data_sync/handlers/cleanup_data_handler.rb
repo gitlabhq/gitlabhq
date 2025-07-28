@@ -13,24 +13,19 @@ module WorkItems
         end
 
         def execute
-          if cleanup_data_source_work_item_data?
-            cleanup_work_item_widgets_data
-            cleanup_work_item_non_widgets_data
-          end
+          cleanup_work_item_non_widgets_data
+          cleanup_work_item_widgets_data
 
           cleanup_work_item
         end
 
         private
 
-        def cleanup_data_source_work_item_data?
-          Feature.enabled?(:cleanup_data_source_work_item_data, work_item.resource_parent)
-        end
-
         def cleanup_work_item_widgets_data
           work_item.widgets.each do |widget|
             sync_data_callback_class = widget.class.sync_data_callback_class
             next if sync_data_callback_class.nil?
+            next unless sync_data_callback_class.cleanup_source_work_item_data?(work_item)
 
             data_handler = sync_data_callback_class.new(
               work_item: work_item,
@@ -46,6 +41,7 @@ module WorkItems
           WorkItem.non_widgets.filter_map do |association_name|
             sync_callback_class = WorkItem.sync_callback_class(association_name)
             next if sync_callback_class.nil?
+            next unless sync_callback_class.cleanup_source_work_item_data?(work_item)
 
             data_handler = sync_callback_class.new(
               work_item: work_item,

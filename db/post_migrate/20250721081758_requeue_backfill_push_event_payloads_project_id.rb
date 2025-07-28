@@ -10,43 +10,10 @@ class RequeueBackfillPushEventPayloadsProjectId < Gitlab::Database::Migration[2.
   SUB_BATCH_SIZE = 100
 
   def up
-    delete_batched_background_migration(
-      MIGRATION,
-      :push_event_payloads,
-      :event_id,
-      [
-        :project_id,
-        :events,
-        :project_id,
-        :event_id
-      ]
-    )
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :push_event_payloads,
-      :event_id,
-      :project_id,
-      :events,
-      :project_id,
-      :event_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # This is a no-op to prevent it from running because this migration is causing timeouts: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198522#note_2650827634
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :push_event_payloads,
-      :event_id,
-      [
-        :project_id,
-        :events,
-        :project_id,
-        :event_id
-      ]
-    )
+    # This is a no-op to prevent it from running because this migration is causing timeouts: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198522#note_2650827634
   end
 end

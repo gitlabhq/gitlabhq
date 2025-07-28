@@ -867,6 +867,7 @@ BEGIN
 
     IF FOUND THEN
       INSERT INTO group_push_rules (
+        id,
         group_id,
         max_file_size,
         member_check,
@@ -884,6 +885,7 @@ BEGIN
         created_at,
         updated_at
       ) VALUES (
+        push_rule.id,
         NEW.id,
         push_rule.max_file_size,
         push_rule.member_check,
@@ -902,6 +904,7 @@ BEGIN
         push_rule.updated_at
       )
       ON CONFLICT (group_id) DO UPDATE SET
+        id = push_rule.id,
         max_file_size = push_rule.max_file_size,
         member_check = push_rule.member_check,
         prevent_secrets = push_rule.prevent_secrets,
@@ -23306,6 +23309,30 @@ CREATE TABLE secret_detection_token_statuses (
     status smallint DEFAULT 0 NOT NULL
 );
 
+CREATE TABLE security_attributes (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    security_category_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    editable_state smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    description text,
+    color text NOT NULL,
+    CONSTRAINT check_219cd2b143 CHECK ((char_length(color) <= 7)),
+    CONSTRAINT check_518516df75 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_5f6fd50ef3 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE security_attributes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_attributes_id_seq OWNED BY security_attributes.id;
+
 CREATE TABLE security_categories (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -28718,6 +28745,8 @@ ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_ident
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY security_attributes ALTER COLUMN id SET DEFAULT nextval('security_attributes_id_seq'::regclass);
+
 ALTER TABLE ONLY security_categories ALTER COLUMN id SET DEFAULT nextval('security_categories_id_seq'::regclass);
 
 ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security_findings_id_seq'::regclass);
@@ -31798,6 +31827,9 @@ ALTER TABLE ONLY scim_oauth_access_tokens
 
 ALTER TABLE ONLY secret_detection_token_statuses
     ADD CONSTRAINT secret_detection_token_statuses_pkey PRIMARY KEY (vulnerability_occurrence_id);
+
+ALTER TABLE ONLY security_attributes
+    ADD CONSTRAINT security_attributes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_categories
     ADD CONSTRAINT security_categories_pkey PRIMARY KEY (id);
@@ -38143,6 +38175,10 @@ CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON sc
 CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identities USING btree (user_id, group_id);
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
+
+CREATE INDEX index_security_attributes_on_namespace_id ON security_attributes USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_security_attributes_security_category_name ON security_attributes USING btree (security_category_id, name);
 
 CREATE UNIQUE INDEX index_security_categories_namespace_name ON security_categories USING btree (namespace_id, name);
 
@@ -46862,6 +46898,9 @@ ALTER TABLE ONLY abuse_report_label_links
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_rails_e1ac527425 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_attributes
+    ADD CONSTRAINT fk_rails_e1ccaa8b02 FOREIGN KEY (security_category_id) REFERENCES security_categories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

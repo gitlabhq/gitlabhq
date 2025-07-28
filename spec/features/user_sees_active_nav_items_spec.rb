@@ -36,7 +36,7 @@ RSpec.describe 'User sees correct active nav items in the super sidebar', :js, f
       end
 
       it 'renders the side navigation with the correct submenu set as active' do
-        expect(page).to have_active_sub_navigation('Authentication Log')
+        expect(page).to have_active_sub_navigation('Authentication log')
       end
     end
 

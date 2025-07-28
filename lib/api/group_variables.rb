@@ -41,6 +41,8 @@ module API
 
         break not_found!('GroupVariable') unless variable
 
+        audit_variable_access(variable, user_group)
+
         present variable, with: Entities::Ci::Variable
       end
 

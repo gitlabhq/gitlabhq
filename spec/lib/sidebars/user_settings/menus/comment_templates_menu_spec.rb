@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::UserSettings::Menus::CommentTemplatesMenu, feature_category: :navigation do
   it_behaves_like 'User settings menu',
     link: '/-/profile/comment_templates',
-    title: _('Comment Templates'),
+    title: _('Comment templates'),
     icon: 'comment-lines',
     active_routes: { controller: :comment_templates }
 

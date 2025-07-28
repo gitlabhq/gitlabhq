@@ -14,7 +14,7 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
-import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS } from '~/work_items/constants';
+import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 
 export default {
   name: 'WorkItemUserPreferences',
@@ -46,6 +46,11 @@ export default {
       type: String,
       required: true,
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -65,9 +70,11 @@ export default {
       return this.displaySettings.namespacePreferences?.hiddenMetadataKeys || [];
     },
     applicableMetadataPreferences() {
-      return this.$options.constants.WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
-        (item) => !this.isGroup || item.isPresentInGroup,
-      );
+      return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
+        return item.key === METADATA_KEYS.STATUS
+          ? !this.isEpicsList
+          : !this.isGroup || item.isPresentInGroup;
+      });
     },
   },
   methods: {
@@ -191,9 +198,6 @@ export default {
         this.isLoading = false;
       }
     },
-  },
-  constants: {
-    WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS,
   },
 };
 </script>

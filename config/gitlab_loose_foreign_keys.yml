@@ -661,6 +661,10 @@ sbom_sources:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+security_attributes:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 security_categories:
   - table: namespaces
     column: namespace_id

@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdown, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,8 +9,8 @@ import WorkItemUserPreferences from '~/work_items/components/shared/work_item_us
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
-import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS } from '~/work_items/constants';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 
 Vue.use(VueApollo);
 
@@ -21,6 +21,8 @@ const mockDisplaySettings = {
   commonPreferences: { shouldOpenItemsInSidePanel: true },
   namespacePreferences: { hiddenMetadataKeys: [] },
 };
+
+const firstMetadataKey = METADATA_KEYS[Object.keys(METADATA_KEYS)[0]];
 
 const mockCacheData = {
   currentUser: {
@@ -60,13 +62,14 @@ describe('WorkItemUserPreferences', () => {
         errors: [],
         userPreferences: {
           __typename: 'UserPreferences',
-          displaySettings: { hiddenMetadataKeys: ['assignee'] },
+          displaySettings: { hiddenMetadataKeys: [firstMetadataKey] },
         },
       },
     },
   });
 
   const createComponent = ({
+    mountFn = shallowMount,
     props = {},
     provide = {},
     mutationHandler = successHandler,
@@ -84,11 +87,12 @@ describe('WorkItemUserPreferences', () => {
       data: mockCacheData,
     });
 
-    wrapper = shallowMount(WorkItemUserPreferences, {
+    wrapper = mountFn(WorkItemUserPreferences, {
       apolloProvider: mockApolloProvider,
       propsData: {
         displaySettings: mockDisplaySettings,
         fullPath: 'gitlab-org/gitlab',
+        isEpicsList: false,
         ...props,
       },
       provide: {
@@ -229,7 +233,7 @@ describe('WorkItemUserPreferences', () => {
         expect(namespacePreferencesHandler).toHaveBeenCalledWith({
           namespace: 'gitlab-org/gitlab',
           displaySettings: {
-            hiddenMetadataKeys: ['assignee'],
+            hiddenMetadataKeys: [firstMetadataKey],
           },
         });
 
@@ -239,7 +243,7 @@ describe('WorkItemUserPreferences', () => {
         });
 
         expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
-          hiddenMetadataKeys: ['assignee'],
+          hiddenMetadataKeys: [firstMetadataKey],
         });
       });
 
@@ -263,9 +267,10 @@ describe('WorkItemUserPreferences', () => {
         });
 
         expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
-          hiddenMetadataKeys: ['assignee'],
+          hiddenMetadataKeys: [firstMetadataKey],
         });
       });
+
       it('handles namespace preference errors gracefully', async () => {
         const error = new Error('Network error');
         const errorHandler = jest.fn().mockRejectedValue(error);
@@ -286,7 +291,7 @@ describe('WorkItemUserPreferences', () => {
       });
 
       it('renders only group-applicable metadata fields in group context', () => {
-        createComponent({ provide: { isGroup: true } });
+        createComponent({ mountFn: mount, provide: { isGroup: true } });
 
         const expectedGroupFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
           (field) => field.isPresentInGroup,
@@ -309,10 +314,38 @@ describe('WorkItemUserPreferences', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           'work_item_metadata_field_hidden',
           {
-            property: 'assignee',
+            property: firstMetadataKey,
           },
           undefined,
         );
+      });
+
+      it('does not render `Status` settings for epics listing', () => {
+        createComponent({
+          mountFn: mount,
+          provide: { isGroup: true },
+          props: { isEpicsList: true },
+        });
+
+        const firstMetadataItem = findDropdownItems().at(0);
+
+        expect(firstMetadataItem.text()).not.toBe('Status');
+      });
+
+      it('renders `Status` settings for group work item listing', () => {
+        createComponent({ mountFn: mount, provide: { isGroup: true } });
+
+        const firstMetadataItem = findDropdownItems().at(0);
+
+        expect(firstMetadataItem.text()).toBe('Status');
+      });
+
+      it('renders `Status` settings for project work item listing', () => {
+        createComponent({ mountFn: mount });
+
+        const firstMetadataItem = findDropdownItems().at(0);
+
+        expect(firstMetadataItem.text()).toBe('Status');
       });
     });
   });

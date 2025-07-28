@@ -5,7 +5,7 @@ module WorkItems
     class DestroyService < IssuableLinks::DestroyService
       extend ::Gitlab::Utils::Override
 
-      attr_reader :link, :current_user, :parent, :child
+      attr_reader :link, :current_user, :parent, :child, :params
 
       def initialize(link, user, params = {})
         @link = link
@@ -34,6 +34,9 @@ module WorkItems
       end
 
       def permission_to_remove_relation?
+        # we can skip policy check if we check policy in the service that calls this
+        return true if skip_policy_check?
+
         can?(current_user, :admin_parent_link, child) && can?(current_user, :admin_parent_link, parent)
       end
 
@@ -42,6 +45,10 @@ module WorkItems
         super
 
         GraphqlTriggers.work_item_updated(@link.work_item_parent)
+      end
+
+      def skip_policy_check?
+        params.fetch(:skip_policy_check, false)
       end
     end
   end

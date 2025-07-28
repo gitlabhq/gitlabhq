@@ -220,7 +220,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
 
         context 'when work items import/export feature is not available' do
           before do
-            stub_feature_flags(import_export_work_items_csv: false)
+            stub_feature_flags(work_items_project_issues_list: false)
           end
 
           it_behaves_like 'response with 404 status'
@@ -274,9 +274,9 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
         end
       end
 
-      context 'when work items import/export feature is disabled' do
+      context 'when work_items_project_issues_list is disabled' do
         before do
-          stub_feature_flags(import_export_work_items_csv: false)
+          stub_feature_flags(work_items_project_issues_list: false)
         end
 
         it_behaves_like 'response with 404 status'

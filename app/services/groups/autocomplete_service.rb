@@ -42,7 +42,7 @@ module Groups
     # rubocop: enable CodeReuse/ActiveRecord
 
     def labels_as_hash(target)
-      super(target, group_id: group.id, only_group_labels: true, include_ancestor_groups: true)
+      super(target, group_id: group.id, only_group_labels: true, include_ancestor_groups: true, archived: false)
     end
 
     def commands(noteable)

@@ -23,7 +23,11 @@
       }
 
       &:focus {
-        @include gl-focus($color: var(--gl-action-neutral-border-color-active));
+        text-decoration: none;
+        color: var(--gl-text-default);
+        outline: 2px solid var(--gl-focus-ring-color, var(--gl-tab-selected-indicator-color-default));
+        outline-offset: 2px;
+        box-shadow: none;
       }
     }
 

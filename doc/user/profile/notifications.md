@@ -374,7 +374,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 - Last sign-in IP: The current sign-in IP address is checked against the last sign-in
   IP address.
 - Current active sessions: If the user has an existing active session from the
-  same IP address. See [Active Sessions](active_sessions.md).
+  same IP address. See [Active sessions](active_sessions.md).
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 

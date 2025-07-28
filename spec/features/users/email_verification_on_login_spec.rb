@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency do
+RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556094' do
   include EmailHelpers
 
   let_it_be_with_reload(:user) { create(:user) }

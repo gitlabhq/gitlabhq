@@ -3655,9 +3655,6 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-msgid "Active Sessions"
-msgstr ""
-
 msgid "Active group access tokens"
 msgstr ""
 
@@ -3668,6 +3665,9 @@ msgid "Active pipeline trigger tokens"
 msgstr ""
 
 msgid "Active project access tokens"
+msgstr ""
+
+msgid "Active sessions"
 msgstr ""
 
 msgid "ActiveSessions|with Step-up Authentication"
@@ -5973,6 +5973,9 @@ msgid "AiAgents|Create your own AI Agents"
 msgstr ""
 
 msgid "AiAnalytics|the ClickHouse data store is not available"
+msgstr ""
+
+msgid "AiCatalog|Agent not found."
 msgstr ""
 
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
@@ -9480,9 +9483,6 @@ msgid "Authentication"
 msgstr ""
 
 msgid "Authentication Failure"
-msgstr ""
-
-msgid "Authentication Log"
 msgstr ""
 
 msgid "Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"
@@ -15351,9 +15351,6 @@ msgid "Comment"
 msgstr ""
 
 msgid "Comment '%{label}' position"
-msgstr ""
-
-msgid "Comment Templates"
 msgstr ""
 
 msgid "Comment added to the timeline."

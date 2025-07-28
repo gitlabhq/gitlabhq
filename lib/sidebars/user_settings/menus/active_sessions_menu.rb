@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          _('Active Sessions')
+          _('Active sessions')
         end
 
         override :sprite_icon

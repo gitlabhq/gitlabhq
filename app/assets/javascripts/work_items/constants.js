@@ -373,6 +373,7 @@ export const newWorkItemOptimisticUserPermissions = {
 };
 
 export const METADATA_KEYS = {
+  STATUS: 'status',
   ASSIGNEE: 'assignee',
   LABELS: 'labels',
   WEIGHT: 'weight',
@@ -386,6 +387,12 @@ export const METADATA_KEYS = {
 };
 
 export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
+  {
+    key: 'status',
+    label: __('Status'),
+    icon: 'status',
+    isPresentInGroup: true,
+  },
   {
     key: 'assignee',
     label: __('Assignee'),

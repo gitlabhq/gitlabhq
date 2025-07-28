@@ -13,20 +13,7 @@ RSpec.describe RequeueBackfillPushEventPayloadsProjectId, feature_category: :sou
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :push_event_payloads,
-          column_name: :event_id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
-          job_arguments: [
-            :project_id,
-            :events,
-            :project_id,
-            :event_id
-          ]
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end
