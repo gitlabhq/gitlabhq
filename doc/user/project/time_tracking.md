@@ -183,15 +183,7 @@ To delete all the time spent at once, use the `/remove_time_spent` [quick action
 
 To view a time tracking report of time spent on an item:
 
-- For an issue or a merge request:
-
-  1. Go to an issue or a merge request.
-  1. In the right sidebar, select **Time tracking report**.
-
-- For an epic or a task:
-
-  1. Go to an epic or a task.
-  1. In the right sidebar, select the time next to **Spent**.
+- On the right sidebar, next to **Spent**, select the time.
 
 ![Time tracking report](img/time_tracking_report_v15_1.png)
 

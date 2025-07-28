@@ -2,11 +2,13 @@
 
 module Ci
   class RunnerProjectPolicy < BasePolicy
-    condition(:locked, scope: :subject) { @subject.runner.locked? }
+    with_options scope: :subject, score: 10
+    condition(:locked) { @subject.runner.locked? }
 
-    condition(:assigned_to_owner_project, scope: :subject) { @subject.project == @subject.runner.owner }
+    with_options scope: :subject, score: 12
+    condition(:assigned_to_owner_project) { @subject.project == @subject.runner.owner }
 
-    condition(:can_admin_project_runners, score: 2) do
+    condition(:can_admin_project_runners) do
       Ability.allowed?(@user, :admin_runners, @subject.project)
     end
 

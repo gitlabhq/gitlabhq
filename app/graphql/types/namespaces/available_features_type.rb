@@ -7,12 +7,33 @@ module Types
 
       include IssuesHelper
 
+      field :has_blocked_issues_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether blocked issues are enabled for the namespace.',
+        resolver_method: :blocked_issues_enabled?,
+        experiment: { milestone: '18.3' }
+
+      field :has_custom_fields_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether custom fields are enabled for the namespace.',
+        resolver_method: :custom_fields_enabled?,
+        experiment: { milestone: '18.3' }
+
       field :has_epics_feature,
         GraphQL::Types::Boolean,
         null: false,
         description: 'Whether epics are enabled for the namespace.',
         resolver_method: :epics_enabled?,
         experiment: { milestone: '18.1' }
+
+      field :has_group_bulk_edit_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether group bulk edit is enabled for the namespace.',
+        resolver_method: :group_bulk_edit_enabled?,
+        experiment: { milestone: '18.3' }
 
       field :has_issuable_health_status_feature,
         GraphQL::Types::Boolean,
@@ -77,15 +98,27 @@ module Types
         resolver_method: :subepics_enabled?,
         experiment: { milestone: '18.1' }
 
-      field :has_statuses_feature,
+      field :has_work_item_status_feature,
         GraphQL::Types::Boolean,
         null: false,
         description: 'Whether work item statuses are enabled for the namespace.',
-        resolver_method: :work_item_statuses_enabled?,
+        resolver_method: :work_item_status_enabled?,
         experiment: { milestone: '18.3' }
+
+      def blocked_issues_enabled?
+        object.licensed_feature_available?(:blocked_issues)
+      end
+
+      def custom_fields_enabled?
+        object.licensed_feature_available?(:custom_fields)
+      end
 
       def epics_enabled?
         object.licensed_feature_available?(:epics)
+      end
+
+      def group_bulk_edit_enabled?
+        object.licensed_feature_available?(:group_bulk_edit)
       end
 
       def issuable_health_status_enabled?
@@ -124,7 +157,7 @@ module Types
         object.licensed_feature_available?(:subepics)
       end
 
-      def work_item_statuses_enabled?
+      def work_item_status_enabled?
         object.licensed_feature_available?(:work_item_status)
       end
     end

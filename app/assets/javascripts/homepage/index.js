@@ -14,6 +14,7 @@ export default () => {
 
   const {
     reviewRequestedPath,
+    activityPath,
     assignedMergeRequestsPath,
     assignedWorkItemsPath,
     authoredWorkItemsPath,
@@ -32,6 +33,7 @@ export default () => {
       return createElement(HomepageApp, {
         props: {
           reviewRequestedPath,
+          activityPath,
           assignedMergeRequestsPath,
           assignedWorkItemsPath,
           authoredWorkItemsPath,

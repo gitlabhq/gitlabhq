@@ -242,10 +242,10 @@ module AuthHelper
               end
 
     { button_text: _('Delete one-time password authenticator'),
-      icon: ('remove' if Feature.enabled?(:redesign_user_account_otp, current_user)),
+      icon: 'remove',
       message: message,
       path: destroy_otp_profile_two_factor_auth_path,
-      password_required: password_required.to_s }.compact
+      password_required: password_required.to_s }
   end
 
   def delete_webauthn_device_data(password_required, path)

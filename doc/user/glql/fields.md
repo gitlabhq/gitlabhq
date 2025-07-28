@@ -43,27 +43,31 @@ In an embedded view, the `query` parameter can be used to include one or more ex
 format `<field> <operator> <value>`. Multiple expressions are joined with `and`,
 for example, `group = "gitlab-org" and author = currentUser()`.
 
+Prerequisites:
+
+- Querying epics is available in the Premium and Ultimate tier.
+
 The table below provides an overview of all available query fields and their specifications:
 
 | Field                                   | Name (and alias)                             | Operators                 | Supported for |
 | --------------------------------------- | -------------------------------------------- | ------------------------- | ------------- |
 | [Approved by user](#approved-by-user)   | `approver`, `approvedBy`, `approvers`        | `=`, `!=`                 | Merge requests |
-| [Assignees](#assignees)                 | `assignee`, `assignees`                      | `=`, `in`, `!=`           | Issues, merge requests |
+| [Assignees](#assignees)                 | `assignee`, `assignees`                      | `=`, `in`, `!=`           | Issues, epics, merge requests |
 | [Author](#author)                       | `author`                                     | `=`, `in`, `!=`           | Issues, epics, merge requests |
-| [Cadence](#cadence)                     | `cadence`                                    | `=`, `in`                 | Issues        |
-| [Closed at](#closed-at)                 | `closed`, `closedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Issues        |
+| [Cadence](#cadence)                     | `cadence`                                    | `=`, `in`                 | Issues |
+| [Closed at](#closed-at)                 | `closed`, `closedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Issues, epics |
 | [Confidential](#confidential)           | `confidential`                               | `=`, `!=`                 | Issues, epics |
 | [Created at](#created-at)               | `created`, `createdAt`, `opened`, `openedAt` | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
 | [Deployed at](#deployed-at)             | `deployed`, `deployedAt`                     | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
 | [Draft](#draft)                         | `draft`                                      | `=`, `!=`                 | Merge requests |
-| [Due date](#due-date)                   | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=` | Issues        |
+| [Due date](#due-date)                   | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=` | Issues, epics |
 | [Environment](#environment)             | `environment`                                | `=`                       | Merge requests |
-| [Epic](#epic)                           | `epic`                                       | `=`, `!=`                 | Issues        |
+| [Epic](#epic)                           | `epic`                                       | `=`, `!=`                 | Issues |
 | [Group](#group)                         | `group`                                      | `=`                       | Issues, epics, merge requests |
-| [Health status](#health-status)         | `health`, `healthStatus`                     | `=`, `!=`                 | Issues        |
+| [Health status](#health-status)         | `health`, `healthStatus`                     | `=`, `!=`                 | Issues, epics |
 | [ID](#id)                               | `id`                                         | `=`, `in`                 | Issues, epics, merge requests |
 | [Include subgroups](#include-subgroups) | `includeSubgroups`                           | `=`, `!=`                 | Issues, epics, merge requests |
-| [Iteration](#iteration)                 | `iteration`                                  | `=`, `in`, `!=`           | Issues        |
+| [Iteration](#iteration)                 | `iteration`                                  | `=`, `in`, `!=`           | Issues |
 | [Labels](#labels)                       | `label`, `labels`                            | `=`, `in`, `!=`           | Issues, epics, merge requests |
 | [Merged at](#merged-at)                 | `merged`, `mergedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
 | [Merged by user](#merged-by-user)       | `merger`, `mergedBy`                         | `=`                       | Merge requests |
@@ -76,7 +80,7 @@ The table below provides an overview of all available query fields and their spe
 | [Target branch](#target-branch)         | `targetBranch`                               | `=`, `in`, `!=`           | Merge requests |
 | [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, epics, merge requests |
 | [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
-| [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues        |
+| [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues |
 
 ### Approved by user
 
@@ -116,10 +120,11 @@ The table below provides an overview of all available query fields and their spe
 {{< history >}}
 
 - Alias `assignees` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Support for querying epics by assignees [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by one or more users who are assigned to the issue or merge request.
+**Description**: Query issues, epics, or merge requests by one or more users who are assigned to them.
 
 **Allowed value types**:
 
@@ -245,10 +250,11 @@ The table below provides an overview of all available query fields and their spe
 
 - Alias `closedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+- Support for querying epics by closed date [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
-**Description**: Query issues by the date when they were closed.
+**Description**: Query issues or epics by the date when they were closed.
 
 **Allowed value types**:
 
@@ -427,10 +433,11 @@ The table below provides an overview of all available query fields and their spe
 
 - Alias `dueDate` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+- Support for querying epics by due date [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
-**Description**: Query issues by the date when they are due.
+**Description**: Query issues or epics by the date when they are due.
 
 **Allowed value types**:
 
@@ -566,10 +573,11 @@ The table below provides an overview of all available query fields and their spe
 {{< history >}}
 
 - Alias `healthStatus` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Support for querying epics by health status [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
-**Description**: Query issues by their health status.
+**Description**: Query issues or epics by their health status.
 
 **Allowed value types**:
 
@@ -1239,6 +1247,7 @@ The table below provides an overview of all available query fields and their spe
 - Field `lastComment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
 - Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 - Fields `status`, `sourceBranch`, `targetBranch`, `sourceProject`, and `targetProject` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
+- Fields `health`, and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -1259,7 +1268,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |
 | Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available in the Premium and Ultimate tier |
-| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object. Available in the Ultimate tier |
+| Health status    | `health`, `healthStatus`              | Issues, epics                 | Display a badge indicating the health status of the object. Available in the Ultimate tier |
 | ID               | `id`                                  | Issues, epics, merge requests | Display the ID of the object |
 | Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available in the Premium and Ultimate tier |
 | Labels           | `label`, `labels`                     | Issues, epics, merge requests | Display labels associated with the object. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
@@ -1275,7 +1284,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Target branch    | `targetBranch`                        | Merge requests                | Display the target branch of the merge request |
 | Target project   | `targetProject`                       | Merge requests                | Display the target project of the merge request |
 | Title            | `title`                               | Issues, epics, merge requests | Display the title of the object |
-| Type             | `type`                                | Issues                        | Display the work item type, for example `Issue`, `Task`, or `Objective` |
+| Type             | `type`                                | Issues, epics                 | Display the work item type, for example `Issue`, `Task`, or `Objective` |
 | Updated at       | `updated`, `updatedAt`                | Issues, epics, merge requests | Display time since the object was last updated |
 | Weight           | `weight`                              | Issues                        | Display the weight of the object. Available in the Premium and Ultimate tiers. |
 
@@ -1284,6 +1293,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/178) in GitLab 18.2.
+- Support for sorting epics by health status [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -1296,7 +1306,7 @@ field and order.
 | Closed at     | `closed`, `closedAt`     | Issues, epics, merge requests | Sort by closed date                             |
 | Created       | `created`, `createdAt`   | Issues, epics, merge requests | Sort by created date                            |
 | Due date      | `due`, `dueDate`         | Issues, epics                 | Sort by due date                                |
-| Health status | `health`, `healthStatus` | Issues                        | Sort by health status                           |
+| Health status | `health`, `healthStatus` | Issues, epics                 | Sort by health status                           |
 | Merged at     | `merged`, `mergedAt`     | Merge requests                | Sort by merge date                              |
 | Milestone     | `milestone`              | Issues, merge requests        | Sort by milestone due date                      |
 | Popularity    | `popularity`             | Issues, epics, merge requests | Sort by the number of thumbs up emoji reactions |

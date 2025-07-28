@@ -9,6 +9,7 @@ module HomepageData
   def homepage_app_data(user)
     {
       review_requested_path: review_requested_path(user),
+      activity_path: activity_dashboard_path,
       assigned_merge_requests_path: assigned_merge_requests_path(user),
       assigned_work_items_path: issues_dashboard_path(assignee_username: user.username),
       authored_work_items_path: issues_dashboard_path(author_username: user.username),

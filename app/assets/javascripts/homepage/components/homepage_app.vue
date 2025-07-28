@@ -32,6 +32,10 @@ export default {
       type: String,
       required: true,
     },
+    activityPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -52,7 +56,7 @@ export default {
           />
         </div>
         <todos-widget />
-        <activity-widget />
+        <activity-widget :activity-path="activityPath" />
       </div>
       <div>
         <recently-viewed-widget />

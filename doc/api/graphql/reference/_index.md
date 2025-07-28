@@ -25541,6 +25541,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkeditpath"></a>`editPath` | [`String!`](#string) | Web UI path to edit the compliance framework. |
 | <a id="complianceframeworkid"></a>`id` | [`ID!`](#id) | Compliance framework ID. |
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
+| <a id="complianceframeworknamespaceid"></a>`namespaceId` | [`TypesNamespaceID!`](#typesnamespaceid) | Namespace ID. |
 | <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.4. Use pipeline execution policies instead. |
 | <a id="complianceframeworkpipelineexecutionpolicies"></a>`pipelineExecutionPolicies` | [`PipelineExecutionPolicyConnection`](#pipelineexecutionpolicyconnection) | Pipeline Execution Policies of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkprojects"></a>`projects` | [`ProjectConnection`](#projectconnection) | Projects associated with the compliance framework. (see [Connections](#connections)) |
@@ -35778,7 +35779,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceavailablefeatureshasblockedissuesfeature"></a>`hasBlockedIssuesFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether blocked issues are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshascustomfieldsfeature"></a>`hasCustomFieldsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether custom fields are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasepicsfeature"></a>`hasEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether epics are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasgroupbulkeditfeature"></a>`hasGroupBulkEditFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether group bulk edit is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasissuablehealthstatusfeature"></a>`hasIssuableHealthStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issuable health status is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasissuedatefilterfeature"></a>`hasIssueDateFilterFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue date filter is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasissueweightsfeature"></a>`hasIssueWeightsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue weights are enabled for the namespace. |
@@ -35787,8 +35791,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshasokrsfeature"></a>`hasOkrsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether OKRs are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
-| <a id="namespaceavailablefeatureshasstatusesfeature"></a>`hasStatusesFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasworkitemstatusfeature"></a>`hasWorkItemStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
 
 ### `NamespaceBan`
 

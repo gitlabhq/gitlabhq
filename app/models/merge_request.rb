@@ -2136,7 +2136,7 @@ class MergeRequest < ApplicationRecord
   def has_sast_reports?
     if Feature.enabled?(:show_child_reports_in_mr_page, project)
       !!diff_head_pipeline&.complete_or_manual? &&
-        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:sast))&.exists?
+        pipeline_has_report_in_self_or_descendants?(:sast)
     else
       !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
     end
@@ -2145,7 +2145,7 @@ class MergeRequest < ApplicationRecord
   def has_secret_detection_reports?
     if Feature.enabled?(:show_child_reports_in_mr_page, project)
       !!diff_head_pipeline&.complete_or_manual? &&
-        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:secret_detection))&.exists?
+        pipeline_has_report_in_self_or_descendants?(:secret_detection)
     else
       !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
     end
@@ -2678,12 +2678,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def report_type_enabled?(report_type)
-    supported_report_types_for_child_pipelines = [:sast, :secret_detection]
+    supported_report_types_for_child_pipelines = [:sast, :secret_detection, :container_scanning]
 
     if report_type == :license_scanning
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
     elsif supported_report_types_for_child_pipelines.include?(report_type) && Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))&.exists?
+      pipeline_has_report_in_self_or_descendants?(report_type)
     else
       !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
     end
@@ -2695,6 +2695,12 @@ class MergeRequest < ApplicationRecord
     else
       [description, 'false']
     end
+  end
+
+  def pipeline_has_report_in_self_or_descendants?(report_type)
+    !!diff_head_pipeline
+      &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
+      &.exists?
   end
 end
 

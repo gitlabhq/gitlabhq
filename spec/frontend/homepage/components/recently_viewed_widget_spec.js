@@ -45,6 +45,15 @@ describe('RecentlyViewedWidget', () => {
           {
             viewedAt: '2025-06-19T15:30:00Z',
             item: {
+              __typename: 'Epic',
+              id: 'epic-1',
+              title: 'Q3 Development Roadmap',
+              webUrl: '/groups/company/-/epics/999',
+            },
+          },
+          {
+            viewedAt: '2025-06-18T15:45:00Z',
+            item: {
               __typename: 'Issue',
               id: 'issue-2',
               title: 'Add new feature for user management',
@@ -170,7 +179,7 @@ describe('RecentlyViewedWidget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(4); // 4 items total
+      expect(findItemLinks()).toHaveLength(5); // 5 items total (2 MRs, 2 Issues, 1 Epic)
     });
 
     it('handles empty response gracefully', async () => {
@@ -214,17 +223,18 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('renders the correct number of items', () => {
-      expect(findItemLinks()).toHaveLength(4);
+      expect(findItemLinks()).toHaveLength(5);
     });
 
     it('sorts items by viewedAt in descending order (most recent first)', () => {
       const { items } = wrapper.vm;
 
-      // Should be sorted by viewedAt (backend already sorts): mr-1, issue-1, issue-2, mr-2
+      // Should be sorted by viewedAt (backend already sorts): mr-1, issue-1, epic-1, issue-2, mr-2
       expect(items[0].id).toBe('mr-1');
       expect(items[1].id).toBe('issue-1');
-      expect(items[2].id).toBe('issue-2');
-      expect(items[3].id).toBe('mr-2');
+      expect(items[2].id).toBe('epic-1');
+      expect(items[3].id).toBe('issue-2');
+      expect(items[4].id).toBe('mr-2');
     });
 
     it('limits items to MAX_ITEMS', async () => {
@@ -267,11 +277,21 @@ describe('RecentlyViewedWidget', () => {
       expect(mrItems[0].id).toBe('mr-1');
     });
 
+    it('adds correct icon to epics', () => {
+      const epicItems = wrapper.vm.items.filter((item) => item.icon === 'epic');
+
+      expect(epicItems).toHaveLength(1);
+      expect(epicItems[0].id).toBe('epic-1');
+    });
+
     it('renders items with correct URLs', () => {
       const links = findItemLinks();
 
       expect(links.at(0).attributes('href')).toBe('/project/-/merge_requests/456');
       expect(links.at(1).attributes('href')).toBe('/project/-/issues/123');
+      expect(links.at(2).attributes('href')).toBe('/groups/company/-/epics/999');
+      expect(links.at(3).attributes('href')).toBe('/project/-/issues/124');
+      expect(links.at(4).attributes('href')).toBe('/project/-/merge_requests/457');
     });
 
     it('renders items with correct icons', () => {
@@ -279,13 +299,17 @@ describe('RecentlyViewedWidget', () => {
 
       expect(icons.at(0).props('name')).toBe('merge-request'); // First item is MR
       expect(icons.at(1).props('name')).toBe('issues'); // Second item is issue
+      expect(icons.at(2).props('name')).toBe('epic'); // Third item is epic
+      expect(icons.at(3).props('name')).toBe('issues'); // Fourth item is issue
+      expect(icons.at(4).props('name')).toBe('merge-request'); // Fifth item is MR
     });
 
     it('renders tooltip components for each item', () => {
       const tooltips = findTooltipComponents();
 
-      expect(tooltips).toHaveLength(4);
+      expect(tooltips).toHaveLength(5);
       expect(tooltips.at(0).props('title')).toBe('Implement authentication improvements');
+      expect(tooltips.at(2).props('title')).toBe('Q3 Development Roadmap');
     });
   });
 });

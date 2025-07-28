@@ -16,14 +16,6 @@ module QA
           element 'register-2fa-app-button'
         end
 
-        # Remove when we delete the redesign_user_account_otp feature flag
-        view 'app/views/profiles/two_factor_auths/show.html.haml' do
-          element 'otp-secret-content'
-          element 'pin-code-field'
-          element 'current-password-field'
-          element 'register-2fa-app-button'
-        end
-
         view 'app/assets/javascripts/authentication/two_factor_auth/components/recovery_codes.vue' do
           element 'proceed-button'
           element 'copy-button'
@@ -41,7 +33,7 @@ module QA
         end
 
         def otp_secret_content
-          click_register_otp_authenticator_button if Runtime::Feature.enabled?(:redesign_user_account_otp)
+          click_register_otp_authenticator_button
 
           find_element('otp-secret-content').text.gsub('Key:', '').delete(' ')
         end

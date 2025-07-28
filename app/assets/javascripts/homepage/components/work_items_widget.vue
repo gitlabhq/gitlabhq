@@ -71,9 +71,9 @@ export default {
 
 <template>
   <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
-    <h4 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
+    <h2 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
       <gl-icon name="issues" :size="16" />{{ __('Issues') }}
-    </h4>
+    </h2>
     <p v-if="hasError" data-testid="error-message">
       <gl-sprintf
         :message="

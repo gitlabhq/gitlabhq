@@ -218,7 +218,6 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
-      (analyze_nav_item if Gitlab.ee?),
       observability_nav_item
     ]
   end

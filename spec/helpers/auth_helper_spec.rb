@@ -4,7 +4,6 @@ require "spec_helper"
 
 RSpec.describe AuthHelper, feature_category: :system_access do
   include LoginHelpers
-  include Devise::Test::ControllerHelpers # Remove when we delete the redesign_user_account_otp feature flag
 
   describe "#enabled_button_based_providers_for_signup" do
     [[true, %w[github gitlab]],

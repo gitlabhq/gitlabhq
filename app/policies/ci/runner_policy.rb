@@ -2,8 +2,8 @@
 
 module Ci
   class RunnerPolicy < BasePolicy
-    with_options scope: :subject, score: 0
-    condition(:locked, scope: :subject) { @subject.locked? }
+    with_scope :subject
+    condition(:locked) { @subject.locked? }
 
     condition(:can_admin_runner) do
       # Check global admin_runner permission for instance runners
@@ -25,32 +25,32 @@ module Ci
       @user == @subject.creator
     end
 
-    with_options scope: :subject, score: 0
+    with_scope :subject
     condition(:is_instance_runner) do
       @subject.instance_type?
     end
 
-    with_options scope: :subject, score: 0
+    with_scope :subject
     condition(:is_group_runner) do
       @subject.group_type?
     end
 
-    with_options scope: :subject, score: 0
+    with_scope :subject
     condition(:is_project_runner) do
       @subject.project_type?
     end
 
-    with_options scope: :user, score: 5
+    with_options scope: :user, score: 10
     condition(:any_maintainer_owned_groups_inheriting_shared_runners) do
       @user.owned_or_maintainers_groups.with_shared_runners_enabled.exists?
     end
 
-    with_options scope: :user, score: 5
+    with_options scope: :user, score: 10
     condition(:any_maintainer_projects_inheriting_shared_runners) do
       @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.exists?
     end
 
-    with_score 10
+    with_score 20
     condition(:any_associated_projects_in_group_runner_inheriting_group_runners) do
       # Check if any projects where user is a maintainer+ are inheriting group runners
       @subject.groups&.any? do |group|
@@ -61,7 +61,7 @@ module Ci
       end
     end
 
-    with_score 6
+    with_score 20
     condition(:maintainer_in_any_associated_projects) do
       next true if maintainer_in_owner_scope?
 
@@ -69,20 +69,20 @@ module Ci
       @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
     end
 
-    with_score 5
     condition(:maintainer_in_owner_scope) do
       # Check if user is a maintainer+ in the scope owning the runner
       can?(:maintainer_access, @subject.owner)
     end
 
-    with_score 6
+    with_score 20
     condition(:maintainer_in_any_associated_groups) do
       @subject.groups.any? do |group|
         can?(:maintainer_access, group)
       end
     end
 
-    condition(:belongs_to_multiple_projects, scope: :subject) do
+    with_scope :subject
+    condition(:belongs_to_multiple_projects) do
       @subject.belongs_to_more_than_one_project?
     end
 

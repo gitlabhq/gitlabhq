@@ -14,6 +14,11 @@ query RecentlyViewedItems {
           title
           webUrl
         }
+        ... on Epic {
+          id
+          title
+          webUrl
+        }
       }
     }
   }

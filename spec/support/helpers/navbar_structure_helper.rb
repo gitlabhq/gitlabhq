@@ -151,6 +151,16 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_contribution_analytics_nav
+    insert_after_nav_item(
+      _('Operate'),
+      new_nav_item: {
+        nav_item: _("Analyze"),
+        nav_sub_items: [_("Contribution analytics")]
+      }
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),
@@ -161,10 +171,6 @@ module NavbarStructureHelper
       (_('Merge request analytics') if Gitlab.ee?),
       _('Model experiments')
     ]
-  end
-
-  def group_analytics_sub_nav_item
-    [_("Contribution analytics")]
   end
 end
 

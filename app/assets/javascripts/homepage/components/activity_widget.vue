@@ -6,7 +6,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
-const MAX_EVENTS = 10;
+const MAX_EVENTS = 5;
 
 export default {
   components: {
@@ -15,6 +15,12 @@ export default {
   },
   directives: {
     SafeHtml,
+  },
+  props: {
+    activityPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -64,7 +70,7 @@ export default {
 
 <template>
   <visibility-change-detector @visible="reload">
-    <h4 class="gl-heading-4 gl-my-4">{{ __('Activity') }}</h4>
+    <h2 class="gl-heading-4 gl-mb-0 gl-mt-4">{{ __('Activity') }}</h2>
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
       <rect width="160" height="3" rx="1" x="8" y="2" />
@@ -98,5 +104,12 @@ export default {
       data-testid="events-list"
       class="gl-list-none gl-p-0"
     ></ul>
+    <a :href="activityPath">{{ __('All activity') }}</a>
   </visibility-change-detector>
 </template>
+
+<style scoped>
+::v-deep .event-item {
+  padding-bottom: 0;
+}
+</style>

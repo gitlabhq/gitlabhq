@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Push do
+RSpec.describe Gitlab::DataBuilder::Push, feature_category: :webhooks do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

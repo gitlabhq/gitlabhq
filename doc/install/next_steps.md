@@ -22,6 +22,12 @@ installation.
 - [Incoming email](../administration/incoming_email.md): Configure incoming email
   so that users can use email to reply to comments, create new issues and merge requests, etc.
 
+## GitLab Duo
+
+- [GitLab Duo](../user/gitlab_duo/_index.md): Learn about the AI-native features that GitLab offers and how to enable them.
+- [GitLab Duo Self-Hosted](../administration/gitlab_duo_self_hosted/_index.md): Deploy GitLab Duo Self-Hosted to use your preferred GitLab-supported LLM.
+- [GitLab Duo data usage](../user/gitlab_duo/data_usage.md): Learn how GitLab handles AI data privacy.
+
 ## CI/CD (Runner)
 
 - [Set up runners](https://docs.gitlab.com/runner/): Set up one or more
