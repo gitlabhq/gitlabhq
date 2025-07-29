@@ -4,6 +4,8 @@ import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@git
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   TABS_INDICES,
   TODO_ACTION_TYPE_BUILD_FAILED,
@@ -15,7 +17,11 @@ import {
 } from '~/todos/constants';
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_TODO_ITEMS,
+  TRACKING_PROPERTY_ALL_TODOS,
+} from '../tracking_constants';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const N_TODOS = 5;
@@ -52,6 +58,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   provide() {
     return {
       currentTab: TABS_INDICES.pending,
@@ -96,6 +103,12 @@ export default {
       this.showLoading = true;
       this.hasError = false;
       this.$apollo.queries.todos.refetch();
+    },
+    handleViewAllClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_TODO_ITEMS,
+        property: TRACKING_PROPERTY_ALL_TODOS,
+      });
     },
   },
 
@@ -157,7 +170,7 @@ export default {
       </ol>
 
       <div class="gl-px-5 gl-py-3">
-        <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
+        <a href="/dashboard/todos" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
       </div>
     </div>
   </visibility-change-detector>

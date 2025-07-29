@@ -2,6 +2,9 @@
 
 require 'yaml'
 
+require_relative 'helpers/rubocop_fixer/file_helper'
+require_relative 'helpers/rubocop_fixer/config_helper'
+
 module Keeps
   class RubocopFixer < ::Gitlab::Housekeeper::Keep
     LIMIT_FIXES = 20
@@ -10,41 +13,42 @@ module Keeps
     def initialize(
       logger: nil,
       filter_identifiers: nil,
-      todo_dir_pattern: RUBOCOP_TODO_DIR_PATTERN,
       limit_fixes: LIMIT_FIXES
     )
       super(logger: logger, filter_identifiers: filter_identifiers)
-      @todo_dir_pattern = todo_dir_pattern
       @limit_fixes = limit_fixes
+      @config_helper = ::Keeps::Helpers::RubocopFixer::ConfigHelper.new
+      @file_helper = ::Keeps::Helpers::RubocopFixer::FileHelper.new
     end
 
     def each_change
       each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
-        @logger.puts "RubopCop rule #{rule}"
+        logger.puts "RubopCop rule #{rule}"
         remove_allow_rule = true
 
-        if violating_files.count > @limit_fixes
-          violating_files = violating_files.first(@limit_fixes)
+        if violating_files.count > limit_fixes
+          violating_files = violating_files.first(limit_fixes)
           remove_allow_rule = false
         end
 
         change = ::Gitlab::Housekeeper::Change.new
         change.title = "Fix #{violating_files.count} rubocop violations for #{rule}"
-        change.identifiers = [self.class.name, rule, violating_files.last]
+        change.labels = %w[backend type::maintenance maintenance::refactor]
+        change.identifiers = [self.class.name, rule]
         change.description = <<~MARKDOWN
-            Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
-            that were previously excluded in `#{rule_file_path}`.
-            The exclusions have now been removed.
+          Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
+          that were previously excluded in `#{rule_file_path}`.
+          The exclusions have now been removed.
         MARKDOWN
 
         if remove_allow_rule
           FileUtils.rm(rule_file_path)
         else
-          remove_first_exclusions(rule, rule_file_path, violating_files.count)
+          file_helper.remove_first_exclusions(rule_file_path, violating_files.count)
         end
 
-        unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files)
-          @logger.warn "Failed to autocorrect files. Reverting"
+        unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files, logger: logger)
+          logger.warn "Failed to autocorrect files. Reverting"
           # Ignore when it cannot be automatically fixed. But we need to checkout any files we might have updated.
           ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', rule_file_path, *violating_files)
           next
@@ -56,8 +60,12 @@ module Keeps
       end
     end
 
+    private
+
+    attr_reader :config_helper, :file_helper, :limit_fixes
+
     def each_allowed_rubocop_rule
-      Dir.glob(@todo_dir_pattern).each do |file|
+      Dir.glob(RUBOCOP_TODO_DIR_PATTERN).each do |file|
         content = File.read(file)
         next unless content.include?('Cop supports --autocorrect')
 
@@ -67,27 +75,13 @@ module Keeps
         next unless data.keys.count == 1
 
         rule = data.keys[0]
+        next unless config_helper.can_autocorrect?(rule)
+
         violating_files = data[rule]['Exclude']
         next unless violating_files&.count&.positive?
 
         yield rule, file, violating_files
       end
-    end
-
-    def remove_first_exclusions(_rule, file, remove_count)
-      content = File.read(file)
-      skipped = 0
-
-      output = content.each_line.filter do |line|
-        if skipped < remove_count && line.match?(/\s+-\s+/)
-          skipped += 1
-          false
-        else
-          true
-        end
-      end
-
-      File.write(file, output.join)
     end
   end
 end

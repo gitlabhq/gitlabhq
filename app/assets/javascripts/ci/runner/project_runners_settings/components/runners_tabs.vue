@@ -6,9 +6,10 @@ import InstanceRunnersToggle from '~/projects/settings/components/instance_runne
 import RunnersTab from './runners_tab.vue';
 import RunnerToggleAssignButton from './runner_toggle_assign_button.vue';
 import GroupRunnersToggle from './group_runners_toggle.vue';
-import InstanceRunnersTabEmptyState from './instance_runners_tab_empty_state.vue';
-import GroupRunnersTabEmptyState from './group_runners_tab_empty_state.vue';
 import ProjectRunnersTabEmptyState from './project_runners_tab_empty_state.vue';
+import AssignableRunnersTabEmptyState from './assignable_runners_tab_empty_state.vue';
+import GroupRunnersTabEmptyState from './group_runners_tab_empty_state.vue';
+import InstanceRunnersTabEmptyState from './instance_runners_tab_empty_state.vue';
 
 export default {
   name: 'RunnersTabs',
@@ -17,9 +18,10 @@ export default {
     RunnersTab,
     GroupRunnersToggle,
     InstanceRunnersToggle,
-    InstanceRunnersTabEmptyState,
-    GroupRunnersTabEmptyState,
     ProjectRunnersTabEmptyState,
+    AssignableRunnersTabEmptyState,
+    GroupRunnersTabEmptyState,
+    InstanceRunnersTabEmptyState,
     RunnerToggleAssignButton,
   },
   inject: {
@@ -72,7 +74,9 @@ export default {
     onRunnerToggleAssign({ message }) {
       this.$toast?.show(message);
 
+      // Regardless of which tab emitted the event, we refresh the runner list in both.
       this.$refs.assignedRunners.refresh();
+      this.$refs.otherAvailableRunners.refresh();
     },
     onGroupRunnersToggled(value) {
       this.groupRunnersEnabled = value;
@@ -106,6 +110,27 @@ export default {
           :project-full-path="projectFullPath"
           :runner="runner"
           :assigns="false"
+          @done="onRunnerToggleAssign"
+          @error="onError"
+        />
+      </template>
+    </runners-tab>
+    <runners-tab
+      ref="otherAvailableRunners"
+      :title="s__('Runners|Other available project runners')"
+      :runner-type="$options.PROJECT_TYPE"
+      :project-full-path="projectFullPath"
+      use-assignable-query
+      @error="onError"
+    >
+      <template #empty>
+        <assignable-runners-tab-empty-state />
+      </template>
+      <template #other-runner-actions="{ runner }">
+        <runner-toggle-assign-button
+          :project-full-path="projectFullPath"
+          :runner="runner"
+          :assigns="true"
           @done="onRunnerToggleAssign"
           @error="onError"
         />

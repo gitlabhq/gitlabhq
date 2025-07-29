@@ -296,7 +296,7 @@ monthlyBugsCreated:
     period_limit: 104
 ```
 
-#### `query.data_source`
+##### `query.data_source`
 
 Use `data_source` to define the data source that exposes the data.
 

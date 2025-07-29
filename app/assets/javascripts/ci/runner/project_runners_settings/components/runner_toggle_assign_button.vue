@@ -92,5 +92,12 @@ export default {
 };
 </script>
 <template>
-  <gl-button v-gl-tooltip="tooltip" size="small" :icon="icon" :loading="loading" @click="onClick" />
+  <gl-button
+    v-gl-tooltip="tooltip"
+    :aria-label="tooltip"
+    size="small"
+    :icon="icon"
+    :loading="loading"
+    @click="onClick"
+  />
 </template>

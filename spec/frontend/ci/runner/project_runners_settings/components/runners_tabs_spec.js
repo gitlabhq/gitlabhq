@@ -8,11 +8,12 @@ import InstanceRunnersToggle from '~/projects/settings/components/instance_runne
 import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_tab.vue';
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
 import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
-
 import GroupRunnersToggle from '~/ci/runner/project_runners_settings/components/group_runners_toggle.vue';
+
+import ProjectRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/project_runners_tab_empty_state.vue';
+import AssignableRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/assignable_runners_tab_empty_state.vue';
 import GroupRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/group_runners_tab_empty_state.vue';
 import InstanceRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/instance_runners_tab_empty_state.vue';
-import ProjectRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/project_runners_tab_empty_state.vue';
 
 import { projectRunnersData } from 'jest/ci/runner/mock_data';
 
@@ -80,7 +81,7 @@ describe('RunnersTabs', () => {
   });
 
   it('renders the correct number of tabs', () => {
-    expect(findRunnerTabs()).toHaveLength(3);
+    expect(findRunnerTabs()).toHaveLength(4);
   });
 
   describe('Assigned project runners tab', () => {
@@ -111,54 +112,47 @@ describe('RunnersTabs', () => {
       expect(findRunnerToggleAssignButtonAt(0).exists()).toBe(false);
     });
 
-    it('refreshes project tabs after unassigning', async () => {
-      await findRunnerToggleAssignButtonAt(0).vm.$emit('done', { message: 'Runner unassigned.' });
-
-      await nextTick();
-
-      expect(mockShowToast).toHaveBeenCalledWith('Runner unassigned.');
-
-      expect(mockRefresh).toHaveBeenCalledTimes(1);
-      expect(mockRefresh).toHaveBeenCalledWith('Assigned project runners');
-    });
-
     it('emits an error event', () => {
       findRunnerTabAt(0).vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
-  });
 
-  describe('Group tab', () => {
-    it('renders the tab content', () => {
-      expect(findRunnerTabAt(1).props()).toMatchObject({
-        title: 'Group',
-        runnerType: GROUP_TYPE,
-        projectFullPath: 'group/project',
+    describe('when runner is unassigned', () => {
+      beforeEach(async () => {
+        findRunnerToggleAssignButtonAt(0).vm.$emit('done', { message: 'Runner unassigned.' });
+        await nextTick();
       });
 
-      expect(findRunnerTabAt(1).text()).toContain(
-        'These runners are shared across projects in this group.',
-      );
-      expect(findRunnerTabAt(1).findComponent(GroupRunnersToggle).exists()).toEqual(true);
-      expect(findRunnerTabAt(1).findComponent(GroupRunnersTabEmptyState).exists()).toEqual(true);
+      it('refreshes project tabs after assigning', () => {
+        expect(mockRefresh).toHaveBeenCalledTimes(2);
+        expect(mockRefresh).toHaveBeenCalledWith('Assigned project runners');
+        expect(mockRefresh).toHaveBeenCalledWith('Other available project runners');
+      });
+
+      it('shows confirmation toast', () => {
+        expect(mockShowToast).toHaveBeenCalledWith('Runner unassigned.');
+      });
+    });
+  });
+
+  describe('Available project runners tab', () => {
+    it('renders the tab content', () => {
+      expect(findRunnerTabAt(1).props()).toMatchObject({
+        title: 'Other available project runners',
+        runnerType: PROJECT_TYPE,
+        projectFullPath: 'group/project',
+        useAssignableQuery: true,
+      });
+      expect(findRunnerTabAt(1).findComponent(AssignableRunnersTabEmptyState).exists()).toBe(true);
     });
 
-    it('updates list and empty state on toggle', async () => {
-      findRunnerTabAt(1).findComponent(GroupRunnersToggle).vm.$emit('change', false);
-      await nextTick();
-
-      expect(mockRefresh).toHaveBeenCalledTimes(1);
-      expect(mockRefresh).toHaveBeenCalledWith('Group');
-      expect(
-        findRunnerTabAt(1).findComponent(GroupRunnersTabEmptyState).props('groupRunnersEnabled'),
-      ).toEqual(false);
-    });
-
-    it('emits an error event from toggle', () => {
-      findRunnerTabAt(1).findComponent(GroupRunnersToggle).vm.$emit('error', error);
-
-      expect(wrapper.emitted().error[0]).toEqual([error]);
+    it('renders assign button', () => {
+      expect(findRunnerToggleAssignButtonAt(1).props()).toEqual({
+        projectFullPath: 'group/project',
+        runner: mockRunner,
+        assigns: true,
+      });
     });
 
     it('emits an error event', () => {
@@ -166,20 +160,75 @@ describe('RunnersTabs', () => {
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
+
+    describe('when runner is assigned', () => {
+      beforeEach(async () => {
+        findRunnerToggleAssignButtonAt(0).vm.$emit('done', { message: 'Runner assigned.' });
+        await nextTick();
+      });
+
+      it('refreshes project tabs after assigning', () => {
+        expect(mockRefresh).toHaveBeenCalledTimes(2);
+        expect(mockRefresh).toHaveBeenCalledWith('Assigned project runners');
+        expect(mockRefresh).toHaveBeenCalledWith('Other available project runners');
+      });
+
+      it('shows confirmation toast', () => {
+        expect(mockShowToast).toHaveBeenCalledWith('Runner assigned.');
+      });
+    });
+  });
+
+  describe('Group tab', () => {
+    it('renders the tab content', () => {
+      expect(findRunnerTabAt(2).props()).toMatchObject({
+        title: 'Group',
+        runnerType: GROUP_TYPE,
+        projectFullPath: 'group/project',
+      });
+      expect(findRunnerTabAt(2).text()).toContain(
+        'These runners are shared across projects in this group.',
+      );
+      expect(findRunnerTabAt(2).findComponent(GroupRunnersToggle).exists()).toBe(true);
+      expect(findRunnerTabAt(2).findComponent(GroupRunnersTabEmptyState).exists()).toBe(true);
+    });
+
+    it('updates list and empty state on toggle', async () => {
+      findRunnerTabAt(2).findComponent(GroupRunnersToggle).vm.$emit('change', false);
+      await nextTick();
+
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(mockRefresh).toHaveBeenCalledWith('Group');
+      expect(
+        findRunnerTabAt(2).findComponent(GroupRunnersTabEmptyState).props('groupRunnersEnabled'),
+      ).toBe(false);
+    });
+
+    it('emits an error event from toggle', () => {
+      findRunnerTabAt(2).findComponent(GroupRunnersToggle).vm.$emit('error', error);
+
+      expect(wrapper.emitted().error[0]).toEqual([error]);
+    });
+
+    it('emits an error event', () => {
+      findRunnerTabAt(2).vm.$emit('error', error);
+
+      expect(wrapper.emitted().error[0]).toEqual([error]);
+    });
   });
 
   describe('Instance tab', () => {
     it('renders the tab content', () => {
-      expect(findRunnerTabAt(2).props()).toMatchObject({
+      expect(findRunnerTabAt(3).props()).toMatchObject({
         title: 'Instance',
         runnerType: INSTANCE_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(2).findComponent(InstanceRunnersTabEmptyState).exists()).toBe(true);
+      expect(findRunnerTabAt(3).findComponent(InstanceRunnersTabEmptyState).exists()).toBe(true);
     });
 
     it('shows instance runners toggle', () => {
-      expect(findRunnerTabAt(2).findComponent(InstanceRunnersToggle).props()).toEqual({
+      expect(findRunnerTabAt(3).findComponent(InstanceRunnersToggle).props()).toEqual({
         groupName: 'My group',
         groupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
         isDisabledAndUnoverridable: false,
@@ -189,18 +238,18 @@ describe('RunnersTabs', () => {
     });
 
     it('updates list and empty state on toggle', async () => {
-      findRunnerTabAt(2).findComponent(InstanceRunnersToggle).vm.$emit('change', false);
+      findRunnerTabAt(3).findComponent(InstanceRunnersToggle).vm.$emit('change', false);
       await nextTick();
 
       expect(mockRefresh).toHaveBeenCalledTimes(1);
       expect(mockRefresh).toHaveBeenCalledWith('Instance');
-      expect(findRunnerTabAt(2).findComponent(InstanceRunnersToggle).props('isEnabled')).toEqual(
+      expect(findRunnerTabAt(3).findComponent(InstanceRunnersToggle).props('isEnabled')).toBe(
         false,
       );
     });
 
     it('emits an error event', () => {
-      findRunnerTabAt(2).vm.$emit('error', error);
+      findRunnerTabAt(3).vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });

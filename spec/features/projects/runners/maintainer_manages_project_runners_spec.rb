@@ -35,6 +35,41 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
     end
   end
 
+  context 'with a project runner from another project', :js do
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_2_runner) { create(:ci_runner, :project, projects: [project_2]) }
+
+    before_all do
+      project_2.add_maintainer(user)
+    end
+
+    before do
+      visit project_runners_path(project)
+    end
+
+    it 'assigns the runner' do
+      click_on 'Other available project runners'
+
+      within_runner_row(project_2_runner.id) do
+        click_on 'Assign to project'
+      end
+
+      expect(page.find('.gl-toast')).to have_text(/Runner .+ was assigned to this project/)
+
+      wait_for_requests
+
+      expect(page).not_to have_content(project_2_runner.short_sha)
+
+      # Find runner in the "Assigned project runners" tab
+      click_on 'Assigned project runners'
+
+      within_runner_row(project_2_runner.id) do
+        expect(page).to have_content(project_2_runner.short_sha)
+        expect(page).to have_button('Unassign from project')
+      end
+    end
+  end
+
   context 'when updating a runner' do
     let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 

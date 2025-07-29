@@ -1,14 +1,20 @@
 <script>
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { InternalEvents } from '~/tracking';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from '../graphql/queries/recently_viewed_items.query.graphql';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_RECENTLY_VIEWED,
+} from '../tracking_constants';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const MAX_ITEMS = 10;
 
 export default {
   components: { GlIcon, GlSkeletonLoader, VisibilityChangeDetector, TooltipOnTruncate },
+  mixins: [InternalEvents.mixin()],
   data() {
     return {
       items: [],
@@ -53,6 +59,13 @@ export default {
       };
       return iconMap[itemType] || 'question';
     },
+    handleItemClick(item) {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_RECENTLY_VIEWED,
+        // eslint-disable-next-line no-underscore-dangle
+        property: item.__typename,
+      });
+    },
   },
   MAX_ITEMS,
 };
@@ -84,6 +97,7 @@ export default {
         <a
           :href="item.webUrl"
           class="gl-flex gl-items-center gl-gap-2 gl-rounded-small gl-p-1 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
+          @click="handleItemClick(item)"
         >
           <gl-icon :name="item.icon" class="gl-shrink-0" />
           <tooltip-on-truncate

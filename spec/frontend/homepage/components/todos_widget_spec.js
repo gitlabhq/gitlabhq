@@ -10,6 +10,12 @@ import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_TODO_ITEMS,
+  TRACKING_PROPERTY_ALL_TODOS,
+} from '~/homepage/tracking_constants';
 import { todosResponse } from '../../todos/mock_data';
 
 Vue.use(VueApollo);
@@ -305,6 +311,32 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(provided.currentUserId.value).toBe(todosResponse.data.currentUser.id);
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks click on "All to-do items" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const allTodosLink = findAllTodosLink();
+
+      allTodosLink.element.addEventListener('click', (e) => e.preventDefault());
+      allTodosLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_TODO_ITEMS,
+          property: TRACKING_PROPERTY_ALL_TODOS,
+        },
+        undefined,
+      );
     });
   });
 });

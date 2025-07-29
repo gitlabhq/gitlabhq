@@ -6,10 +6,15 @@ import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import { PROJECT_TYPE } from '~/ci/runner/constants';
-import { projectRunnersData, runnerJobCountData } from 'jest/ci/runner/mock_data';
+import {
+  projectRunnersData,
+  projectAssignableRunnersData,
+  runnerJobCountData,
+} from 'jest/ci/runner/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
+import projectAssignableRunnersQuery from '~/ci/runner/graphql/list/project_assignable_runners.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { captureException } from '~/ci/runner/sentry_utils';
@@ -21,6 +26,7 @@ Vue.use(VueApollo);
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunners = projectRunnersData.data.project.runners.edges;
+const mockAssignableRunners = projectAssignableRunnersData.data.currentUser.runners.edges;
 const mockPageInfo = projectRunnersData.data.project.runners.pageInfo;
 const mockRunnerId = getIdFromGraphQLId(mockRunners[0].node.id);
 const mockRunnerSha = mockRunners[0].node.shortSha;
@@ -28,6 +34,7 @@ const mockRunnerSha = mockRunners[0].node.shortSha;
 describe('RunnersTab', () => {
   let wrapper;
   let projectRunnersHandler;
+  let assignableRunnersHandler;
   let runnerJobCountHandler;
   const showToast = jest.fn();
 
@@ -41,6 +48,7 @@ describe('RunnersTab', () => {
       },
       apolloProvider: createMockApollo([
         [projectRunnersQuery, projectRunnersHandler],
+        [projectAssignableRunnersQuery, assignableRunnersHandler],
         [runnerJobCountQuery, runnerJobCountHandler],
       ]),
       mocks: {
@@ -63,6 +71,7 @@ describe('RunnersTab', () => {
 
   beforeEach(() => {
     projectRunnersHandler = jest.fn().mockResolvedValue(projectRunnersData);
+    assignableRunnersHandler = jest.fn().mockResolvedValue(projectAssignableRunnersData);
     runnerJobCountHandler = jest.fn().mockResolvedValue(runnerJobCountData);
   });
 
@@ -119,6 +128,42 @@ describe('RunnersTab', () => {
 
     it('renders description slot', () => {
       expect(wrapper.findComponent(GlAlert).text()).toContain('Some description');
+    });
+  });
+
+  describe('when rendered for assignable runners', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          useAssignableQuery: true,
+        },
+      });
+    });
+
+    it('fetches data', () => {
+      expect(assignableRunnersHandler).toHaveBeenCalledTimes(1);
+      expect(assignableRunnersHandler).toHaveBeenCalledWith({
+        fullPath: 'group/project',
+        type: PROJECT_TYPE,
+        first: 10,
+      });
+    });
+
+    describe('when data is fetched', () => {
+      beforeEach(async () => {
+        await waitForPromises();
+      });
+
+      it('shows badge with count when available', () => {
+        expect(findBadge().text()).toBe('1');
+      });
+
+      it('shows runner list when runners are available', () => {
+        expect(findRunnerList().props('loading')).toBe(false);
+        expect(findRunnerList().props('runners')).toEqual([
+          expect.objectContaining({ ...mockAssignableRunners[0].node }),
+        ]);
+      });
     });
   });
 

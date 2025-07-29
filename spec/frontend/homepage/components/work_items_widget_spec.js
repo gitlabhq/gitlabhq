@@ -9,6 +9,13 @@ import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '~/homepage/graphql/queries/work_items_widget_metadata.query.graphql';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_ISSUES,
+  TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+  TRACKING_PROPERTY_AUTHORED_BY_YOU,
+} from '~/homepage/tracking_constants';
 import { withItems, withoutItems } from './mocks/work_items_widget_metadata_query_mocks';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -29,6 +36,8 @@ describe('WorkItemsWidget', () => {
   const findLinksList = () => wrapper.findByTestId('links-list');
   const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findGlLinks = () => wrapper.findAllComponents(GlLink);
+  const findAssignedToYouLink = () => findGlLinks().at(0);
+  const findAuthoredByYouLink = () => findGlLinks().at(1);
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
   const findAuthoredCount = () => wrapper.findByTestId('authored-count');
@@ -138,6 +147,47 @@ describe('WorkItemsWidget', () => {
 
       expect(reloadSpy).toHaveBeenCalled();
       reloadSpy.mockRestore();
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('tracks click on "Assigned to you" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const assignedLink = findAssignedToYouLink();
+
+      assignedLink.vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_ISSUES,
+          property: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+        },
+        undefined,
+      );
+    });
+
+    it('tracks click on "Authored by you" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const authoredLink = findAuthoredByYouLink();
+
+      authoredLink.vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_ISSUES,
+          property: TRACKING_PROPERTY_AUTHORED_BY_YOU,
+        },
+        undefined,
+      );
     });
   });
 });

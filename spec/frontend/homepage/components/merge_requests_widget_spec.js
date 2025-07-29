@@ -5,10 +5,17 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_MERGE_REQUESTS,
+  TRACKING_PROPERTY_REVIEW_REQUESTED,
+  TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+} from '~/homepage/tracking_constants';
 import { withItems, withoutItems } from './mocks/merge_requests_widget_metadata_query_mocks';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -31,6 +38,8 @@ describe('MergeRequestsWidget', () => {
   const findLinksList = () => wrapper.findByTestId('links-list');
   const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findGlLinks = () => wrapper.findAllComponents(GlLink);
+  const findReviewRequestedLink = () => findGlLinks().at(0);
+  const findAssignedToYouLink = () => findGlLinks().at(1);
   const findReviewRequestedCount = () => wrapper.findByTestId('review-requested-count');
   const findReviewRequestedLastUpdatedAt = () =>
     wrapper.findByTestId('review-requested-last-updated-at');
@@ -140,6 +149,47 @@ describe('MergeRequestsWidget', () => {
 
       expect(reloadSpy).toHaveBeenCalled();
       reloadSpy.mockRestore();
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('tracks click on "Review requested" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const reviewRequestedLink = findReviewRequestedLink();
+
+      reviewRequestedLink.vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_MERGE_REQUESTS,
+          property: TRACKING_PROPERTY_REVIEW_REQUESTED,
+        },
+        undefined,
+      );
+    });
+
+    it('tracks click on "Assigned to you" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const assignedLink = findAssignedToYouLink();
+
+      assignedLink.vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_MERGE_REQUESTS,
+          property: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+        },
+        undefined,
+      );
     });
   });
 });

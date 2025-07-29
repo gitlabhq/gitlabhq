@@ -86,7 +86,7 @@ describe('RunnerList', () => {
   it('Displays a list of runners', () => {
     createComponent({}, mountExtended);
 
-    expect(findRows()).toHaveLength(4);
+    expect(findRows()).toHaveLength(5);
 
     expect(findSkeletonLoader().exists()).toBe(false);
   });

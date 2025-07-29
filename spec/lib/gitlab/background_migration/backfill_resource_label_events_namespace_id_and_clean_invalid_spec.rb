@@ -131,12 +131,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLabelEventsNamespace
   end
 
   let!(:invalid_label_event) do
-    # Necessary as we can no longer create invalid test data due to the contraint, but we know it exists in production
-    resource_label_events.connection.execute(<<~SQL)
-      ALTER TABLE resource_label_events DROP CONSTRAINT check_614704e750;
-    SQL
-
-    event = resource_label_events.create!(
+    resource_label_events.create!(
       epic_id: epic.id,
       issue_id: issue.id,
       label_id: label.id,
@@ -144,13 +139,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLabelEventsNamespace
       user_id: user.id,
       namespace_id: fake_namespace.id
     )
-
-    resource_label_events.connection.execute(<<~SQL)
-      ALTER TABLE resource_label_events
-        ADD CONSTRAINT check_614704e750 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1)) NOT VALID;
-    SQL
-
-    event
   end
 
   let(:migration) do

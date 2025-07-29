@@ -98,7 +98,7 @@ export default {
             :description="$options.i18n.granularCardDescription"
             :button-link="$options.GRANULAR_CARD_URL"
             data-testid="granular-controls-feature-card"
-            tracking-event="click_learn_more_in_granular_control_featured_update_card"
+            tracking-event="click_learn_more_in_granular_access_featured_update_card"
           />
         </div>
         <div class="gl-w-full gl-flex-shrink-0">

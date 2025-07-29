@@ -705,6 +705,7 @@ Gitlab/AvoidFeatureGet:
 
 Gitlab/FeatureFlagKeyDynamic:
   Enabled: true
+  SafeAutoCorrect: false
 
 RSpec/WebMockEnable:
   Enabled: true
@@ -1374,6 +1375,7 @@ Cop/ActiveRecordDependent:
 
 Gitlab/Rails/AttrEncrypted:
   Enabled: true
+  SafeAutoCorrect: false
   Include:
   - '{,ee/,jh/}app/models/**/*.rb'
   - 'db/migrate/*.rb'

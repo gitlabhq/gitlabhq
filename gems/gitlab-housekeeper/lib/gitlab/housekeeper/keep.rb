@@ -51,6 +51,10 @@ module Gitlab
       def each_change
         raise NotImplementedError, "A Keep must implement each_change method"
       end
+
+      private
+
+      attr_reader :logger
     end
   end
 end

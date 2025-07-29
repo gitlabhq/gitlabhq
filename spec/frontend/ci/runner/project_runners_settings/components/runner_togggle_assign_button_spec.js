@@ -74,6 +74,7 @@ describe('RunnerToggleAssignButton', () => {
     it('renders button', () => {
       expect(findButton().props('loading')).toBe(false);
       expect(findButton().props('icon')).toBe(icon);
+      expect(findButton().attributes('aria-label')).toBe(tooltip);
       expect(getTooltipValue()).toBe(tooltip);
     });
 

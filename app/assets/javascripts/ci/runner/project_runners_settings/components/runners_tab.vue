@@ -5,6 +5,7 @@ import { fetchPolicies } from '~/lib/graphql';
 
 import { I18N_FETCH_ERROR } from '~/ci/runner/constants';
 import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
+import projectAssignableRunnersQuery from '~/ci/runner/graphql/list/project_assignable_runners.query.graphql';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerName from '~/ci/runner/components/runner_name.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
@@ -38,6 +39,11 @@ export default {
       type: String,
       required: true,
     },
+    useAssignableQuery: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   emits: ['error'],
   expose: ['refresh'],
@@ -54,14 +60,17 @@ export default {
   },
   apollo: {
     runners: {
-      query: projectRunnersQuery,
+      query() {
+        return this.useAssignableQuery ? projectAssignableRunnersQuery : projectRunnersQuery;
+      },
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       loadingKey: 'loading',
       variables() {
         return this.variables;
       },
       update(data) {
-        const { edges = [], pageInfo = {}, count } = data?.project?.runners || {};
+        const parent = this.useAssignableQuery ? data?.currentUser : data?.project;
+        const { edges = [], pageInfo = {}, count } = parent?.runners || {};
         const items = edges.map(({ node, webUrl, editUrl }) => ({ ...node, webUrl, editUrl }));
 
         return {

@@ -9,6 +9,11 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import RecentlyViewedItemsQuery from '~/homepage/graphql/queries/recently_viewed_items.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_RECENTLY_VIEWED,
+} from '~/homepage/tracking_constants';
 
 Vue.use(VueApollo);
 
@@ -26,6 +31,7 @@ describe('RecentlyViewedWidget', () => {
         recentlyViewedItems: [
           {
             viewedAt: '2025-06-21T09:15:00Z',
+            itemType: 'MergeRequest',
             item: {
               __typename: 'MergeRequest',
               id: 'mr-1',
@@ -35,6 +41,7 @@ describe('RecentlyViewedWidget', () => {
           },
           {
             viewedAt: '2025-06-20T10:00:00Z',
+            itemType: 'Issue',
             item: {
               __typename: 'Issue',
               id: 'issue-1',
@@ -44,6 +51,7 @@ describe('RecentlyViewedWidget', () => {
           },
           {
             viewedAt: '2025-06-19T15:30:00Z',
+            itemType: 'Issue',
             item: {
               __typename: 'Epic',
               id: 'epic-1',
@@ -62,6 +70,7 @@ describe('RecentlyViewedWidget', () => {
           },
           {
             viewedAt: '2025-06-18T11:45:00Z',
+            itemType: 'MergeRequest',
             item: {
               __typename: 'MergeRequest',
               id: 'mr-2',
@@ -245,6 +254,7 @@ describe('RecentlyViewedWidget', () => {
             id: 123,
             recentlyViewedItems: Array.from({ length: 15 }, (_, i) => ({
               viewedAt: new Date(Date.now() - i * 1000).toISOString(),
+              itemType: 'Issue',
               item: {
                 __typename: 'Issue',
                 id: `issue-${i}`,
@@ -310,6 +320,47 @@ describe('RecentlyViewedWidget', () => {
       expect(tooltips).toHaveLength(5);
       expect(tooltips.at(0).props('title')).toBe('Implement authentication improvements');
       expect(tooltips.at(2).props('title')).toBe('Q3 Development Roadmap');
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks click on issue item', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const mockIssueItem = { icon: 'issues', __typename: 'Issue' };
+      wrapper.vm.handleItemClick(mockIssueItem);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_RECENTLY_VIEWED,
+          property: 'Issue',
+        },
+        undefined,
+      );
+    });
+
+    it('tracks click on merge request item', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const mockMrItem = { icon: 'merge-request', __typename: 'MergeRequest' };
+      wrapper.vm.handleItemClick(mockMrItem);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_RECENTLY_VIEWED,
+          property: 'MergeRequest',
+        },
+        undefined,
+      );
     });
   });
 });

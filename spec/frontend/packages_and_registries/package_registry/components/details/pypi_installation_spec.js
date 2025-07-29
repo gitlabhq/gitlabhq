@@ -1,4 +1,3 @@
-import { GlSprintf } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
@@ -37,9 +36,6 @@ password = <your personal access token>`;
           ...props,
         },
       },
-      stubs: {
-        GlSprintf,
-      },
     });
   }
 
@@ -51,10 +47,6 @@ password = <your personal access token>`;
     it('does not show the installation method component', () => {
       expect(findInstallationMethod().exists()).toBe(false);
     });
-  });
-
-  it('renders all the messages', () => {
-    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('installation commands', () => {

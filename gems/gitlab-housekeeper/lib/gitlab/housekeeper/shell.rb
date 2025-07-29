@@ -20,7 +20,7 @@ module Gitlab
 
         exit_status = wait_thr.value
 
-        raise Error, "Failed with #{exit_status}\n#{out}\n#{err}\n" unless exit_status.success?
+        raise Error, "Failed with #{exit_status}\nOutput: #{out}\nError: #{err}\n" unless exit_status.success?
 
         out + err
       end
@@ -28,14 +28,15 @@ module Gitlab
       # Run `rubocop --autocorrect --force-exclusion`.
       #
       # RuboCop is run without revealed TODOs.
-      def self.rubocop_autocorrect(files)
+      def self.rubocop_autocorrect(files, logger: Logger.new(nil))
         # Stop revealing RuboCop TODOs so RuboCop is only fixing material offenses.
         env = { 'REVEAL_RUBOCOP_TODO' => nil }
         cmd = ['rubocop', '--autocorrect', '--force-exclusion']
 
         ::Gitlab::Housekeeper::Shell.execute(*cmd, *files, env: env)
         true
-      rescue ::Gitlab::Housekeeper::Shell::Error
+      rescue ::Gitlab::Housekeeper::Shell::Error => e
+        logger.warn(e.message)
         false
       end
     end

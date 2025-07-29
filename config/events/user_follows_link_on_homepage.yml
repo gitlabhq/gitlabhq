@@ -1,0 +1,23 @@
+---
+description: When a user clicks any link on the homepage
+internal_events: true
+status: active
+action: user_follows_link_on_homepage
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Source - a string describing the widget containing the followed link (e.g. "Recently viewed")
+  property:
+    description: Type - a string describing the type of item followed, optional (e.g. "Merge request")
+product_group: personal_productivity
+product_categories:
+- navigation
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198854
+tiers:
+- free
+- premium
+- ultimate

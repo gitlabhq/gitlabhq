@@ -1,8 +1,15 @@
 <script>
 import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_MERGE_REQUESTS,
+  TRACKING_PROPERTY_REVIEW_REQUESTED,
+  TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+} from '../tracking_constants';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 export default {
@@ -14,7 +21,7 @@ export default {
     GlSprintf,
     VisibilityChangeDetector,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, InternalEvents.mixin()],
   inject: ['duoCodeReviewBotUsername'],
   props: {
     reviewRequestedPath: {
@@ -68,6 +75,18 @@ export default {
       this.hasError = false;
       this.$apollo.queries.metadata.refetch();
     },
+    handleReviewRequestedClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_MERGE_REQUESTS,
+        property: TRACKING_PROPERTY_REVIEW_REQUESTED,
+      });
+    },
+    handleAssignedClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_MERGE_REQUESTS,
+        property: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+      });
+    },
   },
 };
 </script>
@@ -96,6 +115,7 @@ export default {
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="reviewRequestedPath"
+          @click="handleReviewRequestedClick"
         >
           {{ __('Review requested') }}
           <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
@@ -112,6 +132,7 @@ export default {
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="assignedToYouPath"
+          @click="handleAssignedClick"
         >
           {{ __('Assigned to you') }}
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
