@@ -391,7 +391,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/api/entities/protected_environments/approval_rule_for_summary_spec.rb'
     - 'ee/spec/lib/api/entities/protected_environments/approval_rule_spec.rb'
     - 'ee/spec/lib/api/entities/protected_environments/deploy_access_level_spec.rb'
-    - 'ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/jira_private_image_link_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iteration_reference_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/label_reference_filter_spec.rb'

@@ -31,19 +31,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementPerActionedResource,
       expect { increment('resource_1', expiry + 1) }.not_to change { ttl }
       expect { increment('resource_2', expiry + 2) }.not_to change { ttl }
     end
-
-    context 'when optimize_rate_limiter_redis_expiry is disabled' do
-      before do
-        stub_feature_flags(optimize_rate_limiter_redis_expiry: false)
-      end
-
-      it 'sets TTL on each increment' do
-        expect(ttl).to eq key_does_not_exist
-        expect { increment('resource_1') }.to change { ttl }.by(a_value > 0)
-        expect { increment('resource_1', expiry + 1) }.to change { ttl }.by(a_value > 0)
-        expect { increment('resource_2', expiry + 2) }.to change { ttl }.by(a_value > 0)
-      end
-    end
   end
 
   describe '#read' do

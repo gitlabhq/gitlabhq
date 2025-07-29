@@ -116,6 +116,8 @@ module QA
             within_element 'note-container' do
               fill_and_submit_comment(reply_text)
             end
+
+            has_comment?(reply_text)
           end
 
           def select_all_activities_filter

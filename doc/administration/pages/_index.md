@@ -715,6 +715,40 @@ To do that:
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
 
+#### Disable unique domains by default
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/555559) in GitLab 18.3.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+By default, all newly created GitLab Pages sites use unique domain URLs
+(for example, `my-project-1a2b3c.example.com`), which prevents cookie sharing
+between different sites under the same namespace.
+
+You can disable this default behavior so that new Pages sites use path-based URLs
+(for example, `my-namespace.example.com/my-project`) instead.
+However, this approach has the risk of cookie sharing between different sites under the same namespace.
+
+This setting controls the default behavior for new sites only.
+Users can still override this setting for individual projects.
+
+To disable unique domains by default:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Preferences**.
+1. Expand **Pages**.
+1. Clear the **Enable unique domains by default** checkbox.
+1. Select **Save changes**.
+
+This setting only affects new Pages sites.
+Existing sites maintain their current unique domain configuration.
+
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external

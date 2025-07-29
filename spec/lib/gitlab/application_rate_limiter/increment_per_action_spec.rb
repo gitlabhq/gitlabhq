@@ -29,18 +29,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementPerAction, :freeze_time,
       expect { increment }.to change { ttl }.by(a_value > 0)
       expect { increment(expiry + 1) }.not_to change { ttl }
     end
-
-    context 'when optimize_rate_limiter_redis_expiry is disabled' do
-      before do
-        stub_feature_flags(optimize_rate_limiter_redis_expiry: false)
-      end
-
-      it 'sets TTL on each increment' do
-        expect(ttl).to eq key_does_not_exist
-        expect { increment }.to change { ttl }.by(a_value > 0)
-        expect { increment(expiry + 1) }.to change { ttl }.by(a_value > 0)
-      end
-    end
   end
 
   describe '#read' do

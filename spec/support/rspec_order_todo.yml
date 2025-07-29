@@ -719,7 +719,6 @@
 - './ee/spec/lib/audit/details_spec.rb'
 - './ee/spec/lib/merge_requests/external_status_check_changes_auditor_spec.rb'
 - './ee/spec/lib/audit/group_merge_request_approval_setting_changes_auditor_spec.rb'
-- './ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb'
 - './ee/spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
 - './ee/spec/lib/banzai/filter/jira_private_image_link_filter_spec.rb'
 - './ee/spec/lib/banzai/filter/references/epic_reference_filter_spec.rb'

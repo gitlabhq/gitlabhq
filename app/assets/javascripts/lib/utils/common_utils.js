@@ -364,6 +364,12 @@ export const insertText = (target, text) => {
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
   const hasSelection = selectionEnd !== selectionStart;
 
+  const currentActiveElement = document.activeElement;
+
+  if (document.activeElement !== target) {
+    target.focus();
+  }
+
   // The `execCommand` is officially deprecated.  However, for `insertText`,
   // there is currently no alternative. We need to use it in order to trigger
   // the browser's undo tracking when we insert text.
@@ -398,6 +404,10 @@ export const insertText = (target, text) => {
   const event = document.createEvent('Event');
   event.initEvent('autosize:update', true, false);
   target.dispatchEvent(event);
+
+  if (currentActiveElement !== target) {
+    currentActiveElement.focus();
+  }
 };
 
 /**

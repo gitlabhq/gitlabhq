@@ -10,63 +10,61 @@ RSpec.describe 'viewing an issue with cross project references', :js, feature_ca
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
   let_it_be(:support_bot) { Users::Internal.support_bot }
 
-  let(:user) { create(:user) }
-  let(:other_project) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:other_project) do
     create(:project, :public, external_authorization_classification_label: 'other_label')
   end
 
-  let(:other_issue) do
+  let_it_be(:other_issue) do
     create(:issue, :closed, title: 'I am in another project', project: other_project)
   end
 
-  let(:other_confidential_issue) do
+  let_it_be(:other_confidential_issue) do
     create(:issue, :confidential, :closed, title: 'I am in another project and confidential', project: other_project)
   end
 
-  let(:other_merge_request) do
+  let_it_be(:other_merge_request) do
     create(:merge_request, :closed, title: 'I am a merge request in another project', source_project: other_project)
   end
 
-  let(:description_referencing_other_issue) do
-    "Referencing: #{other_issue.to_reference(project)}, "\
-    "a confidential issue #{confidential_issue.to_reference}, "\
-    "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and "\
-    "a cross project merge request #{other_merge_request.to_reference(project)}"
+  let_it_be(:project) { create(:project) }
+
+  let_it_be(:confidential_issue) do
+    create(:issue, :confidential, :closed, title: "I am in the same project and confidential", project: project)
   end
 
-  let(:project) { create(:project) }
-  let(:issue) do
+  let_it_be(:issue) do
+    description_referencing_other_issue = "Referencing: #{other_issue.to_reference(project)}, "\
+                                          "a confidential issue #{confidential_issue.to_reference}, "\
+                                          "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and "\
+                                          "a cross project merge request #{other_merge_request.to_reference(project)}"
     create(:issue, project: project, description: description_referencing_other_issue)
   end
 
-  let(:confidential_issue) do
-    create(:issue, :confidential, :closed, title: "I am in the same project and confidential", project: project)
+  before_all do
+    project.add_developer(user)
   end
 
   before do
     stub_feature_flags(work_item_view_for_issues: true)
-    project.add_developer(user)
     sign_in(user)
   end
 
-  it 'shows all information related to the cross project reference' do
+  it 'shows all references the user has access to', :aggregate_failures do
     visit project_issue_path(project, issue)
 
+    # cross-project issue and MR references
     expect(page).to have_link("#{other_issue.to_reference(project)} (#{other_issue.state})")
     expect(page).to have_xpath("//a[@title='#{other_issue.title}']")
-  end
+    expect(page).to have_link("#{other_merge_request.to_reference(project)} (#{other_merge_request.state})")
+    expect(page).to have_xpath("//a[@title='#{other_merge_request.title}']")
 
-  it 'shows a link to the confidential issue in the same project' do
-    visit project_issue_path(project, issue)
-
+    # confidential issue in same project
     expect(page).to have_link("#{confidential_issue.to_reference(project)} (#{confidential_issue.state})")
     expect(page).to have_xpath("//a[@title='#{confidential_issue.title}']")
-  end
 
-  it 'does not show the link to a cross project confidential issue when the user does not have access' do
-    visit project_issue_path(project, issue)
-
-    expect(page).not_to have_link("#{other_confidential_issue.to_reference(project)} (#{other_confidential_issue.state})")
+    # confidential issue in other project user does not have access to
+    expect(page).not_to have_link(other_confidential_issue.to_reference(project))
     expect(page).not_to have_xpath("//a[@title='#{other_confidential_issue.title}']")
   end
 
@@ -93,38 +91,31 @@ RSpec.describe 'viewing an issue with cross project references', :js, feature_ca
       visit project_issue_path(project, issue)
     end
 
-    it 'shows only the link to the cross project references' do
+    it 'redacts the cross project references', :aggregate_failures do
       visit project_issue_path(project, issue)
 
-      expect(page).to have_link(other_issue.to_reference(project).to_s)
-      expect(page).to have_link(other_merge_request.to_reference(project).to_s)
-      expect(page).not_to have_content("#{other_issue.to_reference(project)} (#{other_issue.state})")
+      # cross-project issue and MR references
+      expect(page).not_to have_link(other_issue.to_reference(project))
       expect(page).not_to have_xpath("//a[@title='#{other_issue.title}']")
-      expect(page).not_to have_content("#{other_merge_request.to_reference(project)} (#{other_merge_request.state})")
+      expect(page).not_to have_link(other_merge_request.to_reference(project))
       expect(page).not_to have_xpath("//a[@title='#{other_merge_request.title}']")
-    end
 
-    it 'does not link a cross project confidential issue if the user does not have access' do
-      visit project_issue_path(project, issue)
+      # confidential issue in same project
+      expect(page).to have_link("#{confidential_issue.to_reference(project)} (#{confidential_issue.state})")
+      expect(page).to have_xpath("//a[@title='#{confidential_issue.title}']")
 
-      expect(page).not_to have_link(other_confidential_issue.to_reference(project).to_s)
+      # confidential issue in other project user does not have access to
+      expect(page).not_to have_link(other_confidential_issue.to_reference(project))
       expect(page).not_to have_xpath("//a[@title='#{other_confidential_issue.title}']")
     end
 
-    it 'links a cross project confidential issue without exposing information when the user has access' do
+    it 'redacts the cross project confidential issue even when the user has access' do
       other_project.add_developer(user)
 
       visit project_issue_path(project, issue)
 
-      expect(page).to have_link(other_confidential_issue.to_reference(project).to_s)
+      expect(page).not_to have_link(other_confidential_issue.to_reference(project))
       expect(page).not_to have_xpath("//a[@title='#{other_confidential_issue.title}']")
-    end
-
-    it 'shows a link to the confidential issue in the same project' do
-      visit project_issue_path(project, issue)
-
-      expect(page).to have_link("#{confidential_issue.to_reference(project)} (#{confidential_issue.state})")
-      expect(page).to have_xpath("//a[@title='#{confidential_issue.title}']")
     end
   end
 end
