@@ -35,6 +35,10 @@ variables:
 
 release-environments-build-cng-env:
   extends: .build-cng-env
+  before_script:
+    - !reference [.build-cng-env, before_script]
+    - define_trigger_branch_in_build_env
+    - export CNG_BRANCH=$TRIGGER_BRANCH
 
 release-environments-build-cng:
   extends: .build-cng
