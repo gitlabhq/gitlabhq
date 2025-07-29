@@ -31535,6 +31535,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
 | <a id="groupnamespacelinksgroupissues"></a>`groupIssues` | [`String`](#string) | Namespace group_issues. |
 | <a id="groupnamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
+| <a id="groupnamespacelinksissuessettings"></a>`issuesSettings` | [`String`](#string) | Namespace issues settings path. |
 | <a id="groupnamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="groupnamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
 | <a id="groupnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
@@ -39989,6 +39990,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
 | <a id="projectnamespacelinksgroupissues"></a>`groupIssues` | [`String`](#string) | Namespace group_issues. |
 | <a id="projectnamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
+| <a id="projectnamespacelinksissuessettings"></a>`issuesSettings` | [`String`](#string) | Namespace issues settings path. |
 | <a id="projectnamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="projectnamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
 | <a id="projectnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
@@ -42911,6 +42913,7 @@ fields relate to interactions between the two entities.
 | <a id="usernamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
 | <a id="usernamespacelinksgroupissues"></a>`groupIssues` | [`String`](#string) | Namespace group_issues. |
 | <a id="usernamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
+| <a id="usernamespacelinksissuessettings"></a>`issuesSettings` | [`String`](#string) | Namespace issues settings path. |
 | <a id="usernamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="usernamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
 | <a id="usernamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
@@ -51409,6 +51412,7 @@ Implementations:
 | <a id="namespaceslinkpathsepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
 | <a id="namespaceslinkpathsgroupissues"></a>`groupIssues` | [`String`](#string) | Namespace group_issues. |
 | <a id="namespaceslinkpathsissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
+| <a id="namespaceslinkpathsissuessettings"></a>`issuesSettings` | [`String`](#string) | Namespace issues settings path. |
 | <a id="namespaceslinkpathslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="namespaceslinkpathslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
 | <a id="namespaceslinkpathsnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |

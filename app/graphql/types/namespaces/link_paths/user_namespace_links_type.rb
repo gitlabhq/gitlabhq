@@ -10,3 +10,5 @@ module Types
     end
   end
 end
+
+::Types::Namespaces::LinkPaths::UserNamespaceLinksType.prepend_mod

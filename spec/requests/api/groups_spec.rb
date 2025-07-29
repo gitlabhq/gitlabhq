@@ -3363,7 +3363,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       context 'when using a group path in URL' do
         context 'with a valid group path' do
-          it "transfers project to group" do
+          it "transfers project to group", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556741' do
             post api("/groups/#{group1.path}/projects/#{project_path}", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:created)

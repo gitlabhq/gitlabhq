@@ -110,11 +110,11 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-tmp-cache: &assets-tmp-cache
-  key: "assets-tmp-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-node-${NODE_ENV}-v1"
+  key: "assets-tmp-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-node-${NODE_ENV}-v2"
   paths:
     - tmp/cache/assets/sprockets/
-    - tmp/cache/webpack/babel-loader/
-    - tmp/cache/webpack/vue-loader/
+    - tmp/cache/babel-loader/
+    - tmp/cache/vue-loader/
   policy: pull
 
 .assets-tmp-cache-push: &assets-tmp-cache-push

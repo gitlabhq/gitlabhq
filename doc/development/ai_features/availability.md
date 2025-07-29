@@ -135,7 +135,7 @@ This setting allows group owners to control Duo Core availability:
 | Feature | Duo Core | Duo Pro | Duo Enterprise |
 |---------|----------|---------|----------------|
 | Chat | Limited to IDE | Full functionality | Full functionality |
-| Code Suggestions | Availble in IDE and Web IDE | Available in IDE and Web IDE | Available in IDE and Web IDE |
+| Code Suggestions | Available in IDE and Web IDE | Available in IDE and Web IDE | Available in IDE and Web IDE |
 | Additional AI features | Not available | Some Available | All Available |
 
 This flow diagram shows how GitLab Duo feature availability works on GitLab.com with
