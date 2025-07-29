@@ -8,12 +8,22 @@ module RapidDiffs
           'text_inline'
         end
 
+        def virtual_rendering_params
+          { total_rows: total_rows }
+        end
+
+        private
+
         def column_titles
           [
             s_('RapidDiffs|Original line number'),
             s_('RapidDiffs|Diff line number'),
             s_('RapidDiffs|Diff line')
           ]
+        end
+
+        def total_rows
+          @diff_file.viewer_hunks.sum { |hunk| (hunk.header ? 1 : 0) + hunk.lines.count }
         end
       end
     end

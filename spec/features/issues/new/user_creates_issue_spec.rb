@@ -286,6 +286,8 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit(new_project_issue_path(project))
+
+      wait_for_all_requests
     end
 
     it_behaves_like 'rich text editor - autocomplete'

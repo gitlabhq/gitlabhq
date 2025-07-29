@@ -187,4 +187,52 @@ RSpec.describe Clusters::CreateService, feature_category: :deployment_management
       include_examples 'setting a management project'
     end
   end
+
+  describe 'sharding key columns' do
+    context 'for a project cluster' do
+      let_it_be(:project) { create(:project) }
+
+      let(:params) do
+        {
+          name: 'test-cluster',
+          clusterable: project
+        }
+      end
+
+      it 'sets the project_id' do
+        expect { subject }.to change { Clusters::Cluster.count }.by(1)
+        expect(Clusters::Cluster.last).to have_attributes(project_id: project.id, group_id: nil, organization_id: nil)
+      end
+    end
+
+    context 'for a group cluster' do
+      let_it_be(:group) { create(:group) }
+
+      let(:params) do
+        {
+          name: 'test-cluster',
+          clusterable: group
+        }
+      end
+
+      it 'sets the group_id' do
+        expect { subject }.to change { Clusters::Cluster.count }.by(1)
+        expect(Clusters::Cluster.last).to have_attributes(project_id: nil, group_id: group.id, organization_id: nil)
+      end
+    end
+
+    context 'for an instance cluster' do
+      let(:params) do
+        {
+          name: 'test-cluster',
+          clusterable: Clusters::Instance.new
+        }
+      end
+
+      it 'sets the organization_id' do
+        expect { subject }.to change { Clusters::Cluster.count }.by(1)
+        expect(Clusters::Cluster.last).to have_attributes(project_id: nil, group_id: nil, organization_id: user.organization_id)
+      end
+    end
+  end
 end

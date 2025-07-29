@@ -884,12 +884,11 @@ Do not use **easily**. If the user doesn't find the process to be easy, we lose 
 
 Use **edit** for UI documentation and user actions.
 
-Use **update** for API documentation and programmatic changes.
-
 For example:
 
 - To edit your profile settings, select **Edit**.
-- Use this endpoint to update user permissions.
+
+For API documentation and programmatic changes, use **[update](#update)**.
 
 ## e.g.
 
@@ -2628,9 +2627,13 @@ For more information, see the
 
 ## update
 
-Use **update** for installing a newer **patch** version of the software only. For example:
+Use **update** for installing a newer **patch** version of the software,
+or for documenting API and programmatic changes.
+
+For example:
 
 - Update GitLab from 14.9 to 14.9.1.
+- Use this endpoint to update user permissions.
 
 Do not use **update** for any other case. Instead, use **[upgrade](#upgrade)** or **[edit](#edit)**.
 

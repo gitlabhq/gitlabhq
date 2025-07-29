@@ -1,12 +1,12 @@
-= gitlab_ui_form_for current_user, url: toggle_dpop_user_settings_personal_access_tokens_path, method: :put, html: { data: { testid: 'dpop-form' } } do |f|
-  .settings-section.js-search-settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h3.gl-heading-4.gl-mb-3
-          = s_('AccessTokens|Use Demonstrating Proof of Possession (DPoP)')
-        %p.gl-text-secondary
-          = s_('AccessTokens|Use DPoP to protect your REST or GraphQL API access when using a personal access token.')
-          = link_to s_('AccessTokens|How do I use DPoP?'), help_page_path('user/profile/personal_access_tokens.md', anchor: 'use-dpop-with-personal-access-tokens'), target: '_blank', rel: 'noopener noreferrer'
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h2.gl-heading-2{ class: '!gl-mb-0' }
+        = s_('AccessTokens|Use Demonstrating Proof of Possession (DPoP)')
+  %p.gl-text-secondary
+    = s_('AccessTokens|Use DPoP to protect your REST or GraphQL API access when using a personal access token.')
+    = link_to s_('AccessTokens|How do I use DPoP?'), help_page_path('user/profile/personal_access_tokens.md', anchor: 'use-dpop-with-personal-access-tokens'), target: '_blank', rel: 'noopener noreferrer'
+  = gitlab_ui_form_for current_user, url: toggle_dpop_user_settings_personal_access_tokens_path, method: :put, html: { data: { testid: 'dpop-form' } } do |f|
     .form-group
       = f.gitlab_ui_checkbox_component :dpop_enabled, s_('AccessTokens|Enable DPoP'), checkbox_options: { checked: current_user.dpop_enabled }
     = f.submit _('Save changes'), pajamas_button: true

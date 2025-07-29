@@ -482,7 +482,7 @@ class Member < ApplicationRecord
 
     # overriden in EE
     def member_role_id(_group_link_table, _custom_role_for_group_link_enabled)
-      arel_table[:member_role_id]
+      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
     end
   end
 

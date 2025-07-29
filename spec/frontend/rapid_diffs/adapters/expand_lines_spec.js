@@ -87,7 +87,7 @@ describe('expandLinesAdapter', () => {
     expect(getFirstInsertedRow()).not.toBe(null);
     expect(getLastInsertedRow()).not.toBe(null);
     expect(getExpandButton(direction)).toBe(null);
-    expect(getDiffElement().style.getPropertyValue('--total-rows')).toBe('6');
+    expect(getDiffElement().style.getPropertyValue('--virtual-total-rows')).toBe('6');
   });
 
   it('focuses first inserted line number', async () => {

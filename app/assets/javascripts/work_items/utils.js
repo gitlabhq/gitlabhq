@@ -181,7 +181,14 @@ const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemType
   return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&${typeId}`;
 };
 
-export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup = false }) => {
+export const autocompleteDataSources = ({
+  fullPath,
+  iid,
+  workItemTypeId,
+  isGroup = false,
+  markdownPaths = {},
+}) => {
+  const fetchedPaths = markdownPaths;
   const sources = {
     labels: autocompleteSourcesPath({
       autocompleteType: 'labels',
@@ -253,6 +260,7 @@ export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup
       isGroup,
       workItemTypeId,
     }),
+    ...fetchedPaths,
   };
 
   const enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;

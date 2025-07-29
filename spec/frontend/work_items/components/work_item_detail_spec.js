@@ -81,10 +81,7 @@ describe('WorkItemDetail component', () => {
   const successHandlerWithNoPermissions = jest
     .fn()
     .mockResolvedValue(workItemQueryResponseWithNoPermissions);
-  const {
-    id,
-    namespace: { webUrl },
-  } = workItemByIidQueryResponse.data.workspace.workItem;
+  const { id } = workItemByIidQueryResponse.data.workspace.workItem;
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
@@ -1435,20 +1432,6 @@ describe('WorkItemDetail component', () => {
         );
       });
     });
-
-    it.each`
-      isGroupWorkItem | uploadsPath
-      ${true}         | ${`${webUrl}/-/uploads`}
-      ${false}        | ${`${webUrl}/uploads`}
-    `(
-      'passes correct uploads path for markdown editor when isGroupWorkItem is $isGroupWorkItem',
-      async ({ isGroupWorkItem, uploadsPath }) => {
-        createComponent({ modalIsGroup: isGroupWorkItem });
-        await waitForPromises();
-
-        expect(findWorkItemDescription().props('uploadsPath')).toBe(uploadsPath);
-      },
-    );
   });
 
   it('sets `canPasteDesign` to true on work item notes focus event', async () => {

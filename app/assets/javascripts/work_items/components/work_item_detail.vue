@@ -1125,7 +1125,6 @@ export default {
                   :without-heading-anchors="isDrawer"
                   :hide-fullscreen-markdown-button="isDrawer"
                   :truncation-enabled="truncationEnabled"
-                  :uploads-path="uploadsPath"
                   @updateWorkItem="updateWorkItem"
                   @updateDraft="updateDraft('description', $event)"
                   @cancelEditing="cancelEditing"

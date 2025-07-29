@@ -15,11 +15,6 @@ RSpec.shared_context "with diff file component tests" do
     allow(repository).to receive(:commit).with(RepoHelpers.sample_commit.id).and_return(sample_commit)
   end
 
-  # This should be overridden in the including spec
-  def render_component
-    raise "Override render_component in the including spec"
-  end
-
   it "renders" do
     render_component
     expect(page).to have_selector(web_component_selector)
@@ -33,15 +28,11 @@ RSpec.shared_context "with diff file component tests" do
     expect(file_data['diff_lines_path']).to eq("#{diff_path}/diff_lines")
   end
 
-  it "renders line count" do
-    render_component
-    total_count = web_component.all(:css, 'table tbody tr').count
-    expect(web_component).to have_css("[style~='--total-rows: #{total_count}']")
-  end
-
   it "enables virtual rendering" do
     render_component
-    expect(web_component).to have_css("[data-virtual]")
+    total_count = web_component.all(:css, 'table tbody tr').count
+    expect(web_component).to have_css("[data-virtual='text_inline']")
+    expect(web_component).to have_css("[style*='--virtual-total-rows: #{total_count}']")
   end
 
   context "when is text diff" do
@@ -57,6 +48,9 @@ RSpec.shared_context "with diff file component tests" do
       it "renders no preview" do
         render_component
         expect(file_data['viewer']).to eq('no_preview')
+        expect(web_component).to have_css("[data-virtual='no_preview']")
+        expect(web_component).to have_css("[style*='--virtual-paragraphs-count: 2']")
+        expect(web_component).to have_css("[style*='--virtual-action-buttons-present: 1']")
       end
     end
 
@@ -68,6 +62,7 @@ RSpec.shared_context "with diff file component tests" do
     it "renders parallel text viewer" do
       render_component(parallel_view: true)
       expect(file_data['viewer']).to eq('text_parallel')
+      expect(web_component).to have_css("[data-virtual='text_parallel']")
     end
   end
 
@@ -79,6 +74,7 @@ RSpec.shared_context "with diff file component tests" do
     it "renders image viewer" do
       render_component
       expect(file_data['viewer']).to eq('image')
+      expect(web_component).not_to have_css("[data-virtual]")
     end
   end
 
@@ -90,11 +86,7 @@ RSpec.shared_context "with diff file component tests" do
     it "renders no preview" do
       render_component
       expect(file_data['viewer']).to eq('no_preview')
-    end
-
-    it "disables virtual rendering" do
-      render_component
-      expect(web_component).not_to have_css("[data-virtual]")
+      expect(web_component).to have_css("[data-virtual='no_preview']")
     end
   end
 
@@ -106,15 +98,18 @@ RSpec.shared_context "with diff file component tests" do
     it "renders no preview" do
       render_component
       expect(file_data['viewer']).to eq('no_preview')
-    end
-
-    it "disables virtual rendering" do
-      render_component
-      expect(web_component).not_to have_css("[data-virtual]")
+      expect(web_component).to have_css("[data-virtual='no_preview']")
+      expect(web_component).to have_css("[style*='--virtual-paragraphs-count: 2']")
+      expect(web_component).to have_css("[style*='--virtual-action-buttons-present: 1']")
     end
   end
 
   def file_data
     Gitlab::Json.parse(web_component['data-file-data'])
+  end
+
+  # This should be overridden in the including spec
+  def render_component
+    raise "Override render_component in the including spec"
   end
 end

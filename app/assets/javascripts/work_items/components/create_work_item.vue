@@ -34,11 +34,7 @@ import {
   updateDraftWorkItemType,
   newWorkItemFullPath,
 } from '~/work_items/utils';
-import {
-  TYPENAME_MERGE_REQUEST,
-  TYPENAME_VULNERABILITY,
-  TYPENAME_GROUP,
-} from '~/graphql_shared/constants';
+import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_ERROR_CREATING,
   i18n,
@@ -603,16 +599,6 @@ export default {
     showWorkItemStatus() {
       return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
     },
-    isGroupWorkItem() {
-      return this.namespace?.id.includes(TYPENAME_GROUP);
-    },
-    uploadsPath() {
-      const rootPath = this.namespace?.webUrl;
-      if (!rootPath) {
-        return window.uploads_path;
-      }
-      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
-    },
     inputNamespacePath() {
       if (this.workItemPlanningViewEnabled) {
         return this.selectedNamespacePath;
@@ -1098,7 +1084,6 @@ export default {
               :new-work-item-type="selectedWorkItemTypeName"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
-              :uploads-path="uploadsPath"
               @error="updateError = $event"
               @cancelCreate="handleCancelClick"
               @updateDraft="updateDraftData('description', $event)"

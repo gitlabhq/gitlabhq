@@ -8934,3 +8934,24 @@ export const availableBulkEditWidgetsQueryResponse = {
     },
   },
 };
+
+export const namespacePathsQueryResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      markdownPaths: {
+        issues: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem',
+        members: '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem',
+        commands: '/flightjs/Flight/-/autocomplete_sources/commands?type=WorkItem',
+        labels: '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem',
+        mergeRequests: '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem',
+        milestones: '/flightjs/Flight/-/autocomplete_sources/milestones?type=WorkItem',
+        wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem',
+        markdownPreviewPath: '/flightjs/Flight/-/preview_markdown?target_type=WorkItem',
+        uploadsPath: '/flightjs/Flight/uploads',
+        __typename: 'ProjectNamespaceMarkdownPaths',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};

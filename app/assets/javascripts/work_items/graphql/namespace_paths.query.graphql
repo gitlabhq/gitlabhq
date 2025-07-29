@@ -1,0 +1,44 @@
+query namespacePaths($fullPath: ID!, $iid: String, $workItemTypeId: String) {
+  namespace(fullPath: $fullPath) {
+    id
+    markdownPaths {
+      issues: autocompleteSourcesPath(
+        autocompleteType: ISSUES
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      members: autocompleteSourcesPath(
+        autocompleteType: MEMBERS
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      commands: autocompleteSourcesPath(
+        autocompleteType: COMMANDS
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      labels: autocompleteSourcesPath(
+        autocompleteType: LABELS
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      mergeRequests: autocompleteSourcesPath(
+        autocompleteType: MERGE_REQUESTS
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      milestones: autocompleteSourcesPath(
+        autocompleteType: MILESTONES
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      wikis: autocompleteSourcesPath(
+        autocompleteType: WIKIS
+        iid: $iid
+        workItemTypeId: $workItemTypeId
+      )
+      markdownPreviewPath
+      uploadsPath
+    }
+  }
+}

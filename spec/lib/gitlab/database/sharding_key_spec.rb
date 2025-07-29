@@ -290,6 +290,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       # End of uploads related tables
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "clusters" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553452",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "group_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "project_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",

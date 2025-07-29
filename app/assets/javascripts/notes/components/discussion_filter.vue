@@ -67,13 +67,6 @@ export default {
       'persistSortOrder',
       'noteableType',
     ]),
-    currentFilter() {
-      if (!this.currentValue) return this.filters[0];
-      return this.filters.find((filter) => filter.value === this.currentValue);
-    },
-    selectedSortOption() {
-      return SORT_OPTIONS.find(({ key }) => this.sortDirection === key);
-    },
     sortStorageKey() {
       return `sort_direction_${this.noteableType.toLowerCase()}`;
     },

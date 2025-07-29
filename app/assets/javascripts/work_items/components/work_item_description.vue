@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -15,11 +16,11 @@ import {
   newWorkItemId,
   newWorkItemFullPath,
   autocompleteDataSources,
-  markdownPreviewPath,
 } from '~/work_items/utils';
 import projectPermissionsQuery from '../graphql/ai_permissions_for_project.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
+import namespacePathsQuery from '../graphql/namespace_paths.query.graphql';
 import { i18n, NEW_WORK_ITEM_IID, TRACKING_CATEGORY_SHOW, ROUTES } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
@@ -106,11 +107,6 @@ export default {
       required: false,
       default: true,
     },
-    uploadsPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -134,157 +130,8 @@ export default {
       appliedTemplate: '',
       showTemplateApplyWarning: false,
       workspacePermissions: {},
+      markdownPaths: {},
     };
-  },
-  computed: {
-    createFlow() {
-      return this.workItemId === newWorkItemId(this.newWorkItemType);
-    },
-    editorAiActions() {
-      const { id, userPermissions } = this.workspacePermissions;
-      return userPermissions?.generateDescription
-        ? [generateDescriptionAction({ resourceId: id })]
-        : [];
-    },
-    workItemFullPath() {
-      return this.createFlow
-        ? newWorkItemFullPath(this.fullPath, this.newWorkItemType)
-        : this.fullPath;
-    },
-    autosaveKey() {
-      return this.workItemId || `new-${this.workItemType}-description-draft`;
-    },
-    canEdit() {
-      return this.workItem?.userPermissions?.updateWorkItem || false;
-    },
-    hasConflicts() {
-      return Boolean(this.conflictedDescription);
-    },
-    // eslint-disable-next-line vue/no-unused-properties
-    tracking() {
-      return {
-        category: TRACKING_CATEGORY_SHOW,
-        label: 'item_description',
-        property: `type_${this.workItemType}`,
-      };
-    },
-    workItemDescription() {
-      const descriptionWidget = findDescriptionWidget(this.workItem);
-      return {
-        ...descriptionWidget,
-        description: descriptionWidget?.description || '',
-      };
-    },
-    workItemType() {
-      return this.workItem?.workItemType?.name;
-    },
-    taskCompletionStatus() {
-      return this.workItemDescription?.taskCompletionStatus;
-    },
-    lastEditedAt() {
-      return this.workItemDescription?.lastEditedAt;
-    },
-    lastEditedByName() {
-      return this.workItemDescription?.lastEditedBy?.name;
-    },
-    lastEditedByPath() {
-      return this.workItemDescription?.lastEditedBy?.webPath;
-    },
-    isGroupWorkItem() {
-      return this.workItemNamespaceId.includes(TYPENAME_GROUP);
-    },
-    workItemNamespaceId() {
-      return this.workItem?.namespace?.id || '';
-    },
-    markdownPreviewPath() {
-      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
-      const {
-        fullPath,
-        workItem: { iid },
-      } = this;
-
-      return markdownPreviewPath({
-        fullPath,
-        iid,
-        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
-      });
-    },
-    autocompleteDataSources() {
-      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
-      return autocompleteDataSources({
-        fullPath: this.fullPath,
-        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
-        iid: this.workItemIid,
-        workItemTypeId: this.workItem?.workItemType?.id,
-      });
-    },
-    saveButtonText() {
-      return this.editMode ? __('Save changes') : __('Save');
-    },
-    formGroupClass() {
-      return {
-        'common-note-form': true,
-      };
-    },
-    showEditedAt() {
-      return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
-    },
-    descriptionTemplateContent() {
-      return this.descriptionTemplate || '';
-    },
-    canResetTemplate() {
-      const hasAppliedTemplate = this.appliedTemplate !== '';
-      const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
-      return hasAppliedTemplate && hasEditedTemplate;
-    },
-    isNewWorkItemRoute() {
-      return this.$route?.name === ROUTES.new;
-    },
-    restrictedToolBarItems() {
-      if (this.hideFullscreenMarkdownButton) {
-        return ['full-screen'];
-      }
-      return [];
-    },
-    enableTruncation() {
-      /* truncationEnabled uses the local storage based setting,
-         wasEdited is a localized override for when user actions on this work item
-         should result in a full description shown. */
-      return this.truncationEnabled && !this.wasEdited;
-    },
-  },
-  watch: {
-    updateInProgress(newValue) {
-      this.isSubmitting = newValue;
-    },
-    editMode(newValue) {
-      this.isEditing = newValue;
-      this.selectedTemplate = null;
-      this.appliedTemplate = '';
-      this.showTemplateApplyWarning = false;
-      if (newValue) {
-        this.startEditing();
-      }
-    },
-  },
-  mounted() {
-    const DEFAULT_TEMPLATE_NAME = 'default';
-    const templateNameFromRoute =
-      this.$route?.query[paramName] || this.$route?.query[oldParamNameFromPreWorkItems];
-    const templateName = !this.isNewWorkItemRoute
-      ? DEFAULT_TEMPLATE_NAME
-      : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
-
-    // Ensure that template is set during Create Flow only if any of the following is true:;
-    // - Template name is present in URL.
-    // - Description is empty.
-    if (this.isCreateFlow && (templateNameFromRoute || this.descriptionText.trim() === '')) {
-      this.selectedTemplate = {
-        name: templateName,
-        projectId: null,
-        category: null,
-      };
-    }
   },
   apollo: {
     workItem: {
@@ -365,6 +212,175 @@ export default {
         Sentry.captureException(error);
       },
     },
+    markdownPaths: {
+      query: namespacePathsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+          workItemTypeId: this.workItem?.workItemType?.id,
+        };
+      },
+      update(data) {
+        return data?.namespace?.markdownPaths || {};
+      },
+      skip() {
+        return !this.fullPath || !this.workItemIid || !this.workItem?.workItemType?.id;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+  },
+  computed: {
+    createFlow() {
+      return this.workItemId === newWorkItemId(this.newWorkItemType);
+    },
+    editorAiActions() {
+      const { id, userPermissions } = this.workspacePermissions;
+      return userPermissions?.generateDescription
+        ? [generateDescriptionAction({ resourceId: id })]
+        : [];
+    },
+    workItemFullPath() {
+      return this.createFlow
+        ? newWorkItemFullPath(this.fullPath, this.newWorkItemType)
+        : this.fullPath;
+    },
+    autosaveKey() {
+      return this.workItemId || `new-${this.workItemType}-description-draft`;
+    },
+    canEdit() {
+      return this.workItem?.userPermissions?.updateWorkItem || false;
+    },
+    hasConflicts() {
+      return Boolean(this.conflictedDescription);
+    },
+    // eslint-disable-next-line vue/no-unused-properties
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_description',
+        property: `type_${this.workItemType}`,
+      };
+    },
+    workItemDescription() {
+      const descriptionWidget = findDescriptionWidget(this.workItem);
+      return {
+        ...descriptionWidget,
+        description: descriptionWidget?.description || '',
+      };
+    },
+    workItemType() {
+      return this.workItem?.workItemType?.name;
+    },
+    taskCompletionStatus() {
+      return this.workItemDescription?.taskCompletionStatus;
+    },
+    lastEditedAt() {
+      return this.workItemDescription?.lastEditedAt;
+    },
+    lastEditedByName() {
+      return this.workItemDescription?.lastEditedBy?.name;
+    },
+    lastEditedByPath() {
+      return this.workItemDescription?.lastEditedBy?.webPath;
+    },
+    isGroupWorkItem() {
+      return this.workItemNamespaceId.includes(TYPENAME_GROUP);
+    },
+    workItemNamespaceId() {
+      return this.workItem?.namespace?.id || '';
+    },
+
+    saveButtonText() {
+      return this.editMode ? __('Save changes') : __('Save');
+    },
+    formGroupClass() {
+      return {
+        'common-note-form': true,
+      };
+    },
+    showEditedAt() {
+      return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
+    },
+    descriptionTemplateContent() {
+      return this.descriptionTemplate || '';
+    },
+    canResetTemplate() {
+      const hasAppliedTemplate = this.appliedTemplate !== '';
+      const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
+      return hasAppliedTemplate && hasEditedTemplate;
+    },
+    isNewWorkItemRoute() {
+      return this.$route?.name === ROUTES.new;
+    },
+    restrictedToolBarItems() {
+      if (this.hideFullscreenMarkdownButton) {
+        return ['full-screen'];
+      }
+      return [];
+    },
+    enableTruncation() {
+      /* truncationEnabled uses the local storage based setting,
+         wasEdited is a localized override for when user actions on this work item
+         should result in a full description shown. */
+      return this.truncationEnabled && !this.wasEdited;
+    },
+    markdownPathsLoaded() {
+      return !isEmpty(this.markdownPaths);
+    },
+    uploadsPath() {
+      return this.markdownPaths.uploadsPath;
+    },
+    markdownPreviewPath() {
+      return this.markdownPaths.markdownPreviewPath;
+    },
+    autocompleteDataSources() {
+      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
+      const sources = autocompleteDataSources({
+        fullPath: this.fullPath,
+        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
+        iid: this.workItemIid,
+        workItemTypeId: this.workItem?.workItemType?.id,
+        markdownPaths: this.markdownPaths,
+      });
+
+      return sources;
+    },
+  },
+  watch: {
+    updateInProgress(newValue) {
+      this.isSubmitting = newValue;
+    },
+    editMode(newValue) {
+      this.isEditing = newValue;
+      this.selectedTemplate = null;
+      this.appliedTemplate = '';
+      this.showTemplateApplyWarning = false;
+      if (newValue) {
+        this.startEditing();
+      }
+    },
+  },
+  mounted() {
+    const DEFAULT_TEMPLATE_NAME = 'default';
+    const templateNameFromRoute =
+      this.$route?.query[paramName] || this.$route?.query[oldParamNameFromPreWorkItems];
+    const templateName = !this.isNewWorkItemRoute
+      ? DEFAULT_TEMPLATE_NAME
+      : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
+
+    // Ensure that template is set during Create Flow only if any of the following is true:;
+    // - Template name is present in URL.
+    // - Description is empty.
+    if (this.isCreateFlow && (templateNameFromRoute || this.descriptionText.trim() === '')) {
+      this.selectedTemplate = {
+        name: templateName,
+        projectId: null,
+        category: null,
+      };
+    }
   },
   methods: {
     checkForConflicts() {
@@ -558,6 +574,7 @@ export default {
           </template>
         </gl-alert>
         <markdown-editor
+          v-if="markdownPathsLoaded"
           ref="markdownEditor"
           :value="descriptionText"
           :render-markdown-path="markdownPreviewPath"

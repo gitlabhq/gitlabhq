@@ -12898,7 +12898,10 @@ CREATE TABLE clusters (
     management_project_id bigint,
     cleanup_status smallint DEFAULT 1 NOT NULL,
     cleanup_status_reason text,
-    helm_major_version integer DEFAULT 3 NOT NULL
+    helm_major_version integer DEFAULT 3 NOT NULL,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint
 );
 
 CREATE SEQUENCE clusters_id_seq
@@ -35517,7 +35520,13 @@ CREATE INDEX index_clusters_on_enabled_and_provider_type_and_id ON clusters USIN
 
 CREATE INDEX index_clusters_on_enabled_cluster_type_id_and_created_at ON clusters USING btree (enabled, cluster_type, id, created_at);
 
+CREATE INDEX index_clusters_on_group_id ON clusters USING btree (group_id);
+
 CREATE INDEX index_clusters_on_management_project_id ON clusters USING btree (management_project_id) WHERE (management_project_id IS NOT NULL);
+
+CREATE INDEX index_clusters_on_organization_id ON clusters USING btree (organization_id);
+
+CREATE INDEX index_clusters_on_project_id ON clusters USING btree (project_id);
 
 CREATE INDEX index_clusters_on_user_id ON clusters USING btree (user_id);
 
@@ -43430,6 +43439,9 @@ ALTER TABLE ONLY merge_request_predictions
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT fk_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY clusters
+    ADD CONSTRAINT fk_43af04cf6d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_report_notes
     ADD CONSTRAINT fk_44166fe70f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -43708,6 +43720,9 @@ ALTER TABLE ONLY ci_pipeline_chat_data
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY clusters
+    ADD CONSTRAINT fk_6518622e81 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_user_details
     ADD CONSTRAINT fk_657140ae14 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -45037,6 +45052,9 @@ ALTER TABLE ONLY project_requirement_compliance_statuses
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_f9867b3540 FOREIGN KEY (web_ide_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY clusters
+    ADD CONSTRAINT fk_f9a4914fd4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_f9df19ecb6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

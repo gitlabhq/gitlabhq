@@ -18,13 +18,23 @@
   display: none;
 }
 
-.rd-diff-file[data-virtual]:not([data-collapsed]) {
-  // header top/bottom borders + body border
-  $total-borders: constants.$diff-file-border-width * 3;
+.rd-diff-file[data-virtual],
+.rd-diff-file[data-collapsed] {
   content-visibility: var(--rd-content-visibility-auto, auto);
+}
+
+.rd-diff-file[data-virtual] {
+  // header top/bottom borders + body border
   contain-intrinsic-size:
     auto 0 auto
-    calc(var(--rd-diff-file-header-height) + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
+    calc(var(--rd-diff-file-header-height) + #{constants.$diff-file-border-width * 3} + var(--rd-body-intrinsic-height));
+}
+
+.rd-diff-file[data-collapsed] {
+  // header top/bottom borders only
+  contain-intrinsic-size:
+    auto 0 auto
+    calc(var(--rd-diff-file-header-height) + #{constants.$diff-file-border-width * 2});
 }
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file

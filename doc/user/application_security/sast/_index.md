@@ -226,7 +226,7 @@ To disable a rule, for example because it generates too many false positives:
 1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
 1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
 
-   ```yaml
+   ```toml
    [semgrep]
      [[semgrep.ruleset]]
        disable = true
@@ -271,20 +271,20 @@ For more information about our plans for language support in SAST, see the [cate
 | Language                                             | Supported by [GitLab Advanced SAST](gitlab_advanced_sast.md) (Ultimate only)                                      | Supported by another [analyzer](analyzers.md) (all tiers) |
 |------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
 | Apex (Salesforce)                                    | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) |
-| C                                                    | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
-| C++                                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| C                                                    | {{< icon name="dotted-circle" >}} No, tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| C++                                                  | {{< icon name="dotted-circle" >}} No, tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | C#                                                   | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | Elixir (Phoenix)                                     | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) |
 | Go                                                   | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | Groovy                                               | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin<sup><b><a href="#spotbugs-footnote">1</a></b></sup> |
 | Java                                                 | {{< icon name="check-circle" >}} Yes, including Java Server Pages (JSP)                                           | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
 | JavaScript, including Node.js and React              | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
-| Kotlin                                               | {{< icon name="dotted-circle" >}} No; tracked in [epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
+| Kotlin                                               | {{< icon name="dotted-circle" >}} No, tracked in [epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
 | Objective-C (iOS)                                    | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
-| PHP                                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 14273](https://gitlab.com/groups/gitlab-org/-/epics/14273) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| PHP                                                  | {{< icon name="dotted-circle" >}} No, tracked in [epic 14273](https://gitlab.com/groups/gitlab-org/-/epics/14273) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | Python                                               | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | Ruby, including Ruby on Rails                        | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
-| Scala                                                | {{< icon name="dotted-circle" >}} No; tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Scala                                                | {{< icon name="dotted-circle" >}} No, tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | Swift (iOS)                                          | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | TypeScript                                           | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 | YAML<sup><b><a href="#yaml-footnote">2</a></b></sup> | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
@@ -464,7 +464,11 @@ The method you can use depends on your GitLab license tier.
 
 {{< /details >}}
 
-> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
+
+{{< /history >}}
 
 {{< alert type="note" >}}
 
@@ -941,7 +945,7 @@ Some analyzers can be customized with CI/CD variables.
 | `GRADLE_PATH`                       | SpotBugs             | `gradle`                                        | Path to the `gradle` executable. |
 | `JAVA_OPTS`                         | SpotBugs             | `-XX:MaxRAMPercentage=80`                       | Additional arguments for the `java` executable. |
 | `JAVA_PATH`                         | SpotBugs             | `java`                                          | Path to the `java` executable. |
-| `SAST_JAVA_VERSION`                 | SpotBugs             | `8` for GitLab < 15 </br> `17` for GitLab >= 15 | Which Java version to use. [Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549), supported versions are `11` and `17`. Before GitLab 15.0, supported versions are `8` and `11`. |
+| `SAST_JAVA_VERSION`                 | SpotBugs             | `17`                                            | Java version used. Supported versions are `17` and `11`. |
 | `MAVEN_CLI_OPTS`                    | SpotBugs             | `--batch-mode -DskipTests=true`                 | Additional arguments for the `mvn` or `mvnw` executable. |
 | `MAVEN_PATH`                        | SpotBugs             | `mvn`                                           | Path to the `mvn` executable. |
 | `MAVEN_REPO_PATH`                   | SpotBugs             | `$HOME/.m2/repository`                          | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |

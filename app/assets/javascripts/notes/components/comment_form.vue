@@ -152,9 +152,6 @@ export default {
     markdownPreviewPath() {
       return this.getNoteableData.preview_note_path;
     },
-    author() {
-      return this.getUserData;
-    },
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
@@ -173,9 +170,6 @@ export default {
     },
     isIssue() {
       return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.ISSUE_NOTEABLE_TYPE;
-    },
-    isEpic() {
-      return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.EPIC_NOTEABLE_TYPE;
     },
     isMergeRequest() {
       return (
@@ -352,15 +346,13 @@ export default {
         }
       }
     },
-    hasEmailParticipants() {
-      return this.getNoteableData.issue_email_participants?.length;
-    },
     dismissError(index) {
       this.errors.splice(index, 1);
     },
     onInput(value) {
       this.note = value;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- append() is part of the component's public API.
     append(value) {
       this.$refs.markdownEditor.append(value);
     },

@@ -56,12 +56,6 @@ export default {
     },
   },
   computed: {
-    isNoteTypeComment() {
-      return this.noteType === constants.COMMENT;
-    },
-    isNoteTypeDiscussion() {
-      return this.noteType === constants.DISCUSSION;
-    },
     dropdownCommentButtonTitle() {
       const { comment, internalComment } = this.$options.i18n.submitButton;
 

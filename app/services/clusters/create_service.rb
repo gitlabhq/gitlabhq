@@ -40,11 +40,11 @@ module Clusters
     def clusterable_params
       case clusterable
       when ::Project
-        { cluster_type: :project_type, projects: [clusterable] }
+        { cluster_type: :project_type, projects: [clusterable], project_id: clusterable.id }
       when ::Group
-        { cluster_type: :group_type, groups: [clusterable] }
+        { cluster_type: :group_type, groups: [clusterable], group_id: clusterable.id }
       when Instance
-        { cluster_type: :instance_type }
+        { cluster_type: :instance_type, organization_id: current_user.organization_id }
       else
         raise NotImplementedError
       end
