@@ -69,7 +69,7 @@ export default {
       'getCommentFormForDiffFile',
       'diffLines',
     ]),
-    ...mapState(useNotes, ['getNoteableData', 'noteableType', 'getUserData']),
+    ...mapState(useNotes, ['getNoteableData', 'noteableType']),
     diffMode() {
       return getDiffMode(this.diffFile);
     },
@@ -99,9 +99,6 @@ export default {
     },
     diffFileHash() {
       return this.diffFile.file_hash;
-    },
-    author() {
-      return this.getUserData;
     },
     mappedLines() {
       const {

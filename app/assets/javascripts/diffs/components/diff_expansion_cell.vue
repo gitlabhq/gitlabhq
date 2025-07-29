@@ -232,7 +232,7 @@ export default {
         class="js-unfold-down diff-line-expand-button gl-rounded-none gl-border-0"
         @click="handleExpandLines($options.EXPAND_DOWN)"
       >
-        <gl-loading-icon v-if="loading.down" size="sm" color="dark" inline />
+        <gl-loading-icon v-if="loading.down" size="sm" color="dark" :inline="inline" />
         <gl-icon v-else name="expand-down" />
       </button>
       <button
@@ -244,7 +244,7 @@ export default {
         class="js-unfold-all diff-line-expand-button gl-rounded-none gl-border-0"
         @click="handleExpandLines()"
       >
-        <gl-loading-icon v-if="loading.all" size="sm" color="dark" inline />
+        <gl-loading-icon v-if="loading.all" size="sm" color="dark" :inline="inline" />
         <gl-icon v-else name="expand" />
       </button>
       <button
@@ -256,7 +256,7 @@ export default {
         class="js-unfold diff-line-expand-button gl-rounded-none gl-border-0"
         @click="handleExpandLines($options.EXPAND_UP)"
       >
-        <gl-loading-icon v-if="loading.up" size="sm" color="dark" inline />
+        <gl-loading-icon v-if="loading.up" size="sm" color="dark" :inline="inline" />
         <gl-icon v-else name="expand-up" />
       </button>
     </div>

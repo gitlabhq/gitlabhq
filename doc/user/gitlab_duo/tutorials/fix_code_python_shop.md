@@ -112,7 +112,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat
 1. Open a project in a JetBrains IDE that supports Python, such as
    [PyCharm](https://www.jetbrains.com/pycharm/), or [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 1. Open GitLab Duo Chat in either a [chat window](../../gitlab_duo_chat/_index.md#in-a-chat-window)
-   or an [editor window](../../gitlab_duo_chat/_index.md#in-the-editor-window).
+   or an [editor window](../../gitlab_duo_chat/_index.md#use-chat-while-working-in-the-editor-window).
 
 For more information, see [Use GitLab Duo Chat in JetBrains IDEs](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides).
 

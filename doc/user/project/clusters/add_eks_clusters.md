@@ -44,7 +44,7 @@ Prerequisites:
 - An [Amazon Web Services](https://aws.amazon.com/) account.
 - Permissions to manage IAM resources.
 
-For instance-level clusters, see [additional requirements for self-managed instances](#additional-requirements-for-self-managed-instances).
+For instance-level clusters, see [additional requirements for GitLab Self-Managed instances](#additional-requirements-for-gitlab-self-managed-instances).
 
 To create new Kubernetes clusters for your project, group, or instance through the certificate-based method:
 
@@ -232,7 +232,7 @@ GitLab displays a list of the environments and their deploy status, as well as
 options to browse to the app, view monitoring metrics, and even access a shell
 on the running pod.
 
-## Additional requirements for self-managed instances
+## Additional requirements for GitLab Self-Managed instances
 
 {{< details >}}
 
@@ -306,7 +306,7 @@ User `arn:aws:iam::x` is not authorized to perform: `sts:AssumeRole` on resource
 
 Check that:
 
-1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-self-managed-instances).
+1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-gitlab-self-managed-instances).
 1. The Provision Role has access to create clusters in the given region.
 1. The account ID and
    [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)

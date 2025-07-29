@@ -18723,9 +18723,6 @@ msgstr ""
 msgid "Copy URL"
 msgstr ""
 
-msgid "Copy audio URL"
-msgstr ""
-
 msgid "Copy autocomplete description"
 msgstr ""
 
@@ -18762,9 +18759,6 @@ msgstr ""
 msgid "Copy descriptive label"
 msgstr ""
 
-msgid "Copy diagram URL"
-msgstr ""
-
 msgid "Copy environment"
 msgstr ""
 
@@ -18781,9 +18775,6 @@ msgid "Copy file path"
 msgstr ""
 
 msgid "Copy file permalink"
-msgstr ""
-
-msgid "Copy image URL"
 msgstr ""
 
 msgid "Copy issue URL to clipboard"
@@ -18829,9 +18820,6 @@ msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Copy value"
-msgstr ""
-
-msgid "Copy video URL"
 msgstr ""
 
 msgid "Corpus Management"
@@ -21574,9 +21562,6 @@ msgstr ""
 msgid "Delete asset"
 msgstr ""
 
-msgid "Delete audio"
-msgstr ""
-
 msgid "Delete badge"
 msgstr ""
 
@@ -21609,9 +21594,6 @@ msgstr ""
 msgid "Delete deployment"
 msgstr ""
 
-msgid "Delete diagram"
-msgstr ""
-
 msgid "Delete epic"
 msgstr ""
 
@@ -21625,9 +21607,6 @@ msgid "Delete group immediately?"
 msgstr ""
 
 msgid "Delete identity"
-msgstr ""
-
-msgid "Delete image"
 msgstr ""
 
 msgid "Delete immediately"
@@ -21693,9 +21672,6 @@ msgid "Delete this epic and release all child items?"
 msgstr ""
 
 msgid "Delete user list"
-msgstr ""
-
-msgid "Delete video"
 msgstr ""
 
 msgid "DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."
@@ -32057,6 +32033,15 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
+msgid "HomepageActivityWidget|Followed users"
+msgstr ""
+
+msgid "HomepageActivityWidget|Starred projects"
+msgstr ""
+
+msgid "HomepageActivityWidget|Your activity"
+msgstr ""
+
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
 msgstr ""
 
@@ -38880,6 +38865,9 @@ msgid "MemberRole|To delete custom member role, remove role from all group and p
 msgstr ""
 
 msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
+msgstr ""
+
+msgid "MemberRole|To enhance security, we recommend %{linkStart}enabling Admin mode%{linkEnd} when using custom admin roles. Enabling Admin mode will require users to re-authenticate in GitLab before accessing the Admin area."
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."

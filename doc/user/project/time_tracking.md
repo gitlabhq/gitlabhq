@@ -35,15 +35,17 @@ You can see time tracking information in the right sidebar of your work items:
 
 ![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
 
+Enter and remove time tracking data using [quick actions](quick_actions.md) or the user interface.
+Type quick actions on their own lines.
+If you use any quick action more than once in a single comment, only its last occurrence is applied.
+
+## Permissions
+
 Different time tracking features are available based on your role:
 
 - To add, edit, and remove estimates, you need at least the Planner role for issues and tasks, or the Developer role for merge requests.
 - To add and edit time spent, you need at least the Planner role for the project.
 - To delete a time entry, you must be the author or have at least the Maintainer role.
-
-Enter and remove time tracking data using [quick actions](quick_actions.md) or the user interface.
-Type quick actions on their own lines.
-If you use any quick action more than once in a single comment, only its last occurrence is applied.
 
 ## Estimates
 
@@ -141,6 +143,87 @@ For example, to log 1 hour of time spent on 31 January 2021,
 enter `/spend 1h 2021-01-31`.
 
 If you type a future date, no time is logged.
+
+#### Using commit messages
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16543) in GitLab 18.3 with a flag named `commit_time_tracking`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+You can record time spent on issues directly in commit messages. This approach is useful when you want to track time as you work, without updating the issue separately.
+
+To add time spent in a commit message, include an issue reference and a time tracking marker in the format `@<time>` with no spaces between time units.
+
+For example:
+
+```plaintext
+Fix a bug in the login form #123 @1mo2d3h15m
+```
+
+This commit message adds 1 month, 2 days, 3 hours, and 15 minutes of time spent to issue #123.
+
+The time tracking marker must:
+
+- Start with the `@` symbol.
+- Be followed immediately by time units with no spaces between them.
+- Support the following time units: months (`mo`), days (`d`), hours (`h`), minutes (`m`), and seconds (`s`).
+- Use the same [time units](#available-time-units) as regular time tracking.
+
+When you push a commit with time tracking information:
+
+1. GitLab extracts the time spent from the commit message.
+1. The time is added to any issues referenced in the same commit message.
+1. A system note is added to the issue indicating time was added from a commit.
+1. The time tracking entry includes the commit SHA and title as the description.
+
+##### Commit author permissions
+
+Time is added to an issue from a commit message only if the commit author has permission to update the issue:
+
+- The commit author must have at least the Planner role for the project where the issue exists.
+- If the author doesn't have sufficient permissions, the time tracking information in their commit is ignored.
+- Permission checks use the same rules as regular time tracking.
+
+##### Known issues
+
+**Multiple time amounts in one commit**
+
+When a commit message references multiple issues with different time amounts, only the first time amount is applied to all referenced issues.
+
+For example, this commit message:
+
+```plaintext
+Fixes #41 @1h30m and fixes #40 @2h
+```
+
+Adds 1h30m to both issue #41 and issue #40. The second time amount (`@2h`) is ignored.
+
+**Duplicate time entries from commit SHA changes**
+
+When a commit's SHA changes (for example, after rebasing or amending), GitLab treats it as a new commit for time tracking. This can create duplicate time entries if both the original and new commits are referenced in the issue.
+
+To avoid duplicate time entries when commit SHAs might change:
+
+- Add time directly to the issue using the UI or quick actions instead of commit messages.
+- If you must use commit messages for time tracking, add the time only after your branch's history is finalized.
+- Before merging, check the issue's time tracking report to identify and remove any potential duplicates.
+
+### Prevent duplicate time tracking in merge requests
+
+When you merge a merge request containing commits with time tracking information, GitLab prevents duplicate time tracking:
+
+- Time is tracked only once per commit, even if the same commit message appears multiple times in the repository history.
+- GitLab prevents duplicate time tracking by checking if a time entry with the same commit title and ID already exists for an issue.
+- When commits are merged, no additional time is tracked. This prevents double-counting time when feature branches are merged to the default branch.
 
 ### Subtract time spent
 

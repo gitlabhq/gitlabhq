@@ -86,7 +86,7 @@ with `pd-ssd` disks. The [advertised](https://cloud.google.com/compute/docs/disk
 maximum write and read IOPS are 60,000.
 
 GitLab.com also employs stricter [concurrency limits](concurrency_limiting.md) on expensive
-Git operations that aren't enabled by default on GitLab Self-Managed installations. Relaxed concurrency
+Git operations that aren't enabled by default on GitLab Self-Managed instances. Relaxed concurrency
 limits, operations against particularly large monorepos, or the use of the
 [pack-objects cache](configure_gitaly.md#pack-objects-cache) can also significantly increase
 disk activity.

@@ -297,7 +297,8 @@ reports can be downloaded from the pipeline details page. If necessary, you can 
 [artifacts:access](_index.md#artifactsaccess) to restrict the users that can download
 the report artifacts in a job.
 
-The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
+GitLab uses the [`dotenv` gem](https://github.com/bkeepers/dotenv) for handling dotenv files,
+and handles dotenv files differently than [the original dotenv rules](https://github.com/motdotla/dotenv?tab=readme-ov-file#what-rules-does-the-parsing-engine-follow):
 
 - The variable key can contain only letters, digits, and underscores (`_`).
 - The maximum size of the `.env` file is 5 KB.

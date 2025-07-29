@@ -56,6 +56,7 @@ class UsersFinder
     users = by_non_internal(users)
     users = by_without_project_bots(users)
     users = by_member_source_ids(users)
+    users = by_public_email(users)
 
     order(users)
   end
@@ -80,6 +81,12 @@ class UsersFinder
     return users unless params[:username]
 
     users.by_username(params[:username])
+  end
+
+  def by_public_email(users)
+    return users unless params[:public_email]
+
+    users.with_public_email(params[:public_email])
   end
 
   def by_id(users)

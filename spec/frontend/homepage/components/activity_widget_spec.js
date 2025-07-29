@@ -1,4 +1,4 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,6 +18,7 @@ describe('ActivityWidget', () => {
   const MOCK_CURRENT_USERNAME = 'administrator';
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findActivityFeedSelector = () => wrapper.findComponent(GlCollapsibleListbox);
   const findErrorMessage = () =>
     wrapper.findByText(
       'Your activity feed is not available. Please refresh the page to try again.',
@@ -115,6 +116,52 @@ describe('ActivityWidget', () => {
     const timestampEls = wrapper.vm.$el.querySelectorAll('.js-timeago');
     expect(timestampEls).toHaveLength(1);
     expect(localTimeAgo).toHaveBeenCalledWith(timestampEls);
+  });
+
+  it('populates the activity feed seletor with the correct options', () => {
+    createWrapper();
+
+    expect(findActivityFeedSelector().props('items')).toEqual([
+      { text: 'Your activity', value: null },
+      { text: 'Starred projects', value: 'starred' },
+      { text: 'Followed users', value: 'followed' },
+    ]);
+  });
+
+  it("fetches the starred projects' activity feed", async () => {
+    mockAxios.onGet('*').reply(200, {
+      html: '',
+    });
+    createWrapper();
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(1);
+
+    findActivityFeedSelector().vm.$emit('select', 'starred');
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(2);
+    expect(mockAxios.history.get[1].url).toBe(
+      '/dashboard/activity?limit=5&offset=0&filter=starred',
+    );
+  });
+
+  it("fetches the followed users' activity feed", async () => {
+    mockAxios.onGet('*').reply(200, {
+      html: '',
+    });
+    createWrapper();
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(1);
+
+    findActivityFeedSelector().vm.$emit('select', 'followed');
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(2);
+    expect(mockAxios.history.get[1].url).toBe(
+      '/dashboard/activity?limit=5&offset=0&filter=followed',
+    );
   });
 
   it('shows a link to all activity', () => {

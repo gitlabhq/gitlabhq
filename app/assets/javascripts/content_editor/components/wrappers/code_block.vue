@@ -42,11 +42,6 @@ export default {
       type: Function,
       required: true,
     },
-    selected: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {

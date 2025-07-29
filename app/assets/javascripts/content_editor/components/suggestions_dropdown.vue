@@ -233,6 +233,7 @@ export default {
       return props;
     },
 
+    // eslint-disable-next-line vue/no-unused-properties -- onKeyDown() is part of the component's public API.
     onKeyDown({ event }) {
       if (!this.items.length) return false;
 

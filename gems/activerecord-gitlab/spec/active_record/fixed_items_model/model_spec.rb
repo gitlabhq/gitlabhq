@@ -5,11 +5,8 @@ require 'spec_helper'
 RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared do
   before do
     stub_const('TestStaticModel', Class.new do
-      include ActiveModel::Model
-      include ActiveModel::Attributes
       include ActiveRecord::FixedItemsModel::Model
 
-      attribute :id, :integer
       attribute :name, :string
       attribute :category
     end)
@@ -51,6 +48,36 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
     it 'returns all items' do
       expect(TestStaticModel.all.map(&:id)).to eq([1, 2, 3])
     end
+
+    context "when item definition has duplicated ids" do
+      before do
+        stub_const('TestStaticModel::ITEMS', [
+          { id: 1, name: 'Item 1', category: :a },
+          { id: 1, name: 'Item 2', category: :b },
+          { id: 1, name: 'Item 3', category: :a }
+        ].freeze)
+      end
+
+      it 'raises an error' do
+        expect do
+          TestStaticModel.all
+        end.to raise_error("Static definition ITEMS has 2 duplicated IDs!")
+      end
+    end
+
+    context "when item definition is invalid" do
+      before do
+        stub_const('TestStaticModel::ITEMS', [
+          { id: -1, name: 'Item 1', category: :a }
+        ].freeze)
+      end
+
+      it 'raises an error' do
+        expect do
+          TestStaticModel.all
+        end.to raise_error("Static definition in ITEMS is invalid! Id must be greater than 0")
+      end
+    end
   end
 
   describe '.where' do
@@ -85,17 +112,15 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
     end
   end
 
-  describe 'cache isolation' do
-    it 'creates new cache instances for each subclass' do
-      # Create a subclass of TestModelA
-      subclass = Class.new(TestStaticModel)
+  describe 'storage isolation' do
+    let(:subclass) { Class.new(TestStaticModel).tap(&:all) }
+    let(:new_item) { subclass.new(id: 2, name: 'foo') }
 
-      # Modifying the subclass cache shouldn't affect the parent class data
-      # rubocop:disable GitlabSecurity/PublicSend -- Just used for mocking
-      subclass.send(:find_instances)[2] = 'test'
-      expect(subclass.send(:find_instances)[2]).to eq('test')
-      expect(TestStaticModel.send(:find_instances)[2]).to be_nil
-      # rubocop:enable GitlabSecurity/PublicSend
+    it 'creates new storage instance for each subclass' do
+      subclass.storage[new_item.id] = new_item
+
+      expect(subclass.find(2)).to eq(new_item)
+      expect(TestStaticModel.find(2)).not_to eq(new_item)
     end
   end
 
@@ -212,11 +237,8 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
     context 'when comparing with different classes' do
       before do
         stub_const('AnotherStaticModel', Class.new do
-          include ActiveModel::Model
-          include ActiveModel::Attributes
           include ActiveRecord::FixedItemsModel::Model
 
-          attribute :id, :integer
           attribute :name, :string
         end)
 
@@ -282,7 +304,15 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
 
       hash = { model1 => 'nil_value' }
       expect(hash[model2]).to be_nil # Different objects
-      expect(hash[model1]).to eq('nil_value')  # Same object
+      expect(hash[model1]).to eq('nil_value') # Same object
+    end
+  end
+
+  describe '#validations' do
+    it 'validates id numericality' do
+      expect(TestStaticModel.new(id: 0)).not_to be_valid
+      expect(TestStaticModel.new(id: -1)).not_to be_valid
+      expect(TestStaticModel.new(id: 1)).to be_valid
     end
   end
 

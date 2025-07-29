@@ -227,7 +227,12 @@ The `container` component type supports the following schema properties only:
 
 ### User-defined `postStart` events
 
-You can define custom `postStart` events in your devfile to run commands after the workspace starts. Use this type of event to:
+You can define custom `postStart` events in your devfile to run commands after the workspace starts.
+These `postStart` events do not block workspace accessibility. The workspace becomes available as
+soon as internal initialization is complete, even if your custom `postStart` commands are still
+running or waiting to run.
+
+Use this type of event to:
 
 - Set up development dependencies.
 - Configure the workspace environment.

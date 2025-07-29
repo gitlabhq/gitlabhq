@@ -63,9 +63,6 @@ export default {
 
       this.$emit('execute', { contentType, value });
     },
-    isActive(dropdownItem) {
-      return this.tiptapEditor.isActive(dropdownItem.contentType, dropdownItem.commandParams);
-    },
   },
   items: TEXT_STYLE_DROPDOWN_ITEMS,
   i18n: {

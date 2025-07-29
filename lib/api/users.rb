@@ -173,6 +173,7 @@ module API
         # CE
         optional :username, type: String, desc: 'Get a single user with a specific username'
         optional :extern_uid, type: String, desc: 'Get a single user with a specific external authentication provider UID'
+        optional :public_email, type: String, desc: 'Get a single user with a specific public email'
         optional :provider, type: String, desc: 'The external provider'
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'

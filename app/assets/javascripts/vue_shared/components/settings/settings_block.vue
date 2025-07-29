@@ -46,7 +46,7 @@ export default {
       return this.id || uniqueId('settings-block-');
     },
     isChevronUp() {
-      return this.expanded;
+      return this.localExpanded;
     },
   },
   watch: {

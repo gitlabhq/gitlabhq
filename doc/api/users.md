@@ -39,6 +39,7 @@ Supported attributes:
 | Attribute              | Type     | Required | Description |
 |:-----------------------|:---------|:---------|:------------|
 | `username`             | string   | no       | Get a single user with a specific username. |
+| `public_email`         | string   | no       | Get a single user with a specific public email. |
 | `search`               | string   | no       | Search for users by name, username, or public email. |
 | `active`               | boolean  | no       | Filters only active users. Default is `false`. |
 | `external`             | boolean  | no       | Filters only external users. Default is `false`. |

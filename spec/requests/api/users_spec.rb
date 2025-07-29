@@ -781,6 +781,38 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response.first['id']).to eq(admin.id)
       end
     end
+
+    context 'public email' do
+      it 'returns one user by public_email' do
+        user_with_public_email = create(:user)
+        unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: user_with_public_email, email: unique_email)
+        user_with_public_email.update!(public_email: unique_email)
+
+        second_user_with_public_email = create(:user)
+        second_unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: second_user_with_public_email, email: second_unique_email)
+        second_user_with_public_email.update!(public_email: second_unique_email)
+
+        get api(path, user), params: { public_email: unique_email }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_with_public_email.id)
+      end
+
+      it 'returns no users if public_email does not match' do
+        user_with_public_email = create(:user)
+        unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: user_with_public_email, email: unique_email)
+        user_with_public_email.update!(public_email: unique_email)
+
+        get api(path, user), params: { public_email: 'nonexistent@example.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(0)
+      end
+    end
   end
 
   describe "GET /users/:id" do

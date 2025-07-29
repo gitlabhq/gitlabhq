@@ -226,6 +226,7 @@ export default {
         this.notifyLoadingError();
       }
     },
+    // eslint-disable-next-line vue/no-unused-properties -- focus() is part of the component's public API.
     focus() {
       this.contentEditor.tiptapEditor.commands.focus();
     },

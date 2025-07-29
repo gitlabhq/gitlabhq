@@ -143,13 +143,23 @@
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
   policy: push
 
+.cache-analytics:
+  after_script:
+    - |
+      source scripts/utils.sh
+      section_start "cache-analytics" "Uploading cache metrics"
+      bundle exec ruby scripts/cache_metrics || true
+      section_end "cache-analytics"
+
 .setup-test-env-cache:
+  extends: .cache-analytics
   cache:
     - *ruby-gems-cache
     - *gitaly-binaries-cache
     - *go-pkg-cache
 
 .setup-test-env-cache-push:
+  extends: .cache-analytics
   cache:
     - *ruby-gems-cache-push
     - *go-pkg-cache-push
@@ -164,6 +174,7 @@
     - *ruby-gems-cache
 
 .static-analysis-cache:
+  extends: .cache-analytics
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
@@ -267,12 +278,14 @@
     - *node-modules-cache
 
 .assets-compile-cache:
+  extends: .cache-analytics
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
     - *assets-tmp-cache
 
 .assets-compile-cache-push:
+  extends: .cache-analytics
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push

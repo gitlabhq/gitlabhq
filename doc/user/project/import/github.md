@@ -332,7 +332,7 @@ Mirroring does not sync any new or updated pull requests from your GitHub projec
 
 {{< /alert >}}
 
-## Improve the speed of imports on self-managed instances
+## Improve the speed of imports on GitLab Self-Managed instances
 
 Administrator access on the GitLab server is required for these steps.
 

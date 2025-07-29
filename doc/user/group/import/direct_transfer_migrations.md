@@ -12,10 +12,10 @@ title: Migrate groups and projects by using direct transfer
 
 {{< /details >}}
 
-To migrate GitLab groups and projects by using direct transfer, you:
+To migrate GitLab groups and projects by using direct transfer:
 
-1. Fulfill the [prerequisites](#prerequisites).
-1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping) and [configure users on the destination instance](#configure-users-on-destination-instance)
+1. Ensure you meet the [prerequisites](#prerequisites).
+1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping).
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).

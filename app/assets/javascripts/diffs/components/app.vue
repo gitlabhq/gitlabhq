@@ -4,7 +4,6 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -120,11 +119,6 @@ export default {
       required: false,
       default: false,
     },
-    endpointCodequality: {
-      type: String,
-      required: false,
-      default: '',
-    },
     shouldShow: {
       type: Boolean,
       required: false,
@@ -233,19 +227,14 @@ export default {
       'latestDiff',
       'currentDiffFileId',
       'isTreeLoaded',
-      'conflictResolutionPath',
-      'canMerge',
       'hasConflicts',
       'viewDiffsFileByFile',
       'mrReviews',
       'renderTreeList',
       'showWhitespace',
-      'targetBranchName',
-      'branchName',
       'addedLines',
       'removedLines',
       'whichCollapsedTypes',
-      'isParallelView',
       'currentDiffIndex',
       'isVirtualScrollingEnabled',
       'isBatchLoading',
@@ -311,9 +300,6 @@ export default {
     },
     fileReviews() {
       return reviewStatuses(this.diffFiles, this.mrReviews);
-    },
-    resourceId() {
-      return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
     renderFileTree() {
       return this.renderDiffFiles && this.fileBrowserVisible;
@@ -450,7 +436,6 @@ export default {
       'setFileForcedOpen',
       'fetchCoverageFiles',
       'rereadNoteHash',
-      'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setCurrentFileHash',
       'setHighlightedRow',

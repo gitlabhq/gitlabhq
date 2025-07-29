@@ -10,6 +10,8 @@
 class ProcessCommitWorker
   include ApplicationWorker
 
+  MAX_TIME_TRACKING_REFERENCES = 5
+
   data_consistency :sticky, feature_flag: :process_commit_worker_sticky
 
   sidekiq_options retry: 3
@@ -53,6 +55,58 @@ class ProcessCommitWorker
 
     close_issues(project, user, author, commit, closed_issues) if closed_issues.any?
     commit.create_cross_references!(author, closed_issues)
+
+    return unless Feature.enabled?(:commit_time_tracking, project)
+
+    track_time_from_commit_message(project, commit, author)
+  end
+
+  def track_time_from_commit_message(project, commit, author)
+    # Pre-validate commit message to prevent abuse
+    validated_message = validate_and_limit_time_tracking_references(commit.safe_message, commit, project, author)
+    return unless validated_message
+
+    time_tracking_extractor = Gitlab::WorkItems::TimeTrackingExtractor.new(project, author)
+    time_spent_entries = time_tracking_extractor.extract_time_spent(validated_message)
+
+    time_spent_entries.each do |issue, time_spent|
+      next if project.forked_from?(issue.project)
+      next unless issue.supports_time_tracking?
+      # Only log time if the user has permission to do so
+      next unless Ability.allowed?(author, :create_timelog, issue)
+
+      # Add commit information to the time tracking description
+      description = "#{commit.title} (Commit #{commit.short_id})"
+
+      # Check if a time entry with this commit info already exists
+      # This prevents duplicate time tracking when commits appear multiple times in history
+      duplicate_finder = Timelogs::TimelogsFinder.new(issue, summary: description)
+      next if duplicate_finder.execute.exists?
+
+      result = ::Timelogs::CreateService.new(
+        issue,
+        time_spent,
+        commit.committed_date,
+        description,
+        author
+      ).execute
+
+      next if result.success?
+
+      log_hash_metadata_on_done(
+        issue_id: issue.id,
+        project_id: project.id,
+        commit_id: commit.id
+      )
+
+      Gitlab::AppLogger.error(
+        message: "Failed to create timelog from commit",
+        issue_id: issue.id,
+        project_id: project.id,
+        commit_id: commit.id,
+        error_message: result.message
+      )
+    end
   end
 
   def close_issues(project, user, author, commit, issues)
@@ -85,5 +139,30 @@ class ProcessCommitWorker
     Issue::Metrics.for_issues(mentioned_issues)
       .with_first_mention_not_earlier_than(commit.committed_date)
       .update_all(first_mentioned_in_commit_at: commit.committed_date)
+  end
+
+  def validate_and_limit_time_tracking_references(message, commit, project, user)
+    return if message.blank?
+
+    # Check if message contains time tracking syntax
+    return unless message.match?(Gitlab::WorkItems::TimeTrackingExtractor.reference_pattern)
+
+    issue_references = message.scan(Issue.reference_pattern)
+
+    if issue_references.count > MAX_TIME_TRACKING_REFERENCES
+      # Log the abuse attempt
+      Gitlab::AppLogger.warn(
+        message: "Time tracking abuse prevented: too many issue references",
+        issue_count: issue_references.count,
+        commit_id: commit.id,
+        project_id: project.id,
+        author_id: commit.author&.id,
+        user_id: user.id
+      )
+
+      return
+    end
+
+    message
   end
 end

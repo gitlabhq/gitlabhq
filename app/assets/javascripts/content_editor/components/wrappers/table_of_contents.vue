@@ -16,6 +16,7 @@ export default {
       type: Object,
       required: true,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- node is part of the component's public API.
     node: {
       type: Object,
       required: true,

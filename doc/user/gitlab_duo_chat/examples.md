@@ -440,7 +440,7 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 
 {{< alert type="note" >}}
 
-You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-view) to add files or ask questions about files added for Chat's context.
+You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
 
 {{< /alert >}}
 
@@ -767,7 +767,7 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< alert type="note" >}}
 
-On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations-with-chat), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
+On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
 
 {{< /alert >}}
 
@@ -795,7 +795,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
 | /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
-| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations-with-chat). GitLab 17.10 and later.         | All |
+| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations). GitLab 17.10 and later.         | All |
 
 ### IDE
 

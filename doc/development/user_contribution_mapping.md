@@ -38,15 +38,15 @@ flowchart
     }}
 
     FetchInfo[
-        Fetch information 
+        Fetch information
         about the contribution
     ]
-    
+
     FetchUserInfo[
-        Fetch information about 
-        the user who is associated 
+        Fetch information about
+        the user who is associated
         with the contribution.
-    ] 
+    ]
 
     CheckSourceUser{
         Has a user in the destination
@@ -64,23 +64,23 @@ flowchart
     }
 
     CreatePlaceholderUser[
-        Create a placeholder user and 
+        Create a placeholder user and
         save the details of the source user
     ]
 
     AssignContributionPlaceholder[
-        Assign contribution 
+        Assign contribution
         to placeholder user
     ]
 
     AssignImportUser[
         Assign contributions to the
-        ImportUser and save source user 
+        ImportUser and save source user
         details
     ]
 
     ImportContribution[
-        Save contribution 
+        Save contribution
         into the database
     ]
 
@@ -94,7 +94,7 @@ flowchart
         into the database
     )))
 
-    %%% connections 
+    %%% connections
     Start --> FetchInfo
     FetchInfo --> FetchUserInfo
     FetchUserInfo --> CheckSourceUser
@@ -145,8 +145,8 @@ Placeholder user reassignment takes place after an import has completed. The rea
 flowchart TD
 %% Nodes
     OwnerAssigns{{
-        Group owner requests a 
-        source user to be assigned 
+        Group owner requests a
+        source user to be assigned
         to a user in the destination
     }}
     Notification[
@@ -154,33 +154,33 @@ flowchart TD
         to the user
     ]
     ReceivesNotification[
-        User receives the notification and 
+        User receives the notification and
         clicks the button to see more details
     ]
     ClickMoreDetails[
         The user is redirected to the more details page
     ]
     CheckRequestStatus{
-        Group owner has cancelled 
+        Group owner has cancelled
         the request?
     }
     RequestCancelledPage(((
-        Shows request cancelled 
+        Shows request cancelled
         by the owner message
     )))
     OwnerCancel(
-        Group owner chooses to cancel 
+        Group owner chooses to cancel
         the assignment request
     )
     ReassigmentOptions{
         Show reassignment options
     }
     ReassigmentStarts(((
-        Start the reassignment 
+        Start the reassignment
         of the contributions
     )))
     ReassigmentRejected(((
-        Shows request rejected 
+        Shows request rejected
         by the user message
     )))
 
@@ -193,7 +193,7 @@ flowchart TD
     ReassigmentOptions -- User accepts --> ReassigmentStarts
     ReassigmentOptions -- User rejects --> ReassigmentRejected
     OwnerCancel-.->CheckRequestStatus
-    
+
 ```
 
 Each step of the reassignment flow corresponds to a source user state:
@@ -207,9 +207,9 @@ awaiting_approval --> reassignment_in_progress: Accept reassignment
 reassignment_in_progress --> completed: Contribution reassignment completed successfully
 reassignment_in_progress --> failed: Error reassigning contributions
 pending_reassignment --> awaiting_approval: Reassign user
-awaiting_approval --> pending_reassignment: Cancel reassignment 
-awaiting_approval --> rejected: Reject reassignment 
-rejected --> pending_reassignment: Cancel reassignment 
+awaiting_approval --> pending_reassignment: Cancel reassignment
+awaiting_approval --> rejected: Reject reassignment
+rejected --> pending_reassignment: Cancel reassignment
 rejected --> keep_as_placeholder: Keep as placeholder
 pending_reassignment --> keep_as_placeholder: Keeps as placeholder
 ```
@@ -260,7 +260,7 @@ flowchart LR
 
 Bypassing an assignee's confirmation can only be done in the following situations:
 
-- An administrator reassigns a placeholder user on a self-managed instance with the application setting `allow_bypass_placeholder_confirmation` enabled. The `Import::UserMapping::AdminBypassAuthorizer` module determines if all criteria are met.
+- An administrator reassigns a placeholder user on a GitLab Self-Managed instance with the application setting `allow_bypass_placeholder_confirmation` enabled. The `Import::UserMapping::AdminBypassAuthorizer` module determines if all criteria are met.
 - An enterprise group owner with GitLab Premium or Ultimate reassigns a placeholder user to a real user within their enterprise on `.com` with the group setting `allow_enterprise_bypass_placeholder_confirmation` enabled. The `Import::UserMappingEnterpriseBypassAuthorizer` module determines if all criteria are met.
 
 ### User contribution reassignment
@@ -278,7 +278,7 @@ When a real user accepts their reassignment, the process of replacing all foreig
    - **Note:** there are valid scenarios where a placeholder reference may not be able to be reassigned. For example, if a user is added as a reviewer to a merge request with a placeholder user reviewer, then the user accepts reassignments to the placeholder who was already a reviewer. This will raise an `ActiveRecord::RecordNotUnique` error during contribution reassignment, but it's a valid scenario.
    - **Note:** there is a possibility that the reassignment may fail due to unhandled errors. We need to investigate the issue since the reassignment is supposed to always succeed.
 
-1. Once the service finishes, the worker calls `Import::DeletePlaceholderUserWorker` asynchronously to delete the placeholder user. If the placeholder user ID is still referenced in any imported table, it will not be deleted. Check `columns_ignored_on_deletion` in the [AliasResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/import/placeholder_references/alias_resolver.rb#L5) for exceptions. 
+1. Once the service finishes, the worker calls `Import::DeletePlaceholderUserWorker` asynchronously to delete the placeholder user. If the placeholder user ID is still referenced in any imported table, it will not be deleted. Check `columns_ignored_on_deletion` in the [AliasResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/import/placeholder_references/alias_resolver.rb#L5) for exceptions.
 
 1. If the placeholder user was reassigned without confirmation from the reassigned user, an email is sent to the reassigned user notifying them that they have been reassigned.
 
@@ -315,7 +315,7 @@ Add the new column key to the latest version of the model's alias. The new colum
 +   columns: { "author_id" => "author_id", "last_updated_by_id" => "last_updated_by_id" }
   }
 },
-``` 
+```
 
 #### A user reference column was renamed
 

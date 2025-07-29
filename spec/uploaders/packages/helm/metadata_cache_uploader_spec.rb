@@ -16,24 +16,6 @@ RSpec.describe Packages::Helm::MetadataCacheUploader, feature_category: :package
     end
   end
 
-  describe '#store_dir' do
-    it 'uses the object_storage_key' do
-      expect(uploader.store_dir).to eq(object_storage_key)
-    end
-
-    context 'without the object_storage_key' do
-      let(:object_storage_key) { nil }
-
-      it 'raises the error' do
-        expect { uploader.store_dir }
-          .to raise_error(
-            described_class::ObjectNotReadyError,
-            'Packages::Helm::MetadataCache model not ready'
-          )
-      end
-    end
-  end
-
   context 'with object storage enabled' do
     let(:helm_metadata_cache) { create(:helm_metadata_cache, :object_storage) }
 

@@ -230,6 +230,17 @@ might impact its functionality.
 To help resolve Agentic Chat networking issues, see the
 [GitLab Duo Agent Platform network issue troubleshooting documentation](../duo_agent_platform/troubleshooting.md#network-issues).
 
+### Agentic Chat does not show up in the IDE
+
+You might find that Agentic Chat is not visible in your IDE. To resolve this, make sure that:
+
+1. You have enabled Agentic Chat in the [VS Code](#use-agentic-chat-in-vs-code) or [JetBrains IDE](#use-agentic-chat-in-jetbrains-ides) settings.
+1. You have one project open in your IDE workspace, and that [project is connected to a GitLab project](../duo_agent_platform/troubleshooting.md#view-the-project-in-the-gitlab-workflow-extension).
+1. The [GitLab project is in a group namespace](../duo_agent_platform/troubleshooting.md#project-not-in-a-group-namespace).
+1. You have a Premium or Ultimate subscription.
+1. [GitLab Duo is turned on](../gitlab_duo/turn_on_off.md).
+1. [GitLab Duo experimental and beta features are turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your top-level group on GitLab.com, or your instance on GitLab Self-Managed. Contact your administrator if necessary.
+
 ### Slow response times
 
 Agentic Chat has significant latency when processing requests.
@@ -250,7 +261,7 @@ used in the search.
 
 ## Feedback
 
-Because this is an experimental feature, your feedback is valuable in helping us improve it.
+Because this is a beta feature, your feedback is valuable in helping us improve it.
 Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
 
 ## Related topics

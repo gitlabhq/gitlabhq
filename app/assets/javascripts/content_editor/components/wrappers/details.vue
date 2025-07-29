@@ -7,12 +7,6 @@ export default {
     NodeViewWrapper,
     NodeViewContent,
   },
-  props: {
-    node: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       open: true,

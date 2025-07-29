@@ -588,6 +588,11 @@ group :test do
 
   gem 'graphlyte', '~> 1.0.0', feature_category: :shared
 
+  # Upload CI metrics to a GCP BigQuery instance
+  #
+  # We only use this gem in CI.
+  gem 'google-cloud-bigquery', '~> 1.0', feature_category: :tooling
+
   gem 'shoulda-matchers', '~> 6.4.0', require: false, feature_category: :shared
   gem 'email_spec', '~> 2.3.0', feature_category: :shared
   gem 'webmock', '~> 3.25.0', feature_category: :shared
@@ -752,4 +757,4 @@ gem 'paper_trail', '~> 16.0', feature_category: :shared
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.23", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.24", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning

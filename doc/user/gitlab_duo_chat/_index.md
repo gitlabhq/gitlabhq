@@ -26,7 +26,7 @@ title: GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat is an AI-native assistant that accelerates development with
+GitLab Duo Chat is an AI assistant that accelerates development with
 contextual, conversational AI. Chat:
 
 - Explains code and suggests improvements directly in your development environment.
@@ -44,41 +44,49 @@ You can use GitLab Duo Chat in:
 
 - The GitLab UI
 - [The GitLab Web IDE (VS Code in the cloud)](../project/web_ide/_index.md)
-- VS Code, with the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-- JetBrains IDEs, with the [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
-- Eclipse, with the [GitLab for Eclipse extension](https://marketplace.eclipse.org/content/gitlab-eclipse)
-- Visual Studio for Windows, with the [GitLab Extension for Visual Studio](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
+
+You can also use GitLab Duo Chat in these IDEs by installing an editor extension:
+
+- [VS Code](../../editor_extensions/visual_studio_code/setup.md)
+- [JetBrains](../../editor_extensions/jetbrains_ide/setup.md)
+- [Eclipse](../../editor_extensions/eclipse/setup.md)
+- [Visual Studio](../../editor_extensions/visual_studio/setup.md)
 
 {{< alert type="note" >}}
 
-If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
 
 {{< /alert >}}
 
 ## Use GitLab Duo Chat in the GitLab UI
 
+Prerequisites:
+
+- You must have access to GitLab Duo Chat and GitLab Duo must be turned on.
+- You must be where Chat is available. It is not available on:
+  - The **Your work** pages, like the To-Do List.
+  - Your **User settings** page.
+  - The **Help** menu.
+
+To use GitLab Duo Chat in the GitLab UI:
+
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press **Enter** or select **Send**.
+1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
    - It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
+To ask a new, unrelated question, clear the context by typing `/reset` or `/clear` and selecting **Send**.
+
+### View the Chat history
+
 The 25 most recent messages are retained in the chat history.
 
-To ask a new question unrelated to the previous conversation, you might receive better answers
-if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
+To view the history:
 
-{{< alert type="note" >}}
+- In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
 
-The **GitLab Duo Chat** button is **not available** on:
-
-- The **Your work** pages, like the [To-Do List](../todos.md).
-- Your [**User settings**](../profile/_index.md) page.
-- The **Help** menu.
-
-{{< /alert >}}
-
-### Have multiple conversations with Chat
+### Have multiple conversations
 
 {{< details >}}
 
@@ -94,34 +102,31 @@ The **GitLab Duo Chat** button is **not available** on:
 
 {{< /history >}}
 
-In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
+In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press **Enter** or select **Send**.
-1. To create a new conversation with Chat, you can either:
-   - In the top-left corner of the Chat drawer, select **New Chat**.
-   - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
+1. Create a new conversation with Chat by selecting one of the following:
+   - In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).
+   - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
    A new Chat drawer replaces the previous one.
-
-   You can have an unlimited number of simultaneous conversations with Chat.
-
-1. To view all of your conversations, in the top-left corner of the Chat drawer, select **Chat History**.
-
-   Conversations created before the multiple conversations feature was enabled are not visible in the Chat history.
-
+1. Create another new conversation.
+1. To view all of your conversations, in the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
 
-   Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
+Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
 
-#### Delete a conversation
+Conversations created before this feature was enabled are not visible in the Chat history.
+
+### Delete a conversation
 
 To delete a conversation:
 
-1. In the top-left corner of the Chat drawer, select **Chat History**.
-1. In the Chat history, select **Delete conversation**.
+1. In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
+1. In the history, select **Delete conversation** ({{< icon name="remove" >}}).
 
-> By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
-> However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
+By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
+However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
 
 ## Use GitLab Duo Chat in the Web IDE
 
@@ -137,15 +142,18 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 1. Open the Web IDE:
    1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
-1. Then open Chat by using one of the following methods:
+1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
-     1. Select **Explain selected code**, **Generate Tests**, or **Refactor**.
-   - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac)
-1. In the message box, enter your question and press **Enter** or select **Send**.
+     1. Select **Explain selected snippet**, **Fix**, **Generate tests**, **Open Quick Chat**, or **Refactor**.
+   - Use the keyboard shortcut:
+     - On Windows or Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+     - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
+If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
+For example, you can select code and ask Chat, `Can you simplify this?`.
 
 ## Use GitLab Duo Chat in VS Code
 
@@ -161,32 +169,16 @@ Prerequisites:
 
 - You've [installed and configured the VS Code extension](../../editor_extensions/visual_studio_code/setup.md).
 
-To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
+To use GitLab Duo Chat in the GitLab Workflow extension for VS Code:
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. On the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-1. In the message box, enter your question and press **Enter** or select **Send**.
-1. In the chat pane, on the top right corner, select **Show Status** to show information
-   in the Command Palette.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-### Select code and use Duo Chat
+If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
+For example, you can select code and ask Chat, `Can you simplify this?`.
 
-You can interact with Duo Chat while you're working with a subset of code.
-
-1. In VS Code, open a file. The file does not need to be a file in a Git repository.
-1. In the file, select some code.
-1. Right-click and select **GitLab Duo Chat**.
-1. Select an option, or **Open Quick Chat** and ask a question, like `Can you simplify this code?` and press <kbd>Enter</kbd>.
-
-### Close Duo Chat
-
-To close Duo Chat:
-
-- For Duo Chat on the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-- For the quick chat window that's embedded in your file, in the upper-right corner,
-  select **Collapse** ({{< icon name="chevron-lg-up" >}}).
-
-### In the editor window
+### Use Chat while working in the editor window
 
 {{< history >}}
 
@@ -197,22 +189,35 @@ To close Duo Chat:
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- Right-clicking in the currently open file in your IDE, then selecting **GitLab Duo Chat > Open Quick Chat**.
-  Optionally, select some code to provide additional context.
-- Opening the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette),
-  then selecting **GitLab Duo Chat: Open Quick Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
+- In the currently open file in your IDE, right-click and select **GitLab Duo Chat > Open Quick Chat**.
+  Select some code to provide additional context.
+- Open the Command Palette, then select **GitLab Duo Chat: Open Quick Chat**.
 
 After Quick Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor`.
-1. To send your question, select **Send**, or press <kbd>Command</kbd> + <kbd>Enter</kbd>.
-1. Use the **Copy Snippet** and **Insert Snippet** links above code blocks in the responses to interact with them.
-1. To exit chat, either select the chat icon in the gutter, or press **Escape** while focused on the chat.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor`.
+1. To send your question, select **Send**, or press <kbd>Command</kbd>+<kbd>Enter</kbd>.
+1. To interact with the responses, above the code blocks, use the **Copy Snippet** and **Insert Snippet** links.
+1. To exit chat, select the chat icon in the gutter, or press **Escape** while focused on the chat.
+
+### Check the status of Chat
+
+To check the health of your GitLab Duo configuration:
+
+- In the chat pane, in the upper-right corner, select **Status**.
+
+### Close Chat
+
+To close GitLab Duo Chat:
+
+- For GitLab Duo Chat on the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+- For the quick chat window that's embedded in your file, in the upper-right corner,
+  select **Collapse** ({{< icon name="chevron-lg-up" >}}).
 
 ## Use GitLab Duo Chat in Visual Studio for Windows
 
@@ -228,7 +233,7 @@ To use GitLab Duo Chat in the GitLab extension for Visual Studio:
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected code** or **Generate Tests**.
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you refactor this?`.
 
@@ -253,10 +258,10 @@ To use GitLab Duo Chat in the GitLab plugin for JetBrains IDEs:
 
 To open GitLab Duo Chat in a chat window, use any of these methods:
 
-- On the right tool window bar, by selecting **GitLab Duo Chat**.
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd>
+- On the right tool window bar, select **GitLab Duo Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
 - From an open editor file:
   1. Right-click and select **GitLab Duo Chat**.
   1. Select **Open Chat Window**.
@@ -271,13 +276,13 @@ To open GitLab Duo Chat in a chat window, use any of these methods:
 
 After GitLab Duo Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor` and `/reset`.
-1. To send your question, press **Enter** or select **Send**.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor` and `/reset`.
+1. To send your question, press <kbd>Enter</kbd> or select **Send**.
 1. Use the buttons within code blocks in the responses to interact with them.
 
-### In GitLab Duo Quick Chat in the editor view
+### In an editor window
 
 {{< history >}}
 
@@ -285,23 +290,23 @@ After GitLab Duo Chat opens:
 
 {{< /history >}}
 
-To open GitLab Duo Chat Quick Chat in the editor window, use any of these methods:
+To open GitLab Duo Chat in the editor window, use any of these methods:
 
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- In an open file in your IDE, by selecting some code,
-  then, in the floating toolbar, selecting **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- Right-clicking, then selecting **GitLab Duo Chat > Open Quick Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
+- In an open file in your IDE, select some code,
+  then, in the floating toolbar, select **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
+- Right-click and select **GitLab Duo Chat > Open Quick Chat**.
 
 After Quick Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor` and `/reset`.
-1. To send your question, press **Enter**.
-1. Use the buttons around code blocks in the responses to interact with them.
-1. To exit chat, either select **Escape to close**, or press **Escape** while focused on the chat.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor` and `/reset`.
+1. To send your question, press <kbd>Enter</kbd>.
+1. To interact with the responses, use the buttons around the code blocks.
+1. To exit chat, either select **Escape to close**, or press <kbd>Escape</kbd> while focused on the chat.
 
 <div class="video-fallback">
   <a href="https://youtu.be/5JbAM5g2VbQ">View how to use GitLab Duo Quick Chat</a>.
@@ -326,10 +331,10 @@ Prerequisites:
 To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 
 1. Open a project in Eclipse.
-1. To open the chat window, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
-   - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd> on Windows and Linux
-   - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. Select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
+   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+   - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 ## Watch a demo and get tips
 
@@ -341,7 +346,7 @@ To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 </figure>
 <!-- Video published on 2023-11-10 -->
 
-For tips and tricks about integrating GitLab Duo Chat into your AI-native DevSecOps workflows,
+For tips and tricks about integrating GitLab Duo Chat into your DevSecOps workflows,
 read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
@@ -365,7 +370,6 @@ Prerequisites:
 1. Select **GitLab Duo**.
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:
-
    - **Expire conversation based on time conversation was last updated**.
    - **Expire conversation based on time conversation was created**.
 1. Select **Save changes**.
@@ -391,7 +395,7 @@ For each Chat conversation, input and output length is limited:
 
 ## Give feedback
 
-Your feedback is important to us as we continually enhance your GitLab Duo Chat experience.
+Your feedback is important to us as we continually enhance the GitLab Duo Chat experience.
 Leaving feedback helps us customize the Chat for your needs and improve its performance for everyone.
 
 To give feedback about a specific response, use the feedback buttons in the response message.

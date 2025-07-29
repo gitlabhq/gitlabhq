@@ -50,6 +50,7 @@ compile-production-assets:
     - !reference [.compile-assets-base, before_script]
     - !reference [.buildx-setup, before_script]
   after_script:
+    - !reference [.compile-assets-base, after_script]
     - source scripts/utils.sh
     - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
   artifacts:

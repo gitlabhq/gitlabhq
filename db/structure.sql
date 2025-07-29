@@ -30069,6 +30069,9 @@ ALTER TABLE oauth_applications
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
+ALTER TABLE merge_request_context_commit_diff_files
+    ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE p_ci_job_artifacts
     ADD CONSTRAINT check_b8fac815e7 CHECK ((char_length(exposed_as) <= 100)) NOT VALID;
 

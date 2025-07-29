@@ -43,6 +43,10 @@ class Timelog < ApplicationRecord
     where('spent_at <= ?', end_time)
   end
 
+  scope :with_summary, ->(summary) do
+    where(summary: summary)
+  end
+
   scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
   scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
 
