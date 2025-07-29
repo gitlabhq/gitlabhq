@@ -50,8 +50,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::FinishImportWorker, feature
       it 'queues LoadPlaceholderReferencesWorker' do
         expect(Import::LoadPlaceholderReferencesWorker).to receive(:perform_async).with(
           project.import_type,
-          project.import_state.id,
-          { current_user_id: project.creator.id }
+          project.import_state.id
         )
 
         worker.perform(project.id)

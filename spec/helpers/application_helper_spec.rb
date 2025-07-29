@@ -303,30 +303,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  unless Gitlab.jh?
-    describe '#promo_host' do
-      subject { helper.promo_host }
-
-      it 'returns the url' do
-        is_expected.to eq('about.gitlab.com')
-      end
-    end
-  end
-
-  describe '#promo_url' do
-    subject { helper.promo_url }
-
-    it 'returns the url' do
-      is_expected.to eq("https://#{helper.promo_host}")
-    end
-
-    it 'changes if promo_host changes' do
-      allow(described_class).to receive(:promo_host).and_return('foobar.baz')
-
-      is_expected.to eq('https://foobar.baz')
-    end
-  end
-
   describe '#community_forum' do
     subject { helper.community_forum }
 
@@ -348,7 +324,7 @@ RSpec.describe ApplicationHelper do
 
     context 'when alternate support url is not specified' do
       it 'builds the support url from the promo_url' do
-        expect(helper.support_url).to eq(helper.promo_url + '/get-help/')
+        expect(helper.support_url).to eq(promo_url(path: '/get-help/'))
       end
     end
   end

@@ -193,7 +193,7 @@ class Namespace < ApplicationRecord
       :resource_access_token_notify_inherited_locked?,
       :resource_access_token_notify_inherited_locked_by_ancestor?,
       :resource_access_token_notify_inherited_locked_by_application_setting?
-    delegate :jwt_ci_cd_job_token_enabled?, :job_token_policies_enabled?
+    delegate :jwt_ci_cd_job_token_enabled?
 
     with_options allow_nil: true do
       delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=
@@ -371,10 +371,6 @@ class Namespace < ApplicationRecord
       Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) || ProjectSetting.unique_domain_exists?(s) }
     end
 
-    def clean_name(value)
-      value.scan(Gitlab::Regex.group_name_regex_chars).join(' ')
-    end
-
     def reference_prefix
       User.reference_prefix
     end
@@ -435,8 +431,9 @@ class Namespace < ApplicationRecord
   end
 
   def self_or_ancestors_archived?
-    if association(:namespace_settings_with_ancestors_inherited_settings).loaded?
-      return !!namespace_settings_with_ancestors_inherited_settings&.archived
+    if association(:namespace_settings_with_ancestors_inherited_settings).loaded? &&
+        namespace_settings_with_ancestors_inherited_settings
+      return namespace_settings_with_ancestors_inherited_settings.archived
     end
 
     self_and_ancestors(skope: Namespace).archived.exists?

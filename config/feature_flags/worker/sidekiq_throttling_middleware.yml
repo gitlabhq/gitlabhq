@@ -1,0 +1,10 @@
+---
+name: sidekiq_throttling_middleware
+description:
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/3815
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197226
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554621
+milestone: '18.2'
+group: group::durability
+type: worker
+default_enabled: false

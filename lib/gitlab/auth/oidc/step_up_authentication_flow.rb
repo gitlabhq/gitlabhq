@@ -66,7 +66,7 @@ module Gitlab
         end
 
         def provider_scope_session_data
-          omniauth_step_up_auth_session_data[provider.to_s][scope.to_s]
+          omniauth_step_up_auth_session_data&.[](provider.to_s)&.[](scope.to_s)
         end
 
         def update_session_state(new_state)

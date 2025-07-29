@@ -38,6 +38,7 @@ module RuboCop
         COP_DISABLE = '#\s*rubocop\s*:\s*(?:disable|todo)\s+.*Migration\s*/\s*EnsureFactoryForTable'
         COP_DISABLE_LINE = /\A(?<line>#{COP_DISABLE}.*)\Z/
 
+        # @!method table_definition(node)
         def_node_matcher :table_definition, <<~PATTERN
           (send nil? RESTRICT_ON_SEND ${(sym $_) (str $_)} ...)
         PATTERN

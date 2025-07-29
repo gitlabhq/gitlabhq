@@ -144,16 +144,14 @@ If you are an administrator, you can create group access tokens in the Rails con
 {{< history >}}
 
 - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens limited to 30 days and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
 
 In GitLab 17.9 and later, you can view both active and inactive group
 access tokens on the access tokens page.
 
-The inactive group access tokens table displays revoked and expired tokens for 30 days after they became inactive.
-
-Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
+The inactive group access tokens table displays revoked and expired tokens until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 To revoke or rotate a group access token:
 
@@ -257,11 +255,11 @@ GitLab runs a check every day at 1:00 AM UTC to identify group access tokens tha
   - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
-Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) for 30 days after the tokens expire.
+Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 ## Bot users for groups
 
-Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
+Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
 Each time you create a group access token, a bot user is created and added to the group.
 These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added

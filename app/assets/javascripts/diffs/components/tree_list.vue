@@ -314,7 +314,7 @@ export default {
           <div class="tree-list-gutter"></div>
         </template>
       </recycle-scroller>
-      <p v-else class="prepend-top-20 append-bottom-20 text-center">
+      <p v-else class="gl-my-3">
         {{ s__('MergeRequest|No files found') }}
       </p>
     </nav>

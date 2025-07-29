@@ -14,14 +14,17 @@ module RuboCop
           Extend `ActiveSupport::Concern` in the EE background migration if it defines `scope_to`.
         MSG
 
+        # @!method prepended_block_uses_scope_to?(node)
         def_node_matcher :prepended_block_uses_scope_to?, <<~PATTERN
           (:block (:send nil? :prepended) (:args) `(:send nil? :scope_to ...))
         PATTERN
 
+        # @!method scope_to?(node)
         def_node_matcher :scope_to?, <<~PATTERN
           (:send nil? :scope_to ...)
         PATTERN
 
+        # @!method extend_activesupport_concern?(node)
         def_node_matcher :extend_activesupport_concern?, <<~PATTERN
           (:send nil? :extend (:const (:const nil? :ActiveSupport) :Concern))
         PATTERN
@@ -43,7 +46,7 @@ module RuboCop
 
         def module_extends_activesupport_concern?(node)
           while node = node.parent
-            break if node.type == :module
+            break if node.module_type?
           end
 
           return false unless node

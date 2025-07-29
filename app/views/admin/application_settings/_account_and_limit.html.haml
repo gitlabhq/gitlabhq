@@ -22,11 +22,10 @@
       = f.label :session_expire_delay, s_('Settings|Session timeout duration'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session. Restart GitLab to apply changes.'), data: { toggle: 'tooltip', container: 'body' }
       .form-text.gl-text-subtle= s_('Settings|Session duration, in minutes. Restart GitLab to apply changes.')
-    - if Feature.enabled?(:session_expire_from_init, :instance)
-      .form-group
-        = f.label :session_expire_from_init, s_('Settings|Session settings')
-        = f.gitlab_ui_radio_component :session_expire_from_init, false, s_('Settings|Expire from time of last session activity')
-        = f.gitlab_ui_radio_component :session_expire_from_init, true, s_('Settings|Expire from time of session creation')
+    .form-group
+      = f.label :session_expire_from_init, s_('Settings|Session settings')
+      = f.gitlab_ui_radio_component :session_expire_from_init, false, s_('Settings|Expire from time of last session activity')
+      = f.gitlab_ui_radio_component :session_expire_from_init, true, s_('Settings|Expire from time of session creation')
     .form-group
       = f.label :remember_me_enabled, _('Remember me'), class: 'label-light'
       - remember_me_help_link = help_page_path('user/profile/_index.md', anchor: 'stay-signed-in-for-one-week')
@@ -53,6 +52,8 @@
       = render 'admin/application_settings/require_access_token_expiry', form: f
       = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
+
+    = render 'admin/application_settings/project_and_group_access_tokens', form: f
 
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
 

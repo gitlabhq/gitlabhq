@@ -178,7 +178,7 @@ export default {
       if (this.tab.listComponent.name === NESTED_GROUPS_PROJECTS_LIST_COMPONENT_NAME) {
         return {
           ...baseProps,
-          initialExpanded: Boolean(this.search),
+          expandedOverride: Boolean(this.search),
         };
       }
 

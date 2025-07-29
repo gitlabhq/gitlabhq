@@ -9,6 +9,8 @@ module Gitlab
             include Gitlab::Allowable
             include Chain::Helpers
 
+            GL_BUILD_ID_KEY = "glBuildId"
+
             def perform!
               if project.pending_delete?
                 return error('Project is deleted!')
@@ -28,6 +30,15 @@ module Gitlab
 
               unless allowed_to_run_pipeline?
                 error("You do not have sufficient permission to run a pipeline on '#{command.ref}'. Please select a different branch or contact your administrator for assistance.")
+              end
+
+              if push_from_ci?
+                Gitlab::AppLogger.info(
+                  message: "Pipeline creation blocked for CI job token push",
+                  build_id: command.gitaly_context[GL_BUILD_ID_KEY],
+                  project_id: project.id
+                )
+                error('Pipeline creation is not allowed when pushing from CI jobs. This prevents infinite pipeline loops.')
               end
             end
 
@@ -64,6 +75,10 @@ module Gitlab
               else
                 true # Allow it for now and we'll reject when we check ref existence
               end
+            end
+
+            def push_from_ci?
+              command.gitaly_context&.dig(GL_BUILD_ID_KEY).present?
             end
           end
         end

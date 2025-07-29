@@ -27,7 +27,7 @@ High CPU utilization is a common cause of slow performance.
 The following non-mutually exclusive causes are possible:
 
 - [Too many clones for Gitaly to handle](#cause-too-many-large-clones).
-- [Poor read distribution on Gitaly Cluster](#cause-poor-read-distribution).
+- [Poor read distribution on Gitaly Cluster (Praefect)](#cause-poor-read-distribution).
 
 #### Cause: too many large clones
 
@@ -54,7 +54,7 @@ The other option is to increase CPU capacity on Gitaly servers.
 
 #### Cause: poor read distribution
 
-You might have poor read distribution on Gitaly Cluster.
+You might have poor read distribution on Gitaly Cluster (Praefect).
 
 To observe if most read traffic is going to the primary Gitaly node instead of
 getting distributed across the cluster, use the
@@ -67,7 +67,7 @@ a monorepo.
 Monorepos are often both large and busy. This leads to two effects. Firstly,
 monorepos are pushed to often and have lots of CI jobs running. There can be
 times when write operations such as deleting a branch fails a proxy call to the
-secondary nodes. This triggers a replication job in Gitaly Cluster so that
+secondary nodes. This triggers a replication job in Gitaly Cluster (Praefect) so that
 the secondary node will catch up eventually.
 
 The replication job is essentially a `git fetch` from the secondary node to the

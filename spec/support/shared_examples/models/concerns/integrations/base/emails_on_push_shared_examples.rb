@@ -85,5 +85,14 @@ RSpec.shared_examples Integrations::Base::EmailsOnPush do
       expect(described_class.valid_recipients(recipients)).not_to contain_exactly('valid@dup@asd')
       expect(described_class.valid_recipients(recipients)).to contain_exactly('Valid@recipient.com', 'Dup@lica.te')
     end
+
+    context 'when email addresses contains angle brackets' do
+      let(:recipients) { 'Name <valid@recipient.com> Name 2 valid2@recipient.com' }
+
+      it 'removes the angle brackets' do
+        expect(described_class.valid_recipients(recipients)).to contain_exactly(
+          'valid@recipient.com', 'valid2@recipient.com')
+      end
+    end
   end
 end

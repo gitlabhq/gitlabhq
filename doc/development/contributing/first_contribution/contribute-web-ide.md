@@ -17,10 +17,10 @@ and is not an example of a change that should be submitted for review.
 The example in this section shows how to modify a line of code as part of a community contribution
 to GitLab code using the Web IDE.
 
-1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
+1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab).
 
 1. Search the GitLab code for the string `Syntax highlighting theme`.
-   From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab):
+   From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab):
 
    1. On the left sidebar, select **Search or go to**.
    1. Enter the search string `"Syntax highlighting theme"`.

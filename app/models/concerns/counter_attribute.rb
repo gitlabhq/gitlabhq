@@ -3,6 +3,10 @@
 # Add capabilities to increment a numeric model attribute efficiently by
 # using Redis and flushing the increments asynchronously to the database
 # after a period of time (10 minutes).
+#
+# The ActiveRecord model is required to either have a project_id or a
+# group_id foreign key.
+#
 # When an attribute is incremented by a value, the increment is added
 # to a Redis key. Then, FlushCounterIncrementsWorker will execute
 # `commit_increment!` which removes increments from Redis for a
@@ -48,6 +52,18 @@
 # To increment the counter we can use the method:
 #   increment_amount(:commit_count, 3)
 #
+# Bumping counters relies on the Rails .update_counters class method. As such, we can pass a :touch option
+# that can accept true, timestamp columns are updated, or attribute names, which will be updated along with
+# updated_at/on
+#
+# @example:
+#
+# class ProjectStatistics
+#   include CounterAttribute
+#
+#   counter_attribute :my_counter, touch: :my_counter_updated_at
+# end
+#
 # This method would determine whether it would increment the counter using Redis,
 # or fallback to legacy increment on ActiveRecord counters.
 #
@@ -66,12 +82,12 @@ module CounterAttribute
   include Gitlab::Utils::StrongMemoize
 
   class_methods do
-    def counter_attribute(attribute, if: nil, returns_current: false)
-      counter_attributes << {
-        attribute: attribute,
+    def counter_attribute(attribute, if: nil, returns_current: false, touch: nil)
+      counter_attributes[attribute] = {
         if_proc: binding.local_variable_get(:if), # can't read `if` directly
-        returns_current: returns_current
-      }
+        returns_current: returns_current,
+        touch: touch
+      }.compact
 
       if returns_current
         define_method(attribute) do
@@ -85,7 +101,7 @@ module CounterAttribute
     end
 
     def counter_attributes
-      @counter_attributes ||= []
+      @counter_attributes ||= {}.with_indifferent_access
     end
 
     def after_commit_callbacks
@@ -99,7 +115,7 @@ module CounterAttribute
   end
 
   def counter_attribute_enabled?(attribute)
-    counter_attribute = self.class.counter_attributes.find { |registered| registered[:attribute] == attribute }
+    counter_attribute = self.class.counter_attributes[attribute]
     return false unless counter_attribute
     return true unless counter_attribute[:if_proc]
 
@@ -142,6 +158,11 @@ module CounterAttribute
   end
 
   def update_counters(increments)
+    touch = increments.each_key.flat_map do |attribute|
+      self.class.counter_attributes.dig(attribute, :touch)
+    end
+
+    increments[:touch] = touch if touch.any?
     self.class.update_counters(id, increments)
   end
 
@@ -170,6 +191,10 @@ module CounterAttribute
     end
   end
 
+  def counters_key_prefix
+    with_parent { |type, id| "#{type}:{#{id}}" }
+  end
+
   private
 
   def build_counter_for(attribute)
@@ -189,7 +214,7 @@ module CounterAttribute
   end
 
   def database_lock_key
-    "project:{#{project_id}}:#{self.class}:#{id}"
+    "#{counters_key_prefix}:#{self.class}:#{id}"
   end
 
   # This method uses a lease to monitor access to the model row.
@@ -208,7 +233,7 @@ module CounterAttribute
       message: 'Acquiring lease for project statistics update',
       model: self.class.name,
       model_id: id,
-      project_id: project.id,
+      **parent_log_fields,
       **log_fields,
       **Gitlab::ApplicationContext.current
     )
@@ -221,7 +246,7 @@ module CounterAttribute
       message: 'Concurrent project statistics update detected',
       model: self.class.name,
       model_id: id,
-      project_id: project.id,
+      **parent_log_fields,
       **log_fields,
       **Gitlab::ApplicationContext.current
     )
@@ -233,11 +258,11 @@ module CounterAttribute
     payload = Gitlab::ApplicationContext.current.merge(
       message: 'Increment counter attribute',
       attribute: attribute,
-      project_id: project_id,
       increment: increment.amount,
       ref: increment.ref,
       new_counter_value: new_value,
-      current_db_value: read_attribute(attribute)
+      current_db_value: read_attribute(attribute),
+      **parent_log_fields
     )
 
     Gitlab::AppLogger.info(payload)
@@ -257,9 +282,20 @@ module CounterAttribute
     payload = Gitlab::ApplicationContext.current.merge(
       message: 'Clear counter attribute',
       attribute: attribute,
-      project_id: project_id
+      **parent_log_fields
     )
 
     Gitlab::AppLogger.info(payload)
+  end
+
+  def parent_log_fields
+    with_parent { |type, id| { "#{type}_id": id } }
+  end
+
+  def with_parent
+    return yield(:project, project_id) if self.respond_to?(:project_id)
+    return yield(:group, group_id) if self.respond_to?(:group_id)
+
+    raise ArgumentError, 'counter record must have either a project_id or a group_id column'
   end
 end

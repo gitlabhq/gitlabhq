@@ -13,6 +13,7 @@ import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemLinkedResources from '~/work_items/components/work_item_linked_resources.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import WorkItemErrorTracking from '~/work_items/components/work_item_error_tracking.vue';
@@ -88,7 +89,9 @@ describe('WorkItemDetail component', () => {
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
 
-  const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
+  const allowedChildrenTypesSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(allowedChildrenTypesResponse);
   const workspacePermissionsAllowedHandler = jest
     .fn()
     .mockResolvedValue(mockProjectPermissionsQueryResponse());
@@ -123,6 +126,7 @@ describe('WorkItemDetail component', () => {
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findErrorTrackingWidget = () => wrapper.findComponent(WorkItemErrorTracking);
+  const findLinkedResourcesWidget = () => wrapper.findComponent(WorkItemLinkedResources);
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
@@ -163,9 +167,9 @@ describe('WorkItemDetail component', () => {
     modalIsGroup = null,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
+    allowedChildrenTypesHandler = allowedChildrenTypesSuccessHandler,
     hasLinkedItemsEpicsFeature = true,
     showSidebar = true,
-    newCommentTemplatePaths = [],
     lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -187,7 +191,6 @@ describe('WorkItemDetail component', () => {
         workItemIid,
         isDrawer,
         modalIsGroup,
-        newCommentTemplatePaths,
       },
       data() {
         return {
@@ -254,7 +257,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not fetch allowed children types for current work item', () => {
-      expect(allowedChildrenTypesHandler).not.toHaveBeenCalled();
+      expect(allowedChildrenTypesSuccessHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -293,7 +296,32 @@ describe('WorkItemDetail component', () => {
     });
 
     it('fetches allowed children types for current work item', () => {
-      expect(allowedChildrenTypesHandler).toHaveBeenCalled();
+      expect(allowedChildrenTypesSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('fetches and sets allowedChildTypes when workItem.id changes', async () => {
+      wrapper.vm.workItem = { id: 'gid://gitlab/WorkItem/123' };
+
+      await nextTick();
+
+      expect(allowedChildrenTypesSuccessHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/WorkItem/123',
+      });
+    });
+
+    it('handles Apollo error when fetching allowedChildTypes', async () => {
+      const allowedChildrenTypesErrorHandler = jest
+        .fn()
+        .mockRejectedValue(new Error('Apollo error'));
+
+      createComponent({
+        workItemId: 'gid://gitlab/WorkItem/123',
+        allowedChildrenTypesHandler: allowedChildrenTypesErrorHandler,
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.vm.allowedChildTypes).toEqual([]);
     });
 
     it('passes `parentMilestone` prop to work item tree', () => {
@@ -567,6 +595,13 @@ describe('WorkItemDetail component', () => {
         expect(findEmptyState().props('description')).toBe(i18n.fetchError);
       });
     });
+  });
+
+  it('renders the resources widget', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findLinkedResourcesWidget().exists()).toBe(true);
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
@@ -880,9 +915,6 @@ describe('WorkItemDetail component', () => {
           __typename: 'CommentTemplatePathType',
         },
       ];
-      const newCommentTemplatePaths = [
-        { text: 'Default template', href: '/groups/gitlab-org/-/comment_templates' },
-      ];
 
       it('passes fetched comment template paths to WorkItemNotes component', async () => {
         const commentTemplateQueryResponse = workItemByIidResponseFactory({
@@ -897,32 +929,6 @@ describe('WorkItemDetail component', () => {
         expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(
           mockCommentTemplatePaths,
         );
-      });
-
-      it('uses prop `newCommentTemplatePaths` value  if the query returns empty array', async () => {
-        const commentTemplateQueryResponse = workItemByIidResponseFactory({
-          commentTemplatesPaths: [],
-        });
-
-        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
-
-        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
-        await waitForPromises();
-
-        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
-      });
-
-      it('uses prop `newCommentTemplatePaths` value  if the query returns null', async () => {
-        const commentTemplateQueryResponse = workItemByIidResponseFactory({
-          commentTemplatesPaths: null,
-        });
-
-        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
-
-        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
-        await waitForPromises();
-
-        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
       });
     });
   });

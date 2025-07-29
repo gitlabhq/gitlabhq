@@ -230,6 +230,22 @@ module Projects
           end
         end
       end
+
+      if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+        loop do
+          inner_query = MergeRequest::CommitsMetadata
+            .select(:id)
+            .where(project_id: project.id)
+            .limit(delete_batch_size)
+
+          deleted_rows = MergeRequest::CommitsMetadata
+            .where(project_id: project.id)
+            .where(id: inner_query)
+            .delete_all
+
+          break if deleted_rows == 0
+        end
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -332,13 +348,6 @@ module Projects
       )
     end
 
-    # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.
-    # By default, they are removed with "DELETE CASCADE" option defined via foreign_key.
-    # But such queries can exceed the statement_timeout limit and fail to delete the project.
-    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/26259)
-    #
-    # To prevent that we use WebHooks::DestroyService. It deletes logs in batches and
-    # produces smaller and faster queries to the database.
     def destroy_web_hooks!
       project.hooks.find_each do |web_hook|
         result = ::WebHooks::DestroyService.new(current_user).execute(web_hook)

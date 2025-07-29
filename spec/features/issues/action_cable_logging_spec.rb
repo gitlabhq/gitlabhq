@@ -7,6 +7,10 @@ RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   it 'adds extra context to logs' do
     allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
 
@@ -29,11 +33,15 @@ RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
     # Because there is no visual indicator for Capybara to wait on before closing the browser,
     # we need to test an actual feature to ensure that the subscription was already established.
 
-    expect(page.find('.assignee')).to have_content 'None'
+    within_testid('work-item-assignees') do
+      expect(page).to have_text 'None'
+    end
 
-    fill_in 'note[note]', with: "/assign #{user.username}"
+    fill_in 'Add a reply', with: "/assign #{user.username}"
     click_button 'Comment'
 
-    expect(page.find('.assignee')).to have_content user.name
+    within_testid('work-item-assignees') do
+      expect(page).to have_link user.name
+    end
   end
 end

@@ -251,11 +251,14 @@ module Types
     mount_mutation Mutations::WorkItems::Hierarchy::AddChildrenItems, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::BulkUpdate, experiment: { milestone: '17.4' }
     mount_mutation Mutations::WorkItems::BulkMove, experiment: { milestone: '18.2' }
+    mount_mutation Mutations::WorkItems::Reorder, experiment: { milestone: '18.3' }
     mount_mutation Mutations::WorkItems::UserPreference::Update, experiment: { milestone: '17.10' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
     mount_mutation Mutations::Pages::MarkOnboardingComplete
+    mount_mutation Mutations::Pages::SetPagesForceHttps
+    mount_mutation Mutations::Pages::SetPagesUseUniqueDomain
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }

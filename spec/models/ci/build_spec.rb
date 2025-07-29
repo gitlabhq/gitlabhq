@@ -42,6 +42,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       .inverse_of(:build)
   end
 
+  it { is_expected.to have_many(:inputs).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
@@ -78,11 +79,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'partition query' do
     subject { build.reload }
 
+    it_behaves_like 'including partition key for relation', :inputs
     it_behaves_like 'including partition key for relation', :trace_chunks
     it_behaves_like 'including partition key for relation', :build_source
     it_behaves_like 'including partition key for relation', :job_artifacts
     it_behaves_like 'including partition key for relation', :job_annotations
     it_behaves_like 'including partition key for relation', :runner_manager_build
+
     Ci::JobArtifact.file_types.each_key do |key|
       it_behaves_like 'including partition key for relation', :"job_artifacts_#{key}"
     end
@@ -398,36 +401,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build is still running' do
       let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-
-      it 'returns an empty array' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.with_exposed_artifacts' do
-    subject { described_class.with_exposed_artifacts }
-
-    let_it_be(:job1) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:job3) { create(:ci_build, pipeline: pipeline) }
-
-    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
-
-    context 'when some jobs have exposed artifacts and some not' do
-      let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
-
-      before_all do
-        job1.ensure_metadata.update!(has_exposed_artifacts: nil)
-        job3.ensure_metadata.update!(has_exposed_artifacts: false)
-      end
-
-      it 'selects only the jobs with exposed artifacts' do
-        is_expected.to eq([job2])
-      end
-    end
-
-    context 'when job does not expose artifacts' do
-      let(:options) { nil }
 
       it 'returns an empty array' do
         is_expected.to be_empty
@@ -2228,14 +2201,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it 'does not persist data in build' do
       expect(build.read_attribute(:options)).to be_nil
-    end
-
-    context 'when options include artifacts:expose_as' do
-      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }, pipeline: pipeline) }
-
-      it 'saves the presence of expose_as into build metadata' do
-        expect(build.metadata).to have_exposed_artifacts
-      end
     end
   end
 

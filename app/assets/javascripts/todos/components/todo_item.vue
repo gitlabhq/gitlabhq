@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { fallsBefore } from '~/lib/utils/datetime_utility';
-import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
+import { INSTRUMENT_TODO_ITEM_FOLLOW } from '../constants';
 import TodoItemBody from './todo_item_body.vue';
 import TodoItemTimestamp from './todo_item_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
@@ -36,9 +36,6 @@ export default {
     isHiddenBySaml() {
       return !this.todo.targetEntity;
     },
-    isDone() {
-      return this.todo.state === TODO_STATE_DONE;
-    },
     isSnoozed() {
       if (this.todo.snoozedUntil === null) {
         return false;
@@ -59,9 +56,8 @@ export default {
 
 <template>
   <li
-    class="gl-border-b gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-feedback-info"
+    class="gl-border-b gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-subtle"
     :data-testid="`todo-item-${todo.id}`"
-    :class="{ 'gl-bg-subtle': isDone }"
   >
     <gl-form-checkbox
       v-if="selectable"

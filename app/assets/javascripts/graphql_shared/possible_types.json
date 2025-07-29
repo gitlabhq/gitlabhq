@@ -228,6 +228,10 @@
     "Project",
     "ProjectMinimalAccess"
   ],
+  "RecentlyViewedItemUnion": [
+    "Issue",
+    "MergeRequest"
+  ],
   "Registrable": [
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",

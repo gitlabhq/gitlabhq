@@ -83,7 +83,6 @@ describe('WorkItemDetailModal component', () => {
       workItemId,
       workItemIid: '1',
       workItemFullPath: '',
-      newCommentTemplatePaths: [],
       isDrawer: false,
       modalIsGroup: null,
       isBoard: false,

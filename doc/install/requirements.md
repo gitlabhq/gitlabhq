@@ -107,7 +107,7 @@ For more information, see [upgrading operating systems for PostgreSQL](../admini
 ### GitLab schemas
 
 You should create or use databases exclusively for GitLab, [Geo](../administration/geo/_index.md),
-[Gitaly Cluster](../administration/gitaly/praefect/_index.md), or other components.
+[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md), or other components.
 Do not create or modify databases, schemas, users, or other properties except when you follow:
 
 - Procedures in the GitLab documentation
@@ -186,7 +186,7 @@ More threads would lead to excessive swapping and lower performance.
 [Redis](https://redis.io/) stores all user sessions and background tasks
 and requires about 25 kB per user on average.
 
-In GitLab 16.0 and later, Redis 6.2.x or 7.x is required.
+In GitLab 16.0 and later, Redis 6.x or 7.x is required.
 For more information about end-of-life dates, see the
 [Redis documentation](https://redis.io/docs/latest/operate/rs/installing-upgrading/product-lifecycle/).
 

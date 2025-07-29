@@ -167,7 +167,9 @@ This feature is meant to prevent accidental reassignment to users outside your o
 
 {{< alert type="note" >}}
 
-User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
+When you use a supported method to import projects to a
+[personal namespace](../../namespace/_index.md#types-of-namespaces),
+user contribution mapping is not supported.
 When you import to a personal namespace, all contributions are assigned to
 a single non-functional user called `Import User` and they cannot be reassigned.
 [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.

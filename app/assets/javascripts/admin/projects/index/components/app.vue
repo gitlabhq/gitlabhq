@@ -7,20 +7,21 @@ import {
   FILTERED_SEARCH_TOKEN_NAMESPACE,
   PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
-import {
-  SORT_OPTIONS,
-  SORT_OPTION_UPDATED,
-  SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
-} from '~/projects/filtered_search_and_sort/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import projectCountsQuery from '~/admin/projects/index/graphql/queries/project_counts.query.graphql';
-import { ADMIN_PROJECTS_TABS, FIRST_TAB_ROUTE_NAMES } from '~/admin/projects/index/constants';
+import {
+  ADMIN_PROJECTS_TABS,
+  SORT_OPTIONS,
+  SORT_OPTION_UPDATED,
+  SORT_OPTION_CREATED,
+  FIRST_TAB_ROUTE_NAMES,
+  FILTERED_SEARCH_TERM_KEY,
+  FILTERED_SEARCH_NAMESPACE,
+} from '~/admin/projects/index/constants';
 
 export default {
   ADMIN_PROJECTS_TABS,

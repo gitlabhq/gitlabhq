@@ -21,7 +21,7 @@ in the background.
 On the **primary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Select **Edit** of the secondary site you want to tune.
 1. Under **Tuning settings**, there are several variables that can be tuned to
    improve the performance of Geo:
@@ -46,7 +46,7 @@ Geo's concurrency settings are set to low defaults for most environments.
 To increase these settings:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Decide which data types are progressing too slowly.
 1. Watch load metrics of the primary and secondary sites.
 1. Increase concurrency limits by 10 to be conservative.

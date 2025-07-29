@@ -7,7 +7,7 @@ feature_categories:
 description: "(Deprecated) Join table between `deployments` and `clusters`"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24235
 milestone: '12.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main
 exempt_from_sharding: true
 notes: Exempted because Table is scheduled for removal
 table_size: small

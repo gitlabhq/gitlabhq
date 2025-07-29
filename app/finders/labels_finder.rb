@@ -25,6 +25,7 @@ class LabelsFinder < UnionFinder
     items = by_subscription(items)
     items = by_search(items)
     items = by_locked_labels(items)
+    items = by_archived(items) if Feature.enabled?(:labels_archive, :instance)
 
     items = items.with_preloaded_container if @preload_parent_association
     sort(items)
@@ -91,6 +92,20 @@ class LabelsFinder < UnionFinder
 
   def by_subscription(labels)
     labels.optionally_subscribed_by(subscriber_id)
+  end
+
+  def by_archived(labels)
+    return labels unless filter_by_archived?
+
+    # When called from GraphQL, :archived will be boolean.
+    # When called from LabelsController, :archived will be a string ('true' / 'false')
+    archived = Gitlab::Utils.to_boolean(params[:archived])
+
+    labels.archived(archived)
+  end
+
+  def filter_by_archived?
+    params.has_key?(:archived) && [nil, ''].exclude?(params[:archived])
   end
 
   def by_locked_labels(items)

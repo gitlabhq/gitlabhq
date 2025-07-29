@@ -20,6 +20,8 @@ import {
   mockFailedSearchToken,
   mockJobsCountResponse,
   mockPushSourceToken,
+  mockBridgeKindToken,
+  mockBuildKindToken,
 } from 'jest/ci/jobs_mock_data';
 import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE } from '~/ci/jobs_page/constants';
 
@@ -140,7 +142,7 @@ describe('Job table app', () => {
 
   describe('error state', () => {
     it('should show an alert if there is an error fetching the jobs data', async () => {
-      createComponent({ handler: failedHandler });
+      createComponent({ handler: failedHandler, mountFn: mount });
 
       await waitForPromises();
 
@@ -230,12 +232,14 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        kind: 'BUILD',
       });
     });
 
@@ -280,7 +284,7 @@ describe('Job table app', () => {
       await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/?statuses=FAILED`,
+        url: `${TEST_HOST}/?statuses=FAILED&kind=BUILD`,
       });
     });
 
@@ -298,33 +302,37 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: mockJobSource,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: mockJobSource,
+        kind: 'BUILD',
       });
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
+        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}&kind=BUILD`,
       });
 
       findFilteredSearch().vm.$emit('filterJobsBySearch', []);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/`,
+        url: `${TEST_HOST}/?kind=BUILD`,
       });
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: null,
         sources: null,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: null,
         sources: null,
+        kind: 'BUILD',
       });
     });
 
@@ -337,12 +345,14 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        kind: 'BUILD',
       });
     });
 
@@ -358,12 +368,14 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: 'FAILED',
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: 'FAILED',
+        kind: 'BUILD',
       });
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
@@ -372,12 +384,14 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        kind: 'BUILD',
       });
     });
 
@@ -389,7 +403,7 @@ describe('Job table app', () => {
       await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/?sources=${mockJobSource}`,
+        url: `${TEST_HOST}/?sources=${mockJobSource}&kind=BUILD`,
       });
     });
 
@@ -404,7 +418,7 @@ describe('Job table app', () => {
       ]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
+        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}&kind=BUILD`,
       });
     });
 
@@ -421,6 +435,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: null,
           sources: null,
+          kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
@@ -428,6 +443,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: null,
           sources: null,
+          kind: 'BUILD',
         });
       });
 
@@ -442,6 +458,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: 'FAILED',
           sources: null,
+          kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
@@ -449,6 +466,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: 'FAILED',
           sources: null,
+          kind: 'BUILD',
         });
 
         await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
@@ -458,6 +476,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: null,
           sources: null,
+          kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
@@ -465,6 +484,7 @@ describe('Job table app', () => {
           name: mockJobName,
           statuses: null,
           sources: null,
+          kind: 'BUILD',
         });
       });
 
@@ -474,7 +494,7 @@ describe('Job table app', () => {
         await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
 
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?name=${mockJobName}`,
+          url: `${TEST_HOST}/?name=${mockJobName}&kind=BUILD`,
         });
       });
 
@@ -487,7 +507,7 @@ describe('Job table app', () => {
         ]);
 
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?statuses=FAILED&name=${mockJobName}`,
+          url: `${TEST_HOST}/?statuses=FAILED&name=${mockJobName}&kind=BUILD`,
         });
       });
 
@@ -501,6 +521,7 @@ describe('Job table app', () => {
           statuses: 'FAILED',
           sources: null,
           name: mockJobName,
+          kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
@@ -508,15 +529,16 @@ describe('Job table app', () => {
           statuses: 'FAILED',
           sources: null,
           name: mockJobName,
+          kind: 'BUILD',
         });
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?statuses=FAILED&name=${mockJobName}`,
+          url: `${TEST_HOST}/?statuses=FAILED&name=${mockJobName}&kind=BUILD`,
         });
 
         findFilteredSearch().vm.$emit('filterJobsBySearch', []);
 
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/`,
+          url: `${TEST_HOST}/?kind=BUILD`,
         });
 
         expect(successHandler).toHaveBeenCalledWith({
@@ -524,6 +546,7 @@ describe('Job table app', () => {
           statuses: null,
           sources: null,
           name: null,
+          kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
@@ -531,6 +554,64 @@ describe('Job table app', () => {
           statuses: null,
           sources: null,
           name: null,
+          kind: 'BUILD',
+        });
+      });
+    });
+
+    describe('filters jobs by kind', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        successHandler.mockClear();
+        countSuccessHandler.mockClear();
+
+        await waitForPromises();
+      });
+
+      it('filters trigger jobs', async () => {
+        jest.spyOn(urlUtils, 'updateHistory');
+
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockBridgeKindToken]);
+
+        expect(successHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          statuses: null,
+          sources: null,
+          kind: 'BRIDGE',
+          ...DEFAULT_PAGINATION,
+        });
+        expect(countSuccessHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          statuses: null,
+          sources: null,
+          kind: 'BRIDGE',
+        });
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          url: `${TEST_HOST}/?kind=BRIDGE`,
+        });
+      });
+
+      it('filters build jobs', async () => {
+        jest.spyOn(urlUtils, 'updateHistory');
+
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockBuildKindToken]);
+
+        expect(successHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          statuses: null,
+          sources: null,
+          kind: 'BUILD',
+          ...DEFAULT_PAGINATION,
+        });
+        expect(countSuccessHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          statuses: null,
+          sources: null,
+          kind: 'BUILD',
+        });
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          url: `${TEST_HOST}/?kind=BUILD`,
         });
       });
     });
@@ -635,6 +716,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
     });
@@ -653,6 +735,7 @@ describe('Job table app', () => {
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: ['FAILED', 'SUCCESS', 'CANCELED'],
+        kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
     });

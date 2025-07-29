@@ -6,6 +6,14 @@ description: AI-native features and functionality.
 title: Summary of GitLab Duo features
 ---
 
+{{< history >}}
+
+- [First GitLab Duo features introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
+- [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
+- [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
+
+{{< /history >}}
+
 The following features are generally available on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 They require a Premium or Ultimate subscription and one of the available add-ons.
 

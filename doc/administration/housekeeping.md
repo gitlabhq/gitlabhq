@@ -90,7 +90,7 @@ frequently.
 You can change how often Gitaly is asked to optimize a repository.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Housekeeping** section, configure the housekeeping options.
 1. Select **Save changes**.
@@ -122,7 +122,7 @@ housekeeping tasks. The manual trigger can be useful when either:
 To trigger housekeeping tasks manually:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
 
@@ -160,7 +160,7 @@ connection. Consider the project usage profile when using this option and select
 To trigger a manual prune of unreachable objects:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
 1. Wait 30 minutes for the operation to complete.
@@ -194,7 +194,7 @@ duration of 10 minutes.
 
 You can change this default in Gitaly configuration.
 
-For environments with Gitaly Cluster, the scheduled housekeeping start time can be
+For environments with Gitaly Cluster (Praefect), the scheduled housekeeping start time can be
 staggered across Gitaly nodes so the scheduled housekeeping is not running
 simultaneously on multiple nodes.
 

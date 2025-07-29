@@ -18,16 +18,15 @@ export default {
   apollo: {
     items: {
       query: RecentlyViewedItemsQuery,
-      update({
-        currentUser: { recentlyViewedIssues = [], recentlyViewedMergeRequests = [] } = {},
-      }) {
-        const enhanceWithIcon = (items, icon) => items.map((item) => ({ ...item, icon }));
-
-        return [
-          ...enhanceWithIcon(recentlyViewedIssues, 'issues'),
-          ...enhanceWithIcon(recentlyViewedMergeRequests, 'merge-request'),
-        ]
-          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      update({ currentUser: { recentlyViewedItems = [] } = {} }) {
+        return recentlyViewedItems
+          .map((entry) => ({
+            ...entry.item,
+            viewedAt: entry.viewedAt,
+            itemType: entry.itemType,
+            // eslint-disable-next-line no-underscore-dangle
+            icon: this.getIconForItemType(entry.item.__typename),
+          }))
           .slice(0, MAX_ITEMS);
       },
       error(error) {
@@ -46,6 +45,13 @@ export default {
       this.error = null;
       this.$apollo.queries.items.refetch();
     },
+    getIconForItemType(itemType) {
+      const iconMap = {
+        Issue: 'issues',
+        MergeRequest: 'merge-request',
+      };
+      return iconMap[itemType] || 'question';
+    },
   },
   MAX_ITEMS,
 };
@@ -53,7 +59,7 @@ export default {
 
 <template>
   <visibility-change-detector @visible="reload">
-    <h4 class="gl-mt-0">{{ __('Recently viewed') }}</h4>
+    <h4 class="gl-heading-4 gl-mb-4 gl-mt-0">{{ __('Recently viewed') }}</h4>
 
     <div v-if="error">
       <span>{{ __('Something went wrong.') }}</span>
@@ -69,7 +75,7 @@ export default {
     <p v-else-if="!items.length">
       {{ __('Issues and merge requests you visit will appear here.') }}
     </p>
-    <ul v-else class="gl-m-0 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-p-0">
+    <ul v-else class="gl-m-0 gl-flex gl-list-none gl-flex-col gl-gap-1 gl-p-0">
       <li v-for="item in items" :key="item.id">
         <a
           :href="item.webUrl"

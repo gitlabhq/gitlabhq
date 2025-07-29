@@ -17,7 +17,9 @@ module WorkItems
 
     def execute(skip_system_notes: false)
       result = skip_system_notes? ? super(skip_system_notes: true) : super
-      return result if result.error?
+
+      # we need to pass `work_item` in error response to properly display errors
+      return error(result.message, result.http_status, pass_back: payload(result[:issue])) if result.error?
 
       work_item = result[:issue]
 

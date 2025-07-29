@@ -22,6 +22,7 @@ module Ci
         Ci::JobAnnotation
         Ci::JobArtifact
         Ci::JobArtifactReport
+        Ci::JobInput
         Ci::JobVariable
         Ci::Pipeline
         Ci::PendingBuild

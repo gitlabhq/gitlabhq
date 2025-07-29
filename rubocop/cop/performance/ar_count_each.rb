@@ -9,10 +9,12 @@ module RuboCop
           "Use `#{ivar}.load.size ...; #{ivar}.each... ` instead. If #{ivar} is an array, try to use #{ivar}.size."
         end
 
+        # @!method count_match(node)
         def_node_matcher :count_match, <<~PATTERN
           (send (ivar $_) :count)
         PATTERN
 
+        # @!method each_match(node)
         def_node_matcher :each_match, <<~PATTERN
           (send (ivar $_) :each)
         PATTERN

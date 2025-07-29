@@ -33,7 +33,9 @@ Supported attributes:
 | `id`       | integer | yes      | ID of user account |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/approve"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/approve"
 ```
 
 Returns:
@@ -76,7 +78,9 @@ Supported attributes:
 | `id`       | integer | yes      | ID of user account |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/reject"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/reject"
 ```
 
 Returns:
@@ -118,6 +122,12 @@ Supported attributes:
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
 
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/deactivate"
+```
+
 Returns:
 
 - `201 OK` on success.
@@ -145,6 +155,12 @@ Supported attributes:
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
 
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/activate"
+```
+
 Returns:
 
 - `201 OK` on success.
@@ -168,6 +184,12 @@ Supported attributes:
 | Attribute  | Type    | Required | Description        |
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/block"
+```
 
 Returns:
 
@@ -195,6 +217,12 @@ Supported attributes:
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
 
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/unblock"
+```
+
 Returns:
 
 - `201 OK` on success.
@@ -219,6 +247,12 @@ Supported attributes:
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
 
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/ban"
+```
+
 Returns:
 
 - `201 OK` on success.
@@ -242,6 +276,12 @@ Supported attributes:
 | Attribute  | Type    | Required | Description        |
 |------------|---------|----------|--------------------|
 | `id`       | integer | yes      | ID of user account |
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/unban"
+```
 
 Returns:
 

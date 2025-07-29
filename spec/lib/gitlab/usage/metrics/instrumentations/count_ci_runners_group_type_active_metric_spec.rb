@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountCiRunnersGroupType
 
   before do
     create(:ci_runner, :group, groups: [group])
+    create(:ci_runner, :group, :paused, groups: [group])
   end
 
   it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }

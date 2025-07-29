@@ -9,6 +9,10 @@ module Gitlab
       'gitlab.com'
     end
 
+    def self.promo_host
+      'about.gitlab.com'
+    end
+
     def self.com_url
       'https://gitlab.com'
     end
@@ -43,18 +47,6 @@ module Gitlab
 
     def self.gitlab_com_status_url
       'https://status.gitlab.com'
-    end
-
-    def self.about_pricing_url
-      "https://about.gitlab.com/pricing/"
-    end
-
-    def self.about_pricing_faq_url
-      "https://about.gitlab.com/pricing#faq"
-    end
-
-    def self.about_feature_comparison_url
-      "https://about.gitlab.com/pricing/gitlab-com/feature-comparison"
     end
 
     def self.doc_url

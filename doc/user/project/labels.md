@@ -275,6 +275,74 @@ To delete a **group** label:
 
 1. Select **Delete**.
 
+## Archived labels
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can archive labels that are no longer actively used but need to be preserved
+for historical perspective and search purposes.
+
+For example, you might archive
+release labels like `Q4-25` after a release is complete, keeping them available
+for searches while removing them from the label selection dropdown list.
+
+When you archive a label:
+
+- The label is hidden from the label selection dropdown list in issues, merge requests, and epics.
+- The label remains visible on existing issues, merge requests, and epics where it was previously assigned.
+- You can still search for the label and view historical data.
+- The label appears in a separate **Archived** tab on the **Labels** page.
+
+### Archive a label
+
+Prerequisites:
+
+- You must have at least the Planner role for the project or group.
+
+To archive a label:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Manage > Labels**.
+1. Next to the label you want to archive, select **Edit** ({{< icon name="pencil" >}}).
+1. Select the **Archived** checkbox.
+1. Select **Save changes**.
+
+### View archived labels
+
+To view archived labels:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Manage > Labels**.
+1. Go to the labels page for your project or group.
+1. Select the **Archived** tab.
+
+### Unarchive a label
+
+Prerequisites:
+
+- You must have at least the Planner role for the project or group.
+
+To unarchive a label:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Labels**.
+1. Select the **Archived** tab.
+1. Next to the label you want to unarchive, select **Edit** ({{< icon name="pencil" >}}).
+1. Clear the **Archived** checkbox.
+1. Select Save changes.
+
 ## Promote a project label to a group label
 
 {{< history >}}

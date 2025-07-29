@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module WebHooks
-  # Destroy a hook, and schedule the logs for deletion.
+  # Destroys a WebHook record.
+  #
+  # Note: Log cleanup is handled automatically through daily partitioning
+  # of the `web_hook_logs` table, so manual log purging is not required.
   class DestroyService
     include Services::ReturnServiceResponses
 
@@ -25,10 +28,8 @@ module WebHooks
 
     private
 
-    def after_destroy(web_hook)
-      WebHooks::LogDestroyWorker.perform_async({ 'hook_id' => web_hook.id })
-      Gitlab::AppLogger.info(log_message(web_hook))
-
+    # Overridden in EE
+    def after_destroy(_web_hook)
       success({ async: false })
     end
 

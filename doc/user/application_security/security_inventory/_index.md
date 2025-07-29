@@ -27,48 +27,50 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The security inventory provides an overview of your organization's security posture.
-It shows:
+Use the security inventory to visualize which assets you need to secure and understand the actions you need to take to improve security. A common phrase in security is, "you can't secure what you can't see." The security inventory provides visibility into the security posture of your organization's top-level groups, helps you identify coverage gaps, and enables you to make efficient, risk-based prioritization decisions.
+
+The security inventory shows:
 
 - Your groups, subgroups, and projects.
-- Which security scanners are enabled in each project, including:
+- Security scanner coverage for each project, regardless of how the scanner is enabled. Security scanners include:
   - Static application security testing (SAST)
   - Dependency scanning
   - Container scanning
   - Secret detection
   - Dynamic application security testing (DAST)
   - Infrastructure-as-code (IaC) scanning
-- The number of vulnerabilities in each group or project, sorted by security level.
+- The number of vulnerabilities in each group or project, sorted by severity level.
 
-Use the security inventory to visualize your assets, understand coverage gaps, and triage risks to your organization.
+This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) with us as we continue to develop this feature. The security inventory is enabled by default.
 
-This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484).
-
-## Getting started
-
-The security inventory is enabled by default.
+## View the security inventory
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have at least the Developer role in the group to view the security inventory.
 
 To view the security inventory:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Security inventory**.
-1. Select a group to view its subgroups, projects, and security assets.
+1. Complete one of the following actions:
+   - To view a group's subgroups, projects, and security assets, select the group.
+   - To view a group or project's scanner coverage, search for the group or project.
 
 ## Related topics
 
 - [Security Dashboard](../security_dashboard/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
+- GraphQL references:
+  - [AnalyzerGroupStatusType](../../../api/graphql/reference/_index.md#analyzergroupstatustype) - Counts for each analyzer status in the group and subgroups.
+  - [AnalyzerProjectStatusType](../../../api/graphql/reference/_index.md#analyzerprojectstatustype) - Analyzer status (success/fail) for projects.
+  - [VulnerabilityNamespaceStatisticType](../../../api/graphql/reference/_index.md#vulnerabilitynamespacestatistictype) - Counts for each vulnerability severity in the group and its subgroups.
+  - [VulnerabilityStatisticType](../../../api/graphql/reference/_index.md#vulnerabilitystatistictype) - Counts for each vulnerability severity in the project.
 
 ## Troubleshooting
 
-When working with the security inventory, you might encounter the following issues.
+When working with the security inventory, you might encounter the following issues:
 
-### Inaccurate scanner coverage
+### Security inventory menu item missing
 
-Due to a known issue, scanner configuration data is still being backfilled.
-As a result, the displayed container scanning and secret detection coverage might not be entirely accurate.
-A fix for this issue is proposed in [issue 548281](https://gitlab.com/gitlab-org/gitlab/-/issues/548281).
+Some users do not have the required permissions to access the **Security Inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer role or higher.

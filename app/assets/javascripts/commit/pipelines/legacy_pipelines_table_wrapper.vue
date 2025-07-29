@@ -228,7 +228,7 @@ export default {
       v-if="isLoading"
       :label="s__('Pipelines|Loading pipelines')"
       size="lg"
-      class="prepend-top-20"
+      class="gl-mt-5"
     />
 
     <gl-empty-state

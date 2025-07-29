@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Analyze dependency for behaviors
+description: Libbehave scans new dependencies added in merge requests for risky behaviors and assigns each behavior a risk score. Results are shown in the job output, merge request comments, and job artifacts.
 ---
 
 {{< details >}}

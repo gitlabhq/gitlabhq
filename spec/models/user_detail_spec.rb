@@ -465,6 +465,10 @@ RSpec.describe UserDetail, feature_category: :system_access do
         expect(user_detail.errors.full_messages).to match_array(["Website url is not a valid URL"])
       end
     end
+
+    it { is_expected.to validate_length_of(:email_otp).is_equal_to(64).allow_nil }
+
+    it { is_expected.to validate_length_of(:email_otp_last_sent_to).is_at_most(511) }
   end
 
   describe '#save' do
@@ -551,6 +555,28 @@ RSpec.describe UserDetail, feature_category: :system_access do
         .and_call_original
 
       details.valid?
+    end
+  end
+
+  describe '#email_otp' do
+    let(:user_detail) { build(:user_detail) }
+    let(:hashed_value) { Devise.token_generator.digest(User, generate(:email), '123456') }
+
+    it 'can be set to a hashed value' do
+      expect { user_detail.email_otp = hashed_value }
+        .to change { user_detail.email_otp }.to(hashed_value)
+    end
+  end
+
+  describe '#as_json' do
+    let(:user_detail) { build(:user_detail, email_otp: Digest::SHA2.hexdigest('')) }
+
+    it 'includes attributes' do
+      expect(user_detail.as_json.keys).not_to be_empty
+    end
+
+    it 'does not include email_otp' do
+      expect(user_detail.as_json).not_to have_key('email_otp')
     end
   end
 end

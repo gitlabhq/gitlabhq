@@ -1,5 +1,5 @@
 import initCompareSelector from '~/projects/compare';
-import { createRapidDiffsApp } from '~/rapid_diffs/app';
+import { createRapidDiffsApp } from '~/rapid_diffs';
 
 initCompareSelector();
 

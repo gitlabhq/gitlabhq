@@ -25,6 +25,7 @@ module RuboCop
         NULL_OFFENSE = 'Boolean columns on the `%s` table should disallow nulls.'
         DEFAULT_AND_NULL_OFFENSE = 'Boolean columns on the `%s` table should have a default and should disallow nulls.'
 
+        # @!method add_column?(node)
         def_node_matcher :add_column?, <<~PATTERN
           (send nil? :add_column $...)
         PATTERN

@@ -33,6 +33,7 @@ default:
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
+  FF_TIMESTAMPS: "true"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
@@ -233,28 +234,28 @@ variables:
   FORCE_COLOR: 1
   CLICOLOR_FORCE: 1
 
+  # File paths used in predictive testing flow
+  GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
+  GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
+  GLCI_PREDICTIVE_CHANGED_FILES_PATH: rspec/changed_files.txt
+  GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
+  GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
+  GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
+  GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH: crystalball/packed-mapping-alt.json
+  GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
+  GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
+  GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
+
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
-  FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
   JEST_MATCHING_TEST_FILES_PATH: jest/matching_test_files.txt
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
   JOB_METRICS_FILE_PATH: "${CI_PROJECT_DIR}/tmp/job-metrics.json"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
-  RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
   RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
   RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH: rspec/test_already_failed_on_master.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
-  RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
-  RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
-  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
-  RSPEC_MATCHING_TEST_FILES_PATH: rspec/matching_test_files.txt
-  RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
-  RSPEC_PACKED_TESTS_MAPPING_ALT_PATH: crystalball/packed-mapping-alt.json
-  RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
-  RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
-  RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
-  RSPEC_VIEWS_INCLUDING_PARTIALS_PATH: rspec/views_including_partials.txt
   RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
   RUBYOPT: "--yjit"
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"

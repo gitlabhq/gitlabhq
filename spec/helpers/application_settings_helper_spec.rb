@@ -145,6 +145,10 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users_period)
       end
     end
+
+    it 'contains :inactive_resource_access_tokens_delete_after_days' do
+      expect(helper.visible_attributes).to include(:inactive_resource_access_tokens_delete_after_days)
+    end
   end
 
   describe '.integration_expanded?' do

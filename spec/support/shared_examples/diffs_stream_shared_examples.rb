@@ -44,16 +44,4 @@ RSpec.shared_examples 'diffs stream tests' do
       expect(response.body).to include('something went wrong')
     end
   end
-
-  context 'when the rapid_diffs feature flag is disabled' do
-    before do
-      stub_feature_flags(rapid_diffs: false)
-    end
-
-    it 'returns a 404 status' do
-      go
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
 end

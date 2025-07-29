@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -28,6 +28,8 @@ describe('MergeRequestsWidget', () => {
 
   let wrapper;
 
+  const findLinksList = () => wrapper.findByTestId('links-list');
+  const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findGlLinks = () => wrapper.findAllComponents(GlLink);
   const findReviewRequestedCount = () => wrapper.findByTestId('review-requested-count');
   const findReviewRequestedLastUpdatedAt = () =>
@@ -50,6 +52,9 @@ describe('MergeRequestsWidget', () => {
       propsData: {
         reviewRequestedPath: MOCK_REVIEW_REQUESTED_PATH,
         assignedToYouPath: MOCK_ASSIGNED_TO_YOU_PATH,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -103,22 +108,20 @@ describe('MergeRequestsWidget', () => {
       expect(findAssignedCount().text()).toBe('0');
     });
 
-    it('emits the `fetch-metadata-error` event if the query errors out', async () => {
+    it('shows an error message if the query errors out', async () => {
       createWrapper({
         mergeRequestsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
       });
-
-      expect(wrapper.emitted('fetch-metadata-error')).toBeUndefined();
-
       await waitForPromises();
 
-      expect(wrapper.emitted('fetch-metadata-error')).toHaveLength(1);
+      expect(findErrorMessage().text()).toBe(
+        'The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
+      );
+      expect(findErrorMessage().findComponent(GlLink).props('href')).toBe(
+        MOCK_ASSIGNED_TO_YOU_PATH,
+      );
       expect(Sentry.captureException).toHaveBeenCalled();
-      expect(findReviewRequestedLastUpdatedAt().exists()).toBe(false);
-      expect(findAssignedLastUpdatedAt().exists()).toBe(false);
-
-      expect(findReviewRequestedCount().text()).toBe('-');
-      expect(findAssignedCount().text()).toBe('-');
+      expect(findLinksList().exists()).toBe(false);
     });
   });
 

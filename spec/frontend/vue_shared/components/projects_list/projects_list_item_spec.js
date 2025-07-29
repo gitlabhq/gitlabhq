@@ -3,7 +3,7 @@ import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
@@ -81,8 +81,9 @@ describe('ProjectsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
+  const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
-  const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
+  const findProjectDescription = () => wrapper.findComponent(ListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
@@ -190,6 +191,36 @@ describe('ProjectsListItem', () => {
 
     it('does not render access level badge', () => {
       expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when project does not have statistics key', () => {
+    beforeEach(createComponent);
+
+    it('does not render storage size badge', () => {
+      expect(findStorageSizeBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when project has statistics key', () => {
+    it('renders storage size in human size', () => {
+      createComponent({
+        propsData: { project: { ...project, statistics: { storageSize: 3072 } } },
+      });
+
+      expect(findStorageSizeBadge().text()).toBe('3.0 KiB');
+    });
+
+    describe('when storage size is null', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: { project: { ...project, statistics: { storageSize: null } } },
+        });
+      });
+
+      it('renders 0 B', () => {
+        expect(findStorageSizeBadge().text()).toBe('0 B');
+      });
     });
   });
 

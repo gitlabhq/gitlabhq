@@ -34,8 +34,14 @@ module API
         end
       end
 
-      def track_commit_events
-        return unless find_user_from_warden
+      def web_ide_request?
+        return false unless access_token.respond_to?(:application)
+
+        access_token.application.id == WebIde::DefaultOauthApplication.oauth_application_id
+      end
+
+      def track_web_ide_commit_events
+        return unless web_ide_request?
 
         Gitlab::InternalEvents.track_event('create_commit_from_web_ide', user: current_user, project: user_project)
         Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)
@@ -251,7 +257,7 @@ module API
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
 
-          track_commit_events
+          track_web_ide_commit_events
 
           present commit_detail, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
         else

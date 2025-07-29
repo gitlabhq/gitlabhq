@@ -62,7 +62,7 @@ Create a `Ai::ActiveContext::Connection` record in the database with the followi
 Ai::ActiveContext::Connection.create!(
   name: "elastic",
   adapter_class: "ActiveContext::Databases::Elasticsearch::Adapter",
-  options: ::Gitlab::CurrentSettings.elasticsearch_config
+  options: { use_advanced_search_config: true }
 )
 ```
 
@@ -72,7 +72,7 @@ Ai::ActiveContext::Connection.create!(
 Ai::ActiveContext::Connection.create!(
   name: "opensearch",
   adapter_class: "ActiveContext::Databases::Opensearch::Adapter",
-  options: ::Gitlab::CurrentSettings.elasticsearch_config
+  options: { use_advanced_search_config: true }
 )
 ```
 

@@ -1,0 +1,10 @@
+---
+name: admin_groups_vue
+description: Render Admin area -> Groups with Vue instead of HAML/vanilla JS
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/17783
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194642
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553229
+milestone: '18.2'
+group: group::organizations
+type: beta
+default_enabled: false

@@ -6,8 +6,7 @@ RSpec.describe 'layouts/project', feature_category: :groups_and_projects do
   let(:invite_member) { true }
 
   before do
-    project_namespace = build_stubbed(:project_namespace)
-    project = build_stubbed(:project, project_namespace: project_namespace)
+    project = build_stubbed(:project)
     assign(:project, project)
     user = build_stubbed(:user)
 

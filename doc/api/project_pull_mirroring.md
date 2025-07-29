@@ -144,9 +144,9 @@ This change is a breaking change.
 
 {{< /alert >}}
 
-Configure pull mirroring while [creating a new project](projects.md#create-a-project) or
-[updating an existing project](projects.md#edit-a-project) by using the API if the remote repository is accessible publicly or by
-using `username:token` authentication.
+If the remote repository is publicly accessible or uses `username:token` authentication, use the API
+to configure pull mirroring when [creating](projects.md#create-a-project) or [updating](projects.md#edit-a-project)
+a project.
 
 If your HTTP repository is not publicly accessible, you can add the authentication information to the URL. For example,
 `https://username:token@gitlab.company.com/group/project.git` where `token` is a

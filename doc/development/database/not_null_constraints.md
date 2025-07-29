@@ -8,11 +8,17 @@ title: '`NOT NULL` constraints'
 All attributes that should not have `NULL` as a value, should be defined as `NOT NULL`
 columns in the database.
 
-Depending on the application logic, `NOT NULL` columns should either have a `presence: true`
-validation defined in their Model or have a default value as part of their database definition.
+Depending on the application logic, `NOT NULL` columns should either have a [presence validation defined in their Model](#add-validation-to-the-model-next-release)
+or have a default value as part of their database definition.
 As an example, the latter can be true for boolean attributes that should always have a non-`NULL`
 value, but have a well defined default value that the application does not need to enforce each
 time (for example, `active=true`).
+
+For foreign key columns that are part of a `belongs_to` association, prefer using `optional: false`
+on the association instead of a separate `presence: true` validation. This approach is more
+semantically correct and leverages Rails' built-in association validation. Note that GitLab has
+[config.active_record.belongs_to_required_by_default = false](https://gitlab.com/gitlab-org/gitlab/blob/bb49c1beceb3615bcff8993085e5f2b89c844599/config/application.rb#L259-259)
+in `config/application.rb`, so `belongs_to` associations are optional by default and must be explicitly marked as required.
 
 ## Create a new table with `NOT NULL` columns
 
@@ -173,6 +179,25 @@ If the migration was done using a background migration then [finalize the migrat
 #### Add validation to the model (next release)
 
 Add a validation for the attribute to the model to prevent records with `nil` attribute as now all existing and new records should be valid.
+
+For foreign key columns that are part of a `belongs_to` association, prefer using `optional: false`:
+
+```ruby
+class Epic < ApplicationRecord
+  belongs_to :group, optional: false
+end
+```
+
+This is preferred over:
+
+```ruby
+class Epic < ApplicationRecord
+  belongs_to :group
+  validates :group, presence: true
+end
+```
+
+For regular attributes:
 
 ```ruby
 class Epic < ApplicationRecord

@@ -9,8 +9,8 @@ title: Agent flows
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
@@ -18,7 +18,7 @@ title: Agent flows
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../policy/development_stages_support.md).
-- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) and `duo_workflow` [flag enabled](../../administration/feature_flags/_index.md) in GitLab 18.2.
+- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382), `duo_workflow` [flag enabled](../../administration/feature_flags/_index.md), and status changed to beta in GitLab 18.2.
 
 {{< /history >}}
 
@@ -101,32 +101,16 @@ The software development flow is one flow in the Agent Platform.
 
 To use the software development flow:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform**.
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The software development flow is aware of all files available to Git in the project branch.
-     You can also give [additional context](#the-context-the-software-development-flow-is-aware-of).
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
    - The software development flow cannot access external sources or the web.
 1. Select **Start**.
 
 After you describe your task, a plan is generated and executed.
 You can pause or ask it to adjust the plan.
-
-## The context the software development flow is aware of
-
-When you ask for help with a task, the software development flow refers to
-files available to Git in the current branch of the project in your VS Code workspace.
-
-You can also provide it with additional context.
-
-| Area                    | Enter      | Examples |
-|-------------------------|------------------------|----------|
-| Local files             | The file with path. |• Summarize the file `src/main.js`<br>• Review the code in `app/models/`<br>• List all JavaScript files in the project |
-| Epics                   | Either:<br>• The URL of the group or epic. <br>• The epic ID and the name of the group the epic is in. | Examples:<br>• List all epics in `https://gitlab.com/groups/namespace/group`<br>• Summarize the epic: `https://gitlab.com/groups/namespace/group/-/epics/42`<br>• `Summarize epic 42 in group namespace/group` |
-| Issues                  | Either:<br>• The URL of the project or issue. <br>• The issue ID in the current or another project. | Examples:<br>• List all issues in the project at `https://gitlab.com/namespace/project`<br>• Summarize the issue at `https://gitlab.com/namespace/project/-/issues/103`<br>• Review the comment with ID `42` in `https://gitlab.com/namespace/project/-/issues/103`<br>• List all comments on the issue at `https://gitlab.com/namespace/project/-/issues/103`<br>• Summarize issue `103` in this project |
-| Merge requests          | Either:<br>• The URL of the merge request. <br>• The merge request ID in the current or another project. |• Summarize `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Review the diffs in `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Summarize the comments on `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Summarize merge request `103` in this project |
-| Merge request pipelines | The merge request ID in the current or another project. |• Review the failures in merge request `12345`<br>• Can you identify the cause of the error in the merge request `54321` in project `gitlab-org/gitlab-qa` <br>• Suggest a solution to the pipeline failure in `https://gitlab.com/namespace/project/-/merge_requests/54321` |
-
-The software development flow also has access to the GitLab [Search API](../../api/search.md) to find related issues or merge requests.
 
 ## Supported languages
 

@@ -4,7 +4,6 @@ import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
-import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
 import { useFakeDate } from 'helpers/fake_date';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { MR_REVIEW_REQUEST_TODO } from '../mock_data';
@@ -67,25 +66,6 @@ describe('TodoItem', () => {
         label: 'MERGEREQUEST',
         property: 'review_requested',
       });
-    });
-  });
-
-  describe('state based style', () => {
-    it('applies background when todo is done', () => {
-      createComponent({ todo: { state: TODO_STATE_DONE } });
-      expect(wrapper.classes()).toContain('gl-bg-subtle');
-    });
-
-    it('applies no background when todo is pending', () => {
-      createComponent({ todo: { state: TODO_STATE_PENDING } });
-      expect(wrapper.classes()).not.toContain('gl-bg-subtle');
-    });
-  });
-
-  describe('computed properties', () => {
-    it('isDone returns true when todo state is done', () => {
-      createComponent({ todo: { state: TODO_STATE_DONE } });
-      expect(wrapper.vm.isDone).toBe(true);
     });
   });
 

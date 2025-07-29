@@ -17,14 +17,6 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
       end
     end
 
-    context 'when ci_create_dynamic_partitions is disabled' do
-      before do
-        stub_feature_flags(ci_create_dynamic_partitions: false)
-      end
-
-      it_behaves_like 'ci_partition not created'
-    end
-
     context 'when ci_partition is nil' do
       let(:ci_partition) { nil }
 

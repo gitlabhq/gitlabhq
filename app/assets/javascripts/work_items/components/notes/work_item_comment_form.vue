@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { STATE_OPEN, i18n } from '~/work_items/constants';
+import { i18n, STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -222,6 +222,13 @@ export default {
       }
       return [];
     },
+    showStateButton() {
+      return (
+        this.isNewDiscussion &&
+        this.canUpdate &&
+        !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked)
+      );
+    },
   },
   apollo: {
     emailParticipants: {
@@ -420,7 +427,7 @@ export default {
               >{{ commentButtonTextComputed }}
             </gl-button>
             <work-item-state-toggle
-              v-if="isNewDiscussion && canUpdate"
+              v-if="showStateButton"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-state="workItemState"

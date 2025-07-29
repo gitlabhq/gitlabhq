@@ -82,78 +82,19 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
     end
   end
 
-  describe 'save callbacks' do
-    describe 'object_storage_key' do
-      let(:object_storage_key) do
+  describe '#object_storage_key' do
+    it_behaves_like 'object_storage_key callbacks' do
+      let(:model) { build(:npm_metadata_cache, project: project, package_name: package_name) }
+      let(:expected_object_storage_key) do
         Gitlab::HashedPath.new(
           'packages', 'metadata_caches', 'npm', OpenSSL::Digest::SHA256.hexdigest(package_name),
           root_hash: project.id
         )
       end
-
-      before do
-        allow(Gitlab::HashedPath).to receive(:new).and_return(object_storage_key)
-      end
-
-      context 'when the record is created' do
-        let(:npm_metadata_cache) { build(:npm_metadata_cache, package_name: package_name, project: project) }
-
-        it 'sets object_storage_key' do
-          npm_metadata_cache.save!
-
-          expect(npm_metadata_cache.object_storage_key).to eq(object_storage_key.to_s)
-        end
-
-        context 'when using `update!`' do
-          let(:metadata_content) { {}.to_json }
-
-          it 'sets object_storage_key' do
-            npm_metadata_cache.update!(
-              file: CarrierWaveStringFile.new(metadata_content),
-              size: metadata_content.bytesize
-            )
-
-            expect(npm_metadata_cache.object_storage_key).to eq(object_storage_key.to_s)
-          end
-        end
-      end
-
-      context 'when the record is updated' do
-        let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package_name, project: project) }
-
-        let(:existing_object_storage_key) { npm_metadata_cache.object_storage_key }
-        let(:new_package_name) { 'updated_package_name' }
-
-        it 'does not update object_storage_key' do
-          existing_object_storage_key = npm_metadata_cache.object_storage_key
-
-          npm_metadata_cache.update!(package_name: new_package_name)
-
-          expect(npm_metadata_cache.object_storage_key).to eq(existing_object_storage_key)
-        end
-      end
     end
-  end
 
-  describe 'readonly attributes' do
-    describe 'object_storage_key' do
-      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
-
-      it 'sets object_storage_key' do
-        expect(npm_metadata_cache.object_storage_key).to be_present
-      end
-
-      context 'when the record is persisted' do
-        let(:new_object_storage_key) { 'object/storage/updated_key' }
-
-        it 'does not re-set object_storage_key' do
-          npm_metadata_cache.object_storage_key = new_object_storage_key
-
-          npm_metadata_cache.save!
-
-          expect(npm_metadata_cache.object_storage_key).not_to eq(new_object_storage_key)
-        end
-      end
+    it_behaves_like 'object_storage_key readonly attributes' do
+      let_it_be(:model) { create(:npm_metadata_cache, project: project, package_name: package_name) }
     end
   end
 

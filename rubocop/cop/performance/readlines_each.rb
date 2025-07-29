@@ -9,11 +9,13 @@ module RuboCop
         MESSAGE = 'Avoid `IO.readlines.each`, since it reads contents into memory in full. ' \
           'Use `IO.each_line` or `IO.each` instead.'
 
+        # @!method full_file_read_via_class?(node)
         def_node_matcher :full_file_read_via_class?, <<~PATTERN
           (send
             (send (const nil? {:IO :File}) :readlines _) :each)
         PATTERN
 
+        # @!method full_file_read_via_instance?(node)
         def_node_matcher :full_file_read_via_instance?, <<~PATTERN
           (... (... :readlines) :each)
         PATTERN

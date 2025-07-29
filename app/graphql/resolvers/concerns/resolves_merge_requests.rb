@@ -22,8 +22,6 @@ module ResolvesMergeRequests
       args[:include_subgroups] = true
     end
 
-    args.delete(:blob_path) if Feature.disabled?(:filter_blob_path, current_user)
-
     validate_blob_path!(args)
 
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)

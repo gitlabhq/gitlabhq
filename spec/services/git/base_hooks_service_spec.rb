@@ -160,6 +160,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
           before: oldrev,
           checkout_sha: checkout_sha,
           push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
+          gitaly_context: {},
           ref: ref,
           variables_attributes: []
         }
@@ -225,6 +226,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         before: oldrev,
         checkout_sha: checkout_sha,
         push_options: an_instance_of(Ci::PipelineCreation::PushOptions), # defined in each context
+        gitaly_context: {},
         ref: ref,
         variables_attributes: variables_attributes # defined in each context
       }
@@ -333,6 +335,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         before: oldrev,
         checkout_sha: checkout_sha,
         push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
+        gitaly_context: {},
         ref: ref,
         variables_attributes: variables_attributes
       }

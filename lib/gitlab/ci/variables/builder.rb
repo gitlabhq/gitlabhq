@@ -301,7 +301,7 @@ module Gitlab
 
         def protected_ref?
           strong_memoize(:protected_ref) do
-            project.protected_for?(pipeline.jobs_git_ref)
+            pipeline.protected_ref?
           end
         end
 

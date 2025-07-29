@@ -86,7 +86,7 @@ Prerequisites:
 To allow a cluster agent for workspaces in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > Workspaces**.
+1. On the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
 1. On the confirmation dialog, select **Allow agent**.
@@ -103,7 +103,7 @@ Prerequisites:
 To remove an allowed cluster agent from a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > Workspaces**.
+1. On the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **Allowed agents** tab.
 1. From the list of allowed agents, find the agent you want to remove, and select **Block**.
 1. On the confirmation dialog, select **Block agent**.

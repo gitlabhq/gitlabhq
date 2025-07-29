@@ -43,7 +43,7 @@ export function initShow() {
   initRelatedIssues();
   initRelatedMergeRequests();
   initSentryErrorStackTrace();
-  initSidebarBundle(store);
+  initSidebarBundle();
   initWorkItemLinks();
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')

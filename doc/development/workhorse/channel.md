@@ -39,7 +39,7 @@ At this point, the connection is still HTTP, so this is a request.
 The server can send a standard HTTP response, such as `404 Not Found` or
 `500 Internal Server Error`.
 
-If the server decides to permit the upgrade, it sends a HTTP
+If the server decides to permit the upgrade, it sends an HTTP
 `101 Switching Protocols` response. From this point, the connection is no longer
 HTTP. It is now a WebSocket and frames, not HTTP requests, flow over it. The connection
 persists until the client or server closes the connection.
@@ -142,7 +142,7 @@ remote end.
 
 Before upgrading the browser's connection to a websocket, Workhorse:
 
-1. Opens a HTTP client connection, according to the details given to it by Workhorse.
+1. Opens an HTTP client connection, according to the details given to it by Workhorse.
 1. Attempts to upgrade that connection to a websocket.
    - If it fails, an error response is sent to the browser.
    - If it succeeds, the browser is also upgraded.

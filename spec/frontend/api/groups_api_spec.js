@@ -14,6 +14,7 @@ import {
   getSharedGroups,
   deleteGroupMember,
   restoreGroup,
+  archiveGroup,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
@@ -76,6 +77,18 @@ describe('GroupsApi', () => {
       mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, group);
 
       await expect(restoreGroup(mockGroupId)).resolves.toMatchObject({
+        data: group,
+      });
+    });
+  });
+
+  describe('archiveGroup', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/archive`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, group);
+
+      await expect(archiveGroup(mockGroupId)).resolves.toMatchObject({
         data: group,
       });
     });

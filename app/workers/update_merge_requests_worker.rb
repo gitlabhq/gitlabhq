@@ -23,9 +23,10 @@ class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
     return unless user
 
     push_options = params.with_indifferent_access[:push_options]
+    gitaly_context = params.with_indifferent_access[:gitaly_context]
 
     MergeRequests::RefreshService
-      .new(project: project, current_user: user, params: { push_options: push_options })
+      .new(project: project, current_user: user, params: { push_options: push_options, gitaly_context: gitaly_context })
       .execute(oldrev, newrev, ref)
   end
 end

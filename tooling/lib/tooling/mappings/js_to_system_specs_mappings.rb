@@ -10,10 +10,11 @@ module Tooling
       include Helpers::PredictiveTestsHelper
 
       def initialize(
-        changed_files_pathname, predictive_tests_pathname,
-        js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')
-        @changed_files             = read_array_from_file(changed_files_pathname)
-        @predictive_tests_pathname = predictive_tests_pathname
+        changed_files,
+        js_base_folder: 'app/assets/javascripts',
+        system_specs_base_folder: 'spec/features'
+      )
+        @changed_files             = changed_files
         @js_base_folder            = js_base_folder
         @js_base_folders           = folders_for_available_editions(js_base_folder)
         @system_specs_base_folder  = system_specs_base_folder
@@ -28,15 +29,13 @@ module Tooling
       end
 
       def execute
-        matching_system_tests = filter_files.flat_map do |edition, js_files|
+        filter_files.flat_map do |edition, js_files|
           js_keywords_regexp = Regexp.union(construct_js_keywords(js_files))
 
           system_specs_for_edition(edition).select do |system_spec_file|
             system_spec_file if js_keywords_regexp.match?(system_spec_file)
           end
         end
-
-        write_array_to_file(predictive_tests_pathname, matching_system_tests)
       end
 
       # Keep the files that are in the @js_base_folders folders
@@ -81,7 +80,7 @@ module Tooling
 
       private
 
-      attr_reader :changed_files, :predictive_tests_pathname
+      attr_reader :changed_files
     end
   end
 end

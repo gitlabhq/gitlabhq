@@ -546,6 +546,27 @@ RSpec.shared_examples 'work items parent' do |type|
       expect(page).not_to have_link(work_item_parent.title)
     end
   end
+
+  it 'adds and removes parent from the breadcrumb', :aggregate_failures do
+    within_testid 'work-item-parent' do
+      click_button 'Edit'
+      send_keys(work_item_parent.title)
+      select_listbox_item(work_item_parent.title)
+    end
+
+    within_testid 'ancestors-breadcrumb' do
+      expect(page).to have_link(work_item_parent.title)
+    end
+
+    page.refresh
+
+    within_testid 'work-item-parent' do
+      click_button 'Edit'
+      click_button 'Clear'
+    end
+
+    expect(page).not_to have_selector('[data-testid="ancestors-breadcrumb"]')
+  end
 end
 
 def find_and_click_edit(selector)
@@ -641,6 +662,23 @@ RSpec.shared_examples 'work items iteration' do
 end
 
 RSpec.shared_examples 'work items time tracking' do
+  def add_estimate(estimate)
+    click_button 'estimate'
+    within_testid 'set-time-estimate-modal' do
+      fill_in 'Estimate', with: estimate
+      click_button 'Save'
+    end
+  end
+
+  def add_time_entry(time, summary = '')
+    click_button 'Add time entry'
+    within_testid 'create-timelog-modal' do
+      fill_in 'Time spent', with: time
+      fill_in 'Summary', with: summary
+      click_button 'Save'
+    end
+  end
+
   it 'passes axe automated accessibility testing for estimate and time spent modals', :aggregate_failures do
     click_button 'estimate'
 
@@ -655,11 +693,7 @@ RSpec.shared_examples 'work items time tracking' do
   end
 
   it 'adds and removes an estimate', :aggregate_failures do
-    click_button 'estimate'
-    within_testid 'set-time-estimate-modal' do
-      fill_in 'Estimate', with: '5d'
-      click_button 'Save'
-    end
+    add_estimate('5d')
 
     expect(page).to have_text 'Estimate 5d'
     expect(page).to have_button '5d'
@@ -676,21 +710,9 @@ RSpec.shared_examples 'work items time tracking' do
   end
 
   it 'adds and deletes time entries and view report', :aggregate_failures do
-    click_button 'Add time entry'
+    add_time_entry('1d', 'First summary')
 
-    within_testid 'create-timelog-modal' do
-      fill_in 'Time spent', with: '1d'
-      fill_in 'Summary', with: 'First summary'
-      click_button 'Save'
-    end
-
-    click_button 'Add time entry'
-
-    within_testid 'create-timelog-modal' do
-      fill_in 'Time spent', with: '2d'
-      fill_in 'Summary', with: 'Second summary'
-      click_button 'Save'
-    end
+    add_time_entry('2d', 'Second summary')
 
     expect(page).to have_text 'Spent 3d'
     expect(page).to have_button '3d'
@@ -712,6 +734,52 @@ RSpec.shared_examples 'work items time tracking' do
 
     expect(page).to have_text 'Spent 1d'
     expect(page).to have_button '1d'
+  end
+
+  it 'checks for progess bar with both time entries and estimate', :aggregate_failures do
+    add_estimate('5d')
+
+    expect(page).to have_text 'Estimate 5d'
+    expect(page).to have_button '5d'
+    expect(page).not_to have_button 'estimate'
+
+    add_time_entry('1d')
+
+    expect(page).to have_text 'Spent 1d'
+    expect(page).to have_button '1d'
+
+    within_testid 'time-tracking-body' do
+      expect(page).to have_selector('[role="progressbar"][aria-valuenow="20"]')
+    end
+  end
+
+  it 'using quick actions', :aggregate_failures do
+    add_estimate('5d')
+
+    expect(page).to have_text 'Estimate 5d'
+    expect(page).to have_button '5d'
+    expect(page).not_to have_button 'estimate'
+
+    add_time_entry('1d')
+
+    expect(page).to have_text 'Spent 1d'
+    expect(page).to have_button '1d'
+
+    fill_in _('Add a reply'), with: '/estimate 4d'
+    click_button "Comment"
+
+    fill_in _('Add a reply'), with: '/spend 1d'
+    click_button "Comment"
+
+    expect(page).to have_text 'Estimate 4d'
+    expect(page).to have_button '4d'
+
+    expect(page).to have_text 'Spent 2d'
+    expect(page).to have_button '2d'
+
+    within_testid 'time-tracking-body' do
+      expect(page).to have_selector('[role="progressbar"][aria-valuenow="50"]')
+    end
   end
 end
 
@@ -766,28 +834,126 @@ RSpec.shared_examples 'work items progress' do
   end
 end
 
+RSpec.shared_examples 'work items status' do
+  context 'when feature is licensed' do
+    context 'when work_item_status_feature_flag feature flag is enabled' do
+      it 'updates and selects system defined work item status' do
+        within_testid 'work-item-status' do
+          click_button 'Edit'
+          select_listbox_item 'In progress'
+
+          expect(page).to have_text 'In progress'
+        end
+      end
+
+      context 'when namespace has custom status' do
+        let(:custom_status) { create(:work_item_custom_status, name: "Ready for development", namespace: root_group) }
+
+        let(:custom_lifecycle) do
+          create(:work_item_custom_lifecycle, default_open_status: custom_status, namespace: root_group)
+        end
+
+        let!(:type_custom_lifecycle) do
+          create(:work_item_type_custom_lifecycle,
+            lifecycle: custom_lifecycle,
+            work_item_type: work_item.work_item_type,
+            namespace: root_group
+          )
+        end
+
+        before do
+          visit work_items_path
+        end
+
+        it 'selects and updates custom status' do
+          within_testid 'work-item-status' do
+            click_button 'Edit'
+            select_listbox_item 'Ready for development'
+
+            expect(page).to have_text 'Ready for development'
+          end
+        end
+      end
+    end
+
+    context 'when work_item_status_feature_flag feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_status_feature_flag: false)
+        page.refresh
+      end
+
+      it 'does not show the work item status' do
+        expect(page).not_to have_text 'Status'
+      end
+    end
+  end
+
+  context 'when feature is not licensed' do
+    before do
+      stub_licensed_features(work_item_status: false)
+      sign_in(user)
+      visit work_items_path
+    end
+
+    it 'does not show the work item status' do
+      expect(page).not_to have_text 'Status'
+    end
+  end
+end
+
 RSpec.shared_examples 'work items health status' do
-  it 'updates and clears a health status', :aggregate_failures do
+  it 'shows default state with no status' do
+    within_testid 'work-item-health-status' do
+      expect(page).to have_text('None')
+    end
+  end
+
+  it 'shows available statuses in the dropdown' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      expect(page).to have_text('Needs attention')
+      expect(page).to have_text('On track')
+      expect(page).to have_text('At risk')
+    end
+  end
+
+  it 'selects a health status' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'At risk'
+      expect(page).to have_text('At risk')
+      expect(page).not_to have_text('None')
+    end
+  end
+
+  it 'clears the selected health status' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'At risk'
+      expect(page).to have_text('At risk')
+      click_button 'Edit'
+      click_button 'Clear'
+      expect(page).to have_text('None')
+    end
+  end
+
+  it 'shows selected status correctly' do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'Needs attention'
+      expect(page).to have_text('Needs attention')
+    end
+  end
+
+  it 'changes health status' do
     within_testid 'work-item-health-status' do
       click_button 'Edit'
       select_listbox_item 'On track'
-
-      expect(page).to have_text 'On track'
-
-      click_button 'Edit'
-      select_listbox_item 'Needs attention'
-
-      expect(page).to have_text 'Needs attention'
-
+      expect(page).to have_text('On track')
       click_button 'Edit'
       select_listbox_item 'At risk'
-
-      expect(page).to have_text 'At risk'
-
-      click_button 'Edit'
-      click_button 'Clear'
-
-      expect(page).to have_text('None')
+      expect(page).to have_text('At risk')
+      expect(page).not_to have_text('On track')
     end
   end
 end
@@ -807,7 +973,6 @@ RSpec.shared_examples 'work items color' do
 
       click_button 'Edit'
       click_button 'Reset'
-
       expect(page).to have_text('Blue')
     end
   end

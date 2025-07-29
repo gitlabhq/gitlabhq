@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
+RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
@@ -960,7 +960,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'id' => note.discussion.to_global_id.to_s,
                   'resolvable' => false,
                   'userPermissions' => {
-                    'resolveNote' => true
+                    'resolveNote' => false
                   }
                 ),
                 hash_including(
@@ -1473,7 +1473,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           it 'avoids N + 1 queries', :use_sql_query_cache do
             # warm-up already done in the before block
-            control = ActiveRecord::QueryRecorder.new do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               post_graphql(query, current_user: current_user)
             end
             expect(graphql_errors).to be_blank

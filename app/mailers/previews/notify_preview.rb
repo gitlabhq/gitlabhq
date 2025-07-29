@@ -253,6 +253,22 @@ class NotifyPreview < ActionMailer::Preview
     Notify.pipeline_fixed_email(pipeline, pipeline.user.try(:email))
   end
 
+  def pipeline_variables_migration_complete_email
+    Notify.pipeline_variables_migration_complete_email(user, group, { updated_count: 5, skipped_count: 3 }).message
+  end
+
+  def pipeline_variables_migration_complete_email_all_updated
+    Notify.pipeline_variables_migration_complete_email(user, group, { updated_count: 10, skipped_count: 0 }).message
+  end
+
+  def pipeline_variables_migration_complete_email_single_project
+    Notify.pipeline_variables_migration_complete_email(user, group, { updated_count: 1, skipped_count: 0 }).message
+  end
+
+  def pipeline_variables_migration_complete_email_single_skipped
+    Notify.pipeline_variables_migration_complete_email(user, group, { updated_count: 2, skipped_count: 1 }).message
+  end
+
   def pipeline_schedule_owner_unavailable
     Notify.pipeline_schedule_owner_unavailable_email(pipeline_schedule, user)
   end

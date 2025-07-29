@@ -173,7 +173,69 @@ However, when you enforce a
 All users who have access to the project policy page and are not project owners instead view a
 button linking out to the associated security policy project.
 
-## Deleting a security policy project
+## Changing policy limits
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Configurable limits introduced](https://gitlab.com/groups/gitlab-org/-/epics/8084) in GitLab 18.3.
+
+{{< /history >}}
+
+For performance reasons, GitLab limits the number of policies that can be configured in a security policy project.
+
+{{< alert type="warning" >}}
+
+If you reduce the limit below the number of policies currently stored in a security policy project, GitLab does not enforce any policies after the limit. To re-enable the policies, increase the limit to match the number of policies in the largest security policy project.
+
+{{< /alert >}}
+
+The default limits are:
+
+| Policy type                       | Default policy limit   |
+| --------------------------------- | ---------------------- |
+| Merge request approval policies   | 5                      |
+| Scan execution policies           | 5                      |
+| Pipeline execution policies       | 5                      |
+| Vulnerability management policies | 5                      |
+
+On GitLab Self-Managed instances, instance administrators can adjust the limits for the entire instance, up to a maximum of 20 of each type of policy.
+Administrator can also change the limits for a specific top-level group.
+
+### Change the policy limits for an instance
+
+To change the maximum number of policies your organization can store in a security policy project:
+
+1. Go to **Admin Area** > **Settings** > **Security and compliance**.
+1. Expand the **Security policies** section.
+1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
+1. Select **Save changes**.
+
+#### Change the policy limits for a top-level group
+
+Group limits can exceed the configured or default instance limits. To change the maximum number of policies your organization can store in a security policy project for a top-level group:
+
+{{< alert type="note" >}}
+
+Increasing these limits can affect system performance, especially if you apply a large number of complex policies.
+
+{{< /alert >}}
+
+To adjust the limit for a top-level group:
+
+1. Go to **Admin Area** > **Overview** > **Groups**.
+1. In the row of the top-level group you want to modify, select **Edit**.
+1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
+1. Select **Save changes**.
+
+If you set the limit for an individual group to `0`, the system uses the instance-wide default value. This ensures that groups with a zero limit can still create policies according to the default instance configuration.
+
+## Delete a security policy project
 
 {{< history >}}
 

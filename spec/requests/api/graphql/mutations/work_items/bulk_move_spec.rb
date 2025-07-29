@@ -110,7 +110,9 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
     it 'returns error because groups cannot be move targets' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors.first['message']).to include("undefined method `project_namespace' for nil")
+      expect(graphql_errors.first['message']).to eq(
+        'At this moment, it is only possible to move work items to projects.'
+      )
     end
   end
 
@@ -193,7 +195,9 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors.first['message']).to include("undefined method `project_namespace' for nil")
+      expect(graphql_errors.first['message']).to eq(
+        'At this moment, it is only possible to move work items to projects.'
+      )
     end
   end
 

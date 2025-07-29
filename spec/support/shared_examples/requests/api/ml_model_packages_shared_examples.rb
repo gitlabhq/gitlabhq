@@ -56,7 +56,7 @@ RSpec.shared_examples 'creates package files for model versions' do
       .to change { Packages::PackageFile.count }.by(1)
     expect(api_response).to have_gitlab_http_status(:created)
 
-    package_file = project.packages.last.package_files.reload.last
+    package_file = ::Packages::MlModel::Package.for_projects(project).last.package_files.reload.last
     expect(package_file.file_name).to eq(saved_file_name)
   end
 

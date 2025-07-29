@@ -7,6 +7,9 @@ module API
     include Helpers::CustomAttributes
 
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.head? || request_current_user?(request)
+    end
 
     feature_category :user_profile,
       %w[
@@ -20,6 +23,10 @@ module API
         /users/:id/custom_attributes
         /users/:id/custom_attributes/:key
       ]
+
+    def self.request_current_user?(request)
+      request.get? && request.path.match?(%r{/api/v\d+/user$})
+    end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints

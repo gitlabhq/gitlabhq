@@ -213,22 +213,22 @@ gitlab_kas['env'] = {
 
 ##### Agent server node settings
 
-| Setting | Description                                                                                                                                                                                      |
-|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `gitlab_kas['private_api_listen_network']` | The network family KAS listens on. Defaults to `tcp` for both IPv4 and IPv6 networks. Set to `tcp4` for IPv4 or `tcp6` for IPv6.                                                   |
-| `gitlab_kas['private_api_listen_address']` | The address the KAS listens on. Set to `0.0.0.0:8155` or to an IP:PORT reachable by other nodes in the cluster.                                                                         |
-| `gitlab_kas['api_secret_key']` | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long.                                                           |
-| `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long.                                                  |
-| `OWN_PRIVATE_API_SCHEME` | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`.                                                                             |
-| `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
-| `OWN_PRIVATE_API_HOST` | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file.                                    |
-| `OWN_PRIVATE_API_PORT` | Optional value used to specify what port to use when constructing `OWN_PRIVATE_API_URL`.                                                                                                         |
-| `OWN_PRIVATE_API_CIDR` | Optional value used to specify which IP addresses from the available networks to use when constructing `OWN_PRIVATE_API_URL`.                                                                                       |
-| `gitlab_kas['client_timeout_seconds']` | The timeout for the client to connect to the KAS.                                                                                                                                       |
-| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL.  |
-| `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`.                                                                                            |
-| `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`.                                                                                 |
-| `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS.                                                                                                                       |
+| Setting                                             | Description |
+|-----------------------------------------------------|-------------|
+| `gitlab_kas['private_api_listen_network']`          | The network family KAS listens on. Defaults to `tcp` for both IPv4 and IPv6 networks. Set to `tcp4` for IPv4 or `tcp6` for IPv6. |
+| `gitlab_kas['private_api_listen_address']`          | The address the KAS listens on. Set to `0.0.0.0:8155` or to an IP and port reachable by other nodes in the cluster. |
+| `gitlab_kas['api_secret_key']`                      | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
+| `gitlab_kas['private_api_secret_key']`              | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
+| `OWN_PRIVATE_API_SCHEME`                            | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`. |
+| `OWN_PRIVATE_API_URL`                               | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
+| `OWN_PRIVATE_API_HOST`                              | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file. |
+| `OWN_PRIVATE_API_PORT`                              | Optional value used to specify what port to use when constructing `OWN_PRIVATE_API_URL`. |
+| `OWN_PRIVATE_API_CIDR`                              | Optional value used to specify which IP addresses from the available networks to use when constructing `OWN_PRIVATE_API_URL`. |
+| `gitlab_kas['client_timeout_seconds']`              | The timeout for the client to connect to the KAS. |
+| `gitlab_kas_external_url`                           | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL. |
+| `gitlab_rails['gitlab_kas_external_url']`           | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_internal_url']`           | The internal URL the GitLab backend uses to communicate with KAS. |
 
 **Footnotes**:
 
@@ -314,7 +314,7 @@ The path is incorrect for either:
 
 To fix this issue, ensure that the paths are correct.
 
-### `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
+### Error: `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
 
 If you are running GitLab Self-Managed and:
 
@@ -369,7 +369,7 @@ sudo gitlab-ctl reconfigure
 gitlab-ctl restart gitlab-kas
 ```
 
-### GRPC::DeadlineExceeded in Clusters::Agents::NotifyGitPushWorker
+### Error: `GRPC::DeadlineExceeded in Clusters::Agents::NotifyGitPushWorker`
 
 This error likely occurs when the client does not receive a response within the default timeout period (5 seconds). To resolve the issue, you can increase the client timeout by modifying the `/etc/gitlab/gitlab.rb` configuration file.
 

@@ -34,7 +34,7 @@ a system alert notifies you of its successful addition.
 The issue's description is automatically edited to include the Zoom link, and a button
 appears right under the issue's title.
 
-![Link Zoom Call in Issue](img/zoom_quickaction_button_v16_6.png)
+![GitLab issue view showing a Join Zoom meeting button](img/zoom_quickaction_button_v16_6.png)
 
 You are only allowed to attach a single Zoom meeting to an issue. If you attempt
 to add a second Zoom meeting using the `/zoom` quick action, it doesn't work. You

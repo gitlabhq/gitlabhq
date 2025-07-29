@@ -56,7 +56,8 @@ flowchart TD
         ReviewApp["Review app deployed"]
         Testing["Review and testing"]
         Feedback["Feedback provided"]
-        NewCommits["Address feedback\nwith new commits"]
+        NewCommits["Address feedback
+        with new commits"]
     end
 
     subgraph Deployment["Deployment"]

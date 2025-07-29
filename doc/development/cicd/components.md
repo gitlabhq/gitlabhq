@@ -66,15 +66,17 @@ in the catalog.
 
 ### Best practices for official components
 
-1. Ensure that the `README.md` contains at least the sections below (for example, see the [Code quality component](https://gitlab.com/components/code-quality)):
-   - **Overview**: The capabilities offered by the component project.
-   - **Components**: Sub-sections for each component, each with:
-     - **Usage**: Examples with and without inputs (when optional).
-     - **Inputs**: A table showing the input names, types, default values (if any) and descriptions.
-     - **Variables** (when applicable): The variable names, supported values, and descriptions.
-   - **Contribute**: Notes and how to get in touch with the maintainers.
-     Usually the contribution process should follow the [official guide](../../ci/components/_index.md).
-1. Use underscores `_` for composite input names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.
+- Ensure that the `README.md` contains at least the sections below (for example, see the [Code quality component](https://gitlab.com/components/code-quality)):
+  - **Overview**: The capabilities offered by the component project.
+  - **Components**: Sub-sections for each component, each with:
+    - **Usage**: Examples with and without inputs (when optional).
+    - **Inputs**: A table showing the input names, types, default values (if any) and descriptions.
+    - **Variables** (when applicable): The variable names, supported values, and descriptions.
+  - **Contribute**: Notes and how to get in touch with the maintainers.
+    Usually the contribution process should follow the [official guide](../../ci/components/_index.md).
+- When naming `inputs`, use underscores `_` for composite names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.
+- Use `inputs` if you want to allow users to configure `rules`. See an [example here](https://gitlab.com/components/opentofu/-/blob/5e86fd6c5f524785fd3dbd6cdb09f03d19a0cced/templates/fmt.yml#L82-88).
+  To preserve the default behavior when `rules` is not defined you should use `default: [{when: on_success}]` for the input, until [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/440468) is resolved.
 
 ## Review and contribution process for official components
 

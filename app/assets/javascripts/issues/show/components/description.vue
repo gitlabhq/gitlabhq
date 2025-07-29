@@ -17,9 +17,9 @@ import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutati
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import {
-  sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_CREATING,
   I18N_WORK_ITEM_ERROR_DELETING,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -382,7 +382,9 @@ export default {
     },
     showAlert(message, error) {
       createAlert({
-        message: sprintfWorkItem(message, WORK_ITEM_TYPE_NAME_TASK),
+        message: sprintf(message, {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[WORK_ITEM_TYPE_NAME_TASK],
+        }),
         error,
         captureError: true,
       });

@@ -45,9 +45,6 @@ export default {
     };
   },
   methods: {
-    refetchCustomEmojis() {
-      this.$apollo.queries.customEmojis.refetch();
-    },
     changePage(pageInfo) {
       this.pagination = pageInfo;
     },

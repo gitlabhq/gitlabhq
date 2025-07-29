@@ -15,18 +15,6 @@ RSpec.shared_examples 'diffs stats' do
     expect(response).to have_gitlab_http_status(:success)
     expect(json_response['diffs_stats']).to be_an Hash
   end
-
-  context 'when the rapid_diffs feature flag is disabled' do
-    before do
-      stub_feature_flags(rapid_diffs: false)
-    end
-
-    it 'returns a 404 status' do
-      send_request
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
 end
 
 RSpec.shared_examples 'overflow' do

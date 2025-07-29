@@ -2,6 +2,7 @@ import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
+import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
 import { COMMANDS } from '../constants';
 
 export function defaultSorter(searchFields) {
@@ -116,6 +117,8 @@ export function createDataSource({
 }
 
 export default class AutocompleteHelper {
+  tiptapEditor;
+
   constructor({ dataSourceUrls, sidebarMediator }) {
     this.updateDataSources(dataSourceUrls);
 
@@ -175,12 +178,20 @@ export default class AutocompleteHelper {
         }),
       user: (items) =>
         items.filter((item) => {
-          const assigned = this.sidebarMediator?.store?.assignees.some(
+          let assigned = this.sidebarMediator?.store?.assignees.some(
             (assignee) => assignee.username === item.username,
           );
           const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
             (reviewer) => reviewer.username === item.username,
           );
+
+          const { workItemId } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemId) {
+            const assignees = currentAssignees()[workItemId] || [];
+            assigned = assignees.some((assignee) => assignee.username === item.username);
+          }
 
           if (command === COMMANDS.ASSIGN) return !assigned;
           if (command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
@@ -189,6 +200,34 @@ export default class AutocompleteHelper {
 
           return true;
         }),
+      /**
+       * We're overriding returned items instead of filtering out
+       * irrelavent items because for `/unlink #`, it should show
+       * all linked items at once without waiting for user to
+       * manually search items.
+       */
+      issue: (items) => {
+        let filteredItems = items;
+
+        if (command === COMMANDS.UNLINK) {
+          const { workItemFullPath, workItemIid } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemFullPath && workItemIid) {
+            const links = linkedItems()[`${workItemFullPath}:${workItemIid}`] || [];
+            filteredItems = links.map((link) => ({
+              id: Number(link.iid),
+              iid: Number(link.iid),
+              title: link.title,
+              reference: link.reference,
+              search: `${link.iid} ${link.title}`,
+              icon_name: link.workItemType.iconName,
+            }));
+          }
+        }
+
+        return filteredItems;
+      },
       emoji: (_, query) =>
         query
           ? searchEmoji(query)

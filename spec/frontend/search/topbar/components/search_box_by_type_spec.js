@@ -110,7 +110,7 @@ describe('search box by type component', () => {
     });
   });
 
-  // Regression test for https://gitlab.com/gitlab-org/gitlab-ui/-/issues/937
+  // Regression test for https://gitlab.com/gitlab-org/gitlab-ui/-/issues/937 [CLOSED]
   describe('double input event bug', () => {
     let listener;
 

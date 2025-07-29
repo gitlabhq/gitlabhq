@@ -445,7 +445,7 @@ jest predictive:
   script:
     - |
       function jest_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --predictive
         fi
       }
@@ -464,7 +464,7 @@ jest-with-fixtures predictive:
   script:
     - |
       function jest_with_fixtures_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --predictive --fixtures
         fi
       }
@@ -481,7 +481,7 @@ jest vue3 predictive:
   script:
     - |
       function jest_vue3_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --vue3 --predictive
         fi
       }
@@ -498,7 +498,7 @@ jest-with-fixtures vue3 predictive:
   script:
     - |
       function jest_with_fixtures_vue3_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
         fi
       }
@@ -516,7 +516,7 @@ jest vue3 check quarantined predictive:
   script:
     - |
       function jest_vue_check_quarantined_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           ./scripts/frontend/check_jest_vue3_quarantine.js
         fi
       }
@@ -546,7 +546,7 @@ jest vue3 check quarantined:
   script:
     - |
       function jest_vue3_check_quarantined() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           ./scripts/frontend/check_jest_vue3_quarantine.js --all
         fi
       }

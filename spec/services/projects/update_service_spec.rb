@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects do
@@ -504,46 +505,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
                 features: array_including(feature, "updated_at")
               )
           end
-        end
-      end
-    end
-
-    context 'when archiving a project' do
-      before do
-        allow(Projects::UnlinkForkService).to receive(:new).and_return(unlink_fork_service)
-      end
-
-      let(:unlink_fork_service) { instance_double(Projects::UnlinkForkService, execute: true) }
-
-      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
-        params: { archived: true },
-        attributes: %w[updated_at archived]
-
-      it 'publishes a ProjectTransferedEvent' do
-        expect { update_project(project, user, archived: true) }
-          .to publish_event(Projects::ProjectArchivedEvent)
-          .with(
-            project_id: project.id,
-            namespace_id: project.namespace_id,
-            root_namespace_id: project.root_namespace.id
-          )
-      end
-
-      context 'when project is being archived' do
-        it 'calls UnlinkForkService' do
-          project.update!(archived: false)
-
-          expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(unlink_fork_service)
-
-          update_project(project, user, archived: true)
-        end
-      end
-
-      context 'when project is not being archived' do
-        it 'does not call UnlinkForkService' do
-          expect(Projects::UnlinkForkService).not_to receive(:new)
-
-          update_project(project, user, archived: false)
         end
       end
     end

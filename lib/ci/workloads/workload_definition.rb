@@ -30,6 +30,7 @@ module Ci
 
         result = {
           image: image,
+          stage: 'build',
           timeout: "#{timeout} seconds",
           variables: variables_without_expand,
           script: commands

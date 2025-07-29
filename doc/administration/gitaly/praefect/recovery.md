@@ -2,15 +2,15 @@
 stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Gitaly Cluster recovery options and tools
+title: Gitaly Cluster (Praefect) recovery options and tools
 ---
 
-Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
-recovery and has Praefect tracking database tools.
+Gitaly Cluster (Praefect) can recover from primary-node failure and unavailable repositories. Gitaly Cluster (Praefect)
+can perform data recovery and has Praefect tracking database tools.
 
-## Manage Gitaly nodes on a Gitaly Cluster
+## Manage Gitaly nodes on a Gitaly Cluster (Praefect)
 
-You can add and replace Gitaly nodes on a Gitaly Cluster.
+You can add and replace Gitaly nodes on a Gitaly Cluster (Praefect).
 
 ### Add new Gitaly nodes
 
@@ -51,13 +51,11 @@ To use the same name for the replacement node, use [repository verifier](configu
 
 #### With a node with a different name
 
-The steps use a different name for the replacement node for a Gitaly Cluster depend on if a [replication factor](configure.md#configure-replication-factor)
-is set.
+The steps to replace a node with a node with a different name for Gitaly Cluster (Praefect) depend on if a
+[replication factor](configure.md#configure-replication-factor) is set.
 
-##### Replication factor set
-
-If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor) to set the replication factor per repository again to get
-new storage assigned.
+If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor)
+to set the replication factor per repository again to get new storage assigned.
 
 For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you should increase the replication
 factor to 3:
@@ -70,8 +68,8 @@ current assignments: gitaly-1, gitaly-2, gitaly-3
 
 This ensures that the repository is replicated to the new node and the `repository_assignments` table gets updated with the name of new Gitaly node.
 
-If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not automatically included in replication.
-You must follow the steps described previously.
+If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not
+automatically included in replication. You must follow the steps described previously.
 
 After you [verify](#check-for-data-loss) that repository is successfully replicated to the new node:
 
@@ -104,8 +102,8 @@ This would trigger appropriate replication jobs to bring the system back into th
 
 ## Primary node failure
 
-Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary. Gitaly
-Cluster:
+Gitaly Cluster (Praefect) recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary.
+Gitaly Cluster (Praefect):
 
 - Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
 - If no fully up to date secondary is available, elects the secondary with the least unreplicated writes from the primary as the new primary.
@@ -324,13 +322,7 @@ praefect['configuration'] = {
 
 ### Manually remove repositories
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from the Praefect tracking database.
-
-{{< /history >}}
-
-The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
+The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster (Praefect), and all state associated with a given repository including:
 
 - On-disk repositories on all relevant Gitaly nodes.
 - Any database state tracked by Praefect.
@@ -343,7 +335,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 - Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
 - Replace `<repository>` with the relative path of the repository to remove.
-- In GitLab 15.3 and later, add `-db-only` to remove the Praefect tracking database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
+- Add `-db-only` to remove the Praefect tracking database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
   protect on-disk repository data from deletion when a valid repository is accidentally specified. If the database entry is accidentally deleted, re-track the repository with the
   [`track-repository` command](#manually-add-a-single-repository-to-the-tracking-database).
 - Add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
@@ -392,13 +384,7 @@ Common maintenance tasks on the Praefect tracking database are documented in thi
 
 ### List untracked repositories
 
-{{< history >}}
-
-- `older-than` option added in GitLab 15.0.
-
-{{< /history >}}
-
-The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
+The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster (Praefect) that both:
 
 - Exist for at least one Gitaly storage.
 - Aren't tracked in the Praefect tracking database.
@@ -473,7 +459,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
   @hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git
   ```
 
-- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../../repository_storage_paths.md#gitaly-cluster-storage).
+- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../../repository_storage_paths.md#gitaly-cluster-praefect-storage).
 - `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
   [per-repository replication](configure.md#configure-replication-factor) is set as the replication strategy.
 - `-replicate-immediately` causes the command to replicate the repository to its secondaries immediately.
@@ -490,12 +476,6 @@ This command fails if:
 - The repository does not exist on disk.
 
 ### Manually add many repositories to the tracking database
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
-
-{{< /history >}}
 
 {{< alert type="warning" >}}
 
@@ -542,12 +522,6 @@ If any entry fails these checks, the command aborts prior to attempting to track
   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 
 ### List virtual storage details
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
-
-{{< /history >}}
 
 The `list-storages` Praefect sub-command lists virtual storages and their associated storage nodes. If a virtual storage is:
 

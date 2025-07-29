@@ -9,5 +9,4 @@ description: Per month CI usage data at the runner and project level meant to st
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171336
 milestone: '17.9'
 gitlab_schema: gitlab_ci
-exempt_from_sharding: true
-notes: Exempted from sharding because Dedicated only.
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553104

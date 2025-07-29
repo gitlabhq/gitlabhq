@@ -47,21 +47,6 @@ repositories can be, because no single repository can exceed the capacity of a s
 For example, if each Gitaly node has 100 GB of storage capacity and there are 3 Gitaly nodes, your instance
 can store a total of 300 GB of repository data, but no single repository can exceed 100 GB.
 
-#### View repository storage per Gitaly node
-
-To view your repository storage capacity per Gitaly node:
-
-1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. Select your tenant.
-1. From the tenant overview page, view the value listed under **Total repository capacity**.
-
-{{< alert type="note" >}}
-
-While this field in Switchboard is labeled "Total repository capacity," this value represents the
-repository storage capacity per Gitaly node, not the total capacity across all nodes.
-
-{{< /alert >}}
-
 ### Object storage
 
 Object storage is a storage architecture that manages data as objects rather than as a file hierarchy.

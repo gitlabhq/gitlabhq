@@ -13,7 +13,7 @@ title: Design and configure a GitLab Runner fleet on Google Kubernetes Engine
 
 {{< /details >}}
 
-This page describes how to analyze your CI/CD build requirements to design, configure,
+Use these recommendations to analyze your CI/CD build requirements to design, configure,
 and validate a GitLab Runner fleet hosted on Google Kubernetes Engine (GKE).
 
 The following diagram illustrates the path of your runner fleet implementation journey.
@@ -178,13 +178,13 @@ To plan runner scope, consider the following questions:
 - Do you want project owners and group owners to create and manage their own runners?
 
   - By default, project and group owners can create runner configuration and register runners to a project or group in GitLab.
-  - This design makes it easy for developers to create a build environment. This approach reduces developer friction when getting started with GitLab CI. However, in large organizations, this approach may lead to many underutilized or unused runners across the environment.
+  - This design allows developers to create a build environment quickly. This approach reduces developer friction when getting started with GitLab CI/CD. However, in large organizations, this approach may lead to many underutilized or unused runners across the environment.
 
 - Does your organization have security or other policies that require segmenting access to certain types of runners to specific groups or projects?
 
 The most straightforward way to deploy a runner in a GitLab Self-Managed environments is to create it for an instance. Runners scoped for an instance are available to all groups and projects by default.
 
-If you are able to meet all your organization's needs with instance runners, then this deployment pattern is the most efficient pattern. It ensures that you can operate a CI/CD build fleet at scale efficiently and cost effectively.
+If you can meet all your organization's needs with instance runners, then this deployment pattern is the most efficient pattern. It ensures that you can operate a CI/CD build fleet at scale efficiently and cost effectively.
 
 If there are requirements to segment access to specific runners to certain groups or projects, incorporate those into your planning process.
 
@@ -241,12 +241,12 @@ For the FastAPI, consider the following information:
   - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
   - `0.20` for the CPU instead of `1 CPU`. We don't mind our job taking more time to complete. We prioritize accuracy and quality over speed when completing tasks.
 - **How many GitLab Runner Managers do I need to run?** Only one GitLab Runner Manager is enough for our tests.
-- **What is the expected Workload?** We want to be able to run up to 20 jobs simultaneously at any time.
+- **What is the expected Workload?** We want to run up to 20 jobs simultaneously at any time.
 
 Based on these inputs, any GKE Cluster with the following minimum characteristics should be enough:
 
-- Minimum CPU: **(0.20 + helper_cpu_usage) * number_of_jobs_simultaneously**. In our example, we get **7 vCPU** with the limit for the helper container set to **0.15 CPU**.
-- Minimum Memory: **(400Mi + helper_memory_usage) * number_of_jobs_simultaneously**. In our example, we get at least **10 Gi** with the limit for the helper set to **100 Mi**.
+- Minimum CPU: **(0.20 + helper CPU usage) * number of jobs simultaneously**. In our example, we get **7 vCPU** with the limit for the helper container set to **0.15 CPU**.
+- Minimum Memory: **(400Mi + helper memory usage) * number of jobs simultaneously**. In our example, we get at least **10 Gi** with the limit for the helper set to **100 Mi**.
 
 Other characteristics such as the minimum storage required should also be considered. However, we don't into consideration in the example.
 

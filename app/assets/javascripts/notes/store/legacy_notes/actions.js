@@ -176,7 +176,7 @@ export function initPolling() {
       noteable_id: this.notesData.noteableId,
     },
     {
-      connected() {
+      connected: () => {
         this.fetchUpdatedNotes();
       },
       received(data) {

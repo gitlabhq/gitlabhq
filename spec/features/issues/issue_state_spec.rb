@@ -8,37 +8,32 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(user)
     sign_in(user)
   end
 
   shared_examples 'issue closed' do |selector|
-    it 'can close an issue' do
-      expect(page).to have_selector('[data-testid="issue-state-badge"]')
+    it 'closes an issue' do
+      expect(page).to have_css('.gl-badge', text: 'Open')
 
-      expect(find_by_testid('issue-state-badge')).to have_content 'Open'
-
-      within selector do
+      within_testid(selector) do
         click_button 'Close issue'
-        wait_for_requests
       end
 
-      expect(find_by_testid('issue-state-badge')).to have_content 'Closed'
+      expect(page).to have_css('.gl-badge', text: 'Closed')
     end
   end
 
   shared_examples 'issue reopened' do |selector|
-    it 'can reopen an issue' do
-      expect(page).to have_selector('[data-testid="issue-state-badge"]')
+    it 'reopens an issue' do
+      expect(page).to have_css('.gl-badge', text: 'Closed')
 
-      expect(find_by_testid('issue-state-badge')).to have_content 'Closed'
-
-      within selector do
+      within_testid(selector) do
         click_button 'Reopen issue'
-        wait_for_requests
       end
 
-      expect(find_by_testid('issue-state-badge')).to have_content 'Open'
+      expect(page).to have_css('.gl-badge', text: 'Open')
     end
   end
 
@@ -48,10 +43,10 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
 
       before do
         visit project_issue_path(project, open_issue)
-        find('#new-actions-header-dropdown > button').click
+        click_button 'More actions', match: :first
       end
 
-      it_behaves_like 'issue closed', '.gl-new-dropdown-contents'
+      it_behaves_like 'issue closed', 'work-item-actions-dropdown'
     end
 
     context 'when clicking the bottom `Close issue` button', :aggregate_failures do
@@ -61,7 +56,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
         visit project_issue_path(project, open_issue)
       end
 
-      it_behaves_like 'issue closed', '.timeline-content-form'
+      it_behaves_like 'issue closed', 'work-item-comment-form-actions'
     end
   end
 
@@ -71,10 +66,10 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
 
       before do
         visit project_issue_path(project, closed_issue)
-        find('#new-actions-header-dropdown > button').click
+        click_button 'More actions', match: :first
       end
 
-      it_behaves_like 'issue reopened', '.gl-new-dropdown-contents'
+      it_behaves_like 'issue reopened', 'work-item-actions-dropdown'
     end
 
     context 'when clicking the bottom `Reopen issue` button', :aggregate_failures do
@@ -84,7 +79,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
         visit project_issue_path(project, closed_issue)
       end
 
-      it_behaves_like 'issue reopened', '.timeline-content-form'
+      it_behaves_like 'issue reopened', 'work-item-comment-form-actions'
     end
   end
 end

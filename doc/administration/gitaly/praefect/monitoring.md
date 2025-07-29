@@ -64,5 +64,3 @@ The following metrics are available from the `/db_metrics` endpoint:
 - `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
 - `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.
 - `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification.
-- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode in a virtual storage.
-  - This metric was [removed](https://gitlab.com/gitlab-org/gitaly/-/issues/4229) in GitLab 15.4.

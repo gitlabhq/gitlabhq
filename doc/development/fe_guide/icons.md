@@ -174,7 +174,7 @@ Component:
 ```html
 <script>
 import { GlEmptyState } from '@gitlab/ui';
-// The ?url query string ensures the SVG is imported as an URL instead of an inilne SVG
+// The ?url query string ensures the SVG is imported as a URL instead of an inline SVG
 // This is useful for bundle size and optimized loading
 import mergeTrainsSvgPath from '@gitlab/svgs/dist/illustrations/train-sm.svg?url';
 

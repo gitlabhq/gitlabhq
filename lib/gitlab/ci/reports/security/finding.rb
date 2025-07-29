@@ -6,6 +6,19 @@ module Gitlab
       module Security
         class Finding
           include ::VulnerabilityFindingHelpers
+          include Gitlab::Utils::StrongMemoize
+
+          REQUIRED_KEYS = %i[
+            identifiers
+            location
+            metadata_version
+            name
+            original_data
+            report_type
+            scanner
+            scan
+            uuid
+          ].freeze
 
           attr_reader :confidence
           attr_reader :identifiers
@@ -32,28 +45,34 @@ module Gitlab
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          def initialize(identifiers:, location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, flags: [], links: [], remediations: [], confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists -- TODO: Reduce number of parameters in this function
-            @confidence = confidence
-            @identifiers = identifiers
-            @flags = flags
-            @links = links
-            @location = location
-            @evidence = evidence
-            @metadata_version = metadata_version
-            @name = name
-            @original_data = original_data
-            @report_type = report_type
-            @scanner = scanner
-            @scan = scan
-            @severity = severity
-            @uuid = uuid
-            @remediations = remediations
-            @details = details
-            @signatures = signatures
-            @project_id = project_id
-            @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
-            @found_by_pipeline = found_by_pipeline
-            @cvss = cvss
+          def initialize(**args)
+            missing_keys = REQUIRED_KEYS.filter { |key| !args.key?(key) }
+
+            if missing_keys.present?
+              raise ArgumentError, "missing keys: #{missing_keys.join(', ')}"
+            end
+
+            @confidence = args[:confidence]
+            @identifiers = args[:identifiers]
+            @flags = args.fetch(:flags, [])
+            @links = args.fetch(:links, [])
+            @location = args[:location]
+            @evidence = args[:evidence]
+            @metadata_version = args[:metadata_version]
+            @name = args[:name]
+            @original_data = args[:original_data]
+            @report_type = args[:report_type]
+            @scanner = args[:scanner]
+            @scan = args[:scan]
+            @severity = args[:severity]
+            @uuid = args[:uuid]
+            @remediations = args.fetch(:remediations, [])
+            @details = args.fetch(:details, {})
+            @signatures = args.fetch(:signatures, [])
+            @project_id = args[:project_id]
+            @vulnerability_finding_signatures_enabled = args.fetch(:vulnerability_finding_signatures_enabled, false)
+            @found_by_pipeline = args[:found_by_pipeline]
+            @cvss = args.fetch(:cvss, [])
           end
 
           def to_hash
@@ -187,6 +206,16 @@ module Gitlab
             location_fingerprints.first
           end
 
+          def owasp_top_10
+            extract_owasp_top_10
+          end
+          strong_memoize_attr :owasp_top_10
+
+          def has_vulnerability_resolution?
+            extract_vulnerability_resolution
+          end
+          strong_memoize_attr :has_vulnerability_resolution?
+
           private
 
           def location_fingerprints
@@ -198,6 +227,45 @@ module Gitlab
             return [] unless @vulnerability_finding_signatures_enabled && signatures.present?
 
             signatures.sort_by { |sig| -sig.priority }.map(&:signature_hex)
+          end
+
+          def extract_owasp_top_10
+            owasp_identifier = identifiers.find { |id| id.external_type.casecmp?('owasp') }
+            return ::Vulnerabilities::Read::OWASP_TOP_10_DEFAULT unless owasp_identifier
+
+            map_owasp_external_id(owasp_identifier.external_id)
+          end
+
+          def map_owasp_external_id(external_id)
+            default_value = ::Vulnerabilities::Read::OWASP_TOP_10_DEFAULT
+
+            return default_value unless valid_owasp_external_id?(external_id)
+
+            ::Enums::Vulnerability.owasp_top_10.keys.find { |key| key.include?(external_id) } ||
+              default_value
+          end
+
+          def valid_owasp_external_id?(external_id)
+            arr = external_id.split(':')
+
+            priority_label = arr.first
+            year = arr.second ? arr.second[0..3] : nil
+
+            return false if year.nil? || ::Enums::Vulnerability.owasp_years.exclude?(year)
+
+            Enums::Vulnerability.owasp_categories.include?(priority_label)
+          end
+
+          def extract_vulnerability_resolution
+            report_type_str = report_type.to_s
+            cwe_identifier = identifiers.find { |id| id.external_type == 'cwe' }
+            return false unless cwe_identifier
+
+            cwe_value = cwe_identifier.name
+            return false unless cwe_value
+
+            ::Vulnerabilities::Finding::AI_ALLOWED_REPORT_TYPES.include?(report_type_str) &&
+              ::Vulnerabilities::Finding::HIGH_CONFIDENCE_AI_RESOLUTION_CWES.include?(cwe_value&.upcase)
           end
         end
       end

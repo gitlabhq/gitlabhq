@@ -37,6 +37,11 @@
   }
 }
 
+// Avoid background scrolling when zen is in fullscreen
+body:has(.zen-backdrop.fullscreen) {
+  overflow-y: clip;
+}
+
 .zen-control {
   padding: 0;
   @apply gl-text-subtle;

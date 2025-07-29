@@ -60,7 +60,10 @@ Note: for more detailed instructions, see [Automate DevOps change request creati
 
 Below are the high-level steps:
 
-1. From the DevOps Change Workspace, navigate to the Change tab, then select Automate change. ![Automate change creation](img/snow_automate_cr_creation_v17_9.png)
+1. From the DevOps Change Workspace, navigate to the Change tab, then select Automate change.
+
+   ![DevOps Change Workspace with the Automate change option selected.](img/snow_automate_cr_creation_v17_9.png)
+
 1. In the Application field, select the application that you want to associate with the pipeline for which you want to automate change request creation, and select Next.
 1. Select the pipeline that has the step (stage) from where you want to trigger the automated creation of change requests. For example, the change request creation step.
 1. Select the step in the pipeline from where you want to trigger the automated creation of a change request.
@@ -72,7 +75,7 @@ Below are the high-level steps:
       allow_failure: false
    ```
 
-    ![Automated change pipeline modification](img/snow_automated_cr_pipeline_update_v17_9.png)
+    ![GitLab CI/CD pipeline job updated to support change control.](img/snow_automated_cr_pipeline_update_v17_9.png)
 
 #### Run Pipeline with Change Management
 
@@ -80,13 +83,25 @@ After the previous steps are completed, the project CD pipeline can incorporate 
 
 To run a pipeline with Change Management:
 
-1. In ServiceNow, Change control is enabled for one of the stages in the pipeline. ![change control enabled](img/snow_change_control_enabled_v17_9.png)
-1. In GitLab, the pipeline job with the change control function runs. ![pipeline paused](img/snow_pipeline_pause_for_approval_v17_9.png)
-1. In ServiceNow, a change request is automatically created in ServiceNow. ![change request waiting for approval](img/snow_cr_waiting_for_approval_v17_9.png)
+1. In ServiceNow, Change control is enabled for one of the stages in the pipeline.
+
+   ![ServiceNow stage with change control enabled in pipeline.](img/snow_change_control_enabled_v17_9.png)
+
+1. In GitLab, the pipeline job with the change control function runs.
+
+   ![GitLab pipeline paused for change approval.](img/snow_pipeline_pause_for_approval_v17_9.png)
+
+1. In ServiceNow, a change request is automatically created in ServiceNow.
+
+   ![ServiceNow change request pending approval.](img/snow_cr_waiting_for_approval_v17_9.png)
+
 1. In ServiceNow, approve the change request
-    ![change request approved](img/snow_cr_approved_v17_9.png)
+
+   ![ServiceNow change request marked as approved.](img/snow_cr_approved_v17_9.png)
+
 1. Pipeline resumes and begins the next job for deploying to the production environment upon the approval of the change request.
-    ![pipeline resumes](img/snow_pipeline_resumes_v17_9.png)
+
+   ![GitLab pipeline resumes after change approval.](img/snow_pipeline_resumes_v17_9.png)
 
 ### Custom Actions with Velocity Container Image
 
@@ -132,11 +147,26 @@ After the previous steps are completed, the project CD pipeline can incorporate 
 
 To run a pipeline with custom Change Management:
 
-1. In ServiceNow, change control is enabled for one of the stages in the pipeline. ![change control enabled](img/snow_change_control_enabled_v17_9.png)
-1. In GitLab, the pipeline job with the change control function runs. ![change request creation workflow2](img/snow_cr_creation_workflow2_v17_9.png)
-1. In ServiceNow, a change request is created with custom title, description and any other fields supplied by the pipeline variable values using `servicenowdocker/sndevops` image. ![pipeline remain running](img/snow_pipeline_workflow2_v17_9.png)
-1. In GitLab, change request number and other information can be found in the pipeline details. The pipeline job will remain running until the change request is approved, then it will proceed to the next job. ![pipeline change details after approval workflow2](img/snow_pipeline_details_workflow2_v17_9.png)
+1. In ServiceNow, change control is enabled for one of the stages in the pipeline.
+
+   ![ServiceNow stage with change control enabled using custom change flow.](img/snow_change_control_enabled_v17_9.png)
+
+1. In GitLab, the pipeline job with the change control function runs.
+
+   ![change request creation workflow2](img/snow_cr_creation_workflow2_v17_9.png)
+
+1. In ServiceNow, a change request is created with custom title, description and any other fields supplied by the pipeline variable values using `servicenowdocker/sndevops` image.
+
+   ![ServiceNow change request created with custom values from pipeline.](img/snow_pipeline_workflow2_v17_9.png)
+
+1. In GitLab, change request number and other information can be found in the pipeline details. The pipeline job will remain running until the change request is approved, then it will proceed to the next job.
+
+   ![pipeline change details after approval workflow2](img/snow_pipeline_details_workflow2_v17_9.png)
+
 1. In ServiceNow, approve the change request.
-    ![pipeline details workflow2](img/snow_pipeline_cr_details_workflow2_v17_9.png)
+
+   ![pipeline details workflow2](img/snow_pipeline_cr_details_workflow2_v17_9.png)
+
 1. In GitLab, the Pipeline job resumes and begins the next job which is the deployment to the production environment upon the approval of the change request.
-    ![pipeline resumes workflow2](img/snow_pipeline_resumes_workflow2_v17_9.png)
+
+   ![pipeline resumes workflow2](img/snow_pipeline_resumes_workflow2_v17_9.png)

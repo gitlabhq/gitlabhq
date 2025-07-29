@@ -3,7 +3,7 @@
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
   .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.md:gl-flex-row.gl-gap-5
     .home-panel-title-row.gl-flex.gl-items-center
-      = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-self-start gl-shrink-0 gl-mr-4', size: 48, avatar_options: { itemprop: 'image' })
+      = render Pajamas::AvatarComponent.new(@project, class: 'gl-self-start gl-shrink-0 gl-mr-4', size: 48, avatar_options: { itemprop: 'image' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ data: { testid: 'project-name-content' }, itemprop: 'name' }
         = @project.name
         = visibility_level_content(@project, css_class: 'visibility-icon gl-inline-flex', icon_variant: 'subtle')
@@ -16,3 +16,6 @@
     #js-home-panel{ data: home_panel_data_attributes }
 
   = render_if_exists "projects/home_mirror"
+
+= content_for :page_level_alert do
+  = render_if_exists 'shared/targeted_message_banner', group: @project.root_ancestor

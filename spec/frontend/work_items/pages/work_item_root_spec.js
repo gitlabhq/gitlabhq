@@ -50,7 +50,6 @@ describe('Work items root component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       isModal: false,
-      newCommentTemplatePaths: [],
       workItemId: null,
       workItemIid: '1',
       workItemFullPath: 'full-path',

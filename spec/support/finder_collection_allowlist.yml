@@ -63,6 +63,7 @@
 - Packages::Pypi::PackageFinder
 - Projects::Integrations::Jira::ByIdsFinder
 - Projects::Integrations::Jira::IssuesFinder
+- PushRuleFinder
 - Releases::EvidencePipelineFinder
 - Repositories::BranchNamesFinder
 - Repositories::ChangelogTagFinder

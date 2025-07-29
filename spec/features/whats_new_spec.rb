@@ -74,5 +74,23 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
         within_testid('disclosure-content') { expect(page).to have_button(text: "What's new") }
       end
     end
+
+    it 'renders two feature cards in the drawer' do
+      visit root_dashboard_path
+
+      within_testid('super-sidebar') do
+        find_by_testid('sidebar-help-button').click
+
+        find_by_testid('sidebar-help-button').click
+
+        click_on "What's new"
+      end
+
+      expect(page).to have_css("[data-testid='granular-controls-feature-card']")
+
+      find_by_testid('card-carousel-next-button').click
+
+      expect(page).to have_css("[data-testid='duo-core-feature-card']")
+    end
   end
 end

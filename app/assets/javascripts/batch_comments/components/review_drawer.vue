@@ -1,7 +1,5 @@
 <script>
 import { mapActions, mapState } from 'pinia';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters } from 'vuex';
 import {
   GlDrawer,
   GlModal,
@@ -30,6 +28,7 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import { CLEAR_AUTOSAVE_ENTRY_EVENT, CONTENT_EDITOR_PASTE } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { updateText } from '~/lib/utils/text_markdown';
+import { useNotes } from '~/notes/store/legacy_notes';
 import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 const REVIEW_STATES = {
@@ -50,7 +49,7 @@ export default {
           iid: `${this.getNoteableData.iid}`,
         };
       },
-      update: (data) => data.project?.mergeRequest?.userPermissions,
+      update: (data) => data.project?.mergeRequest?.userPermissions ?? {},
     },
   },
   components: {
@@ -94,7 +93,7 @@ export default {
   computed: {
     ...mapState(useLegacyDiffs, ['viewDiffsFileByFile', 'projectPath']),
     ...mapState(useBatchComments, ['sortedDrafts', 'draftsCount', 'drawerOpened']),
-    ...mapVuexGetters(['getNoteableData', 'getNotesData', 'getCurrentUserLastNote']),
+    ...mapState(useNotes, ['getNoteableData', 'getNotesData', 'getCurrentUserLastNote']),
     getDrawerHeaderHeight() {
       if (!this.drawerOpened) return '0';
 

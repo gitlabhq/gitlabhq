@@ -133,22 +133,6 @@ describe('Token access table', () => {
     });
   });
 
-  describe('when showPolicies prop is false', () => {
-    beforeEach(() => createComponent({ showPolicies: false, items: mockGroups }));
-
-    it('does not show policies column', () => {
-      const tableFieldKeys = findTable()
-        .props('fields')
-        .map(({ key }) => key);
-
-      expect(tableFieldKeys).not.toContain('policies');
-    });
-
-    it('does not show edit button', () => {
-      expect(findEditButton().exists()).toBe(false);
-    });
-  });
-
   describe('group auto-populated icon', () => {
     it('shows the icon when the item is auto-populated', () => {
       createComponent({ items: [mockGroups[0]] });

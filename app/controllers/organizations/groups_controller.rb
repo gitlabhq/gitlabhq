@@ -35,13 +35,16 @@ module Organizations
 
       result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
-      if result[:status] == :success
-        removal_time = helpers.permanent_deletion_date_formatted
-        message = _("'%{group_name}' has been scheduled for removal on %{removal_time}.")
-
-        render json: { message: format(message, group_name: group.name, removal_time: removal_time) }
+      if result.success?
+        render json: {
+          message: format(
+            _("'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."),
+            group_name: group.name,
+            date: helpers.permanent_deletion_date_formatted(group)
+          )
+        }
       else
-        render json: { message: result[:message] }, status: :unprocessable_entity
+        render json: { message: result.message }, status: :unprocessable_entity
       end
     end
 

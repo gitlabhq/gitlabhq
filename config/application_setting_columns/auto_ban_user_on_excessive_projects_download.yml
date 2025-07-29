@@ -7,9 +7,8 @@ db_type: boolean
 default: 'false'
 description: When enabled, users will get automatically banned from the application
   when they download more than the maximum number of unique projects in the time period
-  specified by `max_number_of_repository_downloads` and `max_number_of_repository_downloads_within_time_period`
-  respectively. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94153)
-  in GitLab 15.4. GitLab Self-Managed, Ultimate only.
+  specified by `max_number_of_repository_downloads` and `max_number_of_repository_downloads_within_time_period`.
+  GitLab Self-Managed, Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

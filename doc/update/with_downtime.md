@@ -100,10 +100,10 @@ following principles when upgrading those servers:
 - Do not restart services more than one server at a time.
 - Check the Consul cluster is healthy before upgrading or restarting services.
 
-## Upgrade the Gitaly nodes (Praefect / Gitaly Cluster)
+## Upgrade the Gitaly nodes (Gitaly Cluster (Praefect))
 
-If you're running Gitaly cluster, follow the [zero-downtime process](zero_downtime.md)
-for Gitaly cluster.
+If you're running Gitaly Cluster (Praefect), follow the [zero-downtime process](zero_downtime.md)
+for Gitaly Cluster (Praefect).
 
 If you are using Amazon Machine Images (AMIs) on AWS, you can either upgrade the Gitaly nodes
 through the AMI process, or upgrade the package itself:
@@ -113,9 +113,9 @@ through the AMI process, or upgrade the package itself:
   you can upgrade through the AMI process. With ENI, you can keep the private DNS names
   through AMI instance changes, something that is crucial for Gitaly to work.
 - If you're **not** using ENI, you must upgrade Gitaly using the GitLab package.
-  This is because Gitaly Cluster tracks replicas of Git repositories by the server hostname,
+  This is because Gitaly Cluster (Praefect) tracks replicas of Git repositories by the server hostname,
   and a redeployment using AMIs issues the nodes with new hostnames. Even though
-  the storage is the same, Gitaly Cluster does not work when the hostnames change.
+  the storage is the same, Gitaly Cluster (Praefect) does not work when the hostnames change.
 
 The Praefect nodes, however, can be upgraded by using an AMI redeployment process:
 

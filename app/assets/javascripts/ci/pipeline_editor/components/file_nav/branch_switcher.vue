@@ -1,15 +1,13 @@
 <script>
 import { GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import { historyPushState } from '~/lib/utils/common_utils';
-import { setUrlParams } from '~/lib/utils/url_utility';
+import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   BRANCH_PAGINATION_LIMIT,
   BRANCH_SEARCH_DEBOUNCE,
   DEFAULT_FAILURE,
 } from '~/ci/pipeline_editor/constants';
-import updateCurrentBranchMutation from '~/ci/pipeline_editor/graphql/mutations/client/update_current_branch.mutation.graphql';
 import getAvailableBranchesQuery from '~/ci/pipeline_editor/graphql/queries/available_branches.query.graphql';
 import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
@@ -164,15 +162,8 @@ export default {
         .catch(this.showFetchError);
     },
     async changeBranch(newBranch) {
-      this.updateCurrentBranch(newBranch);
       const updatedPath = setUrlParams({ branch_name: newBranch });
-      historyPushState(updatedPath);
-
-      // refetching the content will cause a lot of components to re-render,
-      // including the text editor which uses the commit sha to register the CI schema
-      // so we need to make sure the currentBranch (and consequently, the commitSha) are updated first
-      await this.$nextTick();
-      this.$emit('refetchContent');
+      visitUrl(updatedPath);
     },
     selectBranch(newBranch) {
       // If there are unsaved changes, we want to show the user
@@ -193,12 +184,6 @@ export default {
       this.$emit('showError', {
         type: DEFAULT_FAILURE,
         reasons: [this.$options.i18n.fetchError],
-      });
-    },
-    updateCurrentBranch(currentBranch) {
-      this.$apollo.mutate({
-        mutation: updateCurrentBranchMutation,
-        variables: { currentBranch },
       });
     },
   },

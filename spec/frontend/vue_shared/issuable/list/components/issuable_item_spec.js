@@ -13,7 +13,7 @@ import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
-import { mockIssuable, mockRegularLabel } from '../mock_data';
+import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
 
 const createComponent = ({
   hasScopedLabelsFeature = false,
@@ -26,6 +26,7 @@ const createComponent = ({
   preventRedirect = false,
   fullPath = 'gitlab-org/issuable-project-path',
   hiddenMetadataKeys = [],
+  provide = {},
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -50,6 +51,7 @@ const createComponent = ({
         queries: { childItemLinkedItems: { loading: false } },
       },
     },
+    provide,
   });
 
 const MOCK_GITLAB_URL = TEST_HOST;
@@ -78,6 +80,7 @@ describe('IssuableItem', () => {
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
   const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
   const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
+  const findDraftStatusBadge = () => wrapper.findByTestId('issuable-draft-status-badge');
 
   describe('computed', () => {
     describe('author', () => {
@@ -948,6 +951,25 @@ describe('IssuableItem', () => {
           expect(visitUrl).toHaveBeenCalledWith(item.webUrl);
         });
       });
+    });
+  });
+
+  it('renders draft status for draft merge requests', () => {
+    // Note: this is gated by the `showMergeRequestStatusDraft` feature flag currently
+    wrapper = createComponent({
+      issuable: mockDraftIssuable,
+      provide: {
+        glFeatures: {
+          showMergeRequestStatusDraft: true,
+        },
+      },
+    });
+
+    expect(findDraftStatusBadge().exists()).toBe(true);
+    expect(findDraftStatusBadge().props()).toMatchObject({
+      state: 'opened',
+      isDraft: true,
+      issuableType: 'merge_request',
     });
   });
 });

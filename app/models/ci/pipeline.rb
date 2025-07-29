@@ -350,10 +350,9 @@ module Ci
         end
       end
 
-      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::PipelineArtifacts::CoverageReportWorker.perform_async(pipeline.id)
-          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
         end
       end
 
@@ -367,6 +366,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
+          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
           ::Ci::TestFailureHistoryService.new(pipeline).async.perform_if_needed # rubocop: disable CodeReuse/ServiceClass
         end
       end
@@ -1100,10 +1100,6 @@ module Ci
       object_hierarchy(project_condition: :same).descendants
     end
 
-    def self_and_project_descendants_complete?
-      self_and_project_descendants.all?(&:complete?)
-    end
-
     # Follow the parent-child relationships and return the top-level parent
     def root_ancestor
       return self unless child?
@@ -1296,11 +1292,7 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
-        complete? && builds.latest.any_with_exposed_artifacts?
-      else
-        complete? && builds.latest.with_exposed_artifacts.exists?
-      end
+      complete? && builds.latest.any_with_exposed_artifacts?
     end
 
     def has_erasable_artifacts?
@@ -1621,7 +1613,10 @@ module Ci
     end
 
     def protected_for_merge_request?
-      return false unless merge_request?
+      # we do not allow exposing protected variables to merge request pipelines that run against source branches and not merge request refs
+      # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196304#note_2611964312
+
+      return false unless merge_request? && merge_request_ref?
       return false unless project.protect_merge_request_pipelines?
 
       # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs

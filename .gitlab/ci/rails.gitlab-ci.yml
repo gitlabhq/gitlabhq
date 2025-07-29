@@ -692,9 +692,9 @@ rspec:schedule-weekly-report-failures:
   when: on_failure
   script:
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
-      (scripts/slack g_global_search_alerts "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+        (scripts/slack g_global_search_alerts "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else
-      echo "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}"
+        (echo "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}");
       fi
 
 rspec:flaky-tests-report:
@@ -750,29 +750,29 @@ rspec-predictive:pipeline-generate:
   script:
     - |
       scripts/generate_rspec_pipeline.rb \
-        -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" \
+        -t "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}" \
         -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" \
-        -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" \
+        -f "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}" \
         -j "${DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS}" \
-        -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+        -o "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml"
     - |
       scripts/generate_rspec_pipeline.rb \
-        -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" \
+        -t "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}" \
         -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" \
-        -f "${RSPEC_MATCHING_TESTS_EE_PATH}" \
+        -f "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}" \
         -j "${DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS}" \
-        -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml" \
+        -o "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml" \
         -p "ee/"
-    - echo "Content of ${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml:"
-    - cat "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+    - echo "Content of ${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml:"
+    - cat "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml"
     - echo "\n================================================\n"
-    - echo "Content of ${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml:"
-    - cat "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+    - echo "Content of ${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml:"
+    - cat "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
   artifacts:
     expire_in: 1 day
     paths:
-      - "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
-      - "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+      - "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml"
+      - "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
 
 rspec:predictive:trigger:
   extends:
@@ -797,7 +797,7 @@ rspec:predictive:trigger:
       yaml_variables: true
       pipeline_variables: true
     include:
-      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+      - artifact: "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml"
         job: rspec-predictive:pipeline-generate
 
 rspec:predictive:trigger single-db:
@@ -820,7 +820,7 @@ rspec-ee:predictive:trigger:
   extends: rspec:predictive:trigger
   trigger:
     include:
-      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+      - artifact: "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
         job: rspec-predictive:pipeline-generate
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive'
@@ -829,7 +829,7 @@ rspec-ee:predictive:trigger single-db:
   extends: rspec:predictive:trigger single-db
   trigger:
     include:
-      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+      - artifact: "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
         job: rspec-predictive:pipeline-generate
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db'
@@ -838,7 +838,7 @@ rspec-ee:predictive:trigger single-db-ci-connection:
   extends: rspec:predictive:trigger single-db-ci-connection
   trigger:
     include:
-      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+      - artifact: "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
         job: rspec-predictive:pipeline-generate
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
@@ -1355,14 +1355,14 @@ rspec fail-fast:
     - .rspec-base-pg16
     - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-base-pg16
   variables:
-    MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
+    MATCHING_TESTS_PATH: "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}"
 
 rspec-ee fail-fast:
   extends:
     - .rspec-ee-base-pg16
     - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg16
   variables:
-    MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
+    MATCHING_TESTS_PATH: "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}"
 
 fail-pipeline-early:
   extends:

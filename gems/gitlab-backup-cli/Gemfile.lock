@@ -18,7 +18,7 @@ PATH
       faraday (~> 2)
       google-cloud-storage_transfer (~> 1.2.0)
       google-protobuf (~> 3.25, >= 3.25.3)
-      googleauth (~> 1.8.1)
+      googleauth (~> 1.14)
       grpc (= 1.63.0)
       json (~> 2.7)
       jwt (~> 2.5)
@@ -88,6 +88,7 @@ GEM
     google-cloud-storage_transfer-v1 (0.8.0)
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
+    google-logging-utils (0.1.0)
     google-protobuf (3.25.4)
     google-protobuf (3.25.4-aarch64-linux)
     google-protobuf (3.25.4-arm64-darwin)
@@ -100,8 +101,10 @@ GEM
       grpc (~> 1.41)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
-    googleauth (1.8.1)
-      faraday (>= 0.17.3, < 3.a)
+    googleauth (1.14.0)
+      faraday (>= 1.0, < 3.a)
+      google-cloud-env (~> 2.2)
+      google-logging-utils (~> 0.1)
       jwt (>= 1.4, < 3.0)
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
@@ -253,6 +256,7 @@ CHECKSUMS
   google-cloud-errors (1.4.0) sha256=0b4e2e0f563db1708732ab4037421d9f26de5cbbbc04be710f2c9cf358e2de14
   google-cloud-storage_transfer (1.2.0) sha256=132901f50889e02a0d378e6117c6408cbfc4fdbd15c9d31fabec4f4189ef1658
   google-cloud-storage_transfer-v1 (0.8.0) sha256=9dbef80275db556e046bb24139ca6559affe641d1e38b2537b8caaf2f8896176
+  google-logging-utils (0.1.0) sha256=70950b1e49314273cf2e167adb47b62af7917a4691b580da7e9be67b9205fcd5
   google-protobuf (3.25.4) sha256=a1c594ca9d99c894e558f984d70731a8935ec639e75865f0181cab126a0aef0e
   google-protobuf (3.25.4-aarch64-linux) sha256=d155538358d03af4bcac908811d2c8b287573005f0549d8cf55354ad0c0928ff
   google-protobuf (3.25.4-arm64-darwin) sha256=6d39a99a7910fc6b03479c298f38be9497938f78c0f08c89d7542bc8205be8c7
@@ -261,7 +265,7 @@ CHECKSUMS
   google-protobuf (3.25.4-x86_64-linux) sha256=9e8e66fb5a00cf90f88f37b07e7da10ca9e176e28a3314fc80c4e7fdab120aeb
   googleapis-common-protos (1.6.0) sha256=d540114a75fd4b34fee936495d28ff7e331d546b7d7ac7898f3b4bb9f13a8d79
   googleapis-common-protos-types (1.15.0) sha256=57b1600c271fa3312096e55a3040d20d2c0f9a5d65d0fde1f16e5cd99bab156b
-  googleauth (1.8.1) sha256=814adadaaa1221dce72a67131e3ecbd6d23491a161ec84fb15fd353b87d8c9e7
+  googleauth (1.14.0) sha256=62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149
   grpc (1.63.0) sha256=5f4383c4ee2886e92c31b90422261b7527f26e3baa585d877e9804e715983686
   grpc (1.63.0-aarch64-linux) sha256=dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee
   grpc (1.63.0-arm64-darwin) sha256=91b93a354508a9d1772f095554f2e4c04358c2b32d7a670e3705b7fc4695c996

@@ -51,7 +51,7 @@ Prerequisites:
 
 - You must have a Sourcegraph instance [configured and running](https://sourcegraph.com/docs/admin)
   with your GitLab instance as an external service.
-- If your Sourcegraph instance uses a HTTPS connection to GitLab, you must
+- If your Sourcegraph instance uses an HTTPS connection to GitLab, you must
   [configure HTTPS](https://sourcegraph.com/docs/admin/http_https_configuration)
   for your Sourcegraph instance.
 

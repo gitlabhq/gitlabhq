@@ -184,7 +184,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
           expect(json_response.first).not_to have_key('created_by')
-          expect(json_response.first).not_to have_key('email_reset_offered_at')
         end
       end
 
@@ -197,7 +196,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
             expect(json_response.first).not_to have_key('created_by')
-            expect(json_response.first).not_to have_key('email_reset_offered_at')
           end
         end
 
@@ -207,7 +205,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
-            expect(json_response.first).to have_key('email_reset_offered_at')
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
           end
 
@@ -319,6 +316,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               get api(path, admin, admin_mode: true)
 
               expect(json_response).to have_key('note')
+              expect(json_response).to have_key('preferred_language')
               expect(json_response['note']).to eq(admin.note)
             end
           end
@@ -3271,6 +3269,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     it_behaves_like 'get user info', 'v3'
     it_behaves_like 'get user info', 'v4'
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      subject(:get_user) { get api("/user", oauth_access_token: oauth_token) }
+
+      it 'is successful' do
+        get_user
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /user/preferences" do

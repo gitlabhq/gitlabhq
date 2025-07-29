@@ -48908,7 +48908,7 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
-      admin_security_labels:
+      admin_security_attributes:
         type: boolean
       manage_security_policy_link:
         type: boolean

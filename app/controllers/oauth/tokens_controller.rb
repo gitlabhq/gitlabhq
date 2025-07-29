@@ -7,6 +7,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   alias_method :auth_user, :current_user
 
+  before_action :validate_pkce_for_dynamic_applications, only: [:create]
+
   def create
     if authorize_response.status == :ok
       track_internal_event(
@@ -23,6 +25,16 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   private
+
+  def validate_pkce_for_dynamic_applications
+    return unless server.client&.application&.dynamic?
+    return unless params[:code_verifier].blank? # rubocop:disable Rails/StrongParams -- Only accessing a single named param
+
+    render json: {
+      error: 'invalid_request',
+      error_description: 'PKCE code_verifier is required for dynamic OAuth applications'
+    }, status: :bad_request
+  end
 
   def validate_presence_of_client
     return if Doorkeeper.config.skip_client_authentication_for_password_grant.call

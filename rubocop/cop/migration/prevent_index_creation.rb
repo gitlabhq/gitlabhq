@@ -38,26 +38,32 @@ module RuboCop
           @forbidden_tables_used = false
         end
 
+        # @!method add_index?(node)
         def_node_matcher :add_index?, <<~PATTERN
           (send nil? :add_index ({sym|str} #forbidden_tables?) ...)
         PATTERN
 
+        # @!method add_concurrent_index?(node)
         def_node_matcher :add_concurrent_index?, <<~PATTERN
           (send nil? { :add_concurrent_index | :add_concurrent_partitioned_index } ({sym|str} #forbidden_tables?) ...)
         PATTERN
 
+        # @!method prepare_async_index?(node)
         def_node_matcher :prepare_async_index?, <<~PATTERN
           (send nil? { :prepare_async_index | :prepare_partitioned_async_index } ({sym|str} #forbidden_tables?) ...)
         PATTERN
 
+        # @!method forbidden_constant_defined?(node)
         def_node_matcher :forbidden_constant_defined?, <<~PATTERN
           (casgn nil? _ ({sym|str} #forbidden_tables?))
         PATTERN
 
+        # @!method add_concurrent_index_with_constant?(node)
         def_node_matcher :add_concurrent_index_with_constant?, <<~PATTERN
           (send nil? { :add_concurrent_index | :add_concurrent_partitioned_index } (const nil? _) ...)
         PATTERN
 
+        # @!method prepare_async_index_with_constant?(node)
         def_node_matcher :prepare_async_index_with_constant?, <<~PATTERN
           (send nil? { :prepare_async_index | :prepare_partitioned_async_index } (const nil? _) ...)
         PATTERN

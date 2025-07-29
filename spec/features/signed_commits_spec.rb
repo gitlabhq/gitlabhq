@@ -139,7 +139,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it "verified and the gpg user's profile doesn't exist anymore", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/395802' do
+    it "verified and the gpg user's profile doesn't exist anymore" do
       user_1_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)

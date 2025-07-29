@@ -180,7 +180,7 @@ class GroupsController < Groups::ApplicationController
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       respond_to do |format|
         format.html do
           redirect_to group_path(group), status: :found
@@ -199,11 +199,11 @@ class GroupsController < Groups::ApplicationController
     else
       respond_to do |format|
         format.html do
-          redirect_to edit_group_path(group), status: :found, alert: result[:message]
+          redirect_to edit_group_path(group), status: :found, alert: result.message
         end
 
         format.json do
-          render json: { message: result[:message] }, status: :unprocessable_entity
+          render json: { message: result.message }, status: :unprocessable_entity
         end
       end
     end
@@ -214,11 +214,11 @@ class GroupsController < Groups::ApplicationController
 
     result = ::Groups::RestoreService.new(group, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       redirect_to edit_group_path(group),
         notice: format(_("Group '%{group_name}' has been successfully restored."), group_name: group.full_name)
     else
-      redirect_to edit_group_path(group), alert: result[:message]
+      redirect_to(edit_group_path(group), alert: result.message)
     end
   end
 

@@ -2,6 +2,7 @@ package objectstore
 
 import (
 	"context"
+	"os"
 	"sync"
 	"time"
 
@@ -39,6 +40,7 @@ var (
 	// hours. To be safe, refresh AWS clients every 10 minutes.
 	clientExpiration = 10 * time.Minute
 	clientCache      = &s3ClientCache{clients: make(map[config.S3Config]*s3Client)}
+	awsDebugEnabled  = os.Getenv("AWS_DEBUG") == "1"
 )
 
 func (c *s3Client) isExpired() bool {
@@ -71,6 +73,10 @@ func setupS3Client(s3Credentials config.S3Credentials, s3Config config.S3Config)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // lint:allow context.Background
 	defer cancel()
+
+	if awsDebugEnabled {
+		options = append(options, awsConfig.WithClientLogMode(aws.LogRetries|aws.LogRequest|aws.LogResponse))
+	}
 
 	cfg, err := awsConfig.LoadDefaultConfig(ctx, options...)
 	if err != nil {

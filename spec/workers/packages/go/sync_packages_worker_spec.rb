@@ -27,7 +27,7 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category
 
     it "returns a package for example.com/project#{path.empty? ? '' : '/' + path}@#{version}" do
       expect { subject }
-        .to change { project.packages.count }.by(exists ? 0 : 1)
+        .to change { ::Packages::Go::Package.for_projects(project).count }.by(exists ? 0 : 1)
         .and change { Packages::PackageFile.count }.by(exists ? 0 : 2)
 
       mod = create :go_module, project: project, path: path
@@ -60,7 +60,7 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category
 
       context 'marked as pending_destruction' do
         before do
-          project.packages.each(&:pending_destruction!)
+          ::Packages::Go::Package.for_projects(project).each(&:pending_destruction!)
         end
 
         it_behaves_like 'it creates a package', '', 'v1.0.1'
@@ -99,7 +99,7 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category
 
         it 'creates a package' do
           expect { subject }
-            .to change { project.packages.count }.by(1)
+            .to change { ::Packages::Go::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(2)
 
           mod = create :go_module, project: project, path: path

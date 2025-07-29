@@ -113,18 +113,6 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       end
     end
 
-    context 'when rapid_diffs FF is disabled' do
-      before do
-        stub_feature_flags(rapid_diffs: false)
-      end
-
-      it 'returns 404' do
-        go
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     include_examples 'with diffs_blobs param'
   end
 end

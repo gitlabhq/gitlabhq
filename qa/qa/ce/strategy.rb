@@ -55,7 +55,9 @@ module QA
           Page::Main::Login.perform do |login|
             login.sign_in_using_credentials(user: admin_user)
           rescue Runtime::User::ExpiredPasswordError
-            login.set_up_new_password(user: admin_user)
+            Support::Retrier.retry_until(retry_on_exception: true, message: "set_up_new_password failed") do
+              login.set_up_new_password(user: admin_user)
+            end
           end
 
           Page::Main::Menu.perform(&:sign_out_if_signed_in)

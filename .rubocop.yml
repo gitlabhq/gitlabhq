@@ -1415,3 +1415,11 @@ RSpec/Dialect:
   # This cop rule produces too many false positives.
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173889#note_2232088196
   Enabled: false
+
+Gitlab/UseParamKeyForConvertingClassName:
+  Enabled: true
+
+Gitlab/NoHelpersInPresenters:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}app/presenters/**/*.rb'

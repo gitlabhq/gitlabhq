@@ -438,7 +438,7 @@ The [minimum wait time between pull refreshes](../user/project/repository/mirror
 defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
 This setting applies in the context of pull refreshes invoked by using the [projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
-or when forcing an update by selecting **Update now** ({{< icon name="retry" >}}) in **Settings > Repository > Mirroring repositories**.
+or when forcing an update by selecting **Update now** ({{< icon name="retry" >}}) in **Settings** > **Repository** > **Mirroring repositories**.
 This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
 To change this limit for a GitLab Self-Managed instance, run the following in the
@@ -756,6 +756,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 {{< history >}}
 
 - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+- `ci_max_artifact_size_jacoco` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159696) in GitLab 17.3
 - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
 {{< /history >}}
@@ -787,6 +788,7 @@ setting is used:
 | `ci_max_artifact_size_dast`                 | 0             |
 | `ci_max_artifact_size_dependency_scanning`  | 0             |
 | `ci_max_artifact_size_dotenv`               | 0             |
+| `ci_max_artifact_size_jacoco`               | 0             |
 | `ci_max_artifact_size_junit`                | 0             |
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |

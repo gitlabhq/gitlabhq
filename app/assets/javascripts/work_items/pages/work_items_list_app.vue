@@ -171,11 +171,6 @@ export default {
       required: false,
       default: true,
     },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     eeSearchTokens: {
       type: Array,
       required: false,
@@ -1010,7 +1005,6 @@ export default {
         :active-item="activeItem"
         :open="isItemSelected"
         :issuable-type="activeWorkItemType"
-        :new-comment-template-paths="newCommentTemplatePaths"
         click-outside-exclude-selector=".issuable-list"
         @close="activeItem = null"
         @addChild="refetchItems"

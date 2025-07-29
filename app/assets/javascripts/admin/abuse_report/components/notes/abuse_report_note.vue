@@ -25,10 +25,6 @@ export default {
     EditedAt,
   },
   props: {
-    abuseReportId: {
-      type: String,
-      required: true,
-    },
     note: {
       type: Object,
       required: true,
@@ -97,7 +93,6 @@ export default {
     <div class="timeline-content !gl-pb-4">
       <abuse-report-edit-note
         v-if="isEditing"
-        :abuse-report-id="abuseReportId"
         :note="updatedNote"
         @cancelEditing="cancelEditing"
         @updateNote="updateNote"

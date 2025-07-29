@@ -28,10 +28,12 @@ module RuboCop
 
         MESSAGE = 'Do not use `be_success` (wraps deprecated `success?`); use `be_successful` instead.'
 
+        # @!method expect_to_be_success?(node)
         def_node_search :expect_to_be_success?, <<~PATTERN
           (send (send nil? :expect (send nil? ...)) {:to :not_to :to_not} (send nil? :be_success))
         PATTERN
 
+        # @!method is_expected_to_be_success?(node)
         def_node_search :is_expected_to_be_success?, <<~PATTERN
           (send (send nil? :is_expected) {:to :not_to :to_not} (send nil? :be_success))
         PATTERN

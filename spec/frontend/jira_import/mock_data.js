@@ -10,8 +10,6 @@ export const illustration = 'illustration.svg';
 
 export const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
 
-export const projectId = '5';
-
 export const projectPath = 'gitlab-org/gitlab-test';
 
 export const queryDetails = {

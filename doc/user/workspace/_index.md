@@ -27,7 +27,7 @@ These environments ensure that different projects don't interfere with each othe
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
 
-A Workspace can exist for a maximum of approximately one calendar year, `8760` hours. After this, it is automatically terminated.
+A workspace can exist for a maximum of approximately one calendar year, `8760` hours. After this, it is automatically terminated.
 
 For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
 
@@ -176,6 +176,13 @@ You can define a devfile in the following locations, relative to your project's 
 - /.devfile/{devfile_name}.yaml
 - /.devfile/{devfile_name}.yml
 ```
+
+{{< alert type="note" >}}
+
+Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
+For example, `.devfile/subfolder/devfile.yaml` is not recognized.
+
+{{< /alert >}}
 
 ### Validation rules
 

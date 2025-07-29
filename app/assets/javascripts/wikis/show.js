@@ -3,6 +3,8 @@ import VueApollo from 'vue-apollo';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
+import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
@@ -46,10 +48,23 @@ const mountWikiContentApp = () => {
     pagePersisted,
     templates,
     formatOptions,
+    containerId,
+    containerType,
   } = el.dataset;
 
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+
+  const pageInfoData = convertObjectPropsToCamelCase(JSON.parse(pageInfo));
+  const queryVariables = {
+    slug: pageInfoData.slug,
+  };
+
+  if (containerType === 'project') {
+    queryVariables.projectId = convertToGraphQLId(TYPENAME_PROJECT, containerId);
+  } else if (containerType === 'group') {
+    queryVariables.namespaceId = convertToGraphQLId(TYPENAME_GROUP, containerId);
+  }
 
   return new Vue({
     el,
@@ -59,7 +74,8 @@ const mountWikiContentApp = () => {
       pageHeading,
       contentApi,
       showEditButton: parseBoolean(showEditButton),
-      pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+      pageInfo: pageInfoData,
+      queryVariables,
       isPageTemplate: parseBoolean(isPageTemplate),
       isPageHistorical: parseBoolean(isPageHistorical),
       editButtonUrl,

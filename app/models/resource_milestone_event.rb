@@ -40,11 +40,7 @@ class ResourceMilestoneEvent < ResourceTimeboxEvent
   def ensure_namespace_id
     # Due to how these records are created. I think it's better to always assign the right namespace before validation
     # instead of only doing it conditionally. These records never get updated.
-    self.namespace_id = if merge_request.present?
-                          merge_request.project&.project_namespace_id
-                        elsif issue.present?
-                          issue.namespace_id
-                        end
+    self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(issuable, allow_nil: true).namespace_id
   end
 end
 

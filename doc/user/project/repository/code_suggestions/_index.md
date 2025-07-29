@@ -11,9 +11,9 @@ title: Code Suggestions
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501). For code generation, Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4).
-- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
-- LLM for Amazon Q: Amazon Q Developer
+- LLMs for code completion: Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501).
+- LLMs for code generation: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4).
+- LLM For Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -30,6 +30,7 @@ title: Code Suggestions
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
+- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
 
 {{< /history >}}
@@ -52,7 +53,8 @@ To use Code Suggestions, you need:
 
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results, [upgrade to GitLab 18.0 or later](../../../../update/_index.md#upgrade-gitlab). Earlier versions might continue to work, however the experience might be degraded.
+GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
+[upgrade to GitLab 18.0 or later](../../../../update/_index.md). Earlier versions might continue to work, however the experience might be degraded.
 
 {{< /alert >}}
 
@@ -134,7 +136,7 @@ To get the best results from code generation:
   This space tells the code generator that you have completed your instructions.
 - In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
   feature flags are enabled, open related files in other tabs to expand the
-  [context that Code Suggestions is aware of](#use-files-open-in-tabs-as-context).
+  [context that Code Suggestions is aware of](../../../gitlab_duo/context.md#code-suggestions).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -149,134 +151,6 @@ AI is non-deterministic, so you may not get the same suggestion every time with 
 To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
-
-## The context Code Suggestions is aware of
-
-Code Suggestions is aware of the context you're working in.
-
-| Context | Description | Default status |
-|---------|-------------|----------------|
-| Current file content <sup>1</sup> | The file open in your IDE, including the content before and after the cursor in that file. | Always included. |
-| Filename and extension | The name and extension of the current file. | Always included. |
-| [Open tab files](#using-open-files-as-context) | Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. | Optional, but on by default. |
-| [Imported files](#using-imported-files-as-context) | Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. | Optional and off by default. |
-
-Footnotes:
-
-1. Code completion is aware of all [supported languages](supported_extensions.md#supported-languages-by-ide).
-   Code generation is aware of files in these languages only:
-   Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
-
-For more information, see [epic 57](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
-
-### Enhanced suggestions
-
-For the following languages, Code Suggestions uses [files open in tabs as context](_index.md#use-files-open-in-tabs-as-context)
-and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware suggestions:
-C, C#, C++, Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, PHP, and TypeScript.
-
-### Using open files as context
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
-- [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
-- Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2.
-- Feature flags `advanced_context_resolver` and `code_suggestions_context` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161538) in GitLab 17.4.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-Prerequisites:
-
-- JetBrains extension version 3.6.5 or later.
-- Neovim extension version 1.1.0 or later.
-- Visual Studio extension version 0.51.0 or later.
-- VS Code extension version 6.2.2 or later.
-
-If tab as context is on, Code Suggestions uses the files open in tabs in your IDE as context. These files give GitLab Duo more information about the standards and practices in your code project.
-
-#### Turn on open files as context
-
-By default, Code Suggestions uses the open files in your IDE for context when making suggestions.
-
-Prerequisites:
-
-- You must have GitLab 17.2 or later. Earlier GitLab versions that support Code Suggestions
-  cannot weigh the content of open tabs more heavily than other files in your project.
-- GitLab Duo Code Suggestions must be enabled for your project.
-- Use a [supported code language](#the-context-code-suggestions-is-aware-of).
-- For Visual Studio Code, you must have GitLab Workflow extension version 4.14.2 or later.
-
-To confirm that files open in tabs are being used as context:
-
-{{< tabs >}}
-
-{{< tab title="Visual Studio Code" >}}
-
-1. On the top bar, go to **Code > Settings > Extensions**.
-1. Search for GitLab Workflow in the list, and select the gear icon.
-1. Select **Extension Settings**.
-1. In your **User** settings, under **GitLab › Duo Code Suggestions: Open Tabs Context**,
-   select **Use the contents of open tabs as context**.
-
-{{< /tab >}}
-
-{{< tab title="JetBrains IDEs" >}}
-
-1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
-1. Expand **GitLab Language Server**.
-1. Under **Code Completion**, select **Send open tabs as context**.
-1. Select **OK** or **Save**.
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### Use files open in tabs as context
-
-After you have confirmed that files open in tabs are being used as context,
-open the files you want to provide for context:
-
-- Code Suggestions uses the most recently opened or changed files.
-- If you do not want a file used as additional context, close that file.
-
-When you start working in a file, GitLab Duo uses your open files
-as extra context, within [truncation limits](#truncation-of-file-content).
-
-To adjust your code generation results, add code comments to your file
-that explain what you want to build:
-
-- Code generation treats your code comments like chat.
-- Your code comments update the `user_instruction`, and then improve the next results you receive.
-
-### Using imported files as context
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_include_context_imports`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 
 ## Truncation of file content
 

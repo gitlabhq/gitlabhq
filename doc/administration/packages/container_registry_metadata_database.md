@@ -80,14 +80,14 @@ Prerequisites:
 
 Follow the instructions that match your situation:
 
-- [New installation](#new-installations) or enabling the container registry for the first time.
+- [New installations](#new-installations) or enabling the container registry for the first time.
 - Import existing container image metadata to the metadata database:
   - [One-step import](#one-step-import). Only recommended for relatively small registries or no requirement to avoid downtime.
   - [Three-step import](#three-step-import). Recommended for larger container registries.
 
 ### Before you start
 
-- All database connection values are placeholders. You must create, verify your ability to
+- All database connection values are placeholders. You must [create](../postgresql/external.md#container-registry-metadata-database), verify your ability to
   connect to, and manage a new PostgreSQL database for the registry before completing any step.
   - See the full [database configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#database).
   - See [epic 17005](https://gitlab.com/groups/gitlab-org/-/epics/17005) for progress towards automatic registry database provisioning and management.
@@ -105,6 +105,10 @@ Follow the instructions that match your situation:
   if possible.
 
 ### New installations
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 To enable the database:
 
@@ -170,6 +174,10 @@ and layers that remain for longer than 24 hours.
 Choose the one or three step method according to your registry installation.
 
 #### One-step import
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 {{< alert type="warning" >}}
 
@@ -262,6 +270,10 @@ and your registry contains a relatively small amount of data.
 You can now use the metadata database for all operations!
 
 #### Three-step import
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 Follow this guide to import your existing container registry metadata.
 This procedure is recommended for larger sets of metadata or if you are

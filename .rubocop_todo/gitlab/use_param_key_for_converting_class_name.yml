@@ -1,0 +1,4 @@
+---
+# Cop supports --autocorrect.
+Gitlab/UseParamKeyForConvertingClassName:
+  Details: grace period

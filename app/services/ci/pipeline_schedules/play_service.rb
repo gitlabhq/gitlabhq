@@ -8,7 +8,10 @@ module Ci
       def execute(schedule)
         check_access!(schedule)
 
-        return error("Failed to schedule pipeline.", :bad_request) unless project.persisted?
+        if !project.persisted? || project.self_or_ancestors_archived?
+          return error("Failed to schedule pipeline.",
+            :bad_request)
+        end
 
         # Ensure `next_run_at` is set properly before creating a pipeline.
         # Otherwise, multiple pipelines could be created in a short interval.

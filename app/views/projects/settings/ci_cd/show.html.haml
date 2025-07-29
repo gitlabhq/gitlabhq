@@ -32,7 +32,7 @@
 - if can?(current_user, :admin_protected_environments, @project)
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-- if can?(current_user, :admin_runner, @project)
+- if can?(current_user, :admin_runners, @project)
   - expand_runners = expanded || params[:expand_runners]
   = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
     id: 'js-runners-settings',

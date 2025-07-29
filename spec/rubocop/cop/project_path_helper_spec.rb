@@ -10,14 +10,14 @@ RSpec.describe RuboCop::Cop::ProjectPathHelper do
     let(:correct_source) { 'edit_project_issue_path(@issue.project, @issue)' }
 
     it 'registers an offense and corrects', :aggregate_failures do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         #{source}
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use short project path helpers without explicitly passing the namespace[...]
-      CODE
+      RUBY
 
-      expect_correction(<<~CODE)
+      expect_correction(<<~RUBY)
         #{correct_source}
-      CODE
+      RUBY
     end
   end
 

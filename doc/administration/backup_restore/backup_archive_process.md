@@ -65,10 +65,10 @@ sequenceDiagram
     gitaly-backup->>-Repositories sub-task: Success/failure
 ```
 
-Gitaly Cluster configured storages are backed up in the same way as standalone Gitaly instances.
+Gitaly Cluster (Praefect) configured storages are backed up in the same way as standalone Gitaly instances.
 
 - When Gitaly Cluster receives the RPC calls from `gitaly-backup`, it rebuilds its own database.
-  - There is no need to backup the Gitaly Cluster database separately.
+  - There is no need to backup the Gitaly Cluster (Praefect) database separately.
 - Each repository is backed up only once, regardless of the replication factor, because backups operate through RPCs.
 
 ### Server-side backups

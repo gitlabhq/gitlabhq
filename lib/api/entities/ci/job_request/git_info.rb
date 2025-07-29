@@ -10,6 +10,7 @@ module API
           expose :refspecs
           expose :git_depth, as: :depth
           expose :repo_object_format
+          expose :protected
         end
       end
     end

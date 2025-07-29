@@ -5,7 +5,6 @@ module RapidDiffs
     extend ActiveSupport::Concern
 
     def diff_files_metadata
-      return render_404 unless rapid_diffs_enabled?
       return render_404 unless diffs_resource.present?
 
       render json: {
@@ -14,7 +13,6 @@ module RapidDiffs
     end
 
     def diffs_stats
-      return render_404 unless rapid_diffs_enabled?
       return render_404 unless diffs_resource.present?
 
       render json: RapidDiffs::DiffsStatsEntity.represent(
@@ -27,7 +25,6 @@ module RapidDiffs
     end
 
     def diff_file
-      return render_404 unless rapid_diffs_enabled?
       return render_404 unless diffs_resource.present?
 
       old_path = diff_file_params[:old_path]
@@ -51,10 +48,6 @@ module RapidDiffs
     end
 
     private
-
-    def rapid_diffs_enabled?
-      ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
-    end
 
     def diffs_resource(options = {})
       raise NotImplementedError

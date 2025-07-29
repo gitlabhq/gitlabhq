@@ -95,17 +95,17 @@ To enable SAST:
 
 Using a template:
 
-   ```yaml
-   include:
-     - template: Jobs/SAST.gitlab-ci.yml
-   ```
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+```
 
 Or using a CI component:
 
-   ```yaml
-   include:
-     - component: gitlab.com/components/sast/sast@main
-   ```
+```yaml
+include:
+  - component: gitlab.com/components/sast/sast@main
+```
 
 At this point, SAST is enabled in your pipeline.
 If supported source code is present, the appropriate analyzers and default rules automatically scan for vulnerabilities when a pipeline runs.
@@ -124,6 +124,8 @@ After completing these steps, you can:
 - Review [optimization tips](#optimization).
 - Plan a [rollout to more projects](#roll-out).
 
+For details on other configuration methods, see [Configuration](#configuration).
+
 ## Understanding the results
 
 You can review vulnerabilities in a pipeline:
@@ -132,7 +134,7 @@ You can review vulnerabilities in a pipeline:
 1. On the left sidebar, select **Build > Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
-1. Select a vulnerability to view its details, including:
+1. Either download results, or select a vulnerability to view its details (Ultimate only), including:
    - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
    - Status: Indicates whether the vulnerability has been triaged or resolved.
    - Severity: Categorized into six levels based on impact.
@@ -142,7 +144,11 @@ You can review vulnerabilities in a pipeline:
    - Scanner: Identifies which analyzer detected the vulnerability.
    - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers and the IDs of the rules that detected it.
 
-You can also download the security scan results:
+SAST vulnerabilities are named according to the primary Common Weakness Enumeration (CWE) identifier for the discovered vulnerability.
+Read the description of each vulnerability finding to learn more about the specific issue that the scanner has detected.
+For more information on SAST coverage, see [SAST rules](rules.md).
+
+In Ultimate, you can also download the security scan results:
 
 - In the pipeline's **Security** tab, select **Download results**.
 
@@ -159,6 +165,50 @@ Additional ways to see SAST results:
 - [Merge request widget](#merge-request-widget): Shows newly introduced or resolved findings.
 - [Merge request changes view](#merge-request-changes-view): Shows inline annotations for changed lines.
 - [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
+
+A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
+for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
+job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
+the analyzer outputs an exit code.
+
+### Merge request widget
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+SAST results display in the merge request widget area if a report from the target branch is available for comparison.
+The merge request widget shows:
+
+- new SAST findings that are introduced by the MR.
+- existing findings that are resolved by the MR.
+
+The results are compared using [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking) whenever it is available.
+
+![Security Merge request widget](img/sast_mr_widget_v16_7.png)
+
+### Merge request changes view
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags/_index.md) named `sast_reports_in_inline_diff`. Disabled by default.
+- Enabled by default in GitLab 16.8.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
+
+{{< /history >}}
+
+SAST results display in the merge request **Changes** view. Lines containing SAST
+issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
+
+![SAST Inline Indicator](img/sast_inline_indicator_v16_7.png)
 
 ## Optimization
 
@@ -337,13 +387,6 @@ To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from r
 
 {{< /alert >}}
 
-## Vulnerability details
-
-SAST vulnerabilities are named according to the primary Common Weakness Enumeration (CWE) identifier for the discovered vulnerability.
-Read the description of each vulnerability finding to learn more about the specific issue that the scanner has detected.
-
-For more information on SAST coverage, see [SAST rules](rules.md).
-
 ## Download a SAST report
 
 Each SAST analyzer outputs a JSON report as a job artifact.
@@ -354,54 +397,6 @@ For more information, see:
 
 - [SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Example SAST report file](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/qa/expect/js/default/gl-sast-report.json)
-
-## View SAST results
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-In Ultimate, the [SAST report file](#download-a-sast-report) is processed by GitLab and the details are shown in the UI:
-
-- [Merge request widget](#merge-request-widget)
-- [Merge request changes view](#merge-request-changes-view)
-- [Vulnerability report](../vulnerability_report/_index.md)
-- [Pipeline security report](../detect/security_scanning_results.md)
-
-A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
-for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
-job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
-the analyzer outputs an exit code.
-
-### Merge request widget
-
-SAST results display in the merge request widget area if a report from the target branch is available for comparison.
-The merge request widget shows:
-
-- new SAST findings that are introduced by the MR.
-- existing findings that are resolved by the MR.
-
-The results are compared using [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking) whenever it is available.
-
-![Security Merge request widget](img/sast_mr_widget_v16_7.png)
-
-### Merge request changes view
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags/_index.md) named `sast_reports_in_inline_diff`. Disabled by default.
-- Enabled by default in GitLab 16.8.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
-
-{{< /history >}}
-
-SAST results display in the merge request **Changes** view. Lines containing SAST
-issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
-
-![SAST Inline Indicator](img/sast_inline_indicator_v16_7.png)
 
 ## Configuration
 

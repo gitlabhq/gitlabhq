@@ -147,7 +147,8 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
-    enable :create_instance_runner
+    enable :create_instance_runners
+    enable :admin_runners
     enable :read_web_hook
     enable :admin_web_hook
 
@@ -161,6 +162,8 @@ class GlobalPolicy < BasePolicy
     enable :read_admin_metrics_dashboard
     enable :read_admin_system_information
     enable :read_admin_users
+    enable :read_admin_groups
+    enable :read_admin_projects
     enable :read_application_statistics
   end
 

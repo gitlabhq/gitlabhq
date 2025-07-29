@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillResourceLabelEventsNamespaceIdAndCleanInvalid
+description: Backfill sharding key based on issue, merge_request or epic namespace. Also remove `issue_id` from records
+  that have both `issue_id` and `epic_id` set.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197676
+milestone: '18.3'
+queued_migration_version: 20250714214345
+finalized_by: # version of the migration that finalized this BBM

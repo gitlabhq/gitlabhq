@@ -100,7 +100,7 @@ If there is more than one **secondary** site, the remaining sites can be brought
 When a secondary site is added, if it contains data that would otherwise be synced from the primary, then Geo avoids re-transferring the data.
 
 - Git repositories are transferred by `git fetch`, which only transfers missing refs.
-- Geo's container registry sync code compares tags and only pulls missing tags.
+- Geo's container registry sync code compares tuples of tags and digests, and only pulls missing ones.
 - [Blobs](#skipping-re-transfer-of-blobs) are skipped if they exist on the first sync.
 
 Use-cases:

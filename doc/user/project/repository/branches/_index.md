@@ -275,6 +275,71 @@ To compare branches in a repository:
 1. Select **Compare** to show the list of commits, and changed files.
 1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** ({{< icon name="substitute" >}}).
 
+### Download branch comparisons
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217206) in GitLab 18.3.
+
+{{< /history >}}
+
+You can download the comparison between branches as a diff or patch file for use outside of GitLab.
+
+#### As a diff
+
+To download the branch comparison as a diff, add `format=diff` to the compare URL:
+
+- If the URL has no query parameters, append `?format=diff`:
+
+  ```plaintext
+  https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?format=diff
+  ```
+
+- If the URL already has query parameters, append `&format=diff`:
+
+  ```plaintext
+  https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?from_project_id=2&format=diff
+  ```
+
+To download and apply the diff:
+
+```shell
+curl "https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?format=diff" | git apply
+```
+
+#### As a patch file
+
+To download the branch comparison as a patch file, add `format=patch` to the compare URL:
+
+- If the URL has no query parameters, append `?format=patch`:
+
+  ```plaintext
+  https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?format=patch
+  ```
+
+- If the URL already has query parameters, append `&format=patch`:
+
+  ```plaintext
+  https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?from_project_id=2&format=patch
+  ```
+
+To download and apply the patch using [`git am`](https://git-scm.com/docs/git-am):
+
+```shell
+# Download and preview the patch
+curl "https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?format=patch" > changes.patch
+git apply --check changes.patch
+
+# Apply the patch
+git am changes.patch
+```
+
+You can also download and apply the patch in a single command:
+
+```shell
+curl "https://gitlab.example.com/my-group/my-project/-/compare/main...feature-branch?format=patch" | git am
+```
+
 ## Delete merged branches
 
 Merged branches can be deleted in bulk if they meet all of these criteria:
@@ -381,6 +446,9 @@ To do this:
 ## Related topics
 
 - [Protected branches](protected.md)
+- [Branch rules](branch_rules.md)
+- [Compare changes in merge requests](../../merge_requests/changes.md)
+- [Download merge request changes](../../merge_requests/changes.md#download-merge-request-changes)
 - [Branches API](../../../../api/branches.md)
 - [Protected Branches API](../../../../api/protected_branches.md)
 - [Getting started with Git](../../../../topics/git/_index.md)

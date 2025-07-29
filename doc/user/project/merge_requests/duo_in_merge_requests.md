@@ -215,6 +215,22 @@ instructions:
       3. Use shared examples to reduce duplication
 ```
 
+### Customized code review comments
+
+When GitLab Duo Code Review generates code review comments based on your custom instructions, they follow this format:
+
+```plaintext
+According to custom instructions in '[instruction_name]': [specific feedback]
+```
+
+For example:
+
+```plaintext
+According to custom instructions in 'Ruby Style Guide': This method should have proper documentation explaining its purpose and parameters.
+```
+
+The `instruction_name` value corresponds to the `name` property from your `.gitlab/duo/mr-review-instructions.yaml` file. Standard GitLab Duo comments don't use this citation format.
+
 ## Summarize a code review
 
 {{< details >}}

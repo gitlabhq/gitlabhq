@@ -1,0 +1,10 @@
+---
+name: validity_refresh
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555411
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198161
+rollout_issue_url:
+milestone: '18.3'
+group: group::secret detection
+type: wip
+default_enabled: false

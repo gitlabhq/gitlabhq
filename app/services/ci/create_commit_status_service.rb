@@ -6,6 +6,8 @@ module Ci
     include ::Gitlab::Utils::StrongMemoize
     include ::Services::ReturnServiceResponses
 
+    InvalidState = Class.new(StandardError)
+
     delegate :sha, to: :commit
 
     # Default number of pipelines to return
@@ -175,7 +177,7 @@ module Ci
       when 'skipped'
         job.skip!
       else
-        raise('invalid state')
+        raise InvalidState, 'invalid state'
       end
     end
 

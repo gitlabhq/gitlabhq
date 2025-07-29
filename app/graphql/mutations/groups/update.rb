@@ -8,7 +8,7 @@ module Mutations
       include ::Gitlab::Allowable
       include Mutations::ResolvesGroup
 
-      authorize :admin_group_or_admin_runner
+      authorize :admin_group_or_admin_runners
 
       field :group, Types::GroupType,
         null: true,
@@ -55,7 +55,7 @@ module Mutations
       def authorized_args(group, args)
         return args if can?(current_user, :admin_group, group)
 
-        if can?(current_user, :admin_runner, group) && args.keys == [:shared_runners_setting]
+        if can?(current_user, :admin_runners, group) && args.keys == [:shared_runners_setting]
           return { shared_runners_setting: args[:shared_runners_setting] }
         end
 

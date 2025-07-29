@@ -22,7 +22,7 @@ You need to enable Kroki integration from Settings under **Admin** area.
 To do that, sign in with an administrator account and follow these steps:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Go to **Settings > General**.
+1. Go to **Settings** > **General**.
 1. Expand the **Kroki** section.
 1. Select **Enable Kroki** checkbox.
 1. Enter the **Kroki URL**, for example, `https://kroki.io`.

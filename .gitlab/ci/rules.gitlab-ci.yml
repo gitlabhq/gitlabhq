@@ -45,8 +45,9 @@
       || $FORCE_GITLAB_CI
       '
 
+# weekly pipeline is opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly"'
 
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.
@@ -151,9 +152,6 @@
 
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
-
-.if-merge-request-not-labels-pipeline-run-e2e-omnibus-once: &if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS !~ /pipeline:run-e2e-omnibus-once/)'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
@@ -1047,7 +1045,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
-      when: always
+      when: never # Disable job due to preventing critical MRs from being merged
 
 ################
 # Shared rules #
@@ -1230,8 +1228,9 @@
     - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *assets-compilation-patterns
-    - <<: *if-tag
+    # push assets for stable branches (canonical & security)
     - <<: *if-sync-changes-on-stable-branches
+      changes: *assets-compilation-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - ".gitlab/ci/caching.gitlab-ci.yml"
@@ -1242,7 +1241,6 @@
     - if: '$ENABLE_CACHE_ASSETS == "true"'
       when: manual
       allow_failure: true
-    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 .caching:rules:packages-cleanup:
   rules:
@@ -2843,7 +2841,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
-.reports:rules:gemnasium-dependency_scanning:
+.reports:rules:dependency_scanning:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -2853,17 +2851,6 @@
     - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
-
-.reports:rules:gemnasium-python-dependency_scanning:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
-      when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/504908#note_2218591981 is resolved
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
-      changes: *python-patterns
 
 .reports:rules:test-dast:
   rules:
@@ -3277,6 +3264,8 @@
       when: never
     - !reference [".strict-ee-only-rules", rules]
     - *if-merge-request-labels-as-if-foss
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss-once/'
+      when: never
     - !reference [".prevent-tier-2-and-below", "rules"]
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never

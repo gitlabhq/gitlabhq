@@ -47,7 +47,7 @@ module Issuable
       # Regular user notes don't need this check because:
       # - If user can access the work item, they have `read_note` ability
       # - Internal notes are separately filtered in NotesFinder.redact_internal
-      notes = notes.select { |n| !n.system? || n.readable_by?(current_user) }
+      notes = notes.select { |n| !n.system? || n.system_note_visible_for?(current_user) }
 
       Discussion.build_collection(notes, issuable)
     end

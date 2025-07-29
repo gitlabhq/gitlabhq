@@ -1,37 +1,52 @@
 # frozen_string_literal: true
 
-module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level module
-  class RestoreService < Groups::BaseService
-    def execute
-      return error(_('You are not authorized to perform this action')) unless can?(current_user, :remove_group, group)
-      return error(_('Group has not been marked for deletion')) unless group.self_deletion_scheduled?
-      return error(_('Group deletion is in progress')) if group.self_deletion_in_progress?
+module Groups
+  class RestoreService < ::Namespaces::RestoreBaseService
+    private
 
-      result = remove_deletion_schedule
+    RenamingFailedError = Class.new(StandardError)
+    DeletionScheduleDestroyingFailedError = Class.new(StandardError)
 
-      group.reset
+    def remove_permission
+      :remove_group
+    end
 
-      log_event if result[:status] == :success
+    def resource_name
+      'group'
+    end
+
+    def execute_restore
+      result = ServiceResponse.success
+
+      resource.transaction do
+        rename_resource!
+        destroy_deletion_schedule!
+      rescue RenamingFailedError
+        result = ServiceResponse.error(message: resource.errors.full_messages.to_sentence)
+        raise ActiveRecord::Rollback
+      rescue DeletionScheduleDestroyingFailedError
+        result = ServiceResponse.error(message: _('Could not restore the group'))
+        raise ActiveRecord::Rollback
+      end
 
       result
     end
 
-    private
+    def rename_resource!
+      successful = ::Groups::UpdateService.new(
+        resource,
+        current_user,
+        { name: updated_value(resource.name), path: updated_value(resource.path) }
+      ).execute
+      return if successful
 
-    def remove_deletion_schedule
-      deletion_schedule = group.deletion_schedule
-
-      if deletion_schedule.destroy
-        success
-      else
-        error(_('Could not restore the group'))
-      end
+      raise RenamingFailedError
     end
 
-    def log_event
-      log_info("User #{current_user.id} restored group #{group.full_path}")
+    def destroy_deletion_schedule!
+      return if resource.deletion_schedule.destroy
+
+      raise DeletionScheduleDestroyingFailedError
     end
   end
 end
-
-Groups::RestoreService.prepend_mod

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -26,6 +26,8 @@ describe('WorkItemsWidget', () => {
 
   let wrapper;
 
+  const findLinksList = () => wrapper.findByTestId('links-list');
+  const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findGlLinks = () => wrapper.findAllComponents(GlLink);
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
@@ -44,6 +46,9 @@ describe('WorkItemsWidget', () => {
       propsData: {
         assignedToYouPath: MOCK_ASSIGNED_TO_YOU_PATH,
         authoredByYouPath: MOCK_AUTHORED_BY_YOU_PATH,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -103,22 +108,20 @@ describe('WorkItemsWidget', () => {
       expect(findAuthoredCount().text()).toBe('0');
     });
 
-    it('emits the `fetch-metadata-error` event if the query errors out', async () => {
+    it('shows an error message if the query errors out', async () => {
       createWrapper({
         workItemsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
       });
-
-      expect(wrapper.emitted('fetch-metadata-error')).toBeUndefined();
-
       await waitForPromises();
 
-      expect(wrapper.emitted('fetch-metadata-error')).toHaveLength(1);
+      expect(findErrorMessage().text()).toBe(
+        'The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
+      );
+      expect(findErrorMessage().findComponent(GlLink).props('href')).toBe(
+        MOCK_ASSIGNED_TO_YOU_PATH,
+      );
       expect(Sentry.captureException).toHaveBeenCalled();
-      expect(findAssignedLastUpdatedAt().exists()).toBe(false);
-      expect(findAuthoredLastUpdatedAt().exists()).toBe(false);
-
-      expect(findAssignedCount().text()).toBe('-');
-      expect(findAuthoredCount().text()).toBe('-');
+      expect(findLinksList().exists()).toBe(false);
     });
   });
 

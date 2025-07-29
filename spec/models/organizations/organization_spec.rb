@@ -315,6 +315,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
+  describe '#scoped_paths?' do
+    it { expect(organization.scoped_paths?).to eq(true) }
+  end
+
   describe '.search' do
     let_it_be(:other_organization) { create(:organization, name: 'Other') }
 
@@ -460,6 +464,21 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
           expect(default_organization.name).to eq('Default')
         end
       end
+    end
+
+    describe '#scoped_paths?' do
+      it { expect(default_organization.scoped_paths?).to eq(false) }
+    end
+  end
+
+  describe 'Feature flagged #scoped_paths?' do
+    # The FF enabled cases are above.
+    context 'when organization_scoped_paths feature flag is disabled' do
+      before do
+        stub_feature_flags(organization_scoped_paths: false)
+      end
+
+      it { expect(organization.scoped_paths?).to eq(false) }
     end
   end
 end

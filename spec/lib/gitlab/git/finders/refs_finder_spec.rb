@@ -58,5 +58,43 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         expect { subject }.to raise_error(described_class::UnknownRefTypeError)
       end
     end
+
+    describe 'Sort' do
+      context 'without sort' do
+        let(:params) do
+          { ref_type: :tags }
+        end
+
+        it "returns refs sorted by name in ascending order" do
+          refs = subject
+
+          expect(refs.map(&:name)).to eq(['refs/tags/v1.0.0', 'refs/tags/v1.1.0', 'refs/tags/v1.1.1'])
+        end
+      end
+
+      context 'with sort by name in descending order' do
+        let(:params) do
+          { ref_type: :tags, sort_by: 'name_desc' }
+        end
+
+        it "returns refs sorted by name in descending order" do
+          refs = subject
+
+          expect(refs.map(&:name)).to eq(['refs/tags/v1.1.1', 'refs/tags/v1.1.0', 'refs/tags/v1.0.0'])
+        end
+      end
+
+      context 'with sort by updated in descending order' do
+        let(:params) do
+          { ref_type: :tags, sort_by: 'updated_desc' }
+        end
+
+        it "returns refs sorted by created timestamp in descending order" do
+          refs = subject
+
+          expect(refs.map(&:name)).to eq(['refs/tags/v1.1.1', 'refs/tags/v1.1.0', 'refs/tags/v1.0.0'])
+        end
+      end
+    end
   end
 end

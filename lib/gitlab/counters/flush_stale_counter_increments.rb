@@ -6,7 +6,7 @@ module Gitlab
       def initialize(collection)
         @collection = collection
         @logger = Gitlab::AppLogger
-        @counter_attributes = collection.counter_attributes.pluck(:attribute)
+        @counter_attributes = collection.counter_attributes.keys.map(&:to_sym)
       end
 
       def execute

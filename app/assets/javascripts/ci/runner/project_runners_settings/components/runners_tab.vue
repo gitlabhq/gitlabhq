@@ -40,6 +40,7 @@ export default {
     },
   },
   emits: ['error'],
+  expose: ['refresh'],
   data() {
     return {
       loading: 0, // Initialized to 0 as this is used by a "loadingKey". See https://apollo.vuejs.org/api/smart-query.html#options
@@ -92,12 +93,14 @@ export default {
     },
   },
   methods: {
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+    },
     onPaginationInput(value) {
       this.pagination = value;
     },
 
     // Component API
-    // eslint-disable-next-line vue/no-unused-properties
     refresh() {
       this.$apollo.queries.runners.refresh();
     },
@@ -133,7 +136,12 @@ export default {
         <runner-name v-else :runner="runner" />
       </template>
       <template #runner-actions-cell="{ runner }">
-        <runner-actions-cell :runner="runner" size="small" :edit-url="runner.editUrl">
+        <runner-actions-cell
+          :runner="runner"
+          size="small"
+          :edit-url="runner.editUrl"
+          @deleted="onDeleted"
+        >
           <slot name="other-runner-actions" :runner="runner"></slot>
         </runner-actions-cell>
       </template>

@@ -34,11 +34,11 @@ We will need to create 2 automation workflows:
 
 ### Incident Creation
 
-![Incident creation diagram](img/jira_dora_creation_flow_v18_1.png)
+![Workflow showing how a Jira incident triggers an alert in GitLab.](img/jira_dora_creation_flow_v18_1.png)
 
 ### Incident Resolution
 
-![Incident resolution diagram](img/jira_dora_resolution_flow_v18_1.png)
+![Workflow showing how a resolved Jira incident triggers incident resolution in GitLab.](img/jira_dora_resolution_flow_v18_1.png)
 
 ## Setup
 

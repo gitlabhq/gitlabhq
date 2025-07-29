@@ -220,14 +220,15 @@ module AuthHelper
     current_user.allow_password_authentication_for_web? && !current_user.password_automatically_set?
   end
 
-  def auth_app_owner_text(owner)
-    return _('An administrator added this OAuth application ') unless owner
+  def auth_app_owner_text(application)
+    return _('An anonymous service added this dynamically created OAuth application ') if application.dynamic?
+    return _('An administrator added this OAuth application ') unless application.owner
 
-    if owner.is_a?(Group)
-      group_link = link_to(owner.name, group_path(owner))
+    if application.owner.is_a?(Group)
+      group_link = link_to(application.owner.name, group_path(application.owner))
       safe_format(_("%{group_link} added this OAuth application "), group_link: group_link)
     else
-      user_link = link_to(owner.name, user_path(owner))
+      user_link = link_to(application.owner.name, user_path(application.owner))
       safe_format(_("%{user_link} added this OAuth application "), user_link: user_link)
     end
   end

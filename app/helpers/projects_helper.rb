@@ -851,6 +851,8 @@ module ProjectsHelper
   end
 
   def current_ref
+    return current_branch if @repository.try(:branch_exists?, current_branch)
+
     @ref || @repository.try(:root_ref)
   end
 

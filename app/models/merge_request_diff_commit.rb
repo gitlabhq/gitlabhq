@@ -27,6 +27,11 @@ class MergeRequestDiffCommit < ApplicationRecord
   belongs_to :commit_author, class_name: 'MergeRequest::DiffCommitUser'
   belongs_to :committer, class_name: 'MergeRequest::DiffCommitUser'
 
+  belongs_to :merge_request_commits_metadata,
+    ->(diff_commit) { where(project_id: diff_commit.project_id) },
+    class_name: 'MergeRequest::CommitsMetadata',
+    inverse_of: :merge_request_diff_commits
+
   sha_attribute :sha
 
   attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
@@ -42,14 +47,16 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
     with_organization = Feature.enabled?(:add_organization_to_diff_commit_users, project)
-    commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
+    dedup_enabled = Feature.enabled?(:merge_request_diff_commits_dedup, project)
+    commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id, with_organization)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(
       user_triples,
       with_organization: with_organization
     )
 
     rows = commit_hashes.map.with_index do |commit_hash, index|
-      sha = commit_hash.delete(:id)
+      raw_sha = commit_hash.delete(:id)
+      trailers = commit_hash.fetch(:trailers, {})
 
       if with_organization
         author = users[[commit_hash[:author_name], commit_hash[:author_email], organization_id]]
@@ -74,23 +81,45 @@ class MergeRequestDiffCommit < ApplicationRecord
         committer_id: committer.id,
         merge_request_diff_id: merge_request_diff_id,
         relative_order: index,
-        sha: Gitlab::Database::ShaAttribute.serialize(sha),
+        sha: Gitlab::Database::ShaAttribute.serialize(raw_sha),
         authored_date: Gitlab::Database.sanitize_timestamp(commit_hash[:authored_date]),
         committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date]),
-        trailers: Gitlab::Json.dump(commit_hash.fetch(:trailers, {}))
+        trailers: Gitlab::Json.dump(trailers)
       )
 
-      if skip_commit_data
-        commit_hash.merge(message: '')
-      else
-        commit_hash
+      # Need to add `raw_sha` and `raw_trailers` to commit_hash as we will use that when
+      # inserting the `sha` and `trailers` in `merge_request_commits_metadata` table. We
+      # only need to do this when dedup is enabled.
+      if dedup_enabled
+        commit_hash[:raw_sha] = raw_sha
+        commit_hash[:raw_trailers] = trailers
+      end
+
+      commit_hash = commit_hash.merge(message: '') if skip_commit_data
+
+      commit_hash
+    end
+
+    if dedup_enabled
+      commits_metadata_mapping = MergeRequest::CommitsMetadata.bulk_find_or_create(
+        project.id,
+        rows
+      )
+
+      rows.each do |row|
+        row[:merge_request_commits_metadata_id] = commits_metadata_mapping[row[:raw_sha]]
+
+        # At this point, we no longer need the `raw_sha` and `raw_trailer` so we delete them from
+        # the row that will be inserted into `merge_request_diff_commits` table.
+        row.delete(:raw_sha)
+        row.delete(:raw_trailers)
       end
     end
 
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
 
-  def self.prepare_commits_for_bulk_insert(commits, organization_id)
+  def self.prepare_commits_for_bulk_insert(commits, organization_id, with_organization)
     user_triples = Set.new
     hashes = commits.map do |commit|
       hash = commit.to_hash.except(:parent_ids, :referenced_by)
@@ -99,8 +128,13 @@ class MergeRequestDiffCommit < ApplicationRecord
         hash[key] = MergeRequest::DiffCommitUser.prepare(hash[key])
       end
 
-      user_triples << [hash[:author_name], hash[:author_email], organization_id]
-      user_triples << [hash[:committer_name], hash[:committer_email], organization_id]
+      if with_organization
+        user_triples << [hash[:author_name], hash[:author_email], organization_id]
+        user_triples << [hash[:committer_name], hash[:committer_email], organization_id]
+      else
+        user_triples << [hash[:author_name], hash[:author_email]]
+        user_triples << [hash[:committer_name], hash[:committer_email]]
+      end
 
       hash
     end
@@ -152,6 +186,10 @@ class MergeRequestDiffCommit < ApplicationRecord
       'id' => sha,
       message: fetch_message
     })
+  end
+
+  def project_id
+    project.id
   end
 
   private

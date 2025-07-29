@@ -54,7 +54,7 @@ If you need to run Jenkins manually outside of the tests, refer to the README fo
 If Jenkins Docker container exits without providing any information in the logs, try increasing the memory used by
 the Docker Engine.
 
-## Gitaly Cluster tests
+## Gitaly Cluster (Praefect) tests
 
 The tests tagged `:gitaly_ha` are orchestrated tests that can only be run against a set of Docker containers as configured and started by [the `Test::Integration::GitalyCluster` GitLab QA scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationgitalycluster-ceeefull-image-address).
 

@@ -759,10 +759,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           end
         end
 
-        context 'with audit event' do
-          it 'does not send a git streaming audit event' do
-            expect(::Gitlab::Audit::Auditor).not_to receive(:audit)
-
+        context 'with audit event', unless: Gitlab.ee? do
+          it 'sets "need_audit" parameter as false in CE context' do
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -784,7 +782,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
             expect(json_response["gl_key_type"]).to eq("key")
             expect(json_response["gl_key_id"]).to eq(key.id)
-            expect(json_response["need_audit"]).to be_falsy
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -799,6 +796,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             def request
               push(key, project)
             end
+          end
+
+          it 'sets "need_audit" parameter as false in CE context', unless: Gitlab.ee? do
+            push(key, project)
+
+            expect(json_response["need_audit"]).to be_falsy
           end
         end
 

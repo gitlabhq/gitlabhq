@@ -149,7 +149,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_work_item
     prevent :create_package
     prevent :create_projects
-    prevent :create_runner
+    prevent :create_runners
     prevent :create_subgroup
     prevent :edit_billing
     prevent :import_projects
@@ -316,7 +316,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_upload
     enable :import_projects
     enable :read_deploy_token
-    enable :read_group_runners
+    enable :read_runners
     enable :update_cluster
   end
 
@@ -329,20 +329,20 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_package
     enable :admin_protected_environments
-    enable :admin_runner
+    enable :admin_runners
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control
     enable :change_visibility_level
     enable :create_deploy_token
-    enable :create_runner
+    enable :create_runners
     enable :create_subgroup
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing
     enable :manage_merge_request_settings
     enable :read_billing
-    enable :read_group_runners
+    enable :read_runners
     enable :read_runners_registration_token
     enable :read_usage_quotas
     enable :register_group_runners
@@ -466,7 +466,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
-    prevent :create_runner
+    prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do
@@ -480,7 +480,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_resource_access_tokens
   end
 
-  rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
+  rule { can?(:admin_group) | can?(:admin_runners) }.enable :admin_group_or_admin_runners
 
   rule { can?(:remove_group) }.enable :view_edit_page
 

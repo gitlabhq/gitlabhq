@@ -59,10 +59,10 @@ module API
           project = authorized_user_project(action: :read_package)
           authorize_read_package!(project)
 
-          packages = Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
+          packages = ::Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
+          metadata = ::Packages::Helm::GenerateMetadataService.new(params[:id], params[:channel], packages).execute
 
-          present ::Packages::Helm::IndexPresenter.new(params[:id], params[:channel], packages),
-            with: ::API::Entities::Helm::Index
+          present metadata.payload, with: ::API::Entities::Helm::Index
         end
 
         desc 'Download a chart' do

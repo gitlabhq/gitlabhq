@@ -1,43 +1,38 @@
 import Vue from 'vue';
 import { GlAlert, GlDisclosureDropdown, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import MockAdapter from 'axios-mock-adapter';
 
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import CiValidate, { i18n } from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
 import ValidatePipelinePopover from '~/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue';
 import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.query.graphql';
+import ciLintMutation from '~/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql';
+import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import { pipelineEditorTrackingOptions } from '~/ci/pipeline_editor/constants';
 import {
   mockBlobContentQueryResponse,
+  mockCiLintMutationResponse,
+  ciLintErrorResponse,
   mockCiLintPath,
   mockCiYml,
+  mockCurrentBranchResponse,
+  mockDefaultBranch,
   mockSimulatePipelineHelpPagePath,
 } from '../../mock_data';
-import {
-  mockLintDataError,
-  mockLintDataValid,
-  mockLintDataErrorRest,
-  mockLintDataValidRest,
-} from '../../../ci_lint/mock_data';
-
-let mockAxios;
+import { mockCiLintJobs } from '../../../ci_lint/mock_data';
 
 Vue.use(VueApollo);
 
 const defaultProvide = {
   ciConfigPath: '/path/to/ci-config',
   ciLintPath: mockCiLintPath,
-  currentBranch: 'main',
   projectFullPath: '/path/to/project',
   validateTabIllustrationPath: '/path/to/img',
   simulatePipelineHelpPagePath: mockSimulatePipelineHelpPagePath,
@@ -46,11 +41,20 @@ const defaultProvide = {
 describe('Pipeline Editor Validate Tab', () => {
   let wrapper;
   let mockBlobContentData;
+  let mockCiLintData;
   let trackingSpy;
 
   const createComponent = ({ props, stubs } = {}) => {
-    const handlers = [[getBlobContent, mockBlobContentData]];
+    const handlers = [
+      [getBlobContent, mockBlobContentData],
+      [ciLintMutation, mockCiLintData],
+    ];
     const mockApollo = createMockApollo(handlers, resolvers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getCurrentBranch,
+      data: mockCurrentBranchResponse,
+    });
 
     wrapper = shallowMountExtended(CiValidate, {
       propsData: {
@@ -80,14 +84,8 @@ describe('Pipeline Editor Validate Tab', () => {
   const findResultsCta = () => wrapper.findByTestId('resimulate-pipeline-button');
 
   beforeEach(() => {
-    mockAxios = new MockAdapter(axios);
-    mockAxios.onPost(defaultProvide.ciLintPath).reply(HTTP_STATUS_OK, mockLintDataValidRest);
-
     mockBlobContentData = jest.fn();
-  });
-
-  afterEach(() => {
-    mockAxios.restore();
+    mockCiLintData = jest.fn();
   });
 
   describe('while initial CI content is loading', () => {
@@ -115,7 +113,9 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(findPipelineSource().props('disabled')).toBe(true);
     });
 
-    it('renders enabled CTA without tooltip', () => {
+    it('renders enabled CTA without tooltip', async () => {
+      await waitForPromises();
+
       expect(findCta().exists()).toBe(true);
       expect(findCta().props('disabled')).toBe(false);
       expect(findDisabledCtaTooltip().exists()).toBe(false);
@@ -162,24 +162,25 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(findCta().props('loading')).toBe(true);
     });
 
-    it('calls endpoint with the correct input', async () => {
+    it('calls ciLint mutation with the correct input', async () => {
       findCta().vm.$emit('click');
 
       await waitForPromises();
 
-      expect(mockAxios.history.post).toHaveLength(1);
-      expect(mockAxios.history.post[0].data).toBe(
-        JSON.stringify({
-          content: mockCiYml,
-          dry_run: true,
-        }),
-      );
+      expect(mockCiLintData).toHaveBeenCalledWith({
+        projectPath: defaultProvide.projectFullPath,
+        content: mockCiYml,
+        ref: mockDefaultBranch,
+        dryRun: true,
+      });
     });
 
     describe('when results are successful', () => {
       beforeEach(async () => {
-        findCta().vm.$emit('click');
+        mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
+        await createComponent();
 
+        findCta().vm.$emit('click');
         await waitForPromises();
       });
 
@@ -200,14 +201,15 @@ describe('Pipeline Editor Validate Tab', () => {
           dryRun: true,
           hideAlert: true,
           isValid: true,
-          jobs: mockLintDataValid.data.lintCI.jobs,
+          jobs: mockCiLintJobs,
         });
       });
     });
 
     describe('when results have errors', () => {
       beforeEach(async () => {
-        mockAxios.onPost(defaultProvide.ciLintPath).reply(HTTP_STATUS_OK, mockLintDataErrorRest);
+        mockCiLintData.mockResolvedValue(ciLintErrorResponse);
+
         findCta().vm.$emit('click');
 
         await waitForPromises();
@@ -225,8 +227,8 @@ describe('Pipeline Editor Validate Tab', () => {
           dryRun: true,
           hideAlert: true,
           isValid: false,
-          errors: mockLintDataError.data.lintCI.errors,
-          warnings: mockLintDataError.data.lintCI.warnings,
+          errors: ciLintErrorResponse.data.ciLint.config.errors,
+          warnings: ciLintErrorResponse.data.ciLint.config.warnings,
         });
       });
     });
@@ -234,6 +236,7 @@ describe('Pipeline Editor Validate Tab', () => {
 
   describe('when CI content has changed after a simulation', () => {
     beforeEach(async () => {
+      mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       await createComponent();
 
@@ -272,13 +275,13 @@ describe('Pipeline Editor Validate Tab', () => {
 
       await waitForPromises();
 
-      expect(mockAxios.history.post).toHaveLength(2);
-      expect(mockAxios.history.post[1].data).toBe(
-        JSON.stringify({
-          content: newContent,
-          dry_run: true,
-        }),
-      );
+      expect(mockCiLintData).toHaveBeenCalledTimes(2);
+      expect(mockCiLintData).toHaveBeenCalledWith({
+        content: 'new yaml content',
+        dryRun: true,
+        projectPath: '/path/to/project',
+        ref: mockDefaultBranch,
+      });
     });
   });
 

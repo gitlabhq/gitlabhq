@@ -25,7 +25,7 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
-- Enforce consistent secret detection rules across projects using [security policies](../../policies/_index.md).
+- Enforce consistent secret detection rules across projects by using [security policies](../../policies/_index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
 
@@ -38,16 +38,16 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
 
-| Capability                                                                                           | In Free & Premium      | In Ultimate            |
-|:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| [Customize analyzer behavior](configure.md#customize-analyzer-behavior)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Download [output](#secret-detection-results)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Capability                                                              | In Free & Premium                    | In Ultimate |
+|:------------------------------------------------------------------------|:-------------------------------------|:------------|
+| [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Download [output](#secret-detection-results)                            | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| See new findings in the merge request widget                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| View identified secrets in the pipelines' **Security** tab              | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Access the Security Dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Enable security policies](../../policies/_index.md)                    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ## Getting started
 
@@ -62,7 +62,7 @@ Prerequisites:
   - CPU architectures other than amd64 are not supported.
 - You have a `.gitlab-ci.yml` file that includes the `test` stage.
 
-There are three ways to enable the analyzer:
+Enable the secret detection analyzer by using one of the following:
 
 - Edit the `.gitlab-ci.yml` file manually. Use this method if your CI/CD configuration is complex.
 - Use an automatically configured merge request. Use this method if you don't have a CI/CD configuration, or your configuration is minimal.

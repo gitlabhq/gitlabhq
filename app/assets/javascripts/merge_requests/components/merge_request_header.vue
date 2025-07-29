@@ -1,6 +1,5 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
@@ -9,6 +8,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { badgeState } from '~/merge_requests/badge_state';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   TYPE_ISSUE,
@@ -58,7 +58,7 @@ export default {
     return badgeState;
   },
   computed: {
-    ...mapGetters(['getNoteableData']),
+    ...mapState(useNotes, ['getNoteableData']),
     isLocked() {
       return this.getNoteableData.discussion_locked;
     },

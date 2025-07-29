@@ -7,7 +7,7 @@ feature_categories:
 description: https://docs.gitlab.com/ee/user/project/deploy_keys/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32901
 milestone: '13.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main
 exempt_from_sharding: true
 notes: Exempted because Table is empty and will be removed - https://gitlab.com/gitlab-org/gitlab/-/issues/408933
 table_size: small

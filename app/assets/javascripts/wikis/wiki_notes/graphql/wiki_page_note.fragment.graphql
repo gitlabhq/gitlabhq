@@ -1,0 +1,41 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+fragment WikiPageNote on Note {
+  id
+  author {
+    ...Author
+    emails {
+      nodes {
+        id
+        email
+      }
+    }
+  }
+  maxAccessLevelOfAuthor
+  internal
+  body
+  bodyHtml
+  createdAt
+  lastEditedAt
+  lastEditedBy {
+    ...Author
+  }
+  url
+  awardEmoji {
+    nodes {
+      name
+      user {
+        id
+        name
+      }
+    }
+  }
+  userPermissions {
+    adminNote
+    awardEmoji
+    createNote
+  }
+  discussion {
+    id
+  }
+}

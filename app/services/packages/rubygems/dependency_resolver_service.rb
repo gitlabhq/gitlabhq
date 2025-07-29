@@ -33,7 +33,7 @@ module Packages
       private
 
       def packages
-        project.packages.with_name(gem_name)
+        ::Packages::Rubygems::Package.for_projects(project).with_name(gem_name)
       end
       strong_memoize_attr :packages
 

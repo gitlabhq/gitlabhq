@@ -426,7 +426,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       it 'displays group avatar' do
         expected_pattern = %r{
           <div\s+
-          alt="foo"\s+
+          aria-hidden="true"\s+
           class="gl-avatar\s+
           gl-avatar-s32\s+
           gl-avatar-circle\s+

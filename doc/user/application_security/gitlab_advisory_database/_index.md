@@ -72,11 +72,14 @@ accDescr: Sequence of actions that make up the advisory ingestion process.
         A[GitLab Advisory Database]
     end
     subgraph Container Scanning
-        C[GitLab Advisory Database \n Open Source Edition \n integrated into Trivy]
+        C[GitLab Advisory Database
+          Open Source Edition
+          integrated into Trivy]
     end
     A --> B{Ingest}
     C --> B
-    B --> |store| D{{"Cloud Storage \n (NDJSON format)"}}
+    B --> |store| D{{"Cloud Storage 
+                     (NDJSON format)"}}
     F[\GitLab Instance/] --> |pulls data| D
     F --> |stores| G[(Relational Database)]
 ```

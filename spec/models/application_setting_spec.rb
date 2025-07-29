@@ -149,6 +149,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        inactive_resource_access_tokens_delete_after_days: 30,
         include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_token_prefix: '',
         invitation_flow_enforcement: false,
@@ -191,6 +192,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         package_registry_cleanup_policies_worker_capacity: 2,
         packages_cleanup_package_file_worker_capacity: 2,
         pages_extra_deployments_default_expiry_seconds: 86400,
+        pages_unique_domain_default_enabled: true,
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         personal_access_token_prefix: 'glpat-',
@@ -305,12 +307,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     subject { described_class::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS }
 
     it { is_expected.to eq(3) }
-  end
-
-  describe 'INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS' do
-    subject { described_class::INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS }
-
-    it { is_expected.to eq(30) }
   end
 
   describe 'validations' do
@@ -496,6 +492,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }
 
     context 'for validating the group_settings jsonb_column`s atrributes' do
       it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
@@ -1707,6 +1706,45 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         end
       end
     end
+
+    context 'for resource_access_tokens_settings' do
+      it 'allows inactive_resource_access_tokens_delete_after_days with nil' do
+        is_expected.to allow_value({ inactive_resource_access_tokens_delete_after_days: nil })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow inactive_resource_access_tokens_delete_after_days with string' do
+        is_expected.not_to allow_value({ inactive_resource_access_tokens_delete_after_days: 'abc' })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow inactive_resource_access_tokens_delete_after_days with negative integer' do
+        is_expected.not_to allow_value({ inactive_resource_access_tokens_delete_after_days: -1 })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow inactive_resource_access_tokens_delete_after_days with 0' do
+        is_expected.not_to allow_value({ inactive_resource_access_tokens_delete_after_days: 0 })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'allows inactive_resource_access_tokens_delete_after_days with integer greater than 0' do
+        is_expected.to allow_value({ inactive_resource_access_tokens_delete_after_days: 1 })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'allows inactive_resource_access_tokens_delete_after_days with maximum integer value' do
+        is_expected.to allow_value(
+          { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE }
+        ).for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow inactive_resource_access_tokens_delete_after_days with greater than maximum integer value' do
+        is_expected.not_to allow_value(
+          { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE + 1 }
+        ).for(:resource_access_tokens_settings)
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -2377,32 +2415,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   describe '.personal_access_tokens_disabled?' do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to be(false)
-    end
-  end
-
-  describe '#session_expire_from_init_enabled?' do
-    subject(:session_expire_from_init_enabled) { setting.session_expire_from_init_enabled? }
-
-    before do
-      setting.session_expire_from_init = true
-    end
-
-    it { is_expected.to be true }
-
-    context 'when session_expire_from_init is set to false' do
-      before do
-        setting.session_expire_from_init = false
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when session_expire_from_init FF is disabled' do
-      before do
-        stub_feature_flags(session_expire_from_init: false)
-      end
-
-      it { is_expected.to be false }
     end
   end
 

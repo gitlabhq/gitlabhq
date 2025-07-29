@@ -55,11 +55,23 @@ RSpec.describe 'layouts/_head' do
   end
 
   it 'adds selected syntax highlight stylesheet' do
+    allow_any_instance_of(PreferencesHelper).to receive(:user_application_system_mode?).and_return(false)
     allow_any_instance_of(PreferencesHelper).to receive(:user_color_scheme).and_return("solarised-light")
 
     render
 
-    expect(rendered).to match('<link rel="stylesheet" href="/stylesheets/highlight/themes/solarised-light.css" />')
+    expect(rendered).to match(%r{highlight/themes/solarised-light})
+  end
+
+  it 'adds selected syntax highlight stylesheet in system mode' do
+    allow_any_instance_of(PreferencesHelper).to receive(:user_application_system_mode?).and_return(true)
+    allow_any_instance_of(PreferencesHelper).to receive(:user_light_color_scheme).and_return("solarised-light")
+    allow_any_instance_of(PreferencesHelper).to receive(:user_dark_color_scheme).and_return("solarised-dark")
+
+    render
+
+    expect(rendered).to match(%r{highlight/themes/solarised-light.*prefers-color-scheme: light})
+    expect(rendered).to match(%r{highlight/themes/solarised-dark.*prefers-color-scheme: dark})
   end
 
   context 'for apple touch icon' do

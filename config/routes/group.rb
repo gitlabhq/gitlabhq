@@ -185,6 +185,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resource :import_history, only: [:show]
 
+    namespace :observability do
+      resource :o11y_service_settings, only: [:update, :edit, :destroy]
+    end
     resources :observability, only: [:show]
 
     post :preview_markdown

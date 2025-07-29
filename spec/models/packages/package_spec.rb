@@ -379,11 +379,11 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package2) { create(:maven_package, project: project) }
 
     it 'orders packages their associated package_file\'s created_at date', :aggregate_failures do
-      expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2])
+      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2])
 
       create(:package_file, :xml, package: package1)
 
-      expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
+      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
     end
   end
 

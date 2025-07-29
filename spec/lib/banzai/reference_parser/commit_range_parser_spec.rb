@@ -7,9 +7,9 @@ RSpec.describe Banzai::ReferenceParser::CommitRangeParser, feature_category: :so
 
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
-  subject { described_class.new(Banzai::RenderContext.new(project, user)) }
-
   let(:link) { empty_html_link }
+
+  subject { described_class.new(Banzai::RenderContext.new(project, user)) }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-project attribute' do

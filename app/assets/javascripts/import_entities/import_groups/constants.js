@@ -16,6 +16,11 @@ export const i18n = {
     'BulkImport|More than six imports were attempted in one minute. Try again after a minute.',
   ),
 
+  SOMETHING_WENT_WRONG_TITLE: s__('BulkImport|Something went wrong'),
+  SOMETHING_WENT_WRONG_DESCRIPTION: s__(
+    'BulkImport|Please re-enter your credentials to reconnect.',
+  ),
+  SOMETHING_WENT_WRONG_BUTTON: s__('BulkImport|Reconnect to instance'),
   NO_GROUPS_FOUND: s__('BulkImport|No groups found'),
   OWNER: __('Owner'),
   LEARN_MORE: __('Learn more.'),

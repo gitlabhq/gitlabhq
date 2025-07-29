@@ -576,6 +576,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#group_archive_settings_app_data' do
+    let_it_be(:group) { create(:group) }
+
+    subject { helper.group_archive_settings_app_data(group) }
+
+    it 'returns correct data' do
+      is_expected.to match({
+        resource_type: 'group',
+        resource_id: group.id,
+        resource_path: including(group.path)
+      })
+    end
+  end
+
   describe "#enabled_git_access_protocol_options_for_group" do
     subject { helper.enabled_git_access_protocol_options_for_group }
 

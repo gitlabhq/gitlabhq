@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Upgrading self-compiled instances
+title: Upgrade self-compiled installations
 ---
 
 {{< details >}}
@@ -12,8 +12,7 @@ title: Upgrading self-compiled instances
 
 {{< /details >}}
 
-Upgrading self-compiled instances to a later version of GitLab requires several steps, many specific to self-compiled
-installations.
+Upgrade a self-compiled installation to a later version of GitLab.
 
 If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see
 the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
@@ -383,7 +382,7 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 Upgrade Gitaly servers to the newer version before upgrading the application server. This prevents the gRPC client
 on the application server from sending RPCs that the old Gitaly version does not support.
 
-If Gitaly is located on its own server, or you use Gitaly Cluster, see [Zero-downtime upgrades](zero_downtime.md).
+If Gitaly is located on its own server, or you use Gitaly Cluster (Praefect), see [Zero-downtime upgrades](zero_downtime.md).
 
 During the build process, Gitaly [compiles and embeds Git binaries](https://gitlab.com/gitlab-org/gitaly/-/issues/6089),
 which requires additional dependencies.

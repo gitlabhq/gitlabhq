@@ -6,7 +6,7 @@ module Onboarding
 
     private
 
-    def after_sign_up_path
+    def after_sign_up_path(_user)
       if onboarding_status_presenter.single_invite?
         flash[:notice] = helpers.invite_accepted_notice(onboarding_status_presenter.last_invited_member)
         polymorphic_path(onboarding_status_presenter.last_invited_member_source)

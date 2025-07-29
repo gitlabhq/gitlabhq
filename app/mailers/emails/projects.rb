@@ -81,6 +81,18 @@ module Emails
       )
     end
 
+    def pipeline_variables_migration_complete_email(user, group, counts)
+      @user = user
+      @group = group
+      @updated_count = counts[:updated_count]
+      @skipped_count = counts[:skipped_count]
+
+      email_with_layout(
+        to: @user.notification_email_for(@group),
+        subject: subject("Pipeline variables settings migration complete")
+      )
+    end
+
     def repository_push_email(project_id, opts = {})
       @message =
         Gitlab::Email::Message::RepositoryPush.new(self, project_id, opts)

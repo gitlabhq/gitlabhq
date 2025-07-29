@@ -15,6 +15,12 @@
     },
     "read_admin_users": {
       "type": "boolean"
+    },
+    "read_admin_groups": {
+      "type": "boolean"
+    },
+    "read_admin_projects": {
+      "type": "boolean"
     }
   }
 }

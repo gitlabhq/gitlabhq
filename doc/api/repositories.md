@@ -172,7 +172,7 @@ Supported attributes:
 | `path`      | string         | no       | The subpath of the repository to download. If an empty string, defaults to the whole repository.  |
 | `sha`       | string         | no       | The commit SHA to download. A tag, branch reference, or SHA can be used. If not specified, defaults to the tip of the default branch. |
 | `include_lfs_blobs` | boolean | no | Determines whether LFS objects are included in the archive. Default is `true`. When set to `false`, LFS objects are excluded. |
-| `exclude_paths` | array | no | List of paths to exclude from the archive. |
+| `exclude_paths` | string | no | Comma-separated list of paths to exclude from the archive. |
 
 Example request:
 
@@ -537,7 +537,7 @@ Example response, with line breaks added for readability:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220) in GitLab 17.10. Guarded behind the
-  [project_repositories_health](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
+  [`project_repositories_health`](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
 - New fields [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191263) in GitLab 18.1.
 
 {{< /history >}}

@@ -1,9 +1,10 @@
 <script>
 import { GlButton, GlFormCheckbox, GlLink, GlAlert } from '@gitlab/ui';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
-import lintCiMutation from '~/ci/pipeline_editor/graphql/mutations/client/lint_ci.mutation.graphql';
+import ciLintMutation from '~/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import { CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 
 export default {
   components: {
@@ -16,15 +17,15 @@ export default {
     HelpIcon,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
     lintHelpPagePath: {
       type: String,
       required: true,
     },
     pipelineSimulationHelpPagePath: {
+      type: String,
+      required: true,
+    },
+    projectFullPath: {
       type: String,
       required: true,
     },
@@ -52,19 +53,25 @@ export default {
     async lint() {
       this.loading = true;
       try {
-        const {
-          data: {
-            lintCI: { valid, errors, warnings, jobs },
+        const { data } = await this.$apollo.mutate({
+          mutation: ciLintMutation,
+          variables: {
+            projectPath: this.projectFullPath,
+            content: this.content,
+            dryRun: this.dryRun,
           },
-        } = await this.$apollo.mutate({
-          mutation: lintCiMutation,
-          variables: { endpoint: this.endpoint, content: this.content, dry: this.dryRun },
         });
 
+        const ciConfigData = data?.ciLint?.config || {};
+        const { errors, stages, warnings, status } = ciConfigData;
+
         this.showingResults = true;
-        this.isValid = valid;
+        this.isValid = status === CI_CONFIG_STATUS_VALID;
         this.errors = errors;
         this.warnings = warnings;
+        const jobs = stages.flatMap((stage) =>
+          (stage.groups || []).flatMap((group) => group.jobs || []),
+        );
         this.jobs = jobs;
       } catch (error) {
         this.apiError = error;

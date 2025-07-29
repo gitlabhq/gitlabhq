@@ -1253,7 +1253,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     it 'does not mark project for deletion because of error' do
       message = 'Error'
 
-      expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+      expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: message))
 
       delete :destroy, params: { namespace_id: project.namespace, id: project }
 
@@ -1278,14 +1278,15 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       context 'when permanently_delete param is not set' do
-        it 'does nothing' do
+        it 'redirects to edit page' do
           expect(ProjectDestroyWorker).not_to receive(:perform_async)
 
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
           expect(project.reload.pending_delete).to eq(false)
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(project_path(project))
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:edit)
+          expect(flash[:alert]).to include('Project has been already marked for deletion')
         end
       end
     end
@@ -1324,7 +1325,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       it 'does not mark project for deletion because of error' do
         message = 'Error'
 
-        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: message))
 
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
@@ -1349,14 +1350,15 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         end
 
         context 'when permanently_delete param is not set' do
-          it 'does nothing' do
+          it 'redirects to edit page' do
             expect(ProjectDestroyWorker).not_to receive(:perform_async)
 
             delete :destroy, params: { namespace_id: project.namespace, id: project }
 
             expect(project.reload.pending_delete).to eq(false)
-            expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(project_path(project))
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:edit)
+            expect(flash[:alert]).to include('Project has been already marked for deletion')
           end
         end
       end
@@ -1387,7 +1389,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     it 'does not restore project because of error' do
       message = 'Error'
-      expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+      expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: message))
 
       post :restore, params: { namespace_id: project.namespace, project_id: project }
 

@@ -255,25 +255,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     describe '#rapid_diffs' do
-      context 'when the feature flag rapid_diffs is disabled' do
-        before do
-          stub_feature_flags(rapid_diffs: false)
-        end
-
-        it 'returns 404' do
-          get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-
-        it 'uses diffs action when rapid_diffs query parameter doesnt exist' do
-          get diffs_project_merge_request_path(project, merge_request)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('data-page="projects:merge_requests:diffs"')
-        end
-      end
-
       it 'returns 200' do
         get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
 

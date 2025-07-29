@@ -20,10 +20,12 @@ module RuboCop
         MSG = 'Avoid time comparison, use `.past?` or `.future?` instead.'
         RESTRICT_ON_SEND = %i[< >].to_set.freeze
 
+        # @!method comparison?(node)
         def_node_matcher :comparison?, <<~PATTERN
           (send _ %RESTRICT_ON_SEND _)
         PATTERN
 
+        # @!method time_now?(node)
         def_node_matcher :time_now?, <<~PATTERN
            {
             (send

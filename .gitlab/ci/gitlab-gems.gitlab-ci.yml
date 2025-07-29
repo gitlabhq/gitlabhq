@@ -7,9 +7,6 @@ include:
       gem_name: "bundler-checksum"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "click_house-client"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "gitlab-rspec"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:

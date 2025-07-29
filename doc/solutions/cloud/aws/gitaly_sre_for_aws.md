@@ -15,7 +15,7 @@ title: SRE Considerations for Gitaly on AWS
 
 ## Gitaly SRE considerations
 
-Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is in-depth technical reading on the topic:
+Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster (Praefect) have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is in-depth technical reading on the topic:
 
 ### Why Gitaly was built
 

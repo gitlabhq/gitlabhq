@@ -7,10 +7,12 @@ module RuboCop
       class MigrationWithMilestone < RuboCop::Cop::Base
         MSG = 'Version 2.2 migrations must specify a milestone.'
 
+        # @!method gitlab_migration?(node)
         def_node_matcher :gitlab_migration?, <<-PATTERN
           (class (const nil? _) (send (const (const (const nil? :Gitlab) :Database) :Migration) :[] (float $_)) ...)
         PATTERN
 
+        # @!method milestone_call?(node)
         def_node_search :milestone_call?, '(begin <(send nil? :milestone (str $_)) ...>)'
 
         def on_class(node)

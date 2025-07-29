@@ -123,6 +123,45 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
         expect(label_response).to be_nil
       end
     end
+
+    context 'with archived label' do
+      let_it_be(:label_archived) do
+        create(label_factory, :described, :scoped, description: 'test', prefix: 'matching', archived: true,
+**label_attrs)
+      end
+
+      it 'excludes archived labels by default' do
+        expect(labels_response.pluck('title')).to contain_exactly(
+          label_a.title,
+          label_b.title,
+          label_c.title,
+          label_d.title
+        )
+      end
+
+      context 'with archived true' do
+        let(:labels_params) { { archived: true } }
+
+        it 'includes only archived labels' do
+          expect(labels_response.pluck('title')).to contain_exactly(
+            label_archived.title
+          )
+        end
+      end
+
+      context 'with archived false' do
+        let(:labels_params) { { archived: false } }
+
+        it 'includes only unarchived labels' do
+          expect(labels_response.pluck('title')).to contain_exactly(
+            label_a.title,
+            label_b.title,
+            label_c.title,
+            label_d.title
+          )
+        end
+      end
+    end
   end
 
   describe 'performance' do

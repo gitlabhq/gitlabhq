@@ -4,7 +4,6 @@ import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
-import { createStore } from '~/mr_notes/stores';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -18,15 +17,12 @@ jest.mock('~/behaviors/markdown/render_gfm');
 Vue.use(PiniaVuePlugin);
 
 describe('DiffDiscussions', () => {
-  let store;
   let pinia;
   let wrapper;
   const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
   const createComponent = (props, discussions = getDiscussionsMockData()) => {
-    store = createStore();
     wrapper = mount(DiffDiscussions, {
-      store,
       pinia,
       propsData: {
         discussions,

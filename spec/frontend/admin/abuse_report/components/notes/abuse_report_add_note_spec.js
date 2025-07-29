@@ -57,7 +57,6 @@ describe('Abuse Report Add Note', () => {
     it('should show the comment form', () => {
       expect(findAbuseReportCommentForm().exists()).toBe(true);
       expect(findAbuseReportCommentForm().props()).toMatchObject({
-        abuseReportId: mockAbuseReportId,
         isSubmitting: false,
         autosaveKey: `${mockAbuseReportId}-comment`,
         commentButtonText: 'Comment',

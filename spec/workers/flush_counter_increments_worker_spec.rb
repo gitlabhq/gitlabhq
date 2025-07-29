@@ -15,7 +15,8 @@ RSpec.describe FlushCounterIncrementsWorker, :counter_attribute, feature_categor
     subject(:service) { worker.perform(model.class.name, model.id, attribute) }
 
     it 'commits increments to database' do
-      expect(model.class).to receive(:find_by_id).and_return(model)
+      relation_double = instance_double(ActiveRecord::Relation, take: model)
+      expect(model.class).to receive(:primary_key_in).with([model.id]).and_return(relation_double)
       expect_next_instance_of(Gitlab::Counters::BufferedCounter, model, attribute) do |service|
         expect(service).to receive(:commit_increment!)
       end

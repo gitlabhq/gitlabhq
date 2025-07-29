@@ -208,6 +208,6 @@ class Discussion
   end
 
   def can_resolve_discussion?(user)
-    !first_note.system? && user&.can?(:resolve_note, first_note)
+    resolvable? && !!user&.can?(:resolve_note, first_note)
   end
 end

@@ -115,6 +115,31 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
         expect(step.break?).to eq false
       end
     end
+
+    context 'when push is from CI with job token' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project,
+          current_user: user,
+          origin_ref: origin_ref,
+          merge_request: merge_request,
+          gitaly_context: { 'glBuildId' => '123' }
+        )
+      end
+
+      before do
+        step.perform!
+      end
+
+      it 'adds an error about CI job token usage' do
+        expect(pipeline.errors.full_messages.first)
+          .to include('Pipeline creation is not allowed when pushing from CI jobs.')
+      end
+
+      it 'breaks the pipeline builder chain' do
+        expect(step.break?).to eq true
+      end
+    end
   end
 
   describe '#allowed_to_write_ref?' do

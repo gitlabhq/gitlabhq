@@ -9,7 +9,6 @@ title: GLQL fields
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -20,23 +19,17 @@ title: GLQL fields
 - Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
+
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 With GitLab Query Language (GLQL), fields are used to:
 
 - Filter the results returned from a [GLQL query](_index.md#query-syntax).
-- Control the details displayed in a [GLQL view](_index.md#presentation-syntax).
-- Sort the results displayed in a GLQL view.
+- Control the details displayed in an [embedded view](_index.md#presentation-syntax).
+- Sort the results displayed in an embedded view.
 
-You use fields in three GLQL components:
+You use fields in three embedded view parameters:
 
 - **`query`** - Set conditions to determine which items to retrieve
 - **`fields`** - Specify which columns and details appear in your view
@@ -46,7 +39,7 @@ The following sections describe the available fields for each component.
 
 ## Fields inside query
 
-In a GLQL view, the `query` parameter can be used to include one or more expressions of the
+In an embedded view, the `query` parameter can be used to include one or more expressions of the
 format `<field> <operator> <value>`. Multiple expressions are joined with `and`,
 for example, `group = "gitlab-org" and author = currentUser()`.
 
@@ -81,7 +74,7 @@ The table below provides an overview of all available query fields and their spe
 | [State](#state)                         | `state`                                      | `=`                       | Issues, epics, merge requests |
 | [Status](#status)                       | `status`                                     | `=`                       | Issues |
 | [Target branch](#target-branch)         | `targetBranch`                               | `=`, `in`, `!=`           | Merge requests |
-| [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, merge requests |
+| [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, epics, merge requests |
 | [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
 | [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues        |
 
@@ -171,7 +164,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge request by their author.
+**Description**: Query issues, epics, or merge requests by their author.
 
 **Allowed value types**:
 
@@ -235,7 +228,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by the date when they were closed.
+**Description**: Query issues by the date when they were closed.
 
 **Allowed value types**:
 
@@ -276,7 +269,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues by their visibility to project members.
+**Description**: Query issues or epics by their visibility to project members.
 
 **Allowed value types**:
 
@@ -310,7 +303,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by the date when they were created.
+**Description**: Query issues, epics, or merge requests by the date when they were created.
 
 **Allowed value types**:
 
@@ -514,7 +507,7 @@ The table below provides an overview of all available query fields and their spe
 
 ### Group
 
-**Description**: Query issues or merge requests within all projects in a given group.
+**Description**: Query issues, epics, or merge requests within all projects in a given group.
 
 **Allowed value types**: `String`
 
@@ -522,7 +515,7 @@ The table below provides an overview of all available query fields and their spe
 
 - Only one group can be queried at a time.
 - The `group` cannot be used together with the `project` field.
-- If omitted when using inside a GLQL view in a group object (like an epic), `group` is assumed to
+- If omitted when using inside an embedded view in a group object (like an epic), `group` is assumed to
   be the current group.
 - Using the `group` field queries all objects in that group, all its subgroups, and child projects.
 - By default, issues or merge requests are searched in all descendant projects across all subgroups.
@@ -543,6 +536,12 @@ The table below provides an overview of all available query fields and their spe
   ```
 
 ### Health status
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -580,7 +579,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their IDs.
+**Description**: Query issues, epics, or merge requests by their IDs.
 
 **Allowed value types**:
 
@@ -616,7 +615,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query within the entire hierarchy of a group.
+**Description**: Query issues, epics, or merge requests within the entire hierarchy of a group.
 
 **Allowed value types**:
 
@@ -713,7 +712,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their associated labels.
+**Description**: Query issues, epics, or merge requests by their associated labels.
 
 **Allowed value types**:
 
@@ -841,7 +840,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their associated milestone.
+**Description**: Query issues, epics, or merge requests by their associated milestone.
 
 **Allowed value types**:
 
@@ -899,7 +898,7 @@ The table below provides an overview of all available query fields and their spe
 
 - Only one project can be queried at a time.
 - The `project` field cannot be used together with the `group` field.
-- If omitted when using inside a GLQL view, `project` is assumed to be the current project.
+- If omitted when using inside an embedded view, `project` is assumed to be the current project.
 
 **Examples**:
 
@@ -978,7 +977,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: The state of this issue or merge request.
+**Description**: Query issues, epics, or merge requests by state.
 
 **Allowed value types**:
 
@@ -1087,7 +1086,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: The type of object to query: one of the work item types or merge requests.
+**Description**: The type of object to query: issues, epics, or merge requests.
 
 **Allowed value types**:
 
@@ -1106,7 +1105,7 @@ The table below provides an overview of all available query fields and their spe
 
 **Additional details**:
 
-- If omitted when used inside a GLQL view, the default `type` is `Issue`.
+- If omitted when used inside an embedded view, the default `type` is `Issue`.
 - `type = Epic` queries can only be used together with the [group](#group) field.
 
 **Examples**:
@@ -1141,10 +1140,11 @@ The table below provides an overview of all available query fields and their spe
 
 - Alias `updatedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+- Support for querying epics by last updated [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by when they were last updated.
+**Description**: Query issues, epics, or merge requests by when they were last updated.
 
 **Allowed value types**:
 
@@ -1210,7 +1210,7 @@ The table below provides an overview of all available query fields and their spe
   weight != 5
   ```
 
-## Fields in GLQL views
+## Fields in embedded views
 
 {{< history >}}
 
@@ -1222,8 +1222,8 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-In GLQL views, the `fields` view component is a comma-separated list of fields, or field functions that
-can be used to indicate what fields to include in the rendered GLQL view,
+In embedded views, the `fields` view parameter is a comma-separated list of fields, or field functions that
+can be used to indicate what fields to include in the rendered embedded view,
 for example, `fields: title, state, health, epic, milestone, weight, updated`.
 
 | Field            | Name or alias                         | Objects supported             | Description |
@@ -1238,10 +1238,10 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Description      | `description`                         | Issues, epics, merge requests | Display the description of the object |
 | Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |
-| Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available for Premium and Ultimate tiers |
-| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object |
+| Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available in the Premium and Ultimate tier |
+| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object. Available in the Ultimate tier |
 | ID               | `id`                                  | Issues, epics, merge requests | Display the ID of the object |
-| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available for Premium and Ultimate tiers |
+| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available in the Premium and Ultimate tier |
 | Labels           | `label`, `labels`                     | Issues, epics, merge requests | Display labels associated with the object. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
 | Last comment     | `lastComment`                         | Issues, epics, merge requests | Display the last comment made on the object |
 | Merged at        | `merged`, `mergedAt`                  | Merge requests                | Display time since the merge request was merged |
@@ -1259,7 +1259,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Updated at       | `updated`, `updatedAt`                | Issues, epics, merge requests | Display time since the object was last updated |
 | Weight           | `weight`                              | Issues                        | Display the weight of the object. Available in the Premium and Ultimate tiers. |
 
-## Fields to sort GLQL views by
+## Fields to sort embedded views by
 
 {{< history >}}
 
@@ -1267,7 +1267,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 
 {{< /history >}}
 
-In GLQL views, the `sort` view parameter is a field name followed by
+In embedded views, the `sort` view parameter is a field name followed by
 a sort order (`asc` or `desc`) that sorts the results by the specified
 field and order.
 
@@ -1356,7 +1356,7 @@ field and order.
 You might encounter these error messages:
 
 ```plaintext
-GLQL view timed out. Add more filters to reduce the number of results.
+Embedded view timed out. Add more filters to reduce the number of results.
 ```
 
 ```plaintext

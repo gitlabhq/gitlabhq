@@ -83,13 +83,27 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
   end
 
   describe '#omnibus_package_version' do
-    it 'generates the correct omnibus package name' do
-      stub_env('CI_COMMIT_BRANCH', '15-10-stable-ee')
-      stub_env('CI_PIPELINE_ID', '12345')
-      stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
+    context 'when using CI_COMMIT_BRANCH' do
+      it 'generates the correct omnibus package name' do
+        stub_env('CI_COMMIT_BRANCH', '15-10-stable-ee')
+        stub_env('CI_PIPELINE_ID', '12345')
+        stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
 
-      expected_package = '15.10+stable.12345.abcdef'
-      expect(model.omnibus_package_version).to eq(expected_package)
+        expected_package = '15.10+stable.12345.abcdef'
+        expect(model.omnibus_package_version).to eq(expected_package)
+      end
+    end
+
+    context 'when using RC42 tag' do
+      it 'generates the correct omnibus package name from RC42 tag' do
+        stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc42-ee')
+        stub_env('CI_COMMIT_BRANCH', nil) # This would be nil for tag pipelines
+        stub_env('CI_PIPELINE_ID', '12345')
+        stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
+
+        expected_package = '15.10+stable.12345.abcdef'
+        expect(model.omnibus_package_version).to eq(expected_package)
+      end
     end
   end
 

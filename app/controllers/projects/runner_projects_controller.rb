@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::RunnerProjectsController < Projects::ApplicationController
-  before_action :authorize_admin_runner!
+  before_action :authorize_admin_runners!
 
   layout 'project_settings'
 

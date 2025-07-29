@@ -90,6 +90,15 @@ module API
           forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
         end
 
+        def authenticate_disable_runner!(runner_project)
+          not_found!('Runner') unless runner_project
+
+          return if current_user.can_admin_all_resources?
+
+          forbidden!("Runner is locked") if runner_project.runner.locked?
+          forbidden!("No access granted") unless can?(current_user, :unassign_runner, runner_project)
+        end
+
         def authenticate_list_runners_jobs!(runner)
           return if current_user.can_read_all_resources?
 
@@ -294,7 +303,7 @@ module API
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize! :read_project_runners, user_project }
+        before { authorize! :read_runners, user_project }
 
         desc 'Get runners available for project' do
           summary "List project's runners"
@@ -330,7 +339,7 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         post ':id/runners' do
-          authorize! :create_runner, user_project # Ensure the user is allowed to create a runner on the target project
+          authorize! :create_runners, user_project # Ensure the user is allowed to create a runner on the target project
 
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
@@ -357,10 +366,8 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         delete ':id/runners/:runner_id' do
-          authorize! :admin_project_runners, user_project
-
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
-          not_found!('Runner') unless runner_project
+          authenticate_disable_runner!(runner_project)
 
           destroy_conditionally!(runner_project) do
             response = ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
@@ -373,7 +380,7 @@ module API
         requires :id, type: String, desc: 'The ID of a group'
       end
       resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize! :read_group_runners, user_group }
+        before { authorize! :read_runners, user_group }
 
         desc 'Get runners available for group' do
           summary "List group's runners"

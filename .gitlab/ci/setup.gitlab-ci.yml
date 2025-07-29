@@ -123,7 +123,7 @@ generate-frontend-fixtures-mapping:
   artifacts:
     expire_in: 7d
     paths:
-      - ${FRONTEND_FIXTURES_MAPPING_PATH}
+      - ${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}
 
 detect-tests:
   extends:
@@ -131,62 +131,37 @@ detect-tests:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
   needs: []
   stage: prepare
-  variables:
-    RSPEC_TESTS_MAPPING_ENABLED: "true"
-    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_PATH
   before_script:
-    - apt update && apt install -y curl
-    - source ./scripts/utils.sh
-    - source ./scripts/rspec_helpers.sh
-    - retrieve_frontend_fixtures_mapping
     # Use alternative coverage based mappings for tier-2 pipeline
     - |
-      echo "Fetching crystalball mappings"
       if echo "$CI_MERGE_REQUEST_LABELS" | grep -q "pipeline::tier-2"; then
-        echo "Using alternative coverage based mapping path: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH"
-        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH")
+        MAPPING_TYPE=coverage
       else
-        echo "Using standard described_class based mapping path: $RSPEC_PACKED_TESTS_MAPPING_PATH"
-        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_PATH")
+        MAPPING_TYPE=described_class
       fi
-      retrieve_tests_mapping "$MAPPING_ARCHIVE"
   script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
-        mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
-
-        tooling/bin/predictive_tests --select-tests
-
-        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
-        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
-
-        echoinfo 'Changed files:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
-        echo ""
-
-        echoinfo 'Related FOSS RSpec tests:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_FOSS_PATH)"
-        echo ""
-
-        echoinfo 'Related EE RSpec tests:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_EE_PATH)"
-        echo ""
-
-        echoinfo 'Related JS files:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_JS_FILES_PATH)"
-        echo ""
+        tooling/bin/predictive_tests \
+          --ci \
+          --with-crystalball-mappings \
+          --mapping-type $MAPPING_TYPE \
+          --with-frontend-fixture-mappings \
+          --frontend-fixtures-mapping-path $GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH \
+          --matching-foss-rspec-test-files-path $GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH \
+          --matching-ee-rspec-test-files-path $GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH \
+          --matching-js-files-path $GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH \
+          --changed-files-path $GLCI_PREDICTIVE_CHANGED_FILES_PATH
       fi
   artifacts:
     expire_in: 7d
     paths:
-      - ${FRONTEND_FIXTURES_MAPPING_PATH}
-      - ${RSPEC_CHANGED_FILES_PATH}
-      - ${RSPEC_MATCHING_JS_FILES_PATH}
-      - ${RSPEC_MATCHING_TESTS_EE_PATH}
-      - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
-      - ${RSPEC_MATCHING_TEST_FILES_PATH}
-      - ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH}
+      - ${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}
+      - ${GLCI_PREDICTIVE_CHANGED_FILES_PATH}
+      - ${GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH}
+      - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}
+      - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}
 
 detect-previous-failed-tests:
   extends:

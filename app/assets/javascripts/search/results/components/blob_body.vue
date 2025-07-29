@@ -27,10 +27,6 @@ export default {
       type: Number,
       required: true,
     },
-    systemColorScheme: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {

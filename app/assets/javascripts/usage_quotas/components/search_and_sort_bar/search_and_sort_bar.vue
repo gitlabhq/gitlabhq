@@ -17,16 +17,6 @@ export default {
       type: String,
       required: true,
     },
-    recentSearchesStorageKey: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    initialFilterValue: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     // Sort
     initialSortBy: {
       type: String,

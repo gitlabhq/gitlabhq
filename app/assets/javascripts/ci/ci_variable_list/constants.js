@@ -32,7 +32,7 @@ export const defaultVariableState = {
   description: null,
   environmentScope: '*',
   key: '',
-  masked: false,
+  masked: true,
   hidden: false,
   protected: false,
   raw: false,

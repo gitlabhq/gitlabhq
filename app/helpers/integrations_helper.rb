@@ -118,7 +118,7 @@ module IntegrationsHelper
       enable_comments: integration.comment_on_event_enabled.to_s,
       comment_detail: integration.comment_detail,
       learn_more_path: integrations_help_page_path,
-      about_pricing_url: Gitlab::Saas.about_pricing_url,
+      about_pricing_url: promo_pricing_url,
       trigger_events: trigger_events_for_integration(integration),
       sections: integration.sections.to_json,
       fields: fields_for_integration(integration),

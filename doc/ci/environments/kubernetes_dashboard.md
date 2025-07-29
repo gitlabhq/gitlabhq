@@ -115,8 +115,7 @@ For more information, see the [CI/CD YAML syntax reference](../yaml/_index.md#en
 {{< /history >}}
 
 View a dashboard to see the status of connected clusters.
-If the `k8s_watch_api` feature flag is enabled, the status of your
-Kubernetes resources and Flux reconciliation updates in real time.
+The status of your Kubernetes resources and Flux reconciliation updates in real time.
 
 To view a configured dashboard:
 

@@ -171,6 +171,21 @@ $ echo $CI_JOB_ID
 9811701914
 ```
 
+### Use the CLI as a Docker credential helper
+
+You can use the CLI as a [Docker credential helper](https://docs.docker.com/reference/cli/docker/login/#credential-helpers)
+when pulling images from the GitLab [container registry](../../user/packages/container_registry/_index.md) or the
+[container image dependency proxy](../../user/packages/dependency_proxy/_index.md). To configure the credential helper
+do the following:
+
+1. Run `glab auth login`.
+1. Select the type of GitLab instance to sign in to. If prompted, enter your GitLab hostname.
+1. For sign-in method, select `Web`.
+1. Enter a comma-separated list of domains used for the container registry and container image proxy.
+   When signing in to GitLab.com, default values are provided.
+1. After authenticating, run `glab auth configure-docker` to initialize the credential helper in
+   your Docker configuration.
+
 ## Report issues
 
 Open an issue in the [`gitlab-org/cli` repository](https://gitlab.com/gitlab-org/cli/-/issues/new)

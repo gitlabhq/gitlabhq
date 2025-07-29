@@ -28,19 +28,8 @@ class DescriptionVersion < ApplicationRecord
 
   private
 
-  def parent_namespace_id
-    case issuable
-    when Issue
-      issuable.namespace_id
-    when MergeRequest
-      issuable.project.project_namespace_id
-    end
-  end
-
   def ensure_namespace_id
-    return if namespace_id && namespace_id > 0
-
-    self.namespace_id = parent_namespace_id
+    self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(issuable, allow_nil: true).namespace_id
   end
 
   def exactly_one_issuable

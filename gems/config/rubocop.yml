@@ -170,3 +170,10 @@ Database/AvoidUsingConnectionExecute:
 
 RSpec/RedundantMetatagType:
   Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/NoHelpersInPresenters:
+  Enabled: false
+  Include:
+    - '{,ee/,jh/}app/presenters/**/*.rb'
+

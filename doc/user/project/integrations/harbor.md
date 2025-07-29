@@ -30,7 +30,7 @@ In the Harbor instance, ensure that:
 GitLab supports integrating Harbor projects at the group or project level. Complete these steps in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Harbor**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Harbor configuration information:

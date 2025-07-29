@@ -1,0 +1,6 @@
+query getAvailableBulkEditWidgets($fullPath: ID!, $ids: [WorkItemsTypeID!]!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItemsWidgets(ids: $ids)
+  }
+}

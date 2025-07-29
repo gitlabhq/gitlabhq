@@ -93,7 +93,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
     context 'when feature flags are disabled' do
       before do
         stub_feature_flags(bitbucket_server_notes_separate_worker: false)
-        stub_feature_flags(importer_user_mapping: false)
         stub_feature_flags(bitbucket_server_user_mapping: false)
       end
 

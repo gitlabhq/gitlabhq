@@ -956,6 +956,7 @@ excluded_attributes:
     - :issue_id
     - :merge_request_id
     - :label_id
+    - :namespace_id
   runners:
     - :token
     - :token_encrypted
@@ -1374,6 +1375,7 @@ ee:
   excluded_attributes:
     project:
       - :vulnerability_hooks_integrations
+      - :ready_active_context_code_repository
     approval_rules:
       - :created_at
       - :updated_at

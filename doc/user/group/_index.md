@@ -110,6 +110,7 @@ To explore all public or internal groups:
 {{< history >}}
 
 - **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
 
@@ -122,8 +123,6 @@ This page shows groups that you are a member of through:
 
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
-
-If the `your_work_groups_vue` feature flag is enabled, groups that you are a member of appear in the **Member** tab.
 
 ## View a group
 
@@ -267,7 +266,8 @@ You can also delete a group from the groups dashboard:
 1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
 
-This action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
+This action adds a background job to mark a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
+you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job will instead restore and unarchive the group, so the group will no longer be scheduled for deletion.
@@ -283,17 +283,17 @@ the deletion job will instead restore and unarchive the group, so the group will
 {{< history >}}
 
 - **Inactive** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
 
-To view a list of the subgroups that are pending deletion in a group:
+To view a list of the groups that are pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Subgroups and projects**.
+1. Select **View all my groups**.
+1. Select the **Inactive** tab.
 
 Groups that are marked for deletion are labeled **Pending deletion**.
-
-If the `your_work_groups_vue` feature flag is enabled, groups marked for deletion appear in the **Inactive** tab.
 
 ## Delete a group immediately
 
@@ -374,7 +374,7 @@ For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/i
 
 {{< /alert >}}
 
-To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/_index.md#view-seat-usage).
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/manage_users_and_seats.md#view-seat-usage).
 
 ## Filter and sort members in a group
 

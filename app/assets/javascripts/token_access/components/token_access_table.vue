@@ -47,20 +47,13 @@ export default {
       required: false,
       default: '',
     },
-    // This can be removed after outbound_token_access.vue is removed, which is a deprecated feature. We need to hide
-    // policies for that component, but show them on inbound_token_access.vue.
-    showPolicies: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   computed: {
     fields() {
       const fullPath = {
         key: 'fullPath',
         label: s__('CICD|Group or project'),
-        tdClass: this.showPolicies ? 'md:gl-w-3/5' : 'gl-w-full',
+        tdClass: 'md:gl-w-3/5',
       };
       const policies = {
         key: 'jobTokenPolicies',
@@ -74,7 +67,7 @@ export default {
         tdClass: 'md:!gl-pb-0 md:!gl-pt-4',
       };
 
-      return this.showPolicies ? [fullPath, policies, actions] : [fullPath, actions];
+      return [fullPath, policies, actions];
     },
   },
   methods: {
@@ -161,7 +154,6 @@ export default {
     <template #cell(actions)="{ item }">
       <div class="gl-flex gl-gap-2">
         <gl-button
-          v-if="showPolicies"
           icon="pencil"
           :aria-label="__('Edit')"
           data-testid="token-access-table-edit-button"

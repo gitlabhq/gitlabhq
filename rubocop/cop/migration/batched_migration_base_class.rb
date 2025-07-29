@@ -14,14 +14,17 @@ module RuboCop
           BackfillDesiredShardingKeyPartitionJob
         ].to_set.freeze
 
+        # @!method top_level_module?(node)
         def_node_search :top_level_module?, <<~PATTERN
           (module (const nil? :Gitlab) (module (const nil? :BackgroundMigration) ...))
         PATTERN
 
+        # @!method matching_parent_namespace?(node)
         def_node_matcher :matching_parent_namespace?, <<~PATTERN
           {nil? (const (const {cbase nil?} :Gitlab) :BackgroundMigration)}
         PATTERN
 
+        # @!method inherits_batched_migration_job?(node)
         def_node_search :inherits_batched_migration_job?, <<~PATTERN
           (class _ (const #matching_parent_namespace? %BASE_CLASSES) ...)
         PATTERN

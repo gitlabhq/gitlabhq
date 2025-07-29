@@ -47,4 +47,13 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
       let!(:model) { create(:ci_workload, project: parent) }
     end
   end
+
+  describe '#logs_url' do
+    it 'returns the pipeline url' do
+      allow(Gitlab::Routing).to receive_message_chain(:url_helpers, :project_pipeline_url)
+        .with(workload.project, workload.pipeline).and_return('log-url')
+
+      expect(workload.logs_url).to eq('log-url')
+    end
+  end
 end

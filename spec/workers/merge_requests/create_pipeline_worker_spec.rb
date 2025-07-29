@@ -12,7 +12,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
     subject do
       worker.perform(
         project.id, user.id, merge_request.id,
-        'pipeline_creation_request' => { 'key' => '123', 'id' => '456' }
+        'pipeline_creation_request' => { 'key' => '123', 'id' => '456' }, 'gitaly_context' => {}
       )
     end
 
@@ -25,6 +25,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
             params: {
               allow_duplicate: nil,
               push_options: nil,
+              gitaly_context: {},
               pipeline_creation_request: { 'key' => '123', 'id' => '456' }
             }) do |service|
             expect(service).to receive(:execute).with(merge_request)
@@ -41,7 +42,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
         let(:extra_params) do
           {
             'pipeline_creation_request' => { 'key' => '123', 'id' => '456' },
-            'push_options' => { 'ci' => { 'skip' => true } }
+            'push_options' => { 'ci' => { 'skip' => true } },
+            'gitaly_context' => {}
           }
         end
 
@@ -55,6 +57,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
               params: {
                 allow_duplicate: nil,
                 push_options: { ci: { skip: true } },
+                gitaly_context: {},
                 pipeline_creation_request: { 'key' => '123', 'id' => '456' }
               }) do |service|
               expect(service).to receive(:execute).with(merge_request)

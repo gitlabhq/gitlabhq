@@ -106,16 +106,6 @@ export default {
       this.environmentSearch = '';
     },
     /**
-     * On click, it will:
-     *  1. clear the input value
-     *  2. close the list of suggestions
-     *  3. emit an event
-     */
-    clearInput() {
-      this.closeSuggestions();
-      this.$emit('clearInput');
-    },
-    /**
      * When the user selects a value from the list of suggestions
      *
      * It emits an event with the selected value

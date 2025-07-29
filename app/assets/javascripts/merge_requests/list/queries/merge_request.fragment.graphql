@@ -13,6 +13,7 @@ fragment MergeRequestFragment on MergeRequest {
   resolvedDiscussionsCount @include(if: $isSignedIn)
   resolvableDiscussionsCount @include(if: $isSignedIn)
   webPath
+  draft
   assignees @skip(if: $hideUsers) {
     nodes {
       ...User

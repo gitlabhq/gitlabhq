@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_click_glql_info_link
-description: Count of unique users who clicked the "View powered by GLQL link"
+description: Count of unique users who clicked the Embedded view powered by GLQL link"
 product_group: knowledge
 performance_indicator_type: []
 value_type: number

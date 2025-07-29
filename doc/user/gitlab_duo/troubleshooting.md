@@ -7,7 +7,7 @@ title: Troubleshooting GitLab Duo
 
 When working with GitLab Duo, you might encounter issues.
 
-Start by [running a health check](setup.md#run-a-health-check-for-gitlab-duo)
+Start by [running a health check](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo)
 to determine if your instance meets the requirements to use GitLab Duo.
 
 For more information on troubleshooting GitLab Duo, see:
@@ -88,7 +88,7 @@ you can also do the following:
    curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
    ```
 
-1. Optional. If you are using a [proxy server](setup.md#allow-outbound-connections-from-the-gitlab-instance) between the GitLab
+1. Optional. If you are using a [proxy server](../../administration/gitlab_duo/setup.md#allow-outbound-connections-from-the-gitlab-instance) between the GitLab
    application and the public internet,
    [disable DNS rebinding protection](../../security/webhooks.md#enforce-dns-rebinding-attack-protection).
 

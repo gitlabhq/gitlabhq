@@ -17,9 +17,9 @@ import {
 import {
   LINKED_CATEGORIES_MAP,
   LINKED_ITEMS_ANCHOR,
+  NAME_TO_TEXT_MAP,
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
-  sprintfWorkItem,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '../../constants';
 
@@ -184,7 +184,7 @@ export default {
         ),
         { itemCount: this.linkedWorkItemsCount },
       );
-      return sprintfWorkItem(message, this.workItemType);
+      return sprintf(message, { workItemType: NAME_TO_TEXT_MAP[this.workItemType] });
     },
     openRelatesToLinks() {
       return this.displayableLinks(this.linksRelatesTo);

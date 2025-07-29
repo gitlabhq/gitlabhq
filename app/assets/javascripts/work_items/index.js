@@ -44,7 +44,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     hasSubepicsFeature,
     hasIssuableHealthStatusFeature,
     hasCustomFieldsFeature,
-    newCommentTemplatePaths,
     reportAbusePath,
     defaultBranch,
     initialSort,
@@ -155,7 +154,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     render(createElement) {
       return createElement(App, {
         props: {
-          newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
           rootPageFullPath: fullPath,
           withTabs,
         },

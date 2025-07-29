@@ -9,7 +9,7 @@ module Projects
       urgency :low
 
       def show
-        @package = project.packages.find(params.permit(:id)[:id])
+        @package = ::Packages::TerraformModule::Package.for_projects(project).find(params.permit(:id)[:id])
       end
     end
   end

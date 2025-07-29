@@ -43,12 +43,6 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
 
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_update_policies) }
 
-  before do
-    allow_next_found_instance_of(Project) do |project|
-      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
-  end
-
   context 'when policies are updated for a target project' do
     let_it_be(:target_project) { create(:project, :private) }
     let_it_be(:target_path) { target_project.full_path }
@@ -115,17 +109,6 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
           it_behaves_like 'a mutation that returns top-level errors' do
             let(:match_errors) { include(/was provided invalid value for jobTokenPolicies/) }
           end
-        end
-
-        context 'when job token policies are disabled' do
-          before do
-            allow_next_found_instance_of(Project) do |project|
-              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-            end
-          end
-
-          it_behaves_like 'a mutation that returns top-level errors',
-            errors: ['job token policies are disabled.']
         end
       end
     end
@@ -196,17 +179,6 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
           it_behaves_like 'a mutation that returns top-level errors' do
             let(:match_errors) { include(/was provided invalid value for jobTokenPolicies/) }
           end
-        end
-
-        context 'when job token policies are disabled' do
-          before do
-            allow_next_found_instance_of(Project) do |project|
-              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-            end
-          end
-
-          it_behaves_like 'a mutation that returns top-level errors',
-            errors: ['job token policies are disabled.']
         end
       end
     end

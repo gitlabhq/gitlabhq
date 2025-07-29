@@ -11,6 +11,7 @@ module RuboCop
 
       MSG = 'Put new project routes under /-/ scope'
 
+      # @!method dash_scope?(node)
       def_node_matcher :dash_scope?, <<~PATTERN
         (:send nil? :scope (:str "-"))
       PATTERN

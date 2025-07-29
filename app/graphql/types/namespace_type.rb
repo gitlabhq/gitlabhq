@@ -23,6 +23,7 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Full path of the namespace.'
     field :name, GraphQL::Types::String, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Name of the namespace.'
     field :path, GraphQL::Types::String, null: false,
       description: 'Path of the namespace.'
@@ -34,6 +35,7 @@ module Types
       description: 'Indicates if the cross_project_pipeline feature is available for the namespace.'
 
     field :description, GraphQL::Types::String, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Description of the namespace.'
 
     field :lfs_enabled,
@@ -41,6 +43,11 @@ module Types
       null: true,
       method: :lfs_enabled?,
       description: 'Indicates if Large File Storage (LFS) is enabled for namespace.'
+    field :merge_requests_enabled,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if merge requests are enabled for the namespace.',
+      experiment: { milestone: '18.3' }
     field :request_access_enabled,
       GraphQL::Types::Boolean,
       null: true,
@@ -113,6 +120,14 @@ module Types
       experiment: { milestone: '18.1' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
+    field :work_item_state_counts,
+      Types::WorkItemStateCountsType,
+      null: true,
+      experiment: { milestone: '18.3' },
+      description: 'Counts of work items by state for the namespace (project or group). Returns `null` for user ' \
+        'namespaces.',
+      resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
+
     field :work_items_widgets,
       null: true,
       description: 'List of available widgets for the given work items.',
@@ -166,12 +181,27 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    # TODO: Remove once the frontend switches to using available_features.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/555803
     field :licensed_features,
-      Types::Namespaces::LicensedFeaturesType,
+      Types::Namespaces::AvailableFeaturesType,
       null: false,
       description: 'Licensed features available on the namespace.',
       method: :itself,
       experiment: { milestone: '18.1' }
+
+    field :available_features,
+      Types::Namespaces::AvailableFeaturesType,
+      null: false,
+      description: 'Features available on the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.3' }
+
+    field :web_url,
+      GraphQL::Types::String,
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'URL of the namespace.'
 
     markdown_field :description_html, null: true, &:namespace_details
 
@@ -187,6 +217,12 @@ module Types
 
     def cross_project_pipeline_available?
       object.licensed_feature_available?(:cross_project_pipelines)
+    end
+
+    def merge_requests_enabled
+      return object.project.merge_requests_enabled? if object.is_a?(::Namespaces::ProjectNamespace)
+
+      true
     end
 
     def root_storage_statistics

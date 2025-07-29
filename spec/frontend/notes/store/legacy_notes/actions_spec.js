@@ -330,6 +330,17 @@ describe('Actions Notes Store', () => {
       );
     });
 
+    it('calls fetchUpdatedNotes in the connected callback', () => {
+      store.fetchUpdatedNotes.mockResolvedValue();
+
+      store.setNotesData(notesDataMock);
+      store.initPolling();
+
+      actionCable.subscriptions.subscriptions.at(-1).connected();
+
+      expect(store.fetchUpdatedNotes).toHaveBeenCalledTimes(1);
+    });
+
     it('prevents `fetchUpdatedNotes` being called multiple times within time limit when action cable receives contineously new events', () => {
       store.fetchUpdatedNotes.mockResolvedValue();
       getters = { getNotesDataByProp: () => 123456789 };

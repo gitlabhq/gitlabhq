@@ -216,6 +216,40 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         expect { destroy_project(project, user, {}) }.to change { model.count }.by(-records_count)
       end
     end
+
+    it 'deletes MergeRequest::CommitsMetadata records associated to project' do
+      another_project = create(:project, :repository)
+      create(:merge_request, source_project: another_project)
+
+      records_count = MergeRequest::CommitsMetadata.where(project_id: project.id).count
+
+      expect(records_count).not_to eq(0)
+
+      expect { destroy_project(project, user, {}) }
+        .to change { MergeRequest::CommitsMetadata.count }
+        .by(-records_count)
+
+      expect(MergeRequest::CommitsMetadata.count).not_to eq(0)
+    end
+
+    context 'when there are no MergeRequest::CommitsMetadata records associated to project' do
+      it 'does not delete MergeRequest::CommitsMetadata records' do
+        another_project = create(:project, :repository)
+
+        expect { destroy_project(another_project, user, {}) }
+          .not_to change { MergeRequest::CommitsMetadata.count }
+      end
+    end
+
+    context 'when merge_request_diff_commits_dedup is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'does not delete MergeRequest::CommitsMetadata records' do
+        expect { destroy_project(project, user, {}) }.not_to change { MergeRequest::CommitsMetadata.count }
+      end
+    end
   end
 
   context 'deleting a project with merge request diffs' do

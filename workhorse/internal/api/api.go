@@ -162,6 +162,9 @@ type Response struct {
 	// 'git push' and 'git pull'
 	GL_REPOSITORY string // nolint:stylecheck,revive // used as env variable
 
+	// Id of the pipeline build
+	GLBuildID string
+
 	// Id of the requested project
 	ProjectID int
 

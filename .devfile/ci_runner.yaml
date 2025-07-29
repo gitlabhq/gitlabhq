@@ -1,0 +1,75 @@
+schemaVersion: 2.2.0
+variables:
+  dockerHost: unix:///projects/.docker.sock
+  gdkRoot: /home/gitlab-workspaces/workspace/gitlab-development-kit
+components:
+  - name: gitlab-development-kit
+    attributes:
+      gl/inject-editor: true
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitlab-remote-workspace:main
+      memoryRequest: 10240M
+      memoryLimit: 16384M
+      cpuRequest: 2000m
+      cpuLimit: 6000m
+      env:
+        - name: GDK_CONFIG
+          value: |
+            runner:
+              enabled: true
+              docker_host: {{dockerHost}}
+            registry:
+              enabled: true
+              self_signed: false
+              auth_enabled: true
+        - name: DOCKER_HOST
+          value: "{{dockerHost}}"
+        - name: GDK_ROOT_DIR
+          value: "{{gdkRoot}}"
+      endpoints:
+        - name: ssh-2222
+          targetPort: 2222
+        - name: gdk-3000
+          targetPort: 3000
+        - name: docs-3005
+          targetPort: 3005
+        - name: pages-3010
+          targetPort: 3010
+        - name: vite-3038
+          targetPort: 3038
+        - name: workhorse-3333
+          targetPort: 3333
+        - name: registry-5100
+          targetPort: 5100
+        - name: jaeger-5778
+          targetPort: 5778
+        - name: nginx-8080
+          targetPort: 8080
+        - name: objects-9000
+          targetPort: 9000
+        - name: router-9393
+          targetPort: 9393
+  - name: sidecar-container
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitlab-remote-workspace:main
+      memoryRequest: 1024M
+      memoryLimit: 2048M
+      cpuRequest: 500m
+      cpuLimit: 1000m
+      command: ["sudo", "dockerd", "--host", "{{dockerHost}}", "--insecure-registry", "10.0.0.0/8"]
+      env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+commands:
+  - id: setup-workspace
+    exec:
+      component: gitlab-development-kit
+      commandLine: "[ -n \"$GDK_ROOT_DIR\" ] && {{gdkRoot}}/support/gitlab-remote-development/setup_workspace.sh"
+  - id: wait-for-setup
+    exec:
+      component: gitlab-development-kit
+      commandLine: "[ -n \"$GDK_ROOT_DIR\" ] && /home/gitlab-workspaces/.local/bin/mise x ruby -- {{gdkRoot}}/support/gitlab-remote-development/send_telemetry.rb"
+events:
+  postStart:
+    - setup-workspace
+    - wait-for-setup

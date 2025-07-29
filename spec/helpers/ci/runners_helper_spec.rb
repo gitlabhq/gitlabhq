@@ -234,8 +234,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
 
     context 'when the user has all permissions' do
       before do
-        allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(true)
-        allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(true)
+        allow(helper).to receive(:can?).with(user, :create_runners, project).and_return(true)
+        allow(helper).to receive(:can?).with(user, :create_runners, project.group).and_return(true)
         allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(true)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(true)
         allow(helper).to receive(:can?).with(user, :admin_group, project.group).and_return(true)
@@ -262,8 +262,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
 
     context 'when user cannot manage runners' do
       before do
-        allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(false)
-        allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_runners, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_runners, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :admin_group, project.group).and_return(false)

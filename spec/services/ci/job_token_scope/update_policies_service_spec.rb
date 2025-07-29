@@ -13,10 +13,6 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     described_class.new(project, current_user).execute(target, default_permissions, policies)
   end
 
-  before do
-    allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-  end
-
   describe '#execute' do
     shared_examples 'when user is not logged in' do
       let(:current_user) { nil }
@@ -82,20 +78,6 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
       it 'returns an error' do
         expect(execute).to be_error
         expect(execute.message).to eq('Job token policies must be a valid json schema')
-      end
-
-      it_behaves_like 'internal event not tracked'
-    end
-
-    shared_examples 'when job token policies are disabled' do
-      before do
-        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'returns an error and does not update the policies' do
-        expect(execute).to be_error
-        expect(execute.message).to eq('Failed to update job token scope')
-        expect(scope.reload.job_token_policies).to eq(%w[read_deployments])
       end
 
       it_behaves_like 'internal event not tracked'
@@ -199,7 +181,6 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           end
 
           it_behaves_like 'event tracking for project scope'
-          it_behaves_like 'when job token policies are disabled'
 
           context 'when default permissions are not updated' do
             let(:default_permissions) { true }
@@ -286,7 +267,6 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           end
 
           it_behaves_like 'event tracking for group scope'
-          it_behaves_like 'when job token policies are disabled'
 
           context 'when default permissions are not updated' do
             let(:default_permissions) { true }

@@ -3503,19 +3503,19 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'create_runner' do
+  describe 'create_runners' do
     context 'admin' do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_runner) }
+        it { is_expected.to be_allowed(:create_runners) }
 
         context 'with project runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['group'])
           end
 
-          it { is_expected.to be_allowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runners) }
         end
 
         context 'with specific project runner registration disabled' do
@@ -3523,26 +3523,26 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
             project.update!(runner_registration_enabled: false)
           end
 
-          it { is_expected.to be_allowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runners) }
         end
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:create_runners) }
 
       context 'with project runner registration disabled' do
         before do
           stub_application_setting(valid_runner_registrars: ['group'])
         end
 
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
 
       context 'with specific project runner registration disabled' do
@@ -3550,79 +3550,79 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           project.update!(runner_registration_enabled: false)
         end
 
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
     end
 
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:create_runners) }
     end
 
     %w[anonymous guest planner reporter developer].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
     end
   end
 
-  describe 'admin_project_runners' do
+  describe 'admin_runners' do
     context 'admin' do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_runner) }
+        it { is_expected.to be_allowed(:admin_runners) }
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:admin_runners) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:admin_runners) }
     end
 
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:admin_runners) }
     end
 
     %w[anonymous guest planner reporter developer].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:admin_runners) }
       end
     end
   end
 
-  describe 'read_project_runners' do
+  describe 'read_runners' do
     subject(:policy) { described_class.new(user, project) }
 
     context 'with maintainer' do
       let(:user) { maintainer }
 
-      it { is_expected.to be_allowed(:read_project_runners) }
+      it { is_expected.to be_allowed(:read_runners) }
     end
 
     context 'with admin', :enable_admin_mode do
       let(:user) { admin }
 
-      it { is_expected.to be_allowed(:read_project_runners) }
+      it { is_expected.to be_allowed(:read_runners) }
     end
 
     %w[non_member guest planner reporter].each do |role|
       context "with #{role}" do
         let(:user) { send(role) }
 
-        it { is_expected.to be_disallowed(:read_project_runners) }
+        it { is_expected.to be_disallowed(:read_runners) }
       end
     end
   end

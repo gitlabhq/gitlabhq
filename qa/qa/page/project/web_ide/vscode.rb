@@ -6,7 +6,7 @@ module QA
     module Project
       module WebIDE
         class VSCode < Page::Base
-          COMMIT_SUCCESS_MESSAGE = 'Success! Your changes have been committed and pushed to the remote repository.'
+          COMMIT_SUCCESS_MESSAGE = 'Your changes have been committed successfully.'
 
           view 'app/views/shared/_broadcast_message.html.haml' do
             element 'broadcast-notification-container'
@@ -102,7 +102,7 @@ module QA
           end
 
           def click_commit_button
-            click_element('div[aria-label="Commit and push to \'main\'"]')
+            click_element('div[aria-label^="Commit and push to"]')
           end
 
           def has_notification_box?
@@ -252,7 +252,7 @@ module QA
 
           def create_merge_request
             within_vscode_editor do
-              within_element('.notification-toast-container') do
+              within_element('.notification-toast-container:last-of-type') do
                 click_monaco_button('Create MR')
               end
             end

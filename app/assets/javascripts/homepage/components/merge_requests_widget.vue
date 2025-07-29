@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
@@ -11,6 +11,7 @@ export default {
     GlIcon,
     GlLink,
     GlBadge,
+    GlSprintf,
     VisibilityChangeDetector,
   },
   mixins: [timeagoMixin],
@@ -28,6 +29,7 @@ export default {
   data() {
     return {
       metadata: {},
+      hasError: false,
     };
   },
   apollo: {
@@ -42,7 +44,7 @@ export default {
         return currentUser;
       },
       error(error) {
-        this.$emit('fetch-metadata-error');
+        this.hasError = true;
         Sentry.captureException(error);
       },
     },
@@ -63,6 +65,7 @@ export default {
   },
   methods: {
     reload() {
+      this.hasError = false;
       this.$apollo.queries.metadata.refetch();
     },
   },
@@ -71,10 +74,23 @@ export default {
 
 <template>
   <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
-    <h4 class="gl-flex gl-items-center gl-gap-2">
+    <h4 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
       <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
     </h4>
-    <ul class="gl-list-none gl-p-0">
+    <p v-if="hasError" data-testid="error-message">
+      <gl-sprintf
+        :message="
+          s__(
+            'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the %{linkStart}dashboard%{linkEnd}.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="assignedToYouPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <ul v-else class="gl-list-none gl-p-0" data-testid="links-list">
       <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"

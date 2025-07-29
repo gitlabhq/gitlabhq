@@ -1875,7 +1875,6 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
 
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
-- Factories and their traits should produce valid objects that are [verified by shared specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_examples/models/factories_shared_examples.rb) run in every model spec.
 - Avoid the use of [`skip_callback`](https://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback) in factories.
   See [issue #247865](https://gitlab.com/gitlab-org/gitlab/-/issues/247865) for details.
 

@@ -9,6 +9,7 @@ module WebHooks
     urgency :low
     sidekiq_options retry: 3
     loggable_arguments 0, 2, 3
+    max_concurrency_limit_percentage 0.53
 
     idempotent!
 

@@ -74,20 +74,4 @@ RSpec.describe 'Cancel an reassignment of an import source user', feature_catego
 
     it_behaves_like 'a mutation that returns a top-level access error'
   end
-
-  context 'when feature flag `importer_user_mapping`` disabled' do
-    before do
-      stub_feature_flags(importer_user_mapping: false)
-    end
-
-    it 'returns a resource not available error' do
-      post_graphql_mutation(mutation, current_user: current_user)
-
-      expect(graphql_errors).to contain_exactly(
-        hash_including(
-          'message' => '`importer_user_mapping` feature flag is disabled.'
-        )
-      )
-    end
-  end
 end

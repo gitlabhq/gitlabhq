@@ -85,7 +85,7 @@ export default {
     },
     handleProjectSelect(items) {
       // hack: simulate a single select to prevent the dropdown from closing
-      // todo: switch back to single select when https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2363 is fixed
+      // todo: switch back to single select when https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2476 is fixed
       this.selectedProjects = [items[items.length - 1]];
     },
     handleMoveClick() {

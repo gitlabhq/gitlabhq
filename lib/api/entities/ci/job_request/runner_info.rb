@@ -5,7 +5,7 @@ module API
     module Ci
       module JobRequest
         class RunnerInfo < Grape::Entity
-          expose :metadata_timeout, as: :timeout
+          expose :timeout_value, as: :timeout
           expose :runner_session_url
         end
       end

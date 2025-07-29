@@ -3,8 +3,8 @@ import { mapState, mapActions } from 'pinia';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import DiffAppControls from '~/diffs/components/diff_app_controls.vue';
-import { DiffFile } from '~/rapid_diffs/diff_file';
-import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 
 const collapseAllFiles = () => {

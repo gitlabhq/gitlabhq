@@ -13,28 +13,28 @@ RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
 
   context 'for a non-EE spec file' do
     it 'registers no offenses' do
-      expect_no_offenses(<<~SOURCE, full_path('spec/foo_spec.rb'))
+      expect_no_offenses(<<~RUBY, full_path('spec/foo_spec.rb'))
         describe 'Foo' do
         end
-      SOURCE
+      RUBY
     end
   end
 
   context 'for a non-EE application file' do
     it 'registers no offenses' do
-      expect_no_offenses(<<~SOURCE, full_path('app/models/blog_post.rb'))
+      expect_no_offenses(<<~RUBY, full_path('app/models/blog_post.rb'))
         class BlogPost
         end
-      SOURCE
+      RUBY
     end
   end
 
   context 'for an EE application file' do
     it 'registers no offenses' do
-      expect_no_offenses(<<~SOURCE, full_path('ee/app/models/blog_post.rb'))
+      expect_no_offenses(<<~RUBY, full_path('ee/app/models/blog_post.rb'))
         class BlogPost
         end
-      SOURCE
+      RUBY
     end
   end
 
@@ -42,10 +42,10 @@ RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
     let(:spec_file_path) { full_path('ee/spec/controllers/foo_spec.rb') }
 
     it 'registers no offenses' do
-      expect_no_offenses(<<~SOURCE, spec_file_path)
+      expect_no_offenses(<<~RUBY, spec_file_path)
         describe 'Foo' do
         end
-      SOURCE
+      RUBY
     end
 
     context 'when there is a duplicate file' do
@@ -58,11 +58,11 @@ RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
       end
 
       it 'marks the describe as offending' do
-        expect_offense(<<~SOURCE, spec_file_path)
+        expect_offense(<<~RUBY, spec_file_path)
           describe 'Foo' do
           ^^^^^^^^^^^^^^ Duplicate spec location in `ee/spec/controllers/ee/foo_spec.rb`.
           end
-        SOURCE
+        RUBY
       end
     end
   end
@@ -71,10 +71,10 @@ RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
     let(:spec_file_path) { full_path('ee/spec/controllers/ee/foo_spec.rb') }
 
     it 'registers no offenses' do
-      expect_no_offenses(<<~SOURCE, spec_file_path)
+      expect_no_offenses(<<~RUBY, spec_file_path)
         describe 'Foo' do
         end
-      SOURCE
+      RUBY
     end
 
     context 'when there is a duplicate file' do
@@ -87,11 +87,11 @@ RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
       end
 
       it 'marks the describe as offending' do
-        expect_offense(<<~SOURCE, spec_file_path)
+        expect_offense(<<~RUBY, spec_file_path)
           describe 'Foo' do
           ^^^^^^^^^^^^^^ Duplicate spec location in `ee/spec/controllers/foo_spec.rb`.
           end
-        SOURCE
+        RUBY
       end
     end
   end

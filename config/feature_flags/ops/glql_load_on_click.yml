@@ -1,0 +1,9 @@
+---
+name: glql_load_on_click
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180921
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517914
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517546
+milestone: '17.9'
+type: ops
+group: group::knowledge
+default_enabled: false

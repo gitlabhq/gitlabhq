@@ -11,7 +11,6 @@ module Ci
         return unless partition
 
         sync_available_partitions_statuses!
-        return unless Feature.enabled?(:ci_auto_switch_to_dynamic_partitions, :instance)
 
         next_ci_partition = next_available_partition
         return unless next_ci_partition.present? && above_threshold?

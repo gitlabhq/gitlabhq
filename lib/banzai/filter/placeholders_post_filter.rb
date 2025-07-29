@@ -136,6 +136,7 @@ module Banzai
         node['href'] = new_href
 
         # the rich text editor needs to know what the original placeholders were
+        node['data-canonical-src'] = href
         node['data-placeholder'] = href
 
         sanitize_link(node)
@@ -174,9 +175,9 @@ module Banzai
         end
 
         node['data-src'] = new_url
-        node['data-canonical-src'] = url
 
         # the rich text editor needs to know what the original placeholders were
+        node['data-canonical-src'] = url
         node['data-placeholder'] = url
 
         sanitize_link(node)

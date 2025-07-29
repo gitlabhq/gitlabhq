@@ -68,6 +68,16 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
         expect(assigns(:labels).count).to eq(4)
       end
     end
+
+    context 'with archived labels' do
+      let_it_be(:archived_label) { create(:group_label, :archived, group: group, title: 'Archived Label') }
+
+      let_it_be(:params) { { group_id: group } }
+      let_it_be(:unarchived_labels) { [group_label_1] }
+      let_it_be(:all_labels) { [archived_label, group_label_1] }
+
+      it_behaves_like 'handles archived labels'
+    end
   end
 
   shared_examples 'when current_user does not have ability to modify the label' do

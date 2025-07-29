@@ -45908,6 +45908,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:
@@ -46757,16 +46760,16 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked_and_hidden:
-        type: string
+        type: boolean
         description: Whether the variable is masked and hidden
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string
@@ -46791,13 +46794,13 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string
@@ -48898,6 +48901,8 @@ definitions:
         type: string
       group_saml_identity:
         "$ref": "#/definitions/API_Entities_Identity"
+      group_scim_identity:
+        "$ref": "#/definitions/API_Entities_ScimIdentity"
       email:
         type: string
       is_using_seat:
@@ -48945,7 +48950,7 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
-      admin_security_labels:
+      admin_security_attributes:
         type: boolean
       manage_security_policy_link:
         type: boolean
@@ -48990,6 +48995,10 @@ definitions:
       read_crm_contact:
         type: boolean
       read_dependency:
+        type: boolean
+      read_admin_groups:
+        type: boolean
+      read_admin_projects:
         type: boolean
       read_code:
         type: boolean
@@ -65640,6 +65649,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:
@@ -65654,8 +65666,6 @@ definitions:
         type: string
       created_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
-      email_reset_offered_at:
-        type: string
       using_license_seat:
         type: string
       is_auditor:

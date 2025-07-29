@@ -7,9 +7,10 @@
 
 = render ::Layouts::PageHeadingComponent.new(@group.full_name) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
-      button_options: { data: { testid: 'edit-group-link' }}) do
-      = _('Edit')
+    - if current_user.can_admin_all_resources?
+      = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
+        button_options: { data: { testid: 'edit-group-link' }}) do
+        = _('Edit')
 
 .gl-grid.md:gl-grid-cols-2.gl-gap-5
   .gl-flex.gl-flex-col.gl-gap-5

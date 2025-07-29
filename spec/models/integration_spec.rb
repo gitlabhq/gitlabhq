@@ -434,20 +434,6 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.build_from_integration' do
-    context 'when integration is invalid' do
-      let(:invalid_integration) do
-        build(:prometheus_integration, :instance, active: true, properties: {})
-          .tap { |integration| integration.save!(validate: false) }
-      end
-
-      it 'sets integration to inactive' do
-        integration = described_class.build_from_integration(invalid_integration, project_id: project.id)
-
-        expect(integration).to be_valid
-        expect(integration.active).to be false
-      end
-    end
-
     context 'when integration is an instance-level integration' do
       let(:instance_integration) { create(:jira_integration, :instance) }
 
@@ -602,7 +588,7 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.create_from_default_integrations' do
-    let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+    let!(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki') }
     let!(:instance_level_instance_specific_integration) { create(:beyond_identity_integration) }
 
     it 'creates integrations from default integrations' do
@@ -628,13 +614,13 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '.create_from_active_default_integrations' do
     context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+      let!(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki') }
 
       it 'creates an integration from the instance-level integration' do
         described_class.create_from_active_default_integrations(project, :project_id)
 
         expect(project.reload.integrations.size).to eq(1)
-        expect(project.reload.integrations.first.api_url).to eq(instance_integration.api_url)
+        expect(project.reload.integrations.first.confluence_url).to eq(instance_integration.confluence_url)
         expect(project.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
@@ -643,19 +629,19 @@ RSpec.describe Integration, feature_category: :integrations do
           described_class.create_from_active_default_integrations(group, :group_id)
 
           expect(group.reload.integrations.size).to eq(1)
-          expect(group.reload.integrations.first.api_url).to eq(instance_integration.api_url)
+          expect(group.reload.integrations.first.confluence_url).to eq(instance_integration.confluence_url)
           expect(group.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
         end
       end
 
       context 'with an active group-level integration' do
-        let!(:group_integration) { create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/') }
+        let!(:group_integration) { create(:confluence_integration, :group, group: group, confluence_url: 'https://group.atlassian.net/wiki') }
 
         it 'creates an integration from the group-level integration' do
           described_class.create_from_active_default_integrations(project, :project_id)
 
           expect(project.reload.integrations.size).to eq(1)
-          expect(project.reload.integrations.first.api_url).to eq(group_integration.api_url)
+          expect(project.reload.integrations.first.confluence_url).to eq(group_integration.confluence_url)
           expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
@@ -678,7 +664,7 @@ RSpec.describe Integration, feature_category: :integrations do
             described_class.create_from_active_default_integrations(subgroup, :group_id)
 
             expect(subgroup.reload.integrations.size).to eq(1)
-            expect(subgroup.reload.integrations.first.api_url).to eq(group_integration.api_url)
+            expect(subgroup.reload.integrations.first.confluence_url).to eq(group_integration.confluence_url)
             expect(subgroup.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
           end
         end
@@ -687,13 +673,13 @@ RSpec.describe Integration, feature_category: :integrations do
           let_it_be(:subgroup) { create(:group, parent: group) }
           let_it_be(:project) { create(:project, group: subgroup) }
 
-          let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup_integration) { create(:confluence_integration, :group, group: subgroup, confluence_url: 'https://subgroup.atlassian.net/wiki') }
 
           it 'creates an integration from the subgroup-level integration' do
             described_class.create_from_active_default_integrations(project, :project_id)
 
             expect(project.reload.integrations.size).to eq(1)
-            expect(project.reload.integrations.first.api_url).to eq(subgroup_integration.api_url)
+            expect(project.reload.integrations.first.confluence_url).to eq(subgroup_integration.confluence_url)
             expect(project.reload.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
 
@@ -708,14 +694,14 @@ RSpec.describe Integration, feature_category: :integrations do
                   sub_subgroup.reload
 
                   expect(sub_subgroup.integrations.size).to eq(1)
-                  expect(sub_subgroup.integrations.first.api_url).to eq(subgroup_integration.api_url)
+                  expect(sub_subgroup.integrations.first.confluence_url).to eq(subgroup_integration.confluence_url)
                   expect(sub_subgroup.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
                 end
 
                 context 'when having an integration inheriting settings' do
                   let!(:subgroup_integration) do
-                    create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id,
-                      api_url: 'https://prometheus.subgroup.com/')
+                    create(:confluence_integration, :group, group: subgroup, inherit_from_id: group_integration.id,
+                      confluence_url: 'https://subgroup.atlassian.net/wiki')
                   end
 
                   it 'creates an integration from the group-level integration' do
@@ -724,7 +710,7 @@ RSpec.describe Integration, feature_category: :integrations do
                     sub_subgroup.reload
 
                     expect(sub_subgroup.integrations.size).to eq(1)
-                    expect(sub_subgroup.integrations.first.api_url).to eq(group_integration.api_url)
+                    expect(sub_subgroup.integrations.first.confluence_url).to eq(group_integration.confluence_url)
                     expect(sub_subgroup.integrations.first.inherit_from_id).to eq(group_integration.id)
                   end
                 end
@@ -852,7 +838,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       context 'when the integration is not instance specific' do
-        let!(:instance_integration) { create(:prometheus_integration, :instance) }
+        let!(:instance_integration) { create(:confluence_integration, :instance) }
 
         it 'does not create an integration from the instance level instance specific integration' do
           described_class.create_from_default_instance_specific_integrations(project, :project_id)
@@ -868,18 +854,18 @@ RSpec.describe Integration, feature_category: :integrations do
     let_it_be(:subgroup_2) { create(:group, parent: group) }
     let_it_be(:project_1) { create(:project, group: subgroup_1) }
     let_it_be(:project_2) { create(:project, group: subgroup_2) }
-    let_it_be(:group_integration) { create(:prometheus_integration, :group, group: group) }
+    let_it_be(:group_integration) { create(:confluence_integration, :group, group: group) }
     let_it_be(:subgroup_integration_1) do
-      create(:prometheus_integration, :group, group: subgroup_1, inherit_from_id: group_integration.id)
+      create(:confluence_integration, :group, group: subgroup_1, inherit_from_id: group_integration.id)
     end
 
-    let_it_be(:subgroup_integration_2) { create(:prometheus_integration, :group, group: subgroup_2) }
+    let_it_be(:subgroup_integration_2) { create(:confluence_integration, :group, group: subgroup_2) }
     let_it_be(:project_integration_1) do
-      create(:prometheus_integration, project: project_1, inherit_from_id: group_integration.id)
+      create(:confluence_integration, project: project_1, inherit_from_id: group_integration.id)
     end
 
     let_it_be(:project_integration_2) do
-      create(:prometheus_integration, project: project_2, inherit_from_id: subgroup_integration_2.id)
+      create(:confluence_integration, project: project_2, inherit_from_id: subgroup_integration_2.id)
     end
 
     it 'returns the groups and projects inheriting from integration ancestors', :aggregate_failures do
@@ -894,13 +880,13 @@ RSpec.describe Integration, feature_category: :integrations do
     let_it_be(:project) { create(:project, :in_subgroup) }
     let(:group) { project.root_namespace }
     let(:subgroup) { project.group }
-    let!(:group_integration) { create(:prometheus_integration, :group, group: group) }
+    let!(:group_integration) { create(:confluence_integration, :group, group: group) }
     let!(:subgroup_integration) do
-      create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+      create(:confluence_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
     end
 
     let!(:project_custom_settings_integration) do
-      create(:prometheus_integration, project: project, inherit_from_id: nil)
+      create(:confluence_integration, project: project, inherit_from_id: nil)
     end
 
     it 'returns integrations for descendants of the group of the integration' do

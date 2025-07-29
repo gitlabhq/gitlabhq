@@ -2,6 +2,7 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import logo from '../../../../views/shared/_logo.svg?raw';
 
 export default {
@@ -21,12 +22,17 @@ export default {
       default: '',
     },
   },
+  computed: {
+    homepageTooltip() {
+      return hasTouchCapability() ? null : this.$options.i18n.homepage;
+    },
+  },
 };
 </script>
 
 <template>
   <a
-    v-gl-tooltip:super-sidebar.right="$options.i18n.homepage"
+    v-gl-tooltip:super-sidebar.right="homepageTooltip"
     class="brand-logo gl-inline-block gl-rounded-base gl-border-none gl-bg-transparent gl-p-2 focus:gl-focus active:gl-focus"
     :href="rootPath"
     data-track-action="click_link"

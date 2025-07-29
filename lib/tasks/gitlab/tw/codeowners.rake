@@ -76,6 +76,7 @@ namespace :tw do
       CodeOwnerRule.new('Hosted Runners', '@rsarangadharan'),
       CodeOwnerRule.new('Seat Management', '@lciutacu'),
       # CodeOwnerRule.new('Security Infrastructure', ''),
+      CodeOwnerRule.new('Security Platform Management', '@rlehmann1'),
       CodeOwnerRule.new('Security Policies', '@rlehmann1'),
       CodeOwnerRule.new('Secret Detection', '@phillipwells'),
       CodeOwnerRule.new('Security Insights', '@rlehmann1'),

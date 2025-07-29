@@ -2602,4 +2602,25 @@ describe('legacyDiffs actions', () => {
       });
     });
   });
+
+  describe('setCurrentFileHash', () => {
+    it('commits SET_CURRENT_DIFF_FILE if hash does not start with note_', () => {
+      return testAction(
+        store.setCurrentFileHash,
+        'filehash',
+        {},
+        [
+          {
+            type: store[types.SET_CURRENT_DIFF_FILE],
+            payload: 'filehash',
+          },
+        ],
+        [],
+      );
+    });
+
+    it('does not commit SET_CURRENT_DIFF_FILE if hash starts with note_', () => {
+      return testAction(store.setCurrentFileHash, 'note_filehash', {}, [], []);
+    });
+  });
 });

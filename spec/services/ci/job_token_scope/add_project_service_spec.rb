@@ -24,26 +24,6 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       expect(project_link.default_permissions).to eq(default_permissions)
       expect(project_link.job_token_policies).to eq(policies)
     end
-
-    context 'when job token policies are disabled' do
-      before do
-        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'adds the project to the scope but without the policies', :aggregate_failures do
-        expect { result }.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
-
-        expect(result).to be_success
-
-        project_link = result.payload[:project_link]
-
-        expect(project_link.source_project).to eq(project)
-        expect(project_link.target_project).to eq(target_project)
-        expect(project_link.added_by).to eq(current_user)
-        expect(project_link.default_permissions).to be(true)
-        expect(project_link.job_token_policies).to eq([])
-      end
-    end
   end
 
   shared_examples 'event tracking' do
@@ -79,10 +59,6 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
     subject(:result) { service.execute(target_project, default_permissions: default_permissions, policies: policies) }
 
     let(:default_permissions) { false }
-
-    before do
-      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
 
     it_behaves_like 'editable job token scope' do
       context 'when user has permissions on source and target projects' do

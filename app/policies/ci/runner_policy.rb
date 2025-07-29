@@ -5,9 +5,20 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
-    with_options score: 20
-    condition(:owned_runner) do
-      @user.runner_available?(@subject)
+    condition(:can_admin_runner) do
+      # Check global admin_runner permission for instance runners
+      runner_owner = @subject.instance_type? ? :global : @subject.owner
+
+      can?(:admin_runners, runner_owner)
+    end
+
+    with_score 20
+    condition(:runner_available) do
+      runner = @subject.is_a?(Ci::RunnerPresenter) ? @subject.__getobj__ : @subject
+
+      # TODO: use User#ci_available_project_runners once the optimize_ci_owned_project_runners_query FF is removed
+      # (https://gitlab.com/gitlab-org/gitlab/-/issues/551320)
+      @user.ci_available_runners.include?(runner)
     end
 
     condition(:creator) do
@@ -39,7 +50,7 @@ module Ci
       @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.exists?
     end
 
-    with_options score: 10
+    with_score 10
     condition(:any_associated_projects_in_group_runner_inheriting_group_runners) do
       # Check if any projects where user is a maintainer+ are inheriting group runners
       @subject.groups&.any? do |group|
@@ -50,16 +61,18 @@ module Ci
       end
     end
 
-    with_options score: 6
+    with_score 6
     condition(:maintainer_in_any_associated_projects) do
+      next true if maintainer_in_owner_scope?
+
       # Check if runner is associated to any projects where user is a maintainer+
       @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
     end
 
-    with_options score: 6
-    condition(:maintainer_in_owner_project) do
-      # Check if user is a maintainer+ in the project owning the runner
-      @user.authorized_projects(Gitlab::Access::MAINTAINER).id_in(@subject.owner).exists?
+    with_score 5
+    condition(:maintainer_in_owner_scope) do
+      # Check if user is a maintainer+ in the scope owning the runner
+      can?(:maintainer_access, @subject.owner)
     end
 
     with_score 6
@@ -75,10 +88,27 @@ module Ci
 
     rule { anonymous }.prevent_all
 
-    rule { admin | owned_runner }.policy do
+    # NOTE: The `is_project_runner & belongs_to_multiple_projects & ` part is an optimization to avoid the
+    # `runner_available` condition, which is much more expensive than the `can_admin_runner` one.
+    # We can do this because:
+    # - it doesn't handle instance runners.
+    # - it handles group runners, but those only have a single group associated
+    #   (and can be handled by the `can_admin_runner` rule).
+    # - this leaves project runners. If they have a single associated project
+    #   (the owner project, the can_admin_runner condition will be true).
+    # So only if the runner has multiple projects is this rule useful at all.
+    rule { is_project_runner & belongs_to_multiple_projects & runner_available }.policy do
       enable :read_builds
-
       enable :read_runner
+
+      enable :assign_runner
+      enable :update_runner
+    end
+
+    rule { admin | can_admin_runner }.policy do
+      enable :read_builds
+      enable :read_runner
+
       enable :assign_runner
       enable :update_runner
       enable :delete_runner
@@ -92,20 +122,20 @@ module Ci
       enable :read_runner
     end
 
-    rule { is_project_runner & maintainer_in_owner_project }.policy do
-      enable :update_runner
-    end
-
-    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
-      enable :read_runner
-    end
-
     rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
       enable :read_runner
     end
 
     rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
       enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
+      enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_owner_scope }.policy do
+      enable :update_runner
     end
 
     rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner

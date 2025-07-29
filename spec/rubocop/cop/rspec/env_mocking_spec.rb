@@ -21,14 +21,14 @@ RSpec.describe RuboCop::Cop::RSpec::EnvMocking, feature_category: :tooling do
 
   shared_examples 'cop offense mocking the ENV constant correctable with stub_env' do |content, autocorrected_content|
     it "registers an offense for `#{content}` and corrects", :aggregate_failures do
-      expect_offense(<<~CODE, content: content)
+      expect_offense(<<~RUBY, content: content)
         %{content}
         ^{content} Don't mock the ENV, use `stub_env` instead.
-      CODE
+      RUBY
 
-      expect_correction(<<~CODE)
+      expect_correction(<<~RUBY)
         #{autocorrected_content}
-      CODE
+      RUBY
     end
   end
 

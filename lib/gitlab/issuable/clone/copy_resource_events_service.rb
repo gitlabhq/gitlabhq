@@ -21,19 +21,20 @@ module Gitlab
         private
 
         def namespace_id_for_new_entity(new_entity)
-          case new_entity
-          when Issue
-            new_entity.namespace_id
-          else
-            raise StandardError, "Copying resource events for #{new_entity.class.name} is not supported yet"
-          end
+          Gitlab::Issuable::NamespaceGetter.new(new_entity, excluded_issuable_types: [MergeRequest]).namespace_id
         end
 
         def copy_resource_label_events
+          new_namespace_id = namespace_id_for_new_entity(new_entity)
+
           copy_events(ResourceLabelEvent.table_name, original_entity.resource_label_events) do |event|
             event.attributes
               .except(*(blocked_resource_event_attributes + %w[reference reference_html]))
-              .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
+              .merge(
+                entity_key => new_entity.id,
+                'action' => ResourceLabelEvent.actions[event.action],
+                'namespace_id' => new_namespace_id
+              )
           end
         end
 

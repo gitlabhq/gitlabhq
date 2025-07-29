@@ -21,6 +21,11 @@ export const validateQueryString = (queryStringObj) => {
         const runnerTypesValueValid = jobRunnerTypeValues.includes(runnerTypesValue);
         return runnerTypesValueValid ? { ...acc, runnerTypes: runnerTypesValue } : acc;
       }
+      case 'kind': {
+        const jobKindValue = queryStringValue.toUpperCase();
+        const jobKindValueValid = ['BUILD', 'BRIDGE'].includes(jobKindValue);
+        return jobKindValueValid ? { ...acc, kind: jobKindValue } : acc;
+      }
       case 'name': {
         return { ...acc, name: queryStringValue };
       }

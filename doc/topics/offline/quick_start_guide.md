@@ -225,7 +225,7 @@ for offline environments.
 
 ### Configure NTP
 
-Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect/configure.md#customize-time-server-setting) on the Gitaly
+Gitaly Cluster (Praefect) assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect/configure.md#customize-time-server-setting) on the Gitaly
 and Praefect servers so they can use an accessible NTP server.
 
 On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting/common.md#can-geo-detect-the-current-site-correctly)
@@ -246,8 +246,8 @@ Note the following in relation to use of the Package Metadata Database:
 
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
 
-- License Scanning - prod-export-license-bucket-1a6c642fc4de57d4
-- Dependency Scanning - prod-export-advisory-bucket-1a6c642fc4de57d4
+- License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
+- Dependency Scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`
 
 ### Using the gsutil tool to download the package metadata exports
 

@@ -14,8 +14,12 @@ module ContainerRegistry
 
       belongs_to :project, inverse_of: :container_registry_protection_tag_rules
 
-      validates :tag_name_pattern, presence: true, uniqueness: { scope: :project_id }, length: { maximum: 100 }
+      validates :tag_name_pattern, presence: true, length: { maximum: 100 }
       validates :tag_name_pattern, untrusted_regexp: true
+      validates :tag_name_pattern, uniqueness: {
+        scope: :project_id,
+        conditions: ->(obj) { merge(obj.uniqueness_scope) }
+      }
 
       validate :validate_access_levels
 
@@ -63,6 +67,10 @@ module ContainerRegistry
 
       def matches_tag_name?(name)
         ::Gitlab::UntrustedRegexp.new(tag_name_pattern).match?(name)
+      end
+
+      def uniqueness_scope
+        self.class.mutable
       end
 
       private

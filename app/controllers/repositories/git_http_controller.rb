@@ -78,7 +78,11 @@ module Repositories
 
     def render_ok
       set_workhorse_internal_api_content_type
-      render json: Gitlab::Workhorse.git_http_ok(repository, repo_type, user, action_name)
+
+      params = { authentication_context: authentication_result.authentication_context }
+      yield(params) if block_given?
+
+      render json: Gitlab::Workhorse.git_http_ok(repository, repo_type, user, action_name, **params)
     end
 
     def render_403_with_exception(exception)

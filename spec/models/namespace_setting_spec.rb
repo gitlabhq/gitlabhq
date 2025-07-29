@@ -210,14 +210,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: true)
       end
 
-      around do |example|
-        travel_to(Time.current.change(hour: 10)) do
-          example.run
-        end
-      end
-
-      let(:valid_times) { [1.day.from_now + 1.second, 30.days.from_now, 1.year.from_now - 1.day] }
-      let(:invalid_times) { [nil, 1.minute.ago, Time.current, 1.hour.from_now, 1.year.from_now] }
+      let(:valid_times) { [1.day.from_now, 30.days.from_now, 1.year.from_now - 1.day] }
+      let(:invalid_times) { [nil, 1.day.ago, Time.zone.today, 1.year.from_now] }
 
       it 'does not allow invalid expiration times' do
         invalid_times.each do |time|

@@ -27,7 +27,7 @@
     - c.with_body do
       = render 'ci/variables/index', save_endpoint: group_variables_path
 
-- if can?(current_user, :admin_runner, @group)
+- if can?(current_user, :admin_runners, @group)
   = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
     id: 'runners-settings',
     expanded: expanded) do |c|

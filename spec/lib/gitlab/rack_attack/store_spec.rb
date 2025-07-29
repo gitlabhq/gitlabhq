@@ -105,6 +105,7 @@ RSpec.describe Gitlab::RackAttack::Store, :clean_gitlab_redis_rate_limiting, fea
           custom: { instrumentation_class: Gitlab::Redis::RateLimiting.instrumentation_class }
         )
         allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(broken_redis)
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
       end
 
       it { expect(subject).to eq(nil) }

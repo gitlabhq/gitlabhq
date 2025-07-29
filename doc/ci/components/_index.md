@@ -284,6 +284,9 @@ While it's possible for a component to use other components in turn, make sure t
   all the time and that consumers of your component get consistent behavior.
 - Update your dependencies regularly by pinning them to newer releases. Then publish a new release of your components with updated
   dependencies.
+- Evaluate the permissions of dependencies, and use dependencies that require the least amount of permissions.
+  For example, if you need to build an image, consider using [Buildah](https://buildah.io/) instead of Docker, so that you don't
+  require a Runner with a privileged Docker daemon.
 
 ### Write a clear `README.md`
 

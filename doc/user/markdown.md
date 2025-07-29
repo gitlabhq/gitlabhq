@@ -689,21 +689,21 @@ When rendered, the examples look similar to:
 Using link references:
 
 <!--
-The following codeblock uses HTML to skip the Vale ReferenceLinks test.
-Do not change it back to a markdown codeblock.
+The following codeblock uses extra spaces to avoid the Vale ReferenceLinks test.
+Do not remove the two-space nesting.
 -->
 
-<pre class="highlight"><code>
-- This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
-- You can [use numbers for reference-style link definitions, see below][1]
-- Or leave it empty and use the [link text itself][], see below.
+  ```markdown
+  - This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
+  - You can [use numbers for reference-style link definitions, see below][1]
+  - Or leave it empty and use the [link text itself][], see below.
 
-Some text to show that the reference links can follow later.
+  Some text to show that the reference links can follow later.
 
-&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-&#91;1]: https://slashdot.org
-&#91;link text itself]: https://about.gitlab.com/
-</code></pre>
+  [arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+  [1]: https://slashdot.org
+  [link text itself]: https://about.gitlab.com/
+  ```
 
 <!--
 The example below uses in-line links to pass the Vale ReferenceLinks test.
@@ -1990,9 +1990,9 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{project_namespace}`    | `gitlab-org`        | Project namespace of a project |
 | `%{project_title}`        | `GitLab`            | Title of a project |
 | `%{group_name}`           | `gitlab-org`        | Group of a project |
-| `%{default_branch}`       | `master`            | Default branch name configured for a project’s repository |
-| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project’s repository |
-| `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project’s repository |
+| `%{default_branch}`       | `main`              | Default branch name configured for a project's repository |
+| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
+| `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
 
 ## Escape characters
 

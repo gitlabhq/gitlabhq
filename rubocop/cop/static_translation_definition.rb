@@ -88,7 +88,7 @@ module RuboCop
       private
 
       def memoized?(node)
-        node.type == :or_asgn
+        node.or_asgn_type?
       end
 
       def dynamic?(node, memoized)
@@ -109,11 +109,11 @@ module RuboCop
       end
 
       def instance_method_definition?(node)
-        node.type == :def
+        node.def_type?
       end
 
       def unmemoized_class_method_definition?(node, memoized)
-        node.type == :defs && !memoized
+        node.defs_type? && !memoized
       end
     end
   end

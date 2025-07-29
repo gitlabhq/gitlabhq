@@ -9,6 +9,8 @@ RSpec.describe Gitlab::CircuitBreaker::Store, :clean_gitlab_redis_rate_limiting,
 
   shared_examples 'reliable circuit breaker store method' do
     it 'does not raise an error when Redis::BaseConnectionError is encountered' do
+      allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
       allow(Gitlab::Redis::RateLimiting)
         .to receive(:with)
         .and_raise(Redis::BaseConnectionError)

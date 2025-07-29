@@ -878,7 +878,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:cache_key) { cache.cache_key(:merged_branch_names) }
 
     before do
-      allow(repository.raw_repository).to receive(:merged_branch_names).with(branch_names).and_return(already_merged)
+      allow(repository.raw_repository).to receive(:merged_branch_names).with(branch_names, include_identical: false).and_return(already_merged)
     end
 
     it { is_expected.to eq(already_merged) }
@@ -944,7 +944,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     context "cache is partially complete" do
       before do
-        allow(repository.raw_repository).to receive(:merged_branch_names).with(["boop"]).and_return([])
+        allow(repository.raw_repository).to receive(:merged_branch_names).with(["boop"], hash_including(include_identical: anything)).and_return([])
         hash = write_hash.except("boop")
         cache.write(:merged_branch_names, hash)
       end
@@ -952,9 +952,40 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to eq(already_merged) }
 
       it "does fetch from the disk" do
-        expect(repository.raw_repository).to receive(:merged_branch_names).with(["boop"])
+        expect(repository.raw_repository).to receive(:merged_branch_names).with(["boop"], include_identical: false)
 
         subject
+      end
+    end
+
+    context "with include_identical" do
+      let(:root_ref) { repository.root_ref }
+      let(:identical_branch) { 'identical-branch' }
+      let(:stale_branch) { 'stale-branch' }
+
+      before do
+        allow(repository.raw_repository)
+          .to receive(:merged_branch_names)
+          .and_call_original
+
+        repository.create_branch(identical_branch, root_ref)
+        repository.create_branch(stale_branch, 'HEAD~1')
+      end
+
+      context 'when include_identical: true' do
+        it 'includes branches identical to root ref' do
+          merged = repository.merged_branch_names([identical_branch, stale_branch], include_identical: true)
+
+          expect(merged).to match_array([identical_branch, stale_branch])
+        end
+      end
+
+      context 'when include_identical: false' do
+        it 'excludes branches identical to root ref' do
+          merged = repository.merged_branch_names([identical_branch, stale_branch], include_identical: false)
+
+          expect(merged).to match_array([stale_branch])
+        end
       end
     end
 

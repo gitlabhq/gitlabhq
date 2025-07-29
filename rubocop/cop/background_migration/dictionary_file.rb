@@ -9,6 +9,22 @@ module RuboCop
   module Cop
     module BackgroundMigration
       # Checks the batched background migration has the corresponding dictionary file
+      #
+      # @example
+      #   # bad
+      #   # Invalid dictionary file missing required keys:
+      #   # ---
+      #   # name: :SomethingWrong
+      #   # note: :just some note
+      #
+      #   # good
+      #   # Valid dictionary file structure:
+      #   # ---
+      #   # table_name: <Database table name>
+      #   # feature_category:
+      #       - <List of feature categories using this table.>
+      #   # introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXXX
+      #   # milestone: '17.5'
       class DictionaryFile < RuboCop::Cop::Base
         include MigrationHelpers
 

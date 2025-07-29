@@ -39,7 +39,7 @@ module RuboCop
       private
 
       def container_block_for(current_node)
-        current_node = current_node.parent until current_node.type == :block && current_node.method?(:strong_memoize)
+        current_node = current_node.parent until current_node.block_type? && current_node.method?(:strong_memoize)
 
         current_node
       end

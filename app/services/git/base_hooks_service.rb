@@ -100,6 +100,7 @@ module Git
           ref: ref,
           variables_attributes: ci_push_options.variables,
           push_options: ci_push_options,
+          gitaly_context: gitaly_context,
           checkout_sha: Gitlab::DataBuilder::Push.checkout_sha(
             project.repository, newrev, ref)
         }

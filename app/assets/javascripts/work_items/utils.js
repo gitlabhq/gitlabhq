@@ -29,6 +29,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -93,6 +94,9 @@ export const findLabelsWidget = (workItem) =>
 
 export const findLinkedItemsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
+
+export const findLinkedResourcesWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_RESOURCES);
 
 export const findMilestoneWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);

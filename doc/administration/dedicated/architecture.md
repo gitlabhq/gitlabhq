@@ -41,7 +41,7 @@ GitLab team members with edit access can update the [source](https://lucid.app/l
 
 ### Gitaly setup
 
-GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster), not a Gitaly Cluster. In this setup:
+GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect), not in a Gitaly Cluster (Praefect) configuration.
 
 - Customer repositories are spread across multiple virtual machines.
 - GitLab manages [storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored) on behalf of the customer.

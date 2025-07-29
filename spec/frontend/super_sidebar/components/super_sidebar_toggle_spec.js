@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import * as touchDetection from '~/lib/utils/touch_detection';
 import { JS_TOGGLE_COLLAPSE_CLASS, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
@@ -51,15 +52,56 @@ describe('SuperSidebarToggle component', () => {
     });
   });
 
-  describe('tooltip', () => {
-    it('displays "Hide sidebar" when type is collapse', () => {
-      createWrapper({ type: 'collapse' });
-      expect(getTooltip().title).toBe('Hide sidebar');
+  describe('tooltip behavior', () => {
+    beforeEach(() => {
+      jest.spyOn(touchDetection, 'hasTouchCapability');
     });
 
-    it('displays "Keep sidebar visible" when type is expand', () => {
-      createWrapper();
-      expect(getTooltip().title).toBe('Keep sidebar visible');
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    describe('on non-touch devices', () => {
+      beforeEach(() => {
+        touchDetection.hasTouchCapability.mockReturnValue(false);
+      });
+
+      it('displays "Hide sidebar" when type is collapse', () => {
+        createWrapper({ type: 'collapse' });
+        expect(getTooltip().title).toBe('Hide sidebar');
+        expect(getTooltip().placement).toBe('bottom');
+        expect(getTooltip().container).toBe('super-sidebar');
+      });
+
+      it('displays "Keep sidebar visible" when type is expand', () => {
+        createWrapper();
+        expect(getTooltip().title).toBe('Keep sidebar visible');
+        expect(getTooltip().placement).toBe('right');
+      });
+    });
+
+    describe('on touch devices', () => {
+      beforeEach(() => {
+        touchDetection.hasTouchCapability.mockReturnValue(true);
+      });
+
+      it('disables tooltip when type is expand', () => {
+        createWrapper({ type: 'expand' });
+
+        expect(getTooltip()).toBeNull();
+      });
+
+      it('disables tooltip when type is collapse', () => {
+        createWrapper({ type: 'collapse' });
+
+        expect(getTooltip()).toBeNull();
+      });
+
+      it('calls hasTouchCapability when computing tooltip', () => {
+        createWrapper();
+
+        expect(touchDetection.hasTouchCapability).toHaveBeenCalled();
+      });
     });
   });
 

@@ -1,16 +1,40 @@
 import { GlSprintf } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import Vue, { nextTick } from 'vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import WikiHeader from '~/wikis/components/wiki_header.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { queryVariables, wikiPageQueryMockData } from '../notes/mock_data';
 
+Vue.use(VueApollo);
 describe('wikis/components/wiki_header', () => {
   let wrapper;
+  let fakeApollo;
 
-  function buildWrapper(provide = {}) {
+  const mockToastShow = jest.fn();
+
+  function buildWrapper(provide = {}, mockQueryData = {}) {
+    fakeApollo = createMockApollo([
+      [
+        wikiPageQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            wikiPage: wikiPageQueryMockData,
+            ...mockQueryData,
+          },
+        }),
+      ],
+    ]);
+
     wrapper = shallowMountExtended(WikiHeader, {
+      apolloProvider: fakeApollo,
       provide: {
         pageHeading: 'Wiki page heading',
+        queryVariables,
         isPageTemplate: false,
         isEditingPath: false,
         showEditButton: true,
@@ -30,11 +54,17 @@ describe('wikis/components/wiki_header', () => {
         TimeAgo,
         PageHeading,
       },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
+      },
     });
   }
 
   const findPageHeading = () => wrapper.findByTestId('page-heading');
   const findEditButton = () => wrapper.findByTestId('wiki-edit-button');
+  const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
 
   describe('renders', () => {
@@ -60,6 +90,100 @@ describe('wikis/components/wiki_header', () => {
       buildWrapper({ lastVersion: false });
 
       expect(findLastVersion().exists()).toBe(false);
+    });
+  });
+
+  describe('subscribe button functionality', () => {
+    let mutateSpy;
+
+    beforeEach(async () => {
+      buildWrapper();
+      mutateSpy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
+
+      await nextTick();
+    });
+
+    afterEach(() => {
+      mutateSpy.mockRestore();
+    });
+
+    it('calls apollo with the correct variables when the subscribe button is clicked', () => {
+      findSubscribeButton().vm.$emit('click');
+
+      expect(mutateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            id: 'gid://gitlab/WikiPage/1',
+            subscribed: true,
+          },
+        }),
+      );
+    });
+
+    it('calls apollo with the correct variables when the unsubscribe button is clicked', async () => {
+      const id = 'gid://gitlab/WikiPage/1';
+      buildWrapper(
+        {},
+        {
+          wikiPage: {
+            ...wikiPageQueryMockData,
+            id,
+            subscribed: true,
+          },
+        },
+      );
+
+      const spy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
+
+      await wrapper.vm.$apollo.queries.wikiPage.refetch();
+      await nextTick();
+
+      findSubscribeButton().vm.$emit('click');
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            id,
+            subscribed: false,
+          },
+        }),
+      );
+    });
+
+    it('calls the toast method if the mutation succeeds', async () => {
+      mutateSpy.mockResolvedValue();
+      findSubscribeButton().vm.$emit('click');
+
+      await wrapper.vm.$apollo.queries.wikiPage.refetch();
+      await nextTick();
+
+      expect(mockToastShow).toHaveBeenCalled();
+    });
+
+    it('calls the toast method and captures error if the mutation fails', async () => {
+      const error = new Error('An error occurred');
+      mutateSpy.mockRejectedValue(error);
+      const sentrySpy = jest.spyOn(Sentry, 'captureException');
+
+      findSubscribeButton().vm.$emit('click');
+
+      await wrapper.vm.$apollo.queries.wikiPage.refetch();
+      await nextTick();
+
+      expect(mockToastShow).toHaveBeenCalled();
+      expect(sentrySpy).toHaveBeenCalledWith(error);
+    });
+
+    it('does not call the apollo mutate method if the state of the subscription has not been resolved', () => {
+      expect(mutateSpy).toHaveBeenCalledTimes(0);
+
+      // first click
+      findSubscribeButton().vm.$emit('click');
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+
+      // second click, while the subscription state is still resolving
+      findSubscribeButton().vm.$emit('click');
+      // there should be no second mutation call
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

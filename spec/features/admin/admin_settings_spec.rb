@@ -289,6 +289,19 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(page).to have_current_path(general_admin_application_settings_path, ignore_query: true)
       end
 
+      context 'for project and group access tokens settings' do
+        it 'changes inactive_resource_access_tokens_delete_after_days' do
+          expect(current_settings.inactive_resource_access_tokens_delete_after_days).to eq 30
+
+          within_testid('account-and-limit-settings-content') do
+            fill_in 'Inactive project and group access token retention period', with: '42'
+            click_button 'Save changes'
+          end
+
+          expect(current_settings.inactive_resource_access_tokens_delete_after_days).to eq 42
+        end
+      end
+
       it 'modify oauth providers' do
         expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
@@ -1376,7 +1389,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
     context 'Nav bar', :js do
       it 'shows default help links in nav' do
-        default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
+        default_support_url = Gitlab::Routing.url_helpers.promo_url(path: '/get-help/')
 
         visit root_dashboard_path
 

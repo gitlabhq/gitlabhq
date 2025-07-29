@@ -164,8 +164,8 @@ gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :shared
 
 # GraphQL API
-gem 'graphql', '2.4.13', feature_category: :api
-gem 'graphql-docs', '~> 5.0.0', group: [:development, :test], feature_category: :api
+gem 'graphql', '2.5.11', feature_category: :api
+gem 'graphql-docs', '~> 5.2.0', group: [:development, :test], feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
 
 # Cells
@@ -187,7 +187,7 @@ gem 'hashie', '~> 5.0.0', feature_category: :shared
 gem 'kaminari', '~> 1.2.2', feature_category: :shared
 
 # HAML
-gem 'hamlit', '~> 2.15.0', feature_category: :shared
+gem 'hamlit', '~> 3.0.0', feature_category: :shared
 
 # Files attachments
 gem 'carrierwave', '~> 1.3', feature_category: :shared
@@ -220,18 +220,18 @@ gem 'gitlab-fog-azure-rm', '~> 2.2.0', require: 'fog/azurerm', feature_category:
 gem 'google-apis-storage_v1', '~> 0.29', feature_category: :shared
 gem 'google-cloud-storage', '~> 1.45.0', feature_category: :shared
 # We need >= 0.11.1 because that's when match_glob support is added to list_objects
-gem 'google-apis-core', '~> 0.11.0', '>= 0.11.1', feature_category: :shared
+gem 'google-apis-core', '~> 0.18.0', '>= 0.18.0', feature_category: :shared
 gem 'google-apis-compute_v1', '~> 0.57.0', feature_category: :shared
 gem 'google-apis-container_v1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-container_v1beta1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-cloudbilling_v1', '~> 0.22.0', feature_category: :shared
 gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :shared
-gem 'google-apis-iam_v1', '~> 0.36.0', feature_category: :shared
+gem 'google-apis-iam_v1', '~> 0.72.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared
-gem 'google-apis-androidpublisher_v3', '~> 0.34.0', feature_category: :shared
+gem 'google-apis-androidpublisher_v3', '~> 0.83.0', feature_category: :shared
 
-gem 'googleauth', '~> 1.8.1', feature_category: :shared
+gem 'googleauth', '~> 1.14', feature_category: :shared
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared
 gem 'google-cloud-compute-v1', '~> 2.6.0', feature_category: :shared
 
@@ -242,9 +242,9 @@ gem 'seed-fu', '~> 2.3.7', feature_category: :shared
 gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
 gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
-gem 'aws-sdk-core', '~> 3.225.0', feature_category: :global_search
+gem 'aws-sdk-core', '~> 3.226.0', feature_category: :global_search
 gem 'aws-sdk-cloudformation', '~> 1', feature_category: :global_search
-gem 'aws-sdk-s3', '~> 1.189.0', feature_category: :global_search
+gem 'aws-sdk-s3', '~> 1.193.0', feature_category: :global_search
 gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
 gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
@@ -331,6 +331,8 @@ gem 'device_detector', feature_category: :shared
 
 # Redis
 gem 'redis', '~> 5.4.0', feature_category: :redis
+gem 'redis-client', '~> 0.25', feature_category: :redis
+gem 'redis-cluster-client', '~> 0.13', feature_category: :redis
 gem 'redis-clustering', '~> 5.4.0', feature_category: :redis
 gem 'connection_pool', '~> 2.5.3', feature_category: :shared
 
@@ -345,7 +347,7 @@ gem 'atlassian-jwt', '~> 0.2.1', feature_category: :integrations
 gem 'slack-messenger', '~> 2.3.5', feature_category: :integrations
 
 # Kubernetes integration
-gem 'kubeclient', '~> 4.11.0', feature_category: :shared
+gem 'kubeclient', '~> 4.12.0', feature_category: :shared
 
 # AI
 gem 'circuitbox', '2.0.0', feature_category: :shared
@@ -378,7 +380,7 @@ gem 'rack-proxy', '~> 0.7.7', feature_category: :shared
 gem 'cssbundling-rails', '1.4.3', feature_category: :shared
 gem 'terser', '1.0.2', feature_category: :shared
 
-gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client', feature_category: :database
+gem 'click_house-client', '0.3.1', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared
 gem 'gon', '~> 6.4.0', feature_category: :shared
 gem 'request_store', '~> 1.7.0', feature_category: :shared
@@ -466,7 +468,7 @@ end
 gem 'warning', '~> 1.5.0', feature_category: :shared
 
 group :development do
-  gem 'lefthook', '~> 1.11.0', require: false, feature_category: :tooling
+  gem 'lefthook', '~> 1.12.0', require: false, feature_category: :tooling
   gem 'rubocop', feature_category: :tooling
 
   gem 'solargraph', '~> 0.54.0', require: false, feature_category: :shared
@@ -636,10 +638,10 @@ gem 'ssh_data', '~> 1.3', feature_category: :shared
 gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 18.1.0.pre.rc1', feature_category: :gitaly
+gem 'gitaly', '~> 18.2.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 18.1.0', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 18.2.0', feature_category: :deployment_management
 
 # Lock until 1.74.0 is available
 # https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20067
@@ -661,7 +663,7 @@ gem 'lograge', '~> 0.5', feature_category: :shared
 gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
 
 # DNS Lookup
-gem 'gitlab-net-dns', '~> 0.12.0', feature_category: :shared
+gem 'gitlab-net-dns', '~> 0.15.0', feature_category: :shared
 
 # Countries list
 gem 'countries', '~> 4.0.0', feature_category: :shared
@@ -684,14 +686,14 @@ gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: f
 gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer', feature_category: :shared
 
 # File encryption
-gem 'lockbox', '~> 1.3.0', feature_category: :shared
+gem 'lockbox', '~> 1.4.0', feature_category: :shared
 
 # Email validation
 gem 'valid_email', '~> 0.1', feature_category: :shared
 
 # JSON
 gem 'jsonb_accessor', '~> 1.4', feature_category: :shared
-gem 'json', '~> 2.11.0', feature_category: :shared
+gem 'json', '~> 2.13.0', feature_category: :shared
 gem 'json_schemer', '~> 2.3.0', feature_category: :shared
 gem 'oj', '~> 3.16.0', '>=3.16.10', feature_category: :shared
 gem 'oj-introspect', '~> 0.8', feature_category: :shared
@@ -752,4 +754,4 @@ gem 'paper_trail', '~> 16.0', feature_category: :shared
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.21", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.23", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning

@@ -107,10 +107,7 @@ describe('Abuse Report Note', () => {
       await findNoteActions().vm.$emit('startEditing');
 
       expect(findEditNote().exists()).toBe(true);
-      expect(findEditNote().props()).toMatchObject({
-        abuseReportId: mockAbuseReportId,
-        note: mockNote,
-      });
+      expect(findEditNote().props('note')).toBe(mockNote);
 
       expect(findNoteHeader().exists()).toBe(false);
       expect(findNoteBody().exists()).toBe(false);

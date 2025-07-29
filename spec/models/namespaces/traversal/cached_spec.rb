@@ -127,16 +127,6 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
         end
       end
 
-      context 'when the group_hierarchy_optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(group_hierarchy_optimization: false)
-        end
-
-        it 'returns the values from the uncached self_and_descendant_ids query' do
-          expect(ids.sort).to eq([group.id, subgroup.id, subsubgroup.id])
-        end
-      end
-
       context 'when the scope is specified' do
         it 'returns uncached values that match the scope' do
           ids = group.self_and_descendant_ids(skope: Namespace).pluck(:id)
@@ -161,54 +151,6 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
           namespace_descendants.update!(outdated_at: Time.current)
 
           expect(ids.sort).to eq([project1.id, project2.id, project3.id])
-        end
-      end
-
-      context 'when the group_hierarchy_optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(group_hierarchy_optimization: false)
-        end
-
-        it 'returns the values from the uncached all_project_ids query' do
-          expect(ids.sort).to eq([project1.id, project2.id, project3.id])
-        end
-      end
-    end
-
-    describe '#all_unarchived_project_ids' do
-      subject(:ids) { group.all_unarchived_project_ids.pluck(:id) }
-
-      it 'returns the cached values' do
-        expect(ids).to eq(namespace_descendants.all_unarchived_project_ids)
-      end
-
-      context 'when the cache is outdated' do
-        before do
-          namespace_descendants.update!(outdated_at: Time.current)
-        end
-
-        it 'returns the values from the uncached all_unarchived_project_ids query' do
-          expect(ids).to match_array([project1.id, project2.id])
-        end
-
-        context 'when group is archived' do
-          before do
-            group.archive
-          end
-
-          it 'excludes all descendants projects' do
-            expect(ids).to be_empty
-          end
-        end
-      end
-
-      context 'when the group_hierarchy_optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(group_hierarchy_optimization: false)
-        end
-
-        it 'returns the values from the uncached all_unarchived_project_ids query' do
-          expect(ids).to match_array([project1.id, project2.id])
         end
       end
     end

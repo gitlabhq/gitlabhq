@@ -81,14 +81,6 @@
 
 .light { @apply gl-text-default; }
 
-.slead {
-  @apply gl-text-default;
-  font-size: 14px;
-  margin-bottom: 12px;
-  font-weight: $gl-font-weight-normal;
-  line-height: 24px;
-}
-
 .tab-content {
   overflow: visible;
   @include media-breakpoint-down(sm) {
@@ -307,8 +299,6 @@ li.note {
   🚨 Do not use these classes — they are deprecated and being removed. 🚨
   See https://gitlab.com/gitlab-org/gitlab/-/issues/217418 for more details.
 **/
-.prepend-top-20 { margin-top: 20px; }
-.append-bottom-20 { margin-bottom: 20px; }
 .center { text-align: center; }
 .block { display: block; }
 .vertical-align-text-top { vertical-align: text-top; }
@@ -373,14 +363,6 @@ li.note {
 }
 
 .gl-font-size-0 { font-size: 0; }
-
-.border-section {
-  padding-top: $gl-spacing-scale-6;
-  padding-bottom: $gl-spacing-scale-6;
-  margin: 0;
-
-  @apply gl-border-t;
-}
 
 .gl-pseudo-placeholder:empty::before {
   content: attr(data-placeholder);

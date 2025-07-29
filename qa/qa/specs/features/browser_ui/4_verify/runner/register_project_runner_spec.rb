@@ -14,7 +14,8 @@ module QA
       end
 
       after do
-        runner.remove_via_api!
+        runner_managers&.each(&:remove_via_api!)
+        runner&.remove_via_api!
       end
 
       it 'user registers a new project runner and executes a job',

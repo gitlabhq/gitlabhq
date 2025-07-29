@@ -4,7 +4,7 @@ import { debounce, escape } from 'lodash';
 
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
@@ -15,9 +15,8 @@ import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphq
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
 import {
   I18N_WORK_ITEM_SEARCH_ERROR,
-  sprintfWorkItem,
-  NAME_TO_TEXT_MAP,
   NAME_TO_ENUM_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
 } from '../../constants';
 import { formatAncestors, isReference } from '../../utils';
 
@@ -80,7 +79,9 @@ export default {
         ];
       },
       error() {
-        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeText);
+        this.error = sprintf(I18N_WORK_ITEM_SEARCH_ERROR, {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.childrenType],
+        });
       },
     },
     workItemsByReference: {
@@ -98,7 +99,9 @@ export default {
         return this.filterItems(data.workItemsByReference.nodes);
       },
       error() {
-        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeText);
+        this.error = sprintf(I18N_WORK_ITEM_SEARCH_ERROR, {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.childrenType],
+        });
       },
     },
     ancestorIds: {
@@ -126,7 +129,7 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
-        'aria-label': s__('WorkItem|Search existing items, paste URL, or enter reference ID'),
+        'aria-label': s__("WorkItem|Search existing items or enter an item's URL or reference ID"),
       },
     };
   },
@@ -150,9 +153,6 @@ export default {
         this.$apollo.queries.workspaceWorkItems.loading ||
         this.$apollo.queries.workItemsByReference.loading
       );
-    },
-    childrenTypeText() {
-      return NAME_TO_TEXT_MAP[this.childrenType];
     },
     tokenSelectorContainerClass() {
       return !this.areWorkItemsToAddValid ? '!gl-shadow-inner-1-red-500' : '';
@@ -242,7 +242,7 @@ export default {
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
-      :placeholder="s__('WorkItem|Search existing items, paste URL, or enter reference ID')"
+      :placeholder="s__('WorkItem|Search existing items or enter an item\'s URL or reference ID')"
       menu-class="gl-dropdown-menu-wide dropdown-reduced-height !gl-min-h-7"
       :container-class="tokenSelectorContainerClass"
       data-testid="work-item-token-select-input"

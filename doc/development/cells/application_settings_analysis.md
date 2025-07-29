@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 498
+- Number of attributes: 499
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 294 (59.0%)
-- Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 498 (100.0%)
-- Number of attributes with `clusterwide: true` set: 131 (26.0%)
+- Number of attributes on GitLab.com different from the defaults: 223 (45.0%)
+- Number of attributes with `clusterwide` set: 499 (100.0%)
+- Number of attributes with `clusterwide: true` set: 132 (26.0%)
 
 ## Individual columns
 
@@ -155,6 +155,7 @@ title: Application Settings analysis
 | `ecdsa_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ed25519_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ed25519_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
+| `editor_extensions` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `eks_access_key_id` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `eks_account_id` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `eks_integration_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
@@ -171,7 +172,7 @@ title: Application Settings analysis
 | `enable_artifact_external_redirect_warning_page` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `enable_member_promotion_management` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `enabled_git_access_protocol` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
-| `enforce_ci_inbound_job_token_scope_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `enforce_ci_inbound_job_token_scope_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `enforce_namespace_storage_limit` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `enforce_terms` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `error_tracking_access_token` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -260,11 +261,12 @@ title: Application Settings analysis
 | `license_usage_data_exported` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
-| `lock_model_prompt_cache_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `lock_math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_ldap` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `lock_memberships_to_saml` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `lock_memberships_to_saml` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `lock_model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_spp_repository_pipeline_access` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `lock_web_based_commit_signing_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `login_recaptcha_protection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `mailgun_events_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `mailgun_signing_key` | `true` | `bytea` | `string` | `false` | `null` | `true` | `true`| `true` |
@@ -303,7 +305,7 @@ title: Application Settings analysis
 | `mirror_capacity_threshold` | `false` | `integer` | `integer` | `true` | `50` | `true` | `false`| `true` |
 | `mirror_max_capacity` | `false` | `integer` | `integer` | `true` | `100` | `true` | `false`| `true` |
 | `mirror_max_delay` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
-| `model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `namespace_aggregation_schedule_lease_duration_in_seconds` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
 | `namespace_storage_forks_cost_factor` | `false` | `double` | `` | `true` | `1.0` | `true` | `false`| `false` |
 | `new_user_signups_cap` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
@@ -376,12 +378,16 @@ title: Application Settings analysis
 | `require_personal_access_token_expiry` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `require_two_factor_authentication` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `required_instance_ci_template` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `resource_access_tokens_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
+| `response_limits` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `restricted_visibility_levels` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `false`| `true` |
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
 | `runners_registration_token` | `true` | `character` | `` | `false` | `null` | `true` | `false`| `false` |
-| `sdrs_jwt_signing_key` | `true` | `jsonb` | `Hash` | `false` | `null` | `false` | `true` | `false` |
+| `sdrs_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `sdrs_jwt_signing_key` | `true` | `jsonb` | `` | `false` | `null` | `false` | `true`| `false` |
+| `sdrs_url` | `false` | `text` | `` | `false` | `null` | `false` | `true`| `false` |
 | `search` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `search_max_docs_denominator` | `false` | `integer` | `` | `true` | `5000000` | `false` | `false`| `false` |
 | `search_max_shard_size_gb` | `false` | `integer` | `` | `true` | `50` | `false` | `false`| `false` |
@@ -389,8 +395,6 @@ title: Application Settings analysis
 | `search_rate_limit` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
 | `search_rate_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |
 | `search_rate_limit_unauthenticated` | `false` | `integer` | `integer` | `true` | `100` | `false` | `false`| `true` |
-| `sdrs_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
-| `sdrs_url` | `false` | `text` | `` | `false` | `null` | `false` | `true`| `false` |
 | `secret_detection_revocation_token_types_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_service_auth_token` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_service_url` | `false` | `text` | `` | `true` | `''::text` | `true` | `false`| `false` |
@@ -514,6 +518,7 @@ title: Application Settings analysis
 | `vertex_ai_host` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `vertex_ai_project` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `vscode_extension_marketplace` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
+| `web_based_commit_signing_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `web_ide_oauth_application_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
 | `whats_new_variant` | `false` | `smallint` | `string` | `false` | `0` | `false` | `false`| `true` |
 | `wiki_asciidoc_allow_uri_includes` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |

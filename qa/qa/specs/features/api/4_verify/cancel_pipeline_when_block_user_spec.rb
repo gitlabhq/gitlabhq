@@ -7,7 +7,7 @@ module QA
       let(:admin_user) { Runtime::User::Store.admin_user }
 
       let(:project) { create(:project, name: 'project-for-canceled-schedule') }
-      let(:ref) { 'master' }
+      let(:ref) { 'brand-new-branch' }
 
       before do
         project.add_member(user, Resource::Members::AccessLevel::MAINTAINER)

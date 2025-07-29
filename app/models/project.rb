@@ -288,7 +288,6 @@ class Project < ApplicationRecord
 
   # Packages
   has_many :packages, class_name: 'Packages::Package'
-  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :rpm_repository_files,
     inverse_of: :project,
@@ -299,6 +298,7 @@ class Project < ApplicationRecord
     class_name: 'Packages::Debian::ProjectDistribution',
     dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :npm_metadata_caches, class_name: 'Packages::Npm::MetadataCache'
+  has_many :helm_metadata_caches, class_name: 'Packages::Helm::MetadataCache'
   has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
   has_many :package_protection_rules,
     class_name: 'Packages::Protection::Rule',
@@ -454,6 +454,7 @@ class Project < ApplicationRecord
   has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project
+  has_many :bridges, class_name: 'Ci::Bridge', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks, dependent: :restrict_with_error
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
@@ -2950,8 +2951,11 @@ class Project < ApplicationRecord
   end
 
   def self_or_ancestors_archived?
-    # We can remove `archived?` once we move the project archival to the `namespaces.archived` column
-    archived? || project_namespace.self_or_ancestors_archived?
+    archived? || namespace.self_or_ancestors_archived?
+  end
+
+  def ancestors_archived?
+    ancestors.archived.exists?
   end
 
   def renamed?
@@ -3448,17 +3452,17 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
+  def work_items_project_issues_list_feature_flag_enabled?
+    group&.work_items_project_issues_list_feature_flag_enabled? || Feature.enabled?(:work_items_project_issues_list, type: :beta)
+  end
+
   def work_item_status_feature_available?
     (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
       licensed_feature_available?(:work_item_status)
   end
 
-  def glql_integration_feature_flag_enabled?
-    group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
-    group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self)
+    group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self, type: :ops)
   end
 
   def work_items_bulk_edit_feature_flag_enabled?
@@ -3621,11 +3625,6 @@ class Project < ApplicationRecord
       container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
     end
   end
-
-  def job_token_policies_enabled?
-    namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
-  end
-  strong_memoize_attr :job_token_policies_enabled?
 
   # Overridden for EE
   def licensed_ai_features_available?

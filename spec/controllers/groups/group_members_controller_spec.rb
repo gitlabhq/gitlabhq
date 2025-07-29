@@ -100,24 +100,6 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
             )
           end
         end
-
-        context 'when importer_user_mapping feature flag is disabled' do
-          it 'returns 0 counts' do
-            stub_feature_flags(importer_user_mapping: false)
-
-            create(:import_source_user, :pending_reassignment, namespace: group)
-
-            get :index, params: { group_id: group }
-
-            expect(assigns(:placeholder_users_count)).to eq(
-              pagination: {
-                total_items: 0,
-                awaiting_reassignment_items: 0,
-                reassigned_items: 0
-              }
-            )
-          end
-        end
       end
     end
 

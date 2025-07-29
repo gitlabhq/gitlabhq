@@ -105,12 +105,12 @@ module Ci
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
+    has_one :owner_runner_project, -> { order(:id) }, class_name: 'Ci::RunnerProject'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 
     belongs_to :creator, class_name: 'User', optional: true
 
-    before_validation :ensure_organization_id, on: :update
     before_save :ensure_token
     after_destroy :cleanup_runner_queue
 
@@ -420,16 +420,14 @@ module Ci
     def owner
       case runner_type
       when 'instance_type'
-        ::User.find_by_id(creator_id)
+        memoize_owner { ::User.find_by_id(creator_id) }
       when 'group_type'
-        runner_namespaces.first&.namespace
+        persisted? ? memoize_owner { owner_runner_namespace&.namespace } : runner_namespaces.first&.namespace
       when 'project_type'
         # If runner projects are not yet saved (e.g. when calculating `routable_token`), use in-memory collection
-        candidates = persisted? ? runner_projects.order(:id) : runner_projects
-        candidates.first&.project
+        persisted? ? memoize_owner { owner_runner_project&.project } : runner_projects.first&.project
       end
     end
-    strong_memoize_attr :owner
 
     def belongs_to_one_project?
       runner_projects.one?
@@ -550,8 +548,6 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
-        ensure_organization_id # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/523850
-
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
@@ -627,13 +623,6 @@ module Ci
         .min&.from_now
     end
 
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
-    def ensure_organization_id
-      return if instance_type?
-
-      self.organization_id ||= owner&.organization_id
-    end
-
     def cleanup_runner_queue
       ::Gitlab::Workhorse.cleanup_key(runner_queue_key)
     end
@@ -702,6 +691,12 @@ module Ci
       return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
       CREATED_RUNNER_TOKEN_PREFIX
+    end
+
+    def memoize_owner
+      strong_memoize(:owner) do # rubocop: disable Gitlab/StrongMemoizeAttr -- need to memoize with conditions
+        yield
+      end
     end
   end
 end

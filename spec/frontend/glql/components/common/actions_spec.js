@@ -2,23 +2,13 @@ import { nextTick } from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GlqlActions from '~/glql/components/common/actions.vue';
-import { eventHubByKey } from '~/glql/utils/event_hub_factory';
-
-jest.mock('~/glql/utils/event_hub_factory');
 
 describe('GlqlActions', () => {
   let wrapper;
-  let mockEventHub;
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   const createComponent = (props = {}, provide = {}) => {
-    mockEventHub = {
-      $emit: jest.fn(),
-    };
-
-    eventHubByKey.mockReturnValue(mockEventHub);
-
     wrapper = mountExtended(GlqlActions, {
       propsData: {
         ...props,
@@ -38,9 +28,8 @@ describe('GlqlActions', () => {
     expect(findDropdown().exists()).toBe(true);
   });
 
-  it('sets correct tooltip and text for dropdown', () => {
-    expect(findDropdown().attributes('title')).toBe('GLQL view options');
-    expect(findDropdown().props('toggleText')).toBe('GLQL view options');
+  it('sets correct text for dropdown', () => {
+    expect(findDropdown().props('toggleText')).toBe('Embedded view options');
   });
 
   it.each`
@@ -67,16 +56,14 @@ describe('GlqlActions', () => {
       findDropdown().props('items')[0].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('viewSource', {
-        title: 'Test Modal',
-      });
+      expect(wrapper.emitted('viewSource').at(0)).toEqual([{ title: 'Test Modal' }]);
     });
 
     it('emits copySource event when clicked', async () => {
       findDropdown().props('items')[1].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('copySource');
+      expect(wrapper.emitted('copySource').at(0)).toEqual([]);
     });
 
     it('emits copyAsGFM event when copy contents is clicked', async () => {
@@ -85,14 +72,14 @@ describe('GlqlActions', () => {
       findDropdown().props('items')[2].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('copyAsGFM');
+      expect(wrapper.emitted('copyAsGFM').at(0)).toEqual([]);
     });
 
     it('emits reload event when clicked', async () => {
       findDropdown().props('items')[2].action();
       await nextTick();
 
-      expect(mockEventHub.$emit).toHaveBeenCalledWith('reload');
+      expect(wrapper.emitted('reload').at(0)).toEqual([]);
     });
   });
 });

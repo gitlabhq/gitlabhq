@@ -28,9 +28,16 @@ module Resolvers
       experiment: { milestone: '17.7' },
       description: "Filter jobs by source."
 
+    argument :kind, ::Types::Ci::JobKindEnum,
+      required: false,
+      description: 'Filter jobs by kind.'
+
     alias_method :project, :object
 
     def resolve_with_lookahead(**args)
+      @kind = args[:kind]
+      @with_artifacts = args[:with_artifacts]
+
       filter_by_name = Feature.enabled?(:populate_and_use_build_names_table, project) && args[:name].to_s.present?
       filter_by_sources = args[:sources].present?
 
@@ -38,7 +45,7 @@ module Resolvers
         current_user: current_user, project: project, params: {
           scope: args[:statuses], with_artifacts: args[:with_artifacts],
           skip_ordering: filter_by_sources
-        }
+        }, type: args[:kind] || ::Ci::Build
       ).execute
 
       # These job filters are currently exclusive with each other
@@ -63,13 +70,20 @@ module Resolvers
 
     private
 
+    def should_preload_artifacts?
+      @with_artifacts || @kind == ::Ci::Build
+    end
+
     def preloads
-      {
+      base_preloads = {
         previous_stage_jobs_or_needs: [:needs, :pipeline],
-        artifacts: [:job_artifacts],
         pipeline: [:user],
         build_source: [:source]
       }
+
+      base_preloads[:artifacts] = [:job_artifacts] if should_preload_artifacts?
+
+      base_preloads
     end
   end
 end

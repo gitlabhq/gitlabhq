@@ -36,7 +36,6 @@ func Handler(rails *api.API) http.Handler {
 			fail.Request(w, r, fmt.Errorf("failed to execute a Duo Workflow: %v", err))
 			return
 		}
-		defer func() { _ = wf.CloseSend() }()
 
 		runner := &runner{
 			rails:       rails,
@@ -45,6 +44,7 @@ func Handler(rails *api.API) http.Handler {
 			conn:        conn,
 			wf:          wf,
 		}
+		defer func() { _ = runner.threadSafeCloseSend() }()
 
 		if err := runner.Execute(r.Context()); err != nil {
 			log.WithRequest(r).WithError(err).Error()

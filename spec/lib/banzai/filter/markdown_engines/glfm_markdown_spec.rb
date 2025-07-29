@@ -59,25 +59,27 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
   describe 'placeholder detection' do
     let_it_be(:project) { create(:project) }
+    let_it_be(:group_project) { create(:project, :in_group) }
 
-    it 'turns off placeholder detection when :markdown_placeholders disabled' do
-      stub_feature_flags(markdown_placeholders: false)
+    let(:project_reference) { project }
 
-      engine = described_class.new({ project: project, no_sourcepos: true })
-      expected = <<~TEXT
-        <p>%{test}</p>
-      TEXT
+    shared_examples 'enables placeholder rendering by default' do
+      it 'processes %{} syntax as placeholders' do
+        engine = described_class.new({ project: project_reference, no_sourcepos: true })
+        expected = <<~TEXT
+          <p><span data-placeholder>%{test}</span></p>
+        TEXT
 
-      expect(engine.render('%{test}')).to eq expected
+        expect(engine.render('%{test}')).to eq expected
+      end
     end
 
-    it 'defaults to on' do
-      engine = described_class.new({ project: project, no_sourcepos: true })
-      expected = <<~TEXT
-        <p><span data-placeholder>%{test}</span></p>
-      TEXT
+    it_behaves_like 'enables placeholder rendering by default'
 
-      expect(engine.render('%{test}')).to eq expected
+    context 'when project is project namespace' do
+      let(:project_reference) { group_project.project_namespace }
+
+      it_behaves_like 'enables placeholder rendering by default'
     end
 
     it 'turns off placeholder detection when :disable_placeholders' do
@@ -91,6 +93,17 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     it 'turns off placeholder detection when :broadcast_message_placeholders' do
       engine = described_class.new({ broadcast_message_placeholders: true, project: project, no_sourcepos: true })
+      expected = <<~TEXT
+        <p>%{test}</p>
+      TEXT
+
+      expect(engine.render('%{test}')).to eq expected
+    end
+
+    it 'turns off placeholder detection when :markdown_placeholders disabled' do
+      stub_feature_flags(markdown_placeholders: false)
+
+      engine = described_class.new({ project: project, no_sourcepos: true })
       expected = <<~TEXT
         <p>%{test}</p>
       TEXT

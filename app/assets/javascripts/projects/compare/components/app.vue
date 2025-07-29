@@ -10,7 +10,6 @@ import {
 } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import csrf from '~/lib/utils/csrf';
-import { joinPaths } from '~/lib/utils/url_utility';
 import {
   I18N,
   COMPARE_OPTIONS,
@@ -73,10 +72,6 @@ export default {
       type: Object,
       required: true,
     },
-    projects: {
-      type: Array,
-      required: true,
-    },
     straight: {
       type: Boolean,
       required: true,
@@ -85,7 +80,6 @@ export default {
   data() {
     return {
       from: {
-        projects: this.projects,
         selectedProject: this.targetProject,
         revision: this.paramsFrom,
         refsProjectPath: this.targetProjectRefsPath,
@@ -99,14 +93,10 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      this.$refs.form.submit();
-    },
     onSelectProject({ direction, project }) {
-      const refsPath = joinPaths(gon.relative_url_root || '', `/${project.name}`, '/refs');
       // direction is either 'from' or 'to'
-      this[direction].refsProjectPath = refsPath;
-      this[direction].selectedProject = project;
+      this[direction].refsProjectPath = project.refs_url;
+      this[direction].selectedProject = { ...project };
     },
     onSelectRevision({ direction, revision }) {
       this[direction].revision = revision; // direction is either 'from' or 'to'
@@ -123,7 +113,7 @@ export default {
 </script>
 
 <template>
-  <form ref="form" class="js-signature-container" method="POST" :action="projectCompareIndexPath">
+  <form class="js-signature-container" method="POST" :action="projectCompareIndexPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
     <page-heading :heading="$options.i18n.title">
       <template #description>
@@ -148,6 +138,7 @@ export default {
         :params-branch="to.revision"
         :projects="to.projects"
         :selected-project="to.selectedProject"
+        disable-repo-dropdown
         @selectProject="onSelectProject"
         @selectRevision="onSelectRevision"
       />
@@ -174,7 +165,6 @@ export default {
         :revision-text="$options.i18n.target"
         params-name="from"
         :params-branch="from.revision"
-        :projects="from.projects"
         :selected-project="from.selectedProject"
         @selectProject="onSelectProject"
         @selectRevision="onSelectRevision"
@@ -193,7 +183,8 @@ export default {
         category="primary"
         variant="confirm"
         data-testid="compare-button"
-        @click="onSubmit"
+        type="submit"
+        class="js-no-auto-disable"
       >
         {{ $options.i18n.compare }}
       </gl-button>

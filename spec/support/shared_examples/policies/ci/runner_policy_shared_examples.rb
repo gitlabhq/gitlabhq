@@ -201,22 +201,18 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
 end
 
 RSpec.shared_context 'with runner policy environment' do
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-
-  let_it_be_with_reload(:group) do
-    create(:group, name: 'top-level', path: 'top-level',
-      guests: guest, reporters: reporter, developers: developer, maintainers: maintainer, owners: owner)
-  end
-
+  let_it_be_with_reload(:group) { create(:group, name: 'top-level', path: 'top-level', owners: owner) }
   let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
   let_it_be_with_reload(:owner_project) { create(:project, group: subgroup) }
   let_it_be_with_reload(:other_project) { create(:project) }
   let_it_be_with_reload(:group_without_project) { create(:group, name: 'top-level2', path: 'top-level2') }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+
+  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager, creator: developer) }
   let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
   let_it_be(:subgroup_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
   let_it_be(:project_runner) do
@@ -292,6 +288,18 @@ RSpec.shared_examples 'runner policy' do |ability|
 
       it { expect_allowed ability }
 
+      context 'when user is developer in an associated project' do
+        let_it_be(:user) { create(:user, developer_of: other_project) }
+
+        it { expect_disallowed ability }
+      end
+
+      context 'when user is maintainer in an associated project' do
+        let_it_be(:user) { create(:user, maintainer_of: other_project) }
+
+        it { expect_allowed ability }
+      end
+
       context 'when user is maintainer in an unrelated group' do
         let_it_be(:maintainers_group_maintainer) { create(:user) }
         let_it_be_with_reload(:maintainers_group) do
@@ -346,6 +354,40 @@ RSpec.shared_examples 'runner policy' do |ability|
       let(:runner) { project_runner }
 
       it { expect_allowed ability }
+    end
+  end
+
+  context 'with admin user' do
+    let_it_be(:user) { create(:admin) }
+
+    context 'with instance runner' do
+      let(:runner) { instance_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
+    end
+
+    context 'with group runner' do
+      let(:runner) { group_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
+    end
+
+    context 'with project runner' do
+      let(:runner) { project_runner }
+
+      it { expect_disallowed ability }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed ability }
+      end
     end
   end
 end

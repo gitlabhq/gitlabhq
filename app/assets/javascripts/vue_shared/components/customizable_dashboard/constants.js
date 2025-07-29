@@ -26,20 +26,3 @@ export const PANEL_POPOVER_DELAY = {
 };
 
 export const CURSOR_GRABBING_CLASS = '!gl-cursor-grabbing';
-
-export const NEW_DASHBOARD_SLUG = 'new';
-
-export const CATEGORY_SINGLE_STATS = 'singleStats';
-export const CATEGORY_TABLES = 'tables';
-export const CATEGORY_CHARTS = 'charts';
-
-export const DASHBOARD_STATUS_BETA = 'beta';
-export const DASHBOARD_STATUS_EXPERIMENT = 'experiment';
-
-export const DASHBOARD_SCHEMA_VERSION = '2';
-export const VISUALIZATION_TYPE_DATA_TABLE = 'DataTable';
-export const VISUALIZATION_TYPE_LINE_CHART = 'LineChart';
-export const VISUALIZATION_TYPE_COLUMN_CHART = 'ColumnChart';
-export const VISUALIZATION_TYPE_SINGLE_STAT = 'SingleStat';
-
-export const EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER = 'user_viewed_dashboard_designer';

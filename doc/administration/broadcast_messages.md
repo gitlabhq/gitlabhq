@@ -103,7 +103,10 @@ To add a broadcast message:
      group, subgroup, and project pages, but does not display in Git remote responses.
 1. If required, select the **Target roles** to show the broadcast message to.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path.
-   Use the wildcard character `*` to match multiple URLs, like `mygroup/myproject*`.
+   Use the wildcard character `*` to match multiple URLs and specify paths, for example:
+   - `*/-/milestones` for any group or project's **Milestones** index page.
+   - `*/-/milestones/*` for individual milestone pages only.
+   - `*/-/milestones*` for both index and individual milestone pages.
 1. Select a date and time (UTC) for the message to start and end.
 1. Select **Add broadcast message**.
 

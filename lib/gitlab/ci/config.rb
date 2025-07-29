@@ -87,6 +87,7 @@ module Gitlab
           root.variables_value
         end
       end
+      # :nocov:
       # rubocop:enable Gitlab/NoCodeCoverageComment
 
       def variables_with_data
@@ -169,7 +170,8 @@ module Gitlab
 
       def build_config(config, inputs)
         initial_config = logger.instrument(:config_yaml_load, once: true) do
-          Config::Yaml.load!(config, inputs, @context.variables)
+          yaml_context = Config::Yaml::Context.new(variables: @context.variables)
+          Config::Yaml.load!(config, yaml_context, inputs)
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do
@@ -187,7 +189,7 @@ module Gitlab
         return initial_config unless inject_edge_stages
 
         logger.instrument(:config_stages_inject, once: true) do
-          Config::EdgeStagesInjector.new(initial_config).to_hash
+          Config::Stages.new(initial_config).inject_edge_stages!
         end
       end
 

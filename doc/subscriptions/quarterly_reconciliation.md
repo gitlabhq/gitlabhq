@@ -17,7 +17,7 @@ In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review occurs either quarterly (quarterly reconciliation process) or annually (annual true-up process).
 
-To learn more about how GitLab bills GitLab.com users, see [How seat usage is determined](gitlab_com/_index.md#how-seat-usage-is-determined). For GitLab Self-Managed users, see [How GitLab bills for users](self_managed/_index.md#how-gitlab-bills-for-users).
+To learn more about how GitLab bills GitLab.com users, see [How seat usage is determined](manage_users_and_seats.md#gitlabcom-billing-and-usage). For GitLab Self-Managed users, see [How GitLab bills for users](manage_users_and_seats.md#self-managed-billing-and-usage).
 
 To prevent overages, you can turn on restricted access for [your group](../user/group/manage.md#turn-on-restricted-access)
 or [your instance](../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
@@ -65,7 +65,7 @@ If you are billed quarterly:
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date you are billed.
 
-1. An email that communicates the [overage seat quantity](gitlab_com/_index.md#seats-owed)
+1. An email that communicates the [overage seat quantity](manage_users_and_seats.md#seats-owed)
 and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners.
@@ -95,7 +95,7 @@ You are excluded from quarterly reconciliation if you:
 GitLab for Open Source Program, or GitLab for Startups.
 
 If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually.
-Alternatively, you can reconcile any overages by [purchasing additional seats](gitlab_com/_index.md#buy-seats-for-a-subscription).
+Alternatively, you can reconcile any overages by [purchasing additional seats](manage_users_and_seats.md#buy-more-seats).
 
 ## Troubleshooting
 

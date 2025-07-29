@@ -5,7 +5,6 @@ import { GlToast } from '@gitlab/ui';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
-import store from '~/mr_notes/stores';
 import { pinia } from '~/pinia/instance';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -28,7 +27,6 @@ export default function initDiffsApp() {
       DiffsApp,
     },
     pinia,
-    store,
     apolloProvider,
     provide: {
       newCommentTemplatePaths: newCommentTemplatePaths ? JSON.parse(newCommentTemplatePaths) : [],
@@ -105,7 +103,7 @@ export default function initDiffsApp() {
     // eslint-disable-next-line no-new
     new Vue({
       el: fileFinderEl,
-      store,
+      pinia,
       components: {
         FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
       },

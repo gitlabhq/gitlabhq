@@ -17,8 +17,11 @@ RSpec.describe Gitlab::Email::HtmlToMarkdownParser, feature_category: :service_d
       expect(subject).to eq(
         <<~BODY.chomp
           Hello, World!
+
           This is some e-mail content. Even though it has whitespace and newlines, the e-mail converter will handle it correctly.
+
           *Even* mismatched tags.
+
           A div
           Another div
           A div
@@ -26,7 +29,9 @@ RSpec.describe Gitlab::Email::HtmlToMarkdownParser, feature_category: :service_d
 
           Another line
           Yet another line
+
           [A link](http://foo.com)
+
           <details>
           <summary>
           One</summary>

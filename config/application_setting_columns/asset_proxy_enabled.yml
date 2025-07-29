@@ -5,7 +5,7 @@ clusterwide: true
 column: asset_proxy_enabled
 db_type: boolean
 default: 'false'
-description: "(**If enabled, requires:** `asset_proxy_url`) Enable proxying of assets.
+description: "(**If enabled, requires**: `asset_proxy_url`) Enable proxying of assets.
   GitLab restart is required to apply changes."
 encrypted: false
 gitlab_com_different_than_default: true

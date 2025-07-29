@@ -17,55 +17,6 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
-  describe '#unconfirmed_verification_email?', :freeze_time do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { build_stubbed(:user) }
-    let(:token_valid_for) { ::Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES }
-
-    subject { helper.unconfirmed_verification_email?(user) }
-
-    where(:reset_first_offer?, :unconfirmed_email_present?, :token_valid?, :result) do
-      true  | true  | true  | true
-      false | true  | true  | false
-      true  | false | true  | false
-      true  | true  | false | false
-    end
-
-    with_them do
-      before do
-        user.email_reset_offered_at = 1.minute.ago unless reset_first_offer?
-        user.unconfirmed_email = 'unconfirmed@email' if unconfirmed_email_present?
-        user.confirmation_sent_at = (token_valid? ? token_valid_for - 1 : token_valid_for + 1).minutes.ago
-      end
-
-      it { is_expected.to eq(result) }
-    end
-  end
-
-  describe '#verification_email' do
-    let(:unconfirmed_email) { 'unconfirmed@email' }
-    let(:user) { build_stubbed(:user, unconfirmed_email: unconfirmed_email) }
-
-    subject { helper.verification_email(user) }
-
-    context 'when there is an unconfirmed verification email' do
-      before do
-        allow(helper).to receive(:unconfirmed_verification_email?).and_return(true)
-      end
-
-      it { is_expected.to eq(unconfirmed_email) }
-    end
-
-    context 'when there is no unconfirmed verification email' do
-      before do
-        allow(helper).to receive(:unconfirmed_verification_email?).and_return(false)
-      end
-
-      it { is_expected.to eq(user.email) }
-    end
-  end
-
   describe '#verification_data' do
     let(:user) { build_stubbed(:user) }
 
@@ -74,30 +25,8 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         username: user.username,
         obfuscated_email: obfuscated_email(user.email),
         verify_path: helper.session_path(:user),
-        resend_path: users_resend_verification_code_path,
-        offer_email_reset: 'true',
-        update_email_path: users_update_email_path
+        resend_path: users_resend_verification_code_path
       })
-    end
-
-    context 'when email reset has already been offered' do
-      before do
-        user.email_reset_offered_at = Time.now
-      end
-
-      it 'returns offer_email_reset as `false`' do
-        expect(helper.verification_data(user)).to include(offer_email_reset: 'false')
-      end
-    end
-
-    context 'when the `offer_email_reset` feature flag is disabled' do
-      before do
-        stub_feature_flags(offer_email_reset: false)
-      end
-
-      it 'returns offer_email_reset as `false`' do
-        expect(helper.verification_data(user)).to include(offer_email_reset: 'false')
-      end
     end
   end
 
@@ -138,28 +67,12 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
 
       it { is_expected.to be true }
 
-      context 'and session_expire_from_init FF is disabled' do
-        before do
-          stub_feature_flags(session_expire_from_init: false)
-        end
-
-        it { is_expected.to be true }
-      end
-
       context 'and session_expire_from_init is enabled' do
         before do
           stub_application_setting(session_expire_from_init: true)
         end
 
         it { is_expected.to be false }
-
-        context 'and session_expire_from_init FF is disabled' do
-          before do
-            stub_feature_flags(session_expire_from_init: false)
-          end
-
-          it { is_expected.to be true }
-        end
       end
     end
 

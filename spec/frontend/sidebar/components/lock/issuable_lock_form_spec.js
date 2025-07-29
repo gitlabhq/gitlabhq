@@ -1,23 +1,24 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { createMockDirective } from 'helpers/vue_mock_directive';
-import createStore from '~/notes/stores';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { ISSUABLE_TYPE_ISSUE } from './constants';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('IssuableLockForm', () => {
+  let pinia;
   let wrapper;
-  let store;
   let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
-  let updateLockedAttribute;
 
   const setIssuableType = (pageType) => {
     issuableType = pageType;
@@ -26,25 +27,16 @@ describe('IssuableLockForm', () => {
 
   const initStore = (isLocked) => {
     if (issuableType === ISSUABLE_TYPE_ISSUE) {
-      store = createStore();
-      store.getters.getNoteableData.targetType = 'issue';
+      useNotes().noteableData.targetType = 'issue';
     } else {
-      updateLockedAttribute = jest.fn().mockResolvedValue();
-      store = new Vuex.Store({
-        getters: {
-          getNoteableData: () => ({ targetType: issuableType }),
-        },
-        actions: {
-          updateLockedAttribute,
-        },
-      });
+      useNotes().noteableData.targetType = issuableType;
     }
-    store.getters.getNoteableData.discussion_locked = isLocked;
+    useNotes().noteableData.discussion_locked = isLocked;
   };
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(IssuableLockForm, {
-      store,
+      pinia,
       provide: {
         fullPath: '',
       },
@@ -57,6 +49,12 @@ describe('IssuableLockForm', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes().updateLockedAttribute.mockResolvedValue();
+  });
 
   describe('merge requests', () => {
     beforeEach(() => {

@@ -1,5 +1,6 @@
-import { GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import { SQUASH_BEFORE_MERGE } from '~/vue_merge_request_widget/i18n';
 
@@ -64,37 +65,51 @@ describe('Squash before merge component', () => {
     });
   });
 
-  describe('about link', () => {
+  describe('help popover', () => {
     it('is not rendered if no help path is passed', () => {
       createComponent({
         value: false,
       });
 
-      const aboutLink = wrapper.findComponent(GlLink);
+      const helpPopover = wrapper.findComponent(HelpPopover);
 
-      expect(aboutLink.exists()).toBe(false);
+      expect(helpPopover.exists()).toBe(false);
     });
 
-    it('is rendered if  help path is passed', () => {
+    it('is rendered if help path is passed', () => {
       createComponent({
         value: false,
         helpPath: 'test-path',
       });
 
-      const aboutLink = wrapper.findComponent(GlLink);
+      const helpPopover = wrapper.findComponent(HelpPopover);
 
-      expect(aboutLink.exists()).toBe(true);
+      expect(helpPopover.exists()).toBe(true);
     });
 
-    it('should have a correct help path if passed', () => {
+    it('should have correct popover options', () => {
       createComponent({
         value: false,
         helpPath: 'test-path',
       });
 
-      const aboutLink = wrapper.findComponent(GlLink);
+      const helpPopover = wrapper.findComponent(HelpPopover);
 
-      expect(aboutLink.attributes('href')).toEqual('test-path');
+      expect(helpPopover.props('options')).toEqual({
+        container: 'squash-commits-popover',
+        ...SQUASH_BEFORE_MERGE.popoverOptions,
+      });
+    });
+
+    it('should have correct aria-label', () => {
+      createComponent({
+        value: false,
+        helpPath: 'test-path',
+      });
+
+      const helpPopover = wrapper.findComponent(HelpPopover);
+
+      expect(helpPopover.props('ariaLabel')).toBe(SQUASH_BEFORE_MERGE.helpLabel);
     });
   });
 });

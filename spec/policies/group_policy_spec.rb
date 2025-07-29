@@ -608,7 +608,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         admin_work_item
         create_package
         create_projects
-        create_runner
+        create_runners
         create_subgroup
         edit_billing
         import_projects
@@ -1799,7 +1799,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'create_runner' do
+  describe 'create_runners' do
     shared_examples 'disallowed when group runner registration disabled' do
       context 'with group runner registration disabled' do
         before do
@@ -1810,13 +1810,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         context 'with specific group runner registration enabled' do
           let(:runner_registration_enabled) { true }
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_disallowed(:create_runners) }
         end
 
         context 'with specific group runner registration disabled' do
           let(:runner_registration_enabled) { false }
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_disallowed(:create_runners) }
         end
       end
     end
@@ -1825,14 +1825,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_runner) }
+        it { is_expected.to be_allowed(:create_runners) }
 
         context 'with specific group runner registration disabled' do
           before do
             group.runner_registration_enabled = false
           end
 
-          it { is_expected.to be_allowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runners) }
         end
 
         context 'with group runner registration disabled' do
@@ -1844,26 +1844,26 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           context 'with specific group runner registration enabled' do
             let(:runner_registration_enabled) { true }
 
-            it { is_expected.to be_allowed(:create_runner) }
+            it { is_expected.to be_allowed(:create_runners) }
           end
 
           context 'with specific group runner registration disabled' do
             let(:runner_registration_enabled) { false }
 
-            it { is_expected.to be_allowed(:create_runner) }
+            it { is_expected.to be_allowed(:create_runners) }
           end
         end
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:create_runners) }
 
       it_behaves_like 'disallowed when group runner registration disabled'
     end
@@ -1871,37 +1871,37 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with reporter' do
       let(:current_user) { reporter }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with planner' do
       let(:current_user) { planner }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with guest' do
       let(:current_user) { guest }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with developer' do
       let(:current_user) { developer }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
   end
 

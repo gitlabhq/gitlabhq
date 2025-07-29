@@ -9,7 +9,6 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { createDraft } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
-jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 Vue.use(PiniaVuePlugin);
 

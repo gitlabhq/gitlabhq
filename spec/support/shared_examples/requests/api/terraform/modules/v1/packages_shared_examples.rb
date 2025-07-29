@@ -206,11 +206,11 @@ RSpec.shared_examples 'process terraform module upload' do |user_type, status, a
   RSpec.shared_examples 'creates terraform module package files' do
     it 'creates package files', :aggregate_failures do
       expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { ::Packages::TerraformModule::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
       expect(response).to have_gitlab_http_status(status)
 
-      package_file = project.packages.last.package_files.reload.last
+      package_file = ::Packages::TerraformModule::Package.for_projects(project).last.package_files.reload.last
       expect(package_file.file_name).to eq('mymodule-mysystem-1.0.0.tgz')
     end
   end

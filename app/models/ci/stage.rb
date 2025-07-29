@@ -226,3 +226,5 @@ module Ci
     end
   end
 end
+
+Ci::Stage.prepend_mod

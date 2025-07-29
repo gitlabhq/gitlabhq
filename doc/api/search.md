@@ -14,14 +14,11 @@ title: Search API
 
 Every API call to search must be authenticated.
 
-When [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search),
-these additional scopes are available for the [global search](#global-search),
-[group search](#group-search), and [project search](#project-search) APIs:
-
-- `wiki_blobs`
-- `commits`
-- `blobs`
-- `notes`
+Some scopes are available for [basic search](../user/search/_index.md#available-scopes).
+When [advanced search](../user/search/advanced_search.md#available-scopes) or
+[exact code search](../user/search/exact_code_search.md#available-scopes) is enabled,
+additional scopes are available for [global search](#global-search),
+[group search](#group-search), and [project search](#project-search) APIs.
 
 If you want to use basic search instead, see
 [specify a search type](../user/search/_index.md#specify-a-search-type).
@@ -314,6 +311,7 @@ Example response:
 {{< /details >}}
 
 Use this scope to search wikis.
+
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
@@ -393,7 +391,9 @@ Example response:
 {{< /details >}}
 
 Use this scope to search code.
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
+
+This scope is available only when [advanced search](../user/search/advanced_search.md#use-advanced-search)
+or [exact code search](../user/search/exact_code_search.md#use-exact-code-search) is enabled.
 
 The following filters are available for this scope:
 
@@ -732,6 +732,7 @@ Example response:
 {{< /details >}}
 
 Use this scope to search wikis.
+
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
@@ -811,7 +812,9 @@ Example response:
 {{< /details >}}
 
 Use this scope to search code.
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
+
+This scope is available only when [advanced search](../user/search/advanced_search.md#use-advanced-search)
+or [exact code search](../user/search/exact_code_search.md#use-exact-code-search) is enabled.
 
 The following filters are available for this scope:
 
@@ -1111,14 +1114,7 @@ Example response:
 
 ### Scope: `wiki_blobs`
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
 Use this scope to search wikis.
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 
@@ -1168,14 +1164,6 @@ Example response:
 
 ### Scope: `commits`
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
-
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
 ```
@@ -1207,14 +1195,7 @@ Example response:
 
 ### Scope: `blobs`
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
 Use this scope to search code.
-This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
 
@@ -1261,12 +1242,6 @@ Example response:
 {{< /alert >}}
 
 ### Scope: `notes`
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"

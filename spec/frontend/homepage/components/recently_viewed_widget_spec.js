@@ -23,32 +23,42 @@ describe('RecentlyViewedWidget', () => {
     data: {
       currentUser: {
         id: 123,
-        recentlyViewedIssues: [
+        recentlyViewedItems: [
           {
-            id: 'issue-1',
-            title: 'Fix critical bug in payment processing',
-            webUrl: '/project/-/issues/123',
-            updatedAt: '2025-06-20T10:00:00Z',
+            viewedAt: '2025-06-21T09:15:00Z',
+            item: {
+              __typename: 'MergeRequest',
+              id: 'mr-1',
+              title: 'Implement authentication improvements',
+              webUrl: '/project/-/merge_requests/456',
+            },
           },
           {
-            id: 'issue-2',
-            title: 'Add new feature for user management',
-            webUrl: '/project/-/issues/124',
-            updatedAt: '2025-06-19T15:30:00Z',
-          },
-        ],
-        recentlyViewedMergeRequests: [
-          {
-            id: 'mr-1',
-            title: 'Implement authentication improvements',
-            webUrl: '/project/-/merge_requests/456',
-            updatedAt: '2025-06-21T09:15:00Z',
+            viewedAt: '2025-06-20T10:00:00Z',
+            item: {
+              __typename: 'Issue',
+              id: 'issue-1',
+              title: 'Fix critical bug in payment processing',
+              webUrl: '/project/-/issues/123',
+            },
           },
           {
-            id: 'mr-2',
-            title: 'Update documentation for API endpoints',
-            webUrl: '/project/-/merge_requests/457',
-            updatedAt: '2025-06-18T11:45:00Z',
+            viewedAt: '2025-06-19T15:30:00Z',
+            item: {
+              __typename: 'Issue',
+              id: 'issue-2',
+              title: 'Add new feature for user management',
+              webUrl: '/project/-/issues/124',
+            },
+          },
+          {
+            viewedAt: '2025-06-18T11:45:00Z',
+            item: {
+              __typename: 'MergeRequest',
+              id: 'mr-2',
+              title: 'Update documentation for API endpoints',
+              webUrl: '/project/-/merge_requests/457',
+            },
           },
         ],
       },
@@ -135,8 +145,7 @@ describe('RecentlyViewedWidget', () => {
         data: {
           currentUser: {
             id: 123,
-            recentlyViewedIssues: [],
-            recentlyViewedMergeRequests: [],
+            recentlyViewedItems: [],
           },
         },
       };
@@ -175,7 +184,7 @@ describe('RecentlyViewedWidget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(4); // 2 issues + 2 MRs
+      expect(findItemLinks()).toHaveLength(4); // 4 items total
     });
 
     it('handles empty response gracefully', async () => {
@@ -183,8 +192,7 @@ describe('RecentlyViewedWidget', () => {
         data: {
           currentUser: {
             id: 123,
-            recentlyViewedIssues: [],
-            recentlyViewedMergeRequests: [],
+            recentlyViewedItems: [],
           },
         },
       };
@@ -223,10 +231,10 @@ describe('RecentlyViewedWidget', () => {
       expect(findItemLinks()).toHaveLength(4);
     });
 
-    it('sorts items by updatedAt in descending order', () => {
+    it('sorts items by viewedAt in descending order (most recent first)', () => {
       const { items } = wrapper.vm;
 
-      // Should be sorted: mr-1 (2025-06-21), issue-1 (2025-06-20), issue-2 (2025-06-19), mr-2 (2025-06-18)
+      // Should be sorted by viewedAt (backend already sorts): mr-1, issue-1, issue-2, mr-2
       expect(items[0].id).toBe('mr-1');
       expect(items[1].id).toBe('issue-1');
       expect(items[2].id).toBe('issue-2');
@@ -239,17 +247,14 @@ describe('RecentlyViewedWidget', () => {
         data: {
           currentUser: {
             id: 123,
-            recentlyViewedIssues: Array.from({ length: 8 }, (_, i) => ({
-              id: `issue-${i}`,
-              title: `Issue ${i}`,
-              webUrl: `/issues/${i}`,
-              updatedAt: new Date(Date.now() - i * 1000).toISOString(),
-            })),
-            recentlyViewedMergeRequests: Array.from({ length: 8 }, (_, i) => ({
-              id: `mr-${i}`,
-              title: `MR ${i}`,
-              webUrl: `/mrs/${i}`,
-              updatedAt: new Date(Date.now() - (i + 8) * 1000).toISOString(),
+            recentlyViewedItems: Array.from({ length: 15 }, (_, i) => ({
+              viewedAt: new Date(Date.now() - i * 1000).toISOString(),
+              item: {
+                __typename: 'Issue',
+                id: `issue-${i}`,
+                title: `Issue ${i}`,
+                webUrl: `/issues/${i}`,
+              },
             })),
           },
         },

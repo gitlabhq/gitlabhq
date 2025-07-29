@@ -9,14 +9,14 @@ title: GitLab Duo Agent Platform
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced as [an experiment](../../policy/development_stages_support.md) in GitLab 18.2. 
+- Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2. 
 
 {{< /history >}}
 

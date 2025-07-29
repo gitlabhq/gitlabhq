@@ -10,7 +10,7 @@ module QA
           element 'new-group-button'
         end
 
-        view 'app/views/dashboard/groups/index.html.haml' do
+        view 'app/assets/javascripts/groups/your_work/constants.js' do
           element 'groups-empty-state'
         end
 

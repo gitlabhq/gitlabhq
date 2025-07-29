@@ -58,6 +58,7 @@ RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :ci_va
 
           expect(response.status).to eq(:success)
           expect(response.payload[:updated_count]).to eq(2)
+          expect(response.payload[:skipped_count]).to eq(2)
         end
 
         it 'is idempotent' do
@@ -67,6 +68,7 @@ RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :ci_va
           second_response = service.execute
           expect(second_response.status).to eq(:success)
           expect(second_response.payload[:updated_count]).to eq(0)
+          expect(second_response.payload[:skipped_count]).to eq(2)
         end
       end
 

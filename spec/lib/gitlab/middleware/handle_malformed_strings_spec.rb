@@ -58,6 +58,15 @@ RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
     end
   end
 
+  context 'in the referer header' do
+    it 'rejects malformed strings' do
+      env = env_for
+      env['HTTP_REFERER'] = invalid_string
+
+      expect(subject.call(env)).to eq error_400
+    end
+  end
+
   context 'with POST request' do
     let(:request_env) do
       Rack::MockRequest.env_for(

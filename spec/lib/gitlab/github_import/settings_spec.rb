@@ -105,14 +105,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       project.build_or_assign_import_data(credentials: { user: 'token' })
     end
 
-    shared_examples 'when :importer_user_mapping is disabled' do
-      before do
-        Feature.disable(:importer_user_mapping)
-      end
-
-      it { is_expected.to be(false) }
-    end
-
     shared_examples 'when :github_user_mapping is disabled' do |expected_enabled:|
       before do
         Feature.disable(:github_user_mapping)
@@ -132,7 +124,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     context 'when the project is a GitHub import' do
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
     end
@@ -144,7 +135,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
     end
@@ -156,7 +146,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end
@@ -168,7 +157,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end

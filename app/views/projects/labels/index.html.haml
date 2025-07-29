@@ -2,7 +2,8 @@
 - can_admin_label = can?(current_user, :admin_label, @project)
 - search = params[:search]
 - subscribed = params[:subscribed]
-- labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
+- archived = params[:archived]
+- labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present? || archived.present?
 - add_page_specific_style 'page_bundles/labels'
 
 %h1.gl-sr-only= page_title
@@ -55,6 +56,8 @@
     - elsif subscribed.present?
       .nothing-here-block
         = _('You do not have any subscriptions yet')
-
+    - elsif archived.present?
+      .nothing-here-block
+        = _('No archived labels')
 - else
   = render 'shared/empty_states/labels'

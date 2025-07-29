@@ -2,7 +2,7 @@
 stage: none
 group: unassigned
 info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
-description: Learn how to document version-specific changes
+description: Learn how to document upgrade notes
 title: Version-specific changes
 ---
 
@@ -19,10 +19,10 @@ It contains information like:
 
 For each major version of GitLab, create a page in `doc/update/versions/gitlab_X_changes.md`.
 
-The version-specific changes page should use the following format:
+The version-specific upgrade notes page should use the following format:
 
 ```markdown
-title: GitLab X changes
+title: GitLab X upgrade notes
 ---
 
 {{</* details */>}}
@@ -38,7 +38,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for X.0](https://docs.gitlab.com/charts/releases/X_0).
+For additional information for Helm chart installations, see
+[the Helm chart x.0 upgrade notes](https://docs.gitlab.com/charts/releases/x_0.html).
 
 ## Issues to be aware of when upgrading from <last minor version of last major>
 

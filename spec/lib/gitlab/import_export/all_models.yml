@@ -299,6 +299,7 @@ merge_request_diff_commits:
 - merge_request_diff
 - commit_author
 - committer
+- merge_request_commits_metadata
 merge_request_diff_detail:
 - merge_request_diff
 merge_request_diff_files:
@@ -429,6 +430,7 @@ builds:
 - trace_chunks
 - report_results
 - namespace
+- inputs
 - job_artifacts
 - job_variables
 - sourced_pipelines
@@ -618,6 +620,7 @@ project:
 - alert_hooks_integrations
 - incident_hooks_integrations
 - vulnerability_hooks_integrations
+- ready_active_context_code_repository
 - apple_app_store_integration
 - google_cloud_platform_artifact_registry_integration
 - google_cloud_platform_workload_identity_federation_integration
@@ -713,6 +716,7 @@ project:
 - stages
 - ci_refs
 - builds
+- bridges
 - processables
 - runner_projects
 - runners
@@ -815,6 +819,7 @@ project:
 - package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
+- helm_metadata_caches
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
 - alerting_setting
@@ -971,6 +976,7 @@ resource_label_events:
 - merge_request
 - epic
 - label
+- namespace
 error_tracking_setting:
 - project
 suggestions:

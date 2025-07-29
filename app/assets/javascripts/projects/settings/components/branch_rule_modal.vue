@@ -93,7 +93,7 @@ export default {
     },
     formDescriptionText() {
       return s__(
-        'BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/ are supported',
+        'BranchRules|Wildcards such as *-stable or production/* are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}',
       );
     },
   },

@@ -91,8 +91,6 @@ module Gitlab
       def user_contribution_mapping_enabled?
         creator_user_actor = User.actor_from_id(project.creator_id)
 
-        return false unless Feature.enabled?(:importer_user_mapping, creator_user_actor)
-
         flag_by_type = case project.import_type&.to_sym
                        when ::Import::SOURCE_GITHUB
                          Feature.enabled?(:github_user_mapping, creator_user_actor)

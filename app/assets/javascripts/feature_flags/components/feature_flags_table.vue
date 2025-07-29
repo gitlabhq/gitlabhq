@@ -89,13 +89,6 @@ export default {
     },
   },
   methods: {
-    scopeTooltipText(scope) {
-      return !scope.active
-        ? sprintf(s__('FeatureFlags|Inactive flag for %{scope}'), {
-            scope: scope.environmentScope,
-          })
-        : '';
-    },
     strategyBadgeText(strategy) {
       return labelForStrategy(strategy);
     },

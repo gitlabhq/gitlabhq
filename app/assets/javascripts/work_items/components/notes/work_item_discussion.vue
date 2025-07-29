@@ -70,6 +70,11 @@ export default {
       required: false,
       default: () => [],
     },
+    canReply: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canSetWorkItemMetadata: {
       type: Boolean,
       required: false,
@@ -142,7 +147,7 @@ export default {
       return this.discussion.resolved;
     },
     isDiscussionResolvable() {
-      return this.discussion.resolvable && this.firstNote?.userPermissions?.resolveNote;
+      return this.discussion.resolvable && this.discussion.userPermissions.resolveNote;
     },
   },
   watch: {
@@ -261,6 +266,7 @@ export default {
     :new-comment-template-paths="newCommentTemplatePaths"
     :class="{ 'gl-mb-4': hasReplies }"
     :assignees="assignees"
+    :can-reply="canReply"
     :can-set-work-item-metadata="canSetWorkItemMetadata"
     :is-discussion-resolved="isDiscussionResolved"
     :is-discussion-resolvable="isDiscussionResolvable"
@@ -305,6 +311,7 @@ export default {
                   :assignees="assignees"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
+                  :can-reply="canReply"
                   :can-set-work-item-metadata="canSetWorkItemMetadata"
                   :is-discussion-resolved="isDiscussionResolved"
                   :is-discussion-resolvable="isDiscussionResolvable"

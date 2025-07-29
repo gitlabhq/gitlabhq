@@ -49,8 +49,8 @@ export default {
   <gl-disclosure-dropdown-item :item="menuItem">
     <template #list-item>
       <span class="gl-flex gl-flex-col">
-        <span>
-          <span class="gl-font-bold">
+        <span class="gl-flex">
+          <span class="gl-truncate gl-font-bold">
             {{ user.name }}
           </span>
           <gl-badge v-if="user.status.busy" variant="warning">

@@ -13,10 +13,13 @@ module Ci
       return ServiceResponse.error(message: 'You are not authorized to perform this action') unless authorized?
 
       updated_count = 0
+      total_projects_with_pipeline_variables = 0
 
       parent_group.self_and_descendants.each_batch do |group_batch|
         all_projects_ci_cd_settings = ProjectCiCdSetting.for_namespace(group_batch)
           .with_pipeline_variables_enabled
+
+        total_projects_with_pipeline_variables += all_projects_ci_cd_settings.count
 
         all_projects_ci_cd_settings
           .each_batch(of: PROJECTS_BATCH_SIZE) do |ci_cd_settings|
@@ -29,7 +32,12 @@ module Ci
         end
       end
 
-      ServiceResponse.success(payload: { updated_count: updated_count })
+      skipped_count = total_projects_with_pipeline_variables - updated_count
+
+      ServiceResponse.success(payload: {
+        updated_count: updated_count,
+        skipped_count: skipped_count
+      })
     end
 
     private

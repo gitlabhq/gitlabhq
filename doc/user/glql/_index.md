@@ -9,7 +9,6 @@ title: GitLab Query Language (GLQL)
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -19,22 +18,15 @@ title: GitLab Query Language (GLQL)
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 GitLab Query Language (GLQL) is an attempt to create a single query language for all of GitLab.
 Use it to filter and embed content from anywhere in the platform, using familiar syntax.
 
 Embed queries in Markdown code blocks.
-A view is the rendered output of a GLQL source code block.
+An embedded view is the rendered output of a GLQL source code block.
 
 Share your feedback in the [GLQL beta feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
 
@@ -83,14 +75,14 @@ Values can include:
 - GitLab references (like `~label` for a label, `%Backlog` for a milestone, or `@username` for a user)
 - Lists containing any of the previous values (surrounded by parenthesis: `()` and delimited by commas: `,`)
 
-## GLQL views
+## Embedded views
 
-A view is the output of a GLQL source code block in Markdown. The source includes YAML
+An embedded view is the output of a GLQL source code block in Markdown. The source includes YAML
 attributes that describe how to display the GLQL query results, along with the query.
 
 ### Supported areas
 
-Views can be embedded in the following areas:
+Embedded views can be displayed in the following areas:
 
 - Group and project wikis
 - Descriptions and comments of:
@@ -101,7 +93,7 @@ Views can be embedded in the following areas:
 
 ### Syntax
 
-The syntax of a view's source is a superset of YAML that consists of:
+The syntax of an embedded view's source is a superset of YAML that consists of:
 
 - The `query` parameter: Expressions joined together with a logical operator, such as `and`.
 - Parameters related to the presentation layer, like `display`, `limit`, or `fields`, `title`, and `description`
@@ -134,8 +126,9 @@ This source should render a table like the one below:
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
-- Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
+- `title` and `description` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
 - Sorting and pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502701) in GitLab 18.2.
+- `collapsed` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197824) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -144,14 +137,15 @@ more optional parameters.
 
 Supported parameters:
 
-| Parameter     | Default                     | Description |
-| ------------- | --------------------------- | ----------- |
-| `description` | None                        | An optional description to display below the title. |
-| `display`     | `table`                     | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
-| `fields`      | `title`                     | A comma-separated list of [fields](fields.md#fields-in-glql-views) to include in the view. |
-| `limit`       | `100`                       | How many items to display on the first page. The maximum value is `100`. |
-| `sort`        | `updated desc`              | The [field to sort the data by](fields.md#fields-to-sort-glql-views-by) followed by a sort order (`asc` or `desc`). |
-| `title`       | `GLQL table` or `GLQL list` | A title displayed at the top of the GLQL view. |
+| Parameter     | Default                                       | Description |
+| ------------- | --------------------------------------------- | ----------- |
+| `collapsed`   | `false`                                       | Whether to collapse or expand the view. |
+| `description` | None                                          | An optional description to display below the title. |
+| `display`     | `table`                                       | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
+| `fields`      | `title`                                       | A comma-separated list of [fields](fields.md#fields-in-embedded-views) to include in the view. |
+| `limit`       | `100`                                         | How many items to display on the first page. The maximum value is `100`. |
+| `sort`        | `updated desc`                                | The [field to sort the data by](fields.md#fields-to-sort-embedded-views-by) followed by a sort order (`asc` or `desc`). |
+| `title`       | `Embedded table view` or `Embedded list view` | A title displayed at the top of the embedded view. |
 
 For example, to display the first five issues assigned to the current user in the `gitlab-org/gitlab`
 project as a list, sorted by due date (earliest first) and displaying the `title`, `health`, and `due` fields:
@@ -174,7 +168,7 @@ query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = op
 
 {{< /history >}}
 
-GLQL views display the first page of results by default.
+Embedded views display the first page of results by default.
 The `limit` parameter controls the number of items shown.
 
 To load the next page, in the last row, select **Load more**.
@@ -182,7 +176,7 @@ To load the next page, in the last row, select **Load more**.
 #### Field functions
 
 To create dynamically generated columns, use functions in the `fields` parameters in views.
-For a full list, see [Functions in GLQL views](functions.md#functions-in-glql-views).
+For a full list, see [Functions in embedded views](functions.md#functions-in-embedded-views).
 
 #### Custom field aliases
 

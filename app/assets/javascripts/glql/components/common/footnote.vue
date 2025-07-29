@@ -16,14 +16,14 @@ export default {
       return glqlWorkItemsFeatureFlagEnabled();
     },
   },
-  docsPath: `${helpPagePath('user/glql/_index')}#glql-views`,
+  docsPath: `${helpPagePath('user/glql/_index')}#embedded-views`,
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle">
+  <div class="gl-mb-5 gl-mt-2 gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle">
     <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
-    <gl-sprintf :message="__('%{linkStart}View%{linkEnd} powered by GLQL')">
+    <gl-sprintf :message="__('%{linkStart}Embedded view%{linkEnd} powered by GLQL')">
       <template #link="{ content }">
         <gl-link
           :href="$options.docsPath"

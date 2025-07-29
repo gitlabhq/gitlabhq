@@ -18,10 +18,6 @@ module Mutations
         authorize :admin_namespace
 
         def resolve(args)
-          if Feature.disabled?(:importer_user_mapping, current_user)
-            raise_resource_not_available_error! '`importer_user_mapping` feature flag is disabled.'
-          end
-
           namespace = authorized_find!(id: args[:namespace_id])
           result = ::Import::SourceUsers::KeepAllAsPlaceholderService.new(namespace, current_user: current_user).execute
 

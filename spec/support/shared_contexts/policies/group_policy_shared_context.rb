@@ -77,7 +77,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_upload destroy_upload
       admin_achievement
       award_achievement
-      read_group_runners
+      read_runners
       admin_push_rules
     ]
   end
@@ -90,7 +90,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_namespace
       admin_group_member
       admin_package
-      admin_runner
+      admin_runners
       change_visibility_level
       set_note_created_at
       create_subgroup

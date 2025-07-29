@@ -211,6 +211,8 @@ A scheduled pipeline:
 - Runs under a `security_policy_bot` user account in the project, with the Guest role and
   permissions to create pipelines and read the repository's content from a CI/CD job. This account
   is created when the policy is linked to a group or project.
+- On GitLab.com, only the first 10 `schedule` rules in a scan execution policy are enforced. Rules
+that exceed the limit have no effect.
 
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|

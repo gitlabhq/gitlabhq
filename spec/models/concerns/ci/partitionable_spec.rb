@@ -91,62 +91,43 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
           end
 
           ci_model.table_name = :_test_table_name
-          stub_const('Ci::Partition::LATEST_PARTITION_VALUE', 101)
+          stub_const('Ci::Partition::LAST_STATIC_PARTITION_VALUE', 101)
         end
 
         subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }
 
-        context 'when not using ci partitioning automation' do
-          before do
-            stub_feature_flags(ci_create_dynamic_partitions: false)
-          end
-
-          context 'without any existing partitions' do
-            it { is_expected.to eq(true) }
-          end
-
-          context 'with initial partition attached' do
-            before do
-              ci_model.connection.execute(<<~SQL)
-                CREATE TABLE IF NOT EXISTS _test_table_name_100 PARTITION OF _test_table_name FOR VALUES IN (100);
-              SQL
-            end
-
-            it { is_expected.to eq(true) }
-          end
-
-          context 'with an existing partition for partition_id = 101' do
-            before do
-              ci_model.connection.execute(<<~SQL)
-                CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (101);
-              SQL
-            end
-
-            it { is_expected.to eq(false) }
-          end
-
-          context 'with an existing partition for partition_id in 100, 101' do
-            before do
-              ci_model.connection.execute(<<~SQL)
-                CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (100, 101);
-              SQL
-            end
-
-            it { is_expected.to eq(false) }
-          end
-        end
-
         context 'when using ci partitioning automation' do
           context 'when current ci_partition exists' do
             before do
-              create_list(:ci_partition, 2)
+              create(:ci_partition, id: 125)
+              create(:ci_partition, id: 126)
             end
 
             it { is_expected.to eq(true) }
+
+            context 'when it is creating non default partitions' do
+              let(:active_partition) do
+                Gitlab::Database::Partitioning::MultipleNumericListPartition
+                  .new(ci_model.table_name, 125)
+              end
+
+              it { is_expected.to eq(true) }
+            end
           end
 
           context 'when current ci_partition does not exist' do
-            it { is_expected.to eq(false) }
+            context 'when it is creating the first partition' do
+              it { is_expected.to eq(true) }
+            end
+
+            context 'when it is creating non default partitions' do
+              let(:active_partition) do
+                Gitlab::Database::Partitioning::MultipleNumericListPartition
+                  .new(ci_model.table_name, non_existing_record_id)
+              end
+
+              it { is_expected.to eq(false) }
+            end
           end
         end
       end

@@ -1,6 +1,6 @@
 ---
-stage: Verify
-group: Hosted Runners
+stage: Production Engineering
+group: Runners Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use hosted runners to run your CI/CD jobs on GitLab Dedicated.
 title: Hosted runners for GitLab Dedicated
@@ -137,7 +137,7 @@ Compute usage visualizations are not available, but an [epic](https://gitlab.com
 To view hosted runners in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Optional. Select **Fleet dashboard**.
 
 #### Configure hosted runners in GitLab

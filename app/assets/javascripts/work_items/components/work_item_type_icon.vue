@@ -15,6 +15,11 @@ export default {
       type: String,
       required: true,
     },
+    typeIconName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     showText: {
       type: Boolean,
       required: false,
@@ -46,7 +51,7 @@ export default {
       return convertTypeEnumToName(this.workItemTypeEnum);
     },
     iconName() {
-      return NAME_TO_ICON_MAP[this.workItemTypeName] || 'issue-type-issue';
+      return NAME_TO_ICON_MAP[this.workItemTypeName] || this.typeIconName || 'issue-type-issue';
     },
     workItemTypeText() {
       return NAME_TO_TEXT_MAP[this.workItemTypeName];

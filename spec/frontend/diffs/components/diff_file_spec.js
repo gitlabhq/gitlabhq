@@ -400,6 +400,8 @@ describe('DiffFile', () => {
 
       it('should show the collapsed file warning with expansion button', () => {
         createComponent();
+
+        expect(wrapper.findByTestId('diff-file-warning').exists()).toBe(true);
         expect(findDiffContentArea(wrapper).html()).toContain(
           'Files with large changes are collapsed by default.',
         );
@@ -409,6 +411,12 @@ describe('DiffFile', () => {
       it('should style the component so that it `.has-body` for layout purposes', () => {
         createComponent();
         expect(wrapper.classes('has-body')).toBe(true);
+      });
+
+      it('should hide the collapsed file warning when file has been reviewed', () => {
+        createComponent({ props: { reviewed: true } });
+
+        expect(wrapper.findByTestId('diff-file-warning').exists()).toBe(false);
       });
     });
 

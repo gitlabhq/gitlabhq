@@ -55,7 +55,7 @@ module Groups
         return if can_any?(current_user, [
           :admin_cicd_variables,
           :admin_protected_environments,
-          :admin_runner
+          :admin_runners
         ], group)
 
         access_denied!
@@ -98,8 +98,7 @@ module Groups
         params.require(:group).permit(
           :max_artifacts_size,
           :allow_runner_registration_token,
-          :jwt_ci_cd_job_token_enabled,
-          :job_token_policies_enabled
+          :jwt_ci_cd_job_token_enabled
         )
       end
 

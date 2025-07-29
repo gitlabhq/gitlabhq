@@ -49,9 +49,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=api read_user email" \
-     "https://gitlab.example.com/api/v4/applications"
+curl --request POST \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=api read_user email" \
+    --url "https://gitlab.example.com/api/v4/applications"
 ```
 
 Example response:
@@ -78,7 +79,9 @@ GET /applications
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/applications"
+curl --request GET \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/applications"
 ```
 
 Example response:
@@ -120,7 +123,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/applications/:id"
+curl --request DELETE \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/applications/:id"
 ```
 
 ## Renew an application secret
@@ -146,7 +151,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/applications/:id/renew-secret"
+curl --request POST \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/applications/:id/renew-secret"
 ```
 
 Example response:

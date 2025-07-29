@@ -66,4 +66,46 @@ RSpec.describe API::Validations::Validators::FilePath do
       end
     end
   end
+
+  context 'when allow_initial_path_separator is set' do
+    let(:params) { { allow_initial_path_separator: true } }
+
+    context 'when file path starts with encoded forward slash' do
+      it 'allows paths with encoded separators that decode to absolute paths' do
+        expect_no_validation_error('test' => '%2Ffoo%2F')
+        expect_no_validation_error('test' => '%2Ffoo%2Fconfig.txt')
+        expect_no_validation_error('test' => '%2Ffoo%2Fbar%2Ffile.txt')
+      end
+
+      it 'allows mixed encoded/decoded paths' do
+        expect_no_validation_error('test' => '%2Ffoo/bar')
+      end
+    end
+
+    context 'when file path is a non-encoded absolute path' do
+      it 'raise a validation error' do
+        expect_validation_error('test' => '/foo/bar')
+      end
+    end
+
+    context 'when file path is a traversal attempt' do
+      it 'blocks double-encoded traversal attempts' do
+        expect_validation_error('test' => '%252E%252E%252F')
+        expect_validation_error('test' => '%252E%252E%252Fetc%252Fpasswd')
+        expect_validation_error('test' => '%2Ffoo%252E%252E%252Fbar')
+      end
+
+      it 'blocks mixed encoding patterns' do
+        expect_validation_error('test' => '%2F..%2Fetc')
+        expect_validation_error('test' => '%2Ffoo%2F..%2Fetc%2Fpasswd')
+        expect_validation_error('test' => '%2F..%2F..%2Fetc%2Fpasswd')
+        expect_validation_error('test' => '%2Fdir%2F..%2F..%2Fpasswd')
+      end
+
+      it 'blocks encoded traversal with legitimate directory names' do
+        expect_validation_error('test' => '%2Ffoo%2F..%2Fbar')
+        expect_validation_error('test' => '%2FSAP%2F..%2F..%2Fetc%2Fpasswd')
+      end
+    end
+  end
 end

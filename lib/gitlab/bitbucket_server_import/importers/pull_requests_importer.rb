@@ -6,17 +6,21 @@ module Gitlab
       class PullRequestsImporter
         include ParallelScheduling
 
+        # Cannot exceed BitBucket Server's maximum page limit (1000)
+        # https://confluence.atlassian.com/bitbucketserver/configuration-properties-776640155.html#Configurationproperties-Paging
+        PER_PAGE = 100
+
         def execute
           page = page_counter.current
 
           loop do
             log_info(
               import_stage: 'import_pull_requests',
-              message: "importing page #{page} using batch-size #{concurrent_import_jobs_limit}"
+              message: "importing page #{page} using batch-size #{PER_PAGE}"
             )
 
             pull_requests = client.pull_requests(
-              project_key, repository_slug, page_offset: page, limit: concurrent_import_jobs_limit
+              project_key, repository_slug, page_offset: page, limit: PER_PAGE
             ).to_a
 
             break if pull_requests.empty?
@@ -31,13 +35,15 @@ module Gitlab
             fetch_missing_commits(pull_requests)
 
             pull_requests.each do |pull_request|
-              job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
-
               next if already_processed?(pull_request)
 
-              job_delay = calculate_job_delay(job_waiter.jobs_remaining)
+              job_delay = calculate_job_delay(enqueued_job_counter)
 
               sidekiq_worker_class.perform_in(job_delay, project.id, pull_request.to_hash, job_waiter.key)
+
+              self.enqueued_job_counter += 1
+
+              job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
 
               mark_as_processed(pull_request)
             end

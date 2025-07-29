@@ -44,12 +44,12 @@ The `Query` type contains the API's top-level entry points for all executable qu
 
 ### `Query.abuseReport`
 
-Find an abuse report.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an abuse report.
 
 Returns [`AbuseReport`](#abusereport).
 
@@ -61,12 +61,12 @@ Returns [`AbuseReport`](#abusereport).
 
 ### `Query.abuseReportLabels`
 
-Abuse report labels.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Abuse report labels.
 
 Returns [`AbuseReportLabelConnection`](#abusereportlabelconnection).
 
@@ -94,12 +94,12 @@ Returns [`[AddOnPurchase!]`](#addonpurchase).
 
 ### `Query.adminMemberRole`
 
-Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`AdminMemberRole`](#adminmemberrole).
 
@@ -114,12 +114,12 @@ Returns [`AdminMemberRole`](#adminmemberrole).
 
 ### `Query.adminMemberRolePermissions`
 
-List of all admin customizable permissions.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+List of all admin customizable permissions.
 
 Returns [`CustomizableAdminPermissionConnection`](#customizableadminpermissionconnection).
 
@@ -129,12 +129,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.adminMemberRoles`
 
-Admin custom roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Admin custom roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`AdminMemberRoleConnection`](#adminmemberroleconnection).
 
@@ -151,14 +151,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="queryadminmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
-### `Query.aiCatalogItem`
+### `Query.aiCatalogBuiltInTools`
 
-Find an AI Catalog item.
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+List of AI Catalog built-in tools.
+
+Returns [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+### `Query.aiCatalogItem`
 
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an AI Catalog item.
 
 Returns [`AiCatalogItem`](#aicatalogitem).
 
@@ -170,12 +185,12 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 
 ### `Query.aiCatalogItems`
 
-List of AI Catalog items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of AI Catalog items.
 
 Returns [`AiCatalogItemConnection!`](#aicatalogitemconnection).
 
@@ -206,12 +221,12 @@ Returns [`ContextPreset`](#contextpreset).
 
 ### `Query.aiConversationThreads`
 
-List conversation threads of AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+List conversation threads of AI features.
 
 Returns [`AiConversationsThreadConnection!`](#aiconversationsthreadconnection).
 
@@ -228,12 +243,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiFeatureSettings`
 
-List of configurable AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+List of configurable AI features.
 
 Returns [`AiFeatureSettingConnection`](#aifeaturesettingconnection).
 
@@ -249,12 +264,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiMessages`
 
-Find GitLab Duo Chat messages.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find GitLab Duo Chat messages.
 
 Returns [`AiMessageConnection!`](#aimessageconnection).
 
@@ -274,12 +289,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiModelSelectionNamespaceSettings`
 
-List of configurable AI features for namespace Model Selection.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of configurable AI features for namespace Model Selection.
 
 Returns [`AiModelSelectionNamespaceFeatureSettingConnection`](#aimodelselectionnamespacefeaturesettingconnection).
 
@@ -295,12 +310,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiSelfHostedModels`
 
-Returns the self-hosted model if an ID is provided, otherwise returns all models.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Returns the self-hosted model if an ID is provided, otherwise returns all models.
 
 Returns [`AiSelfHostedModelConnection`](#aiselfhostedmodelconnection).
 
@@ -348,12 +363,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.auditEventsInstanceStreamingDestinations`
 
-Instance-level external audit event streaming destinations.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Instance-level external audit event streaming destinations.
 
 Returns [`InstanceAuditEventStreamingDestinationConnection`](#instanceauditeventstreamingdestinationconnection).
 
@@ -363,12 +378,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.blobSearch`
 
-Find code visible to the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Find code visible to the current user.
 
 Returns [`BlobSearch`](#blobsearch).
 
@@ -408,12 +423,12 @@ Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
 ### `Query.ciCatalogResource`
 
-A single CI/CD Catalog resource visible to an authorized user.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+A single CI/CD Catalog resource visible to an authorized user.
 
 Returns [`CiCatalogResource`](#cicatalogresource).
 
@@ -426,12 +441,12 @@ Returns [`CiCatalogResource`](#cicatalogresource).
 
 ### `Query.ciCatalogResources`
 
-All CI/CD Catalog resources under a common namespace, visible to an authorized user.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+All CI/CD Catalog resources under a common namespace, visible to an authorized user.
 
 Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
 
@@ -451,13 +466,13 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.ciConfig`
 
-Linted and processed contents of a CI config.
-Should not be requested more than once per request.
-
 {{< details >}}
 **Deprecated** in GitLab 18.1.
 Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>.
 {{< /details >}}
+
+Linted and processed contents of a CI config.
+Should not be requested more than once per request.
 
 Returns [`CiConfig`](#ciconfig).
 
@@ -527,12 +542,12 @@ Returns [`CiStage`](#cistage).
 
 ### `Query.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
@@ -562,12 +577,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.cloudConnectorStatus`
 
-Run a series of status checks for Cloud Connector features.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Run a series of status checks for Cloud Connector features.
 
 Returns [`CloudConnectorStatus`](#cloudconnectorstatus).
 
@@ -579,12 +594,12 @@ Returns [`ComplianceRequirementControl`](#compliancerequirementcontrol).
 
 ### `Query.configuredAiCatalogItems`
 
-AI Catalog items configured for use.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+AI Catalog items configured for use.
 
 Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
 
@@ -624,12 +639,12 @@ Returns [`CurrentUser`](#currentuser).
 
 ### `Query.customField`
 
-Find a custom field by its ID.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a custom field by its ID.
 
 Returns [`CustomField`](#customfield).
 
@@ -675,23 +690,23 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.duoSettings`
 
-Get GitLab Duo settings.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
 
+Get GitLab Duo settings.
+
 Returns [`DuoSettings`](#duosettings).
 
 ### `Query.duoWorkflowEvents`
-
-List the events for a Duo Workflow.
 
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List the events for a Duo Workflow.
 
 Returns [`DuoWorkflowEventConnection!`](#duoworkfloweventconnection).
 
@@ -707,12 +722,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.duoWorkflowWorkflows`
 
-List the workflows owned by the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List the workflows owned by the current user.
 
 Returns [`DuoWorkflowConnection!`](#duoworkflowconnection).
 
@@ -755,12 +770,12 @@ Returns [`EpicList`](#epiclist).
 
 ### `Query.featureFlagEnabled`
 
-Check if a feature flag is enabled.
-
 {{< details >}}
 **Deprecated** in GitLab 17.4.
 Replaced with metadata.featureFlags.
 {{< /details >}}
+
+Check if a feature flag is enabled.
 
 Returns [`Boolean!`](#boolean).
 
@@ -802,12 +817,12 @@ Returns [`Boolean`](#boolean).
 
 ### `Query.googleCloudArtifactRegistryRepositoryArtifact`
 
-Details about an artifact in the Google Artifact Registry.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Details about an artifact in the Google Artifact Registry.
 
 Returns [`GoogleCloudArtifactRegistryArtifactDetails`](#googlecloudartifactregistryartifactdetails).
 
@@ -916,12 +931,12 @@ Returns [`Issue`](#issue).
 
 ### `Query.issues`
 
-Find issues visible to the current user. At least one filter must be provided.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find issues visible to the current user. At least one filter must be provided.
 
 Returns [`IssueConnection`](#issueconnection).
 
@@ -1010,12 +1025,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.ldapAdminRoleLinks`
 
-LDAP admin links. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+LDAP admin links. Available only for GitLab Self-Managed.
 
 Returns [`LdapAdminRoleLinkConnection`](#ldapadminrolelinkconnection).
 
@@ -1035,12 +1050,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRole`
 
-Finds a single custom role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single custom role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`MemberRole`](#memberrole).
 
@@ -1055,12 +1070,12 @@ Returns [`MemberRole`](#memberrole).
 
 ### `Query.memberRolePermissions`
 
-List of all standard customizable permissions.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+List of all standard customizable permissions.
 
 Returns [`CustomizableStandardPermissionConnection`](#customizablestandardpermissionconnection).
 
@@ -1070,12 +1085,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRoles`
 
-Custom roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -1136,12 +1151,12 @@ Returns [`MlExperiment`](#mlexperiment).
 
 ### `Query.mlModel`
 
-Find machine learning models.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Find machine learning models.
 
 Returns [`MlModel`](#mlmodel).
 
@@ -1165,12 +1180,12 @@ Returns [`Namespace`](#namespace).
 
 ### `Query.note`
 
-Find a note.
-
 {{< details >}}
 **Introduced** in GitLab 15.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a note.
 
 Returns [`Note`](#note).
 
@@ -1182,12 +1197,12 @@ Returns [`Note`](#note).
 
 ### `Query.organization`
 
-Find an organization.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an organization.
 
 Returns [`Organization`](#organization).
 
@@ -1199,12 +1214,12 @@ Returns [`Organization`](#organization).
 
 ### `Query.organizations`
 
-List organizations.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+List organizations.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -1250,12 +1265,12 @@ Returns [`ProjectComplianceViolation`](#projectcomplianceviolation).
 
 ### `Query.projectSecret`
 
-View a specific project secret.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+View a specific project secret.
 
 Returns [`ProjectSecret`](#projectsecret).
 
@@ -1268,12 +1283,12 @@ Returns [`ProjectSecret`](#projectsecret).
 
 ### `Query.projectSecrets`
 
-List project secrets.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+List project secrets.
 
 Returns [`ProjectSecretConnection`](#projectsecretconnection).
 
@@ -1289,12 +1304,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.projectSecretsManager`
 
-Find a project secrets manager.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a project secrets manager.
 
 Returns [`ProjectSecretsManager`](#projectsecretsmanager).
 
@@ -1337,6 +1352,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="queryprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="queryprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
+| <a id="queryprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
 | <a id="queryprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="queryprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -1360,12 +1376,12 @@ Returns [`CiRunner`](#cirunner).
 
 ### `Query.runnerPlatforms`
 
-Supported runner platforms.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about supported platforms.
 {{< /details >}}
+
+Supported runner platforms.
 
 Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
@@ -1375,12 +1391,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.runnerSetup`
 
-Runner setup instructions.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about runner registration commands.
 {{< /details >}}
+
+Runner setup instructions.
 
 Returns [`RunnerSetup`](#runnersetup).
 
@@ -1454,12 +1470,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.secretPermissions`
 
-List secret permissions.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+List secret permissions.
 
 Returns [`SecretPermissionConnection`](#secretpermissionconnection).
 
@@ -1475,12 +1491,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.selfManagedAddOnEligibleUsers`
 
-Users within the self-managed instance who are eligible for add-ons.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Users within the self-managed instance who are eligible for add-ons.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -1531,12 +1547,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.standardRole`
 
-Finds a single default role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single default role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`StandardRole`](#standardrole).
 
@@ -1548,12 +1564,12 @@ Returns [`StandardRole`](#standardrole).
 
 ### `Query.standardRoles`
 
-Default roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Default roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`StandardRoleConnection`](#standardroleconnection).
 
@@ -1579,12 +1595,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.syntheticNote`
 
-Find a synthetic note.
-
 {{< details >}}
 **Introduced** in GitLab 15.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a synthetic note.
 
 Returns [`Note`](#note).
 
@@ -1767,12 +1783,12 @@ Returns [`Vulnerability`](#vulnerability).
 
 ### `Query.wikiPage`
 
-Find a wiki page.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a wiki page.
 
 Returns [`WikiPage`](#wikipage).
 
@@ -1786,12 +1802,12 @@ Returns [`WikiPage`](#wikipage).
 
 ### `Query.workItem`
 
-Find a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item.
 
 Returns [`WorkItem`](#workitem).
 
@@ -1803,12 +1819,12 @@ Returns [`WorkItem`](#workitem).
 
 ### `Query.workItemDescriptionTemplateContent`
 
-Find a work item description template.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item description template.
 
 Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 
@@ -1820,12 +1836,12 @@ Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 
 ### `Query.workItemsByReference`
 
-Find work items by their reference.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Find work items by their reference.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -2105,6 +2121,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsjobid"></a>`jobId` | [`String`](#string) | Delete jobs matching job_id in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobskubernetesagentid"></a>`kubernetesAgentId` | [`String`](#string) | Delete jobs matching kubernetes_agent_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsmergeactionstatus"></a>`mergeActionStatus` | [`String`](#string) | Delete jobs matching merge_action_status in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsorganizationid"></a>`organizationId` | [`String`](#string) | Delete jobs matching organization_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobspipelineid"></a>`pipelineId` | [`String`](#string) | Delete jobs matching pipeline_id in the context metadata. |
@@ -2151,14 +2168,12 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiondescriptioncomposer"></a>`descriptionComposer` | [`AiDescriptionComposerInput`](#aidescriptioncomposerinput) | Input for description_composer AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
-| <a id="mutationaiactiongeneratecubequery"></a>`generateCubeQuery` | [`AiGenerateCubeQueryInput`](#aigeneratecubequeryinput) | Input for generate_cube_query AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactionmeasurecommenttemperature"></a>`measureCommentTemperature` | [`AiMeasureCommentTemperatureInput`](#aimeasurecommenttemperatureinput) | Input for measure_comment_temperature AI action. |
 | <a id="mutationaiactionplatformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
 | <a id="mutationaiactionprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
 | <a id="mutationaiactionrootnamespaceid"></a>`rootNamespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the top-level namespace the user is acting on. |
-| <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`AiSummarizeNewMergeRequestInput`](#aisummarizenewmergerequestinput) | Input for summarize_new_merge_request AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
 | <a id="mutationaiactionthreadid"></a>`threadId` | [`AiConversationThreadID`](#aiconversationthreadid) | Global Id of the existing thread to continue the conversation. If it is not specified, a new thread will be created for the specified conversation_type. |
@@ -2270,6 +2285,7 @@ Input type: `AiCatalogAgentCreateInput`
 | <a id="mutationaicatalogagentcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the agent. |
 | <a id="mutationaicatalogagentcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the agent is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentcreatesystemprompt"></a>`systemPrompt` | [`String!`](#string) | System prompt for the agent. |
+| <a id="mutationaicatalogagentcreatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
 | <a id="mutationaicatalogagentcreateuserprompt"></a>`userPrompt` | [`String!`](#string) | User prompt for the agent. |
 
 #### Fields
@@ -2304,6 +2320,36 @@ Input type: `AiCatalogAgentDeleteInput`
 | <a id="mutationaicatalogagentdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog Agent was successfully deleted. |
 
+### `Mutation.aiCatalogAgentUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogAgentUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentupdatedescription"></a>`description` | [`String`](#string) | Description for the agent. |
+| <a id="mutationaicatalogagentupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Agent to update. |
+| <a id="mutationaicatalogagentupdatename"></a>`name` | [`String`](#string) | Name for the agent. |
+| <a id="mutationaicatalogagentupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the item is publicly visible in the catalog. |
+| <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
+| <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogagentupdateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Agent that was updated. |
+
 ### `Mutation.aiCatalogFlowCreate`
 
 {{< details >}}
@@ -2331,6 +2377,57 @@ Input type: `AiCatalogFlowCreateInput`
 | <a id="mutationaicatalogflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogflowcreateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Item created. |
 
+### `Mutation.aiCatalogFlowDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogFlowDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogflowdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog flow was successfully deleted. |
+
+### `Mutation.aiCatalogFlowUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogFlowUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowupdatedescription"></a>`description` | [`String`](#string) | Description for the flow. |
+| <a id="mutationaicatalogflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to update. |
+| <a id="mutationaicatalogflowupdatename"></a>`name` | [`String`](#string) | Name for the flow. |
+| <a id="mutationaicatalogflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the flow is publicly visible in the catalog. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogflowupdateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Flow that was updated. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}
@@ -2349,6 +2446,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
 | <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
+| <a id="mutationaiduoworkflowcreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="mutationaiduoworkflowcreatepreapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutationaiduoworkflowcreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiduoworkflowcreateworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Workflow type based on its capability. |
@@ -2363,12 +2461,12 @@ Input type: `AiDuoWorkflowCreateInput`
 
 ### `Mutation.aiFeatureSettingUpdate`
 
-Updates or creates settings for AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates or creates settings for AI features.
 
 Input type: `AiFeatureSettingUpdateInput`
 
@@ -2391,12 +2489,12 @@ Input type: `AiFeatureSettingUpdateInput`
 
 ### `Mutation.aiModelSelectionNamespaceUpdate`
 
-Updates or creates settings for AI features for a namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates or creates settings for AI features for a namespace.
 
 Input type: `AiModelSelectionNamespaceUpdateInput`
 
@@ -2419,12 +2517,12 @@ Input type: `AiModelSelectionNamespaceUpdateInput`
 
 ### `Mutation.aiSelfHostedModelConnectionCheck`
 
-Checks if the AI Gateway can establish a connection with the given model configuration.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Checks if the AI Gateway can establish a connection with the given model configuration.
 
 Input type: `AiSelfHostedModelConnectionCheckInput`
 
@@ -2477,12 +2575,12 @@ Input type: `AiSelfHostedModelCreateInput`
 
 ### `Mutation.aiSelfHostedModelDelete`
 
-Deletes a self-hosted model.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a self-hosted model.
 
 Input type: `AiSelfHostedModelDeleteInput`
 
@@ -2502,12 +2600,12 @@ Input type: `AiSelfHostedModelDeleteInput`
 
 ### `Mutation.aiSelfHostedModelUpdate`
 
-Updates a self-hosted model.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a self-hosted model.
 
 Input type: `AiSelfHostedModelUpdateInput`
 
@@ -3473,12 +3571,12 @@ Input type: `BranchRuleDeleteInput`
 
 ### `Mutation.branchRuleExternalStatusCheckCreate`
 
-Create a new external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Create a new external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckCreateInput`
 
@@ -3501,12 +3599,12 @@ Input type: `BranchRuleExternalStatusCheckCreateInput`
 
 ### `Mutation.branchRuleExternalStatusCheckDestroy`
 
-Destroy an external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroy an external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckDestroyInput`
 
@@ -3527,12 +3625,12 @@ Input type: `BranchRuleExternalStatusCheckDestroyInput`
 
 ### `Mutation.branchRuleExternalStatusCheckUpdate`
 
-Update an external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Update an external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckUpdateInput`
 
@@ -3556,12 +3654,12 @@ Input type: `BranchRuleExternalStatusCheckUpdateInput`
 
 ### `Mutation.branchRuleSquashOptionDelete`
 
-Delete a squash option for a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Delete a squash option for a branch rule.
 
 Input type: `BranchRuleSquashOptionDeleteInput`
 
@@ -3581,12 +3679,12 @@ Input type: `BranchRuleSquashOptionDeleteInput`
 
 ### `Mutation.branchRuleSquashOptionUpdate`
 
-Update a squash option for a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Update a squash option for a branch rule.
 
 Input type: `BranchRuleSquashOptionUpdateInput`
 
@@ -4448,12 +4546,12 @@ Input type: `CreateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.createContainerProtectionTagRule`
 
-Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
 
 Input type: `createContainerProtectionTagRuleInput`
 
@@ -5370,12 +5468,12 @@ Input type: `DeleteContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.deleteContainerProtectionTagRule`
 
-Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 Input type: `DeleteContainerProtectionTagRuleInput`
 
@@ -5465,12 +5563,12 @@ Input type: `DeletePackagesProtectionRuleInput`
 
 ### `Mutation.deletePagesDeployment`
 
-Deletes a Pages deployment.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a Pages deployment.
 
 Input type: `DeletePagesDeploymentInput`
 
@@ -5913,12 +6011,12 @@ Input type: `DiscussionToggleResolveInput`
 
 ### `Mutation.duoSettingsUpdate`
 
-Updates GitLab Duo settings.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates GitLab Duo settings.
 
 Input type: `DuoSettingsUpdateInput`
 
@@ -6216,12 +6314,12 @@ Input type: `EpicBoardListCreateInput`
 
 ### `Mutation.epicBoardListDestroy`
 
-Destroys an epic board list.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by WorkItem type.
 {{< /details >}}
+
+Destroys an epic board list.
 
 Input type: `EpicBoardListDestroyInput`
 
@@ -6500,12 +6598,12 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 
 ### `Mutation.geoRegistriesBulkUpdate`
 
-Mutates multiple Geo registries for a given registry class.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Mutates multiple Geo registries for a given registry class.
 
 Input type: `GeoRegistriesBulkUpdateInput`
 
@@ -6530,12 +6628,12 @@ Input type: `GeoRegistriesBulkUpdateInput`
 
 ### `Mutation.geoRegistriesUpdate`
 
-Mutates a Geo registry.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Mutates a Geo registry.
 
 Input type: `GeoRegistriesUpdateInput`
 
@@ -8007,12 +8105,12 @@ Input type: `LabelCreateInput`
 
 ### `Mutation.ldapAdminRoleLinkCreate`
 
-Creates an instance-level custom admin role LDAP link.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates an instance-level custom admin role LDAP link.
 
 Input type: `LdapAdminRoleLinkCreateInput`
 
@@ -8036,12 +8134,12 @@ Input type: `LdapAdminRoleLinkCreateInput`
 
 ### `Mutation.ldapAdminRoleLinkDestroy`
 
-Destroys an instance-level custom admin role LDAP link.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroys an instance-level custom admin role LDAP link.
 
 Input type: `LdapAdminRoleLinkDestroyInput`
 
@@ -8088,6 +8186,32 @@ Input type: `LifecycleUpdateInput`
 | <a id="mutationlifecycleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationlifecycleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationlifecycleupdatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle updated. |
+
+### `Mutation.linkProjectComplianceViolationIssue`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LinkProjectComplianceViolationIssueInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueissueiid"></a>`issueIid` | [`String!`](#string) | IID of the issue to be linked. |
+| <a id="mutationlinkprojectcomplianceviolationissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the issue belongs to. |
+| <a id="mutationlinkprojectcomplianceviolationissueviolationid"></a>`violationId` | [`ComplianceManagementProjectsComplianceViolationID!`](#compliancemanagementprojectscomplianceviolationid) | Global ID of the project compliance violation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlinkprojectcomplianceviolationissueviolation"></a>`violation` | [`ProjectComplianceViolation`](#projectcomplianceviolation) | Updated project compliance violation. |
 
 ### `Mutation.markAsSpamSnippet`
 
@@ -9898,12 +10022,12 @@ Input type: `ProjectSecurityExclusionUpdateInput`
 
 ### `Mutation.projectSetComplianceFramework`
 
-Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
-
 {{< details >}}
 **Deprecated** in GitLab 17.11.
 Use mutation ProjectUpdateComplianceFrameworks instead of this.
 {{< /details >}}
+
+Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
 
 Input type: `ProjectSetComplianceFrameworkInput`
 
@@ -9925,12 +10049,12 @@ Input type: `ProjectSetComplianceFrameworkInput`
 
 ### `Mutation.projectSetContinuousVulnerabilityScanning`
 
-Enable/disable Continuous Vulnerability Scanning for the given project.
-
 {{< details >}}
 **Deprecated** in GitLab 17.3.
 CVS has been enabled permanently. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11474) for more information.
 {{< /details >}}
+
+Enable/disable Continuous Vulnerability Scanning for the given project.
 
 Input type: `ProjectSetContinuousVulnerabilityScanningInput`
 
@@ -10475,12 +10599,12 @@ Input type: `RepositionImageDiffNoteInput`
 
 ### `Mutation.restorePagesDeployment`
 
-Restores a Pages deployment that has been scheduled for deletion.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Restores a Pages deployment that has been scheduled for deletion.
 
 Input type: `RestorePagesDeploymentInput`
 
@@ -10501,12 +10625,12 @@ Input type: `RestorePagesDeploymentInput`
 
 ### `Mutation.resyncSecurityPolicies`
 
-Triggers a resynchronization of security policies linked to the given project or group (`full_path`).
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Triggers a resynchronization of security policies linked to the given project or group (`full_path`).
 
 Input type: `ResyncSecurityPoliciesInput`
 
@@ -11067,12 +11191,12 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-**Status**: Experiment. Creates and assigns a security policy project for the given project or group (`full_path`) async.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
 Input type: `SecurityPolicyProjectCreateAsyncInput`
 
@@ -11176,6 +11300,46 @@ Input type: `SetGroupSecretPushProtectionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsetgroupsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.setPagesForceHttps`
+
+Input type: `SetPagesForceHttpsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesforcehttpsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesforcehttpsprojectpath"></a>`projectPath` | [`ID!`](#id) | Path of the project to set the pages force HTTPS. |
+| <a id="mutationsetpagesforcehttpsvalue"></a>`value` | [`Boolean!`](#boolean) | Indicates user wants to enforce HTTPS on their pages. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesforcehttpsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesforcehttpserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetpagesforcehttpsproject"></a>`project` | [`Project`](#project) | Project that was updated. |
+
+### `Mutation.setPagesUseUniqueDomain`
+
+Input type: `SetPagesUseUniqueDomainInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesuseuniquedomainclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesuseuniquedomainprojectpath"></a>`projectPath` | [`ID!`](#id) | Path of the project to set the pages to use unique domains. |
+| <a id="mutationsetpagesuseuniquedomainvalue"></a>`value` | [`Boolean!`](#boolean) | Indicates user wants to use unique subdomains for their pages. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetpagesuseuniquedomainclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetpagesuseuniquedomainerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetpagesuseuniquedomainproject"></a>`project` | [`Project`](#project) | Project that was updated. |
 
 ### `Mutation.setPreReceiveSecretDetection`
 
@@ -11782,14 +11946,40 @@ Input type: `TodosMarkAllDoneInput`
 | <a id="mutationtodosmarkalldoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationtodosmarkalldonetodos"></a>`todos` | [`[Todo!]!`](#todo) | Updated to-do items. |
 
-### `Mutation.updateAbuseReportNote`
+### `Mutation.unlinkProjectComplianceViolationIssue`
 
-Updates an abuse report Note.
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `UnlinkProjectComplianceViolationIssueInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationunlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationunlinkprojectcomplianceviolationissueissueiid"></a>`issueIid` | [`String!`](#string) | IID of the issue to be unlinked. |
+| <a id="mutationunlinkprojectcomplianceviolationissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the issue belongs to. |
+| <a id="mutationunlinkprojectcomplianceviolationissueviolationid"></a>`violationId` | [`ComplianceManagementProjectsComplianceViolationID!`](#compliancemanagementprojectscomplianceviolationid) | Global ID of the project compliance violation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationunlinkprojectcomplianceviolationissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationunlinkprojectcomplianceviolationissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationunlinkprojectcomplianceviolationissueviolation"></a>`violation` | [`ProjectComplianceViolation`](#projectcomplianceviolation) | Updated project compliance violation. |
+
+### `Mutation.updateAbuseReportNote`
 
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates an abuse report Note.
 
 Input type: `UpdateAbuseReportNoteInput`
 
@@ -12031,12 +12221,12 @@ Input type: `UpdateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.updateContainerProtectionTagRule`
 
-Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 Input type: `UpdateContainerProtectionTagRuleInput`
 
@@ -12711,12 +12901,12 @@ Input type: `UserSetNamespaceCommitEmailInput`
 
 ### `Mutation.valueStreamCreate`
 
-Creates a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a value stream.
 
 Input type: `ValueStreamCreateInput`
 
@@ -12740,12 +12930,12 @@ Input type: `ValueStreamCreateInput`
 
 ### `Mutation.valueStreamDestroy`
 
-Destroy a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroy a value stream.
 
 Input type: `ValueStreamDestroyInput`
 
@@ -12766,12 +12956,12 @@ Input type: `ValueStreamDestroyInput`
 
 ### `Mutation.valueStreamUpdate`
 
-Updates a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a value stream.
 
 Input type: `ValueStreamUpdateInput`
 
@@ -13125,12 +13315,12 @@ Input type: `WikiPageSubscribeInput`
 
 ### `Mutation.workItemAddClosingMergeRequest`
 
-Adds a closing merge request to a work item.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Adds a closing merge request to a work item.
 
 Input type: `WorkItemAddClosingMergeRequestInput`
 
@@ -13154,12 +13344,12 @@ Input type: `WorkItemAddClosingMergeRequestInput`
 
 ### `Mutation.workItemAddLinkedItems`
 
-Add linked items to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Add linked items to the work item.
 
 Input type: `WorkItemAddLinkedItemsInput`
 
@@ -13183,12 +13373,12 @@ Input type: `WorkItemAddLinkedItemsInput`
 
 ### `Mutation.workItemBulkMove`
 
-Allows move several work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Allows move several work items.
 
 Input type: `WorkItemBulkMoveInput`
 
@@ -13211,12 +13401,12 @@ Input type: `WorkItemBulkMoveInput`
 
 ### `Mutation.workItemBulkUpdate`
 
-Allows updating several properties for a set of work items.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Allows updating several properties for a set of work items.
 
 Input type: `WorkItemBulkUpdateInput`
 
@@ -13236,6 +13426,7 @@ Input type: `WorkItemBulkUpdateInput`
 | <a id="mutationworkitembulkupdatemilestonewidget"></a>`milestoneWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateparentid"></a>`parentId` {{< icon name="warning-solid" >}} | [`WorkItemsParentID`](#workitemsparentid) | **Deprecated**: Use full_path instead. Deprecated in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatestateevent"></a>`stateEvent` {{< icon name="warning-solid" >}} | [`WorkItemStateEvent`](#workitemstateevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitembulkupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitembulkupdatesubscriptionevent"></a>`subscriptionEvent` {{< icon name="warning-solid" >}} | [`WorkItemSubscriptionEvent`](#workitemsubscriptionevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 
 #### Fields
@@ -13248,12 +13439,12 @@ Input type: `WorkItemBulkUpdateInput`
 
 ### `Mutation.workItemConvert`
 
-Converts the work item to a new type.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Converts the work item to a new type.
 
 Input type: `WorkItemConvertInput`
 
@@ -13275,12 +13466,12 @@ Input type: `WorkItemConvertInput`
 
 ### `Mutation.workItemCreate`
 
-Creates a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a work item.
 
 Input type: `WorkItemCreateInput`
 
@@ -13323,12 +13514,12 @@ Input type: `WorkItemCreateInput`
 
 ### `Mutation.workItemCreateFromTask`
 
-Creates a work item from a task in another work item's description.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a work item from a task in another work item's description.
 
 Input type: `WorkItemCreateFromTaskInput`
 
@@ -13351,12 +13542,12 @@ Input type: `WorkItemCreateFromTaskInput`
 
 ### `Mutation.workItemDelete`
 
-Deletes a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a work item.
 
 Input type: `WorkItemDeleteInput`
 
@@ -13438,12 +13629,12 @@ Input type: `WorkItemExportInput`
 
 ### `Mutation.workItemHierarchyAddChildrenItems`
 
-Adds children to a given work item's hierarchy by Global ID.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Adds children to a given work item's hierarchy by Global ID.
 
 Input type: `WorkItemHierarchyAddChildrenItemsInput`
 
@@ -13465,12 +13656,12 @@ Input type: `WorkItemHierarchyAddChildrenItemsInput`
 
 ### `Mutation.workItemRemoveLinkedItems`
 
-Remove items linked to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Remove items linked to the work item.
 
 Input type: `WorkItemRemoveLinkedItemsInput`
 
@@ -13518,12 +13709,12 @@ Input type: `WorkItemSubscribeInput`
 
 ### `Mutation.workItemUpdate`
 
-Updates a work item by Global ID.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a work item by Global ID.
 
 Input type: `WorkItemUpdateInput`
 
@@ -13567,12 +13758,12 @@ Input type: `WorkItemUpdateInput`
 
 ### `Mutation.workItemUserPreferenceUpdate`
 
-Create or Update user preferences for a work item type and namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Create or Update user preferences for a work item type and namespace.
 
 Input type: `WorkItemUserPreferenceUpdateInput`
 
@@ -13681,12 +13872,12 @@ Input type: `WorkItemsCsvImportInput`
 
 ### `Mutation.workItemsHierarchyReorder`
 
-Reorder a work item in the hierarchy tree.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Reorder a work item in the hierarchy tree.
 
 Input type: `workItemsHierarchyReorderInput`
 
@@ -13709,6 +13900,34 @@ Input type: `workItemsHierarchyReorderInput`
 | <a id="mutationworkitemshierarchyreordererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemshierarchyreorderparentworkitem"></a>`parentWorkItem` | [`WorkItem`](#workitem) | Work item's parent after mutation. |
 | <a id="mutationworkitemshierarchyreorderworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
+
+### `Mutation.workItemsReorder`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Reorders a project level work item.
+
+Input type: `workItemsReorderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsreorderid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to be reordered. |
+| <a id="mutationworkitemsreordermoveafterid"></a>`moveAfterId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed after the work item. |
+| <a id="mutationworkitemsreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed before the work item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsreordererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsreorderworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
 ### `Mutation.workspaceCreate`
 
@@ -14007,6 +14226,29 @@ The edge type for [`AiAgent`](#aiagent).
 | <a id="aiagentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiagentedgenode"></a>`node` | [`AiAgent`](#aiagent) | The item at the end of the edge. |
 
+#### `AiCatalogBuiltInToolConnection`
+
+The connection type for [`AiCatalogBuiltInTool`](#aicatalogbuiltintool).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogbuiltintoolconnectionedges"></a>`edges` | [`[AiCatalogBuiltInToolEdge]`](#aicatalogbuiltintooledge) | A list of edges. |
+| <a id="aicatalogbuiltintoolconnectionnodes"></a>`nodes` | [`[AiCatalogBuiltInTool]`](#aicatalogbuiltintool) | A list of nodes. |
+| <a id="aicatalogbuiltintoolconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiCatalogBuiltInToolEdge`
+
+The edge type for [`AiCatalogBuiltInTool`](#aicatalogbuiltintool).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogbuiltintooledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aicatalogbuiltintooledgenode"></a>`node` | [`AiCatalogBuiltInTool`](#aicatalogbuiltintool) | The item at the end of the edge. |
+
 #### `AiCatalogItemConnection`
 
 The connection type for [`AiCatalogItem`](#aicatalogitem).
@@ -14193,6 +14435,29 @@ The edge type for [`AiSelfHostedModel`](#aiselfhostedmodel).
 | ---- | ---- | ----------- |
 | <a id="aiselfhostedmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiselfhostedmodeledgenode"></a>`node` | [`AiSelfHostedModel`](#aiselfhostedmodel) | The item at the end of the edge. |
+
+#### `AiUsageEventConnection`
+
+The connection type for [`AiUsageEvent`](#aiusageevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusageeventconnectionedges"></a>`edges` | [`[AiUsageEventEdge]`](#aiusageeventedge) | A list of edges. |
+| <a id="aiusageeventconnectionnodes"></a>`nodes` | [`[AiUsageEvent]`](#aiusageevent) | A list of nodes. |
+| <a id="aiusageeventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiUsageEventEdge`
+
+The edge type for [`AiUsageEvent`](#aiusageevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusageeventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aiusageeventedgenode"></a>`node` | [`AiUsageEvent`](#aiusageevent) | The item at the end of the edge. |
 
 #### `AiUserMetricsConnection`
 
@@ -21469,12 +21734,12 @@ Activity streams associated with a user.
 
 ##### `ActivityStream.followedUsersActivity`
 
-Activity from users followed by the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Activity from users followed by the current user.
 
 Returns [`EventConnection`](#eventconnection).
 
@@ -21557,12 +21822,12 @@ A user with add-on data.
 
 ##### `AddOnUser.addOnAssignments`
 
-Add-on purchase assignments for the user.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Add-on purchase assignments for the user.
 
 Returns [`UserAddOnAssignmentConnection`](#useraddonassignmentconnection).
 
@@ -21593,7 +21858,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="addonuserassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="addonuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="addonuserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="addonuserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="addonuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="addonuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="addonuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -21651,7 +21916,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="addonuserauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="addonuserauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="addonuserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="addonuserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="addonuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="addonuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="addonuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -21731,12 +21996,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AddOnUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -21771,7 +22036,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="addonuserreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="addonuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="addonuserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="addonuserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="addonuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="addonuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="addonuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -21905,12 +22170,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AddOnUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -22087,9 +22352,23 @@ An AI catalog agent version.
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogagentversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
 | <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="aicatalogagentversiontools"></a>`tools` | [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection) | List of GitLab tools enabled for the agent. (see [Connections](#connections)) |
 | <a id="aicatalogagentversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
 | <a id="aicatalogagentversionuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 | <a id="aicatalogagentversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
+
+### `AiCatalogBuiltInTool`
+
+An AI catalog built-in tool.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogbuiltintooldescription"></a>`description` | [`String!`](#string) | Description of the built-in tool. |
+| <a id="aicatalogbuiltintoolid"></a>`id` | [`AiCatalogBuiltInToolID!`](#aicatalogbuiltintoolid) | Global ID of the built-in tool. |
+| <a id="aicatalogbuiltintoolname"></a>`name` | [`String!`](#string) | Name of the built-in tool. |
+| <a id="aicatalogbuiltintooltitle"></a>`title` | [`String!`](#string) | Title of the built-in tool. |
 
 ### `AiCatalogFlow`
 
@@ -22290,7 +22569,19 @@ Usage data for events stored in the default PostgreSQL database. Data retained f
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiusagedataall"></a>`all` | [`AiUsageEventConnection`](#aiusageeventconnection) | All Duo usage events. (see [Connections](#connections)) |
 | <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions. (see [Connections](#connections)) |
+
+### `AiUsageEvent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusageeventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
+| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
+| <a id="aiusageeventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
+| <a id="aiusageeventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
 ### `AiUserMetrics`
 
@@ -22818,7 +23109,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="autocompleteduserassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="autocompleteduserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="autocompleteduserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="autocompleteduserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="autocompleteduserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="autocompleteduserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="autocompleteduserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -22876,7 +23167,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="autocompleteduserauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="autocompleteduserauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="autocompleteduserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="autocompleteduserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="autocompleteduserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="autocompleteduserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="autocompleteduserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -22968,12 +23259,12 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 ##### `AutocompletedUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -23008,7 +23299,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="autocompleteduserreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="autocompleteduserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="autocompleteduserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="autocompleteduserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="autocompleteduserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="autocompleteduserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="autocompleteduserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -23142,12 +23433,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AutocompletedUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -24295,12 +24586,12 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 
 ##### `CiJobTrace.htmlSummary`
 
-HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
 
 Returns [`String!`](#string).
 
@@ -25747,12 +26038,12 @@ Represents a vulnerability. The connection type is countable.
 
 ##### `CountableVulnerability.dependencies`
 
-Dependencies for the vulnerability.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Dependencies for the vulnerability.
 
 Returns [`DependencyConnection!`](#dependencyconnection).
 
@@ -25886,6 +26177,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="currentuserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="currentuserrecentlyviewedissues"></a>`recentlyViewedIssues` {{< icon name="warning-solid" >}} | [`[Issue!]`](#issue) | **Introduced** in GitLab 17.9. **Status**: Experiment. Most-recently viewed issues for the current user. |
+| <a id="currentuserrecentlyvieweditems"></a>`recentlyViewedItems` | [`[RecentlyViewedItem!]`](#recentlyvieweditem) | Most-recently viewed items for the current user. |
 | <a id="currentuserrecentlyviewedmergerequests"></a>`recentlyViewedMergeRequests` {{< icon name="warning-solid" >}} | [`[MergeRequest!]`](#mergerequest) | **Introduced** in GitLab 17.10. **Status**: Experiment. Most-recently viewed merge requests for the current user. |
 | <a id="currentusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="currentuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -25917,7 +26209,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="currentuserassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="currentuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="currentuserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="currentuserassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="currentuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="currentuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="currentuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -25958,12 +26250,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.assigneeOrReviewerMergeRequests`
 
-Merge requests the current user is an assignee or a reviewer of.Ignored if `merge_request_dashboard` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Merge requests the current user is an assignee or a reviewer of.Ignored if `merge_request_dashboard` feature flag is disabled.
 
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
@@ -25978,7 +26270,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserassigneeorreviewermergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="currentuserassigneeorreviewermergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="currentuserassigneeorreviewermergerequestsassignedreviewstates"></a>`assignedReviewStates` | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | Reviewer states for merge requests the current user is assigned to. |
-| <a id="currentuserassigneeorreviewermergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="currentuserassigneeorreviewermergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="currentuserassigneeorreviewermergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="currentuserassigneeorreviewermergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="currentuserassigneeorreviewermergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -26035,7 +26327,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="currentuserauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="currentuserauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="currentuserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="currentuserauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="currentuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="currentuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="currentuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -26115,12 +26407,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -26155,7 +26447,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="currentuserreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="currentuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="currentuserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="currentuserreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="currentuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="currentuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="currentuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -26289,12 +26581,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -26310,12 +26602,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.workItemPreferences`
 
-User preferences for the given work item type and namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+User preferences for the given work item type and namespace.
 
 Returns [`WorkItemTypesUserPreference`](#workitemtypesuserpreference).
 
@@ -26328,12 +26620,12 @@ Returns [`WorkItemTypesUserPreference`](#workitemtypesuserpreference).
 
 ##### `CurrentUser.workItems`
 
-Find work items visible to the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find work items visible to the current user.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -26790,13 +27082,13 @@ A software dependency used by a project.
 
 ##### `Dependency.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -26832,13 +27124,13 @@ A software dependency aggregation used by a group.
 
 ##### `DependencyAggregation.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -27684,10 +27976,14 @@ GitLab Duo Agent Platform session.
 | <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the session. |
 | <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the session. |
 | <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the session. |
+| <a id="duoworkflowlastexecutorlogsurl"></a>`lastExecutorLogsUrl` | [`String`](#string) | URL to the latest executor logs of the workflow. |
+| <a id="duoworkflowlatestcheckpoint"></a>`latestCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | Latest checkpoint of the session. |
 | <a id="duoworkflowmcpenabled"></a>`mcpEnabled` | [`Boolean`](#boolean) | Has MCP been enabled for the namespace. |
+| <a id="duoworkflownamespace"></a>`namespace` | [`Namespace`](#namespace) | namespace that the session is in. |
+| <a id="duoworkflownamespaceid"></a>`namespaceId` | [`TypesNamespaceID`](#typesnamespaceid) | ID of the namespace. |
 | <a id="duoworkflowpreapprovedagentprivilegesnames"></a>`preApprovedAgentPrivilegesNames` | [`[String!]`](#string) | Privileges pre-approved for the agent during execution. |
-| <a id="duoworkflowproject"></a>`project` | [`Project!`](#project) | Project that the session is in. |
-| <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
+| <a id="duoworkflowproject"></a>`project` | [`Project`](#project) | Project that the session is in. |
+| <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID`](#projectid) | ID of the project. |
 | <a id="duoworkflowstalled"></a>`stalled` | [`Boolean`](#boolean) | Workflow got created but has no checkpoints. |
 | <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 | <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status name of the session. |
@@ -28259,12 +28555,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `EpicIssue.linkedWorkItems`
 
-Work items linked to the issue.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items linked to the issue.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -28587,12 +28883,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `GeoNode.dependencyProxyBlobRegistries`
 
-Find Dependency Proxy Blob registries on this Geo node.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find Dependency Proxy Blob registries on this Geo node.
 
 Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
 
@@ -28632,12 +28928,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `GeoNode.designManagementRepositoryRegistries`
 
-Find Design Management Repository registries on this Geo node.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find Design Management Repository registries on this Geo node.
 
 Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementrepositoryregistryconnection).
 
@@ -29050,6 +29346,7 @@ GPG signature for a signed commit.
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupanalyzerstatuses"></a>`analyzerStatuses` | [`[AnalyzerGroupStatusType!]`](#analyzergroupstatustype) | Status for all analyzers in the group. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
+| <a id="groupavailablefeatures"></a>`availableFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.3. **Status**: Experiment. Features available on the namespace. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupcicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="groupcomplianceframeworkcoveragesummary"></a>`complianceFrameworkCoverageSummary` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageSummary`](#complianceframeworkcoveragesummary) | **Introduced** in GitLab 18.1. **Status**: Experiment. Summary of compliance framework coverage in a group and its subgroups. |
@@ -29094,7 +29391,7 @@ GPG signature for a signed commit.
 | <a id="groupisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is in progress. |
 | <a id="groupisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
-| <a id="grouplicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceLicensedFeatures!`](#namespacelicensedfeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="grouplicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
 | <a id="grouplifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="grouplinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -29106,6 +29403,7 @@ GPG signature for a signed commit.
 | <a id="groupmavenvirtualregistries"></a>`mavenVirtualRegistries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
+| <a id="groupmergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
 | <a id="groupname"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="grouporganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Path for editing group at the organization level. |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -29151,12 +29449,12 @@ GPG signature for a signed commit.
 
 ##### `Group.achievements`
 
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -29172,12 +29470,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.addOnEligibleUsers`
 
-Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -29197,12 +29495,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.aiMetrics`
 
-AI-related metrics.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related metrics.
 
 Returns [`AiMetrics`](#aimetrics).
 
@@ -29215,12 +29513,12 @@ Returns [`AiMetrics`](#aimetrics).
 
 ##### `Group.aiUserMetrics`
 
-AI-related user metrics.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related user metrics.
 
 Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
 
@@ -29306,12 +29604,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
@@ -29394,12 +29692,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.componentVersions`
 
-Find software dependency versions by component name.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependency versions by component name.
 
 Returns [`ComponentVersionConnection!`](#componentversionconnection).
 
@@ -29415,12 +29713,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.components`
 
-Find software dependencies by name.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependencies by name.
 
 Returns [`[Component!]`](#component).
 
@@ -29514,12 +29812,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.customField`
 
-A custom field configured for the group.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+A custom field configured for the group.
 
 Returns [`CustomField`](#customfield).
 
@@ -29531,12 +29829,12 @@ Returns [`CustomField`](#customfield).
 
 ##### `Group.customFields`
 
-Custom fields configured for the group.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom fields configured for the group.
 
 Returns [`CustomFieldConnection`](#customfieldconnection).
 
@@ -29623,12 +29921,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.dependencyAggregations`
 
-Software dependencies used by projects under this group.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Software dependencies used by projects under this group.
 
 Returns [`DependencyAggregationConnection`](#dependencyaggregationconnection).
 
@@ -29705,12 +30003,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.epic`
 
-Find a single epic.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
+
+Find a single epic.
 
 Returns [`Epic`](#epic).
 
@@ -29745,12 +30043,12 @@ Returns [`Epic`](#epic).
 
 ##### `Group.epicBoard`
 
-Find a single epic board.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by WorkItem type.
 {{< /details >}}
+
+Find a single epic board.
 
 Returns [`EpicBoard`](#epicboard).
 
@@ -29762,12 +30060,12 @@ Returns [`EpicBoard`](#epicboard).
 
 ##### `Group.epics`
 
-Find epics.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
+
+Find epics.
 
 Returns [`EpicConnection`](#epicconnection).
 
@@ -29842,12 +30140,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.importSourceUsers`
 
-Import source users of the namespace. This field can only be resolved for one namespace in any single request.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
 
 Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
 
@@ -29996,6 +30294,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouplabelsarchived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
 | <a id="grouplabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="grouplabelsincludedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
@@ -30005,12 +30304,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.memberRoles`
 
-Custom roles available for the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom roles available for the group.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -30064,7 +30363,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="groupmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="groupmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="groupmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="groupmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="groupmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="groupmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="groupmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -30247,12 +30546,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.projectComplianceRequirementsStatus`
 
-Compliance statuses for the projects in a group and its subgroups.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance statuses for the projects in a group and its subgroups.
 
 Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
 
@@ -30331,12 +30630,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.remoteDevelopmentClusterAgents`
 
-Cluster agents in the namespace with remote development capabilities.
-
 {{< details >}}
 **Deprecated** in GitLab 17.8.
 Use `workspacesClusterAgents`.
 {{< /details >}}
+
+Cluster agents in the namespace with remote development capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -30352,12 +30651,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
 
@@ -30444,12 +30743,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -30466,12 +30765,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.securityMetrics`
 
-Security metrics.This feature is currently under development and not yet available for general use.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Security metrics.This feature is currently under development and not yet available for general use.
 
 Returns [`SecurityMetrics`](#securitymetrics).
 
@@ -30485,12 +30784,12 @@ Returns [`SecurityMetrics`](#securitymetrics).
 
 ##### `Group.securityPolicies`
 
-List of security policies configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of security policies configured for the namespace.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -30525,12 +30824,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.standardRole`
 
-Finds a single default role for the group. Available only for SaaS.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single default role for the group. Available only for SaaS.
 
 Returns [`StandardRole`](#standardrole).
 
@@ -30542,12 +30841,12 @@ Returns [`StandardRole`](#standardrole).
 
 ##### `Group.standardRoles`
 
-Default roles available for the group. Available only for SaaS.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Default roles available for the group. Available only for SaaS.
 
 Returns [`StandardRoleConnection`](#standardroleconnection).
 
@@ -30586,12 +30885,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.valueStreamDashboardUsageOverview`
 
-Aggregated usage counts within the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Aggregated usage counts within the group.
 
 Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
 
@@ -30697,12 +30996,12 @@ Returns [`[String!]`](#string).
 
 ##### `Group.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -30749,12 +31048,12 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Group.workItem`
 
-Find a work item by IID directly associated with the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item by IID directly associated with the group.
 
 Returns [`WorkItem`](#workitem).
 
@@ -30766,12 +31065,12 @@ Returns [`WorkItem`](#workitem).
 
 ##### `Group.workItemDescriptionTemplates`
 
-Work item description templates available to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item description templates available to the namespace.
 
 Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
 
@@ -30788,12 +31087,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItemStateCounts`
 
-Counts of work items by state for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Counts of work items by state for the namespace.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
@@ -30865,12 +31164,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItems`
 
-Work items that belong to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items that belong to the namespace.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -30930,12 +31229,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItemsWidgets`
 
-List of available widgets for the given work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of available widgets for the given work items.
 
 Returns [`[String!]`](#string).
 
@@ -30948,12 +31247,12 @@ Returns [`[String!]`](#string).
 
 ##### `Group.workspacesClusterAgents`
 
-Cluster agents in the namespace with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the namespace with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -31882,12 +32181,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Issue.linkedWorkItems`
 
-Work items linked to the issue.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items linked to the issue.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -32180,6 +32479,7 @@ Label to apply to associated Kubernetes objects of a workspace.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="labelarchived"></a>`archived` | [`Boolean!`](#boolean) | Indicates the label is archived. |
 | <a id="labelcolor"></a>`color` | [`String!`](#string) | Background color of the label. |
 | <a id="labelcreatedat"></a>`createdAt` | [`Time!`](#time) | When the label was created. |
 | <a id="labeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
@@ -32599,12 +32899,12 @@ Returns [`[DiffStats!]`](#diffstats).
 
 ##### `MergeRequest.findingReportsComparer`
 
-Vulnerability finding reports comparison reported on the merge request.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability finding reports comparison reported on the merge request.
 
 Returns [`FindingReportsComparer`](#findingreportscomparer).
 
@@ -32748,7 +33048,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="mergerequestassigneeassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="mergerequestassigneeassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestassigneeassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestassigneeassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestassigneeassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestassigneeassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestassigneeassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -32806,7 +33106,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestassigneeauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestassigneeauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="mergerequestassigneeauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestassigneeauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestassigneeauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestassigneeauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestassigneeauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -32886,12 +33186,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAssignee.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -32926,7 +33226,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneereviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestassigneereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33060,12 +33360,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAssignee.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -33169,7 +33469,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="mergerequestauthorassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="mergerequestauthorassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestauthorassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestauthorassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestauthorassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestauthorassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestauthorassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33227,7 +33527,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestauthorauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestauthorauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="mergerequestauthorauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestauthorauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestauthorauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestauthorauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestauthorauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33307,12 +33607,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAuthor.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -33347,7 +33647,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestauthorreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestauthorreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33481,12 +33781,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAuthor.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -33641,7 +33941,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="mergerequestparticipantassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="mergerequestparticipantassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestparticipantassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestparticipantassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestparticipantassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestparticipantassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestparticipantassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33699,7 +33999,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestparticipantauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestparticipantauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="mergerequestparticipantauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestparticipantauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestparticipantauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestparticipantauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestparticipantauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33779,12 +34079,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestParticipant.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -33819,7 +34119,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -33953,12 +34253,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestParticipant.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -34081,7 +34381,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="mergerequestreviewerassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="mergerequestreviewerassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestreviewerassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestreviewerassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestreviewerassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestreviewerassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestreviewerassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -34139,7 +34439,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestreviewerauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestreviewerauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="mergerequestreviewerauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestreviewerauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestreviewerauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestreviewerauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestreviewerauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -34219,12 +34519,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestReviewer.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -34259,7 +34559,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -34393,12 +34693,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestReviewer.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -34446,12 +34746,12 @@ Represents a set of cars/merge_requests queued for merging.
 
 ##### `MergeTrain.cars`
 
-Cars queued in the train.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Cars queued in the train.
 
 Returns [`MergeTrainCarConnection!`](#mergetraincarconnection).
 
@@ -34502,12 +34802,12 @@ MergeTrainCar represents an attempt to merge a merge requestusing merge trains.
 
 ##### `Metadata.featureFlags`
 
-Feature flags for the GitLab instance.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Feature flags for the GitLab instance.
 
 Returns [`[GitlabInstanceFeatureFlag!]!`](#gitlabinstancefeatureflag).
 
@@ -34766,6 +35066,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
+| <a id="namespaceavailablefeatures"></a>`availableFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.3. **Status**: Experiment. Features available on the namespace. |
 | <a id="namespaceavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the namespace. |
 | <a id="namespacecicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
@@ -34777,10 +35078,11 @@ Product analytics events for a specific month and year.
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
-| <a id="namespacelicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceLicensedFeatures!`](#namespacelicensedfeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="namespacelicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
 | <a id="namespacelifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
+| <a id="namespacemergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
@@ -34800,18 +35102,18 @@ Product analytics events for a specific month and year.
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceuserpermissions"></a>`userPermissions` | [`NamespacePermissions!`](#namespacepermissions) | Permissions for the current user on the resource. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
-| <a id="namespaceweburl"></a>`webUrl` | [`String`](#string) | URL of the object. |
+| <a id="namespaceweburl"></a>`webUrl` | [`String`](#string) | URL of the namespace. |
 
 #### Fields with arguments
 
 ##### `Namespace.achievements`
 
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -34827,12 +35129,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.addOnEligibleUsers`
 
-Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -34888,12 +35190,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.customFields`
 
-Custom fields configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom fields configured for the namespace.
 
 Returns [`CustomFieldConnection`](#customfieldconnection).
 
@@ -34912,12 +35214,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.importSourceUsers`
 
-Import source users of the namespace. This field can only be resolved for one namespace in any single request.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
 
 Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
 
@@ -35017,12 +35319,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.remoteDevelopmentClusterAgents`
 
-Cluster agents in the namespace with remote development capabilities.
-
 {{< details >}}
 **Deprecated** in GitLab 17.8.
 Use `workspacesClusterAgents`.
 {{< /details >}}
+
+Cluster agents in the namespace with remote development capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -35056,12 +35358,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -35078,12 +35380,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.securityPolicies`
 
-List of security policies configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of security policies configured for the namespace.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -35101,12 +35403,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -35123,12 +35425,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItem`
 
-Find a work item by IID directly associated with the namespace (project or group).
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item by IID directly associated with the namespace (project or group).
 
 Returns [`WorkItem`](#workitem).
 
@@ -35140,12 +35442,12 @@ Returns [`WorkItem`](#workitem).
 
 ##### `Namespace.workItemDescriptionTemplates`
 
-Work item description templates available to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item description templates available to the namespace.
 
 Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
 
@@ -35160,14 +35462,75 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemdescriptiontemplatesname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. name and project ID are both required for fetching, use DescriptionTemplateContentInputType instead. |
 | <a id="namespaceworkitemdescriptiontemplatessearch"></a>`search` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.8. search on template names is performed on the FE only. |
 
-##### `Namespace.workItemTypes`
+##### `Namespace.workItemStateCounts`
 
-Work item types available to the namespace.
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Counts of work items by state for the namespace (project or group). Returns `null` for user namespaces.
+
+Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemstatecountsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the work item. |
+| <a id="namespaceworkitemstatecountsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with `assigneeUsernames`. |
+| <a id="namespaceworkitemstatecountsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter work items by author username. |
+| <a id="namespaceworkitemstatecountsclosedafter"></a>`closedAfter` | [`Time`](#time) | Work items closed after the date. |
+| <a id="namespaceworkitemstatecountsclosedbefore"></a>`closedBefore` | [`Time`](#time) | Work items closed before the date. |
+| <a id="namespaceworkitemstatecountsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
+| <a id="namespaceworkitemstatecountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
+| <a id="namespaceworkitemstatecountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="namespaceworkitemstatecountscrmcontactid"></a>`crmContactId` | [`String`](#string) | Filter by ID of CRM contact. |
+| <a id="namespaceworkitemstatecountscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | Filter by ID of CRM contact organization. |
+| <a id="namespaceworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
+| <a id="namespaceworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
+| <a id="namespaceworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="namespaceworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="namespaceworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="namespaceworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="namespaceworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="namespaceworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="namespaceworkitemstatecountsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
+| <a id="namespaceworkitemstatecountslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
+| <a id="namespaceworkitemstatecountsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
+| <a id="namespaceworkitemstatecountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
+| <a id="namespaceworkitemstatecountsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values `NONE` and `ANY` are supported. |
+| <a id="namespaceworkitemstatecountsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
+| <a id="namespaceworkitemstatecountsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
+| <a id="namespaceworkitemstatecountsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
+| <a id="namespaceworkitemstatecountsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone. Ignored when parent is a group. |
+| <a id="namespaceworkitemstatecountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
+| <a id="namespaceworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
+| <a id="namespaceworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="namespaceworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="namespaceworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="namespaceworkitemstatecountsstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Introduced** in GitLab 18.0. **Status**: Experiment. Filter by status. |
+| <a id="namespaceworkitemstatecountssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
+| <a id="namespaceworkitemstatecountstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+| <a id="namespaceworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
+| <a id="namespaceworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="namespaceworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="namespaceworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemstatecountsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
+
+##### `Namespace.workItemTypes`
 
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item types available to the namespace.
 
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
@@ -35183,12 +35546,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItems`
 
-Work items that belong to the namespace (project or group). Returns `null` for user namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items that belong to the namespace (project or group). Returns `null` for user namespaces.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -35248,12 +35611,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItemsWidgets`
 
-List of available widgets for the given work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of available widgets for the given work items.
 
 Returns [`[String!]`](#string).
 
@@ -35266,12 +35629,12 @@ Returns [`[String!]`](#string).
 
 ##### `Namespace.workspacesClusterAgents`
 
-Cluster agents in the namespace with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the namespace with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -35284,6 +35647,23 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkspacesclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
+
+### `NamespaceAvailableFeatures`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceavailablefeatureshasepicsfeature"></a>`hasEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether epics are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasissuablehealthstatusfeature"></a>`hasIssuableHealthStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issuable health status is enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasissuedatefilterfeature"></a>`hasIssueDateFilterFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue date filter is enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasissueweightsfeature"></a>`hasIssueWeightsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue weights are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasiterationsfeature"></a>`hasIterationsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether iterations are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshaslinkeditemsepicsfeature"></a>`hasLinkedItemsEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether linked items epics are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasokrsfeature"></a>`hasOkrsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether OKRs are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
 
 ### `NamespaceBan`
 
@@ -35330,23 +35710,6 @@ Represents a namespace-cluster-agent mapping.
 | <a id="namespacecommitemailid"></a>`id` | [`ID!`](#id) | Internal ID of the namespace commit email. |
 | <a id="namespacecommitemailnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace. |
 | <a id="namespacecommitemailupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the namespace commit email was last updated. |
-
-### `NamespaceLicensedFeatures`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="namespacelicensedfeatureshasepicsfeature"></a>`hasEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether epics are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasissuablehealthstatusfeature"></a>`hasIssuableHealthStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issuable health status is enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasissuedatefilterfeature"></a>`hasIssueDateFilterFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue date filter is enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasissueweightsfeature"></a>`hasIssueWeightsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issue weights are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasiterationsfeature"></a>`hasIterationsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether iterations are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshaslinkeditemsepicsfeature"></a>`hasLinkedItemsEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether linked items epics are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasokrsfeature"></a>`hasOkrsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether OKRs are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
-| <a id="namespacelicensedfeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
-| <a id="namespacelicensedfeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
 
 ### `NamespacePermissions`
 
@@ -35578,12 +35941,12 @@ Active period time range for on-call rotation.
 
 ##### `Organization.groups`
 
-Groups within this organization that the user has access to.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Groups within this organization that the user has access to.
 
 Returns [`GroupConnection!`](#groupconnection).
 
@@ -35607,12 +35970,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Organization.projects`
 
-Projects within this organization that the user has access to.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Projects within this organization that the user has access to.
 
 Returns [`ProjectConnection!`](#projectconnection).
 
@@ -35643,17 +36006,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="organizationprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="organizationprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
+| <a id="organizationprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
 | <a id="organizationprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="organizationprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
 ##### `Organization.workspacesClusterAgents`
 
-Cluster agents in the organization with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the organization with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -36373,12 +36737,12 @@ Returns [`TestSuite`](#testsuite).
 
 ##### `PipelineAnalytics.timeSeries`
 
-Pipeline analytics shown over time based on the specified filter. Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, daily for longer periods.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Pipeline analytics shown over time based on the specified filter. Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, daily for longer periods.
 
 Returns [`[PipelineAnalyticsPeriod!]`](#pipelineanalyticsperiod).
 
@@ -36401,12 +36765,12 @@ Returns [`[PipelineAnalyticsPeriod!]`](#pipelineanalyticsperiod).
 
 ##### `PipelineAnalyticsPeriod.count`
 
-Pipeline count, optionally filtered by status.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Pipeline count, optionally filtered by status.
 
 Returns [`BigInt`](#bigint).
 
@@ -37031,12 +37395,12 @@ Project-level settings for product analytics provider.
 
 ##### `Project.aiAgent`
 
-Find a specific AI Agent.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a specific AI Agent.
 
 Returns [`AiAgent`](#aiagent).
 
@@ -37048,12 +37412,12 @@ Returns [`AiAgent`](#aiagent).
 
 ##### `Project.aiMetrics`
 
-AI-related metrics.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related metrics.
 
 Returns [`AiMetrics`](#aimetrics).
 
@@ -37066,12 +37430,12 @@ Returns [`AiMetrics`](#aimetrics).
 
 ##### `Project.aiUserMetrics`
 
-AI-related user metrics.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related user metrics.
 
 Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
 
@@ -37156,12 +37520,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.alertManagementIntegrations`
 
-Integrations which can receive alerts for the project.
-
 {{< details >}}
 **Deprecated** in GitLab 18.2.
 Use `alertManagementHttpIntegrations`.
 {{< /details >}}
+
+Integrations which can receive alerts for the project.
 
 Returns [`AlertManagementIntegrationConnection`](#alertmanagementintegrationconnection).
 
@@ -37278,12 +37642,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.ciConfigVariables`
 
-CI/CD config variable.
-
 {{< details >}}
 **Introduced** in GitLab 15.3.
 **Status**: Experiment.
 {{< /details >}}
+
+CI/CD config variable.
 
 Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
@@ -37295,12 +37659,12 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
 ##### `Project.ciPipelineCreationInputs`
 
-Inputs to create a pipeline.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Inputs to create a pipeline.
 
 Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
@@ -37312,12 +37676,12 @@ Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
 ##### `Project.ciPipelineCreationRequest`
 
-Get information about an asynchronous pipeline creation request.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Get information about an asynchronous pipeline creation request.
 
 Returns [`CiPipelineCreationRequest`](#cipipelinecreationrequest).
 
@@ -37392,12 +37756,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.commitReferences`
 
-Get tag names containing a given commit.
-
 {{< details >}}
 **Introduced** in GitLab 16.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Get tag names containing a given commit.
 
 Returns [`CommitReferences`](#commitreferences).
 
@@ -37409,12 +37773,12 @@ Returns [`CommitReferences`](#commitreferences).
 
 ##### `Project.complianceControlStatus`
 
-Compliance control statuses for a project.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance control statuses for a project.
 
 Returns [`ProjectComplianceControlStatusTypeConnection`](#projectcompliancecontrolstatustypeconnection).
 
@@ -37446,12 +37810,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.complianceRequirementStatuses`
 
-Compliance requirement statuses for a project.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance requirement statuses for a project.
 
 Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
 
@@ -37484,12 +37848,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.componentVersions`
 
-Find software dependency versions by component name.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependency versions by component name.
 
 Returns [`ComponentVersionConnection!`](#componentversionconnection).
 
@@ -37505,12 +37869,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.components`
 
-Find software dependencies by name.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependencies by name.
 
 Returns [`[Component!]`](#component).
 
@@ -37539,12 +37903,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.customizableDashboardVisualizations`
 
-Visualizations of the project or associated configuration project.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Visualizations of the project or associated configuration project.
 
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
 
@@ -37560,12 +37924,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.customizableDashboards`
 
-Customizable dashboards for the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Customizable dashboards for the project.
 
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
@@ -37675,13 +38039,13 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.dependencyPaths`
 
-Ancestor dependency paths for a dependency used by the project. \
-          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency used by the project. \
+          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -37742,12 +38106,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.forkDetails`
 
-Details of the fork project compared to its upstream project.
-
 {{< details >}}
 **Introduced** in GitLab 15.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Details of the fork project compared to its upstream project.
 
 Returns [`ForkDetails`](#forkdetails).
 
@@ -38121,6 +38485,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectjobskind"></a>`kind` | [`CiJobKind`](#cijobkind) | Filter jobs by kind. |
 | <a id="projectjobsname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Filter jobs by name. |
 | <a id="projectjobssources"></a>`sources` {{< icon name="warning-solid" >}} | [`[CiJobSource!]`](#cijobsource) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter jobs by source. |
 | <a id="projectjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
@@ -38152,6 +38517,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectlabelsarchived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
 | <a id="projectlabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="projectlabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. Ignored if using `title`. |
 | <a id="projectlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
@@ -38159,12 +38525,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.memberRoles`
 
-Member roles available for the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Member roles available for the group.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -38230,7 +38596,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="projectmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="projectmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="projectmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="projectmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="projectmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="projectmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="projectmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -38267,12 +38633,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.mergeTrains`
 
-Merge trains available to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Merge trains available to the project.
 
 Returns [`MergeTrainConnection`](#mergetrainconnection).
 
@@ -38330,12 +38696,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.mlModels`
 
-Finds machine learning models.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds machine learning models.
 
 Returns [`MlModelConnection`](#mlmodelconnection).
 
@@ -38372,12 +38738,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityLogsLinks`
 
-Logs attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Logs attached to the project.
 
 Returns [`ObservabilityLogConnection`](#observabilitylogconnection).
 
@@ -38397,12 +38763,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityMetricsLinks`
 
-Metrics attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Metrics attached to the project.
 
 Returns [`ObservabilityMetricConnection`](#observabilitymetricconnection).
 
@@ -38419,12 +38785,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityTracesLinks`
 
-Traces attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Traces attached to the project.
 
 Returns [`ObservabilityTraceConnection`](#observabilitytraceconnection).
 
@@ -38597,12 +38963,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.productAnalyticsEventsStored`
 
-Count of all events used, broken down by month.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Count of all events used, broken down by month.
 
 Returns [`[MonthlyUsage!]`](#monthlyusage).
 
@@ -38705,12 +39071,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
-
 {{< details >}}
 **Introduced** in GitLab 16.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
 
@@ -38780,12 +39146,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -38802,12 +39168,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.securityExclusion`
 
-A single security exclusion of a project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+A single security exclusion of a project.
 
 Returns [`ProjectSecurityExclusion`](#projectsecurityexclusion).
 
@@ -38822,12 +39188,12 @@ Returns [`ProjectSecurityExclusion`](#projectsecurityexclusion).
 
 ##### `Project.securityExclusions`
 
-Security exclusions of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Security exclusions of the project.
 
 Returns [`ProjectSecurityExclusionConnection`](#projectsecurityexclusionconnection).
 
@@ -38845,12 +39211,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.securityPolicies`
 
-All security policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+All security policies of the project.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -38940,12 +39306,12 @@ Returns [`SentryDetailedError`](#sentrydetailederror).
 
 ##### `Project.services`
 
-Project services.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
 {{< /details >}}
+
+Project services.
 
 Returns [`ServiceConnection`](#serviceconnection).
 
@@ -39014,12 +39380,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.valueStreamDashboardUsageOverview`
 
-Aggregated usage counts within the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Aggregated usage counts within the project.
 
 Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
 
@@ -39048,12 +39414,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.visibleForks`
 
-Visible forks of the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Visible forks of the project.
 
 Returns [`ProjectConnection`](#projectconnection).
 
@@ -39133,12 +39499,12 @@ Returns [`[String!]`](#string).
 
 ##### `Project.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -39185,12 +39551,12 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Project.workItemStateCounts`
 
-Counts of work items by state for the project.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Counts of work items by state for the project.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
@@ -39258,12 +39624,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.workItems`
 
-Work items of the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items of the project.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -40081,6 +40447,15 @@ Recent failure history of a test case.
 | <a id="recentfailuresbasebranch"></a>`baseBranch` | [`String`](#string) | Name of the base branch of the project. |
 | <a id="recentfailurescount"></a>`count` | [`Int`](#int) | Number of times the test case has failed in the past 14 days. |
 
+### `RecentlyViewedItem`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="recentlyvieweditemitem"></a>`item` | [`RecentlyViewedItemUnion!`](#recentlyvieweditemunion) | Recently viewed item. |
+| <a id="recentlyvieweditemviewedat"></a>`viewedAt` | [`Time!`](#time) | When the item was last viewed. |
+
 ### `Release`
 
 Represents a release.
@@ -40356,12 +40731,12 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 
 ##### `RepositoryBlob.blame`
 
-Blob blame.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Blob blame.
 
 Returns [`Blame`](#blame).
 
@@ -42002,7 +42377,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="usercoreassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="usercoreassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="usercoreassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="usercoreassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="usercoreassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="usercoreassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="usercoreassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -42060,7 +42435,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="usercoreauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="usercoreauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="usercoreauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="usercoreauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="usercoreauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="usercoreauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="usercoreauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -42140,12 +42515,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `UserCore.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -42180,7 +42555,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercorereviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="usercorereviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="usercorereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="usercorereviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="usercorereviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="usercorereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="usercorereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="usercorereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -42314,12 +42689,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `UserCore.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -42630,12 +43005,12 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 
 ##### `ValueStreamStageMetrics.items`
 
-Items in the stage.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Items in the stage.
 
 Returns [`ValueStreamStageItemsConnection`](#valuestreamstageitemsconnection).
 
@@ -42751,12 +43126,12 @@ Represents a vulnerability.
 
 ##### `Vulnerability.dependencies`
 
-Dependencies for the vulnerability.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Dependencies for the vulnerability.
 
 Returns [`DependencyConnection!`](#dependencyconnection).
 
@@ -43953,12 +44328,12 @@ Represents a custom fields widget.
 
 ##### `WorkItemWidgetCustomFields.customFieldValues`
 
-Custom field values associated to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom field values associated to the work item.
 
 Returns [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue).
 
@@ -44223,12 +44598,12 @@ Represents the linked items widget.
 
 ##### `WorkItemWidgetLinkedItems.linkedItems`
 
-Linked items for the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Linked items for the work item.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -44723,6 +45098,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | ----- | ----------- |
 | <a id="aifeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aifeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
+| <a id="aifeaturesduo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |
 | <a id="aifeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
 | <a id="aifeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
 | <a id="aifeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |
@@ -44796,6 +45172,20 @@ Type of code suggestion event.
 | <a id="aiusagecodesuggestioneventcode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code suggestion accepted. |
 | <a id="aiusagecodesuggestioneventcode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code suggestion rejected. |
 | <a id="aiusagecodesuggestioneventcode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code suggestion shown. |
+
+### `AiUsageEventType`
+
+Type of AI usage event.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiusageeventtypecode_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
+| <a id="aiusageeventtypecode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code Suggestion was accepted in IDE. |
+| <a id="aiusageeventtypecode_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
+| <a id="aiusageeventtypecode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
+| <a id="aiusageeventtypecode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
+| <a id="aiusageeventtyperequest_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
+| <a id="aiusageeventtypetroubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 
 ### `AlertManagementAlertSort`
 
@@ -46730,7 +47120,9 @@ Member role admin permission.
 | Value | Description |
 | ----- | ----------- |
 | <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read CI/CD details for runners and jobs in the Admin Area. |
-| <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read system information such as background migrations, health checks, audit logs, and Gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read group details in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read system information such as background migrations, health checks, and Gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read project details in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read subscription details in the Admin area. |
 | <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read the user list and user details in the Admin area. |
 
@@ -46749,7 +47141,7 @@ Member role permission.
 | <a id="memberrolepermissionadmin_protected_environments"></a>`ADMIN_PROTECTED_ENVIRONMENTS` | Create, read, update, and delete protected environments. |
 | <a id="memberrolepermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolepermissionadmin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
-| <a id="memberrolepermissionadmin_security_labels"></a>`ADMIN_SECURITY_LABELS` | Edit the security labels belonging to a top-level group. |
+| <a id="memberrolepermissionadmin_security_attributes"></a>`ADMIN_SECURITY_ATTRIBUTES` | Edit the security attributes belonging to a top-level group. |
 | <a id="memberrolepermissionadmin_security_testing"></a>`ADMIN_SECURITY_TESTING` | Edit and manage security testing configurations and settings. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
@@ -46762,7 +47154,9 @@ Member role permission.
 | <a id="memberrolepermissionmanage_protected_tags"></a>`MANAGE_PROTECTED_TAGS` | Create, read, update, and delete protected tags. |
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolepermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details for runners and jobs in the Admin Area. |
-| <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Read system information such as background migrations, health checks, audit logs, and Gitaly in the Admin Area. |
+| <a id="memberrolepermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` | Read group details in the Admin Area. |
+| <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Read system information such as background migrations, health checks, and Gitaly in the Admin Area. |
+| <a id="memberrolepermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` | Read project details in the Admin Area. |
 | <a id="memberrolepermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 | <a id="memberrolepermissionread_admin_users"></a>`READ_ADMIN_USERS` | Read the user list and user details in the Admin area. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
@@ -46789,7 +47183,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionadmin_protected_environments"></a>`ADMIN_PROTECTED_ENVIRONMENTS` | Create, read, update, and delete protected environments. |
 | <a id="memberrolestandardpermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolestandardpermissionadmin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
-| <a id="memberrolestandardpermissionadmin_security_labels"></a>`ADMIN_SECURITY_LABELS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.2. **Status**: Experiment. Edit the security labels belonging to a top-level group. |
+| <a id="memberrolestandardpermissionadmin_security_attributes"></a>`ADMIN_SECURITY_ATTRIBUTES` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.2. **Status**: Experiment. Edit the security attributes belonging to a top-level group. |
 | <a id="memberrolestandardpermissionadmin_security_testing"></a>`ADMIN_SECURITY_TESTING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Edit and manage security testing configurations and settings. |
 | <a id="memberrolestandardpermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolestandardpermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
@@ -48764,6 +49158,12 @@ A `AiAgentVersionID` is a global ID. It is encoded as a string.
 
 An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
 
+### `AiCatalogBuiltInToolID`
+
+A `AiCatalogBuiltInToolID` is a global ID. It is encoded as a string.
+
+An example `AiCatalogBuiltInToolID` is: `"gid://gitlab/Ai::Catalog::BuiltInTool/1"`.
+
 ### `AiCatalogItemID`
 
 A `AiCatalogItemID` is a global ID. It is encoded as a string.
@@ -49921,6 +50321,12 @@ A `TodoableID` is a global ID. It is encoded as a string.
 
 An example `TodoableID` is: `"gid://gitlab/Todoable/1"`.
 
+### `TypesNamespaceID`
+
+A `TypesNamespaceID` is a global ID. It is encoded as a string.
+
+An example `TypesNamespaceID` is: `"gid://gitlab/Types::Namespace/1"`.
+
 ### `UntrustedRegexp`
 
 A regexp containing patterns sourced from user input.
@@ -50166,6 +50572,13 @@ One of:
 - [`PipelineExecutionScheduledPolicyAttributesType`](#pipelineexecutionscheduledpolicyattributestype)
 - [`ScanExecutionPolicyAttributesType`](#scanexecutionpolicyattributestype)
 - [`VulnerabilityManagementPolicyAttributesType`](#vulnerabilitymanagementpolicyattributestype)
+
+#### `RecentlyViewedItemUnion`
+
+One of:
+
+- [`Issue`](#issue)
+- [`MergeRequest`](#mergerequest)
 
 #### `Registrable`
 
@@ -50575,13 +50988,13 @@ Implementations:
 
 ###### `DependencyInterface.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -51216,7 +51629,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userassignedmergerequestsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
 | <a id="userassignedmergerequestsapprover"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
 | <a id="userassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="userassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="userassignedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="userassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="userassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="userassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -51274,7 +51687,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="userauthoredmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="userauthoredmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
-| <a id="userauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="userauthoredmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="userauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="userauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="userauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -51354,12 +51767,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ###### `User.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -51394,7 +51807,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userreviewrequestedmergerequestsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
 | <a id="userreviewrequestedmergerequestsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
 | <a id="userreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="userreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. Available only when the feature flag `filter_blob_path` is enabled. |
+| <a id="userreviewrequestedmergerequestsblobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
 | <a id="userreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
 | <a id="userreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
 | <a id="userreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
@@ -51528,12 +51941,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ###### `User.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -51727,15 +52140,6 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aigeneratecommitmessageinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
-### `AiGenerateCubeQueryInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aigeneratecubequeryinputquestion"></a>`question` | [`String!`](#string) | Question to ask a project's data. |
-| <a id="aigeneratecubequeryinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-
 ### `AiGenerateDescriptionInput`
 
 #### Arguments
@@ -51763,14 +52167,6 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="airesolvevulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 | <a id="airesolvevulnerabilityinputvulnerablemergerequestid"></a>`vulnerableMergeRequestId` | [`MergeRequestID`](#mergerequestid) | Global ID of the merge request which the merge request containing the vulnerability resolution will target. |
-
-### `AiSummarizeCommentsInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aisummarizecommentsinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiSummarizeNewMergeRequestInput`
 

@@ -33,10 +33,12 @@ module RuboCop
         FEATURE_METHODS = %i[enable disable set enabled?].freeze
         RESTRICT_ON_SEND = RSPEC_METHODS + FEATURE_METHODS
 
+        # @!method const_receiver(node)
         def_node_matcher :const_receiver, <<~PATTERN
           (send $const ...)
         PATTERN
 
+        # @!method feature_flag_metatag?(node)
         def_node_matcher :feature_flag_metatag?, <<~PATTERN
           (hash <(pair (sym :feature_flag) (hash <(pair (sym :name) _) ...>)) ...>)
         PATTERN

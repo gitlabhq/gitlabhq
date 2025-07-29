@@ -147,10 +147,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:organization_groups_projects_display).to(:user_preference) }
     it { is_expected.to delegate_method(:organization_groups_projects_display=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:home_organization).to(:user_preference) }
-    it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
-    it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:dpop_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:dpop_enabled=).to(:user_preference).with_arguments(:args) }
 
@@ -202,14 +198,20 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:organization).to(:user_detail).with_prefix.allow_nil }
     it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).with_prefix.allow_nil }
 
-    it { is_expected.to delegate_method(:email_reset_offered_at).to(:user_detail).allow_nil }
-    it { is_expected.to delegate_method(:email_reset_offered_at=).to(:user_detail).with_arguments(:args).allow_nil }
-
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at=).to(:user_detail).with_arguments(:args).allow_nil }
 
     it { is_expected.to delegate_method(:bot_namespace).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bot_namespace=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:email_otp).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_required_after).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_required_after=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_at).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_at=).to(:user_detail).with_arguments(:args).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_to).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_otp_last_sent_to=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -2746,20 +2748,6 @@ RSpec.describe User, feature_category: :user_profile do
         user.remember_me!
 
         expect(user.remember_created_at).to be_nil
-      end
-
-      context 'when session_expire_from_init FF is disabled' do
-        before do
-          stub_feature_flags(session_expire_from_init: false)
-        end
-
-        it 'sets rememberable attributes' do
-          expect(user.remember_created_at).to be_nil
-
-          user.remember_me!
-
-          expect(user.remember_created_at).not_to be_nil
-        end
       end
     end
   end
@@ -5667,11 +5655,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'loads all the runners in the tree of groups' do
           is_expected.to contain_exactly(runner, group_runner)
         end
-
-        it 'returns true for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(true)
-          expect(user.runner_available?(group_runner)).to eq(true)
-        end
       end
     end
 
@@ -5688,11 +5671,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'loads the runners of the project' do
           is_expected.to contain_exactly(project_runner, another_project_runner)
         end
-
-        it 'returns true for runner_available?' do
-          expect(user.runner_available?(project_runner)).to eq(true)
-          expect(user.runner_available?(another_project_runner)).to eq(true)
-        end
       end
 
       context 'when the user is a developer' do
@@ -5700,11 +5678,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not load any runner' do
           is_expected.to be_empty
-        end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(project_runner)).to eq(false)
-          expect(user.runner_available?(another_project_runner)).to eq(false)
         end
       end
 
@@ -5714,11 +5687,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'does not load any runner' do
           is_expected.to be_empty
         end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(project_runner)).to eq(false)
-          expect(user.runner_available?(another_project_runner)).to eq(false)
-        end
       end
 
       context 'when the user is a guest' do
@@ -5726,11 +5694,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not load any runner' do
           is_expected.to be_empty
-        end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(project_runner)).to eq(false)
-          expect(user.runner_available?(another_project_runner)).to eq(false)
         end
       end
     end
@@ -5744,10 +5707,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'does not load the runners of the group' do
           is_expected.to be_empty
         end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(false)
-        end
       end
 
       context 'when the user is a developer' do
@@ -5757,10 +5716,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not load any runner' do
           is_expected.to be_empty
-        end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(false)
         end
       end
 
@@ -5772,10 +5727,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'does not load any runner' do
           expect(user.ci_available_runners).to be_empty
         end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(false)
-        end
       end
 
       context 'when the user is a guest' do
@@ -5786,20 +5737,12 @@ RSpec.describe User, feature_category: :user_profile do
         it 'does not load any runner' do
           expect(user.ci_available_runners).to be_empty
         end
-
-        it 'returns false for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(false)
-        end
       end
     end
 
     context 'without any projects nor groups' do
       it 'does not load any runner' do
         expect(user.ci_available_runners).to be_empty
-      end
-
-      it 'returns false for runner_available?' do
-        expect(user.runner_available?(create(:ci_runner))).to eq(false)
       end
     end
 
@@ -5812,10 +5755,6 @@ RSpec.describe User, feature_category: :user_profile do
         it 'loads the runner belonging to the project' do
           expect(user.ci_available_runners).to contain_exactly(runner)
         end
-
-        it 'returns true for runner_available?' do
-          expect(user.runner_available?(runner)).to eq(true)
-        end
       end
     end
 
@@ -5825,25 +5764,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when owner is a non-owned group' do
         it_behaves_like 'group member'
-
-        context 'when access is provided by group invitation' do
-          let_it_be(:invited_group) { create(:group) }
-          let_it_be(:user) { create(:user, owner_of: invited_group) }
-
-          it 'returns false for runner_available?' do
-            expect(user.runner_available?(runner)).to eq(false)
-          end
-
-          context 'when invited_group is invited to group' do
-            before do
-              create(:group_group_link, :owner, shared_group: group, shared_with_group: invited_group)
-            end
-
-            it 'returns true for runner_available?' do
-              expect(user.runner_available?(runner)).to eq(true)
-            end
-          end
-        end
       end
 
       context 'when in an owned group' do
@@ -5854,10 +5774,6 @@ RSpec.describe User, feature_category: :user_profile do
         context 'and the user is the owner of a one level group' do
           it 'loads the runners in the group' do
             expect(user.ci_available_runners).to contain_exactly(runner)
-          end
-
-          it 'returns true for runner_available?' do
-            expect(user.runner_available?(runner)).to eq(true)
           end
         end
 
@@ -5920,10 +5836,7 @@ RSpec.describe User, feature_category: :user_profile do
           let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
 
           it 'returns runner shared from inaccessible project' do
-            expect(ci_available_runners).to contain_exactly(runner, another_project_runner)
-
-            expect(user.runner_available?(another_project_runner)).to be true
-            expect(user.runner_available?(runner)).to be true
+            is_expected.to contain_exactly(runner, another_project_runner)
           end
         end
       end
@@ -6005,10 +5918,7 @@ RSpec.describe User, feature_category: :user_profile do
         let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
 
         it 'returns runner shared from inaccessible project' do
-          expect(ci_available_runners).to contain_exactly(runner, another_project_runner)
-
-          expect(user.runner_available?(another_project_runner)).to be true
-          expect(user.runner_available?(runner)).to be true
+          is_expected.to contain_exactly(runner, another_project_runner)
         end
       end
     end
@@ -6682,6 +6592,58 @@ RSpec.describe User, feature_category: :user_profile do
         mr2.merge_request_reviewers.update_all(state: :requested_changes)
 
         is_expected.to eq 3
+      end
+    end
+
+    context 'when the query times out' do
+      context 'with ActiveRecord::StatementTimeout' do
+        before do
+          finder_double = instance_double(MergeRequestsFinder)
+          allow(MergeRequestsFinder).to receive(:new).and_return(finder_double)
+          allow(finder_double).to receive_message_chain(:execute, :count)
+            .and_raise(ActiveRecord::StatementTimeout)
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: 'Timeout counting assigned merge requests',
+              user_id: user.id,
+              error: anything
+            )
+          )
+
+          user.assigned_open_merge_requests_count
+        end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'with ActiveRecord::QueryCanceled' do
+        before do
+          finder_double = instance_double(MergeRequestsFinder)
+          allow(MergeRequestsFinder).to receive(:new).and_return(finder_double)
+          allow(finder_double).to receive_message_chain(:execute, :count)
+            .and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: 'Timeout counting assigned merge requests',
+              user_id: user.id,
+              error: anything
+            )
+          )
+
+          user.assigned_open_merge_requests_count
+        end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
       end
     end
   end

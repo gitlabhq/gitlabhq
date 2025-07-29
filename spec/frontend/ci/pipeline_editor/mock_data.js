@@ -225,96 +225,30 @@ export const mockCiLintMutationResponse = {
   },
 };
 
-// Mock result of the graphql query at:
-// app/assets/javascripts/ci/pipeline_editor/graphql/queries/ci_config.graphql
-export const mockCiConfigQueryResponse = {
-  data: {
-    ciConfig: {
-      errors: [],
-      includes: mockIncludes,
-      mergedYaml: mockCiYml,
-      status: CI_CONFIG_STATUS_VALID,
-      stages: {
-        __typename: 'CiConfigStageConnection',
-        nodes: [
-          {
-            name: 'test',
-            groups: {
-              nodes: [
-                {
-                  id: 'group-1',
-                  name: 'job_test_1',
-                  size: 1,
-                  jobs: {
-                    nodes: [
-                      {
-                        name: 'job_test_1',
-                        script: ['echo "test 1"'],
-                        ...mockJobFields,
-                      },
-                    ],
-                    __typename: 'CiConfigJobConnection',
-                  },
-                  __typename: 'CiConfigGroup',
-                },
-                {
-                  id: 'group-2',
-                  name: 'job_test_2',
-                  size: 1,
-                  jobs: {
-                    nodes: [
-                      {
-                        name: 'job_test_2',
-                        script: ['echo "test 2"'],
-                        ...mockJobFields,
-                      },
-                    ],
-                    __typename: 'CiConfigJobConnection',
-                  },
-                  __typename: 'CiConfigGroup',
-                },
-              ],
-              __typename: 'CiConfigGroupConnection',
-            },
-            __typename: 'CiConfigStage',
-          },
-          {
-            name: 'build',
-            groups: {
-              nodes: [
-                {
-                  name: 'job_build',
-                  size: 1,
-                  jobs: {
-                    nodes: [
-                      {
-                        name: 'job_build',
-                        script: ['echo "build"'],
-                        ...mockJobFields,
-                      },
-                    ],
-                    __typename: 'CiConfigJobConnection',
-                  },
-                  __typename: 'CiConfigGroup',
-                },
-              ],
-              __typename: 'CiConfigGroupConnection',
-            },
-            __typename: 'CiConfigStage',
-          },
-        ],
-      },
-      __typename: 'CiConfig',
-    },
-  },
-};
-
 export const mockMergedConfig = (mergedConfig) => {
   const { config } = mockCiLintMutationResponse.data.ciLint;
   return {
     ...config,
     ...mergedConfig,
   };
+};
+
+export const ciLintErrorResponse = {
+  data: {
+    ciLint: {
+      config: {
+        errors: ['header:spec:inputs:app_target_region config contains unknown keys: required'],
+        warnings: [],
+        includes: null,
+        mergedYaml: null,
+        status: 'INVALID',
+        stages: [],
+        __typename: 'CiConfigV2',
+      },
+      errors: [],
+      __typename: 'CiLintPayload',
+    },
+  },
 };
 
 export const mockCommitShaResults = {
@@ -567,6 +501,16 @@ export const mockCommitCreateResponseNewEtag = {
         sha: mockCommitNextSha,
       },
       commitPipelinePath: '/api/graphql:pipelines/sha/550ceace1acd373c84d02bd539cb9d4614f786db',
+    },
+  },
+};
+
+export const mockCurrentBranchResponse = {
+  workBranches: {
+    __typename: 'BranchList',
+    current: {
+      __typename: 'WorkBranch',
+      name: mockDefaultBranch,
     },
   },
 };

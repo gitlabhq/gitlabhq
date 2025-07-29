@@ -383,82 +383,220 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
+    describe '"Create new" menu groups', :use_clean_rails_memory_store_caching do
+      def menu_item(href:, text:, id:, component: nil)
         {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
+          href: href,
+          text: text,
+          component: component,
+          extraAttrs: {
+            "data-track-label": id,
+            "data-track-action": "click_link",
+            "data-track-property": "nav_create_menu",
+            "data-testid": 'create_menu_item',
+            "data-qa-create-menu-item": id
+          }
         }
-      }
+      end
 
-      expect(subject[:create_new_menu_groups]).to eq([
-        {
-          name: "",
-          items: [
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/organizations/new", text: s_('Organization|New organization'),
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_organization") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          ]
-        }
-      ])
-    end
+      context 'without headers' do
+        shared_examples '"Create new" menu groups without headers' do
+          it 'returns "Create new" menu groups without headers' do
+            expect(subject[:create_new_menu_groups]).to eq([
+              {
+                name: "",
+                items: expected_menu_item_groups
+              }
+            ])
+          end
+        end
 
-    it 'returns "Create new" menu groups with headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
-        {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
-        }
-      }
+        context 'when current Organization has scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
 
-      allow(group).to receive(:persisted?).and_return(true)
-      allow(helper).to receive(:can?).and_return(true)
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
 
-      expect(subject[:create_new_menu_groups]).to contain_exactly(
-        a_hash_including(
-          name: "In this group",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_project") },
-            { href: "/groups/new#create-group-pane", text: "New subgroup",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_subgroup") },
-            { href: nil, text: "Invite members",
-              component: 'invite_members',
-              extraAttrs: extra_attrs.call("invite") }
-          )
-        ),
-        a_hash_including(
-          name: "In GitLab",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          )
-        )
-      )
+          include_examples '"Create new" menu groups without headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups without headers'
+        end
+      end
+
+      context 'with headers' do
+        before do
+          allow(group).to receive(:persisted?).and_return(true)
+          allow(helper).to receive(:can?).and_return(true)
+        end
+
+        shared_examples '"Create new" menu groups with headers' do
+          it 'returns "Create new" menu groups with headers' do
+            expect(subject[:create_new_menu_groups]).to contain_exactly(
+              a_hash_including(
+                name: "In this group",
+                items: array_including(*in_this_group_menu_items)
+              ),
+              a_hash_including(
+                name: "In GitLab",
+                items: array_including(*in_gitlab_menu_items)
+              )
+            )
+          end
+        end
+
+        context 'when current Organization has scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+      end
     end
 
     describe 'current context' do
@@ -649,34 +787,36 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(group).to receive(:to_global_id).and_return(5)
     end
 
-    shared_examples 'nav panels available to logged-out users' do
+    shared_examples 'nav panels available to all users' do
       it 'returns Project Panel for project nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'project',
-          user: user)).to be_a(Sidebars::Projects::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'project', user: user))
+          .to be_a(Sidebars::Projects::SuperSidebarPanel)
       end
 
       it 'returns Group Panel for group nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user)).to be_a(Sidebars::Groups::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user))
+          .to be_a(Sidebars::Groups::SuperSidebarPanel)
       end
 
       it 'returns User profile Panel for user profile nav' do
         viewed_user = build(:user)
-        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user,
-          viewed_user: viewed_user)).to be_a(Sidebars::UserProfile::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: viewed_user))
+          .to be_a(Sidebars::UserProfile::Panel)
       end
 
       it 'returns Explore Panel for explore nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user)).to be_a(Sidebars::Explore::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user))
+          .to be_a(Sidebars::Explore::Panel)
       end
 
       it 'returns Organization Panel for organization nav' do
-        expect(
-          helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user)
-        ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user))
+          .to be_a(Sidebars::Organizations::SuperSidebarPanel)
       end
 
       it 'returns Search Panel for search nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user))
+          .to be_a(Sidebars::Search::Panel)
       end
     end
 
@@ -691,40 +831,94 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       it 'returns User Settings Panel for profile nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user)).to be_a(Sidebars::UserSettings::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user))
+          .to be_a(Sidebars::UserSettings::Panel)
+      end
+
+      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user))
+          .to be_a(Sidebars::YourWork::Panel)
       end
 
       describe 'admin user' do
         let(:user) { build(:admin) }
 
         it 'returns Admin Panel for admin nav', :enable_admin_mode do
-          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::Admin::Panel)
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::Admin::Panel)
+        end
+
+        it 'returns Your Work Panel for admin nav when not in admin mode' do
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::YourWork::Panel)
         end
       end
 
-      it 'returns Your Work Panel for admin nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::YourWork::Panel)
+      describe 'fallback behavior' do
+        it 'returns "Your Work" Panel as default fallback', :use_clean_rails_memory_store_caching do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::YourWork::Panel)
+        end
+
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns YourWork panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::YourWork::Panel)
+          end
+        end
       end
 
-      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it_behaves_like 'nav panels available to logged-out users'
+      it_behaves_like 'nav panels available to all users'
     end
 
     describe 'when logged-out' do
       let(:user) { nil }
 
-      it_behaves_like 'nav panels available to logged-out users'
+      describe 'fallback behavior' do
+        it 'returns "Explore" Panel as default fallback' do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::Explore::Panel)
+        end
 
-      it 'returns "Explore" Panel as a fallback' do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::Explore::Panel)
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns Explore panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
       end
+
+      it_behaves_like 'nav panels available to all users'
     end
   end
 
@@ -765,12 +959,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#compare_plans_url' do
-    before do
-      allow(helper).to receive(:promo_url).and_return('https://about.gitlab.com')
-    end
-
     it 'always returns the pricing page URL' do
-      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq('https://about.gitlab.com/pricing')
+      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq(promo_pricing_url)
     end
   end
 

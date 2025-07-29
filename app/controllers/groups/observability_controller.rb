@@ -17,28 +17,13 @@ module Groups
       p.frame_src(*frame_src_values)
     end
 
-    VALID_PATHS = %w[
-      services
-      traces-explorer
-      logs/logs-explorer
-      metrics-explorer/summary
-      infrastructure-monitoring/hosts
-      dashboard
-      messaging-queues
-      api-monitoring/explorer
-      alerts
-      exceptions
-      service-map
-      settings
-    ].freeze
+    VALID_PATHS = ::Observability::ObservabilityPresenter::PATHS.keys.freeze
 
     def show
-      @o11y_url = group.observability_group_o11y_setting&.o11y_service_url
+      path = permitted_params[:id]
+      return render_404 unless VALID_PATHS.include?(path)
 
-      @path = permitted_params[:id]
-
-      return render_404 unless VALID_PATHS.include?(@path)
-
+      @data = ::Observability::ObservabilityPresenter.new(group, path)
       render
     end
 

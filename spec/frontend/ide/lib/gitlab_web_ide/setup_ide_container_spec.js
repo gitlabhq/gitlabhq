@@ -25,11 +25,12 @@ describe('~/ide/lib/gitlab_web_ide/setup_ide_container', () => {
       const result = setupIdeContainer(baseEl);
 
       expect(Array.from(result.element.classList)).toEqual([
-        'gl-hidden',
+        'gl-flex',
         'gl-justify-center',
         'gl-items-center',
         'gl-relative',
         'gl-h-full',
+        'gl-invisible',
       ]);
     });
 
@@ -46,13 +47,12 @@ describe('~/ide/lib/gitlab_web_ide/setup_ide_container', () => {
     });
 
     describe('show method', () => {
-      it('adds gl-flex class and removes gl-hidden class from element', () => {
+      it('removes gl-invisible class from element', () => {
         const result = setupIdeContainer(baseEl);
 
         result.show();
 
-        expect(result.element.classList.contains('gl-flex')).toBe(true);
-        expect(result.element.classList.contains('gl-hidden')).toBe(false);
+        expect(result.element.classList.contains('gl-invisible')).toBe(false);
       });
 
       it('removes the base element from the DOM', () => {

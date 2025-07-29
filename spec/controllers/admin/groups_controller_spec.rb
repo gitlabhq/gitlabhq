@@ -15,6 +15,11 @@ RSpec.describe Admin::GroupsController, :with_current_organization, feature_cate
     let!(:group_2) { create(:group, name: 'Ygroup') }
     let!(:group_3) { create(:group, name: 'Jgroup', created_at: 2.days.ago, updated_at: 1.day.ago) }
 
+    before do
+      # This endpoint will become a no-op once the `admin_groups_vue` flag has been rolled out.
+      stub_feature_flags(admin_groups_vue: false)
+    end
+
     render_views
 
     it 'lists available groups' do

@@ -4,6 +4,9 @@ query namespaceWorkItemTypes($fullPath: ID!, $name: IssueType) {
   workspace: namespace(fullPath: $fullPath) {
     id
     webUrl
+    userPermissions {
+      setNewWorkItemMetadata
+    }
     workItemTypes(name: $name) {
       nodes {
         ...WorkItemTypeFragment

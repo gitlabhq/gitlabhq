@@ -58,11 +58,6 @@ export default {
       required: false,
       default: null,
     },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     isBoard: {
       type: Boolean,
       required: false,
@@ -295,27 +290,29 @@ export default {
     @opened="$emit('opened')"
   >
     <template #title>
-      <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2 xl:gl-px-4">
-        <gl-link
-          ref="workItemUrl"
-          data-testid="work-item-drawer-ref-link"
-          :href="activeItem.webUrl"
-          class="gl-mr-2 gl-text-sm gl-font-bold gl-text-default"
-          @click="redirectToWorkItem"
-        >
-          {{ headerReference }}
-        </gl-link>
-        <gl-button
-          v-gl-tooltip
-          data-testid="work-item-drawer-copy-button"
-          :title="copyTooltipText"
-          category="tertiary"
-          icon="link"
-          size="small"
-          :aria-label="$options.i18n.copyTooltipText"
-          :data-clipboard-text="activeItem.webUrl"
-          @click="handleCopyToClipboard"
-        />
+      <div class="gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 xl:gl-px-4">
+        <div class="gl-flex gl-grow gl-items-center gl-gap-2">
+          <gl-link
+            ref="workItemUrl"
+            data-testid="work-item-drawer-ref-link"
+            :href="activeItem.webUrl"
+            class="gl-text-sm gl-font-bold gl-text-default"
+            @click="redirectToWorkItem"
+          >
+            {{ headerReference }}
+          </gl-link>
+          <gl-button
+            v-gl-tooltip
+            data-testid="work-item-drawer-copy-button"
+            :title="copyTooltipText"
+            category="tertiary"
+            icon="link"
+            size="small"
+            :aria-label="$options.i18n.copyTooltipText"
+            :data-clipboard-text="activeItem.webUrl"
+            @click="handleCopyToClipboard"
+          />
+        </div>
         <gl-button
           v-gl-tooltip
           data-testid="work-item-drawer-link-button"
@@ -335,7 +332,6 @@ export default {
         :work-item-iid="activeItem.iid"
         :work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
-        :new-comment-template-paths="newCommentTemplatePaths"
         :is-board="isBoard"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"

@@ -79,7 +79,6 @@
 - hosted_runners
 - importers
 - incident_management
-- infra_cost_data
 - infrastructure_as_code
 - insider_threat
 - instance_resiliency
@@ -88,6 +87,7 @@
 - job_artifacts
 - knowledge_graph
 - markdown
+- mcp_server
 - merge_trains
 - mlops
 - mobile_devops

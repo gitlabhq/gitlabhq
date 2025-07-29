@@ -267,7 +267,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     shared_examples 'handling invalid record with 400 error' do |error_message|
       it 'handles an ActiveRecord::RecordInvalid exception with 400 error' do
         expect { upload_package_with_token }
-          .not_to change { project.packages.count }
+          .not_to change { ::Packages::Npm::Package.for_projects(project).count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq(error_message)
@@ -331,7 +331,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
           it 'creates npm package with file with job token' do
             expect { upload_with_job_token(package_name, params) }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -362,7 +362,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         shared_examples 'uploading the package' do
           it 'uploads the package' do
             expect { upload_package_with_token }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
           end
@@ -432,7 +432,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         it 'returns an error if the package already exists' do
           expect { upload_package_with_token }
-            .not_to change { project.packages.count }
+            .not_to change { ::Packages::Npm::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['error']).to eq('Package already exists.')
@@ -449,7 +449,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         it 'creates npm package with file and dependencies' do
           expect { upload_package_with_token }
-            .to change { project.packages.count }.by(1)
+            .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
             .and change { Packages::Dependency.count }.by(4)
             .and change { Packages::DependencyLink.count }.by(6)
@@ -465,7 +465,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
           it 'reuses them' do
             expect { upload_package_with_token }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
               .and not_change { Packages::Dependency.count }
               .and change { Packages::DependencyLink.count }.by(6)
@@ -486,7 +486,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         it 'returns an error' do
           expect { upload_package_with_token }
-            .not_to change { project.packages.count }
+            .not_to change { ::Packages::Npm::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(response.body).to include('Could not obtain package lease. Please try again.')

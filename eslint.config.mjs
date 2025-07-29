@@ -375,6 +375,11 @@ export default [
               message:
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
+            {
+              group: ['@gitlab/ui/src/*'],
+              message:
+                'Avoid importing from @gitlab/ui/src. The build system uses aliases to import specific build variants of gitlab-ui modules, and consumer files should not override these aliases.',
+            },
           ],
         },
       ],
@@ -590,7 +595,6 @@ export default [
     files: ['**/*.graphql'],
 
     languageOptions: {
-
       parserOptions: {
         parser: graphqlPlugin.parser,
         graphQLConfig: {

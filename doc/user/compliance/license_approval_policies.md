@@ -3,6 +3,7 @@ stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: License approval policies
+description: Understand how to specify criteria using license approval policy for approval of a merge request before it can be merged. Applies to protected target branches only.
 ---
 
 {{< details >}}

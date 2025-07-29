@@ -205,8 +205,8 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_limit` | Gauge | 17.6 | Reports the maximum number of requests that a client can make before Rack Attack throttles them. | `event_name` |
 | `gitlab_rack_attack_throttle_period_seconds` | Gauge | 17.6 | Reports the duration over which requests for a client are counted before Rack Attack throttles them. | `event_name` |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio` | Histogram | 17.6 | Utilization ratio of a throttle in GitLab Application Rate Limiter. | `throttle_key`, `peek`, `feature_category` |
-| `gitlab_dependency_path_cte_real_duration_seconds` | Histogram | 17.10 |  Duration in seconds spent resolving the ancestor dependency paths for a given component. | |
-| `dependency_path_cte_paths_found` | Counter | 17.10 |  Counts the number of ancestor dependency paths found for a given dependency. | `max_depth_reached`, `cyclic` |
+| `gitlab_find_dependency_paths_real_duration_seconds` | Histogram | 18.3 |  Duration in seconds spent resolving the ancestor dependency paths for a given component. | |
+| `gitlab_dependency_paths_found_total` | Counter | 18.3 |  Counts the number of ancestor dependency paths found for a given dependency. | `cyclic` |
 
 ## Metrics controlled by a feature flag
 
@@ -259,6 +259,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_concurrency_limit_deferred_jobs_total` | Counter     | 17.3 | Total number of deferred Sidekiq jobs |   `worker`                                                           |
 | `sidekiq_concurrency_limit_queue_jobs_total`    | Counter | 17.6 | Proxy to calculate the number of jobs in the waiting queue due to concurrency limit. It must be interpreted as `max(idelta(sidekiq_concurrency_limit_queue_jobs_total[1m))` in order to see the total queue size. Unlike other counters, the overall `rate` for this counter is meaningless.  |  `worker`                                                             |
 | `sidekiq_concurrency_limit_current_concurrent_jobs_total`    | Counter | 17.6 | Proxy to calculate the number of concurrently running jobs. It must be interpreted as `max(idelta(sidekiq_concurrency_limit_current_concurrent_jobs_total[1m))` in order to see the number of concurrent jobs. Unlike other counters, the overall `rate` for this counter is meaningless. |  `worker`                                                             |
+| `sidekiq_throttling_events_total`              | Counter | 18.3  | Total number of Sidekiq throttling events |   `worker`, `strategy` |
 | `geo_db_replication_lag_seconds`               | Gauge   | 10.2  | Database replication lag (seconds) | `url` |
 | `geo_repositories`                             | Gauge   | 10.2  | Deprecated in 17.9. The future GitLab release for removal is yet to be confirmed. Use `geo_project_repositories` instead. Total number of repositories available on primary | `url` |
 | `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |
@@ -461,7 +462,7 @@ The following metrics are available:
 | Metric                                                   | Type      | Since                                                         | Description                                                                        | Labels                                                                                                                                   |
 |:-------------------------------------------------------- |:--------- |:------------------------------------------------------------- |:---------------------------------------------------------------------------------- |:---------------------------------------------------------------------------------------------------------------------------------------- |
 | `db_load_balancing_hosts`                                | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts                                             |                                                                                                                                          |
-| `sidekiq_load_balancing_count`                           | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `load_balancing_strategy` |
+| `sidekiq_load_balancing_count`                           | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to `:sticky` or `:delayed` | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `load_balancing_strategy` |
 | `gitlab_transaction_caught_up_replica_pick_count_total`  | Counter   | 14.1                                                          | Number of search attempts for caught up replica                                    | `result`                                                                                                                                 |
 
 ## Database partitioning metrics

@@ -1,0 +1,13 @@
+---
+table_name: p_ci_job_inputs
+classes:
+- Ci::JobInput
+feature_categories:
+- pipeline_composition
+description: Table that contains the job-level inputs configured for CI jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194719
+milestone: '18.3'
+gitlab_schema: gitlab_ci
+table_size: small
+sharding_key:
+  project_id: projects

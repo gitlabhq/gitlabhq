@@ -110,7 +110,7 @@ To do this:
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 
-![Status](img/cancel-mwps_v15_4.png)
+![The cancel merge when pipeline succeeds option](img/cancel-mwps_v15_4.png)
 
 ## Pipeline success for auto-merge
 

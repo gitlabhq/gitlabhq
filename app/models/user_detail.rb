@@ -11,6 +11,9 @@ class UserDetail < ApplicationRecord
   validates :job_title, length: { maximum: 200 }
   validates :bio, length: { maximum: 255 }, allow_blank: true
 
+  validates :email_otp, length: { is: 64 }, allow_nil: true
+  validates :email_otp_last_sent_to, length: { maximum: 511 }, allow_nil: true
+
   validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
 
   ignore_column :registration_objective, remove_after: '2025-07-17', remove_with: '18.2'
@@ -80,6 +83,15 @@ class UserDetail < ApplicationRecord
       value = self[attr]
       self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
     end
+  end
+
+  # Exclude the hashed email_otp attribute
+  def serializable_hash(options = nil)
+    options = options.try(:dup) || {}
+    options[:except] = Array(options[:except]).dup
+    options[:except].concat [:email_otp]
+
+    super
   end
 
   private

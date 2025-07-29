@@ -7,8 +7,6 @@ import {
   GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters, mapState as mapVuexState } from 'vuex';
 import { mapState } from 'pinia';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -28,6 +26,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import { badgeState } from '~/merge_requests/badge_state';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useNotes } from '~/notes/store/legacy_notes';
 import titleSubscription from '../queries/title.subscription.graphql';
 
 export default {
@@ -106,10 +105,11 @@ export default {
     };
   },
   computed: {
-    ...mapVuexGetters(['getNoteableData', 'discussionTabCounter']),
-    ...mapVuexState({
-      doneFetchingBatchDiscussions: (state) => state.notes.doneFetchingBatchDiscussions,
-    }),
+    ...mapState(useNotes, [
+      'getNoteableData',
+      'discussionTabCounter',
+      'doneFetchingBatchDiscussions',
+    ]),
     ...mapState(useMrNotes, ['activeTab']),
     badgeState() {
       return badgeState;

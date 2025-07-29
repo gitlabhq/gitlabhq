@@ -5,14 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Pinia
 ---
 
-{{< alert type="warning" >}}
-
-**[Pilot Phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279)**: Adopt Pinia with caution.
-This is a new technology at GitLab, and we might not have all the necessary precautions and best practices in place yet.
-If you're considering using Pinia, drop a message in the `#frontend` internal Slack channel for evaluation.
-
-{{< /alert >}}
-
 [Pinia](https://pinia.vuejs.org/) is a tool for [managing client-side state](state_management.md) for Vue applications.
 Refer to the [official documentation](https://pinia.vuejs.org/core-concepts/) on how to use Pinia.
 
@@ -147,7 +139,7 @@ It acts the same as `setActivePinia(createPinia())` but also allows us to spy on
 A basic test could look like this:
 
 ```javascript
-import { createTestingPinia } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { useMyStore } from '~/my_store.js';
 
 describe('MyStore', () => {
@@ -252,7 +244,9 @@ describe('MyComponent', () => {
 
 ## Migrating from Vuex
 
-Decide what your primary [state manager](state_management.md) should be first.
+GitLab is actively migrating from Vuex, you can contribute and follow this progress [here](https://gitlab.com/groups/gitlab-org/-/epics/18476).
+
+Before migrating decide what your primary [state manager](state_management.md) should be first.
 Proceed with this guide if Pinia was your choice.
 
 Migration to Pinia could be completed in two ways: a single step migration and a multi-step one.
@@ -282,6 +276,11 @@ If your diff starts to exceed reviewable size prefer the multi-step migration.
 
 [Learn about the official Vuex migration guide](https://pinia.vuejs.org/cookbook/migration-vuex.html).
 
+A walkthrough is available in the two part video series:
+
+1. [Migrating the store (part 1)](https://youtu.be/aWVYvhktYfM)
+1. [Migrating the components (part 2)](https://youtu.be/9G7h4YmoHRw)
+
 Follow these steps to iterate over the migration process and split the work onto smaller merge requests:
 
 1. Identify the store you are going to migrate.
@@ -310,6 +309,42 @@ Follow these steps to iterate over the migration process and split the work onto
 1. Remove the Vuex store.
 1. Remove CODEOWNERS rule.
 1. Close the migration issue.
+
+#### Example migration breakdown
+
+You can use the [merge requests migration](https://gitlab.com/groups/gitlab-org/-/epics/16505) breakdown as a reference:
+
+1. Diffs store
+   1. [Copy store to a new location and introduce CODEOWNERS rules](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163826)
+   1. [Automated store migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163827)
+      1. Also creates MrNotes store
+   1. Specs migration ([actions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165733), [getters](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167176), [mutations](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167434))
+1. Notes store
+   1. [Copy store to a new location](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167450)
+   1. [Automated store migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167946)
+   1. Specs migration ([actions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169681), [getters](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170547), [mutations](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170549))
+1. Batch comments store
+   1. [Copy store to a new location](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176485)
+   1. [Automated store migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176486)
+   1. Specs migration ([actions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176487), [getters](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176490), [mutations](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176488))
+1. [Sync Vuex stores with Pinia stores](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178302)
+1. Diffs store components migration
+   1. [Diffs app](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186121)
+   1. [Non diffs components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186365)
+   1. [File browser](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186370)
+   1. [Diffs components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186381)
+   1. [Diff file components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186382)
+   1. [Rest of diffs components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186962)
+1. [Batch comments components migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180129)
+1. [MrNotes components migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178291)
+1. Notes store components migration
+   1. [Diffs components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188273)
+   1. [Simple notes components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193248)
+   1. [More notes components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195975)
+   1. [Rest of notes components](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196142)
+   1. [Notes app](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197331)
+1. [Remove Vuex from merge requests](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196307)
+   1. Also removes the CODEOWNERS rules
 
 ### Post migration steps
 

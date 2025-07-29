@@ -1,6 +1,6 @@
 <script>
 // We are using gl-breadcrumb only at the last child of the handwritten breadcrumb
-// until this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079
+// until this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079 [CLOSED]
 //
 // See the CSS workaround in app/assets/stylesheets/pages/registry.scss when this file is changed.
 import { GlBreadcrumb } from '@gitlab/ui';

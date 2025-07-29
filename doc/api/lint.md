@@ -14,10 +14,85 @@ title: CI Lint API
 
 Use this API to [validate your GitLab CI/CD configuration](../ci/yaml/lint.md).
 
-## Validate sample CI/CD configuration
+These endpoints use JSON-encoded YAML content. In some cases, it can be helpful to use third-party tools like [`jq`](https://jqlang.org/) to properly format your YAML content before making a request. This can be helpful if you want to maintain the format of your CI/CD configuration.
 
-Checks if a sample CI/CD YAML configuration is valid. This endpoint validates the
-CI/CD configuration in the context of the project, including:
+For example, the following command uses JQ to properly escape a given YAML file, encode it as JSON, and make a request to the API.
+
+```shell
+jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
+| curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+--header 'Content-Type: application/json' \
+--data @-
+```
+
+1. Create a YAML file named `example-gitlab-ci.yml`:
+
+   ```yaml
+   .api_test:
+     rules:
+       - if: $CI_PIPELINE_SOURCE=="merge_request_event"
+         changes:
+           - src/api/*
+   deploy:
+     extends:
+       - .api_test
+     rules:
+       - when: manual
+         allow_failure: true
+     script:
+       - echo "hello world"
+   ```
+
+1. To escape and encode an input YAML file (`example-gitlab-ci.yml`), then `POST` it to the
+   GitLab API, create a one-line command that combines `curl` and `jq`:
+
+   ```shell
+   jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
+   | curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+       --header 'Content-Type: application/json' \
+       --data @-
+   ```
+
+## Parse responses from this API
+
+To reformat responses from the CI Lint API, either:
+
+- Pipe the CI Lint response directly to `jq`.
+- Store the API response as a text file, and provide it to `jq` as an argument, like this:
+
+  ```shell
+  jq --raw-output '.merged_yaml | fromjson' <your_input_here>
+  ```
+
+For example, this JSON array:
+
+```json
+{"valid":"true","errors":[],"merged_yaml":"---\n.api_test:\n  rules:\n  - if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    changes:\n    - src/api/*\ndeploy:\n  rules:\n  - when: manual\n    allow_failure: true\n  extends:\n  - \".api_test\"\n  script:\n  - echo \"hello world\"\n"}
+```
+
+When parsed and reformatted, the resulting YAML file contains:
+
+```yaml
+.api_test:
+  rules:
+  - if: $CI_PIPELINE_SOURCE=="merge_request_event"
+    changes:
+    - src/api/*
+deploy:
+  rules:
+  - when: manual
+    allow_failure: true
+  extends:
+  - ".api_test"
+  script:
+  - echo "hello world"
+```
+
+## Validate a new CI/CD configuration
+
+Validates a new `.gitlab-ci.yml` configuration for a specified project.
+This endpoint validates the CI/CD configuration in the context of the
+project, including:
 
 - Using the project's CI/CD variables.
 - Searching the project's files for `include:local` entries.
@@ -36,7 +111,29 @@ POST /projects/:id/ci/lint
 Example request:
 
 ```shell
-curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"stages\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
+curl --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint" \
+  --data @- <<'EOF'
+{
+  "content": "{
+    \"image\": \"ruby:2.6\",
+    \"services\": [\"postgres\"],
+    \"before_script\": [
+      \"bundle install\",
+      \"bundle exec rake db:create\"
+    ],
+    \"variables\": {
+      \"DB_NAME\": \"postgres\"
+    },
+    \"stages\": [\"test\", \"deploy\", \"notify\"],
+    \"rspec\": {
+      \"script\": \"rake spec\",
+      \"tags\": [\"ruby\", \"postgres\"],
+      \"only\": [\"branches\"]
+    }
+  }"
+}
+EOF
 ```
 
 Example responses:
@@ -67,7 +164,7 @@ Example responses:
   }
   ```
 
-## Validate a project's CI/CD configuration
+## Validate an existing CI/CD configuration
 
 {{< history >}}
 
@@ -76,9 +173,9 @@ Example responses:
 
 {{< /history >}}
 
-Checks if a project's `.gitlab-ci.yml` configuration in a given ref (the
-`content_ref` parameter, by default `HEAD` of the project's default branch) is valid.
-This endpoint validates the CI/CD configuration, including:
+Validates an existing `.gitlab-ci.yml` configuration for a specified project.
+This endpoint validates the CI/CD configuration in the context of the
+project, including:
 
 - Using the project's CI/CD variables.
 - Searching the project's files for `include:local` entries.
@@ -90,8 +187,8 @@ GET /projects/:id/ci/lint
 | Attribute      | Type    | Required | Description |
 |----------------|---------|----------|-------------|
 | `content_ref`  | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
-| `dry_run_ref`  | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
+| `dry_run_ref`  | string  | No       | Of `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
 | `ref`          | string  | No       | (Deprecated) When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. Use `dry_run_ref` instead. |
 | `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |
@@ -99,7 +196,7 @@ GET /projects/:id/ci/lint
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+curl --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 ```
 
 Example responses:
@@ -179,92 +276,3 @@ Example responses:
     "includes": []
   }
   ```
-
-## Use jq to create and process YAML & JSON payloads
-
-To `POST` a YAML configuration to the CI Lint endpoint, it must be properly escaped and JSON encoded.
-You can use `jq` and `curl` to escape and upload YAML to the GitLab API.
-
-### Escape YAML for JSON encoding
-
-To escape quotes and encode your YAML in a format suitable for embedding within
-a JSON payload, you can use `jq`. For example, create a file named `example-gitlab-ci.yml`:
-
-```yaml
-.api_test:
-  rules:
-    - if: $CI_PIPELINE_SOURCE=="merge_request_event"
-      changes:
-        - src/api/*
-deploy:
-  extends:
-    - .api_test
-  rules:
-    - when: manual
-      allow_failure: true
-  script:
-    - echo "hello world"
-```
-
-Next, use `jq` to escape and encode the YAML file into JSON:
-
-```shell
-jq --raw-input --slurp < example-gitlab-ci.yml
-```
-
-To escape and encode an input YAML file (`example-gitlab-ci.yml`), and `POST` it to the
-GitLab API using `curl` and `jq` in a one-line command:
-
-```shell
-jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
---header 'Content-Type: application/json' \
---data @-
-```
-
-### Parse a CI Lint response
-
-To reformat the CI Lint response, you can use `jq`. You can pipe the CI Lint response to `jq`,
-or store the API response as a text file and provide it as an argument:
-
-```shell
-jq --raw-output '.merged_yaml | fromjson' <your_input_here>
-```
-
-Example input:
-
-```json
-{"status":"valid","errors":[],"merged_yaml":"---\n.api_test:\n  rules:\n  - if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    changes:\n    - src/api/*\ndeploy:\n  rules:\n  - when: manual\n    allow_failure: true\n  extends:\n  - \".api_test\"\n  script:\n  - echo \"hello world\"\n"}
-```
-
-Becomes:
-
-```yaml
-.api_test:
-  rules:
-  - if: $CI_PIPELINE_SOURCE=="merge_request_event"
-    changes:
-    - src/api/*
-deploy:
-  rules:
-  - when: manual
-    allow_failure: true
-  extends:
-  - ".api_test"
-  script:
-  - echo "hello world"
-```
-
-With a one-line command, you can:
-
-1. Escape the YAML
-1. Encode it in JSON
-1. POST it to the API with curl
-1. Format the response
-
-```shell
-jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
---header 'Content-Type: application/json' --data @- \
-| jq --raw-output '.merged_yaml | fromjson'
-```

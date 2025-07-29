@@ -25,14 +25,14 @@ export default {
       required: false,
       default: null,
     },
-    projects: {
-      type: Array,
-      required: false,
-      default: null,
-    },
     selectedProject: {
       type: Object,
       required: true,
+    },
+    disableRepoDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 };
@@ -47,8 +47,8 @@ export default {
       <repo-dropdown
         class="gl-min-w-0 gl-max-w-full gl-basis-1/2"
         :params-name="paramsName"
-        :projects="projects"
         :selected-project="selectedProject"
+        :disabled="disableRepoDropdown"
         v-on="$listeners"
       />
       <revision-dropdown

@@ -8,14 +8,17 @@ module RuboCop
       MSG = 'Gitlab::Redis::Queues should only be used by Sidekiq initializers. '\
         'Assignments or using its params to initialise another connection is not allowed.'
 
+      # @!method calling_redis_queue_module_methods?(node)
       def_node_matcher :calling_redis_queue_module_methods?, <<~PATTERN
         (send (const (const (const nil? :Gitlab) :Redis) :Queues) ...)
       PATTERN
 
+      # @!method using_redis_queue_module_as_parameter?(node)
       def_node_matcher :using_redis_queue_module_as_parameter?, <<~PATTERN
         (send ... (const (const (const nil? :Gitlab) :Redis) :Queues))
       PATTERN
 
+      # @!method redis_queue_assignment?(node)
       def_node_matcher :redis_queue_assignment?, <<~PATTERN
         ({lvasgn | ivasgn | cvasgn | gvasgn | casgn | masgn | op_asgn | or_asgn | and_asgn } ...
           `(const (const (const nil? :Gitlab) :Redis) :Queues))

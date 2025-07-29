@@ -19,8 +19,7 @@ If you want to install on RHEL/CentOS, you should use the [Linux packages](https
 For many other installation options, see the [main installation page](_index.md).
 
 This guide is long because it covers many cases and includes all commands you
-need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
-The following steps have been known to work. **Use caution when you deviate**
+need. The following steps have been known to work. **Use caution when you deviate**
 from this guide. Make sure you don't violate any assumptions GitLab makes about
 its environment. For example, many people run into permission problems because
 they changed the location of directories or run services as the wrong user.

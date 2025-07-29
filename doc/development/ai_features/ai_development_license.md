@@ -65,7 +65,7 @@ Ai::Setting.instance.update!(ai_gateway_url: 'https://cloud.staging.gitlab.com/a
 
 If you're having issues with your Duo license setup:
 
-- Run the [Duo health check](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
+- Run the [Duo health check](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
 - Verify your license is active by checking the Admin Area
 - Ensure your user has a Duo seat assigned. The GDK setup scripts assign a Duo
   seat to the `root` user only. If you want to test with other users, make sure

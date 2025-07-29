@@ -11,13 +11,13 @@ This page is about developing dark mode for GitLab. For more information on how 
 
 ### Current approach
 
-1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) CSS custom properties for colors and components. See [design tokens technical implementation](https://design.gitlab.com/product-foundations/design-tokens-technical-implementation)
+1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) CSS custom properties for colors and components. See [design tokens technical implementation](https://design.gitlab.com/product-foundations/design-tokens-technical-implementation)
 1. [Semantic design tokens](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) provide values for light and dark mode in general usage, for example: background, text, and border colors.
 
 ### Deprecated approach
 
-1. SCSS variables for the [color palette](https://design.gitlab.com/product-foundations/color) are reversed using [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) to provide darker colors for smaller scales.
-1. `app/assets/stylesheets/color_modes/_dark.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) SCSS variables for colors.
+1. SCSS variables for the [color palette](https://design.gitlab.com/product-foundations/color) are reversed using [design tokens](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) to provide darker colors for smaller scales.
+1. `app/assets/stylesheets/color_modes/_dark.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) SCSS variables for colors.
 1. Bootstrap variables overridden in `app/assets/stylesheets/framework/variables_overrides.scss` are given dark mode values in `_dark.scss`.
 1. `_dark.scss` is loaded before `application.scss` to generate separate `application_dark.css` stylesheet for dark mode users only.
 

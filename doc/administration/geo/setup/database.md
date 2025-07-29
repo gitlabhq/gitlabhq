@@ -70,8 +70,9 @@ The following guide assumes that:
 
 {{< alert type="warning" >}}
 
-Geo works with streaming replication. Logical replication is not supported at this time.
-There is an [issue where support is being discussed](https://gitlab.com/gitlab-org/gitlab/-/issues/7420).
+Geo works with streaming replication. Logical replication is not supported,
+but [epic 18022](https://gitlab.com/groups/gitlab-org/-/epics/18022) proposes to
+change this behavior.
 
 {{< /alert >}}
 

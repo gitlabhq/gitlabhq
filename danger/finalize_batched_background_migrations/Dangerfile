@@ -1,5 +1,0 @@
-# frozen_string_literal: true
-
-files = git.added_files + git.modified_files
-
-finalize_batched_background_migration_validator.validate_migrations(files)

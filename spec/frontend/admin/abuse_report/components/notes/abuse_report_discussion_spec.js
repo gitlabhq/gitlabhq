@@ -43,7 +43,6 @@ describe('Abuse Report Discussion', () => {
       expect(findAbuseReportNote().exists()).toBe(true);
 
       expect(findAbuseReportNote().props()).toMatchObject({
-        abuseReportId: mockAbuseReportId,
         note: mockDiscussionWithNoReplies[0],
         showReplyButton: true,
       });

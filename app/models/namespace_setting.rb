@@ -10,10 +10,12 @@ class NamespaceSetting < ApplicationRecord
   columns_changing_default :require_dpop_for_manage_api_endpoints
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
+  ignore_column :enable_auto_assign_gitlab_duo_pro_seats, remove_with: '18.5', remove_after: '2025-09-12'
   enum :pipeline_variables_default_role, ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
+  ignore_column :job_token_policies_enabled, remove_with: '18.5', remove_after: '2025-09-13'
 
   cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
@@ -84,7 +86,6 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
-    job_token_policies_enabled
   ].freeze
 
   # matches the size set in the database constraint

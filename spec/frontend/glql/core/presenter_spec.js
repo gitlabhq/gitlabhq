@@ -1,6 +1,8 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
+import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
+import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
 import BoolPresenter from '~/glql/components/presenters/bool.vue';
-import HealthPresenter from '~/glql/components/presenters/health.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -14,8 +16,6 @@ import TimePresenter from '~/glql/components/presenters/time.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import NullPresenter from '~/glql/components/presenters/null.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
-import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
-import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
 import TypePresenter from '~/glql/components/presenters/type.vue';
 import Presenter, { componentForField } from '~/glql/core/presenter';
 import {
@@ -68,6 +68,7 @@ describe('componentForField', () => {
   describe('if field name is passed', () => {
     it.each`
       fieldName         | field            | presenter          | presenterName
+      ${'health'}       | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
       ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
       ${'state'}        | ${'opened'}      | ${StatePresenter}  | ${'StatePresenter'}
       ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}   | ${'HtmlPresenter'}

@@ -1,5 +1,4 @@
 import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
-import store from '~/mr_notes/stores';
 import { getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
@@ -24,10 +23,10 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
 
   const { mrPath } = getDerivedMergeRequestInformation({ endpoint: diffsDataset.endpoint });
 
-  store.dispatch('setNotesData', notesData);
-  store.dispatch('setNoteableData', noteableData);
-  store.dispatch('setUserData', currentUserData);
-  store.dispatch('setTargetNoteHash', getLocationHash());
+  useNotes().setNotesData(notesData);
+  useNotes().setNoteableData(noteableData);
+  useNotes().setUserData(currentUserData);
+  useNotes().setTargetNoteHash(getLocationHash());
   useMrNotes(pinia).setEndpoints(endpoints);
   useLegacyDiffs(pinia).setBaseConfig({
     endpoint: diffsDataset.endpoint,
@@ -62,7 +61,7 @@ export function initMrStateLazyLoad() {
     // prevent loading MR state on commits and pipelines pages
     // this is due to them having a shared controller with the Overview page
     if (['diffs', 'show'].includes(useMrNotes(pinia).activeTab)) {
-      eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
+      eventHub.$once('fetchNotesData', () => useNotes().fetchNotes());
 
       requestIdleCallback(() => {
         initOverviewTabCounter();

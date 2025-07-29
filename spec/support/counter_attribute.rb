@@ -12,6 +12,7 @@ RSpec.configure do |config|
       counter_attribute :build_artifacts_size
       counter_attribute :commit_count
       counter_attribute :packages_size, if: ->(instance) { instance.allow_package_size_counter }
+      counter_attribute :uploads_size, touch: :updated_at
 
       attr_accessor :flushed, :allow_package_size_counter
 

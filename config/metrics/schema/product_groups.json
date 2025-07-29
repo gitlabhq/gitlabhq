@@ -73,6 +73,7 @@
     "tenant_scale",
     "utilization",
     "ux_paper_cuts",
-    "vulnerability_research"
+    "vulnerability_research",
+    "workflow_catalog"
   ]
 }

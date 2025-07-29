@@ -1,30 +1,29 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture } from 'helpers/fixtures';
-import { createRapidDiffsApp } from '~/rapid_diffs/app';
+import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
-import { DiffFile } from '~/rapid_diffs/diff_file';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
 import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
-import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
-import { StreamingError } from '~/rapid_diffs/streaming_error';
+import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
+import { StreamingError } from '~/rapid_diffs/web_components/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
-import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix';
+import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
-import { disableBrokenContentVisibility } from '~/rapid_diffs/app/content_visibility_fix';
+import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
 import { useApp } from '~/rapid_diffs/stores/app';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/awards_handler');
-jest.mock('~/mr_notes/stores');
 jest.mock('~/rapid_diffs/app/view_settings');
 jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
-jest.mock('~/rapid_diffs/app/init_file_browser');
-jest.mock('~/rapid_diffs/app/safari_fix');
-jest.mock('~/rapid_diffs/app/content_visibility_fix');
+jest.mock('~/rapid_diffs/app/file_browser');
+jest.mock('~/rapid_diffs/app/quirks/safari_fix');
+jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 
-describe('Rapid Diffs App', () => {
+describe('Rapid Diffs App Facade', () => {
   const { trigger } = useMockIntersectionObserver();
 
   let app;
@@ -58,7 +57,7 @@ describe('Rapid Diffs App', () => {
         </div>
       `,
     );
-    app = createRapidDiffsApp();
+    app = new RapidDiffsFacade();
   };
 
   beforeAll(() => {

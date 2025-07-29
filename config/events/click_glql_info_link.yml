@@ -1,5 +1,5 @@
 ---
-description: Someone clicks the "View powered by GLQL" link below a GLQL view
+description: Someone clicks the "Embedded view powered by GLQL" link below an embedded view
 internal_events: true
 status: active
 action: click_glql_info_link

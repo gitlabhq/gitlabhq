@@ -389,7 +389,7 @@ that cannot be accessed directly from the internet, keep the following in mind:
 
 This server block is an example of how to configure a reverse proxy for GitLab that works with Jira Cloud:
 
-```json
+```nginx
 server {
   listen *:80;
   server_name gitlab.mycompany.com;

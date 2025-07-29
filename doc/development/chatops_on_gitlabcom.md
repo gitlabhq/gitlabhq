@@ -28,14 +28,11 @@ To request access to ChatOps on GitLab.com:
    is the same as your username in [GitLab.com](https://gitlab.com). If the usernames
    don't match, update the username in [User Settings/Account for the Ops instance](https://ops.gitlab.net/-/profile/account). Matching usernames are required to reduce the administrative effort of running multiple platforms. Matching usernames also help with tasks like managing access requests and offboarding.
 
-1. Comment in your onboarding issue, and tag your onboarding buddy and your manager.
-   Request they add you to the `ops` ChatOps project by running this command
-   in the `#chat-ops-test` Slack channel, replacing `<username>` with your GitLab.com username:
+1. Reach out to your onboarding buddy or manager and request they add you to the `ops` ChatOps project by running the following command in the `#chat-ops-test` Slack channel, replacing `<username>` with your GitLab.com username (if they don't have access, you can ask in the #infrastructure-lounge Slack channel ):
    `/chatops run member add <username> gitlab-com/chatops --ops`
 
    ```plaintext
-   Hi <__BUDDY_HANDLE__> and <__MANAGER_HANDLE__>, could you please add me to
-   the ChatOps project in Ops by running this command:
+   Hi, could you please add me to the ChatOps project in Ops by running this command:
    `/chatops run member add <username> gitlab-com/chatops --ops` in the
    `#chat-ops-test` Slack channel? Thanks in advance.
    ```

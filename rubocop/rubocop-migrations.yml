@@ -44,15 +44,16 @@ Migration/UpdateLargeTable:
   - :authentication_events
   - :ci_job_artifact_states
   - :ci_pipeline_messages
+  - :duo_workflows_checkpoints
   - :namespaces
   - :packages_package_files
   - :personal_access_tokens
   - :projects
+  - :resource_state_events
   - :sbom_occurrences
   - :security_scans
   - :uploads
   - :vulnerabilities
-  - :vulnerability_occurrence_identifiers
   DeniedMethods:
   - :change_column_type_concurrently
   - :rename_column_concurrently

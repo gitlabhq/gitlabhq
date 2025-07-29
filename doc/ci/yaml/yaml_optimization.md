@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Optimize GitLab CI/CD configuration files
+description: Use YAML anchors, !reference tags, and the `extends` keyword to reduce CI/CD configuration file complexity.
 ---
 
 {{< details >}}

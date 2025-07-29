@@ -98,12 +98,17 @@ export default {
     // Show only when not loading and filtered search has not been triggered
     // So we don't show empty state when results are empty on a filtered search
     showEmptyState() {
+      const queryStringObject = queryToObject(window.location.search);
+      const hasNonDefaultFilters = Object.keys(queryStringObject).some(
+        (key) => key !== 'kind' && queryStringObject[key] !== 'BUILD',
+      );
+
       return (
         this.jobs.list.length === 0 &&
         !this.scope &&
         !this.loading &&
         !this.filterSearchTriggered &&
-        !this.validatedQueryString
+        !hasNonDefaultFilters
       );
     },
     showPagination() {
@@ -114,8 +119,12 @@ export default {
     },
     validatedQueryString() {
       const queryStringObject = queryToObject(window.location.search);
+      const validated = validateQueryString(queryStringObject);
 
-      return validateQueryString(queryStringObject);
+      return {
+        kind: 'BUILD',
+        ...validated,
+      };
     },
   },
   watch: {
@@ -129,12 +138,27 @@ export default {
       }
     },
   },
+  async mounted() {
+    const queryStringObject = queryToObject(window.location.search);
+
+    // Check if kind is missing from the URL and add default
+    if (!queryStringObject?.kind) {
+      const defaultParams = {
+        ...this.validatedQueryString,
+        kind: 'BUILD',
+      };
+
+      updateHistory({
+        url: setUrlParams(defaultParams, window.location.href, true),
+      });
+    }
+  },
   methods: {
     resetRequestData() {
       if (this.glFeatures.feSearchBuildByName) {
-        this.requestData = { statuses: null, sources: null, name: null };
+        this.requestData = { statuses: null, sources: null, name: null, kind: 'BUILD' };
       } else {
-        this.requestData = { statuses: null, sources: null };
+        this.requestData = { statuses: null, sources: null, kind: 'BUILD' };
       }
     },
     resetPagination() {
@@ -185,6 +209,10 @@ export default {
 
         if (filter.type === 'jobs-source') {
           this.requestData.sources = filter.value.data;
+        }
+
+        if (filter.type === 'kind') {
+          this.requestData.kind = filter.value.data;
         }
       });
 

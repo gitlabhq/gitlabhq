@@ -30,6 +30,7 @@ export const WIDGET_TYPE_STATUS = 'STATUS';
 export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
+export const WIDGET_TYPE_LINKED_RESOURCES = 'LINKED_RESOURCES';
 export const WIDGET_TYPE_COLOR = 'COLOR';
 export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
 export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
@@ -206,7 +207,6 @@ export const DEFAULT_EPIC_COLORS = '#1068bf';
 export const MAX_FREQUENT_PROJECTS = 3;
 export const MAX_FREQUENT_ITEMS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
-export const CREATE_NEW_GROUP_WORK_ITEM_MODAL = 'create_new_group_work_item_modal';
 export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 
 export const WORK_ITEM_REFERENCE_CHAR = '#';

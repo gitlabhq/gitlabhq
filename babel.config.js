@@ -25,6 +25,8 @@ const plugins = [
   '@babel/plugin-transform-optional-chaining',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
   '@babel/plugin-transform-nullish-coalescing-operator',
+  // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
+  '@babel/plugin-transform-logical-assignment-operators',
   'lodash',
   '@babel/plugin-transform-class-static-block',
 ];

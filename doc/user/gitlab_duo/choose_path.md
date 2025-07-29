@@ -168,6 +168,6 @@ Having issues? Check these common solutions:
 
 - [GitLab Duo features don't work on self-managed](troubleshooting.md#gitlab-duo-features-do-not-work-on-self-managed)
 - [GitLab Duo features not available for users](troubleshooting.md#gitlab-duo-features-not-available-for-users)
-- [Run a health check](setup.md#run-a-health-check-for-gitlab-duo) to diagnose your GitLab Duo setup
+- [Run a health check](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to diagnose your GitLab Duo setup
 
 Need more help? Search the GitLab documentation or [ask the GitLab community](https://forum.gitlab.com/).

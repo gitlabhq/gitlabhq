@@ -67,9 +67,6 @@ export default {
   },
   computed: {
     ...mapState(['freezePeriods']),
-    tableIsNotEmpty() {
-      return this.freezePeriods?.length > 0;
-    },
   },
   mounted() {
     this.fetchFreezePeriods();

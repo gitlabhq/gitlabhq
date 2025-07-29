@@ -20,6 +20,7 @@ To authenticate with the container registry, you can use:
 - [Deploy token](../../project/deploy_tokens/_index.md)
 - [Project access token](../../project/settings/project_access_tokens.md)
 - [Group access token](../../group/settings/group_access_tokens.md)
+- The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md#use-the-cli-as-a-docker-credential-helper)
 
 For token-based authentication methods, the minimum required scope:
 
@@ -37,7 +38,8 @@ that token works even though Admin Mode is enabled.
 
 ## Authenticate with username and password
 
-You can authenticate with the container registry using your GitLab username and password:
+You can authenticate with the container registry using
+your GitLab username and password:
 
 ```shell
 docker login registry.example.com -u <username> -p <password>

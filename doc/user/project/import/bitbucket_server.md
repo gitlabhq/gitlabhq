@@ -123,7 +123,7 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 ### Old method of user contribution mapping
 
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-To use this method, `importer_user_mapping` and `bitbucket_server_user_mapping` must be disabled.
+To use this method, `bitbucket_server_user_mapping` must be disabled.
 For imports to GitLab.com, you must
 use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
 

@@ -54,7 +54,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
-    push_force_frontend_feature_flag(:glql_integration, !!project&.glql_integration_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
@@ -452,6 +451,7 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
+    options[:include_subepics] = true if action_name == 'export_csv'
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }

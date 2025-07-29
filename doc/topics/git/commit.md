@@ -54,7 +54,7 @@ help you write a good commit message:
 - The commit subject must not be longer than 72 characters.
 - The commit subject must not end with a period.
 - The commit body must not contain more than 72 characters per line.
-- The commit subject or body must not contain emojis.
+- The commit subject or body must not contain emoji.
 - Commits that change 30 or more lines across at least 3 files should
   describe these changes in the commit body.
 - Use the full URLs for issues, milestones, and merge requests instead of short references,

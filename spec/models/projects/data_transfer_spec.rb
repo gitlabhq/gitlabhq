@@ -9,7 +9,7 @@ RSpec.describe Projects::DataTransfer, feature_category: :source_code_management
 
   # tests DataTransferCounterAttribute with the appropiate attributes
   it_behaves_like CounterAttribute,
-    %i[repository_egress artifacts_egress packages_egress registry_egress] do
+    %w[repository_egress artifacts_egress packages_egress registry_egress] do
     let(:model) { create(:project_data_transfer, project: project) }
   end
 

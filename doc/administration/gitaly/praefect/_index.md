@@ -2,7 +2,7 @@
 stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Gitaly Cluster
+title: Gitaly Cluster (Praefect)
 ---
 
 {{< details >}}
@@ -31,7 +31,7 @@ Gitaly can be run in a clustered configuration to:
 
 In this configuration, every Git repository can be stored on multiple Gitaly nodes in the cluster.
 
-Using a Gitaly Cluster increases fault tolerance by:
+Using Gitaly Cluster (Praefect) increases fault tolerance by:
 
 - Replicating write operations to warm standby Gitaly nodes.
 - Detecting Gitaly node failures.
@@ -39,13 +39,12 @@ Using a Gitaly Cluster increases fault tolerance by:
 
 {{< alert type="note" >}}
 
-Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
+Technical support for Gitaly Cluster (Praefect) is limited to GitLab Premium and Ultimate
 customers.
 
 {{< /alert >}}
 
-The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly
-Cluster:
+The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly Cluster (Praefect):
 
 ![GitLab application interacting with virtual Gitaly storage, which interacts with Gitaly physical storage](img/cluster_example_v13_3.png)
 
@@ -57,7 +56,7 @@ In this example:
 - The [replication factor](#replication-factor) is `3`. Three copies are maintained
   of each repository.
 
-The availability objectives for Gitaly clusters assuming a single node failure are:
+The availability objectives for Gitaly Cluster (Praefect) assuming a single node failure are:
 
 - Recovery Point Objective (RPO): Less than 1 minute.
 
@@ -82,21 +81,21 @@ RPO and RTO discussed previously.
 
 ## Comparison to Geo
 
-Gitaly Cluster and [Geo](../../geo/_index.md) both provide redundancy. However the redundancy of:
+Gitaly Cluster (Praefect) and [Geo](../../geo/_index.md) both provide redundancy. However the redundancy of:
 
-- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
-  not aware when Gitaly Cluster is used.
+- Gitaly Cluster (Praefect) provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster (Praefect) is used.
 - Geo provides [replication](../../geo/_index.md) and [disaster recovery](../../geo/disaster_recovery/_index.md) for
   an entire instance of GitLab. Users know when they are using Geo for
   [replication](../../geo/_index.md). Geo [replicates multiple data types](../../geo/replication/datatypes.md#replicated-data-types),
   including Git data.
 
-The following table outlines the major differences between Gitaly Cluster and Geo:
+The following table outlines the major differences between Gitaly Cluster (Praefect) and Geo:
 
-| Tool           | Nodes    | Locations | Latency tolerance                                                                                     | Failover                                                                    | Consistency                           | Provides redundancy for |
-|:---------------|:---------|:----------|:------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|:--------------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](configure.md#network-latency-and-connectivity) | [Automatic](configure.md#automatic-failover-and-primary-election-strategies) | [Strong](#strong-consistency) | Data storage in Git     |
-| Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../../geo/disaster_recovery/_index.md)                                 | Eventual                              | Entire GitLab instance  |
+| Tool                      | Nodes    | Locations | Latency tolerance                                                                                      | Failover                                                                     | Consistency                   | Provides redundancy for |
+|:--------------------------|:---------|:----------|:-------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|:------------------------------|:------------------------|
+| Gitaly Cluster (Praefect) | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](configure.md#network-latency-and-connectivity) | [Automatic](configure.md#automatic-failover-and-primary-election-strategies) | [Strong](#strong-consistency) | Data storage in Git     |
+| Geo                       | Multiple | Multiple  | Up to one minute                                                                                       | [Manual](../../geo/disaster_recovery/_index.md)                              | Eventual                      | Entire GitLab instance  |
 
 For more information, see:
 
@@ -108,9 +107,9 @@ For more information, see:
 Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
 management.
 
-Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
+Virtual storage with Gitaly Cluster (Praefect) can usually replace direct Gitaly storage configurations.
 However, this is at the expense of additional storage space needed to store each repository on multiple
-Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
+Gitaly nodes. The benefit of using Gitaly Cluster (Praefect) virtual storage over direct Gitaly storage is:
 
 - Improved fault tolerance, because each Gitaly node has a copy of every repository.
 - Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
@@ -133,14 +132,14 @@ As with standard Gitaly storages, virtual storages can be sharded.
 
 {{< alert type="warning" >}}
 
-The storage layout is an internal detail of Gitaly Cluster and is not guaranteed to remain stable between releases.
+The storage layout is an internal detail of Gitaly Cluster (Praefect) and is not guaranteed to remain stable between releases.
 The information here is only for informational purposes and to help with debugging. Performing changes in the
 repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
 
 {{< /alert >}}
 
-Gitaly Cluster's virtual storages provide an abstraction that looks like a single storage but actually consists of
-multiple physical storages. Gitaly Cluster has to replicate each operation to each physical storage. Operations
+Gitaly Cluster (Praefect) virtual storages provide an abstraction that looks like a single storage but actually consists of
+multiple physical storages. Gitaly Cluster (Praefect) has to replicate each operation to each physical storage. Operations
 may succeed on some of the physical storages but fail on others.
 
 Partially applied operations can cause problems with other operations and leave the system in a state it can't recover from.
@@ -159,11 +158,11 @@ recreation of the repository.
 
 These atomicity issues have caused multiple problems in the past with:
 
-- Geo syncing to a secondary site with Gitaly Cluster.
+- Geo syncing to a secondary site with Gitaly Cluster (Praefect).
 - Backup restoration.
 - Repository moves between repository storages.
 
-Gitaly Cluster provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
+Gitaly Cluster (Praefect) provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
 conflicts that could occur due to partially applied operations.
 
 ### Client-generated replica paths
@@ -174,18 +173,9 @@ follow the [hashed storage](../../repository_storage_paths.md#hashed-storage) sc
 
 ### Praefect-generated replica paths
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../../feature_flags/_index.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4809) in GitLab 15.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4941) in GitLab 15.6. Feature flag `gitaly_praefect_generated_replica_paths` removed.
-
-{{< /history >}}
-
-When Gitaly Cluster creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
-internal to Gitaly Cluster and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster and later moved
-back, the repository is assigned a new repository ID and is a different repository from Gitaly Cluster's perspective. The sequence of repository IDs
+When Gitaly Cluster (Praefect) creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
+internal to Gitaly Cluster (Praefect) and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster (Praefect) and later moved
+back, the repository is assigned a new repository ID and is a different repository from the perspective of Gitaly Cluster (Praefect). The sequence of repository IDs
 always increases, but there may be gaps in the sequence.
 
 The repository ID is used to derive a unique storage path called _replica path_ for each repository on the cluster. The replicas of
@@ -229,9 +219,9 @@ Follow the [instructions in hashed storage's documentation](../../repository_sto
 
 ### Atomicity of operations
 
-Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ensure atomicity of repository creation,
+Gitaly Cluster (Praefect) uses the PostgreSQL metadata store with the storage layout to ensure atomicity of repository creation,
 deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
-the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
+the atomicity of the metadata operations. Gitaly Cluster (Praefect) models the operations in a manner that the failing operations always leave
 the metadata consistent. The disks may contain stale state even after successful operations. This situation is expected and
 the leftover state does not interfere with future operations but may use up disk space unnecessarily until a clean up is
 performed.
@@ -264,12 +254,12 @@ The leftover state is eventually cleaned up.
 
 #### Repository moves
 
-Unlike Gitaly, Gitaly Cluster doesn't move the repositories in the storages but only virtually moves the repository by updating the
+Unlike Gitaly, Gitaly Cluster (Praefect) doesn't move the repositories in the storages but only virtually moves the repository by updating the
 relative path of the repository in the metadata store.
 
 ## Components
 
-Gitaly Cluster consists of multiple components:
+Gitaly Cluster (Praefect) consists of multiple components:
 
 - [Load balancer](configure.md#load-balancer) for distributing requests and providing fault-tolerant access to
   Praefect nodes.
@@ -281,7 +271,7 @@ Gitaly Cluster consists of multiple components:
 ## Architecture
 
 Praefect is a router and transaction manager for Gitaly, and a required
-component for running a Gitaly Cluster.
+component for running Gitaly Cluster (Praefect).
 
 ![Praefect distributing incoming connections to Gitaly cluster nodes](img/praefect_architecture_v12_10.png)
 
@@ -289,7 +279,7 @@ For more information, see [Gitaly High Availability (HA) Design](https://gitlab.
 
 ## Features
 
-Gitaly Cluster provides the following features:
+Gitaly Cluster (Praefect) provides the following features:
 
 - [Distributed reads](#distributed-reads) among Gitaly nodes.
 - [Strong consistency](#strong-consistency) of the secondary replicas.
@@ -298,12 +288,12 @@ Gitaly Cluster provides the following features:
   primary Gitaly node to secondary Gitaly nodes.
 - Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 
-Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
+Follow the [epic 1489](https://gitlab.com/groups/gitlab-org/-/epics/1489) for proposed improvements
 including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
 ### Distributed reads
 
-Gitaly Cluster supports distribution of read operations across Gitaly nodes that are configured for
+Gitaly Cluster (Praefect) supports distribution of read operations across Gitaly nodes that are configured for
 the [virtual storage](#virtual-storage).
 
 All RPCs marked with the `ACCESSOR` option are redirected to an up to date and healthy Gitaly node.
@@ -326,42 +316,42 @@ You can [monitor distribution of reads](monitoring.md) by using Prometheus.
 
 ### Strong consistency
 
-Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
+Gitaly Cluster (Praefect) provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
 replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.
 
 Strong consistency is the primary replication method. A subset of operations still use replication jobs
 (eventual consistency) instead of strong consistency. Refer to the
 [strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189) for more information.
 
-If strong consistency is unavailable, Gitaly Cluster guarantees eventual consistency. In this case. Gitaly Cluster
-replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
+If strong consistency is unavailable, Gitaly Cluster (Praefect) guarantees eventual consistency. In this case,
+Gitaly Cluster (Praefect) replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
 
 For more information on monitoring strong consistency, see
 [Monitoring Gitaly Cluster (Praefect)](monitoring.md).
 
 ### Replication factor
 
-Replication factor is the number of copies Gitaly Cluster maintains of a given repository. A higher
+Replication factor is the number of copies Gitaly Cluster (Praefect) maintains of a given repository. A higher
 replication factor:
 
 - Offers better redundancy and distribution of read workload.
 - Results in higher storage cost.
 
-By default, Gitaly Cluster replicates repositories to every storage in a
+By default, Gitaly Cluster (Praefect) replicates repositories to every storage in a
 [virtual storage](#virtual-storage).
 
 For configuration information, see [Configure replication factor](configure.md#configure-replication-factor).
 
-## Upgrade Gitaly Cluster
+## Upgrade Gitaly Cluster (Praefect)
 
-To upgrade a Gitaly Cluster, follow the documentation for
+To upgrade a Gitaly Cluster (Praefect), follow the documentation for
 [zero-downtime upgrades](../../../update/zero_downtime.md).
 
-## Downgrade Gitaly Cluster to a previous version
+## Downgrade Gitaly Cluster (Praefect) to a previous version
 
-If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted.
+If you need to roll back a Gitaly Cluster (Praefect) to an earlier version, some Praefect database migrations may need to be reverted.
 
-To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
+To downgrade a Gitaly Cluster (Praefect), assuming multiple Praefect nodes:
 
 1. Stop the Praefect service on all Praefect nodes:
 
@@ -396,81 +386,81 @@ To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
    gitlab-ctl start praefect
    ```
 
-## Migrate to Gitaly Cluster
+## Migrate to Gitaly Cluster (Praefect)
 
 {{< alert type="warning" >}}
 
-Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
+Some [known issues](#known-issues) exist in Gitaly Cluster (Praefect). Review the following information before you continue.
 
 {{< /alert >}}
 
-Before migrating to Gitaly Cluster:
+Before migrating to Gitaly Cluster (Praefect):
 
-- Review [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster).
+- Review [Before deploying Gitaly Cluster (Praefect)](#before-deploying-gitaly-cluster-praefect).
 - Upgrade to the latest possible version of GitLab, to take advantage of improvements and bug fixes.
 
-To migrate to Gitaly Cluster:
+To migrate to Gitaly Cluster (Praefect):
 
 1. Create the required storage. Refer to
    [repository storage recommendations](configure.md#repository-storage-recommendations).
-1. Create and configure [Gitaly Cluster](configure.md).
+1. Create and configure [Gitaly Cluster (Praefect)](configure.md).
 1. Configure the existing Gitaly instance [to use TCP](configure.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
 1. [Move the repositories](../../operations/moving_repositories.md#moving-repositories). To migrate to
-   Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
+   Gitaly Cluster (Praefect), existing repositories stored outside Gitaly Cluster (Praefect) must be moved. There is no
    automatic migration, but the moves can be scheduled with the GitLab API.
 
 Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](../configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
-## Migrate off Gitaly Cluster
+## Migrate off Gitaly Cluster (Praefect)
 
-If the limitations and tradeoffs of Gitaly Cluster are found to be not suitable for your environment, you can Migrate
-off Gitaly Cluster to a sharded Gitaly instance:
+If the limitations and tradeoffs of Gitaly Cluster (Praefect) are found to be not suitable for your environment, you can
+migrate off Gitaly Cluster (Praefect) to a sharded Gitaly instance:
 
 1. Create and configure a new [Gitaly server](../configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../../operations/moving_repositories.md#moving-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
 
-## Before deploying Gitaly Cluster
+## Before deploying Gitaly Cluster (Praefect)
 
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-Before deploying Gitaly Cluster, see:
+Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+Before deploying Gitaly Cluster (Praefect), see:
 
 - Existing [known issues](#known-issues).
 - [Snapshot backup and recovery](#snapshot-backup-and-recovery).
 - [Configuration guidance](../configure_gitaly.md) and [Repository storage options](../../repository_storage_paths.md) to make
-  sure that Gitaly Cluster is the best setup for you.
+  sure that Gitaly Cluster (Praefect) is the best setup for you.
 
-If you have not yet migrated to Gitaly Cluster, you have two options:
+If you have not yet migrated to Gitaly Cluster (Praefect), you have two options:
 
 - A sharded Gitaly instance.
-- Gitaly Cluster.
+- Gitaly Cluster (Praefect).
 
 Contact your Customer Success Manager or customer support if you have any questions.
 
 ### Known issues
 
-The following table outlines current known issues impacting the use of Gitaly Cluster. For
+The following table outlines current known issues impacting the use of Gitaly Cluster (Praefect). For
 the current status of these issues, refer to the referenced issues and epics.
 
-| Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
-|:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
-| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default. |
-| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
-| Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
-| Limitations when running in Kubernetes, Amazon ECS, or similar | Praefect (Gitaly Cluster) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127). | Use our [reference architectures](../../reference_architectures/_index.md). |
+| Issue                                                                                                 | Summary                                                                                                                                                                                                                                    | How to avoid                                                                                                                                                                                                                                                                                                                                                                                                               |
+|:------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Gitaly Cluster (Praefect) + Geo - Issues retrying failed syncs                                        | If Gitaly Cluster (Praefect) is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default.                                                                                                                                                                                                           |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation.                                                                                                          | Make sure the Praefect database is up and running with all migrations completed (For example: `sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
+| Restoring a Gitaly Cluster (Praefect) node from a snapshot in a running cluster                       | Because the Gitaly Cluster (Praefect) runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data                                          | Don't restore a single Gitaly Cluster (Praefect) node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster (Praefect) nodes at the same time.<br/>3. Take a database dump of the Praefect database.                                                                                              |
+| Limitations when running in Kubernetes, Amazon ECS, or similar                                        | Gitaly Cluster (Praefect) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).                                                                     | Use our [reference architectures](../../reference_architectures/_index.md).                                                                                                                                                                                                                                                                                                                                                |
 
 ### Snapshot backup and recovery
 
-Gitaly Cluster does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
+Gitaly Cluster (Praefect) does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
 during a restore, you should use the [official backup and restore Rake tasks](../backup_restore/../_index.md).
 
 The [incremental backup method](../../backup_restore/backup_gitlab.md#incremental-repository-backups)
-can be used to speed up Gitaly Cluster backups.
+can be used to speed up Gitaly Cluster (Praefect) backups.
 
 If you are unable to use either method, contact customer support for restoration help.
 
-### What to do if you are on Gitaly Cluster experiencing an issue or limitation
+### What to do if you are on Gitaly Cluster (Praefect) experiencing an issue or limitation
 
 Contact customer support for immediate help in restoration or recovery.

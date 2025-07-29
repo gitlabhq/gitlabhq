@@ -970,16 +970,16 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+      let!(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki') }
 
       it 'creates an integration from the instance-level integration' do
         expect(project.integrations.count).to eq(1)
-        expect(project.integrations.first.api_url).to eq(instance_integration.api_url)
+        expect(project.integrations.first.confluence_url).to eq(instance_integration.confluence_url)
         expect(project.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
       context 'with an active group-level integration' do
-        let!(:group_integration) { create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/') }
+        let!(:group_integration) { create(:confluence_integration, :group, group: group, confluence_url: 'https://group.atlassian.net/wiki') }
         let!(:group) do
           create(:group).tap do |group|
             group.add_owner(user)
@@ -995,12 +995,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         it 'creates an integration from the group-level integration' do
           expect(project.integrations.count).to eq(1)
-          expect(project.integrations.first.api_url).to eq(group_integration.api_url)
+          expect(project.integrations.first.confluence_url).to eq(group_integration.confluence_url)
           expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
         context 'with an active subgroup' do
-          let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup_integration) { create(:confluence_integration, :group, group: subgroup, confluence_url: 'https://subgroup.atlassian.net/wiki') }
           let!(:subgroup) do
             create(:group, parent: group).tap do |subgroup|
               subgroup.add_owner(user)
@@ -1016,7 +1016,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
           it 'creates an integration from the subgroup-level integration' do
             expect(project.integrations.count).to eq(1)
-            expect(project.integrations.first.api_url).to eq(subgroup_integration.api_url)
+            expect(project.integrations.first.confluence_url).to eq(subgroup_integration.confluence_url)
             expect(project.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
         end

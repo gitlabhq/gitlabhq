@@ -124,6 +124,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:bridges) }
     it { is_expected.to have_many(:build_report_results) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
@@ -164,7 +165,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:repository_storage_moves) }
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
-    it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:rpm_repository_files).class_name('Packages::Rpm::RepositoryFile').inverse_of(:project).dependent(:destroy) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
@@ -1312,33 +1312,38 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#self_or_ancestors_archived?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:user_namespace_project) { create(:project) }
-
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project) }
     let_it_be_with_reload(:group_project) { create(:project, group: group) }
     let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     context 'when project itself is archived' do
-      it 'returns true' do
+      before do
         group_project.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent group is archived' do
-      it 'returns true' do
-        group.archive
+      before do
+        group.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent subgroup is archived' do
-      it 'returns true' do
-        subgroup.archive
+      before do
+        subgroup.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
       end
     end
@@ -1352,6 +1357,100 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
         expect(user_namespace_project.self_or_ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when namespace_settings_with_ancestors_inherited_settings is preload' do
+      context 'when project itself is archived' do
+        before do
+          group_project.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before do
+          group.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent subgroup is archived' do
+        before do
+          subgroup.update!(archived: true)
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns true' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when neither project nor any ancestor group is archived' do
+        before do
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns false' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe '#ancestors_archived?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user_namespace_project) { create(:project) }
+
+    let_it_be_with_reload(:group_project) { create(:project, group: group) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
+
+    context 'when project itself is archived' do
+      it 'returns false' do
+        group_project.update!(archived: true)
+
+        expect(group_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project is not archived but parent group is archived' do
+      it 'returns true' do
+        group.archive
+
+        expect(group_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when project is not archived but parent subgroup is archived' do
+      it 'returns true' do
+        subgroup.archive
+
+        expect(subgroup_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when neither project nor any ancestor group is archived' do
+      it 'returns false' do
+        expect(subgroup_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project and any its ancestor are not archived' do
+      it 'returns false' do
+        expect(user_namespace_project.ancestors_archived?).to eq(false)
       end
     end
   end
@@ -2974,10 +3073,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '.include_integration' do
     it 'avoids n + 1', :aggregate_failures do
-      create(:prometheus_integration)
-      run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
+      create(:confluence_integration)
+      run_test = -> { described_class.include_integration(:confluence_integration).map(&:confluence_integration) }
       control = ActiveRecord::QueryRecorder.new { run_test.call }
-      create(:prometheus_integration)
+      create(:confluence_integration)
 
       expect(run_test.call.count).to eq(2)
       expect { run_test.call }.not_to exceed_query_limit(control)
@@ -7525,8 +7624,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'with disabled integrations' do
       before do
-        allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover teamcity])
-        allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+        allow(Integration).to receive(:available_integration_names).and_return(%w[zentao pushover teamcity])
+        allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
       end
 
       it 'returns only enabled integrations sorted' do
@@ -7554,19 +7653,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#find_or_initialize_integration' do
     it 'avoids N+1 database queries' do
-      allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover])
+      allow(Integration).to receive(:available_integration_names).and_return(%w[asana pushover])
 
-      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('asana') }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
 
-      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control)
+      expect { subject.find_or_initialize_integration('asana') }.not_to exceed_query_limit(control)
     end
 
     it 'returns nil if integration is disabled' do
-      allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+      allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
 
-      expect(subject.find_or_initialize_integration('prometheus')).to be_nil
+      expect(subject.find_or_initialize_integration('zentao')).to be_nil
     end
 
     it 'returns nil if integration does not exist' do
@@ -7577,28 +7676,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { create(:project) }
 
       before do
-        create(:prometheus_integration, project: subject, api_url: 'https://prometheus.project.com/')
+        create(:confluence_integration, project: subject, confluence_url: 'https://project.atlassian.net/wiki')
       end
 
       it 'retrieves the integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.project.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://project.atlassian.net/wiki')
       end
     end
 
     context 'with an instance-level integration' do
       before do
-        create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
+        create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
       end
 
       it 'builds the integration from the instance integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.instance.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://instance.atlassian.net/wiki')
       end
     end
 
     context 'without an existing integration or instance-level' do
       it 'builds the integration' do
-        expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil
+        expect(subject.find_or_initialize_integration('confluence')).to be_a(::Integrations::Confluence)
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to be_nil
       end
     end
 
@@ -9448,16 +9547,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#glql_integration_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
-      let(:feature_flag) { :glql_integration }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#glql_load_on_click_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -9494,6 +9583,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'checks parent group feature flag' do
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
       let(:feature_flag) { :work_items_alpha }
+      let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#work_items_project_issues_list_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_project_issues_list_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_project_issues_list }
       let(:subject_project) { group_project }
     end
   end
@@ -10211,24 +10310,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
-    end
-  end
-
-  describe '#job_token_policies_enabled?' do
-    let_it_be(:project) { build_stubbed(:project) }
-
-    subject { project.job_token_policies_enabled? }
-
-    where(:setting_enabled) { [true, false] }
-
-    before do
-      project.clear_memoization(:job_token_policies_enabled?)
-      allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
-        :job_token_policies_enabled?).and_return(setting_enabled)
-    end
-
-    with_them do
-      it { is_expected.to eq(setting_enabled) }
     end
   end
 

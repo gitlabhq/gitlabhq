@@ -1,9 +1,0 @@
----
-name: rapid_diffs_on_mr_creation
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11559
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187955
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/539576
-milestone: '18.0'
-group: group::code review
-type: beta
-default_enabled: true

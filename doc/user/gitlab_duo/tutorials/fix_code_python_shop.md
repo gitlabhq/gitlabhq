@@ -344,7 +344,7 @@ what you're configuring and why.
 
    If you want to ask Chat what to adjust, do so in the IDE in the `setup.py`
    file, instead of in the GitLab UI. This provides Chat with
-   [the context you're working in](../../gitlab_duo_chat/_index.md#the-context-chat-is-aware-of),
+   [the context you're working in](../../gitlab_duo/context.md#gitlab-duo-chat),
    including the `setup.py` file you just created.
 
    ```plaintext

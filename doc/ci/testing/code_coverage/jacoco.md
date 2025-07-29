@@ -29,6 +29,28 @@ The JaCoCo coverage reports visualization supports:
 - [Instructions (C0 Coverage)](https://www.eclemma.org/jacoco/trunk/doc/counters.html),
   `ci` (covered instructions) in reports.
 
+Coverage information displays in the merge request diff view with these indicators:
+
+- Instructions covered (green): Lines with at least one covered instruction (`ci > 0`)
+- No instructions covered (red): Lines without any covered instructions (`ci = 0`)
+- No coverage information: Lines not included in the coverage report
+
+For example, with this report output:
+
+```xml
+<line nr="83" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="84" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="85" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="86" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="88" mi="0" ci="7" mb="0" cb="1"/>
+```
+
+The merge request diff view displays coverage as follows:
+
+![Merge request diff view showing coverage indicators with red bars for uncovered lines and green bars for covered lines.](img/jacoco_coverage_example_v18_3.png)
+
+In this example, lines 83-86 show red bars for uncovered code, line 88 shows a green bar for covered code, and lines 87, 89-90 have no coverage data.
+
 ## Add JaCoCo coverage job
 
 To configure your pipeline to generate the coverage reports, add a job to your

@@ -10,22 +10,22 @@ RSpec.describe RuboCop::Cop::Migration::AddIndex do
     end
 
     it 'registers an offense when add_index is used' do
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
         def change
           add_index :table, :column
           ^^^^^^^^^ `add_index` requires downtime, use `add_concurrent_index` instead
         end
-      PATTERN
+      RUBY
     end
   end
 
   context 'outside of migration' do
     it 'registers no offense' do
-      expect_no_offenses(<<~PATTERN)
+      expect_no_offenses(<<~RUBY)
         def change
           add_index :table, :column
         end
-      PATTERN
+      RUBY
     end
   end
 end

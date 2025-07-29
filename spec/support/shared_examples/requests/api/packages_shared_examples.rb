@@ -194,7 +194,7 @@ end
 RSpec.shared_examples 'a successful package creation' do
   it 'creates npm package with file' do
     expect { subject }
-      .to change { project.packages.count }.by(1)
+      .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
       .and change { Packages::PackageFile.count }.by(1)
       .and change { Packages::Tag.count }.by(1)
       .and change { Packages::Npm::Metadatum.count }.by(1)

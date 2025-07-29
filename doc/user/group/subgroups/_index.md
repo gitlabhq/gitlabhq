@@ -153,10 +153,10 @@ accDescr: How users become members of a subgroup - through direct, indirect, or 
     A(Direct member)
     B{{Shared member}}
     subgraph Subgroup A
-      H(1. Direct member)
-      C{{2. Inherited member}}
+      H(1#46; Direct member)
+      C{{2#46; Inherited member}}
       D{{Inherited member}}
-      E{{3. Shared member}}
+      E{{3#46; Shared member}}
     end
     A-->|Direct membership of Group A\nInherited membership of Subgroup A|C
   end

@@ -51,7 +51,7 @@ export default {
   apollo: {
     job: {
       query: getJobQuery,
-      pollInterval: 10000,
+      pollInterval: 30000,
       variables() {
         return {
           fullPath: this.projectPath,

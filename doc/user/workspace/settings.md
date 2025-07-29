@@ -17,7 +17,7 @@ your Kubernetes cluster. These settings control:
 
 ## Set up a basic workspace configuration
 
-To set up a basic Workspace configuration:
+To set up a basic workspace configuration:
 
 1. Open your configuration YAML file.
 1. Add these minimum required settings:

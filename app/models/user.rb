@@ -34,8 +34,10 @@ class User < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
   include Gitlab::InternalEventsTracking
+  include SafelyChangeColumnDefault
 
-  ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
+  columns_changing_default :organization_id
+
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
@@ -280,7 +282,6 @@ class User < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user # deprecated
   has_many :organization_user_details, class_name: 'Organizations::OrganizationUserDetail', inverse_of: :user
 
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
@@ -453,7 +454,6 @@ class User < ApplicationRecord
     :pinned_nav_items, :pinned_nav_items=,
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
-    :home_organization, :home_organization_id, :home_organization_id=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
@@ -477,9 +477,12 @@ class User < ApplicationRecord
   delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
-  delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
+  delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
+  delegate :email_otp_required_after, :email_otp_required_after=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_at, :email_otp_last_sent_at=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_to, :email_otp_last_sent_to=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -2105,21 +2108,6 @@ class User < ApplicationRecord
       end
   end
 
-  def runner_available?(runner)
-    runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
-
-    # NOTE: This is a workaround to the fact that `ci_available_group_runners` does not return the group runners that the
-    # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
-    # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
-    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
-    # and that would get used by `ci_available_group_runners`, but that would require deeper changes
-    # from the ~"group::authorization" team.
-    # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
-    return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
-
-    ci_available_runners.include?(runner)
-  end
-
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
     group_email = if notification_settings.loaded?
@@ -2188,7 +2176,7 @@ class User < ApplicationRecord
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       params = { state: 'opened', non_archived: true }
 
       if merge_request_dashboard_enabled?
@@ -2197,7 +2185,19 @@ class User < ApplicationRecord
         params[:assignee_id] = id
       end
 
-      MergeRequestsFinder.new(self, params).execute.count
+      begin
+        MergeRequestsFinder.new(self, params).execute.count
+      # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Expensive query can throw 500 error, temporary while the query gets improved
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
+        # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
+        Gitlab::AppLogger.error(
+          message: 'Timeout counting assigned merge requests',
+          user_id: id,
+          error: e.message
+        )
+
+        nil
+      end
     end
   end
 
@@ -2941,6 +2941,14 @@ class User < ApplicationRecord
   end
 
   def ci_available_group_runners
+    # NOTE: `ci_available_group_runners` does not return the group runners that the user has access to in group A, when
+    # the user is owner of group B and group B has been invited as owner to group A.
+    # Instead it only returns group runners that belong to a group that the user is a direct owner of.
+    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
+    # and that would get used by `ci_available_group_runners`, but that would require deeper changes from the
+    # ~"group::authorization" team.
+    # NOTE: Issue captured in https://gitlab.com/gitlab-org/gitlab/-/issues/549985
+
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)

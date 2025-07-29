@@ -319,6 +319,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   id: 'new_issue',
                   title: 'New issue',
                   href: "/#{project.path_with_namespace}/-/issues/new",
+                  component: 'create_new_work_item_modal',
                   data: {
                     track_action: 'click_link_new_issue',
                     track_label: 'plus_menu_dropdown',
@@ -434,6 +435,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               id: 'new_issue',
               title: 'New issue',
               href: "/#{project.path_with_namespace}/-/issues/new",
+              component: 'create_new_work_item_modal',
               data: {
                 track_action: 'click_link_new_issue',
                 track_label: 'plus_menu_dropdown',

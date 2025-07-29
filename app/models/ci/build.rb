@@ -84,7 +84,15 @@ module Ci
       inverse_of: :job
     # rubocop:enable Cop/ActiveRecordDependent
 
+    has_many :inputs,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobInput',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
+
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
+
     has_many :job_annotations,
       ->(build) { in_partition(build) },
       class_name: 'Ci::JobAnnotation',
@@ -167,12 +175,6 @@ module Ci
         pipeline: :project,
         user: [:user_preference, :user_detail, :followees, :followers]
       )
-    end
-
-    # TODO: Remove this scope when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-    scope :with_exposed_artifacts, -> do
-      joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
-        .includes(:metadata, :job_artifacts_metadata)
     end
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }

@@ -621,16 +621,6 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
         it 'does not find anything' do
           is_expected.to be_empty
         end
-
-        context 'when feature flag "filter_blob_path" is disabled' do
-          before do
-            stub_feature_flags(filter_blob_path: false)
-          end
-
-          it 'ignores requested blob path' do
-            is_expected.to contain_exactly(merge_request_1)
-          end
-        end
       end
     end
 

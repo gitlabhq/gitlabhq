@@ -756,44 +756,4 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       it { is_expected.to be true }
     end
   end
-
-  describe '#ensure_organization_id' do
-    context 'with group runner' do
-      let(:runner) { build(:ci_runner, :group, groups: [group]) }
-      let(:runner_machine) { build(:ci_runner_machine, runner: runner) }
-
-      context 'when organization_id is not present' do
-        before do
-          runner_machine.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner_machine.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from runner on save', :aggregate_failures do
-          expect { runner_machine.save! }
-            .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
-        end
-      end
-    end
-
-    context 'with project runner' do
-      let(:runner) { build(:ci_runner, :project, projects: [project]) }
-      let(:runner_machine) { build(:ci_runner_machine, runner: runner) }
-
-      context 'when organization_id is not present' do
-        before do
-          runner_machine.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner_machine.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from runner on save', :aggregate_failures do
-          expect { runner_machine.save! }
-            .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
-        end
-      end
-    end
-  end
 end

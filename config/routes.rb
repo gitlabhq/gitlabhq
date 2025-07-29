@@ -31,6 +31,8 @@ InitializerConnections.raise_if_new_database_connection do
         tokens: 'oauth/tokens'
     end
     put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
+    get '/.well-known/oauth-protected-resource' => 'oauth/protected_resource_metadata#show', as: :oauth_protected_resource_metadata
+    post '/oauth/register(.:format)' => 'oauth/dynamic_registrations#create', as: :oauth_register
 
     draw :oauth
 
@@ -46,6 +48,7 @@ InitializerConnections.raise_if_new_database_connection do
     match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
     match '/oauth/discovery/keys' => 'jwks#keys', via: :options
     match '/.well-known/openid-configuration' => 'jwks#provider', via: :options
+    match '/.well-known/oauth-protected-resource' => 'oauth_protected_resource_metadata#show', via: :options
     match '/.well-known/webfinger' => 'jwks#webfinger', via: :options
 
     match '/oauth/token' => 'oauth/tokens#create', via: :options
@@ -59,7 +62,7 @@ InitializerConnections.raise_if_new_database_connection do
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
       Gitlab.ee do
         resource :welcome, only: [:show, :update], controller: 'welcome'
-        resource :trial_welcome, only: [:new], controller: 'trial_welcome'
+        resource :trial_welcome, only: [:new, :create], controller: 'trial_welcome'
         resource :company, only: [:new, :create], controller: 'company'
         resources :groups, only: [:new, :create]
       end
@@ -85,6 +88,8 @@ InitializerConnections.raise_if_new_database_connection do
 
     # Terraform service discovery
     get '.well-known/terraform.json' => 'terraform/services#index', as: :terraform_services
+
+    draw :organizations
 
     # Begin of the /-/ scope.
     # Use this scope for all new global routes.
@@ -170,7 +175,6 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :operations
       draw :jira_connect
-      draw :organizations
 
       Gitlab.ee do
         draw 'remote_development/resources'

@@ -14,14 +14,17 @@ module RuboCop
           "Suggest to use `#{ivar}.empty?` to replace `#{ivar}.blank?`"
         end
 
+        # @!method exists_match(node)
         def_node_matcher :exists_match, <<~PATTERN
           (send (ivar $_) :exists?)
         PATTERN
 
+        # @!method present_match(node)
         def_node_matcher :present_match, <<~PATTERN
           (send (ivar $_) :present?)
         PATTERN
 
+        # @!method blank_match(node)
         def_node_matcher :blank_match, <<~PATTERN
           (send (ivar $_) :blank?)
         PATTERN

@@ -17,7 +17,7 @@ RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: 
 
     context 'when user can create project runner' do
       before do
-        allow(view).to receive(:can?).with(user, :create_runner, project).and_return(true)
+        allow(view).to receive(:can?).with(user, :create_runners, project).and_return(true)
       end
 
       it 'renders the New project runner button' do
@@ -29,7 +29,7 @@ RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: 
 
     context 'when user cannot create project runner' do
       before do
-        allow(view).to receive(:can?).with(user, :create_runner, project).and_return(false)
+        allow(view).to receive(:can?).with(user, :create_runners, project).and_return(false)
       end
 
       it 'does not render the New project runner button' do

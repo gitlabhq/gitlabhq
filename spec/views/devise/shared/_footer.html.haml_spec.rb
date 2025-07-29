@@ -23,7 +23,7 @@ RSpec.describe 'devise/shared/_footer', feature_category: :system_access do
     it { is_expected.to have_link(_('Help'), href: help_path) }
   end
 
-  it { is_expected.to have_link(_('About GitLab'), href: ApplicationHelper.promo_url) }
+  it { is_expected.to have_link(_('About GitLab'), href: promo_url) }
   it { is_expected.to have_link(_('GitLab community forum'), href: ApplicationHelper.community_forum) }
 
   context 'when one trust is enabled' do

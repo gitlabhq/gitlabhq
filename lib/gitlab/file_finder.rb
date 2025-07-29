@@ -34,6 +34,8 @@ module Gitlab
       files = query.filter_results(files) if query.filters.any?
 
       files
+    rescue Gitlab::Git::Repository::NoRepository
+      []
     end
 
     private

@@ -30,7 +30,7 @@ For [client-side state management](state_management.md) in Vue, depending on the
 we use:
 
 - [Apollo](https://www.apollographql.com/) (default choice for applications relying on [GraphQL](graphql.md))
-- [Pinia](pinia.md) (in [pilot phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279))
+- [Pinia](pinia.md)
 - Stateful components.
 
 [Vuex is deprecated](vuex.md) and you should [migrate away from it](migrating_from_vuex.md) whenever possible.

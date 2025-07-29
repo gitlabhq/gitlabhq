@@ -294,6 +294,7 @@ module Types
     field :statistics_details_paths, Types::ProjectStatisticsRedirectType,
       null: true,
       description: 'Redirects for Statistics of the project.',
+      scopes: [:api, :read_api, :ai_workflows],
       calls_gitaly: true
 
     field :repository, Types::RepositoryType,

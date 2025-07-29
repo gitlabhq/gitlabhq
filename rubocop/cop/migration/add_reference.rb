@@ -59,7 +59,7 @@ module RuboCop
         def index_missing?(node)
           opts = node.children.last
 
-          return true if opts && opts.type == :hash
+          return true if opts && opts.hash_type?
 
           index_present = false
 

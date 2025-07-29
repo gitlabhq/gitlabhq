@@ -7,7 +7,11 @@ FactoryBot.define do
     package_type { :composer }
 
     transient do
-      sha { project.repository.find_branch('master').target }
+      sha do
+        project&.repository&.find_branch('master')&.target || OpenSSL::Digest.hexdigest('SHA1', SecureRandom.hex)
+      rescue Gitlab::Git::Repository::NoRepository
+        OpenSSL::Digest.hexdigest('SHA1', SecureRandom.hex)
+      end
       json { { name: name, version: version } }
     end
 

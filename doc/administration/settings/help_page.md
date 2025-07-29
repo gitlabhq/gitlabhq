@@ -21,7 +21,7 @@ You can add a help message, which is shown at the top of the GitLab `/help` page
 <https://gitlab.com/help>):
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
 1. In **Additional text to show on the Help page**, enter the information you want to display on `/help`.
 1. Select **Save changes**.
@@ -51,7 +51,7 @@ To add a help message to the sign-in page, [customize your sign-in and register 
 GitLab marketing-related entries are occasionally shown on the Help page. To hide these entries:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
 1. Select the **Hide marketing-related entries from the Help page** checkbox.
 1. Select **Save changes**.
@@ -60,11 +60,11 @@ GitLab marketing-related entries are occasionally shown on the Help page. To hid
 
 You can specify a custom URL to which users are directed when they:
 
-- Select **Help > Support**.
+- Select **Help** > **Support**.
 - Select **See our website for help** on the Help page.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
 1. In the **Support page URL** field, enter the URL.
 1. Select **Save changes**.
@@ -74,7 +74,7 @@ You can specify a custom URL to which users are directed when they:
 You can redirect all `/help` links to a destination that meets the [necessary requirements](#destination-requirements).
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
 1. In the **Documentation pages URL** field, enter the URL.
 1. Select **Save changes**.

@@ -148,6 +148,9 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
     no_matching_needed_files = (
       [
         '.byebug_history',
+        '.devfile.yaml',
+        '.devfile/ci_runner.yaml',
+        '.devfile/search.yaml',
         '.editorconfig',
         '.eslintcache',
         '.git-blame-ignore-revs',

@@ -13,7 +13,6 @@ describe('google_cloud/gcp_regions/list', () => {
       const propsData = {
         list: [],
         createUrl: '#create-url',
-        emptyIllustrationUrl: '#empty-illustration-url',
       };
       wrapper = mount(GcpRegionsList, { propsData });
     });
@@ -42,7 +41,6 @@ describe('google_cloud/gcp_regions/list', () => {
       const propsData = {
         list: [{}, {}, {}],
         createUrl: '#create-url',
-        emptyIllustrationUrl: '#empty-illustration-url',
       };
       wrapper = mount(GcpRegionsList, { propsData });
     });

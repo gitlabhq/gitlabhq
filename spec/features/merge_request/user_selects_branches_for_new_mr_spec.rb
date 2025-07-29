@@ -127,28 +127,6 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     it_behaves_like 'Rapid Diffs application'
   end
 
-  context 'without rapid diffs' do
-    before do
-      stub_feature_flags(rapid_diffs: false)
-    end
-
-    it 'allows to change the diff view' do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
-
-      click_link 'Changes'
-
-      expect(page).to have_css('a.btn.selected', text: 'Inline')
-      expect(page).not_to have_css('a.btn.selected', text: 'Side-by-side')
-
-      click_link 'Side-by-side'
-
-      within '.merge-request' do
-        expect(page).not_to have_css('a.btn.selected', text: 'Inline')
-        expect(page).to have_css('a.btn.selected', text: 'Side-by-side')
-      end
-    end
-  end
-
   it 'does not allow non-existing branches' do
     visit project_new_merge_request_path(project, merge_request: { target_branch: 'non-exist-target', source_branch: 'non-exist-source' })
 

@@ -9,7 +9,7 @@ module ClickHouse
   # Usage:
   #
   # connection = ClickHouse::Connection.new(:main)
-  # builder = ClickHouse::QueryBuilder.new('event_authors')
+  # builder = ClickHouse::Client::QueryBuilder.new('event_authors')
   # iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
   # iterator.each_batch(column: :author_id, of: 100000) do |scope|
   #   puts scope.to_sql
@@ -19,7 +19,7 @@ module ClickHouse
   # If your database table structure is optimized for a specific filter, you could scan smaller
   # part of the table by adding more condition to the query builder. Example:
   #
-  # builder = ClickHouse::QueryBuilder.new('event_authors').where(type: 'some_type')
+  # builder = ClickHouse::Client::QueryBuilder.new('event_authors').where(type: 'some_type')
   class Iterator
     # rubocop: disable CodeReuse/ActiveRecord -- this is a ClickHouse query builder class usin Arel
     def initialize(query_builder:, connection:, min_value: nil, min_max_strategy: :min_max)

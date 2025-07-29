@@ -28,7 +28,7 @@ vulnerabilities appear in your base images or operating system's packages, Conta
 provides a remediation path for those that it can.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+  For an overview, see [Container Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Container Scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 - For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/_index.md).
 
@@ -615,6 +615,12 @@ For details on saving and transporting Docker images as a file, see the Docker d
 
 #### Set container scanning CI/CD variables to use local container scanner analyzers
 
+{{< alert type="note" >}}
+
+The methods described here apply to `container_scanning` jobs that are defined in your `.gitlab-ci.yml` file. These methods do not work for the Container Scanning for Registry feature, which is managed by a bot and does not use the `.gitlab-ci.yml` file. To configure automatic Container Scanning for Registry in an offline environment, [define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments) instead.
+
+{{< /alert >}}
+
 1. [Override the container scanning template](#overriding-the-container-scanning-template) in your `.gitlab-ci.yml` file to refer to the Docker images hosted on your local Docker container registry:
 
    ```yaml
@@ -938,6 +944,24 @@ To enable container scanning for the GitLab Container Registry:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
+
+### Use with offline or air-gapped environments
+
+To use Container Scanning for Registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
+
+Instead, you must override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD variable in the GitLab UI. The dynamically-created scanning job inherits variables defined in the UI. You can set the variable at the project, group, or instance level.
+
+To configure a custom scanner image:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings** > **CI/CD**.
+1. Expand the **Variables** section.
+1. Select **Add variable** and fill in the details:
+   - Key: `CS_ANALYZER_IMAGE`
+   - Value: The full URL to your mirrored container scanning image. For example, `my.local.registry:5000/analyzers/container-scanning:7`.
+1. Select **Add variable**.
+
+The GitLab Security Policy Bot will now use the specified image when it triggers a scan.
 
 ## Vulnerabilities database
 

@@ -8,6 +8,7 @@ import {
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
@@ -24,6 +25,7 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -42,6 +44,7 @@ import {
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
@@ -128,6 +131,7 @@ export default {
     WorkItemNotes,
     WorkItemRelationships,
     WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
+    WorkItemLinkedResources: () => import('~/work_items/components/work_item_linked_resources.vue'),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -139,6 +143,7 @@ export default {
     WorkItemVulnerabilities: () =>
       import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
     WorkItemMetadataProvider,
+    DuoWorkflowAction,
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
   inject: ['groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
@@ -172,11 +177,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     isBoard: {
       type: Boolean,
@@ -254,7 +254,6 @@ export default {
         if (!res.data) {
           return;
         }
-        this.activeChildItem = null;
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
@@ -277,20 +276,6 @@ export default {
         skip() {
           return !this.workItem?.id;
         },
-      },
-    },
-    allowedChildTypes: {
-      query: getAllowedWorkItemChildTypes,
-      variables() {
-        return {
-          id: this.workItem.id,
-        };
-      },
-      skip() {
-        return !this.workItem?.id;
-      },
-      update(data) {
-        return findHierarchyWidgetDefinition(data.workItem)?.allowedChildTypes?.nodes || [];
       },
     },
     workspacePermissions: {
@@ -418,6 +403,9 @@ export default {
     },
     workItemErrorTracking() {
       return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
+    },
+    workItemLinkedResources() {
+      return this.findWidget(WIDGET_TYPE_LINKED_RESOURCES)?.linkedResources.nodes ?? [];
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -586,11 +574,29 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
-    commentTemplatePaths() {
-      // Fallback to the newCommentTemplatePaths prop if field from work item is null/undefined or empty
-      return this.workItem?.commentTemplatesPaths?.length
-        ? this.workItem.commentTemplatesPaths
-        : this.newCommentTemplatePaths;
+    isDuoWorkflowEnabled() {
+      return this.glFeatures.aiDuoAgentIssueToMr;
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.workItemProjectId);
+    },
+    agentPrivileges() {
+      return [1, 2, 5];
+    },
+    agentInvokePath() {
+      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
+    },
+  },
+  watch: {
+    'workItem.id': {
+      immediate: true,
+      async handler(newId) {
+        // Update allowedChildTypes using manual query instead of a smart query to prevent cache inconsistency (issue: #521771)
+        const { workItem } = await this.fetchAllowedChildTypes(newId);
+        this.allowedChildTypes = workItem
+          ? findHierarchyWidgetDefinition(workItem)?.allowedChildTypes?.nodes
+          : [];
+      },
     },
   },
   beforeDestroy() {
@@ -601,6 +607,20 @@ export default {
     document.addEventListener('actioncable:reconnected', this.refetchIfStale);
   },
   methods: {
+    async fetchAllowedChildTypes(workItemId) {
+      if (!workItemId) return { workItem: null };
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getAllowedWorkItemChildTypes,
+          variables: { id: workItemId },
+        });
+
+        return data;
+      } catch (error) {
+        return { workItem: null };
+      }
+    },
     handleWorkItemCreated() {
       this.$apollo.queries.workItem.refetch();
     },
@@ -1123,6 +1143,19 @@ export default {
                     @emoji-updated="$emit('work-item-emoji-updated', $event)"
                   />
                   <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
+                    <div class="sm:gl-ml-auto">
+                      <duo-workflow-action
+                        v-if="isDuoWorkflowEnabled"
+                        :project-id="projectIdAsNumber"
+                        :title="__('Generate MR with Duo')"
+                        :hover-message="__('Generate merge request with Duo')"
+                        :goal="workItem.webUrl"
+                        workflow-definition="issue_to_merge_request"
+                        :agent-privileges="agentPrivileges"
+                        :duo-workflow-invoke-path="agentInvokePath"
+                        size="medium"
+                      />
+                    </div>
                     <gl-intersection-observer
                       v-if="showUploadDesign"
                       @appear="isDesignUploadButtonInViewport = true"
@@ -1158,7 +1191,7 @@ export default {
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
-                  :class="{ 'gl-top-11': isDrawer }"
+                  :class="{ 'gl-top-5': isDrawer }"
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"
@@ -1172,6 +1205,11 @@ export default {
                 v-if="workItemErrorTracking.identifier"
                 :full-path="workItemFullPath"
                 :iid="iid"
+              />
+
+              <work-item-linked-resources
+                v-if="workItemLinkedResources.length"
+                :linked-resources="workItemLinkedResources"
               />
 
               <design-widget
@@ -1272,7 +1310,7 @@ export default {
                 :can-create-note="canCreateNote"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="workItem.confidential"
-                :new-comment-template-paths="commentTemplatePaths"
+                :new-comment-template-paths="workItem.commentTemplatesPaths"
                 class="gl-pt-5"
                 :use-h2="!isModalOrDrawer"
                 :small-header-style="isModal"
@@ -1295,7 +1333,6 @@ export default {
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"
-        :new-comment-template-paths="commentTemplatePaths"
         click-outside-exclude-selector=".issuable-list"
         @close="activeChildItem = null"
         @workItemDeleted="deleteChildItem"

@@ -6,7 +6,6 @@ export async function copyGLQLNodeAsGFM(el) {
       // eslint-disable-next-line no-param-reassign
       time.textContent = time.title;
     });
-    [...e.querySelectorAll('.gl-new-dropdown')].forEach((dropdown) => dropdown.remove());
   };
 
   const div = document.createElement('div');

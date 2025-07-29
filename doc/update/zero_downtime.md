@@ -43,7 +43,7 @@ The zero-downtime upgrade process has the following requirements:
   - Internal Load Balancer configured for any PgBouncer and Praefect components with TCP health checks enabled.
   - HA mechanisms configured for the Consul, Postgres, Redis components if present.
     - Any of these components that are not deployed in a HA fashion need to be upgraded separately with downtime.
-    - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814). For any other databases, such as the [Praefect database](#praefect-gitaly-cluster), a third party database solution is required to achieve HA and subsequently to avoid downtime.
+    - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814). For any other databases, such as the [Praefect database](#gitaly-cluster-praefect), a third party database solution is required to achieve HA and subsequently to avoid downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use post-deployment migrations.
 - [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). Support is available with the [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html) but there are [known limitations](https://docs.gitlab.com/operator/#known-issues) with this deployment method and as such it's not covered in this guide at this time.
@@ -60,7 +60,7 @@ In addition to the previous, be aware of the following considerations:
   - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the previous conditions are met), it's required that you [wait for background migrations to complete](background_migrations.md) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
     `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](background_migrations.md).
-- Zero downtime upgrades can be performed for [Gitaly](#gitaly) when it's set up in its Cluster or Sharded setups due to a graceful reload mechanism. For the [Praefect (Gitaly Cluster)](#praefect-gitaly-cluster) component it can also be directly upgraded without downtime, however the GitLab Linux package does not offer HA and subsequently Zero Downtime support for it's database - A third party database solution is required to avoid downtime.
+- Zero downtime upgrades can be performed for [Gitaly](#gitaly) when it's set up in its Cluster or Sharded setups due to a graceful reload mechanism. For the [Gitaly Cluster (Praefect)](#gitaly-cluster-praefect) component it can also be directly upgraded without downtime, however the GitLab Linux package does not offer HA and subsequently Zero Downtime support for it's database - A third party database solution is required to avoid downtime.
 - [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
 - Zero-downtime upgrades are supported for the noted GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time is needed for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
@@ -177,9 +177,9 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-#### Praefect (Gitaly Cluster)
+#### Gitaly Cluster (Praefect)
 
-For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
+For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
 {{< alert type="note" >}}
 

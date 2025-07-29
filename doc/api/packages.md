@@ -42,10 +42,11 @@ GET /projects/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
 > **Deprecation**:
@@ -112,10 +113,11 @@ GET /groups/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated``. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
 ```
 
 > **Deprecation**:
@@ -205,7 +207,8 @@ GET /projects/:id/packages/:package_id
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
 > **Deprecation**:
@@ -287,7 +290,8 @@ GET /projects/:id/packages/:package_id/package_files
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"
 ```
 
 Example response:
@@ -366,7 +370,8 @@ GET /projects/:id/packages/:package_id/pipelines
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/pipelines"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/pipelines"
 ```
 
 Example response:
@@ -430,7 +435,9 @@ DELETE /projects/:id/packages/:package_id
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
 Can return the following status codes:
@@ -466,7 +473,9 @@ DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 | `package_file_id` | integer        | yes | ID of a package file. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files/:package_file_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files/:package_file_id"
 ```
 
 Can return the following status codes:

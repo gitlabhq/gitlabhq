@@ -9,8 +9,8 @@ title: GitLab Duo Agentic Chat
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 - LLMs: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
@@ -22,6 +22,7 @@ title: GitLab Duo Agentic Chat
 - GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
+- GitLab Duo Agentic Chat changed to beta in GitLab 18.2.
 
 {{< /history >}}
 
@@ -56,7 +57,7 @@ For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c
 
 ## Use Agentic Chat
 
-You can use Agentic Chat in the GitLab UI or in VS Code.
+You can use Agentic Chat in the GitLab UI, VS Code, or a JetBrains IDE.
 
 Prerequisites:
 
@@ -69,6 +70,7 @@ Prerequisites:
 
 To use Agentic Chat in the GitLab UI:
 
+1. Go to a project in a group that meets the prerequisites.
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
@@ -88,10 +90,11 @@ You can only use Agentic Chat in a project:
 To use Agentic Chat:
 <!-- markdownlint-disable MD044 -->
 1. In VS Code, go to **Settings > Settings**.
-1. Search for `gitlab agentic`.
-1. Under **Gitlab › Duo Agentic Chat: Enabled**, select the
-   **Enable GitLab Duo Agentic Chat** checkbox.
-1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
+1. Search for `agent platform`.
+1. Under **Gitlab › Duo Agent Platform: Enabled**, select the
+   **Enable GitLab Duo Agent Platform** checkbox.
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
 1. Select **Refresh page** if prompted.
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
@@ -111,14 +114,15 @@ To use Agentic Chat in a project, it must be:
 To use Agentic Chat:
 <!-- markdownlint-disable MD044 -->
 1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
-1. Under **Features**, select the **Enable GitLab Duo Agentic Chat** checkbox.
+1. Under **GitLab Duo Agent Platform (Beta)**, select the **Enable GitLab Duo Agent Platform** checkbox.
 1. Restart your IDE if prompted.
-1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
-#### Create custom rules
+### Create custom rules
 
 {{< history >}}
 
@@ -126,11 +130,13 @@ Conversations in Agentic Chat do not expire and are stored permanently. You cann
 
 {{< /history >}}
 
-If you have specific instructions that you want Agentic Chat to follow in every conversation, you can create custom rules.
+In VS Code or a JetBrains IDE, if you have specific instructions that you want
+Agentic Chat to follow in every conversation, you can create custom rules.
 
 Prerequisites:
 
-- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
 
 {{< alert type="note" >}}
 
@@ -138,7 +144,7 @@ Conversations that existed before you created any custom rules do not follow tho
 
 {{< /alert >}}
 
-1. Create a `.gitlab/duo/chat-rules.md` file.
+1. In your IDE workspace, create a custom rules file: `.gitlab/duo/chat-rules.md`.
 1. Enter the custom rules into the file. For example:
 
    ```markdown

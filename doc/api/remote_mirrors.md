@@ -279,7 +279,7 @@ curl --request POST \
 
 Example response:
 
-An empty response with a HTTP response code 204.
+An empty response with an HTTP response code 204.
 
 ## Delete a remote mirror
 

@@ -16,7 +16,7 @@ Use this API to interact with [CI/CD jobs](../ci/jobs/_index.md).
 
 ## List project jobs
 
-Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
+Get a list of jobs in a project.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)
 
@@ -31,10 +31,12 @@ pagination is strongly recommended when requesting consecutive pages of results.
 GET /projects/:id/jobs
 ```
 
-| Attribute | Type                           | Required | Description |
-| --------- | ------------------------------ | -------- | ----------- |
-| `id`      | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `scope`   | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
+| Attribute  | Type                           | Required | Description |
+| ---------- | ------------------------------ | -------- | ----------- |
+| `id`       | integer or string                 | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `scope`    | string, or array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
+| `order_by` | string                         | No       | Return jobs ordered by `id`. |
+| `sort`     | string                         | No       | Return jobs sorted in `asc` or `desc` order. Default is `desc`. |
 
 ```shell
 curl --globoff \

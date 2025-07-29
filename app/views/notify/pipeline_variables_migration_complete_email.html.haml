@@ -1,0 +1,17 @@
+%p
+  = s_('Notify|All projects in the %{group_name} group were checked for pipeline variables usage.').html_safe % { group_name: link_to(@group.name, @group.web_url) }
+%p
+  - if @updated_count == 1
+    = s_('Notify|1 project was not using pipeline variables. CI/CD settings were updated to prevent future pipeline variable usage.')
+  - else
+    = s_('Notify|%{updated_count} projects were not using pipeline variables. CI/CD settings were updated to prevent future pipeline variable usage.') % { updated_count: @updated_count }
+%p
+  - if @skipped_count == 0
+    = s_('Notify|All projects in this group have CI/CD setting set to prevent pipeline variable usage. 🎉')
+  - else
+    - if @skipped_count == 1
+      = s_('Notify|1 project has used pipeline variables in the past. This project\'s CI/CD settings were not updated as there is a risk the setting change would impact pipelines.')
+    - else
+      = s_('Notify|%{skipped_count} have used pipeline variables in the past. These projects\' CI/CD settings were not updated as there is a risk the setting change would impact pipelines.') % { skipped_count: @skipped_count }
+%p
+  = s_('Notify|Projects that could not be updated need manual review. You can check the documentation for more information about the pipeline variable setting migration tool.')

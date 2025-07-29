@@ -33,6 +33,7 @@ fragment MergeRequestFragment on MergeRequest {
       webUrl
       id
       name
+      username
       webPath
       avatarUrl
     }

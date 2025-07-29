@@ -29,10 +29,6 @@ export default {
       type: String,
       required: true,
     },
-    projectId: {
-      type: String,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -105,7 +101,6 @@ export default {
       :issues-path="issuesPath"
       :jira-imports="jiraImportDetails.imports"
       :jira-projects="jiraImportDetails.projects"
-      :project-id="projectId"
       :project-path="projectPath"
       @error="setAlertMessage"
     />

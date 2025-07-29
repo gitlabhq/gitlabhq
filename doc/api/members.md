@@ -31,7 +31,7 @@ in the `Gitlab::Access` module as `access_level`.
 
 ## Known issues
 
-- The `group_saml_identity` attribute is only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/_index.md).
+- The `group_saml_identity` and `group_scim_identity` attributes are only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/_index.md).
 - The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/_index.md)
   of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 

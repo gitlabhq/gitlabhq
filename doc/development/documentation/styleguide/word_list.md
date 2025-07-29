@@ -1193,6 +1193,19 @@ Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
 
 Do not use **Duo Agent Platform** by itself.
 
+## GitLab Duo Core
+
+Use **GitLab Duo Core** for the add-on. Do not use **Duo Core** by itself.
+
+You can also use **the GitLab Duo Core add-on** but omit **add-on** when you can.
+
+In marketing materials, like release posts or blogs, use
+**Premium and Ultimate with GitLab Duo** instead of **GitLab Duo Core**.
+For example:
+
+- [Blog: Unlocking AI for every GitLab Premium and Ultimate customer](https://about.gitlab.com/blog/gitlab-premium-with-duo/)
+- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](https://about.gitlab.com/releases/2025/07/17/gitlab-18-2-released/#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
+
 ## GitLab Duo Enterprise
 
 Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise** unless approved by legal.
@@ -2276,7 +2289,7 @@ Searching is different from [filtering](#filter).
 When referring to the subscription billing model:
 
 - For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
-  to a group, with some [exceptions](../../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined).
+  to a group, with some [exceptions](../../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage).
 - For GitLab Self-Managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section

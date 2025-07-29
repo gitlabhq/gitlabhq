@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'it has loose foreign keys' do
+  include LooseForeignKeysHelper
+
   let(:factory_name) { nil }
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
@@ -52,7 +54,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
     expect { model.delete }.to change { deleted_records.count }.by(1)
 
-    LooseForeignKeys::ProcessDeletedRecordsService.new(connection: connection).execute
+    process_loose_foreign_key_deletions(record: model)
 
     expect(deleted_records.where(primary_key_value: model_id).status_pending.count).to eq(0)
     expect(deleted_records.where(primary_key_value: model_id).status_processed.count).to eq(1)

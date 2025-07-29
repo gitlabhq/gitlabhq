@@ -54,6 +54,10 @@ GET http://localhost/-/health
 ```
 
 ```plaintext
+GET http://localhost/health_check
+```
+
+```plaintext
 GET http://localhost/-/readiness
 ```
 
@@ -84,6 +88,53 @@ Example response:
 ```plaintext
 GitLab OK
 ```
+
+## Comprehensive health check
+
+{{< alert type="warning" >}}
+**Do not use `/health_check` for load balancing or autoscaling.** This endpoint validates backend services (database, Redis) and will fail even when the application is functioning properly if these services are slow or unavailable. This can cause unnecessary removal of healthy application nodes from load balancers.
+{{< /alert >}}
+
+The `/health_check` endpoint performs comprehensive health checks including database connectivity, Redis availability, and other backend services. It's provided by the `health_check` gem and validates the entire application stack.
+
+Use this endpoint for:
+
+- Comprehensive application monitoring
+- Backend service health validation
+- Troubleshooting connectivity issues
+- Monitoring dashboards and alerting
+
+```plaintext
+GET /health_check
+GET /health_check/database
+GET /health_check/cache
+GET /health_check/migrations
+```
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/health_check"
+```
+
+Example response (success):
+
+```plaintext
+success
+```
+
+Example response (failure):
+
+```plaintext
+health_check failed: Unable to connect to database
+```
+
+Available checks:
+
+- `database` - Database connectivity
+- `migrations` - Database migration status
+- `cache` - Redis cache connectivity
+- `geo` (EE only) - Geo replication status
 
 ## Readiness
 

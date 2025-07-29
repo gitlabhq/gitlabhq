@@ -31,7 +31,7 @@
     "admin_runners": {
       "type": "boolean"
     },
-    "admin_security_labels": {
+    "admin_security_attributes": {
       "type": "boolean"
     },
     "admin_security_testing": {
@@ -77,6 +77,12 @@
       "type": "boolean"
     },
     "read_admin_users": {
+      "type": "boolean"
+    },
+    "read_admin_groups": {
+      "type": "boolean"
+    },
+    "read_admin_projects": {
       "type": "boolean"
     },
     "read_code": {

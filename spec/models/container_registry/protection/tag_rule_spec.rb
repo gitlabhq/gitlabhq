@@ -57,7 +57,6 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
     describe '#tag_name_pattern' do
       it { is_expected.to validate_presence_of(:tag_name_pattern) }
       it { is_expected.to validate_length_of(:tag_name_pattern).is_at_most(100) }
-      it { is_expected.to validate_uniqueness_of(:tag_name_pattern).scoped_to(:project_id) }
 
       describe 'regex validations' do
         valid_regexps = %w[master .* v.+ v10.1.* (?:v.+|master|release)]
@@ -69,6 +68,37 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
 
         invalid_regexps.each do |invalid_regexp|
           it { is_expected.not_to allow_value(invalid_regexp).for(:tag_name_pattern) }
+        end
+      end
+
+      describe 'uniqueness validations' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:tag_name_pattern) { 'v*' }
+
+        before_all do
+          create(:container_registry_protection_tag_rule, project:, tag_name_pattern:)
+        end
+
+        context 'with duplicate tag_name_pattern in the same project' do
+          subject { build(:container_registry_protection_tag_rule, project:, tag_name_pattern:) }
+
+          it 'is invalid' do
+            is_expected.to be_invalid.and have_attributes(
+              errors: match_array(['Tag name pattern has already been taken'])
+            )
+          end
+        end
+
+        context 'with duplicate tag_name_pattern in a different project' do
+          subject do
+            build(
+              :container_registry_protection_tag_rule,
+              project: build_stubbed(:project),
+              tag_name_pattern: tag_name_pattern
+            )
+          end
+
+          it { is_expected.to be_valid }
         end
       end
     end

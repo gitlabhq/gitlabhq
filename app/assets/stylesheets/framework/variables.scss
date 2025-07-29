@@ -18,7 +18,7 @@ $top-bar-z-index: 210;
 $settings-sticky-header-height: 3rem;
 $settings-sticky-header-z-index: 98;
 $settings-sticky-footer-height: 3rem;
-$settings-sticky-footer-z-index: #{$settings-sticky-header-z-index +1};
+$settings-sticky-footer-z-index: #{$settings-sticky-header-z-index + 1};
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
@@ -60,7 +60,7 @@ $spacing-scale: (
   5: #{4 * $grid-size}
 );
 
-/* Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709 */
+/* Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2792 */
 $gl-spacing-scale-48: 48 * $grid-size;
 $gl-spacing-scale-75: 75 * $grid-size;
 /* End gitlab-ui#1709 */

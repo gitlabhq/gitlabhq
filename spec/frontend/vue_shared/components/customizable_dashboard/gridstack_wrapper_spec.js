@@ -12,11 +12,8 @@ import {
 } from '~/vue_shared/components/customizable_dashboard/constants';
 import { loadCSSFile } from '~/lib/utils/css_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import {
-  parsePanelToGridItem,
-  createNewVisualizationPanel,
-} from '~/vue_shared/components/customizable_dashboard/utils';
-import { dashboard, builtinDashboard } from './mock_data';
+import { parsePanelToGridItem } from '~/vue_shared/components/customizable_dashboard/utils';
+import { dashboard, mockPanel } from './mock_data';
 
 const mockGridSetStatic = jest.fn();
 const mockGridDestroy = jest.fn();
@@ -103,21 +100,19 @@ describe('GridstackWrapper', () => {
     });
 
     it('renders a panel once it has been added', async () => {
-      const newPanel = createNewVisualizationPanel(builtinDashboard.panels[0].visualization);
-
-      expect(findPanelById(newPanel.id).exists()).toBe(false);
+      expect(findPanelById(mockPanel.id).exists()).toBe(false);
 
       wrapper.setProps({
         value: {
           ...dashboard,
-          panels: [...dashboard.panels, newPanel],
+          panels: [...dashboard.panels, mockPanel],
         },
       });
 
       await waitForPromises();
 
-      const gridItem = findGridItemContentById(newPanel.id);
-      const panel = findPanelById(newPanel.id);
+      const gridItem = findGridItemContentById(mockPanel.id);
+      const panel = findPanelById(mockPanel.id);
 
       expect(panel.element.parentElement).toBe(gridItem.element);
     });

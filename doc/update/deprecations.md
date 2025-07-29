@@ -1210,6 +1210,24 @@ configure the adherence that you require.
 In GitLab 18.6, we'll replace the compliance standards adherence dashboard with the compliance status dashboard for more accurate reporting on requirements and controls.
 
 </div>
+
+<div class="deprecation " data-milestone="18.6">
+
+### User setting to disable exact code search
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- Removal in GitLab <span class="milestone">18.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/554933).
+
+</div>
+
+The user setting to disable exact code search is now deprecated. On GitLab.com, you can no longer disable exact code search in profile preferences.
+
+Exact code search provides a better user experience and is compatible with existing search APIs. This user setting is planned for removal in GitLab 18.6 to ensure all users benefit from improved search functionality.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="18.5">

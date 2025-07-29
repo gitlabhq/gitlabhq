@@ -34,8 +34,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
-  before_action only: [:show, :diffs, :rapid_diffs, :reports] do
+  before_action only: [:index, :show] do
     push_frontend_feature_flag(:show_merge_request_status_draft, current_user)
+  end
+
+  before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_review_batch_submit, current_user)
@@ -705,8 +708,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs_page_enabled?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
-      ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
+    ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
       params[:rapid_diffs] == 'true'
   end
 

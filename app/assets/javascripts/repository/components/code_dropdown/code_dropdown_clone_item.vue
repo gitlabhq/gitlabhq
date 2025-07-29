@@ -4,10 +4,13 @@ import {
   GlDisclosureDropdownItem,
   GlFormGroup,
   GlFormInputGroup,
+  GlToast,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import Vue from 'vue';
 import { __ } from '~/locale';
 
+Vue.use(GlToast);
 export default {
   components: {
     GlDisclosureDropdownItem,
@@ -42,6 +45,11 @@ export default {
       required: true,
     },
   },
+  methods: {
+    onCopyUrl() {
+      this.$toast.show(__('Copied'));
+    },
+  },
   copyURLTooltip: __('Copy URL'),
 };
 </script>
@@ -71,6 +79,7 @@ export default {
             :data-testid="testId"
             icon="copy-to-clipboard"
             class="gl-inline-flex"
+            @click="onCopyUrl"
           />
         </template>
       </gl-form-input-group>

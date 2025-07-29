@@ -55,9 +55,6 @@ To use exact code search:
 
 You can also use exact code search in a project or group.
 
-In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
-to use [advanced search](advanced_search.md) instead.
-
 ## Available scopes
 
 Scopes describe the type of data you're searching.

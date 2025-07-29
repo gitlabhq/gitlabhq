@@ -49,6 +49,7 @@ module Git
         options = {
           change: change,
           push_options: params[:push_options],
+          gitaly_context: params[:gitaly_context],
           merge_request_branches: merge_request_branches,
           create_pipelines: under_process_limit?(change),
           execute_project_hooks: execute_project_hooks,

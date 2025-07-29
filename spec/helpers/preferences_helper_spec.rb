@@ -132,13 +132,19 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
   describe '#user_application_light_mode?' do
     context 'with a user' do
       it "returns true if user's selected light mode" do
-        stub_user(color_mode_id: 1)
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
 
         expect(helper.user_application_light_mode?).to eq true
       end
 
       it "returns false if user's selected dark mode" do
-        stub_user(color_mode_id: 2)
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
+
+        expect(helper.user_application_light_mode?).to eq false
+      end
+
+      it "returns false if user's selected auto mode" do
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
 
         expect(helper.user_application_light_mode?).to eq false
       end
@@ -148,7 +154,7 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       it 'returns false' do
         stub_user
 
-        expect(helper.user_application_light_mode?).to eq true
+        expect(helper.user_application_light_mode?).to eq false
       end
     end
   end
@@ -156,13 +162,19 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
   describe '#user_application_dark_mode?' do
     context 'with a user' do
       it "returns true if user's selected dark mode" do
-        stub_user(color_mode_id: 2)
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
 
         expect(helper.user_application_dark_mode?).to eq true
       end
 
       it "returns false if user's selected light mode" do
-        stub_user(color_mode_id: 1)
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
+
+        expect(helper.user_application_dark_mode?).to eq false
+      end
+
+      it "returns false if user's selected auto mode" do
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
 
         expect(helper.user_application_dark_mode?).to eq false
       end
@@ -177,18 +189,49 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
     end
   end
 
+  describe '#user_application_system_mode?' do
+    context 'with a user' do
+      it "returns true if user's selected auto mode" do
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
+
+        expect(helper.user_application_system_mode?).to eq true
+      end
+
+      it "returns false if user's selected light mode" do
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
+
+        expect(helper.user_application_system_mode?).to eq false
+      end
+
+      it "returns false if user's selected dark mode" do
+        stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
+
+        expect(helper.user_application_system_mode?).to eq false
+      end
+    end
+
+    context 'without a user' do
+      it 'returns true' do
+        stub_user
+
+        expect(helper.user_application_system_mode?).to eq true
+      end
+    end
+  end
+
   describe '#user_color_scheme' do
     context 'with a user' do
       it "returns user's scheme's css_class" do
         allow(helper).to receive(:current_user)
-          .and_return(double(color_scheme_id: 3, color_mode_id: 1))
+          .and_return(double(color_scheme_id: 3, color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT))
 
         expect(helper.user_color_scheme).to eq 'solarized-light'
       end
 
       it 'returns the default when id is invalid' do
         allow(helper).to receive(:current_user)
-          .and_return(double(color_scheme_id: Gitlab::ColorSchemes.count + 5, color_mode_id: 1))
+          .and_return(double(color_scheme_id: Gitlab::ColorSchemes.count + 5,
+            color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT))
 
         expect(helper.user_color_scheme)
           .to eq Gitlab::ColorSchemes.default.css_class

@@ -115,13 +115,13 @@ describe('Create work item component', () => {
     props = {},
     provide = {},
     mutationHandler = createWorkItemSuccessHandler,
+    namespaceQueryResponse = namespaceWorkItemTypesQueryResponse,
+    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
   } = {}) => {
-    const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
+    const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
-    const namespaceResponse = isGroupWorkItem
-      ? namespaceResponseCopy
-      : namespaceWorkItemTypesQueryResponse;
+    const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
     const namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
 
@@ -139,7 +139,7 @@ describe('Create work item component', () => {
       propsData: {
         fullPath: 'full-path',
         projectNamespaceFullPath: 'full-path',
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        preselectedWorkItemType,
         ...props,
       },
       provide: {
@@ -886,7 +886,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
-      expect(findFormButtons().classes('gl-items-end')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
@@ -896,7 +896,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-items-end')).toBe(false);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(false);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
@@ -953,6 +953,27 @@ describe('Create work item component', () => {
       helpText: 'These existing items have a similar title and may represent potential duplicates.',
       title: 'Similar items',
     });
+  });
+
+  it('does not show work item widgets when userPermissions.setNewWorkItemMetadata is false', async () => {
+    const namespaceQueryResponse = {
+      data: {
+        workspace: {
+          ...namespaceWorkItemTypesQueryResponse.data.workspace,
+          userPermissions: {
+            setNewWorkItemMetadata: false,
+          },
+        },
+      },
+    };
+
+    createComponent({ namespaceQueryResponse });
+    await waitForPromises();
+
+    const widgetsContainer = wrapper.findByTestId('work-item-overview-right-sidebar');
+    expect(widgetsContainer.exists()).toBe(true);
+    expect(widgetsContainer.find('strong').text()).toContain('Limited access');
+    expect(widgetsContainer.find('div').text()).toContain('Only project members can add metadata.');
   });
 
   describe('title and description query parameters', () => {

@@ -227,7 +227,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
           expect(api_response).to have_gitlab_http_status(:created)
 
-          package_file = project.packages.last.package_files.reload.last
+          package_file = ::Packages::MlModel::Package.for_projects(project).last.package_files.reload.last
           expect(package_file.file_name).to eq(saved_file_name)
           expect(package_file.package.name).to eq(model.name)
           expect(package_file.package.version).to eq("candidate_#{candidate.iid}")

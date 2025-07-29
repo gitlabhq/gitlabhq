@@ -19,7 +19,8 @@ small and manageable.
 The objective of the triage phase is to either confirm or dismiss each vulnerability. A confirmed
 vulnerability continues to the analysis phase but a dismissed vulnerability does not.
 
-Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
+Use the data contained in the [security dashboard](../security_dashboard/_index.md), the
+[security inventory](../security_inventory/_index.md), and the
 [vulnerability report](../vulnerability_report/_index.md) to help triage vulnerabilities efficiently
 and effectively.
 
@@ -66,6 +67,8 @@ Prioritize vulnerabilities according to their risk.
   to help prioritize vulnerabilities. For example, vulnerabilities in the CISA Known Exploited
   Vulnerabilities (KEV) catalogue should be analyzed and remediated as highest priority because
   these are known to have been exploited.
+- For each group, go to the **Security inventory** to visualize the assets you need to secure and to understand
+  the actions that need to be taken to improve your security posture.
 - For each group, go to the **Security dashboard** and view the **Project security status** panel. This groups
   projects by their highest-severity vulnerability. Use this grouping to prioritize triaging
   vulnerabilities in each project.

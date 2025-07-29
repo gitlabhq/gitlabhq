@@ -22,7 +22,7 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
   end
 
   before do
-    allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agents_by_agent_ids: []))
+    allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agentks_by_agent_ids: []))
   end
 
   it 'can retrieve cluster agents' do
@@ -90,7 +90,7 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
     let(:cluster_agents_fields) { [:id, query_nodes(:connections, [:connection_id, :connected_at, metadata_fields, warnings_fields])] }
 
     before do
-      allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agents_by_agent_ids: [connected_agent]))
+      allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agentks_by_agent_ids: [connected_agent]))
     end
 
     it 'can retrieve connections and agent metadata' do

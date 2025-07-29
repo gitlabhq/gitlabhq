@@ -30,7 +30,8 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
       'instance_integrations',                                  # gitlab_main_clusterwide now deprecated
       'ldap_admin_role_links',                                  # gitlab_main_clusterwide now deprecated
       'user_audit_events',                                      # gitlab_main_clusterwide now deprecated
-      'user_permission_export_upload_uploads'                   # gitlab_main_clusterwide now deprecated
+      'user_permission_export_upload_uploads',                  # gitlab_main_clusterwide now deprecated
+      'cluster_agent_migrations'                                # awaiting table removal
     ]
   end
 

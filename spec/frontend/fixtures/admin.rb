@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'Admin (GraphQL fixtures)', feature_category: :organization do
+  describe GraphQL::Query, type: :request do
+    include GraphqlHelpers
+    include JavaScriptFixturesHelpers
+
+    let_it_be(:current_user) { create(:user, :admin) }
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be(:groups) do
+      create_list(:group, 3, :with_avatar, owners: [group_owner, current_user], description: 'foo bar')
+    end
+
+    let_it_be(:project) do
+      create(:project,
+        namespace: groups.first,
+        statistics: build(
+          :project_statistics,
+          namespace: groups.first,
+          storage_size: 100.megabytes
+        )
+      )
+    end
+
+    before do
+      sign_in(current_user)
+    end
+
+    describe 'groups' do
+      base_input_path = 'admin/groups/index/graphql/queries/'
+      base_output_path = 'graphql/admin/'
+      query_name = 'groups.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(
+          query,
+          current_user: current_user,
+          variables: { search: '', first: 3, sort: 'created_at_asc', active: true }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+  end
+end

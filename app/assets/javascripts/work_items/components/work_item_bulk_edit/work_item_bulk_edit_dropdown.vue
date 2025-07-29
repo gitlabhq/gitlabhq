@@ -24,6 +24,11 @@ export default {
       required: false,
       default: undefined,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     toggleText() {
@@ -51,6 +56,7 @@ export default {
       :reset-button-label="__('Reset')"
       :selected="value"
       :toggle-text="toggleText"
+      :disabled="disabled"
       @reset="reset"
       @select="$emit('input', $event)"
     />

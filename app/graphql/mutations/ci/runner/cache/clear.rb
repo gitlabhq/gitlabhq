@@ -7,7 +7,7 @@ module Mutations
         class Clear < BaseMutation
           graphql_name 'RunnerCacheClear'
 
-          authorize :admin_runner
+          authorize :admin_runners
 
           argument :project_id, ::Types::GlobalIDType[Project],
             required: true,

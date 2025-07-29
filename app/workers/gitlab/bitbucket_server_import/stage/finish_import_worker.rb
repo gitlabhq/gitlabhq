@@ -34,8 +34,7 @@ module Gitlab
         def reschedule(project)
           ::Import::LoadPlaceholderReferencesWorker.perform_async(
             project.import_type,
-            project.import_state.id,
-            { current_user_id: project.creator_id }
+            project.import_state.id
           )
 
           self.class.perform_in(PLACEHOLDER_WAIT_INTERVAL.seconds, project.id)

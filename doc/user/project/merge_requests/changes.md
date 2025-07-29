@@ -372,6 +372,69 @@ You can show scanner findings in the diff. For details, see:
 - [Code Quality findings](../../../ci/testing/code_quality.md#merge-request-changes-view)
 - [Static Analysis findings](../../application_security/sast/_index.md#merge-request-changes-view)
 
+## Download merge request changes
+
+You can download the changes included in a merge request for use outside of GitLab.
+
+### As a diff
+
+To download the changes as a diff:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Select the merge request.
+1. In the upper-right corner, select **Code > Plain diff**.
+
+If you know the URL of the merge request, you can also download the diff from
+the command line by appending `.diff` to the URL. This example downloads the diff
+for merge request `000000`:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff
+```
+
+To download and apply the diff in a one-line CLI command:
+
+```shell
+curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git apply
+```
+
+### As a patch file
+
+To download the changes as a patch file:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Select the merge request.
+1. In the upper-right corner, select **Code > Patches**.
+
+If you know the URL of the merge request, you can also download the patch from
+the command line by appending `.patch` to the URL. This example downloads the patch
+file for merge request `000000`:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch
+```
+
+To download and apply the patch using [`git am`](https://git-scm.com/docs/git-am):
+
+```shell
+# Download and preview the patch
+curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" > changes.patch
+git apply --check changes.patch
+
+# Apply the patch
+git am changes.patch
+```
+
+You can also download and apply the patch in a single command:
+
+```shell
+curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" | git am
+```
+
+The `git am` uses the `-p1` option by default. For more information, see [`git-apply`](https://git-scm.com/docs/git-apply).
+
 ## Add a comment to a merge request file
 
 {{< history >}}
@@ -400,3 +463,10 @@ This comment can also be a thread.
 1. Select the location where you want to comment.
 
 GitLab shows an icon and a comment field on the image.
+
+## Related topics
+
+- [Compare branches](../repository/branches/_index.md#compare-branches)
+- [Download branch comparisons](../repository/branches/_index.md#download-branch-comparisons)
+- [Merge request reviews](reviews/_index.md)
+- [Merge request versions](versions.md)

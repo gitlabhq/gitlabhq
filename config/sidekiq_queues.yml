@@ -353,6 +353,8 @@
   - 1
 - - cronjob
   - 1
+- - database_collation_checker
+  - 1
 - - database_lock_tables
   - 1
 - - default
@@ -687,8 +689,6 @@
   - 1
 - - namespaces_update_root_statistics
   - 1
-- - new_epic
-  - 2
 - - new_issue
   - 2
 - - new_merge_request
@@ -961,6 +961,8 @@
   - 1
 - - security_pipeline_execution_policies_run_schedule
   - 1
+- - security_policies_failed_pipelines_audit
+  - 1
 - - security_policies_project_transfer
   - 1
 - - security_policies_skip_pipelines_audit
@@ -1136,8 +1138,6 @@
 - - work_items_update_parent_objectives_progress
   - 1
 - - work_items_user_preferences_destroy
-  - 1
-- - work_items_validate_epic_work_item_sync
   - 1
 - - work_items_weights_update_rolled_up_weights_event_handler
   - 1

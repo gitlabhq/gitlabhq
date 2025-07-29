@@ -2,7 +2,7 @@
 stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting Gitaly Cluster
+title: Troubleshooting Gitaly Cluster (Praefect)
 ---
 
 {{< details >}}
@@ -17,7 +17,7 @@ see [Troubleshooting Gitaly](../troubleshooting.md).
 
 ## Check cluster health
 
-The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster.
+The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster (Praefect).
 
 ```shell
 gitlab-ctl praefect check
@@ -117,7 +117,7 @@ To determine the primary node of a repository, use the [`praefect metadata`](#vi
 
 ## View repository metadata
 
-Gitaly Cluster maintains a [metadata database](_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
+Gitaly Cluster (Praefect) maintains a [metadata database](_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
 to inspect the metadata for troubleshooting.
 
 You can retrieve a repository's metadata by its Praefect-assigned repository ID:
@@ -202,7 +202,7 @@ For each replica, the following metadata is available:
 | `Generation`     | Latest confirmed generation of the replica. It indicates:<br><br>- The replica is fully up to date if the generation matches the repository's generation.<br>- The replica is outdated if the replica's generation is less than the repository's generation.<br>- `replica not yet created` if the replica does not yet exist at all on the storage.                                                                                                          |
 | `Healthy`        | Indicates whether the Gitaly node that is hosting this replica is considered healthy by the consensus of Praefect nodes.                                                                                                                                                                                                                                                                                                                               |
 | `Valid Primary`  | Indicates whether the replica is fit to serve as the primary node. If the repository's primary is not a valid primary, a failover occurs on the next write to the repository if there is another replica that is a valid primary. A replica is a valid primary if:<br><br>- It is stored on a healthy Gitaly node.<br>- It is fully up to date.<br>- It is not targeted by a pending deletion job from decreasing replication factor.<br>- It is assigned. |
-| `Verified At` | Indicates last successful verification of the replica by the [verification worker](configure.md#repository-verification). If the replica has not yet been verified, `unverified` is displayed in place of the last successful verification time. Introduced in GitLab 15.0. |
+| `Verified At` | Indicates last successful verification of the replica by the [verification worker](configure.md#repository-verification). If the replica has not yet been verified, `unverified` is displayed in place of the last successful verification time. |
 
 ### Command fails with 'repository not found'
 
@@ -266,7 +266,7 @@ This indicates that the virtual storage name used in the
 
 Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.
 
-## Gitaly Cluster performance issues on cloud platforms
+## Gitaly Cluster (Praefect) performance issues on cloud platforms
 
 Praefect does not require a lot of CPU or memory, and can run on small virtual machines.
 Cloud services may place other limits on the resources that small VMs can use, such as

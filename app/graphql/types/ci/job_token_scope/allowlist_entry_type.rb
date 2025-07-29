@@ -75,13 +75,7 @@ module Types
           end
         end
 
-        def default_permissions
-          object.source_project.job_token_policies_enabled? ? object.default_permissions : true
-        end
-
         def job_token_policies
-          return unless object.source_project.job_token_policies_enabled?
-
           object.job_token_policies - ::Ci::JobToken::Policies::DEPRECATED_POLICIES.map(&:to_s)
         end
       end

@@ -19,6 +19,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   describe 'associations' do
     it { is_expected.to belong_to(:commit_author) }
     it { is_expected.to belong_to(:committer) }
+    it { is_expected.to belong_to(:merge_request_commits_metadata) }
   end
 
   describe '#to_hash' do
@@ -61,7 +62,14 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   end
 
   describe '.create_bulk' do
-    subject { described_class.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: skip_commit_data) }
+    def create_bulk(merge_request_diff_id)
+      described_class.create_bulk(
+        merge_request_diff_id,
+        commits,
+        project,
+        skip_commit_data: skip_commit_data
+      )
+    end
 
     let(:merge_request_diff_id) { merge_request.merge_request_diff.id }
     let(:skip_commit_data) { false }
@@ -83,7 +91,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           merge_request_diff_id: merge_request_diff_id,
           relative_order: 0,
           sha: Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e"),
-          trailers: {}.to_json
+          trailers: {}.to_json,
+          merge_request_commits_metadata_id: an_instance_of(Integer)
         },
         {
           message: "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
@@ -94,7 +103,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           merge_request_diff_id: merge_request_diff_id,
           relative_order: 1,
           sha: Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d"),
-          trailers: {}.to_json
+          trailers: {}.to_json,
+          merge_request_commits_metadata_id: an_instance_of(Integer)
         }
       ]
     end
@@ -103,7 +113,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       expect(ApplicationRecord).to receive(:legacy_bulk_insert)
         .with(described_class.table_name, rows)
 
-      subject
+      create_bulk(merge_request_diff_id)
     end
 
     it 'creates diff commit users' do
@@ -120,6 +130,53 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       expect(commit_row.committer).to eq(commit_user_row)
     end
 
+    context 'for merge_request_commits_metadata' do
+      let(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+      let(:merge_request_diff_id) { merge_request_diff.id }
+
+      it 'also inserts all commit metadata to merge_request_commits_metadata' do
+        create_bulk(merge_request_diff_id)
+
+        merge_request_diff.merge_request_diff_commits.each do |mrdc|
+          metadata = mrdc.merge_request_commits_metadata
+          commit = commits[mrdc.relative_order]
+          row = rows[mrdc.relative_order]
+          commit_author = MergeRequest::DiffCommitUser.find_by(name: commit.author_name)
+          committer = MergeRequest::DiffCommitUser.find_by(name: commit.committer_name)
+
+          expect(metadata.commit_author).to eq(commit_author)
+          expect(metadata.committer).to eq(committer)
+          expect(metadata.authored_date).to eq(row[:authored_date])
+          expect(metadata.committed_date).to eq(row[:committed_date])
+          expect(metadata.sha).to eq(commit.sha)
+          expect(metadata.message).to eq(commit.message)
+          expect(metadata.trailers).to eq({})
+        end
+      end
+
+      context 'when there are already existing commits metadata record for some SHAs' do
+        it 'does not create a new merge_request_commits_metadata record' do
+          # Call create_bulk to create bulk records and simulate existing records
+          # so calling it again for a new `MergeRequestDiff` shouldn't create
+          # new commit metadata records.
+          create_bulk(merge_request_diff_id)
+
+          expect { create_bulk(create(:merge_request_diff).id) }
+            .not_to change { MergeRequest::CommitsMetadata.count }
+        end
+      end
+
+      context 'when merge_request_diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not create merge_request_commits_metadata records' do
+          expect { create_bulk(merge_request_diff_id) }.not_to change { MergeRequest::CommitsMetadata.count }
+        end
+      end
+    end
+
     context 'when "skip_commit_data: true"' do
       let(:skip_commit_data) { true }
 
@@ -129,7 +186,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         expect(ApplicationRecord).to receive(:legacy_bulk_insert)
           .with(described_class.table_name, rows_with_empty_messages)
 
-        subject
+        create_bulk(merge_request_diff_id)
       end
     end
 
@@ -150,7 +207,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           merge_request_diff_id: merge_request_diff_id,
           relative_order: 0,
           sha: Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
-          trailers: {}.to_json
+          trailers: {}.to_json,
+          merge_request_commits_metadata_id: an_instance_of(Integer)
         }]
       end
 
@@ -158,7 +216,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         expect(ApplicationRecord).to receive(:legacy_bulk_insert)
           .with(described_class.table_name, rows)
 
-        subject
+        create_bulk(merge_request_diff_id)
       end
     end
 
@@ -213,24 +271,78 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   end
 
   describe '.prepare_commits_for_bulk_insert' do
-    it 'returns the commit hashes and unique user triples' do
-      organization_id = create(:organization).id
-      commit = double(:commit, to_hash: {
-        parent_ids: %w[foo bar],
-        author_name: 'a' * 1000,
-        author_email: 'a' * 1000,
-        committer_name: 'Alice',
-        committer_email: 'alice@example.com'
-      })
-      hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id)
-      expect(hashes).to eq([{
-        author_name: 'a' * 512,
-        author_email: 'a' * 512,
-        committer_name: 'Alice',
-        committer_email: 'alice@example.com'
-      }])
-      expect(triples)
-        .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
+    context 'when with_organization is true' do
+      it 'returns the commit hashes and unique user triples' do
+        organization_id = create(:organization).id
+        commit = double(:commit, to_hash: {
+          parent_ids: %w[foo bar],
+          author_name: 'a' * 1000,
+          author_email: 'a' * 1000,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        })
+        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, true)
+        expect(hashes).to eq([{
+          author_name: 'a' * 512,
+          author_email: 'a' * 512,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        }])
+        expect(triples)
+          .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
+      end
+    end
+
+    context 'when with_organization is false' do
+      it 'returns the commit hashes and unique user triples' do
+        organization_id = create(:organization).id
+        commit = double(:commit, to_hash: {
+          parent_ids: %w[foo bar],
+          author_name: 'a' * 1000,
+          author_email: 'a' * 1000,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        })
+        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, false)
+        expect(hashes).to eq([{
+          author_name: 'a' * 512,
+          author_email: 'a' * 512,
+          committer_name: 'Alice',
+          committer_email: 'alice@example.com'
+        }])
+        expect(triples)
+          .to include(['a' * 512, 'a' * 512], ['Alice', 'alice@example.com'])
+      end
+    end
+  end
+
+  describe '#merge_request_commits_metadata' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:commits_metadata_1) { create(:merge_request_commits_metadata, project: project) }
+    let_it_be(:commits_metadata_2) { create(:merge_request_commits_metadata, project: project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+    let_it_be(:merge_request_diff_commit) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata_1.id
+      )
+    end
+
+    it 'returns associated merge request commits metadata record' do
+      expect(merge_request_diff_commit.merge_request_commits_metadata)
+        .to eq(commits_metadata_1)
+    end
+  end
+
+  describe '#project_id' do
+    let(:merge_request_diff) { create(:merge_request_diff) }
+    let(:merge_request_diff_commit) { create(:merge_request_diff_commit, merge_request_diff: merge_request_diff) }
+
+    it 'returns the project ID of the associated merge request diff' do
+      expect(merge_request_diff_commit.project_id).to eq(merge_request_diff.project_id)
     end
   end
 end

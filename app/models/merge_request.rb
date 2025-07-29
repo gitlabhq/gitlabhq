@@ -415,13 +415,12 @@ class MergeRequest < ApplicationRecord
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
       :merge_schedule, :merge_user,
-      target_project: [:project_feature, :project_setting, { project_namespace: :namespace_settings_with_ancestors_inherited_settings }],
+      target_project: [:project_feature, :project_setting, { namespace: :namespace_settings_with_ancestors_inherited_settings }],
       metrics: [:latest_closed_by, :merged_by]
     )
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
-  scope :recently_unprepared, -> { where(prepared_at: nil).where(created_at: 2.hours.ago..).order(:created_at, :id) } # id is the tie-breaker
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
@@ -594,7 +593,13 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :without_hidden, -> {
-    where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    if Feature.enabled?(:optimize_merge_requests_banned_users_query, :instance)
+      # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
+      # loading of all banned user IDs for certain queries
+      where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
+    else
+      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    end
   }
 
   scope :merged_without_state_event_source, -> {
@@ -1003,7 +1008,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def non_latest_diffs
-    merge_request_diffs.where.not(id: merge_request_diff.id)
+    merge_request_diffs.id_not_in(merge_request_diff.id)
   end
 
   def note_positions_for_paths(paths, user = nil)
@@ -1790,6 +1795,14 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Returns the description (without the first line/title) of the first multiline commit
+  def first_multiline_commit_description
+    strong_memoize(:first_multiline_commit_description) do
+      commit = first_multiline_commit
+      commit&.description
+    end
+  end
+
   def squash_on_merge?
     return true if squash_always?
     return false if squash_never?
@@ -2130,7 +2143,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_secret_detection_reports?
-    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.complete_or_manual? &&
+        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:secret_detection))&.exists?
+    else
+      !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    end
   end
 
   def compare_sast_reports(current_user)
@@ -2660,9 +2678,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def report_type_enabled?(report_type)
+    supported_report_types_for_child_pipelines = [:sast, :secret_detection]
+
     if report_type == :license_scanning
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
-    elsif report_type == :sast && Feature.enabled?(:show_child_reports_in_mr_page, project)
+    elsif supported_report_types_for_child_pipelines.include?(report_type) && Feature.enabled?(:show_child_reports_in_mr_page, project)
       !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))&.exists?
     else
       !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)

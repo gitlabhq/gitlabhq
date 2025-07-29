@@ -1,0 +1,10 @@
+---
+name: set_current_organization_from_session
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548320
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198158
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556743
+milestone: '18.3'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

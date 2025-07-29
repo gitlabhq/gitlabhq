@@ -4,7 +4,7 @@ attr: enforce_ci_inbound_job_token_scope_enabled
 clusterwide: false
 column: enforce_ci_inbound_job_token_scope_enabled
 db_type: boolean
-default: 'false'
+default: 'true'
 description:
 encrypted: false
 gitlab_com_different_than_default: false

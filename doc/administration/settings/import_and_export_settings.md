@@ -42,15 +42,10 @@ To enable the export of
 
 ## Enable migration of groups and projects by direct transfer
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -58,12 +53,6 @@ To enable the export of
 
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-This feature is not ready for production use.
 {{< /alert >}}
 
 Migration of groups and projects by direct transfer is disabled by default.
@@ -108,6 +97,7 @@ To enable silent admin project and group file exports:
 
 - Introduced in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `importer_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175371) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508944) in GitLab 18.3. Feature flag `importer_user_mapping` removed.
 
 {{< /history >}}
 

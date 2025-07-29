@@ -1067,6 +1067,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect { namespace.self_or_ancestors_archived? }.not_to raise_error
           expect(namespace.self_or_ancestors_archived?).to be false
         end
+
+        context 'when ancestor is archived' do
+          before do
+            parent.update!(archived: true)
+          end
+
+          it 'does not raise an error and returns true' do
+            expect { namespace.self_or_ancestors_archived? }.not_to raise_error
+            expect(namespace.self_or_ancestors_archived?).to be true
+          end
+        end
       end
     end
   end
@@ -1840,21 +1851,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       create(:namespace, path: "pickle716")
       expect(described_class.clean_path("pickle@gmail.com")).to eq("pickle717")
       expect(described_class.clean_path("--$--pickle@gmail.com")).to eq("pickle717")
-    end
-  end
-
-  describe ".clean_name" do
-    context "when the name complies with the group name regex" do
-      it "returns the name as is" do
-        valid_name = "Hello - World _ (Hi.)"
-        expect(described_class.clean_name(valid_name)).to eq(valid_name)
-      end
-    end
-
-    context "when the name does not comply with the group name regex" do
-      it "sanitizes the name by replacing all invalid char sequences with a space" do
-        expect(described_class.clean_name("Green'! Test~~~")).to eq("Green Test")
-      end
     end
   end
 

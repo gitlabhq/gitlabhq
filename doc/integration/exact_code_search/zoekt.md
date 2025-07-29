@@ -377,6 +377,90 @@ To define the retry interval for failed namespaces:
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
 1. Select **Save changes**.
 
+## Sizing recommendations
+
+The following recommendations might be over-provisioned for some deployments.
+You should monitor your deployment to ensure:
+
+- No out-of-memory events occur.
+- CPU throttling is not excessive.
+- Indexing performance meets your requirements.
+
+Adjust resources based on your specific workload characteristics, including:
+
+- Repository size and complexity
+- Number of active developers
+- Frequency of code changes
+- Indexing patterns
+
+### Nodes
+
+For optimal performance, proper sizing of Zoekt nodes is crucial.
+Sizing recommendations differ between Kubernetes and VM deployments
+due to how resources are allocated and managed.
+
+#### Kubernetes deployments
+
+The following table shows recommended resources for Kubernetes deployments
+based on index storage requirements:
+
+| Disk   | Webserver CPU | Webserver memory  | Indexer CPU | Indexer memory |
+|--------|---------------|-------------------|-------------|----------------|
+| 128 GB | 1             | 16 GiB            | 1           | 6 GiB  |
+| 256 GB | 1.5           | 32 GiB            | 1           | 8 GiB  |
+| 512 GB | 2             | 64 GiB            | 1           | 12 GiB |
+| 1 TB   | 3             | 128 GiB           | 1.5         | 24 GiB |
+| 2 TB   | 4             | 256 GiB           | 2           | 32 GiB |
+
+To manage resources more granularly, you can allocate
+CPU and memory separately to different containers.
+
+For Kubernetes deployments:
+
+- Do not set CPU limits for Zoekt containers.
+  CPU limits might cause unnecessary throttling during indexing bursts,
+  which would significantly impact performance.
+  Instead, rely on resource requests to guarantee minimum CPU availability
+  and ensure containers use additional CPU when available and needed.
+- Set appropriate memory limits to prevent resource contention
+  and out-of-memory conditions.
+- Use high-performance storage classes for better indexing performance.
+  GitLab.com uses `pd-balanced` on GCP, which balances performance and cost.
+  Equivalent options include `gp3` on AWS and `Premium_LRS` on Azure.
+
+#### VM and bare metal deployments
+
+The following table shows recommended resources for VM and bare metal deployments
+based on index storage requirements:
+
+| Disk   | VM size  | Total CPU | Total memory | AWS          | GCP             | Azure |
+|--------|----------|-----------|--------------|--------------|-----------------|-------|
+| 128 GB | Small    | 2 cores   | 16 GB        | `r5.large`   | `n1-highmem-2`  | `Standard_E2s_v3`  |
+| 256 GB | Medium   | 4 cores   | 32 GB        | `r5.xlarge`  | `n1-highmem-4`  | `Standard_E4s_v3`  |
+| 512 GB | Large    | 4 cores   | 64 GB        | `r5.2xlarge` | `n1-highmem-8`  | `Standard_E8s_v3`  |
+| 1 TB   | X-Large  | 8 cores   | 128 GB       | `r5.4xlarge` | `n1-highmem-16` | `Standard_E16s_v3` |
+| 2 TB   | 2X-Large | 16 cores  | 256 GB       | `r5.8xlarge` | `n1-highmem-32` | `Standard_E32s_v3` |
+
+You can allocate these resources only to the entire node.
+
+For VM and bare metal deployments:
+
+- Monitor CPU, memory, and disk usage to identify bottlenecks.
+  Both webserver and indexer processes share the same CPU and memory resources.
+- Consider using SSD storage for better indexing performance.
+- Ensure adequate network bandwidth for data transfer between GitLab and Zoekt nodes.
+
+### Storage
+
+Storage requirements for Zoekt vary significantly based on repository characteristics,
+including the number of large and binary files.
+
+As a starting point, you can estimate your Zoekt storage to be half your Gitaly storage.
+For example, if your Gitaly storage is 1 TB, you might need approximately 500 GB of Zoekt storage.
+
+To monitor the use of Zoekt nodes, see [check indexing status](#check-indexing-status).
+If namespaces are not being indexed due to low disk space, consider adding or scaling up nodes.
+
 ## Run Zoekt on a separate server
 
 {{< history >}}

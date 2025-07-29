@@ -26,7 +26,7 @@ You can create and manage your snippets with:
 - The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md#create-a-snippet).
 - The [`glab` CLI](../editor_extensions/gitlab_cli/_index.md).
 
-![Example of a snippet](img/snippet_sample_v16_6.png)
+![A code snippet showing sample content in GitLab.](img/snippet_sample_v16_6.png)
 
 GitLab provides two types of snippets:
 
@@ -152,7 +152,7 @@ subscription levels, and [groups](project/wiki/group.md) for
 
 Snippets with multiple files display a file count in the [snippet list](https://gitlab.com/dashboard/snippets):
 
-![Example of snippet](img/snippet_tooltip_v17_4.png)
+![A tooltip displaying details of a GitLab snippet.](img/snippet_tooltip_v17_4.png)
 
 You can manage snippets with Git (because they're [versioned](#versioned-snippets)
 by a Git repository), through the [Snippets API](../api/snippets.md), and in the GitLab UI.

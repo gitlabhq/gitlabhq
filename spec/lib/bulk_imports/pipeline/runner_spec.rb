@@ -27,6 +27,13 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
     end
   end
 
+  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+
+  let(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
+
   before do
     stub_const('BulkImports::Extractor', extractor)
     stub_const('BulkImports::Transformer', transformer)
@@ -48,13 +55,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
     allow(tracker).to receive_message_chain(:pipeline_class, :relation).and_return('relation')
   end
-
-  let_it_be(:bulk_import) { create(:bulk_import) }
-  let_it_be(:configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
-
-  let(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
 
   subject { BulkImports::MyPipeline.new(context) }
 

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
+
 module Ci
   module JobToken
     class Allowlist
       include ::Gitlab::Utils::StrongMemoize
-
-      delegate :job_token_policies_enabled?, to: :@source_project
 
       def initialize(source_project, direction: :inbound)
         @source_project = source_project
@@ -35,29 +34,23 @@ module Ci
       end
 
       def add!(target_project, user:, default_permissions: true, policies: [])
-        job_token_policies = job_token_policies_enabled? ? policies : []
-        default_permissions = job_token_policies_enabled? ? default_permissions : true
-
         Ci::JobToken::ProjectScopeLink.create!(
           source_project: @source_project,
           direction: @direction,
           target_project: target_project,
           added_by: user,
           default_permissions: default_permissions,
-          job_token_policies: job_token_policies
+          job_token_policies: policies
         )
       end
 
       def add_group!(target_group, user:, default_permissions: true, policies: [])
-        job_token_policies = job_token_policies_enabled? ? policies : []
-        default_permissions = job_token_policies_enabled? ? default_permissions : true
-
         Ci::JobToken::GroupScopeLink.create!(
           source_project: @source_project,
           target_group: target_group,
           added_by: user,
           default_permissions: default_permissions,
-          job_token_policies: job_token_policies
+          job_token_policies: policies
         )
       end
 
@@ -92,7 +85,6 @@ module Ci
 
       def bulk_add_projects!(target_projects, user:, autopopulated: false, policies: [])
         now = Time.zone.now
-        job_token_policies = job_token_policies_enabled? ? policies : []
 
         projects = target_projects.map do |target_project|
           Ci::JobToken::ProjectScopeLink.new(
@@ -100,7 +92,7 @@ module Ci
             target_project: target_project,
             autopopulated: autopopulated,
             added_by: user,
-            job_token_policies: job_token_policies,
+            job_token_policies: policies,
             direction: @direction,
             created_at: now
           )
@@ -111,7 +103,6 @@ module Ci
 
       def bulk_add_groups!(target_groups, user:, autopopulated: false, policies: [])
         now = Time.zone.now
-        job_token_policies = job_token_policies_enabled? ? policies : []
 
         groups = target_groups.map do |target_group|
           Ci::JobToken::GroupScopeLink.new(
@@ -119,7 +110,7 @@ module Ci
             target_group: target_group,
             autopopulated: autopopulated,
             added_by: user,
-            job_token_policies: job_token_policies,
+            job_token_policies: policies,
             created_at: now
           )
         end

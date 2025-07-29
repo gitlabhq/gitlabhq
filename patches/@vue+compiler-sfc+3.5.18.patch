@@ -1,0 +1,14 @@
+diff --git a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+index 8a52416..a2d0e91 100644
+--- a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
++++ b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+@@ -1824,7 +1824,8 @@ function parse$1(source, options = {}) {
+           if (!templateBlock.attrs.src) {
+             templateBlock.ast = compilerCore.createRoot(node.children, source);
+           }
+-          if (templateBlock.attrs.functional) {
++          // disabled by patch-package in gitlab as temporary migration
++          if (false && templateBlock.attrs.functional) {
+             const err = new SyntaxError(
+               `<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.`
+             );

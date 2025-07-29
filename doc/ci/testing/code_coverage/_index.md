@@ -57,7 +57,12 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 
 <!-- vale gitlab_base.Spelling = NO -->
 <!-- markdownlint-disable MD056 -->
-<!-- Verify regex patterns on docs.gitlab.com as escape characters render differently than in `.md` files rendered via GitLab code browser -->
+<!--
+Verify regex patterns carefully, especially patterns containing the pipe (`|`) character.
+To use `|` in the text of a table cell (not as cell delimiters), you must escape it with a backslash (`\|`).
+Verify all tables render as expected both in GitLab and on docs.gitlab.com.
+See: https://docs.gitlab.com/user/markdown/#tables
+-->
 
 {{< tabs >}}
 
@@ -65,8 +70,8 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
-| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Simplecov  | Ruby     | `rspec spec`   | `/\(\d+.\d+\%\) covered/` |
+| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
+| Simplecov  | Ruby     | `rspec spec`   | `/(?:LOC\s\(\d+\.\d+%|Line Coverage:\s\d+\.\d+%)/` |
 
 {{< /tab >}}
 
@@ -84,7 +89,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool      | Language    | Command                            | Regex pattern |
 |-----------|-------------|------------------------------------|---------------|
 | JaCoCo    | Java/Kotlin | `./gradlew test jacocoTestReport`  | `/Total.*?([0-9]{1,3})%/` |
-| Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\\|[1-9]?\d(?:\.\d+)?\%)$/` |
+| Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 
 {{< /tab >}}
 
@@ -93,8 +98,8 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool | Command                              | Regex pattern |
 |------|--------------------------------------|---------------|
 | tap  | `tap --coverage-report=text-summary` | `/^Statements\s*:\s*([^%]+)/` |
-| nyc  | `nyc npm test`                       | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
-| jest | `jest --ci --coverage`               | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
+| nyc  | `nyc npm test`                       | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
+| jest | `jest --ci --coverage`               | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
 
 {{< /tab >}}
 
@@ -122,7 +127,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
-| Pester    | PowerShell | None    | `/Covered (\d+\.\d+%)/` |
+| Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.|,)?\d{0,2}%)/` |
 
 {{< /tab >}}
 
@@ -131,7 +136,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool        | Command            | Regex pattern |
 |-------------|--------------------|---------------|
 | excoveralls | None               | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
-| mix         | `mix test --cover` | `/\d+.\d+\%\s+\\|\s+Total/` |
+| mix         | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
 
 {{< /tab >}}
 

@@ -8,10 +8,10 @@ RSpec.describe RuboCop::Cop::Performance::ARCountEach do
     it 'does not flag it as an offense' do
       expect(cop).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(false)
 
-      expect_no_offenses <<~SOURCE
+      expect_no_offenses <<~RUBY
         show(@users.count)
         @users.each { |user| display(user) }
-      SOURCE
+      RUBY
     end
   end
 
@@ -22,20 +22,20 @@ RSpec.describe RuboCop::Cop::Performance::ARCountEach do
 
     context 'when the same object uses count and each' do
       it 'flags it as an offense' do
-        expect_offense <<~SOURCE
+        expect_offense <<~RUBY
         show(@users.count)
              ^^^^^^^^^^^^ If @users is AR relation, avoid `@users.count ...; @users.each... `, this will trigger two queries. Use `@users.load.size ...; @users.each... ` instead. If @users is an array, try to use @users.size.
         @users.each { |user| display(user) }
-        SOURCE
+        RUBY
       end
     end
 
     context 'when different object uses count and each' do
       it 'does not flag it as an offense' do
-        expect_no_offenses <<~SOURCE
+        expect_no_offenses <<~RUBY
         show(@emails.count)
         @users.each { |user| display(user) }
-        SOURCE
+        RUBY
       end
     end
 

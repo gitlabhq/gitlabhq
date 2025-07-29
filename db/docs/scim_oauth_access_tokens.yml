@@ -8,6 +8,6 @@ description: Bearer token used  for authenticating SCIM requests. This is table 
   for Instance SCIM
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e9b2253fe3538234d1c4d173c4549a955233d836
 milestone: '11.10'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553107
 table_size: small

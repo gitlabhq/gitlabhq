@@ -46,13 +46,10 @@ module Mutations
         def resolve(project_path:, target_path:, default_permissions:, job_token_policies:)
           project = authorized_find!(project_path)
           target = find_target_path(target_path)
-          policies_enabled = project.job_token_policies_enabled?
-          # Use default permissions if policies feature isn't enabled.
-          default = policies_enabled ? default_permissions : true
 
           result = ::Ci::JobTokenScope::AddGroupOrProjectService
             .new(project, current_user)
-            .execute(target, default_permissions: default, policies: job_token_policies)
+            .execute(target, default_permissions: default_permissions, policies: job_token_policies)
 
           if result.success?
             {

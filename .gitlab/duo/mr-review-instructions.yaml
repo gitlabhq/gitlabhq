@@ -45,6 +45,8 @@ instructions:
     fileFilters:
       - "spec/**/*_spec.rb"
       - "ee/spec/**/*_spec.rb"
+      - "!spec/factories/**/*"
+      - "!spec/support/**/*"
     instructions: |
       1. Test both happy paths and edge cases
       2. Include error scenarios

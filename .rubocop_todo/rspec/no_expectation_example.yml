@@ -83,7 +83,6 @@ RSpec/NoExpectationExample:
     - 'spec/graphql/mutations/design_management/upload_spec.rb'
     - 'spec/graphql/resolvers/group_labels_resolver_spec.rb'
     - 'spec/helpers/emails_helper_spec.rb'
-    - 'spec/helpers/preferences_helper_spec.rb'
     - 'spec/lib/atlassian/jira_connect/client_spec.rb'
     - 'spec/lib/backup/database_connection_spec.rb'
     - 'spec/lib/backup/targets/target_spec.rb'

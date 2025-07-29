@@ -535,7 +535,6 @@ function log_disk_usage() {
       echo "********************************************************************"
 
       exit_code=111
-      alert_job_in_slack $exit_code "Auto-retried due to low free disk space."
 
       exit $exit_code
     fi
@@ -589,19 +588,16 @@ function find_custom_exit_code() {
     -e "OpenSSL::SSL::SSLError" "$trace_file"; then
     echoerr "Detected network connection error. Changing exit code to 110."
     exit_code=110
-    alert_job_in_slack "$exit_code" "Network connection error"
 
   elif grep -i -q -e "no space left on device" "$trace_file"; then
     echoerr "Detected no space left on device. Changing exit code to 111."
     exit_code=111
-    alert_job_in_slack "$exit_code" "Low disk space"
 
   elif grep -i -q \
     -e "error: downloading artifacts from coordinator" \
     -e "error: uploading artifacts as \"archive\" to coordinator" "$trace_file"; then
     echoerr "Detected artifact transit error. Changing exit code to 160."
     exit_code=160
-    alert_job_in_slack "$exit_code" "Artifact transit error"
 
   elif grep -i -q \
     -e "500 Internal Server Error" \
@@ -613,18 +609,15 @@ function find_custom_exit_code() {
     -e "503 Service Unavailable" "$trace_file"; then
     echoerr "Detected 5XX error. Changing exit code to 161."
     exit_code=161
-    alert_job_in_slack "$exit_code" "5XX error"
 
   elif grep -i -q -e "gitaly spawn failed" "$trace_file"; then
     echoerr "Detected gitaly spawn failure error. Changing exit code to 162."
     exit_code=162
-    alert_job_in_slack "$exit_code" "Gitaly spawn failure"
 
   elif grep -i -q -e \
     "Rspec suite is exceeding the 80 minute limit and is forced to exit with error" "$trace_file"; then
     echoerr "Detected rspec timeout risk. Changing exit code to 163."
     exit_code=163
-    alert_job_in_slack "$exit_code" "RSpec taking longer than 80 minutes and forced to fail."
 
   elif grep -i -q \
     -e "Redis client could not fetch cluster information: Connection refused" \
@@ -632,23 +625,19 @@ function find_custom_exit_code() {
     -e "CLUSTERDOWN The cluster is down" "$trace_file"; then
     echoerr "Detected Redis cluster error. Changing exit code to 164."
     exit_code=164
-    alert_job_in_slack "$exit_code" "Redis cluster error"
 
   elif grep -i -q -e "segmentation fault" "$trace_file"; then
     echoerr "Detected segmentation fault. Changing exit code to 165."
     exit_code=165
-    alert_job_in_slack "$exit_code" "Segmentation fault"
 
   elif grep -i -q -e "Error: EEXIST: file already exists" "$trace_file"; then
     echoerr "Detected EEXIST error. Changing exit code to 166."
     exit_code=166
-    alert_job_in_slack "$exit_code" "EEXIST: file already exists"
 
   elif grep -i -q -e \
     "fatal: remote error: GitLab is currently unable to handle this request due to load" "$trace_file"; then
     echoerr "Detected GitLab overload error in job trace. Changing exit code to 167."
     exit_code=167
-    alert_job_in_slack "$exit_code" "gitlab.com overload"
 
   elif grep -i -q -e "GRPC::ResourceExhausted" "$trace_file"; then
     echoerr "Detected GRPC::ResourceExhausted. Changing exit code to 168."
@@ -668,53 +657,4 @@ function find_custom_exit_code() {
 
   echoinfo "will exit with $exit_code"
   return "$exit_code"
-}
-
-function alert_job_in_slack() {
-  local exit_code=$1
-  local alert_reason=$2
-  local slack_channel="#dx_development-analytics_alerts"
-
-  echoinfo "Reporting ${CI_JOB_URL} to Slack channel ${slack_channel}"
-
-  json_payload=$(cat <<JSON
-{
-	"blocks": [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "*<${CI_PROJECT_URL}|${CI_PROJECT_PATH}> pipeline <${CI_PIPELINE_URL}|#${CI_PIPELINE_ID}> needs attention*"
-			}
-		},
-		{
-			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": "*Branch:* \n\`${CI_COMMIT_REF_NAME}\`"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Job:* \n<${CI_JOB_URL}|${CI_JOB_NAME}>"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Error code:* \n\`${exit_code}\`"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Reason:* \n${alert_reason}"
-				}
-			]
-		}
-	],
-  "channel": "${slack_channel}"
-}
-JSON
-)
-
-  curl --silent -o /dev/null -X POST "${CI_SLACK_WEBHOOK_URL}" \
-    -H 'Content-type: application/json' \
-    -d "${json_payload}"
 }

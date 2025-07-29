@@ -195,6 +195,11 @@ domains:
     feature_categories:
       - mlops
 
+  Mcp:
+    description: MCP server, tools and associated classes and tooling.
+    feature_categories:
+      - mcp_server
+
   Namespaces:
     description: Managing groups, subgroups and user namespaces
     feature_categories:

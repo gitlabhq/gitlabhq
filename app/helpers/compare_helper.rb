@@ -37,18 +37,15 @@ module CompareHelper
   def project_compare_selector_data(project, merge_request, params)
     {
       project_compare_index_path: project_compare_index_path(project),
-      source_project: { id: project.id, name: project.full_path }.to_json,
-      target_project: { id: @target_project.id, name: @target_project.full_path }.to_json,
+      source_project: { value: project.id, text: project.full_name }.to_json,
+      target_projects_path: project_new_merge_request_json_target_projects_path(project),
+      target_project: { value: @target_project.id, text: @target_project.full_name }.to_json,
       source_project_refs_path: refs_project_path(project),
       target_project_refs_path: refs_project_path(@target_project),
       params_from: params[:from],
       params_to: params[:to],
       straight: params[:straight]
     }.tap do |data|
-      data[:projects_from] = target_projects(project).map do |target_project|
-        { id: target_project.id, name: target_project.full_path }
-      end.to_json
-
       data[:project_merge_request_path] =
         if merge_request.present?
           project_merge_request_path(project, merge_request)

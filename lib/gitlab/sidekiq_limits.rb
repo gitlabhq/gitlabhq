@@ -7,7 +7,7 @@ module Gitlab
 
     DEFAULT_SIDEKIQ_LIMITS = {
       main_db_duration_limit_per_worker: {
-        resource_key: 'db_main_duration_s',
+        resource_key: :db_main_duration_s,
         metadata: {
           db_config_name: 'main'
         },
@@ -28,7 +28,7 @@ module Gitlab
         ]
       },
       ci_db_duration_limit_per_worker: {
-        resource_key: 'db_ci_duration_s',
+        resource_key: :db_ci_duration_s,
         metadata: {
           db_config_name: 'ci'
         },
@@ -49,7 +49,7 @@ module Gitlab
         ]
       },
       sec_db_duration_limit_per_worker: {
-        resource_key: 'db_sec_duration_s',
+        resource_key: :db_sec_duration_s,
         metadata: {
           db_config_name: 'sec'
         },
@@ -72,7 +72,7 @@ module Gitlab
     }.freeze
 
     # name         - <String> name of the limit to be used in ApplicationRateLimiter
-    # resource_key - <String> Key in SafeRequestStore which tracks a resource usage
+    # resource_key - <Symbol> Key in SafeRequestStore which tracks a resource usage
     # scopes       - <String> Key in ApplicationContext or the worker_name
     # metadata     - <Hash> Hash containing metadata for various usage, e.g. emitting extra logs/metrics
     #                or further logic checks before throttling.

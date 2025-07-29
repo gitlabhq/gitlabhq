@@ -127,10 +127,7 @@ export default {
               </div>
             </template>
             <slot name="avatar-default">
-              <list-item-description
-                v-if="resource.descriptionHtml"
-                :description-html="resource.descriptionHtml"
-              />
+              <list-item-description :resource="resource" />
             </slot>
           </gl-avatar-labeled>
         </div>

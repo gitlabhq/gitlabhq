@@ -1,89 +1,244 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/inline'
+# use inline bundler only when executed as standalone script
+if __FILE__ == $PROGRAM_NAME
+  require 'bundler/inline'
 
-gemfile do
-  source 'https://rubygems.org'
+  gemfile do
+    source 'https://rubygems.org'
 
-  gem 'gitlab', '~> 5.1'
-  gem 'test_file_finder', '~> 0.3'
-  # loaded from standard library by gitlab and will stop working on ruby 3.4
-  gem 'base64'
-  gem 'csv'
+    gem 'gitlab', '~> 5.1'
+    gem 'test_file_finder', '~> 0.3'
+    # loaded from standard library by gitlab and will stop working on ruby 3.4
+    gem 'base64'
+    gem 'csv'
+  end
 end
 
-require 'optparse'
+require 'fileutils'
+require 'tmpdir'
+require 'json'
+require 'open3'
 
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
+require_relative '../lib/tooling/predictive_tests/test_selector'
+require_relative '../lib/tooling/predictive_tests/changed_files'
+require_relative '../lib/tooling/predictive_tests/mapping_fetcher'
+require_relative '../lib/tooling/find_changes'
 
-  opts.on('--select-tests', 'Run test selection logic') do
-    options[:select_tests] = true
+# rubocop:disable Gitlab/Json, Gitlab/NamespacedClass -- non rails
+class PredictiveTests
+  def initialize(options)
+    @with_crystalball_mappings = options[:with_crystalball_mappings]
+    @mapping_type = options[:mapping_type] || :described_class
+    @with_frontend_fixture_mappings = options[:with_frontend_fixture_mappings]
+    @changed_files = options[:changed_files]&.split(' ')
+    @changed_files_path = options[:changed_files_path]
+    @matching_foss_rspec_test_files_path = options[:matching_foss_rspec_test_files_path]
+    @matching_ee_rspec_test_files_path = options[:matching_ee_rspec_test_files_path]
+    @matching_js_files_path = options[:matching_js_files_path]
+    @ci = options[:ci]
+    @debug = options[:debug]
+
+    # unlike backend mappings, this file is reused in other ci jobs so it's location needs to be configurable
+    @frontend_fixtures_mapping_path = options[:frontend_fixtures_mapping_path] || File.join(
+      Dir.tmpdir, 'frontend_fixtures_mapping.json'
+    )
   end
 
-  opts.on('--export-selected-test-metrics', 'Export selected test metrics') do
-    options[:export_metrics] = true
+  def execute
+    logger.info('Running predictive test selection')
+    create_output_files
+    return if @ci
+
+    puts rspec_spec_list.join(' ')
   end
 
-  opts.on('-h', '--help', 'Show this help message') do
-    puts opts
-    exit
-  end
-end.parse!
+  private
 
-# Validate that exactly one option is provided
-if options.empty?
-  puts "Error: Please specify either --select-tests or --export-selected-test-metrics"
-  puts "Use --help for more information"
-  exit 1
-elsif options.size > 1
-  puts "Error: Please specify only one operation at a time"
-  puts "Use --help for more information"
-  exit 1
+  def logger
+    @logger ||= Logger.new($stdout, progname: 'Predictive Tests').tap do |l|
+      l.level = if @debug
+                  :debug
+                else
+                  # silence logger locally so output can be used in shell scripts
+                  @ci ? :info : :error
+                end
+
+      l.formatter = proc do |severity, _datetime, progname, msg|
+        # remove datetime to keep more neat cli like output
+        "[#{progname}] #{severity}: #{msg}\n"
+      end
+    end
+  end
+
+  def mapping_fetcher
+    @mapping_fetcher ||= Tooling::PredictiveTests::MappingFetcher.new(logger: logger)
+  end
+
+  def test_mapping_file
+    return unless @with_crystalball_mappings
+
+    @test_mapping_file ||= mapping_fetcher.fetch_rspec_mappings(
+      File.join(Dir.tmpdir, 'crystalball_mapping.json'),
+      type: @mapping_type
+    )
+  end
+
+  def frontend_fixtures_mapping_file
+    return unless @with_frontend_fixture_mappings
+
+    @frontend_fixtures_mapping_file ||= mapping_fetcher.fetch_frontend_fixtures_mappings(
+      @frontend_fixtures_mapping_path
+    )
+  end
+
+  def changed_files
+    @changed_files ||= @ci ? mr_diff : git_diff
+  end
+
+  def test_selector
+    @test_selector ||= begin
+      all_changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(changes: changed_files)
+
+      logger.info("Generating predictive test list based on changed files: #{JSON.pretty_generate(all_changed_files)}")
+      Tooling::PredictiveTests::TestSelector.new(
+        changed_files: all_changed_files,
+        rspec_test_mapping_path: test_mapping_file,
+        logger: logger
+      )
+    end
+  end
+
+  def rspec_spec_list
+    @rspec_spec_list ||= test_selector.rspec_spec_list
+  end
+
+  def js_spec_list
+    @js_spec_list ||= test_selector.js_spec_list
+  end
+
+  def mr_diff
+    logger.debug('Fetching list of changes in gitlab merge request')
+    Tooling::FindChanges.new(
+      from: :api,
+      frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_file
+    ).execute
+  end
+
+  def git_diff
+    logger.debug('Fetching list of changes in local git repository')
+
+    out, status = Open3.capture2e('git rev-parse --abbrev-ref HEAD')
+    raise("Failed to fetch current branch name! Output: #{out}") unless status.success?
+
+    # get changes for the whole feature branch when not in master
+    cmd = out.strip != 'master' ? 'git diff --name-only master...HEAD' : 'git diff --name-only HEAD'
+    out, status = Open3.capture2e(cmd)
+    raise("Failed to fetch changed file list from git! Output: #{out}") unless status.success?
+
+    out.split("\n")
+  end
+
+  def create_output_files
+    # Used by frontend related pipelines/jobs
+    save_output(changed_files.join("\n"), @changed_files_path) if valid_file_path?(@changed_files_path)
+
+    # Used by predictive rspec pipelines
+    if valid_file_path?(@matching_foss_rspec_test_files_path)
+      list = rspec_spec_list.select { |f| f.start_with?("spec/") && File.exist?(f) }
+      save_output(list.join(" "), @matching_foss_rspec_test_files_path)
+      logger.info("Following foss rspec tests saved: #{JSON.pretty_generate(list)}")
+    end
+
+    if valid_file_path?(@matching_ee_rspec_test_files_path)
+      list = rspec_spec_list.select { |f| f.start_with?("ee/spec/") && File.exist?(f) }
+      save_output(list.join(" "), @matching_ee_rspec_test_files_path)
+      logger.info("Following ee rspec tests saved: #{JSON.pretty_generate(list)}")
+    end
+
+    return unless valid_file_path?(@matching_js_files_path)
+
+    js_changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
+      changes: changed_files, with_views: true, with_js_files: true
+    ).select { |f| Tooling::PredictiveTests::ChangedFiles::JS_FILE_FILTER_REGEX.match?(f) }
+    logger.info("Following matching js files saved: #{JSON.pretty_generate(js_changed_files)}")
+    save_output(js_changed_files.join("\n"), @matching_js_files_path)
+  end
+
+  def save_output(output, file_path)
+    logger.debug("Writing #{file_path}")
+    FileUtils.mkdir_p(File.dirname(file_path))
+    File.write(file_path, output)
+  end
+
+  def valid_file_path?(file_path)
+    !(file_path.nil? || file_path.empty?)
+  end
 end
+# rubocop:enable Gitlab/Json, Gitlab/NamespacedClass
 
-def validate_required_env_variables!(variables)
-  variables.select { |key| ENV[key.to_s].to_s.empty? }.tap do |missing_variables|
-    next if missing_variables.empty?
+if __FILE__ == $PROGRAM_NAME
+  require 'optparse'
 
-    warn "[predictive tests] Missing ENV variable(s): #{missing_variables.join(',')}."
+  options = {}
+  OptionParser.new do |opts|
+    opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
+
+    opts.on('--ci', 'Enable more verbose logging instead of returning list of tests to stdout') do
+      options[:ci] = true
+    end
+
+    opts.on('--debug', 'Enable debug log level') do
+      options[:debug] = true
+    end
+
+    opts.on('--changed-files [string]', String, 'Manual space separated list of changed files.') do |value|
+      options[:changed_files] = value
+    end
+
+    opts.on('--changed-files-path [string]', String, 'Path to save list of calculated changed files') do |value|
+      options[:changed_files_path] = value
+    end
+
+    opts.on('--with-crystalball-mappings', 'Download crystalball mappings for rspec tests') do
+      options[:with_crystalball_mappings] = true
+    end
+
+    opts.on('--mapping-type [string]', String, 'Crystalball mapping type, coverage or described_class') do |value|
+      options[:mapping_type] = value
+    end
+
+    opts.on('--with-frontend-fixture-mappings', 'Download frontend fixture mappings') do
+      options[:with_frontend_fixture_mappings] = true
+    end
+
+    opts.on('--frontend-fixtures-mapping-path [string]', String, 'Path to save frontend fixtures mappings') do |value|
+      options[:frontend_fixtures_mapping_path] = value
+    end
+
+    opts.on('--matching-foss-rspec-test-files-path [string]', String, 'Path for list of foss rspec tests') do |value|
+      options[:matching_foss_rspec_test_files_path] = value
+    end
+
+    opts.on('--matching-ee-rspec-test-files-path [string]', String, 'Path for list of ee rspec tests') do |value|
+      options[:matching_ee_rspec_test_files_path] = value
+    end
+
+    opts.on('--matching-js-files-path [string]', String, 'File to save list of view related js files') do |value|
+      options[:matching_js_files_path] = value
+    end
+
+    opts.on('-h', '--help', 'Show this help message') do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  begin
+    PredictiveTests.new(options).execute
+  rescue StandardError => e
+    puts "[predictive tests] ERROR: #{e.message}"
     exit 1
   end
-end
-
-if options[:select_tests]
-  require_relative '../lib/tooling/predictive_tests/test_selector'
-
-  validate_required_env_variables!(%w[
-    RSPEC_MATCHING_TEST_FILES_PATH
-    RSPEC_VIEWS_INCLUDING_PARTIALS_PATH
-    FRONTEND_FIXTURES_MAPPING_PATH
-    RSPEC_MATCHING_JS_FILES_PATH
-  ])
-  test_mapping_file = (ENV['RSPEC_TESTS_MAPPING_PATH'] if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true')
-
-  Tooling::PredictiveTests::TestSelector.new(
-    rspec_changed_files_path: ENV['RSPEC_CHANGED_FILES_PATH'],
-    rspec_matching_test_files_path: ENV['RSPEC_MATCHING_TEST_FILES_PATH'],
-    rspec_views_including_partials_path: ENV['RSPEC_VIEWS_INCLUDING_PARTIALS_PATH'],
-    frontend_fixtures_mapping_path: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
-    rspec_matching_js_files_path: ENV['RSPEC_MATCHING_JS_FILES_PATH'],
-    rspec_test_mapping_path: test_mapping_file
-  ).execute
-elsif options[:export_metrics]
-  require_relative '../lib/tooling/predictive_tests/metrics_exporter'
-
-  validate_required_env_variables!(%w[
-    GLCI_CRYSTALBALL_MAPPING_DIR
-    GLCI_ALL_FAILED_RSPEC_TESTS_FILE
-    GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
-  ])
-
-  Tooling::PredictiveTests::MetricsExporter.new(
-    rspec_all_failed_tests_file: ENV['GLCI_ALL_FAILED_RSPEC_TESTS_FILE'],
-    crystalball_mapping_dir: ENV['GLCI_CRYSTALBALL_MAPPING_DIR'],
-    output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
-  ).execute
 end

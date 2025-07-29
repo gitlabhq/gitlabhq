@@ -2483,4 +2483,25 @@ describe('DiffsStoreActions', () => {
       });
     });
   });
+
+  describe('setCurrentFileHash', () => {
+    it('commits SET_CURRENT_DIFF_FILE if hash does not start with note_', () => {
+      return testAction(
+        diffActions.setCurrentFileHash,
+        'filehash',
+        {},
+        [
+          {
+            type: types.SET_CURRENT_DIFF_FILE,
+            payload: 'filehash',
+          },
+        ],
+        [],
+      );
+    });
+
+    it('does not commit SET_CURRENT_DIFF_FILE if hash starts with note_', () => {
+      return testAction(diffActions.setCurrentFileHash, 'note_filehash', {}, [], []);
+    });
+  });
 });

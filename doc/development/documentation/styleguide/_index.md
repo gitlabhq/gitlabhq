@@ -1321,6 +1321,10 @@ can't be conveyed in text.
 
 When you take screenshots:
 
+- Ensure the content in the screenshot adheres to the
+  [GitLab SAFE framework](https://handbook.gitlab.com/handbook/legal/safe-framework/). To check,
+  follow the
+  [SAFE flowchart](https://handbook.gitlab.com/handbook/legal/safe-framework/#safe-flowchart).
 - **Ensure it provides value.** Don't use `lorem ipsum` text.
   Try to replicate how the feature would be used in a real-world scenario, and
   [use realistic text](#fake-user-information).

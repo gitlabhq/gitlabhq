@@ -1272,7 +1272,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       expect(member.invite_accepted_at).to be_nil
       expect(member.invite_token).not_to be_nil
-      expect_any_instance_of(described_class).not_to receive(:after_accept_invite)
+      expect(member).not_to receive(:after_accept_invite)
     end
 
     context 'when after accepting invite' do

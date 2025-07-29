@@ -644,35 +644,35 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
-  describe 'create_instance_runner' do
+  describe 'create_instance_runners' do
     context 'admin' do
       let(:current_user) { admin_user }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_instance_runner) }
+        it { is_expected.to be_allowed(:create_instance_runners) }
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_instance_runner) }
+        it { is_expected.to be_disallowed(:create_instance_runners) }
       end
     end
 
     context 'with project_bot' do
       let(:current_user) { project_bot }
 
-      it { is_expected.to be_disallowed(:create_instance_runner) }
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
 
     context 'with migration_bot' do
       let(:current_user) { migration_bot }
 
-      it { is_expected.to be_disallowed(:create_instance_runner) }
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
 
     context 'with security_bot' do
       let(:current_user) { security_bot }
 
-      it { is_expected.to be_disallowed(:create_instance_runner) }
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
 
     context 'with llm_bot' do
@@ -684,13 +684,13 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'with regular user' do
       let(:current_user) { user }
 
-      it { is_expected.to be_disallowed(:create_instance_runner) }
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
 
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_disallowed(:create_instance_runner) }
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
   end
 
@@ -754,6 +754,8 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
           :access_admin_area,
           :read_application_statistics,
           :read_admin_users,
+          :read_admin_groups,
+          :read_admin_projects,
           :read_admin_audit_log,
           :read_admin_background_jobs,
           :read_admin_background_migrations,

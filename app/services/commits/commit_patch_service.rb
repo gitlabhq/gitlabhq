@@ -34,9 +34,9 @@ module Commits
       branch_result = ::Branches::CreateService.new(project, current_user)
                         .execute(@branch_name, @start_branch)
 
-      if branch_result[:status] != :success
-        raise ChangeError, branch_result[:message]
-      end
+      return if branch_result[:status] == :success
+
+      raise ChangeError, branch_result[:message]
     end
 
     # Overridden from the Commits::CreateService, to skip some validations we
