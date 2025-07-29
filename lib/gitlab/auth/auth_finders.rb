@@ -171,16 +171,7 @@ module Gitlab
       def cluster_agent_token_from_authorization_token
         return unless route_authentication_setting[:cluster_agent_token_allowed]
 
-        # We are migrating from `Gitlab-Agentk-Api-Request` to `Gitlab-Agent-Api-Request` to make it common
-        # for all types of agents. Both must be supported until KAS has been updated to use the new header,
-        # and then this first lookup can be removed.
-        # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/711 .
-        headers = current_request.headers
-        self.current_token = if headers.key?(Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER)
-                               headers[Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER]
-                             else
-                               headers[Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER]
-                             end
+        self.current_token = current_request.headers[Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER]
 
         return unless current_token.present?
 

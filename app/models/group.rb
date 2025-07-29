@@ -158,6 +158,8 @@ class Group < Namespace
       .where(group_deletion_schedules: { marked_for_deletion_on: date })
   end
 
+  scope :with_integrations, -> { joins(:integrations) }
+
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads

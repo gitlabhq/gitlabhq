@@ -869,6 +869,14 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.preload_users' do
+      let_it_be(:members) { described_class.preload_users.load }
+
+      it 'does not perform any additional queries' do
+        expect { members.map(&:user) }.not_to exceed_query_limit(0)
+      end
+    end
+
     describe '.active_state' do
       let_it_be(:active_group_member) { create(:group_member, group: group) }
       let_it_be(:active_project_member) { create(:project_member, project: project) }

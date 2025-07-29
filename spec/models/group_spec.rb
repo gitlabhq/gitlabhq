@@ -1781,6 +1781,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to include(inactive_group, inactive_subgroup) }
       it { is_expected.not_to include(active_group) }
     end
+
+    describe '.with_integrations' do
+      let_it_be(:group_with_integration) { create(:group) }
+      let_it_be(:group_without_integration) { create(:group) }
+
+      before do
+        create(:integrations_slack, :group, group: group_with_integration, group_mention_events: true, group_confidential_mention_events: true)
+      end
+
+      subject { described_class.with_integrations }
+
+      it { is_expected.to include(group_with_integration) }
+      it { is_expected.not_to include(group_without_integration) }
+    end
   end
 
   describe '.project_creation_levels_for_user' do

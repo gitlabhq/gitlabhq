@@ -1,0 +1,8 @@
+---
+name: group_mention_access_check
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134677
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431483
+milestone: "18.3"
+type: gitlab_com_derisk
+group: group::import
+default_enabled: false

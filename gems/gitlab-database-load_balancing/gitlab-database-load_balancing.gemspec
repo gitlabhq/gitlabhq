@@ -16,16 +16,16 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'gitlab-net-dns', '~> 0.9.2'
-  spec.add_runtime_dependency "pg", '~> 1.5.4'
-  spec.add_runtime_dependency 'rails', '>= 7'
+  spec.add_dependency 'gitlab-net-dns', '~> 0.12'
+  spec.add_dependency "pg", '~> 1.5.6'
+  spec.add_dependency 'rails', '>= 7.1'
 
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
-  spec.add_development_dependency "pg", '~> 1.5.4'
+  spec.add_development_dependency "gitlab-styles", "~> 13.1.0"
+  spec.add_development_dependency "pg", '~> 1.5.6'
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rspec", "~> 3.13"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"
   spec.add_development_dependency "rspec-rails", "~> 6.0.1"
-  spec.add_development_dependency "rubocop", "~> 1.50"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.22"
+  spec.add_development_dependency "rubocop", "~> 1.71.1"
+  spec.add_development_dependency "rubocop-rspec", "~> 3.0.4"
 end
