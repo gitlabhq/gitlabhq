@@ -63,12 +63,48 @@ per policy action. For example `secret-detection` becomes `secret-detection-1`.
 
 ## Scan execution policy editor
 
+{{< history >}}
+
+- `Merge Request Security Template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`. Disabled by default.
+
+{{< /history >}}
+
 Use the scan execution policy editor to create or edit a scan execution policy.
 
 Prerequisites:
 
 - By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#application-security)
   required to create or assign a security policy project. Alternatively, you can create a custom role with the permission to [manage security policy links](../../custom_roles/abilities.md#security-policy-management).
+
+When you create your first scan execution policies, we provide you with templates to get started quickly with some of the most common use cases:
+
+- Merge Request Security Template
+
+  - Use case: "I want security scans to run only when merge requests are created, not on every commit."
+  - When to use: For projects using merge request pipelines that need security scans to run on 
+    source branches targeting default or protected branches.
+  - Best for: Teams that want to align with merge request approval policies and reduce infrastructure
+    costs by avoiding scans on every branch.
+  - Pipeline sources: Primarily merge request pipelines.
+
+- Scheduled Scanning Template
+
+  - Use case: "I want security scans to run automatically on a schedule (like daily or weekly) regardless of code changes."
+  - When to use: For security scanning on a regular cadence, independent of development activity.
+  - Best for: Compliance requirements, baseline security monitoring, or projects with infrequent commits.
+  - Pipeline sources: Scheduled pipelines.
+
+- Merge Release Security Template
+
+  - Use case: "I want security scans to run on all changes to my `main` or release branches."
+  - When to use: For projects that need comprehensive scanning before releases, or on protected branches.
+  - Best for: Release-gated workflows, production deployments, or high-security environments.
+  - Pipeline sources: Push pipelines to protected branches, release pipelines.
+
+If the available template do not meet your needs, or you require more customized scan execution policies, you can:
+
+- Select the **Custom** option and create your own scan execution policy with custom requirements.
+- Access more customizable options for security scan and CI enforcement using [pipeline execution policies](pipeline_execution_policies.md).
 
 Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
@@ -165,8 +201,16 @@ Scan execution policies that have the rule type `schedule` always ignore the `sk
 
 - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
 - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+- The `pipeline_sources` field and the `branch_type` options `target_default` and `target_protected` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -174,10 +218,13 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `pipeline` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). For compatibility with merge request approval policies, you should target all branches to include the scans in the feature branch and default branch |
-| `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist |  `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist | `default`, `protected`, `all`, `target_default` <sup>2</sup>, or `target_protected` <sup>2</sup> | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
+| `pipeline_sources` <sup>2</sup> | `array` of `string` | false | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event` <sup>3</sup>, `pipeline`, `push` <sup>3</sup>, `schedule`, `trigger`, `unknown`, `web` | The pipeline source that determines when the scan execution job triggers. See the [documentation](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable) for more information. |
 
-1. You must specify only one of `branches` or `branch_type`.
+1. You must specify either `branches` or `branch_type`, but not both.
+1. Some options are only available with the `flexible_scan_execution` feature flag enabled. See the history for details.
+1. When the `branch_type` options `target_default` or `target_protected` are specified, the `pipeline_sources` field supports only the `merge_request_event` and `push` fields.
 
 ## `schedule` rule type
 

@@ -177,7 +177,8 @@ A full setup looks like this:
 
 ```javascript
 import Vue from 'vue';
-import { createTestingPinia, PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMount } from '@vue/test-utils';
 import { useMyStore } from '~/my_store.js';
 import MyComponent from '~/my_component.vue';

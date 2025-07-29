@@ -30887,8 +30887,7 @@ Returns [`SecurityMetrics`](#securitymetrics).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupsecuritymetricsprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs. |
-| <a id="groupsecuritymetricsscanner"></a>`scanner` | [`[String!]`](#string) | Filter by scanner names. |
-| <a id="groupsecuritymetricsseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter by vulnerability severity levels. |
+| <a id="groupsecuritymetricsreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
 
 ##### `Group.securityPolicies`
 
@@ -39371,8 +39370,7 @@ Returns [`SecurityMetrics`](#securitymetrics).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecuritymetricsprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs. |
-| <a id="projectsecuritymetricsscanner"></a>`scanner` | [`[String!]`](#string) | Filter by scanner names. |
-| <a id="projectsecuritymetricsseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter by vulnerability severity levels. |
+| <a id="projectsecuritymetricsreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
 
 ##### `Project.securityPolicies`
 
@@ -41323,8 +41321,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="securitymetricsvulnerabilitiesovertimeenddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | End date for the vulnerability metrics time range. |
 | <a id="securitymetricsvulnerabilitiesovertimeprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs. |
-| <a id="securitymetricsvulnerabilitiesovertimescanner"></a>`scanner` | [`[String!]`](#string) | Filter by scanner types. |
-| <a id="securitymetricsvulnerabilitiesovertimeseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter by vulnerability severity levels. |
+| <a id="securitymetricsvulnerabilitiesovertimereporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
+| <a id="securitymetricsvulnerabilitiesovertimeseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="securitymetricsvulnerabilitiesovertimestartdate"></a>`startDate` | [`ISO8601Date!`](#iso8601date) | Start date for the vulnerability metrics time range. |
 
 ### `SecurityPolicyType`

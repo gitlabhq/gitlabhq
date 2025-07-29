@@ -2591,6 +2591,9 @@ msgstr ""
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
+msgid "AICatalog|unable to validate definition"
+msgstr ""
+
 msgid "AISummary|Generates a summary of this issue"
 msgstr ""
 
@@ -7712,9 +7715,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Failed to load namespace metadata."
 msgstr ""
 
-msgid "Analytics| Last updated: %{recordedAt}"
-msgstr ""
-
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr ""
 
@@ -7958,6 +7958,9 @@ msgid "Analytics|Start by choosing a measure"
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
+msgstr ""
+
+msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
 msgstr ""
 
 msgid "Analytics|Tables"
