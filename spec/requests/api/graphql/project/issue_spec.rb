@@ -23,6 +23,8 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
     query_graphql_field(:issue, issue_params, issue_fields)
   end
 
+  let(:post_query) { post_graphql(query, current_user: current_user) }
+
   shared_examples 'being able to fetch a design-like object by ID' do
     let(:design) { design_a }
     let(:path) { %w[project issue designCollection] + [GraphqlHelpers.fieldnamerize(object_field_name)] }
@@ -79,8 +81,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
       it_behaves_like 'a failure to find anything'
     end
   end
-
-  let(:post_query) { post_graphql(query, current_user: current_user) }
 
   describe '.designCollection' do
     include DesignManagementTestHelpers

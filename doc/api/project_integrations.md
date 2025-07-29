@@ -1510,6 +1510,45 @@ Get the Jira issues integration settings for a project.
 GET /projects/:id/integrations/jira
 ```
 
+## Linear
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198297) in GitLab 18.3.
+
+{{< /history >}}
+
+### Set up Linear
+
+Set up the Linear integration for a group.
+
+```plaintext
+PUT /projects/:id/integrations/linear
+```
+
+Parameters:
+
+| Parameter     | Type   | Required | Description    |
+| ------------- | ------ | -------- | -------------- |
+| `workspace_url`  | string | yes     | URL of the issue.     |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+
+### Disable Linear
+
+Disable the Linear integration for a group. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/linear
+```
+
+### Get Linear settings
+
+Get the Linear integration settings for a group.
+
+```plaintext
+GET /projects/:id/integrations/linear
+```
+
 ## Matrix notifications
 
 {{< history >}}

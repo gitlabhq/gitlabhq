@@ -6,6 +6,7 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
   include GraphqlHelpers
 
   let_it_be(:noteable) { create(:merge_request) }
+  let(:noteable_data) { graphql_data['project']['mergeRequest'] }
 
   def noteable_query(noteable_fields)
     <<~QRY
@@ -19,7 +20,6 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
       }
     QRY
   end
-  let(:noteable_data) { graphql_data['project']['mergeRequest'] }
 
   it_behaves_like "exposing regular notes on a noteable in GraphQL"
 

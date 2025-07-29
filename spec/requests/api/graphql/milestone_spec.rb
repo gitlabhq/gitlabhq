@@ -15,16 +15,16 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
   let_it_be(:release_a) { create(:release, project: project) }
   let_it_be(:release_b) { create(:release, project: project) }
 
+  let(:expected_release_nodes) do
+    contain_exactly(a_graphql_entity_for(release_a), a_graphql_entity_for(release_b))
+  end
+
   before_all do
     milestone.releases << [release_a, release_b]
     project.add_guest(guest)
     group.add_guest(inherited_guest)
     group.add_reporter(inherited_reporter)
     group.add_developer(inherited_developer)
-  end
-
-  let(:expected_release_nodes) do
-    contain_exactly(a_graphql_entity_for(release_a), a_graphql_entity_for(release_b))
   end
 
   shared_examples 'returns the milestone successfully' do

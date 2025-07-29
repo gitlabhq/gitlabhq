@@ -9,8 +9,6 @@ RSpec.describe 'Project Deployment query', feature_category: :continuous_deliver
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:deployment) { create(:deployment, environment: environment, project: project) }
 
-  subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
-
   let(:user) { developer }
 
   let(:query) do
@@ -32,6 +30,8 @@ RSpec.describe 'Project Deployment query', feature_category: :continuous_deliver
       }
     )
   end
+
+  subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
   it 'returns the deployment of the project' do
     deployment_data = subject.dig('data', 'project', 'deployment')

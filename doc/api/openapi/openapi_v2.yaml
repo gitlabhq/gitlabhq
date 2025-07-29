@@ -5274,6 +5274,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4GroupsIdIntegrationsJiraCloudApp
+  "/api/v4/groups/{id}/integrations/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4GroupsIdIntegrationsLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4GroupsIdIntegrationsLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4GroupsIdIntegrationsLinear
   "/api/v4/groups/{id}/integrations/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -6290,6 +6325,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -6370,6 +6406,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -20348,6 +20385,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdServicesJiraCloudApp
+  "/api/v4/projects/{id}/services/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4ProjectsIdServicesLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdServicesLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4ProjectsIdServicesLinear
   "/api/v4/projects/{id}/services/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -21364,6 +21436,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -21444,6 +21517,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -22381,6 +22455,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdIntegrationsJiraCloudApp
+  "/api/v4/projects/{id}/integrations/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4ProjectsIdIntegrationsLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdIntegrationsLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4ProjectsIdIntegrationsLinear
   "/api/v4/projects/{id}/integrations/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -23397,6 +23506,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -23477,6 +23587,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -47704,6 +47815,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4GroupsIdIntegrationsLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4GroupsIdIntegrationsMatrix:
     type: object
     properties:
@@ -54238,6 +54365,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4ProjectsIdServicesLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4ProjectsIdServicesMatrix:
     type: object
     properties:
@@ -56064,6 +56207,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4ProjectsIdIntegrationsLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4ProjectsIdIntegrationsMatrix:
     type: object
     properties:

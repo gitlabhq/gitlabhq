@@ -232,7 +232,7 @@ export default {
         :src="user.avatarUrl"
         :label="user.name"
         :sub-label="username"
-        class="gl-w-full"
+        class="gl-w-full gl-break-anywhere"
       >
         <template v-if="isBlocked">
           <span class="gl-mt-4 gl-italic">{{ $options.I18N_USER_BLOCKED }}</span>

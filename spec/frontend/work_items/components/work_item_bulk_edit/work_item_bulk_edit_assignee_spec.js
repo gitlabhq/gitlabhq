@@ -134,6 +134,50 @@ describe('WorkItemBulkEditAssignee component', () => {
           },
         ]);
       });
+
+      it('renders all users with current user Administrator at the top even when current user is not in response', async () => {
+        createComponent({
+          searchQueryHandler: jest.fn().mockResolvedValue({
+            data: {
+              workspace: {
+                id: 'gid://gitlab/Project/7',
+                __typename: 'Project',
+                users: [
+                  {
+                    __typename: 'AutocompletedUser',
+                    id: 'gid://gitlab/User/5',
+                    avatarUrl: '/avatar2',
+                    name: 'rookie',
+                    username: 'rookie',
+                    webUrl: 'rookie',
+                    webPath: '/rookie',
+                    status: null,
+                  },
+                ],
+              },
+            },
+          }),
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(findListbox().props('items')).toEqual([
+          {
+            text: 'Unassigned',
+            textSrOnly: true,
+            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+          },
+          {
+            text: 'All',
+            textSrOnly: true,
+            options: [
+              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
+              expect.objectContaining({ text: 'rookie', value: 'gid://gitlab/User/5' }),
+            ],
+          },
+        ]);
+      });
     });
 
     describe('with selected user', () => {
@@ -176,8 +220,8 @@ describe('WorkItemBulkEditAssignee component', () => {
             text: 'All',
             textSrOnly: true,
             options: [
-              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
               expect.objectContaining({ text: 'rookie', value: 'gid://gitlab/User/5' }),
+              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
             ],
           },
         ]);

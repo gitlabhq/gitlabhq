@@ -125,6 +125,13 @@ export default {
         this.state = STATE_ERROR;
       }
     },
+    reset() {
+      // We need to run this in the next tick because otherwise the cancel button doesn't collapse the form section.
+      setTimeout(() => {
+        this.state = STATE_READY;
+        this.form = { deviceName: '', password: '' };
+      });
+    },
   },
 };
 </script>
@@ -132,17 +139,26 @@ export default {
 <template>
   <div class="gl-mb-5">
     <template v-if="isCurrentState($options.STATE_UNSUPPORTED)">
-      <gl-alert variant="danger" :dismissible="false">{{ errorMessage }}</gl-alert>
+      <gl-alert variant="danger" :dismissible="false">
+        {{ errorMessage }}
+        <template #actions>
+          <gl-button class="js-toggle-button">{{ __('Cancel') }}</gl-button>
+        </template>
+      </gl-alert>
     </template>
 
     <template v-else-if="isCurrentState($options.STATE_READY)">
       <gl-button variant="confirm" @click="onRegister">{{ $options.I18N_BUTTON_SETUP }}</gl-button>
+      <gl-button class="js-toggle-button">{{ __('Cancel') }}</gl-button>
     </template>
 
     <template v-else-if="isCurrentState($options.STATE_WAITING)">
       <gl-alert :dismissible="false">
         {{ $options.I18N_STATUS_WAITING }}
-        <gl-loading-icon />
+        <gl-loading-icon size="lg" class="gl-p-4" />
+        <template #actions>
+          <gl-button class="js-toggle-button" @click="reset">{{ __('Cancel') }}</gl-button>
+        </template>
       </gl-alert>
     </template>
 
@@ -192,20 +208,26 @@ export default {
         <input type="hidden" name="device_registration[device_response]" :value="credentials" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
-        <gl-button type="submit" :disabled="disabled" variant="confirm">{{
-          $options.I18N_BUTTON_REGISTER
-        }}</gl-button>
+        <div class="gl-flex gl-gap-3">
+          <gl-button type="submit" :disabled="disabled" variant="confirm">{{
+            $options.I18N_BUTTON_REGISTER
+          }}</gl-button>
+          <gl-button class="js-toggle-button" @click="reset">{{ __('Cancel') }}</gl-button>
+        </div>
       </gl-form>
     </template>
 
     <template v-else-if="isCurrentState($options.STATE_ERROR)">
-      <gl-alert
-        variant="danger"
-        :dismissible="false"
-        :secondary-button-text="$options.I18N_BUTTON_TRY_AGAIN"
-        @secondaryAction="onRegister"
-      >
+      <gl-alert variant="danger" :dismissible="false">
         {{ errorMessage }}
+        <template #actions>
+          <div class="gl-flex gl-gap-3">
+            <gl-button variant="confirm" @click="onRegister">{{
+              $options.I18N_BUTTON_TRY_AGAIN
+            }}</gl-button>
+            <gl-button class="js-toggle-button" @click="reset">{{ __('Cancel') }}</gl-button>
+          </div>
+        </template>
       </gl-alert>
     </template>
   </div>

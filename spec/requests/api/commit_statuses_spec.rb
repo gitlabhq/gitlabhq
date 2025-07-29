@@ -29,12 +29,11 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       end
 
       context "reporter user" do
-        let(:statuses_id) { json_response.map { |status| status['id'] } }
-
         def create_status(pipeline, opts = {})
           create(:commit_status, { pipeline: pipeline, ref: pipeline.ref }.merge(opts))
         end
 
+        let(:statuses_id) { json_response.map { |status| status['id'] } }
         let_it_be(:status1) { create_status(master, status: 'running', retried: true) }
         let_it_be(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
         let_it_be(:status3) { create_status(develop, status: 'running', allow_failure: true) }

@@ -18,8 +18,15 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
   let_it_be(:closed) { create(:milestone, :closed, project: project) }
 
   let(:results) { graphql_data_at(:project, :milestones, :nodes) }
-
   let(:search_params) { nil }
+
+  let(:query) do
+    query_milestones(all_graphql_fields_for('Milestone', max_depth: 1))
+  end
+
+  let(:all_milestones) do
+    [no_dates, no_end, no_start, fully_past, fully_future, covers_today, closed]
+  end
 
   def query_milestones(fields)
     graphql_query_for(
@@ -36,14 +43,6 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
     expected.map do |milestone|
       a_graphql_entity_for(milestone)
     end
-  end
-
-  let(:query) do
-    query_milestones(all_graphql_fields_for('Milestone', max_depth: 1))
-  end
-
-  let(:all_milestones) do
-    [no_dates, no_end, no_start, fully_past, fully_future, covers_today, closed]
   end
 
   it_behaves_like 'a working graphql query' do

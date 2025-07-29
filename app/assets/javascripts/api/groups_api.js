@@ -5,6 +5,7 @@ import { buildApiUrl } from './api_utils';
 const GROUP_PATH = '/api/:version/groups/:id';
 const GROUP_RESTORE_PATH = '/api/:version/groups/:id/restore';
 const GROUP_ARCHIVE_PATH = '/api/:version/groups/:id/archive';
+const GROUP_UNARCHIVE_PATH = '/api/:version/groups/:id/unarchive';
 const GROUPS_PATH = '/api/:version/groups.json';
 const GROUP_MEMBERS_PATH = '/api/:version/groups/:id/members';
 const GROUP_MEMBER_PATH = '/api/:version/groups/:id/members/:user_id';
@@ -69,6 +70,12 @@ export function restoreGroup(groupId) {
 
 export function archiveGroup(groupId) {
   const url = buildApiUrl(GROUP_ARCHIVE_PATH).replace(':id', groupId);
+
+  return axios.post(url);
+}
+
+export function unarchiveGroup(groupId) {
+  const url = buildApiUrl(GROUP_UNARCHIVE_PATH).replace(':id', groupId);
 
   return axios.post(url);
 }

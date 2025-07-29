@@ -100,6 +100,7 @@ module Integrations
       :user_key,
       :username,
       :webhook,
+      :workspace_url,
       :zentao_product_xid
     ].freeze
 

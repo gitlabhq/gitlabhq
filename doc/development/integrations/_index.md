@@ -204,7 +204,14 @@ To create metric definitions:
 1. Replace `milestone` with the current milestone and `introduced_by_url` with the merge request link.
 1. Verify all other attributes have correct values by checking the [metrics guide](../internal_analytics/metrics/metrics_dictionary.md#metrics-definition-and-validation).
 
-For example, to create metric definitions for the Slack integration, you copy the metrics [1](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180122_projects_slack_active.yml), [2](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180124_groups_slack_active.yml), [3](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), [4](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), and [5](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180129_projects_inheriting_slack_active.yml)), then replace `Slack` with the name of the new integration.
+For example, to create metric definitions for the Slack integration, you copy these metrics, and
+then replace `Slack` with the name of the new integration:
+
+- [`20210216180122_projects_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180122_projects_slack_active.yml)
+- [`20210216180124_groups_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180124_groups_slack_active.yml)
+- [`20210216180127_instances_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml)
+- [`20210216180131_groups_inheriting_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180131_groups_inheriting_slack_active.yml)
+- [`20210216180129_projects_inheriting_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180129_projects_inheriting_slack_active.yml)
 
 ### Security requirements
 

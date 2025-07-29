@@ -668,6 +668,7 @@ project:
 - ewm_integration
 - clickup_integration
 - external_wiki_integration
+- linear_integration
 - mock_ci_integration
 - mock_monitoring_integration
 - squash_tm_integration

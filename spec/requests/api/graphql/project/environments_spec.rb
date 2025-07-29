@@ -10,8 +10,6 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
   let_it_be_with_refind(:staging) { create(:environment, :staging, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
-  subject { post_graphql(query, current_user: user) }
-
   let(:user) { developer }
 
   let(:query) do
@@ -31,6 +29,8 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
       }
     )
   end
+
+  subject { post_graphql(query, current_user: user) }
 
   it 'returns the specified fields of the environment', :aggregate_failures do
     production.update!(auto_stop_at: 1.day.ago, auto_delete_at: 2.days.ago, environment_type: 'review')

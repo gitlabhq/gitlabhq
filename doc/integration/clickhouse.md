@@ -2,20 +2,27 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: ClickHouse integration guidelines
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta on GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta on GitLab Self-Managed and GitLab Dedicated
 
 {{< /details >}}
 
 {{< alert type="note" >}}
 
 For more information on plans for ClickHouse support for GitLab Self-Managed, see [this epic](https://gitlab.com/groups/gitlab-com/gl-infra/data-access/dbo/-/epics/29).
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse).
 
 {{< /alert >}}
 

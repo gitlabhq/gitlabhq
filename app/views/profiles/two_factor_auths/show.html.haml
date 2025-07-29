@@ -19,49 +19,10 @@
   - c.with_body do
     = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
 
-= render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |c|
-  - c.with_description do
-    = _('Set up a hardware device to enable two-factor authentication (2FA).')
-    = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
-  - c.with_body do
-    - if @webauthn_registration.errors.present?
-      = form_errors(@webauthn_registration)
+= render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |s|
+  - s.with_body do
+    = render 'webauthn_registration'
 
-    #js-device-registration{ data: device_registration_data(current_password_required: current_password_required?, target_path: create_webauthn_profile_two_factor_auth_path, webauthn_error: @webauthn_error) }
-
-    = render ::Layouts::CrudComponent.new(_('WebAuthn Devices'),
-      icon: 'lock',
-      count: @registrations.length) do |c|
-      - c.with_body do
-        - if @registrations.present?
-          .table-responsive
-            %table.table.gl-table
-              %colgroup
-                %col{ width: "50%" }
-                %col{ width: "30%" }
-                %col{ width: "20%" }
-              %thead
-                %tr
-                  %th= _('Name')
-                  %th= s_('2FADevice|Registered On')
-                  %th
-              %tbody
-                - @registrations.each do |registration|
-                  %tr
-                    %td
-                      - if registration[:name].present?
-                        = registration[:name]
-                      - else
-                        %span.gl-text-subtle
-                          = _("no name set")
-                    %td= registration[:created_at].to_date.to_fs(:medium)
-                    %td{ class: '!gl-py-3' }
-                      .gl-float-right
-                        .js-two-factor-action-confirm{ data: delete_webauthn_device_data(current_password_required?, registration[:delete_path]) }
-
-        - else
-          .gl-text-subtle
-            = _("You don't have any WebAuthn devices registered yet.")
 
 = render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |s|
   - s.with_body do

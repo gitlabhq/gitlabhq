@@ -31587,6 +31587,7 @@ Returns [`String`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="grouppermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
+| <a id="grouppermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
 | <a id="grouppermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this group. |
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
@@ -39354,6 +39355,25 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectsecurityexclusionsscanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Filter entries by scanner. |
 | <a id="projectsecurityexclusionstype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Filter entries by exclusion type. |
 
+##### `Project.securityMetrics`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Security metrics.This feature is currently under development and not yet available for general use.
+
+Returns [`SecurityMetrics`](#securitymetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritymetricsprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs. |
+| <a id="projectsecuritymetricsscanner"></a>`scanner` | [`[String!]`](#string) | Filter by scanner names. |
+| <a id="projectsecuritymetricsseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter by vulnerability severity levels. |
+
 ##### `Project.securityPolicies`
 
 {{< details >}}
@@ -40048,6 +40068,7 @@ Returns [`String`](#string).
 | <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_project` on this resource. |
 | <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_remote_mirror` on this resource. |
 | <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_wiki` on this resource. |
+| <a id="projectpermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
 | <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_project` on this resource. |
 | <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_namespace` on this resource. |
 | <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_visibility_level` on this resource. |
@@ -48414,6 +48435,7 @@ State of a Sentry error.
 | <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | Jenkins integration. |
 | <a id="servicetypejira_cloud_app_service"></a>`JIRA_CLOUD_APP_SERVICE` | GitLab for Jira Cloud app integration. |
 | <a id="servicetypejira_service"></a>`JIRA_SERVICE` | Jira issues integration. |
+| <a id="servicetypelinear_service"></a>`LINEAR_SERVICE` | Linear integration. |
 | <a id="servicetypematrix_service"></a>`MATRIX_SERVICE` | Matrix notifications integration. |
 | <a id="servicetypemattermost_service"></a>`MATTERMOST_SERVICE` | Mattermost notifications integration. |
 | <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | Mattermost slash commands integration. |

@@ -134,6 +134,25 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
 
+#### ClickHouse
+
+You can access [advanced analytical features](../../integration/clickhouse.md) through the ClickHouse integration,
+which is enabled by default for eligible customers. You are eligible if:
+
+- Your GitLab Dedicated tenant is deployed to a commercial AWS region. GitLab Dedicated for Government is not supported.
+- Your tenant's primary region is supported by ClickHouse Cloud. For a list of supported regions, see [supported regions for ClickHouse Cloud](https://clickhouse.com/docs/cloud/reference/supported-regions#aws-regions).
+
+ClickHouse serves as a secondary data store for your GitLab Dedicated instance, enabling advanced analytics capabilities.
+
+Your GitLab Dedicated instance includes a ClickHouse Cloud database deployed in your tenant's primary region.
+The database is not publicly accessible and connects through AWS PrivateLink.
+Your data is encrypted in transit and at rest using cloud provider-managed AES 256 keys and transparent data encryption.
+
+ClickHouse on GitLab Dedicated has the following limitations:
+
+- [Bring your own key (BYOK)](../../administration/dedicated/encryption.md#bring-your-own-key-byok) is not supported.
+- No SLAs apply. Recovery Time Objective (RTO) and Recovery Point Objective (RPO) are best efforts.
+
 #### GitLab Pages
 
 You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.

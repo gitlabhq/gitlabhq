@@ -89,6 +89,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
         # Have the "webauthn device" respond with bad data
         page.execute_script(mock_register_js)
+        click_on _('Register device')
         click_on _('Set up new device')
         webauthn_fill_form_and_submit(password: user.password)
         expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))
@@ -102,6 +103,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
         # Failed registration
         page.execute_script(mock_register_js)
+        click_on _('Register device')
         click_on _('Set up new device')
         webauthn_fill_form_and_submit(password: user.password)
         expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))

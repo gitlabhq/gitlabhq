@@ -8,8 +8,6 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  include_context 'Jira projects request context'
-
   let(:services) { graphql_data_at(:project, :services, :edges) }
   let(:jira_projects) { services.first.dig('node', 'projects', 'nodes') }
   let(:projects_query) { 'projects' }
@@ -36,6 +34,8 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
       }
     ) % { projects_query: projects_query }
   end
+
+  include_context 'Jira projects request context'
 
   context 'when user does not have access' do
     it_behaves_like 'unauthorized users cannot read services'

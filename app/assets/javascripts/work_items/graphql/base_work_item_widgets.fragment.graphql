@@ -99,14 +99,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetLinkedItems {
-    linkedItems {
-      nodes {
-        linkId
-        linkType
-      }
-    }
-  }
   ... on WorkItemWidgetLinkedResources {
     linkedResources {
       nodes {

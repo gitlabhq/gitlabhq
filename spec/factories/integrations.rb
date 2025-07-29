@@ -502,6 +502,13 @@ FactoryBot.define do
     jira_cloud_app_service_ids { 'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzI=' }
   end
 
+  factory :linear_integration, class: 'Integrations::Linear' do
+    project
+    active { true }
+    type { 'Integrations::Linear' }
+    workspace_url { 'https://linear.app/example' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

@@ -41,13 +41,12 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
   describe 'GET #index' do
     let(:default_model) { ActiveRecord::Base }
     let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db', database: 'db') }
+    let!(:main_database_migration) { create(:batched_background_migration, :active) }
 
     before do
       allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
       allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
     end
-
-    let!(:main_database_migration) { create(:batched_background_migration, :active) }
 
     context 'when no database is provided' do
       let(:base_models) { { 'fake_db' => default_model }.with_indifferent_access }

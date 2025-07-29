@@ -101,22 +101,21 @@ export default {
         });
       }
 
+      // Add currentUser to top of "All" if there's no search and they're not in the "Selected" section
+      const allOptions =
+        !this.searchTerm && this.currentUser && this.currentUser.id !== this.selectedId
+          ? [
+              this.currentUser,
+              ...this.users.filter(
+                (user) => user.id !== this.selectedId && user.id !== this.currentUser.id,
+              ),
+            ]
+          : this.users.filter((user) => user.id !== this.selectedId);
+
       listboxItems.push({
         text: __('All'),
         textSrOnly: true,
-        options: this.users
-          .reduce((acc, user) => {
-            // If user is the selected user, take them out of the list
-            if (user.id === this.selectedId) {
-              return acc;
-            }
-            // If user is the current user, move them to the beginning of the list
-            if (user.id === this.currentUser?.id) {
-              return [user].concat(acc);
-            }
-            return acc.concat(user);
-          }, [])
-          .map(formatUserForListbox),
+        options: allOptions.map(formatUserForListbox),
       });
 
       return listboxItems;

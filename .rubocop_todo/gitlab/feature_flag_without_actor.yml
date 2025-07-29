@@ -77,7 +77,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/views/admin/application_settings/_ee_package_registry.haml'
     - 'ee/app/views/admin/application_settings/_elasticsearch_form.html.haml'
     - 'ee/app/views/admin/application_settings/_git_two_factor_session_expiry.html.haml'
-    - 'ee/app/views/admin/geo/shared/_replication_nav.haml'
     - 'ee/app/views/groups/contribution_analytics/show.html.haml'
     - 'ee/app/views/notify/okr_checkin_reminder_notification.html.haml'
     - 'ee/app/views/projects/on_demand_scans/index.html.haml'

@@ -229,7 +229,7 @@ To enable additional triggers for these webhooks:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select the **Extended Group Access Tokens Expiry Webhook execution** checkbox.
+1. Select the **Add additional webhook triggers for group access token expiration** checkbox.
 1. Select **Save changes**.
 
 ## Disable group mentions

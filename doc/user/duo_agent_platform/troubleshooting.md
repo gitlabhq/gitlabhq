@@ -43,9 +43,13 @@ You can troubleshoot some issues by viewing debugging logs.
 ## Network issues
 
 Your network might block the connection to the Agent Platform service,
-for example, by using a firewall. The network must let HTTP/2 traffic through to the service.
+for example, by using a firewall. By default the Agent Platform uses a gRPC
+(Google Remote Procedure Call) connection. The network must let HTTP/2 traffic through to
+the service for gRPC to work.
 
-To confirm that you can connect to the Agent Platform service:
+gRPC can be [changed to a WebSocket connection](#use-websocket-connection-instead-of-grpc) in the IDE.
+
+To confirm that you can connect to the Agent Platform service using gRPC:
 
 1. In Google Chrome or Firefox, open Developer Tools and select the **Network** tab.
 1. Right-click the column headers to show the **Protocol** column.
@@ -59,6 +63,20 @@ If the request fails or does not show the HTTP/2 protocol:
 
 To correct this issue, ask your network administrator to put `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`
 on the correct allowlist, or to exempt it from traffic inspection.
+
+### Use WebSocket connection instead of gRPC
+
+If your network conditions do not allow a gRPC connection, WebSocket is an alternative in
+VS Code and JetBrains IDEs:
+
+- In VS Code:
+  1. Select **File** > **Preferences** > **Settings**
+  1. Search for the setting **GitLab: Duo Agent Platform: Connection Type**, then select `WebSocket`.
+
+- In JetBrains:
+  1. On the top bar, select the main menu, then select **Settings**.
+  1. On the left sidebar, select **Tools > GitLab Duo**.
+  1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
 
 ## IDE configuration
 

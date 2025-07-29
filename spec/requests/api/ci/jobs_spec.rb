@@ -269,14 +269,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       ]
     end
 
-    before_all do
-      project.update!(group: group)
-    end
-
     let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user, status: job_status) }
     let(:job_status) { 'running' }
     let(:params) { {} }
+
+    before_all do
+      project.update!(group: group)
+    end
 
     subject do
       get api('/job/allowed_agents'), headers: headers, params: params

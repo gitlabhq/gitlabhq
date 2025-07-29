@@ -161,10 +161,6 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     let(:management_project) { create(:project, namespace: project.namespace) }
     let(:management_project_id) { management_project.id }
 
-    before do
-      management_project.add_maintainer(maintainer_user)
-    end
-
     let(:platform_kubernetes_attributes) do
       {
         api_url: api_url,
@@ -184,6 +180,10 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         management_project_id: management_project_id
       }
+    end
+
+    before do
+      management_project.add_maintainer(maintainer_user)
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do

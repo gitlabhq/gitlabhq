@@ -2105,7 +2105,7 @@ msgstr ""
 msgid "2FA"
 msgstr ""
 
-msgid "2FADevice|Registered On"
+msgid "2FADevice|Registered on"
 msgstr ""
 
 msgid "30+ contributions"
@@ -28110,9 +28110,6 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
-msgid "Geo Replication - %{node_name}"
-msgstr ""
-
 msgid "Geo Settings"
 msgstr ""
 
@@ -28172,9 +28169,6 @@ msgid "Geo|All"
 msgstr ""
 
 msgid "Geo|All %{replicableType} are being scheduled for %{action}"
-msgstr ""
-
-msgid "Geo|All %{replicable_name}"
 msgstr ""
 
 msgid "Geo|All projects"
@@ -28318,9 +28312,6 @@ msgstr ""
 msgid "Geo|Filter Geo sites"
 msgstr ""
 
-msgid "Geo|Filter by name"
-msgstr ""
-
 msgid "Geo|Geo Replication - %{node_name}"
 msgstr ""
 
@@ -28364,9 +28355,6 @@ msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
-msgstr ""
-
-msgid "Geo|In progress"
 msgstr ""
 
 msgid "Geo|Internal URL"
@@ -37418,6 +37406,24 @@ msgstr[1] ""
 msgid "Line changes"
 msgstr ""
 
+msgid "LinearIntegration|Linear workspace URL (for example, https://linear.app/example)"
+msgstr ""
+
+msgid "LinearIntegration|The Linear logo is a trademark of Linear Orbit Inc. in the U.S. and other countries."
+msgstr ""
+
+msgid "LinearIntegration|URL must point to a workspace URL like https://linear.app/example"
+msgstr ""
+
+msgid "LinearIntegration|Use Linear as this project's issue tracker."
+msgstr ""
+
+msgid "LinearIntegration|Workspace URL"
+msgstr ""
+
+msgid "LinearIntegration|https://linear.app/example"
+msgstr ""
+
 msgid "Link"
 msgstr ""
 
@@ -42049,7 +42055,7 @@ msgstr ""
 msgid "Not adopted"
 msgstr ""
 
-msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser."
+msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in."
 msgstr ""
 
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
@@ -59534,7 +59540,7 @@ msgstr ""
 msgid "Set up Jira Integration"
 msgstr ""
 
-msgid "Set up a hardware device to enable two-factor authentication (2FA)."
+msgid "Set up a WebAuthn device to enable two-factor authentication (2FA)."
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
@@ -69651,6 +69657,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
 msgstr ""
 
+msgid "VulnerabilityManagement|Could not refresh the validity check. Please try again."
+msgstr ""
+
 msgid "VulnerabilityManagement|Create Jira issue"
 msgstr ""
 
@@ -70218,7 +70227,7 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
-msgid "WebAuthn Devices"
+msgid "WebAuthn devices"
 msgstr ""
 
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
@@ -73016,9 +73025,6 @@ msgid "You do not have permission to update the environment."
 msgstr ""
 
 msgid "You do not have permissions to run the import."
-msgstr ""
-
-msgid "You don't have any WebAuthn devices registered yet."
 msgstr ""
 
 msgid "You don't have any applications."

@@ -33,6 +33,7 @@ classes:
 - Integrations::Jenkins
 - Integrations::Jira
 - Integrations::JiraCloudApp
+- Integrations::Linear
 - Integrations::Matrix
 - Integrations::Mattermost
 - Integrations::MattermostSlashCommands

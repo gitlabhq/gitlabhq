@@ -7,6 +7,9 @@ RSpec.shared_context 'GroupPolicy context' do
       organization: organization)
   end
 
+  let_it_be(:subgroup) { create(:group, :private, parent: group) }
+
+  let_it_be(:anonymous) { nil }
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:planner) { create(:user, planner_of: group) }
   let_it_be(:reporter) { create(:user, reporter_of: group) }
@@ -16,6 +19,8 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_group_member) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }
+  let_it_be(:subgroup_guest) { create(:user, guest_of: subgroup) }
+  let_it_be(:subgroup_maintainer) { create(:user, maintainer_of: subgroup) }
 
   let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 
