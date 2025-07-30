@@ -908,7 +908,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
-  describe 'SSH Keys' do
+  describe 'SSH keys' do
     let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
 

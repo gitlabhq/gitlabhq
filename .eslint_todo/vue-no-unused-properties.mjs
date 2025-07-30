@@ -187,7 +187,6 @@ export default {
     'ee/app/assets/javascripts/roadmap/components/roadmap_filters.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_timeline_section.vue',
-    'ee/app/assets/javascripts/tracing/details/tracing_details.vue',
   ],
   rules: {
     'vue/no-unused-properties': 'off',

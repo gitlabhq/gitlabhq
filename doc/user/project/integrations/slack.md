@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Slack notifications (deprecated)
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-05-16' -->
 
 {{< details >}}
 

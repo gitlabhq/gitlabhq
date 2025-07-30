@@ -285,7 +285,7 @@ module SearchHelper
   def default_autocomplete
     [
       { category: "Settings", label: _("User settings"),    url: user_settings_profile_path },
-      { category: "Settings", label: _("SSH Keys"),         url: user_settings_ssh_keys_path },
+      { category: "Settings", label: _("SSH keys"),         url: user_settings_ssh_keys_path },
       { category: "Settings", label: _("Dashboard"),        url: root_path }
     ]
   end
@@ -305,7 +305,7 @@ module SearchHelper
       { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions.md") },
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
       { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/_index.md") },
-      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
+      { category: "Help", label: _("SSH keys Help"),                url: help_page_path("user/ssh.md") },
       {
         category: "Help",
         label: s_("Webhooks|System hooks help"),

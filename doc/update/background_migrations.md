@@ -26,15 +26,6 @@ When upgrading GitLab, there are two types of migrations to check:
 
 {{< /history >}}
 
-Certain releases may require different migrations to be finished before you
-update to the newer version. Two kinds of migrations exist. They differ, and you
-should check that both are complete before upgrading GitLab:
-
-- [Batched background migrations](#batched-background-migrations) were introduced
-  in GitLab 14.0. All migrations in GitLab 15.1 and later use this format exclusively.
-- [Background migrations](#background-migrations) that are not batched.
-  Used in GitLab 15.0 and earlier.
-
 To decrease the time required to complete these migrations, increase the number of
 [Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
@@ -422,85 +413,6 @@ Gitlab::Database.database_base_models.each do |database_name, model|
   end
 end
 ```
-
-<!--- start_remove The following content will be removed on remove_date: '2025-05-10' -->
-<!-- This page needs significant revision after 15.0 becomes unsupported -->
-<!--- end_remove -->
-
-### Background migrations
-
-Non-batched migrations are superseded by batched background migrations. Non-batched
-migrations were gradually phased out during GitLab 14, with the last one
-used in GitLab 15.0.
-
-#### Check for pending background migrations
-
-To check for pending non-batched background migrations:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-```shell
-sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
-```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### Check for failed background migrations
-
-To check for non-batched background migrations that have failed:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-For GitLab versions 14.10 and later:
-
-```shell
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
-```
-
-For GitLab versions 14.0-14.9:
-
-```shell
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
-```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-For GitLab versions 14.10 and later:
-
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
-```
-
-For GitLab versions 14.0-14.9:
-
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 ## Advanced search migrations
 

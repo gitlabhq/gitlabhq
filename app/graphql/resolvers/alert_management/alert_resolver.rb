@@ -37,6 +37,8 @@ module Resolvers
         parent = object.respond_to?(:sync) ? object.sync : object
         return ::AlertManagement::Alert.none if parent.nil?
 
+        raise GraphQL::ExecutionError, error_message if alert_is_disabled?
+
         apply_lookahead(::AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute)
       end
 
@@ -46,6 +48,19 @@ module Resolvers
           notes: [:ordered_notes, { ordered_notes: [:system_note_metadata, :project, :noteable] }],
           issue: [:issue]
         }
+      end
+
+      private
+
+      def alert_is_disabled?
+        Feature.enabled?(:hide_incident_management_features, object)
+      end
+
+      # This error is raised when the alert feature is disabled via feature flag.
+      # Not yet a deprecated field, as the FF is disabled by default (see issue#537182).
+      # If the FF is enabled in the future, we may need to consider deprecating this field.
+      def error_message
+        "Field 'alertManagementAlerts' doesn't exist on type 'Project'."
       end
     end
   end

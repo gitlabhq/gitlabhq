@@ -159,52 +159,6 @@ build-job:
     - echo "Testing"
 ```
 
-<!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
-
-## `workflow:rules` templates (Deprecated)
-
-{{< alert type="warning" >}}
-
-The `workflow:rules` templates were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/456394)
-in GitLab 17.0 and are planned for removal in 18.0. This change is a breaking change.
-To configure `workflow:rules` in your pipeline, add the keyword explicitly. See the previous examples for options.
-
-{{< /alert >}}
-
-GitLab provides templates that set up `workflow: rules`
-for common scenarios. These templates help prevent duplicate pipelines.
-
-The [`Branch-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/Branch-Pipelines.gitlab-ci.yml)
-makes your pipelines run for branches and tags.
-
-Branch pipeline status is displayed in merge requests that use the branch
-as a source. However, this pipeline type does not support any features offered by
-[merge request pipelines](../pipelines/merge_request_pipelines.md), like
-[merged results pipelines](../pipelines/merged_results_pipelines.md)
-or [merge trains](../pipelines/merge_trains.md).
-This template intentionally avoids those features.
-
-To [include](_index.md#include) it:
-
-```yaml
-include:
-  - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
-```
-
-The [`MergeRequest-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml)
-makes your pipelines run for the default branch, tags, and
-all types of merge request pipelines. Use this template if you use any of the
-[merge request pipelines features](../pipelines/merge_request_pipelines.md).
-
-To [include](_index.md#include) it:
-
-```yaml
-include:
-  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
-```
-
-<!--- end_remove -->
-
 ## Troubleshooting
 
 ### Merge request stuck with `Checking pipeline status.` message

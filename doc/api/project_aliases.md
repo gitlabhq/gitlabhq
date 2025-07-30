@@ -12,6 +12,10 @@ title: Project Aliases API
 
 {{< /details >}}
 
+Add, change, or remove project aliases with this API. After you
+create an alias for a project, users can clone the repository with the alias,
+which can be helpful when migrating repositories.
+
 All methods require administrator authorization.
 
 ## List all project aliases

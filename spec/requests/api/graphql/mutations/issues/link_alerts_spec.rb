@@ -53,12 +53,30 @@ RSpec.describe 'Link alerts to an incident', feature_category: :incident_managem
   end
 
   context 'when the user is allowed to update the incident' do
+    before do
+      stub_feature_flags(hide_incident_management_features: false)
+    end
+
     it 'links alerts to the incident' do
       post_graphql_mutation(mutation, current_user: developer)
 
       expect(response).to have_gitlab_http_status(:success)
       expected_response = [linked_alert, alert1, alert2].map { |a| { 'iid' => a.iid.to_s } }
       expect(mutation_response.dig('issue', 'alertManagementAlerts', 'nodes')).to match_array(expected_response)
+    end
+  end
+
+  context 'when hide_incident_management_features flag is enabled' do
+    it 'does not return alertManagementAlerts and raises a GraphQL error' do
+      post_graphql_mutation(mutation, current_user: developer)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response.dig('issue', 'alertManagementAlerts')).to be_nil
+
+      parsed_errors = Gitlab::Json.parse(response.body)['errors']
+      expect(parsed_errors).to include(
+        a_hash_including('message' => a_string_matching(/Field 'alertManagementAlerts' doesn't exist/))
+      )
     end
   end
 end

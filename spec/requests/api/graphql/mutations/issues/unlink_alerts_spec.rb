@@ -59,14 +59,33 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
 
   context 'when the user is allowed to update the incident' do
     shared_examples 'unlinking' do
-      it 'unlinks the alert from the incident', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: current_user)
+      context 'when hide_incident_management_features is disabled' do
+        before do
+          stub_feature_flags(hide_incident_management_features: false)
+        end
 
-        expect(response).to have_gitlab_http_status(:success)
-        expected_response = visible_remainded_alerts.map { |a| { 'id' => a.to_global_id.to_s } }
-        expect(mutation_response.dig('issue', 'alertManagementAlerts', 'nodes')).to match_array(expected_response)
+        it 'unlinks the alert from the incident', :aggregate_failures do
+          post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(incident.reload.alert_management_alerts).to match_array(actual_remainded_alerts)
+          expect(response).to have_gitlab_http_status(:success)
+          expected_response = visible_remainded_alerts.map { |a| { 'id' => a.to_global_id.to_s } }
+          expect(mutation_response.dig('issue', 'alertManagementAlerts', 'nodes')).to match_array(expected_response)
+
+          expect(incident.reload.alert_management_alerts).to match_array(actual_remainded_alerts)
+        end
+      end
+
+      context 'when hide_incident_management_features is enabled' do
+        it 'does not return alert data and raises a GraphQL error', :aggregate_failures do
+          post_graphql_mutation(mutation, current_user: current_user)
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response.dig('issue', 'alertManagementAlerts', 'nodes')).to be_nil
+
+          parsed_errors = Gitlab::Json.parse(response.body)['errors']
+          expect(parsed_errors).to include(
+            a_hash_including('message' => a_string_matching(/Field 'alertManagementAlerts' doesn't exist/))
+          )
+        end
       end
     end
 

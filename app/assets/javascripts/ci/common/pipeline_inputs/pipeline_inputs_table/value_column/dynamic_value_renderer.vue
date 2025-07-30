@@ -167,7 +167,7 @@ export default {
   },
   methods: {
     convertToDisplayValue(value) {
-      if (!value) {
+      if (value == null || value === '') {
         return '';
       }
 
@@ -193,6 +193,7 @@ export default {
       v-model="inputValue"
       block
       :aria-label="item.name"
+      toggle-class="!gl-pl-4"
       :header-text="__('Options')"
       :items="dropdownOptions"
     />

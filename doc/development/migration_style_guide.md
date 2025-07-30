@@ -1345,36 +1345,42 @@ class AddSecretToSomething < Gitlab::Database::Migration[2.1]
 end
 ```
 
-When storing encrypted attributes in a JSONB column, you need to:
-
-1. Add JSON schema validation
-1. Add length validation following [Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size)
-1. Allow `nil` values if the attribute is optional
-
-### Model Configuration
+When storing encrypted attributes in a JSONB column, it's good to add a length validation that
+[follows the Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size).
+For most encrypted attributes, a 510 max length should be enough.
 
 ```ruby
 class Something < ApplicationRecord
   encrypts :secret
-  validates :secret,
-            json_schema: { filename: 'something_secret' },
-            allow_nil: true,
-            length: { maximum: 510 }
+  validates :secret, length: { maximum: 510 }
 end
 ```
 
-### JSON Schema
+## Enhanced validation with type safety
 
-Create a JSON schema file at `config/json_schemas/something_secret.json`:
+For additional data integrity, validate both the format and type of the plain value before encryption:
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Secret Configuration",
-  "type": "string",
-  "description": "Encrypted secret value"
-}
+```ruby
+class Something < ApplicationRecord
+  encrypts :secret
+
+  validates :secret,
+            length: { maximum: 510 },
+            format: { with: /\A[a-zA-Z]+\z/, allow_nil: true }
+
+  validate :ensure_string_type
+
+  private
+
+  def ensure_string_type
+    unless secret.is_a?(String) || secret.nil?
+      errors.add(:secret, "must be a string")
+    end
+  end
+end
 ```
+
+This approach validates the plain value (not the underlying JSONB value) using Rails' format validator and ensures type safety by asserting that the attribute is a `String` or `nil`.
 
 ## Testing
 

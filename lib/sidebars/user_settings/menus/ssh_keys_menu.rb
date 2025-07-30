@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          _('SSH Keys')
+          _('SSH keys')
         end
 
         override :sprite_icon

@@ -2428,6 +2428,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
+msgid "AICatalog|Agent not found."
+msgstr ""
+
 msgid "AICatalog|Agent updated successfully."
 msgstr ""
 
@@ -2453,9 +2456,6 @@ msgid "AICatalog|Choose who can view and interact with this agent after it is pu
 msgstr ""
 
 msgid "AICatalog|Create agent"
-msgstr ""
-
-msgid "AICatalog|Create new agent"
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
@@ -5239,7 +5239,7 @@ msgstr ""
 msgid "AdminStatistics|Notes"
 msgstr ""
 
-msgid "AdminStatistics|SSH Keys"
+msgid "AdminStatistics|SSH keys"
 msgstr ""
 
 msgid "AdminStatistics|Snippets"
@@ -5978,9 +5978,6 @@ msgid "AiAgents|Create your own AI Agents"
 msgstr ""
 
 msgid "AiAnalytics|the ClickHouse data store is not available"
-msgstr ""
-
-msgid "AiCatalog|Agent not found."
 msgstr ""
 
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
@@ -19611,9 +19608,6 @@ msgid "CredentialsInventory|Revoke"
 msgstr ""
 
 msgid "CredentialsInventory|Revoked"
-msgstr ""
-
-msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
 msgid "CredentialsInventory|SSH keys"
@@ -41809,6 +41803,9 @@ msgstr ""
 msgid "No data found for this query."
 msgstr ""
 
+msgid "No default Duo group found. Select a default Duo group in your user preferences and try again."
+msgstr ""
+
 msgid "No deployments found"
 msgstr ""
 
@@ -54688,12 +54685,6 @@ msgstr ""
 msgid "SSH Key"
 msgstr ""
 
-msgid "SSH Keys"
-msgstr ""
-
-msgid "SSH Keys Help"
-msgstr ""
-
 msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr ""
 
@@ -54716,6 +54707,9 @@ msgid "SSH key was added to your account"
 msgstr ""
 
 msgid "SSH keys"
+msgstr ""
+
+msgid "SSH keys Help"
 msgstr ""
 
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
@@ -72872,7 +72866,7 @@ msgstr ""
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
-msgid "You can check it in your in your personal access tokens settings %{pat_link}."
+msgid "You can check it in your personal access tokens settings %{pat_link}."
 msgstr ""
 
 msgid "You can check your tokens or create a new one in your %{pat_link_start}personal access tokens settings%{pat_link_end}."
