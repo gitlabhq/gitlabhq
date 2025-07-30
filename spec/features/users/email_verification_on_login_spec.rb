@@ -38,10 +38,13 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
 
         # Expect an instructions email to be sent with a code
+        expect(ActionMailer::Base.deliveries.size).to eq(1)
         code = expect_instructions_email_and_extract_code
 
         # Signing in again prompts for the code and doesn't send a new one
         gitlab_sign_in(user)
+        expect(ActionMailer::Base.deliveries.size).to eq(0)
+
         expect(page).to have_current_path(new_user_session_path)
         expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
 

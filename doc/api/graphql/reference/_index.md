@@ -13668,6 +13668,7 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutationworkitemexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitemexportiterationcadenceid"></a>`iterationCadenceId` {{< icon name="warning-solid" >}} | [`[IterationsCadenceID!]`](#iterationscadenceid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemexportiterationid"></a>`iterationId` {{< icon name="warning-solid" >}} | [`[ID]`](#id) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemexportiterationwildcardid"></a>`iterationWildcardId` {{< icon name="warning-solid" >}} | [`IterationWildcardId`](#iterationwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
@@ -13886,6 +13887,7 @@ Input type: `WorkItemsCsvExportInput`
 | <a id="mutationworkitemscsvexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemscsvexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemscsvexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutationworkitemscsvexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitemscsvexportiterationcadenceid"></a>`iterationCadenceId` {{< icon name="warning-solid" >}} | [`[IterationsCadenceID!]`](#iterationscadenceid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemscsvexportiterationid"></a>`iterationId` {{< icon name="warning-solid" >}} | [`[ID]`](#id) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemscsvexportiterationwildcardid"></a>`iterationWildcardId` {{< icon name="warning-solid" >}} | [`IterationWildcardId`](#iterationwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
@@ -26758,6 +26760,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="currentuserworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="currentuserworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="currentuserworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="currentuserworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="currentuserworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="currentuserworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -31227,6 +31230,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemstatecountsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="groupworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="groupworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
@@ -31308,6 +31312,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="groupworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="groupworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
@@ -35612,6 +35617,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="namespaceworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="namespaceworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="namespaceworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="namespaceworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
@@ -35698,6 +35704,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="namespaceworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="namespaceworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="namespaceworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
@@ -39745,6 +39752,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemstatecountsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="projectworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="projectworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="projectworkitemstatecountsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
@@ -39822,6 +39830,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="projectworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="projectworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="projectworkitemsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |

@@ -25,6 +25,7 @@ module RuboCop
 
         BACKGROUND_MIGRATION_WORKER_NAMES = %w[BackgroundMigrationWorker CiDatabaseWorker].freeze
 
+        # @!method schedules_in_batch_without_context?(node)
         def_node_matcher :schedules_in_batch_without_context?, <<~PATTERN
           (send (...) {:bulk_perform_async :bulk_perform_in} _*)
         PATTERN

@@ -34,6 +34,7 @@ module RuboCop
               '`expect_snowplow_event` instead. ' \
               'See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#test-snowplow-events'
 
+        # @!method expect_gitlab_tracking?(node)
         def_node_matcher :expect_gitlab_tracking?, <<~PATTERN
           (send
             (send nil? {:expect :allow}

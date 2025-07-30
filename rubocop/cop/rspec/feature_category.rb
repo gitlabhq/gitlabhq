@@ -39,7 +39,7 @@ module RuboCop
 
         DOCUMENT_LINK = 'https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples'
 
-        # @!method feature_category?(node)
+        # @!method feature_category_value(node)
         def_node_matcher :feature_category_value, <<~PATTERN
           (block
             (send #rspec? {#ExampleGroups.all #Examples.all} ...

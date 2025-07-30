@@ -120,7 +120,6 @@ Style/StringConcatenation:
     - 'spec/features/projects/import_export/import_file_spec.rb'
     - 'spec/finders/packages/go/module_finder_spec.rb'
     - 'spec/graphql/mutations/issues/create_spec.rb'
-    - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/diff_helper_spec.rb'
     - 'spec/lib/api/helpers/related_resources_helpers_spec.rb'
     - 'spec/lib/banzai/filter/color_filter_spec.rb'

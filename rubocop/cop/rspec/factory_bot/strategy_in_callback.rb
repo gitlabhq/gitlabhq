@@ -15,6 +15,7 @@ module RuboCop
 
           FORBIDDEN_METHODS = %i[build build_list build_stubbed build_stubbed_list create create_list].freeze
 
+          # @!method forbidden_factory_usage(node)
           def_node_matcher :forbidden_factory_usage, <<~PATTERN
             (block
               (send nil? { :after :before } (sym _strategy))

@@ -19,6 +19,7 @@ module RuboCop
         MESSAGE = "Don't use FactoryBot.%s in migration specs, use `table` instead."
         FORBIDDEN_METHODS = %i[build build_list create create_list attributes_for].freeze
 
+        # @!method forbidden_factory_usage?(node)
         def_node_search :forbidden_factory_usage?, <<~PATTERN
           (send {(const nil? :FactoryBot) nil?} {#{FORBIDDEN_METHODS.map(&:inspect).join(' ')}} _ ...)
         PATTERN

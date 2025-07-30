@@ -21,6 +21,16 @@ module Users
         success
       end
 
+      def expired_token?
+        generated_at = case attr
+                       when :unlock_token then user.locked_at
+                       when :confirmation_token then user.confirmation_sent_at
+                       end
+
+        generated_at.nil? ||
+          generated_at < TOKEN_VALID_FOR_MINUTES.minutes.ago
+      end
+
       private
 
       attr_reader :user
@@ -33,15 +43,6 @@ module Users
         return false unless token.present?
 
         Devise.secure_compare(user[attr], digest)
-      end
-
-      def expired_token?
-        generated_at = case attr
-                       when :unlock_token then user.locked_at
-                       when :confirmation_token then user.confirmation_sent_at
-                       end
-
-        generated_at < TOKEN_VALID_FOR_MINUTES.minutes.ago
       end
 
       def success

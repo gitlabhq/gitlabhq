@@ -237,7 +237,6 @@ Layout/ClassStructure:
     - 'ee/lib/gitlab/spdx/license.rb'
     - 'ee/lib/gitlab/timebox/burnchart_data_point.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/count_ci_builds_metric.rb'
-    - 'ee/lib/gitlab/usage/metrics/instrumentations/count_users_creating_ci_builds_metric.rb'
     - 'ee/lib/gitlab/vulnerability_scanning/advisory_scanner.rb'
     - 'ee/lib/gitlab/vulnerability_scanning/container_scanning/affected_version_range_matcher.rb'
     - 'ee/lib/gitlab/vulnerability_scanning/finding_builder.rb'

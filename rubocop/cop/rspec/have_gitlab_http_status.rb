@@ -49,6 +49,7 @@ module RuboCop
         REPLACEMENT_RESPONSE_STATUS =
           'expect(response).%{expectation} have_gitlab_http_status(%{arg})'
 
+        # @!method have_http_status?(node)
         def_node_matcher :have_http_status?, <<~PATTERN
           (send nil?
               { :have_http_status :have_gitlab_http_status }
@@ -56,6 +57,7 @@ module RuboCop
           )
         PATTERN
 
+        # @!method response_status_eq?(node)
         def_node_matcher :response_status_eq?, <<~PATTERN
           (send
             (send nil? :expect

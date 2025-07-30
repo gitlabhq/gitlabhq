@@ -103,6 +103,11 @@ module WorkItems
         required: false,
         prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
 
+      argument :include_descendant_work_items, GraphQL::Types::Boolean,
+        description: 'Whether to include work items of descendant parents when filtering by parent_ids.',
+        required: false,
+        experiment: { milestone: '18.3' }
+
       argument :release_tag, [GraphQL::Types::String],
         required: false,
         description: "Release tag associated with the work item's milestone. Ignored when parent is a group."

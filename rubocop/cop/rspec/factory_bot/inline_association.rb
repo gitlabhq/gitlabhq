@@ -53,6 +53,7 @@ module RuboCop
 
           REPLACEMENT = 'association'
 
+          # @!method create_or_build(node)
           def_node_matcher :create_or_build, <<~PATTERN
             (
               send
@@ -63,6 +64,7 @@ module RuboCop
             )
           PATTERN
 
+          # @!method association_definition(node)
           def_node_matcher :association_definition, <<~PATTERN
             (block
               {
@@ -73,6 +75,7 @@ module RuboCop
             )
           PATTERN
 
+          # @!method chained_call?(node)
           def_node_matcher :chained_call?, <<~PATTERN
             (send _ _)
           PATTERN

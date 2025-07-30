@@ -47,6 +47,7 @@ module RuboCop
 
           RESTRICT_ON_SEND = %i[factory transient trait].freeze
 
+          # @!method local_assignment(node)
           def_node_search :local_assignment, <<~PATTERN
             (begin $(lvasgn ...))
           PATTERN

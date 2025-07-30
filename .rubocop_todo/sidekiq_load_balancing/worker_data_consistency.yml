@@ -166,7 +166,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/pipeline_metrics_worker.rb'
     - 'app/workers/pipeline_process_worker.rb'
     - 'app/workers/pipeline_schedule_worker.rb'
-    - 'app/workers/process_commit_worker.rb'
     - 'app/workers/project_cache_worker.rb'
     - 'app/workers/project_destroy_worker.rb'
     - 'app/workers/project_export_worker.rb'

@@ -146,5 +146,22 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
         expect(items).to be_empty
       end
     end
+
+    context 'when using include_descendant_work_items filter' do
+      let_it_be(:parent_item) { create(:work_item, :epic) }
+      let_it_be(:child_item_1) { create(:work_item, :issue, project: project1) }
+      let_it_be(:child_item_2) { create(:work_item, :task, project: project1) }
+
+      let(:params) { { work_item_parent_ids: [parent_item.id], include_descendant_work_items: true } }
+
+      before do
+        create(:parent_link, work_item_parent: parent_item, work_item: child_item_1)
+        create(:parent_link, work_item_parent: child_item_1, work_item: child_item_2)
+      end
+
+      it 'includes descendant work items regardless of the work item types' do
+        expect(items).to include(child_item_1, child_item_2)
+      end
+    end
   end
 end

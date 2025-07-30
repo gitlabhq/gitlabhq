@@ -457,7 +457,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/policies/project_snippet_policy_spec.rb'
     - 'spec/policies/todo_policy_spec.rb'
     - 'spec/presenters/alert_management/alert_presenter_spec.rb'
-    - 'spec/presenters/clusters/cluster_presenter_spec.rb'
     - 'spec/presenters/deployments/deployment_presenter_spec.rb'
     - 'spec/presenters/import/pending_reassignment_alert_presenter_spec.rb'
     - 'spec/presenters/tree_entry_presenter_spec.rb'

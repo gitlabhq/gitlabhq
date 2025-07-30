@@ -31,12 +31,8 @@ If an application is successfully deployed to an
 [environment](../../../ci/environments/_index.md), the deployed environment and the link to the
 [review app](../../../ci/review_apps/_index.md) are both shown.
 
-{{< alert type="note" >}}
-
 When the pipeline fails in a merge request but it can still merge,
 GitLab shows **Merge** in red.
-
-{{< /alert >}}
 
 ## Post-merge pipeline status
 
@@ -105,3 +101,11 @@ see the status of these checks in merge requests
 If you enable any application security scanning tools, GitLab shows the results in the security
 scanning widget. For more information, see
 [security scanning output in merge request widget](../../application_security/detect/security_scanning_results.md).
+
+{{< alert type="note" >}}
+
+The results of security scans that run in [child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
+do not display in the security scanning widget. Support for this is proposed in [epic 18377](https://gitlab.com/groups/gitlab-org/-/epics/18377).
+If you want security scan results to display in the widget, run the scanning jobs in the parent pipeline.
+
+{{< /alert >}}

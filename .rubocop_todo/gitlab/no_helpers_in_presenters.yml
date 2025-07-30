@@ -12,7 +12,6 @@ Gitlab/NoHelpersInPresenters:
     - 'app/presenters/note_presenter.rb'
     - 'app/presenters/packages/composer/packages_presenter.rb'
     - 'app/presenters/packages/conan/package_presenter.rb'
-    - 'app/presenters/packages/helm/index_presenter.rb'
     - 'app/presenters/packages/nuget/package_metadata_presenter.rb'
     - 'app/presenters/packages/nuget/packages_metadata_presenter.rb'
     - 'app/presenters/packages/nuget/presenter_helpers.rb'

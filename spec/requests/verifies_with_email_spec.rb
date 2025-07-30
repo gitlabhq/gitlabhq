@@ -9,6 +9,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
   let(:user) { create(:user) }
 
+  before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+  end
+
   shared_examples_for 'does not send verification instructions' do
     let(:recipient_email) { nil }
 
@@ -56,7 +60,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
   end
 
-  shared_examples_for 'rate limited' do
+  shared_examples_for 'rate limited by login attempts' do
     it 'redirects to the login form and shows an alert message' do
       expect(response).to redirect_to(new_user_session_path)
       expect(flash[:alert])
@@ -75,25 +79,26 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
   end
 
   shared_examples_for 'verifying with email' do
-    context 'when rate limited' do
+    context 'when rate limited by login attempts' do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_in,
+          hash_including(scope: user)).and_return(true)
         sign_in
       end
 
-      it_behaves_like 'rate limited'
+      it_behaves_like 'rate limited by login attempts'
     end
 
     context 'when the user already has an unlock_token set' do
       before do
-        user.update!(unlock_token: 'token')
+        user.update!(unlock_token: 'token', locked_at: Time.current)
         sign_in
       end
 
       it_behaves_like 'prompt for email verification'
     end
 
-    context 'when the user is already locked' do
+    context 'when the user is already locked with no token' do
       before do
         user.update!(locked_at: Time.current)
         perform_enqueued_jobs { sign_in }
@@ -156,9 +161,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         stub_session(session_data: { verification_user_id: user.id })
       end
 
-      context 'when rate limited and a verification_token param exists' do
+      context 'when rate limited by code entry and a verification_token param exists' do
         before do
-          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification,
+            hash_including(scope: user.unlock_token)).and_return(true)
 
           post(user_session_path(user: { verification_token: 'token' }))
         end
@@ -356,9 +362,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       end
     end
 
-    context 'when exceeding the rate limit' do
+    context 'when exceeding the code send rate limit' do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification_code_send,
+          hash_including(scope: user)).and_return(true)
 
         stub_session(session_data: { verification_user_id: user.id })
 

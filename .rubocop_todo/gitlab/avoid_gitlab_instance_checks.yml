@@ -79,7 +79,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/lib/ee/gitlab/snippet_search_results.rb'
     - 'ee/lib/ee/gitlab/tracking/standard_context.rb'
     - 'ee/lib/ee/sidebars/groups/menus/settings_menu.rb'
-    - 'ee/lib/gitlab/git_audit_event.rb'
     - 'ee/lib/gitlab/licenses/submit_license_usage_data_banner.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
     - 'ee/lib/gitlab/sitemaps/generator.rb'

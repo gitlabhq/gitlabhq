@@ -17,6 +17,7 @@ module RuboCop
 
       ALLOWED_CLIENT_METHODS = [:via].freeze
 
+      # @!method using_sidekiq_api?(node)
       def_node_matcher :using_sidekiq_api?, <<~PATTERN
         (send (const (const nil? :Sidekiq) $_  ) $... )
       PATTERN

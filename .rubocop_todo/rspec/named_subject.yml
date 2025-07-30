@@ -583,7 +583,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/vulnerabilities/state_transition_spec.rb'
     - 'ee/spec/models/weight_note_spec.rb'
     - 'ee/spec/policies/epic_policy_spec.rb'
-    - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/policies/merge_request_policy_spec.rb'
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'

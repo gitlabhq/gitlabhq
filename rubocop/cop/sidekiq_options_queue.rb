@@ -6,6 +6,7 @@ module RuboCop
     class SidekiqOptionsQueue < RuboCop::Cop::Base
       MSG = 'Do not manually set a queue; `ApplicationWorker` sets one automatically.'
 
+      # @!method sidekiq_options?(node)
       def_node_matcher :sidekiq_options?, <<~PATTERN
         (send nil? :sidekiq_options $...)
       PATTERN

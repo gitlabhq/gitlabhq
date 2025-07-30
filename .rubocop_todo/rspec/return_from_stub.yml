@@ -24,7 +24,6 @@ RSpec/ReturnFromStub:
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'
     - 'ee/spec/services/security/token_revocation_service_spec.rb'
     - 'ee/spec/services/system_notes/merge_train_service_spec.rb'
-    - 'ee/spec/support/shared_examples/models/concerns/elastic/cannot_read_cross_project_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/base_sync_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/geo_event_store_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/merge_merge_requests_shared_examples.rb'

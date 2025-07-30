@@ -57,7 +57,15 @@ module WorkItems
 
       return items unless work_item_parent_ids.present?
 
-      items.with_work_item_parent_ids(work_item_parent_ids)
+      parent_ids = if params[:include_descendant_work_items]
+                     ::Gitlab::WorkItems::WorkItemHierarchy.new(WorkItem.id_in(work_item_parent_ids))
+                                                           .base_and_descendants
+                                                           .select(:id)
+                   else
+                     work_item_parent_ids
+                   end
+
+      items.with_work_item_parent_ids(parent_ids)
     end
 
     def accessible_projects
