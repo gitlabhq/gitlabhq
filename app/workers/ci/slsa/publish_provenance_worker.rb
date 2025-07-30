@@ -2,19 +2,19 @@
 
 module Ci
   module Slsa
-    class PublishStatementWorker
+    class PublishProvenanceWorker
       include ApplicationWorker
 
       data_consistency :sticky
 
       idempotent!
 
-      feature_category :continuous_integration
+      feature_category :artifact_security
 
       def perform(build_id)
         build = Ci::Build.find_by_id(build_id)
 
-        AttestProvenanceService.new(build).execute
+        PublishProvenanceService.new(build).execute
       end
     end
   end

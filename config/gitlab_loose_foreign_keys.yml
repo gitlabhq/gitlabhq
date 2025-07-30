@@ -387,6 +387,13 @@ groups_visits:
   - table: users
     column: user_id
     on_delete: async_delete
+job_environments:
+  - table: p_ci_builds
+    column: ci_job_id
+    on_delete: async_delete
+  - table: p_ci_pipelines
+    column: ci_pipeline_id
+    on_delete: async_delete
 lfs_object_states:
   - table: lfs_objects
     column: lfs_object_id

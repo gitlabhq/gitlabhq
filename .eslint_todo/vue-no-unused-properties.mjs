@@ -61,7 +61,6 @@ export default {
     'app/assets/javascripts/diffs/components/image_diff_overlay.vue',
     'app/assets/javascripts/error_tracking/components/error_details.vue',
     'app/assets/javascripts/error_tracking/components/error_tracking_list.vue',
-    'app/assets/javascripts/groups/components/group_item.vue',
     'app/assets/javascripts/groups/components/invite_members_banner.vue',
     'app/assets/javascripts/integrations/beyond_identity/components/exclusions_list.vue',
     'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue',

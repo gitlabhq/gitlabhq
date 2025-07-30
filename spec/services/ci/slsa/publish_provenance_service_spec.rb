@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'digest'
 
-RSpec.describe Ci::Slsa::AttestProvenanceService, feature_category: :continuous_integration do
+RSpec.describe Ci::Slsa::PublishProvenanceService, feature_category: :artifact_security do
   let(:service) { described_class.new(build) }
 
   describe '#execute' do
@@ -13,9 +13,8 @@ RSpec.describe Ci::Slsa::AttestProvenanceService, feature_category: :continuous_
     let_it_be(:provenance_statement) { create(:provenance_statement) }
 
     it 'returns result from ProvenanceStatement.from_build' do
-      expect(Ci::Slsa::ProvenanceStatement).to receive(:from_build).with(build).and_return(provenance_statement)
-
-      execute
+      expect(execute[:status]).to eq(:success)
+      expect(execute[:message]).to eq("OK")
     end
 
     context "when the build is nil" do

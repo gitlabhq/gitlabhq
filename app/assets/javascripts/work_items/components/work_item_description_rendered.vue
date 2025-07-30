@@ -361,7 +361,7 @@ export default {
     <div
       v-else
       ref="description"
-      class="js-work-item-description work-item-description description md gl-relative gl-clearfix"
+      class="js-work-item-description work-item-description description md gl-relative gl-overflow-y-hidden gl-clearfix"
     >
       <div
         ref="gfm-content"

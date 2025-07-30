@@ -3517,9 +3517,9 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: ci_slsa_publish_statement
-  :worker_name: Ci::Slsa::PublishStatementWorker
-  :feature_category: :continuous_integration
+- :name: ci_slsa_publish_provenance
+  :worker_name: Ci::Slsa::PublishProvenanceWorker
+  :feature_category: :artifact_security
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

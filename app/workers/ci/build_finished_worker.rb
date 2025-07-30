@@ -59,6 +59,12 @@ module Ci
       # details.
       #
       Ci::ArchiveTraceWorker.perform_in(ARCHIVE_TRACES_IN, build.id)
+
+      Ci::Slsa::PublishProvenanceWorker.perform_async(build.id) if should_publish_provenance?(build)
+    end
+
+    def should_publish_provenance?(build)
+      Feature.enabled?(:slsa_provenance_statement, build.project) && build.artifacts?
     end
   end
 end

@@ -347,6 +347,7 @@ ci_pipelines: &pipeline_definition
 - external_pull_request
 - deployments
 - environments
+- job_environments
 - chat_data
 - source_pipeline
 - ref_status
@@ -424,6 +425,7 @@ builds:
 - trigger
 - erased_by
 - deployment
+- job_environment
 - pending_state
 - queuing_entry
 - runtime_metadata
@@ -495,6 +497,7 @@ bridges:
 - resource
 - sourced_pipeline
 - deployment
+- job_environment
 - resource_group
 - metadata
 - trigger

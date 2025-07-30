@@ -163,6 +163,8 @@ module Ci
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+    has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
+
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true

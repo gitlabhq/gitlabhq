@@ -17007,6 +17007,27 @@ CREATE SEQUENCE jira_tracker_data_id_seq
 
 ALTER SEQUENCE jira_tracker_data_id_seq OWNED BY jira_tracker_data.id;
 
+CREATE TABLE job_environments (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    environment_id bigint NOT NULL,
+    ci_pipeline_id bigint NOT NULL,
+    ci_job_id bigint NOT NULL,
+    deployment_id bigint,
+    expanded_environment_name text NOT NULL,
+    options jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_1580b8d3c4 CHECK ((char_length(expanded_environment_name) <= 255))
+);
+
+CREATE SEQUENCE job_environments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE job_environments_id_seq OWNED BY job_environments.id;
+
 CREATE TABLE keys (
     id bigint NOT NULL,
     user_id bigint,
@@ -28277,6 +28298,8 @@ ALTER TABLE ONLY jira_imports ALTER COLUMN id SET DEFAULT nextval('jira_imports_
 
 ALTER TABLE ONLY jira_tracker_data ALTER COLUMN id SET DEFAULT nextval('jira_tracker_data_id_seq'::regclass);
 
+ALTER TABLE ONLY job_environments ALTER COLUMN id SET DEFAULT nextval('job_environments_id_seq'::regclass);
+
 ALTER TABLE ONLY keys ALTER COLUMN id SET DEFAULT nextval('keys_id_seq'::regclass);
 
 ALTER TABLE ONLY label_links ALTER COLUMN id SET DEFAULT nextval('label_links_id_seq'::regclass);
@@ -30908,6 +30931,9 @@ ALTER TABLE ONLY jira_imports
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT jira_tracker_data_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY job_environments
+    ADD CONSTRAINT job_environments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY keys
     ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
@@ -36529,6 +36555,16 @@ CREATE INDEX index_job_artifact_states_needs_verification ON ci_job_artifact_sta
 CREATE INDEX index_job_artifact_states_on_verification_state ON ci_job_artifact_states USING btree (verification_state);
 
 CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE UNIQUE INDEX index_job_environments_on_ci_job_id_and_environment_id ON job_environments USING btree (ci_job_id, environment_id);
+
+CREATE INDEX index_job_environments_on_ci_pipeline_id ON job_environments USING btree (ci_pipeline_id);
+
+CREATE INDEX index_job_environments_on_deployment_id ON job_environments USING btree (deployment_id);
+
+CREATE INDEX index_job_environments_on_environment_id ON job_environments USING btree (environment_id);
+
+CREATE INDEX index_job_environments_on_project_id ON job_environments USING btree (project_id);
 
 CREATE INDEX index_key_updated_at_on_user_custom_attribute ON user_custom_attributes USING btree (key, updated_at);
 
@@ -42965,6 +43001,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_1211a345fb FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY job_environments
+    ADD CONSTRAINT fk_12235a5803 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -43517,6 +43556,9 @@ ALTER TABLE ONLY vulnerabilities
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_4e8b59e7a8 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY job_environments
+    ADD CONSTRAINT fk_4e9acf9238 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_4efde02858 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -44020,6 +44062,9 @@ ALTER TABLE ONLY observability_logs_issues_connections
 
 ALTER TABLE ONLY packages_package_files
     ADD CONSTRAINT fk_86f0f182f8 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY job_environments
+    ADD CONSTRAINT fk_8729424205 FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_diff_commit_users
     ADD CONSTRAINT fk_87f203759e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

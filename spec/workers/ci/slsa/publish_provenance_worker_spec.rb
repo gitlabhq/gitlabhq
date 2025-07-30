@@ -2,15 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Slsa::PublishStatementWorker, feature_category: :continuous_integration do
+RSpec.describe Ci::Slsa::PublishProvenanceWorker, feature_category: :artifact_security do
   let_it_be(:build) { create(:ci_build, :artifacts, :finished) }
   let_it_be(:provenance_statement) { create(:provenance_statement) }
   let(:worker) { described_class.new }
-  let(:statement_artifacts) do
-    build.job_artifacts.filter do |artifact|
-      artifact.file_type == "slsa_provenance_statement"
-    end
-  end
 
   let(:file_contents) { statement_artifact.file.file.read }
   let(:statement_artifact) { statement_artifacts.first }
@@ -26,8 +21,8 @@ RSpec.describe Ci::Slsa::PublishStatementWorker, feature_category: :continuous_i
       expect(Ci::Build)
         .to receive(:find_by_id).with(build.id).and_return(build)
 
-      upload_statement_service = instance_double(Ci::Slsa::AttestProvenanceService)
-      expect(Ci::Slsa::AttestProvenanceService)
+      upload_statement_service = instance_double(Ci::Slsa::PublishProvenanceService)
+      expect(Ci::Slsa::PublishProvenanceService)
         .to receive(:new).with(build).and_return(upload_statement_service)
 
       expect(upload_statement_service).to receive(:execute)

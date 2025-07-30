@@ -1,0 +1,10 @@
+---
+name: slsa_provenance_statement
+description: Roll out feature flag to publish SLSA provenance statements
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547865
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198631
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547866
+milestone: '18.3'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

@@ -46,6 +46,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
+  it { is_expected.to have_many(:job_environments).class_name('Environments::Job').inverse_of(:pipeline) }
+
   it do
     is_expected.to have_many(:failed_builds).class_name('Ci::Build')
       .with_foreign_key(:commit_id).inverse_of(:pipeline)
