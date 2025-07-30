@@ -31,13 +31,15 @@ module Tooling
           property: base_data[:cache_type],
           value: base_data[:cache_operation_duration_seconds]&.round(2),
 
-          # Everything else goes to extra_properties (excluding BigQuery-specific fields)
+          # Everything else goes to extra_properties (excluding auto-provided fields)
           extra_properties: base_data.except(
             :cache_result, # Used as :label
+            :cache_type, # Used as :property
             :cache_operation_duration_seconds, # Used as :value
-            :job_url,         # BigQuery-specific
-            :created_at       # BigQuery-specific
-          )
+            :job_url,     # BigQuery-specific
+            :created_at,  # BigQuery-specific
+            :project_id   # Auto-provided by internal events
+          ).compact
         }
       end
 
@@ -64,7 +66,7 @@ module Tooling
           cache_size_bytes: cache_data[:cache_size_bytes],
           operation_command: cache_data[:operation_command],
           operation_duration_seconds: cache_data[:operation_duration],
-          operation_success: cache_data[:operation_success]
+          operation_success: cache_data[:operation_success]&.to_s # Convert boolean to string
         }
       end
     end

@@ -170,31 +170,33 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
   end
 
   describe '#two_factor_authentication_reason?' do
-    it 'returns false if two factor authentication is not required' do
-      allow(user).to receive(:require_two_factor_authentication?).and_return(false)
+    subject(:mfa_reason) { verifier.two_factor_authentication_reason }
 
-      expect(subject.two_factor_authentication_reason).to be_falsey
+    where(:instance_level_enabled, :group_level_enabled, :required_for_admins, :user_is_admin, :reason) do
+      true | false | false | true | :global
+      true | false | false | false | :global
+      true | true | true | true | :global
+      false | true | true | false | :group
+      false | true  | false | true | :group
+      false | true  | false | false | :group
+      false  | false | true | true | :admin_2fa
+      false  | true | true  | true | :admin_2fa
+      false  | false | true | false | false
+      false | false | false | true | false
+      false | false | false | false | false
     end
 
-    it 'returns :global if two factor authentication is enabled globally' do
-      stub_application_setting require_two_factor_authentication: true
+    with_them do
+      before do
+        stub_application_setting(require_two_factor_authentication: instance_level_enabled)
+        stub_application_setting(require_admin_two_factor_authentication: required_for_admins)
+        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
+        allow(user).to receive(:can_access_admin_area?).and_return(user_is_admin)
+      end
 
-      expect(subject.two_factor_authentication_reason).to eq(:global)
-    end
-
-    it 'returns :admin_2fa if the current user can access admin area and two factor is enabled' do
-      stub_application_setting require_admin_two_factor_authentication: true
-
-      allow(user).to receive(:can_access_admin_area?).and_return(true)
-
-      expect(subject.two_factor_authentication_reason).to eq(:admin_2fa)
-    end
-
-    it 'returns :group if two factor authentication is enforced through a group setting' do
-      stub_application_setting require_two_factor_authentication: false
-      allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
-
-      expect(subject.two_factor_authentication_reason).to eq(:group)
+      it 'returns correct reason' do
+        expect(mfa_reason).to eq(reason)
+      end
     end
   end
 end

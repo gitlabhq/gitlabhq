@@ -25,7 +25,7 @@ RSpec.describe 'gitlab:seed:runner_fleet rake task', :silence_stdout, feature_ca
 
   context 'with admin username', :enable_admin_mode do
     let(:username) { 'runner_fleet_seed' }
-    let!(:admin) { create(:user, :admin, :with_organization, username: username) }
+    let!(:admin) { create(:user, :admin, username: username) }
 
     it 'performs runner fleet seed successfully' do
       expect { rake_task }

@@ -28,7 +28,7 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       it { is_expected.to be_valid }
 
       context 'when a User exists in the same organization with the same username' do
-        let!(:user) { create(:user, :with_namespace, username: username, in_organization: organization) }
+        let!(:user) { create(:user, :with_namespace, username: username, organization: organization) }
 
         it 'adds a validation error on username' do
           expect(organization_user_detail).not_to be_valid
@@ -45,7 +45,7 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       end
 
       context 'when a User exists in another organization with the same username' do
-        let!(:user) { create(:user, :with_namespace, username: username, in_organization: other_organization) }
+        let!(:user) { create(:user, :with_namespace, username: username, organization: other_organization) }
 
         it { is_expected.to be_valid }
       end

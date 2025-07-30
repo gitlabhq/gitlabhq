@@ -28,6 +28,7 @@ module Quality
         experiments
         facades
         factories
+        factories_specs
         finders
         frontend
         graphql

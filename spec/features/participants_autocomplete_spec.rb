@@ -88,8 +88,8 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
   end
 
   context 'when mentioning users with OrganizationUserDetail username alias' do
-    let_it_be(:author) { create(:user, :with_organization) }
-    let_it_be(:organization) { author.organizations.first }
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:author) { create(:user, organization: organization) }
     let_it_be(:project) { create(:project, :public, :repository, organization: organization) }
     let_it_be(:admin_bot) { Users::Internal.for_organization(organization).admin_bot }
 

@@ -10,7 +10,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
   let_it_be_with_refind(:group) { package_settings.namespace }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, organization: group.organization) }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
   let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }

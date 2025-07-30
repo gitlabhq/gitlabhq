@@ -12,11 +12,27 @@ FactoryBot.define do
     color_scheme_id { 1 }
     color_mode_id { 1 }
 
-    transient do
-      in_organization { create(:organization) } # rubocop: disable RSpec/FactoryBot/InlineAssociation -- required since this is a transient attribute, not a factory association
-    end
-
     after(:build) do |user, evaluator|
+      owner_of = [evaluator.owner_of].grep(Organizations::Organization).first
+      overrides = evaluator.instance_variable_get(:@overrides) || {}
+
+      if overrides.key?(:organizations)
+        user.organizations = overrides.fetch(:organizations, [])
+      end
+
+      if user.organizations.any?
+        user.organization ||= user.organizations.first
+      end
+
+      user.organization ||= owner_of || create(:common_organization)
+
+      # Ensure user.organization will be added to user.organizations
+      # except when the organizations is explicitly overridden
+      # except when 'owner_of' is set
+      unless owner_of || overrides.key?(:organizations) || user.organizations.include?(user.organization)
+        user.organizations << user.organization
+      end
+
       # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.
       assign_ns = if defined?(UserWithNamespaceShim)
                     UserWithNamespaceShim.enabled?
@@ -25,33 +41,15 @@ FactoryBot.define do
                   end
 
       if assign_ns
-        org = user&.namespace&.organization ||
-          Organizations::Organization
-            .where(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-            .order(:created_at).first ||
-          # We create an organization next even though we are building here. We need to ensure
-          # that an organization exists so other entities can belong to the same organization
-          evaluator.in_organization
-
-        user.assign_personal_namespace(org)
+        user.assign_personal_namespace(user.organization)
       end
-
-      user.organization ||= evaluator.in_organization
     end
 
-    trait :without_default_org do
-      before(:create) { |user| user.define_singleton_method(:create_default_organization_user) { nil } }
-    end
-
+    # rubocop:disable RSpec/FactoryBot/InlineAssociation -- we don't use an association here
     trait :with_namespace do
-      namespace { assign_personal_namespace(in_organization) }
+      namespace { assign_personal_namespace(organization || create(:common_organization)) }
     end
-
-    trait :with_organization do
-      after(:create) do |user, evaluator|
-        create(:organization_user, user: user, organization: evaluator.in_organization)
-      end
-    end
+    # rubocop:enable RSpec/FactoryBot/InlineAssociation
 
     trait :admin do
       admin { true }

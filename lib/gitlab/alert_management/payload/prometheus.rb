@@ -15,9 +15,9 @@ module Gitlab
         attribute :generator_url, paths: %w[generatorURL]
         attribute :gitlab_y_label,
           paths: [%w[annotations gitlab_y_label],
-                  %w[annotations title],
-                  %w[annotations summary],
-                  %w[labels alertname]]
+            %w[annotations title],
+            %w[annotations summary],
+            %w[labels alertname]]
         attribute :runbook, paths: %w[annotations runbook]
         attribute :starts_at,
           paths: 'startsAt',
@@ -26,8 +26,8 @@ module Gitlab
         attribute :status, paths: 'status'
         attribute :title,
           paths: [%w[annotations title],
-                  %w[annotations summary],
-                  %w[labels alertname]]
+            %w[annotations summary],
+            %w[labels alertname]]
         attribute :starts_at_raw,
           paths: [%w[startsAt]]
         private :starts_at_raw

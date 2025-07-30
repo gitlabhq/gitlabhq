@@ -178,13 +178,13 @@ module API
 
       def install_error_responders(base)
         error_classes = [Gitlab::Auth::MissingTokenError,
-                         Gitlab::Auth::TokenNotFoundError,
-                         Gitlab::Auth::ExpiredError,
-                         Gitlab::Auth::RevokedError,
-                         Gitlab::Auth::ImpersonationDisabled,
-                         Gitlab::Auth::InsufficientScopeError,
-                         Gitlab::Auth::RestrictedLanguageServerClientError,
-                         Gitlab::Auth::DpopValidationError]
+          Gitlab::Auth::TokenNotFoundError,
+          Gitlab::Auth::ExpiredError,
+          Gitlab::Auth::RevokedError,
+          Gitlab::Auth::ImpersonationDisabled,
+          Gitlab::Auth::InsufficientScopeError,
+          Gitlab::Auth::RestrictedLanguageServerClientError,
+          Gitlab::Auth::DpopValidationError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end

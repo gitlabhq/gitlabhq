@@ -230,8 +230,8 @@ module API
           summary 'Delete a runner'
           success Entities::Ci::Runner
           failure [[401, 'Unauthorized'], [403, 'No access granted'],
-                   [403, 'Runner associated with more than one project'], [404, 'Runner not found'],
-                   [412, 'Precondition Failed']]
+            [403, 'Runner associated with more than one project'], [404, 'Runner not found'],
+            [412, 'Precondition Failed']]
           tags %w[runners]
         end
         params do
@@ -331,8 +331,8 @@ module API
           detail "Assign an available project runner to the project."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
-                   [403, 'No access granted'], [403, 'Runner is a group runner'], [403, 'Runner is locked'],
-                   [404, 'Runner not found']]
+            [403, 'No access granted'], [403, 'Runner is a group runner'], [403, 'Runner is locked'],
+            [404, 'Runner not found']]
           tags %w[runners projects]
         end
         params do
@@ -358,8 +358,8 @@ module API
                  "If so, an error is returned. Use the call to delete a runner instead."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
-                   [403, 'You cannot unassign a runner from the owner project. Delete the runner instead'],
-                   [404, 'Runner not found'], [412, 'Precondition Failed']]
+            [403, 'You cannot unassign a runner from the owner project. Delete the runner instead'],
+            [404, 'Runner not found'], [412, 'Precondition Failed']]
           tags %w[runners projects]
         end
         params do

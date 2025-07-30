@@ -24,19 +24,21 @@ additional_properties:
   job_id:
     description: GitLab CI job ID
   job_name:
-    description: GitLab CI job name (e.g., rspec, compile-test-assets)
+    description: GitLab CI job name
   pipeline_id:
     description: GitLab CI pipeline ID
   ref:
     description: Git branch or tag name
   operation_command:
-    description: Command associated with cache operation (bundle install, yarn install, etc.)
+    description: Command associated with cache operation
   operation_duration_seconds:
-    description: Duration of the operation that the cache optimizes (in seconds)
+    description: Duration of the operation in seconds
   operation_success:
-    description: Whether the associated operation completed successfully
+    description: Whether the operation completed successfully
   cache_size_bytes:
-    description: Cache size in bytes (when available)
+    description: Cache size in bytes
+  merge_request_iid:
+    description: Merge request internal ID
   merge_request_target_branch:
     description: Target branch name for merge request pipelines
   pipeline_source:

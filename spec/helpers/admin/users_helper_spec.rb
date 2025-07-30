@@ -55,7 +55,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     end
 
     context 'when user does not have organizations' do
-      let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+      let_it_be(:user) { create(:user, organizations: []) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
 
       it { is_expected.to be(false) }
     end

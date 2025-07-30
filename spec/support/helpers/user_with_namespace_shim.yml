@@ -260,6 +260,7 @@
 - ee/spec/services/users/service_accounts/create_service_spec.rb
 - ee/spec/services/vulnerability_exports/exporters/csv_service_spec.rb
 - ee/spec/services/work_items/legacy_epics/old_epics_update_service_spec.rb
+- ee/spec/services/work_items/legacy_epics/issue_promote_service_spec.rb
 - ee/spec/tasks/gitlab/elastic_rake_spec.rb
 - ee/spec/views/admin/dashboard/index.html.haml_spec.rb
 - ee/spec/views/admin/users/show.html.haml_spec.rb

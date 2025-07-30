@@ -115,10 +115,9 @@ RSpec.describe 'User', feature_category: :user_profile do
   end
 
   describe 'organizations field' do
-    let_it_be(:organization_user) { create(:organization_user, user: current_user) }
-    let_it_be(:organization) { organization_user.organization }
+    let_it_be(:organization) { current_user.organization }
     let_it_be(:another_organization) { create(:organization) }
-    let_it_be(:another_user) { create(:user) }
+    let_it_be(:another_user) { create(:user, organization: another_organization) }
 
     let(:query) do
       graphql_query_for(

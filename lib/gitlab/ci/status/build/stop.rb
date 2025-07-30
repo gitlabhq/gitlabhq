@@ -36,6 +36,10 @@ module Gitlab
           def self.matches?(build, user)
             build.playable? && build.stops_environment?
           end
+
+          def confirmation_message
+            subject.manual_confirmation_message
+          end
         end
       end
     end

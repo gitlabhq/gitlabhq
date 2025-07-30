@@ -113,6 +113,10 @@ module Organizations
       Feature.enabled?(:organization_scoped_paths, self) && !default?
     end
 
+    def inspect
+      "#<#{self.class.name} id:#{id} path:#{path}>"
+    end
+
     private
 
     # The visibility must be broader than the visibility of any contained root groups.

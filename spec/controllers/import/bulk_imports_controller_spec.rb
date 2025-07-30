@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImportsController, feature_category: :importers do
+RSpec.describe Import::BulkImportsController, :with_current_organization, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -417,14 +417,14 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[0], { url: instance_url, access_token: pat },
-            fallback_organization: Organizations::Organization.default_organization
+            fallback_organization: Current.organization
           ) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
           end
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[1], { url: instance_url, access_token: pat },
-            fallback_organization: Organizations::Organization.default_organization
+            fallback_organization: Current.organization
           ) do |service|
             allow(service).to receive(:execute).and_return(error_response)
           end
@@ -458,7 +458,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
             expect_next_instance_of(
               ::BulkImports::CreateService, user, entity, { url: instance_url, access_token: pat },
-              fallback_organization: Organizations::Organization.default_organization
+              fallback_organization: Current.organization
             ) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
             end

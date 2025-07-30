@@ -1912,7 +1912,7 @@ RSpec.describe User, feature_category: :user_profile do
       let_it_be(:default_organization) { create(:organization, :default) }
 
       context 'when user is changed to an instance admin' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user) { create(:user, organization: default_organization) }
 
         it 'changes user to owner in the organization' do
           expect(default_organization.owner?(user)).to be(false)
@@ -1946,7 +1946,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when user did not already exist in the default organization' do
-        let_it_be(:user) { create(:user, :without_default_org) }
+        let_it_be(:user) { create(:user, organizations: []) }
 
         it 'changes user to owner in the organization' do
           expect(default_organization.user?(user)).to be(false)

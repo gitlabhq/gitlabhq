@@ -66,8 +66,8 @@ module Gitlab
       def build_environment_variables(pipeline)
         pipeline.variables.build(
           [{ key: 'CHAT_INPUT', value: arguments },
-           { key: 'CHAT_CHANNEL', value: channel },
-           { key: 'CHAT_USER_ID', value: chat_name.chat_id }]
+            { key: 'CHAT_CHANNEL', value: channel },
+            { key: 'CHAT_USER_ID', value: chat_name.chat_id }]
         )
       end
 

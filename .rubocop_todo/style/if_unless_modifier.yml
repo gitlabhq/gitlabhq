@@ -246,7 +246,6 @@ Style/IfUnlessModifier:
     - 'ee/app/presenters/dast/site_profile_presenter.rb'
     - 'ee/app/presenters/ee/merge_request_presenter.rb'
     - 'ee/app/serializers/ee/blob_entity.rb'
-    - 'ee/app/serializers/linked_epic_issue_entity.rb'
     - 'ee/app/serializers/vulnerabilities/finding_serializer.rb'
     - 'ee/app/services/app_sec/dast/pipelines/find_latest_service.rb'
     - 'ee/app/services/app_sec/dast/profiles/build_config_service.rb'

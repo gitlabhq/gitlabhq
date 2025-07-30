@@ -60,7 +60,7 @@ module WorkItems
         private
 
         def skip_system_notes?
-          (operation == :clone && !!params[:clone_with_notes]) || operation == :move
+          (operation == :clone && !!params[:clone_with_notes]) || operation == :move || operation == :promote
         end
 
         def relative_position

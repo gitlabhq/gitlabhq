@@ -224,7 +224,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
 
   describe '#org_user_detail' do
     let(:org_user_detail) { create(:organization_user_detail, organization: project.organization) }
-    let(:author) { create(:user, in_organization: project.organization) }
+    let(:author) { create(:user, organization: project.organization) }
 
     it 'supports mentioning users aliased within organization' do
       reference = org_user_detail.to_reference
@@ -241,7 +241,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     end
 
     context 'with no context for filter' do
-      let!(:user) { create(:user, :with_organization) }
+      let!(:user) { create(:user) }
       let!(:org_user_detail) { create(:organization_user_detail, user: user, organization: user.organizations.first) }
 
       it 'supports mentioning user aliases from default organization' do

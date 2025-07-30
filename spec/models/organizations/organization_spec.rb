@@ -167,14 +167,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     describe '.with_user' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user) { create(:user, organization: organization) }
       let_it_be(:second_organization) { create(:organization, users: [user]) }
 
       subject(:organizations_for_user) { described_class.with_user(user) }
-
-      before do
-        organization.users << user
-      end
 
       it { is_expected.to eq([organization, second_organization]) }
     end

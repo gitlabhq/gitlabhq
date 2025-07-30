@@ -26,19 +26,6 @@ module Organizations
     scope :with_active_users, -> { joins(:user).merge(User.active) }
     scope :by_user, ->(user) { where(user: user) }
 
-    def self.create_default_organization_record_for(user_id, user_is_admin:)
-      return if Organizations::Organization.default_organization.nil?
-
-      upsert(
-        {
-          organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID,
-          user_id: user_id,
-          access_level: default_organization_access_level(user_is_admin: user_is_admin)
-        },
-        unique_by: [:organization_id, :user_id]
-      )
-    end
-
     def self.update_default_organization_record_for(user_id, user_is_admin:)
       find_or_initialize_by(
         user_id: user_id, organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID

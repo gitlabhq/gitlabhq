@@ -67,7 +67,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       expect(result[:cache_size_bytes]).to eq(1024000)
       expect(result[:operation_command]).to eq('bundle install')
       expect(result[:operation_duration_seconds]).to eq(3.5)
-      expect(result[:operation_success]).to be(true)
+      expect(result[:operation_success]).to eq("true")
     end
 
     context 'when job_url is not set' do
@@ -88,7 +88,6 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       expect(result[:extra_properties][:job_id]).to eq(12345)
       expect(result[:extra_properties][:job_name]).to eq('rspec-unit pg16')
       expect(result[:extra_properties][:cache_key]).to eq('ruby-gems-debian-bookworm-ruby-3.3.8-gemfile-Gemfile-22')
-      expect(result[:extra_properties][:cache_type]).to eq('ruby-gems')
     end
 
     it 'includes internal event specific fields' do
@@ -105,6 +104,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       expect(result[:extra_properties]).not_to have_key(:job_url)
       expect(result[:extra_properties]).not_to have_key(:created_at)
       expect(result).not_to have_key(:job_url)
+      expect(result).not_to have_key(:project_id)
       expect(result).not_to have_key(:created_at)
     end
 
@@ -158,7 +158,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       expect(result[:cache_size_bytes]).to eq(1024000)
       expect(result[:operation_command]).to eq('bundle install')
       expect(result[:operation_duration_seconds]).to eq(3.5)
-      expect(result[:operation_success]).to be(true)
+      expect(result[:operation_success]).to eq("true")
     end
 
     context 'with empty merge request IID' do

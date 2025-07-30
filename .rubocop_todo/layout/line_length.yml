@@ -888,7 +888,6 @@ Layout/LineLength:
     - 'ee/spec/controllers/ee/uploads_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/tasks_by_type_controller_spec.rb'
     - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'
-    - 'ee/spec/controllers/groups/epic_issues_controller_spec.rb'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
     - 'ee/spec/controllers/groups/groups_controller_spec.rb'
     - 'ee/spec/controllers/groups/insights_controller_spec.rb'

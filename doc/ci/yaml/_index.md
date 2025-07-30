@@ -6109,6 +6109,9 @@ In this example, the script:
 Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs.
 If there is no manual job defined with `when: manual`, this keyword has no effect.
 
+Manual confirmation works with all manual jobs, including environment stop jobs that use
+[`environment:action: stop`](#environmentaction).
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
@@ -6124,6 +6127,16 @@ delete_job:
     - make delete
   when: manual
   manual_confirmation: 'Are you sure you want to delete this environment?'
+
+stop_production:
+  stage: cleanup
+  script:
+    - echo "Stopping production environment"
+  environment:
+    name: production
+    action: stop
+  when: manual
+  manual_confirmation: "Are you sure you want to stop the production environment?"
 ```
 
 ## `variables`

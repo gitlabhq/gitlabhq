@@ -100,7 +100,7 @@ module API
               gl_id: Gitlab::GlId.gl_id(actor.user),
               gl_username: actor.username,
               git_config_options: ["uploadpack.allowFilter=true",
-                                   "uploadpack.allowAnySHA1InWant=true"],
+                "uploadpack.allowAnySHA1InWant=true"],
               gitaly: gitaly_payload(params[:action]),
               gl_console_messages: check_result.console_messages,
               need_audit: need_git_audit_event?

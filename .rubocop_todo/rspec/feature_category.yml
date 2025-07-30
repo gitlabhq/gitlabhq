@@ -32,7 +32,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/finders/ee/user_recent_events_finder_spec.rb'
     - 'ee/spec/finders/epics/cross_hierarchy_ancestors_finder_spec.rb'
     - 'ee/spec/finders/epics/cross_hierarchy_children_finder_spec.rb'
-    - 'ee/spec/finders/epics/with_issues_finder_spec.rb'
     - 'ee/spec/finders/gpg_keys_finder_spec.rb'
     - 'ee/spec/finders/group_projects_finder_spec.rb'
     - 'ee/spec/finders/group_saml_identity_finder_spec.rb'

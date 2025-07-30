@@ -144,7 +144,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
   end
 
-  describe 'performance bar settings', feature_category: :cloud_connector do
+  describe 'performance bar settings', feature_category: :performance_tooling do
     using RSpec::Parameterized::TableSyntax
 
     where(

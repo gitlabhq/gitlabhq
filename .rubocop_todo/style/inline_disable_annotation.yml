@@ -1012,7 +1012,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/finders/ee/issuables/label_filter.rb'
     - 'ee/app/finders/ee/issues_finder.rb'
     - 'ee/app/finders/ee/notes_finder.rb'
-    - 'ee/app/finders/epics/with_issues_finder.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'
     - 'ee/app/finders/gitlab_subscriptions/add_on_eligible_users_finder.rb'
     - 'ee/app/finders/group_saml_identity_finder.rb'

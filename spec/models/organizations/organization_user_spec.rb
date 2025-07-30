@@ -53,7 +53,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'on destroy' do
-      let(:user) { create(:user, :without_default_org) }
+      let(:user) { create(:user, organizations: []) }
 
       subject(:organization_user) { create(:organization_user, user: user) }
 
@@ -129,8 +129,8 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     describe '.by_user' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:another_user) { create(:user) }
+      let_it_be(:user) { create(:user, organizations: []) }
+      let_it_be(:another_user) { create(:user, organizations: []) }
       let_it_be(:organization_1) { create(:organization, users: [user]) }
       let_it_be(:organization_2) { create(:organization, users: [user, another_user]) }
       let_it_be(:organization_3) { create(:organization, users: [another_user]) }
@@ -147,73 +147,9 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
 
   it_behaves_like 'having unique enum values'
 
-  describe '.create_default_organization_record_for' do
-    let_it_be(:user) { create(:user, :without_default_org) }
-    let(:user_is_admin) { false }
-    let(:user_id) { user.id }
-
-    subject(:create_entry) do
-      described_class.create_default_organization_record_for(user_id, user_is_admin: user_is_admin)
-    end
-
-    context 'when default organization does not exist' do
-      it 'does not create a recored' do
-        expect { create_entry }.not_to change { described_class.count }
-      end
-    end
-
-    context 'when default organization exist' do
-      let_it_be(:default_organization) { create(:organization, :default) }
-
-      context 'when creating as as default user' do
-        it 'creates record with correct attributes' do
-          expect { create_entry }.to change { described_class.count }.by(1)
-          expect(default_organization.user?(user)).to be(true)
-        end
-      end
-
-      context 'when creating as an admin' do
-        let(:user_is_admin) { true }
-
-        it 'creates record with correct attributes' do
-          expect { create_entry }.to change { described_class.count }.by(1)
-          expect(default_organization.owner?(user)).to be(true)
-        end
-      end
-
-      context 'when entry already exists' do
-        let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
-
-        it 'does not create or update existing record' do
-          expect { create_entry }.not_to change { described_class.count }
-        end
-
-        context 'when access_level changes' do
-          let(:user_is_admin) { true }
-
-          it 'changes access_level on the existing record' do
-            expect(default_organization.owner?(user)).to be(false)
-
-            expect { create_entry }.not_to change { described_class.count }
-
-            expect(default_organization.owner?(user)).to be(true)
-          end
-        end
-      end
-
-      context 'when creating with invalid user_id' do
-        let(:user_id) { nil }
-
-        it 'raises and error' do
-          expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
-        end
-      end
-    end
-  end
-
   describe '.update_default_organization_record_for' do
     let_it_be(:default_organization) { create(:organization, :default) }
-    let_it_be(:user) { create(:user, :without_default_org) }
+    let_it_be(:user) { create(:user, organizations: []) }
     let_it_be(:user_id) { user.id }
     let(:user_is_admin) { false }
 
@@ -297,7 +233,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
 
   describe '.create_organization_record_for' do
     let_it_be(:organization) { create(:organization) }
-    let_it_be(:user) { create(:user, :without_default_org) }
+    let_it_be(:user) { create(:user, organizations: []) }
     let_it_be(:user_id) { user.id }
     let_it_be(:organization_id) { organization.id }
 

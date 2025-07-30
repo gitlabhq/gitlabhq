@@ -288,7 +288,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     describe '#no_conflict_with_organization_user_details' do
-      let!(:user) { create(:user, :with_namespace, in_organization: organization) }
+      let!(:user) { create(:user, :with_namespace, organization: organization) }
       let!(:organization_user_detail) do
         create(:organization_user_detail, organization: organization, user: user, username: 'test-username')
       end
@@ -1952,14 +1952,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     let(:username) { 'capyabra' }
 
-    let_it_be(:user) { create(:user, name: 'capybara') }
-    let_it_be(:group) { create(:group, name: 'capybara-group') }
+    let_it_be(:user) { create(:user, username: 'capybara', organization: organization) }
+    let_it_be(:group) { create(:group, name: 'capybara-group', organization: organization) }
     let_it_be(:subgroup) { create(:group, parent: group, name: 'capybara-subgroup') }
     let_it_be(:project) { create(:project, group: group, name: 'capybara-project') }
 
     let_it_be(:other_organization) { create(:organization) }
     let_it_be(:user_other_org) do
-      create(:user, :with_namespace, username: 'other-capybara', in_organization: other_organization)
+      create(:user, :with_namespace, username: 'other-capybara', organization: other_organization)
     end
 
     let_it_be(:group_other_org) { create(:group, path: 'other-capybara-group', organization: other_organization) }

@@ -2008,7 +2008,6 @@
 - './ee/spec/services/emails/create_service_spec.rb'
 - './ee/spec/services/emails/destroy_service_spec.rb'
 - './ee/spec/services/epic_issues/destroy_service_spec.rb'
-- './ee/spec/services/epic_issues/list_service_spec.rb'
 - './ee/spec/services/epic_issues/update_service_spec.rb'
 - './ee/spec/services/epics/descendant_count_service_spec.rb'
 - './ee/spec/services/epics/epic_links/destroy_service_spec.rb'

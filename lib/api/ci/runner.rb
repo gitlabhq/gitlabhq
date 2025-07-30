@@ -148,10 +148,10 @@ module API
         desc 'Request a job' do
           success Entities::Ci::JobRequest::Response
           http_codes [[201, 'Job was scheduled'],
-                      [204, 'No job for Runner'],
-                      [403, 'Forbidden'],
-                      [409, 'Conflict'],
-                      [422, 'Runner is orphaned']]
+            [204, 'No job for Runner'],
+            [403, 'Forbidden'],
+            [409, 'Conflict'],
+            [422, 'Runner is orphaned']]
         end
         params do
           requires :token, type: String, desc: "Runner's authentication token"
@@ -227,9 +227,9 @@ module API
 
         desc 'Update a job' do
           http_codes [[200, 'Job was updated'],
-                      [202, 'Update accepted'],
-                      [400, 'Unknown parameters'],
-                      [403, 'Forbidden']]
+            [202, 'Update accepted'],
+            [400, 'Unknown parameters'],
+            [403, 'Forbidden']]
         end
         params do
           requires :token, type: String, desc: 'Job token'
@@ -263,9 +263,9 @@ module API
 
         desc 'Append a patch to the job trace' do
           http_codes [[202, 'Trace was patched'],
-                      [400, 'Missing Content-Range header'],
-                      [403, 'Forbidden'],
-                      [416, 'Range not satisfiable']]
+            [400, 'Missing Content-Range header'],
+            [403, 'Forbidden'],
+            [416, 'Range not satisfiable']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -301,9 +301,9 @@ module API
 
         desc 'Authorize uploading job artifact' do
           http_codes [[200, 'Upload allowed'],
-                      [403, 'Forbidden'],
-                      [405, 'Artifacts support not enabled'],
-                      [413, 'File too large']]
+            [403, 'Forbidden'],
+            [405, 'Artifacts support not enabled'],
+            [413, 'File too large']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -338,10 +338,10 @@ module API
         desc 'Upload a job artifact' do
           success Entities::Ci::JobRequest::Response
           http_codes [[201, 'Artifact uploaded'],
-                      [400, 'Bad request'],
-                      [403, 'Forbidden'],
-                      [405, 'Artifacts support not enabled'],
-                      [413, 'File too large']]
+            [400, 'Bad request'],
+            [403, 'Forbidden'],
+            [405, 'Artifacts support not enabled'],
+            [413, 'File too large']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -378,10 +378,10 @@ module API
 
         desc 'Download the artifacts file for job' do
           http_codes [[200, 'Download allowed'],
-                      [302, 'Found'],
-                      [401, 'Unauthorized'],
-                      [403, 'Forbidden'],
-                      [404, 'Artifact not found']]
+            [302, 'Found'],
+            [401, 'Unauthorized'],
+            [403, 'Forbidden'],
+            [404, 'Artifact not found']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"

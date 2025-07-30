@@ -3,6 +3,19 @@
 class ProjectPolicy < BasePolicy
   include ArchivedAbilities
 
+  UPDATE_JOB_PERMISSIONS = [
+    :update_build, # TODO: remove usages of this permission
+    :play_job
+    # :retry_job,
+    # :unschedule_job,
+    # :manage_job_artifacts
+  ].freeze
+
+  CLEANUP_JOB_PERMISSIONS = [
+    :cancel_build,
+    :erase_build
+  ].freeze
+
   desc "Project has public builds enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
@@ -602,7 +615,6 @@ class ProjectPolicy < BasePolicy
     enable :reopen_merge_request
     enable :create_commit_status
     enable :create_build
-    enable :update_build
     enable :cancel_build
     enable :read_resource_group
     enable :update_resource_group
@@ -640,6 +652,8 @@ class ProjectPolicy < BasePolicy
     enable :update_escalation_status
     enable :read_secure_files
     enable :update_sentry_issue
+
+    UPDATE_JOB_PERMISSIONS.each { |perm| enable(perm) }
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -842,12 +856,13 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
+    UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+    CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+
     prevent :read_build
     prevent :create_build
-    prevent :update_build
     prevent :admin_build
     prevent :destroy_build
-    prevent :cancel_build
 
     prevent :read_pipeline_schedule
     prevent :create_pipeline_schedule
