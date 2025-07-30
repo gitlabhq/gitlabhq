@@ -39,6 +39,7 @@ release-environments-build-cng-env:
     - !reference [.build-cng-env, before_script]
     - define_trigger_branch_in_build_env
     - export CNG_BRANCH=$TRIGGER_BRANCH
+    - unset CI_COMMIT_TAG # Do not use tag for CNG build
 
 release-environments-build-cng:
   extends: .build-cng
