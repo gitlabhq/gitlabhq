@@ -31,7 +31,7 @@ Here `amazing_alert` is the callout ID, and `42` is a unique number to be used t
   0 |       1 |        4 |           42 | 2025-05-21 00:00:00.000000+00
 ```
 
-To create a new callout ID, add a new key to the `feature_name` enum in the relevant context type registry file, using a unique name and a sequential value: 
+To create a new callout ID, add a new key to the `feature_name` enum in the relevant context type registry file, using a unique name and a sequential value:
 
 - Global context: `app/models/users/callout.rb`. Callouts are dismissed by a user globally. Related notifications would not be displayed anywhere in the GitLab instance for that user.
 

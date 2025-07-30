@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: Duo Workflow Use Case for Applying Coding Style 
+title: Duo Workflow Use Case for Applying Coding Style
 ---
 
 {{< details >}}

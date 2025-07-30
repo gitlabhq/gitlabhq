@@ -1,7 +1,7 @@
 import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-export const BULK_UPDATE_UNASSIGNED = 'unassigned';
+export const BULK_EDIT_NO_VALUE = 'no-value';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';

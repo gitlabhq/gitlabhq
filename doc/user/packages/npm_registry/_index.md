@@ -487,8 +487,8 @@ publish-npm:
 
 Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope/) of the package that is being installed, as well as the package name.
 
-The previous example uses the project-level endpoint. To use a group- or instance-level endpoint, 
-configure the registry and authentication token URLs as described in [Install from a group](#install-from-a-group) or 
+The previous example uses the project-level endpoint. To use a group- or instance-level endpoint,
+configure the registry and authentication token URLs as described in [Install from a group](#install-from-a-group) or
 [Install from an instance](#install-from-an-instance).
 
 ### Package forwarding to npmjs.com

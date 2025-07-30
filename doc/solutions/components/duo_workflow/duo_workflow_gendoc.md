@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: Duo Workflow Use Case for Generating Documentation 
+title: Duo Workflow Use Case for Generating Documentation
 ---
 
 {{< details >}}

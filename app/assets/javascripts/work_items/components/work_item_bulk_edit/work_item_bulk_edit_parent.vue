@@ -5,10 +5,11 @@ import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { isValidURL } from '~/lib/utils/url_utility';
-import { isReference } from '~/work_items/utils';
+import { BULK_EDIT_NO_VALUE } from '../../constants';
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
+import { isReference } from '../../utils';
 
 export default {
   components: {
@@ -110,6 +111,22 @@ export default {
       return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
     },
     listboxItems() {
+      if (!this.searchTerm.trim().length) {
+        return [
+          {
+            text: s__('WorkItem|No parent'),
+            textSrOnly: true,
+            options: [{ text: s__('WorkItem|No parent'), value: BULK_EDIT_NO_VALUE }],
+          },
+          {
+            text: __('All'),
+            textSrOnly: true,
+            options:
+              this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [],
+          },
+        ];
+      }
+
       return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
     },
     selectedWorkItem() {
@@ -118,6 +135,9 @@ export default {
     toggleText() {
       if (this.selectedWorkItem) {
         return this.selectedWorkItem.title;
+      }
+      if (this.selectedId === BULK_EDIT_NO_VALUE) {
+        return s__('WorkItem|No parent');
       }
       return s__('WorkItem|Select parent');
     },

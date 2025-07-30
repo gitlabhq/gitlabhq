@@ -285,7 +285,7 @@ connection to server at "xxx.xxx.xxx.xxx", port 5432 failed: Connection refused
 ```
 
 ```shell
-psql: error: connection to server on socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432" failed: 
+psql: error: connection to server on socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432" failed:
 FATAL:  sorry, too many clients already
 ```
 

@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  BULK_UPDATE_UNASSIGNED,
+  BULK_EDIT_NO_VALUE,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
@@ -168,7 +168,7 @@ export default {
     },
     performBulkEdit() {
       let assigneeIds;
-      if (this.assigneeId === BULK_UPDATE_UNASSIGNED) {
+      if (this.assigneeId === BULK_EDIT_NO_VALUE) {
         assigneeIds = [null];
       } else if (this.assigneeId) {
         assigneeIds = [this.assigneeId];
@@ -192,23 +192,34 @@ export default {
                 }
               : undefined,
             confidential: this.confidentiality ? this.confidentiality === 'true' : undefined,
-            healthStatusWidget: this.healthStatus
-              ? {
-                  healthStatus: camelCase(this.healthStatus),
-                }
-              : undefined,
-            iterationWidget: this.iterationId ? { iterationId: this.iterationId } : undefined,
-            milestoneWidget: this.milestoneId ? { milestoneId: this.milestoneId } : undefined,
+            healthStatusWidget: this.formatValue({
+              name: 'healthStatus',
+              value: this.healthStatus,
+            }),
+            iterationWidget: this.formatValue({ name: 'iterationId', value: this.iterationId }),
+            milestoneWidget: this.formatValue({ name: 'milestoneId', value: this.milestoneId }),
             stateEvent: this.state && this.state.toUpperCase(),
             subscriptionEvent: this.subscription && this.subscription.toUpperCase(),
-            hierarchyWidget: this.parentId ? { parentId: this.parentId } : undefined,
+            hierarchyWidget: this.formatValue({ name: 'parentId', value: this.parentId }),
           },
         },
       });
     },
+    formatValue({ name, value }) {
+      if (!value) {
+        return undefined;
+      }
+      if (value === BULK_EDIT_NO_VALUE) {
+        return { [name]: null };
+      }
+      if (name === 'healthStatus') {
+        return { [name]: camelCase(value) };
+      }
+      return { [name]: value };
+    },
     performLegacyBulkEdit() {
       let assigneeIds;
-      if (this.assigneeId === BULK_UPDATE_UNASSIGNED) {
+      if (this.assigneeId === BULK_EDIT_NO_VALUE) {
         assigneeIds = [0];
       } else if (this.assigneeId) {
         assigneeIds = [getIdFromGraphQLId(this.assigneeId)];
@@ -274,6 +285,7 @@ export default {
       :header-text="__('Select health status')"
       :items="$options.healthStatusItems"
       :label="__('Health status')"
+      :no-value-text="s__('WorkItem|No health status')"
       :disabled="!hasItemsSelected || !canEditHealthStatus"
       data-testid="bulk-edit-health-status"
     />

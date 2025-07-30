@@ -8,26 +8,26 @@ title: GitLab Testing Strategy
 
 ## Core Principles
 
-**Fast Feedback**  
+**Fast Feedback**
 Prioritize speed by running the most relevant tests first—fail fast, fix fast.
 
-**Progressive Testing**  
+**Progressive Testing**
 Start narrow, expand wide. Build confidence through incremental coverage.
 
-**Resource Efficiency**  
+**Resource Efficiency**
 Every test should earn its keep. No duplication, no waste.
 
-**Clear Ownership**  
+**Clear Ownership**
 Every test suite needs an owner. Undefined responsibility leads to decay.
 
-**Test Stability**  
+**Test Stability**
 If a test can't reliably block a merge, deployment, or release, it shouldn't exist. Fix it or delete it.
 
 ## Test Suite Placement Guidelines
 
 {{< alert type="note" >}}
 
-Please see [testing levels](testing_levels.md) for detailed information on the test pyramid and [pipeline tiers](../pipelines/_index.md#pipeline-tiers) for understanding merge request pipeline tiers. 
+Please see [testing levels](testing_levels.md) for detailed information on the test pyramid and [pipeline tiers](../pipelines/_index.md#pipeline-tiers) for understanding merge request pipeline tiers.
 
 {{< /alert >}}
 
@@ -67,27 +67,27 @@ Please see [testing levels](testing_levels.md) for detailed information on the t
 
 ### Adding a New Test
 
-**Test Type Selection**  
+**Test Type Selection**
 Start at the lowest level possible: Unit → Integration → System → E2E.
 
-**Coverage Assessment**  
+**Coverage Assessment**
 Scan existing tests before writing new ones. Don't test the same thing twice.
 
-**Suite Placement**  
+**Suite Placement**
 Match your test to the correct suite and stage. Follow established patterns.
 
-**Default to Blocking**  
+**Default to Blocking**
 New tests _block by default_. Non-blocking tests are the exception, not the rule.
 
 ### Modifying Test Execution in Pipeline
 
-**Shift Left**  
+**Shift Left**
 Move tests earlier in the pipeline whenever possible. Faster feedback saves time.
 
-**Preserve Blocking Status**  
+**Preserve Blocking Status**
 Once a test blocks at the right stage, it stays blocking. Demotion requires strong justification.
 
-**Document Impact**  
+**Document Impact**
 Every change to test execution patterns needs an impact assessment. No silent modifications.
 
 ## Maintenance and Monitoring

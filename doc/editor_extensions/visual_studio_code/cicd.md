@@ -83,7 +83,7 @@ To view the output for a CI/CD job for your current branch:
    ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](img/view_job_output_v17_6.png)
 
    The downstream pipelines appear under the pipelines. To open a downstream pipeline job log:
-   
+
    1. Select the arrow icons to expand or collapse the visibility of the downstream pipelines.
    1. Select a downstream pipeline. The job log opens in a new VS Code tab.
 

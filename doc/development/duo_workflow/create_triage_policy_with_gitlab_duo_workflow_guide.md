@@ -4,7 +4,7 @@ title: Create triage policies with the assistance of GitLab Duo Agent Platform
 
 {{< history >}}
 
-- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2. 
+- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2.
 
 {{< /history >}}
 

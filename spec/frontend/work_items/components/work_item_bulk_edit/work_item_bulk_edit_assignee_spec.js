@@ -12,7 +12,7 @@ import { createAlert } from '~/alert';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
-import { BULK_UPDATE_UNASSIGNED } from '~/work_items/constants';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 
 jest.mock('~/alert');
 
@@ -122,7 +122,7 @@ describe('WorkItemBulkEditAssignee component', () => {
           {
             text: 'Unassigned',
             textSrOnly: true,
-            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
           },
           {
             text: 'All',
@@ -166,7 +166,7 @@ describe('WorkItemBulkEditAssignee component', () => {
           {
             text: 'Unassigned',
             textSrOnly: true,
-            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
           },
           {
             text: 'All',
@@ -190,7 +190,7 @@ describe('WorkItemBulkEditAssignee component', () => {
           {
             text: 'Unassigned',
             textSrOnly: true,
-            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
           },
           {
             text: 'Selected',
@@ -252,7 +252,7 @@ describe('WorkItemBulkEditAssignee component', () => {
       it('renders "Unassigned"', async () => {
         createComponent();
 
-        await openListboxAndSelect('unassigned');
+        await openListboxAndSelect(BULK_EDIT_NO_VALUE);
 
         expect(findListbox().props('toggleText')).toBe('Unassigned');
       });

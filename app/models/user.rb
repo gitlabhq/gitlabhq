@@ -1471,7 +1471,7 @@ class User < ApplicationRecord
   end
 
   def authorized_project?(project, min_access_level = nil)
-    authorized_projects(min_access_level).exists?({ id: project.id })
+    authorized_projects(min_access_level).exists?(id: project.id)
   end
 
   # Typically used in conjunction with projects table to get projects

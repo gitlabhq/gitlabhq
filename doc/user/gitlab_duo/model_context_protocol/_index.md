@@ -102,7 +102,7 @@ For more information and examples, see the [MCP example servers documentation](h
     "aws-knowledge": {
       "command": "npx",
       "args": [
-        "mcp-remote", 
+        "mcp-remote",
         "https://knowledge-mcp.global.api.aws"
       ]
     }

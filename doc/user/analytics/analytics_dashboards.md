@@ -49,16 +49,7 @@ The following built-in dashboards are available:
 - [**Value Streams Dashboard**](value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
 - [**AI Impact Dashboard**](ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-07-31' -->
-
-## Custom dashboards (deprecated)
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7
-and is planned for removal in 18.2.
-
-{{< /alert >}}
+## Custom dashboards
 
 You can [create custom dashboards](#create-a-dashboard-by-configuration) to visualize the metrics that are most relevant to your case.
 
@@ -69,8 +60,6 @@ You can [create custom dashboards](#create-a-dashboard-by-configuration) to visu
 
 Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/_index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
 Your dashboard files are versioned in source control with the rest of a project's code.
-
-<!--- end_remove -->
 
 ## View project dashboards
 
@@ -151,8 +140,6 @@ To change the location of project dashboards:
 1. Select **Settings > Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
-
-<!--- start_remove The following content will be removed on remove_date: '2025-07-31' -->
 
 ## Create a dashboard by configuration
 
@@ -249,55 +236,6 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
-
-<!--- end_remove -->
-
-## Dashboard designer
-
-{{< history >}}
-
-- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/525203) to experiment in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `customizable_dashboards`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-You can use the dashboard designer to create and edit custom dashboards in the UI.
-
-### Create a custom dashboard
-
-To create a custom dashboard:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. Select **New dashboard**.
-1. In the **New dashboard** input, enter the name of the dashboard.
-1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
-1. Optional. Drag or resize the selected panel how you prefer.
-1. Select **Save**.
-
-### Edit a custom dashboard
-
-You can edit your custom dashboard's title and add or resize and move panels in the dashboard designer.
-
-To edit an existing custom dashboard:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
-1. Select **Edit**.
-1. Optional. Change the title of the dashboard.
-1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
-1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
-1. Select **Save**.
 
 ## Troubleshooting
 

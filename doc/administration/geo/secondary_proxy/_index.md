@@ -281,7 +281,7 @@ When proxying is disabled, users who access only the secondary site cannot prope
 
 - **No record of acceptance**: If an employee only logs into the secondary site, their acceptance of terms and conditions is not recorded in the primary database because write operations (including terms acceptance) are not proxied when secondary proxying is disabled, even though they may be presented with the terms message.
 - **Legal compliance concerns**: Organizations may lack proper legal coverage if employees use GitLab services through a secondary-only access pattern, since there's no verifiable record of their agreement to the terms and conditions.
- 
+
 As a workaround, you must access the primary site at least once to properly accept terms and conditions. After accepted on the primary, this information is replicated to secondary sites through normal Geo synchronization.
 
 {{< alert type="note" >}}

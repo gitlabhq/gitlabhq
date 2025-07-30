@@ -81,7 +81,7 @@ When you create your first scan execution policies, we provide you with template
 - Merge Request Security Template
 
   - Use case: "I want security scans to run only when merge requests are created, not on every commit."
-  - When to use: For projects using merge request pipelines that need security scans to run on 
+  - When to use: For projects using merge request pipelines that need security scans to run on
     source branches targeting default or protected branches.
   - Best for: Teams that want to align with merge request approval policies and reduce infrastructure
     costs by avoiding scans on every branch.

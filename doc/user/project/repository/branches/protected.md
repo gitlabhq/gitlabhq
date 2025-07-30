@@ -96,7 +96,7 @@ To protect a branch for all the projects in a group:
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
-1. In the **Branch** text box, type the branch name or a wildcard.
+1. In the **Branch** text box, type the branch name or a [wildcard](#use-wildcard-rules) (`*`).
    Branch names and wildcards [are case-sensitive](_index.md#name-your-branch).
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
@@ -126,7 +126,7 @@ To protect multiple branches at the same time:
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, type the branch name and a wildcard.
+1. From the **Branch** dropdown list, type the branch name and a wildcard (`*`).
    Branch names and wildcards [are case-sensitive](_index.md#name-your-branch). For example:
 
    | Wildcard protected branch | Matching branches                                      |

@@ -71817,6 +71817,9 @@ msgstr ""
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr ""
 
+msgid "WorkItem|No health status"
+msgstr ""
+
 msgid "WorkItem|No items"
 msgstr ""
 
@@ -71833,6 +71836,9 @@ msgid "WorkItem|No matching results"
 msgstr ""
 
 msgid "WorkItem|No milestone"
+msgstr ""
+
+msgid "WorkItem|No parent"
 msgstr ""
 
 msgid "WorkItem|No template"

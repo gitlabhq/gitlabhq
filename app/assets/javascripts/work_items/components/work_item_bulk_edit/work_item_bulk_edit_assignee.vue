@@ -7,11 +7,11 @@ import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_us
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import { BULK_UPDATE_UNASSIGNED } from '../../constants';
+import { BULK_EDIT_NO_VALUE } from '../../constants';
 import { formatUserForListbox } from '../../utils';
 
 export default {
-  BULK_UPDATE_UNASSIGNED,
+  BULK_EDIT_NO_VALUE,
   components: {
     GlCollapsibleListbox,
     GlFormGroup,
@@ -90,7 +90,7 @@ export default {
         listboxItems.push({
           text: __('Unassigned'),
           textSrOnly: true,
-          options: [{ text: __('Unassigned'), value: BULK_UPDATE_UNASSIGNED }],
+          options: [{ text: __('Unassigned'), value: BULK_EDIT_NO_VALUE }],
         });
       }
 
@@ -127,7 +127,7 @@ export default {
       if (this.selectedAssignee) {
         return this.selectedAssignee.name;
       }
-      if (this.selectedId === BULK_UPDATE_UNASSIGNED) {
+      if (this.selectedId === BULK_EDIT_NO_VALUE) {
         return __('Unassigned');
       }
       return __('Select assignee');
@@ -195,7 +195,7 @@ export default {
       @shown="handleShown"
     >
       <template #list-item="{ item }">
-        <template v-if="item.value === $options.BULK_UPDATE_UNASSIGNED">{{ item.text }}</template>
+        <template v-if="item.value === $options.BULK_EDIT_NO_VALUE">{{ item.text }}</template>
         <sidebar-participant v-else-if="item" :user="item" />
       </template>
     </gl-collapsible-listbox>

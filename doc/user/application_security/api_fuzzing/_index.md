@@ -100,7 +100,7 @@ To get the most out of API fuzzing, follow these recommendations:
 - By default, API fuzzing downloads all artifacts defined by previous jobs in the pipeline. If your
   API fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other
   files created in previous jobs, you should not download artifacts.
- 
+
   To avoid downloading artifacts, extend the analyzer CI/CD job to specify no dependencies.
   For example, for the API fuzzing analyzer, add the following to your `.gitlab-ci.yml` file:
 

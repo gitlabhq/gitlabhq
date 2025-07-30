@@ -20,7 +20,7 @@ you can enable a custom issue tracker.
 After you enable the custom issue tracker, a link to the issue tracker displays
 on the left sidebar in your project.
 
-![Custom issue tracker link](img/custom_issue_tracker_v14_5.png)
+![Custom issue tracker link](img/custom_issue_tracker_v18_3.png)
 
 ## Enable a custom issue tracker
 

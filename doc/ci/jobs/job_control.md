@@ -421,7 +421,7 @@ deploy_job:
 'deploy_job: [3, D]':
   stage: deploy
   script: echo something
-  needs: 
+  needs:
   - 'build_job: [1, A]'
 ```
 
@@ -439,7 +439,7 @@ for `VERSION` and `MODE`.
   - `deploy_job: [4, C]`
   - `deploy_job: [4, D]`
 
-The `deploy_job: [3, D]` job runs as soon as `build_job: [1, A]` job finishes, 
+The `deploy_job: [3, D]` job runs as soon as `build_job: [1, A]` job finishes,
 without waiting for the other `build_job` jobs to finish.
 
 ## Troubleshooting

@@ -1,5 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
+import { __ } from '~/locale';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 
 export default {
   components: {
@@ -19,6 +21,11 @@ export default {
       type: String,
       required: true,
     },
+    noValueText: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     value: {
       type: String,
       required: false,
@@ -31,7 +38,28 @@ export default {
     },
   },
   computed: {
+    listboxItems() {
+      if (this.noValueText) {
+        return [
+          {
+            text: this.noValueText,
+            textSrOnly: true,
+            options: [{ text: this.noValueText, value: BULK_EDIT_NO_VALUE }],
+          },
+          {
+            text: __('All'),
+            textSrOnly: true,
+            options: this.items,
+          },
+        ];
+      }
+
+      return this.items;
+    },
     toggleText() {
+      if (this.value === BULK_EDIT_NO_VALUE) {
+        return this.noValueText;
+      }
       const selected = this.items.find((option) => option.value === this.value);
       return selected?.text || this.headerText;
     },
@@ -52,7 +80,7 @@ export default {
       block
       :header-text="headerText"
       is-check-centered
-      :items="items"
+      :items="listboxItems"
       :reset-button-label="__('Reset')"
       :selected="value"
       :toggle-text="toggleText"

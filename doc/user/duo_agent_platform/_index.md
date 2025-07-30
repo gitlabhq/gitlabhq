@@ -16,7 +16,7 @@ title: GitLab Duo Agent Platform
 
 {{< history >}}
 
-- Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2. 
+- Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2.
 
 {{< /history >}}
 

@@ -59,7 +59,7 @@ either the replication lag size or time. The thresholds for these requirements a
 
 ## Deployment Strategy
 
-When rolling out changes via feature flag, consider deploying exclusively to Sidekiq pods initially to minimize risk. 
+When rolling out changes via feature flag, consider deploying exclusively to Sidekiq pods initially to minimize risk.
 
 Why Sidekiq-first deployment:
 

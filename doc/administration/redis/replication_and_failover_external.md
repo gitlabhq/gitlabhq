@@ -48,7 +48,7 @@ Note the Redis node's IP address or hostname, port, and password (if required).
    # Required if Redis authentication is configured on the Redis node
    gitlab_rails['redis_password'] = '<redis_password>'
 
-   # Set to true if instance is using Redis SSL 
+   # Set to true if instance is using Redis SSL
    gitlab_rails['redis_ssl'] = true
    ```
 

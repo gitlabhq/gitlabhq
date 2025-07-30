@@ -292,7 +292,7 @@ turn can be handled by defining foreign keys with cascading deletes.
 
 Finalizing a batched background migration is done by calling
 `ensure_batched_background_migration_is_finished`, but only if the migration was added
-in or before the last required stop. This ensures a smooth upgrade process for 
+in or before the last required stop. This ensures a smooth upgrade process for
 GitLab Self-Managed instances.
 
 It is important to finalize all batched background migrations when it is safe

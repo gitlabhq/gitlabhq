@@ -348,7 +348,7 @@ The Dependency Scanning job uses rules to check if either lockfiles with depende
 
 If you experience this situation, ensure your repository contains [a supported file](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files),
 or a file indicating that a supported file is generated at runtime.
-Consider whether such files can be added to your repository to trigger the Dependency Scanning job. 
+Consider whether such files can be added to your repository to trigger the Dependency Scanning job.
 
 If you believe that your repository does contain such files and the job is still not triggered, [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
 

@@ -93,7 +93,7 @@ It produces an execution plan which uses an index scan:
          Buffers: shared hit=73212
          I/O Timings: read=0.000 write=0.000
 
- 
+
 Time: 143.779 ms
   - planning: 5.222 ms
   - execution: 138.557 ms

@@ -355,22 +355,25 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#user_detail' do
+      let_it_be_with_refind(:user) { create(:user) }
+
       it 'persists `user_detail` by default' do
-        expect(create(:user).user_detail).to be_persisted
+        expect(user.user_detail).to be_persisted
       end
 
       shared_examples 'delegated field' do |field, prefix: nil|
         field_name = prefix ? :"#{prefix}_#{field}" : field
-        it 'correctly stores the `user_detail` attribute when the field is given on user creation' do
-          user = create(:user, field_name => 'my field')
 
+        before_all do
+          user.update!(field_name => 'my field')
+        end
+
+        it 'correctly stores the `user_detail` attribute when the field is given on user creation' do
           expect(user.user_detail).to be_persisted
           expect(user.user_detail[field]).to eq('my field')
         end
 
         it 'delegates to `user_detail`' do
-          user = create(:user, field_name => 'my field')
-
           expect(user.public_send(field_name)).to eq(user.user_detail[field])
         end
       end
@@ -381,27 +384,29 @@ RSpec.describe User, feature_category: :user_profile do
       it_behaves_like 'delegated field', :twitter
       it_behaves_like 'delegated field', :location
 
-      it 'creates `user_detail` when `website_url` is given' do
-        user = create(:user, website_url: 'https://example.com')
+      context 'when `website_url` is given' do
+        before_all do
+          user.update!(website_url: 'https://example.com')
+        end
 
-        expect(user.user_detail).to be_persisted
-        expect(user.user_detail.website_url).to eq('https://example.com')
-      end
+        it 'creates `user_detail`' do
+          expect(user.user_detail).to be_persisted
+          expect(user.user_detail.website_url).to eq('https://example.com')
+        end
 
-      it 'delegates `website_url` to `user_detail`' do
-        user = create(:user, website_url: 'http://example.com')
-
-        expect(user.website_url).to eq(user.user_detail.website_url)
+        it 'delegates `website_url` to `user_detail`' do
+          expect(user.website_url).to eq(user.user_detail.website_url)
+        end
       end
 
       it 'delegates `pronouns` to `user_detail`' do
-        user = create(:user, pronouns: 'they/them')
+        user.update!(pronouns: 'they/them')
 
         expect(user.pronouns).to eq(user.user_detail.pronouns)
       end
 
       it 'delegates `pronunciation` to `user_detail`' do
-        user = create(:user, name: 'Example', pronunciation: 'uhg-zaam-pl')
+        user.update!(name: 'Example', pronunciation: 'uhg-zaam-pl')
 
         expect(user.pronunciation).to eq(user.user_detail.pronunciation)
       end
@@ -654,7 +659,9 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'namespace_move_dir_allowed' do
         context 'when the user is not a new record' do
-          let!(:user) { create(:user) }
+          before do
+            user.save!
+          end
 
           it 'checks when username changes' do
             expect(user).to receive(:namespace_move_dir_allowed)
@@ -802,7 +809,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when updating user' do
-      let(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
 
       before do
         user.username = username if defined?(username)
@@ -852,63 +859,97 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#commit_email_or_default' do
-      subject(:user) { create(:user) }
+      let_it_be_with_refind(:user) { create(:user) }
+
+      subject(:commit_email_or_default) { user.commit_email_or_default }
 
       it 'defaults to the primary email' do
         expect(user.email).to be_present
-        expect(user.commit_email_or_default).to eq(user.email)
+        expect(commit_email_or_default).to eq(user.email)
       end
 
-      it 'defaults to the primary email when the column in the database is null' do
-        user.update_column(:commit_email, nil)
+      context 'when the column in the database is null' do
+        before do
+          user.update_column(:commit_email, nil)
+        end
 
-        found_user = described_class.find_by(id: user.id)
+        it 'defaults to the primary email' do
+          found_user = described_class.find_by(id: user.id)
 
-        expect(found_user.commit_email_or_default).to eq(user.email)
+          expect(found_user.commit_email_or_default).to eq(user.email)
+        end
       end
 
-      it 'returns the private commit email when commit_email has _private' do
-        user.update_column(:commit_email, Gitlab::PrivateCommitEmail::TOKEN)
+      context 'when commit_email has _private' do
+        before do
+          user.update_column(:commit_email, Gitlab::PrivateCommitEmail::TOKEN)
+        end
 
-        expect(user.commit_email_or_default).to eq(user.private_commit_email)
+        it 'returns the private commit email when commit_email has _private' do
+          is_expected.to eq(user.private_commit_email)
+        end
       end
     end
 
-    shared_examples 'for user notification, public, and commit emails' do
-      context 'when confirmed primary email' do
-        let(:user) { create(:user) }
-        let(:email) { user.email }
+    context 'when setting email address' do
+      let_it_be_with_refind(:user) { create(:user) }
 
-        it 'can be set' do
-          set_email
-
-          expect(user).to be_valid
-        end
-
-        context 'when primary email is changed' do
-          before do
-            user.email = generate(:email)
-          end
-
-          it 'can not be set' do
-            set_email
-
-            expect(user).not_to be_valid
-          end
-        end
-
-        context 'when confirmed secondary email' do
-          let(:email) { create(:email, :confirmed, user: user).email }
+      shared_examples 'for user notification, public, and commit emails' do
+        context 'when confirmed primary email' do
+          let(:email) { user.email }
 
           it 'can be set' do
             set_email
 
             expect(user).to be_valid
           end
+
+          context 'when primary email is changed' do
+            before do
+              user.email = generate(:email)
+            end
+
+            it 'can not be set' do
+              set_email
+
+              expect(user).not_to be_valid
+            end
+          end
+
+          context 'when confirmed secondary email' do
+            let(:email) { create(:email, :confirmed, user: user).email }
+
+            it 'can be set' do
+              set_email
+
+              expect(user).to be_valid
+            end
+          end
+
+          context 'when unconfirmed secondary email' do
+            let(:email) { create(:email, user: user).email }
+
+            it 'can not be set' do
+              set_email
+
+              expect(user).not_to be_valid
+            end
+          end
+
+          context 'when invalid confirmed secondary email' do
+            let(:email) { create(:email, :confirmed, :skip_validate, user: user, email: 'invalid') }
+
+            it 'can not be set' do
+              set_email
+
+              expect(user).not_to be_valid
+            end
+          end
         end
 
-        context 'when unconfirmed secondary email' do
-          let(:email) { create(:email, user: user).email }
+        context 'when unconfirmed primary email' do
+          let(:user) { create(:user, :unconfirmed) }
+          let(:email) { user.email }
 
           it 'can not be set' do
             set_email
@@ -917,72 +958,51 @@ RSpec.describe User, feature_category: :user_profile do
           end
         end
 
-        context 'when invalid confirmed secondary email' do
-          let(:email) { create(:email, :confirmed, :skip_validate, user: user, email: 'invalid') }
+        context 'when new record' do
+          let(:user) { build(:user, :unconfirmed) }
+          let(:email) { user.email }
 
           it 'can not be set' do
             set_email
 
             expect(user).not_to be_valid
           end
-        end
-      end
 
-      context 'when unconfirmed primary email ' do
-        let(:user) { create(:user, :unconfirmed) }
-        let(:email) { user.email }
+          context 'when skipping confirmation' do
+            before do
+              user.skip_confirmation = true
+            end
 
-        it 'can not be set' do
-          set_email
+            it 'can be set' do
+              set_email
 
-          expect(user).not_to be_valid
-        end
-      end
-
-      context 'when new record' do
-        let(:user) { build(:user, :unconfirmed) }
-        let(:email) { user.email }
-
-        it 'can not be set' do
-          set_email
-
-          expect(user).not_to be_valid
-        end
-
-        context 'when skipping confirmation' do
-          before do
-            user.skip_confirmation = true
-          end
-
-          it 'can be set' do
-            set_email
-
-            expect(user).to be_valid
+              expect(user).to be_valid
+            end
           end
         end
       end
-    end
 
-    describe 'notification_email' do
-      include_examples 'for user notification, public, and commit emails' do
-        subject(:set_email) do
-          user.notification_email = email
+      describe 'notification_email' do
+        include_examples 'for user notification, public, and commit emails' do
+          subject(:set_email) do
+            user.notification_email = email
+          end
         end
       end
-    end
 
-    describe 'public_email' do
-      include_examples 'for user notification, public, and commit emails' do
-        subject(:set_email) do
-          user.public_email = email
+      describe 'public_email' do
+        include_examples 'for user notification, public, and commit emails' do
+          subject(:set_email) do
+            user.public_email = email
+          end
         end
       end
-    end
 
-    describe 'commit_email' do
-      include_examples 'for user notification, public, and commit emails' do
-        subject(:set_email) do
-          user.commit_email = email
+      describe 'commit_email' do
+        include_examples 'for user notification, public, and commit emails' do
+          subject(:set_email) do
+            user.commit_email = email
+          end
         end
       end
     end
@@ -1349,7 +1369,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'returns users with 2fa enabled via OTP and hardware token' do
           user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_webauthn)
-          user_without_2fa = create(:user)
 
           is_expected.to contain_exactly(user_with_2fa.id)
           is_expected.not_to include(user_without_2fa.id)
@@ -2104,8 +2123,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
+    let_it_be_with_refind(:user) { create(:user) }
+
     let(:request) { double('request', remote_ip: "127.0.0.1") }
-    let(:user) { create(:user) }
 
     it 'writes trackable attributes' do
       expect do
@@ -2213,13 +2233,13 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#confirm' do
+    let_it_be_with_reload(:user) { create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com') }
+
     let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
     let(:extant_confirmation_sent_at) { Date.today }
 
-    let(:user) do
-      create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com').tap do |user|
-        user.update!(confirmation_sent_at: confirmation_sent_at)
-      end
+    before do
+      user.update!(confirmation_sent_at: confirmation_sent_at)
     end
 
     shared_examples_for 'unconfirmed user' do
@@ -2298,13 +2318,15 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'saving primary email to the emails table' do
-    context 'when calling skip_reconfirmation! while updating the primary email' do
-      let(:user) { create(:user, email: 'primary@example.com') }
+    let_it_be_with_reload(:user) { create(:user, email: 'primary@example.com') }
 
-      it 'adds the new email to emails' do
+    context 'when calling skip_reconfirmation! while updating the primary email' do
+      before do
         user.skip_reconfirmation!
         user.update!(email: 'new_primary@example.com')
+      end
 
+      it 'adds the new email to emails' do
         expect(user.email).to eq('new_primary@example.com')
         expect(user.unconfirmed_email).to be_nil
         expect(user).to be_confirmed
@@ -2314,8 +2336,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the email is changed but not confirmed' do
-      let(:user) { create(:user, email: 'primary@example.com') }
-
       before do
         user.update!(email: 'new_primary@example.com')
       end
@@ -2336,21 +2356,23 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the user is created as not confirmed' do
-      let(:user) { create(:user, :unconfirmed, email: 'primary@example.com') }
+      let_it_be_with_refind(:user) { create(:user, :unconfirmed, email: 'primary2@example.com') }
 
       it 'does not add the email to emails yet' do
         expect(user).not_to be_confirmed
-        expect(user.emails.pluck(:email)).not_to include('primary@example.com')
+        expect(user.emails.pluck(:email)).not_to include('primary2@example.com')
       end
 
       it 'adds the email to emails upon confirmation' do
         user.confirm
-        expect(user.emails.pluck(:email)).to include('primary@example.com')
+        expect(user.emails.pluck(:email)).to include('primary2@example.com')
       end
     end
 
     context 'when the user is created as confirmed' do
-      let(:user) { create(:user, email: 'primary@example.com', confirmed_at: DateTime.now.utc) }
+      before do
+        user.update!(confirmed_at: DateTime.now.utc)
+      end
 
       it 'adds the email to emails' do
         expect(user).to be_confirmed
@@ -2359,26 +2381,28 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when skip_confirmation! is called' do
-      let(:user) { build(:user, :unconfirmed, email: 'primary@example.com') }
+      let(:user) { build(:user, :unconfirmed, email: 'primary2@example.com') }
 
-      it 'adds the email to emails' do
+      before do
         user.skip_confirmation!
         user.save!
+      end
 
+      it 'adds the email to emails' do
         expect(user).to be_confirmed
-        expect(user.emails.pluck(:email)).to include('primary@example.com')
+        expect(user.emails.pluck(:email)).to include('primary2@example.com')
       end
     end
   end
 
   describe '#force_confirm' do
+    let_it_be_with_reload(:user) { create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com') }
+
     let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
     let(:extant_confirmation_sent_at) { Date.today }
 
-    let(:user) do
-      create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com').tap do |user|
-        user.update!(confirmation_sent_at: confirmation_sent_at)
-      end
+    before do
+      user.update!(confirmation_sent_at: confirmation_sent_at)
     end
 
     shared_examples_for 'unconfirmed user' do
@@ -2516,8 +2540,12 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#ensure_user_rights_and_limits' do
+    let_it_be_with_refind(:user) { create(:user) }
+
     describe 'with external user' do
-      let(:user) { create(:user, external: true) }
+      before_all do
+        user.update!(external: true)
+      end
 
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
@@ -2534,7 +2562,9 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'without external user' do
-      let(:user) { create(:user, external: false) }
+      before_all do
+        user.update!(external: false)
+      end
 
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
@@ -2606,8 +2636,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'static object token' do
+    let_it_be_with_refind(:user) { create(:user, static_object_token: nil) }
+
     it 'ensures a static object token on read' do
-      user = create(:user, static_object_token: nil)
       static_object_token = user.static_object_token
 
       expect(static_object_token).not_to be_blank
@@ -2615,8 +2646,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'generates an encrypted version of the token' do
-      user = create(:user, static_object_token: nil)
-
       expect(user[:static_object_token]).to be_nil
       expect(user[:static_object_token_encrypted]).to be_nil
 
@@ -2627,8 +2656,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'prefers an encoded version of the token' do
-      user = create(:user, static_object_token: nil)
-
       token = user.static_object_token
 
       user.update_column(:static_object_token, 'Test')
@@ -2945,7 +2972,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'update_otp_secret!', :freeze_time do
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     before do
       user.update_otp_secret!
@@ -2988,7 +3015,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { expect(user.forkable_namespaces).to contain_exactly(user.namespace, group) }
 
     context 'with owned groups only' do
-      before do
+      before_all do
         create(:group, developers: user)
       end
 
@@ -3148,7 +3175,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'blocking a user pending approval' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     before do
       user.block_pending_approval
@@ -3291,7 +3318,10 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '.filter_items' do
     using RSpec::Parameterized::TableSyntax
-    let(:user) { double }
+
+    let_it_be(:regular_user, freeze: true) { create(:user) }
+    let_it_be(:non_human_user, freeze: true) { create(:user, user_type: :automation_bot) }
+    let_it_be(:placeholder_user, freeze: true) { create(:user, user_type: :placeholder) }
 
     where(:scope, :filter_name) do
       :all_without_ghosts       | nil
@@ -3313,48 +3343,44 @@ RSpec.describe User, feature_category: :user_profile do
 
     with_them do
       it 'uses a certain scope for the given filter name' do
-        expect(described_class).to receive(scope).and_return([user])
-        expect(described_class.filter_items(filter_name)).to include user
+        expect(described_class).to receive(scope).and_return([regular_user])
+        expect(described_class.filter_items(filter_name)).to include regular_user
       end
     end
 
     context 'with without_bots filter' do
-      it 'returns only humans' do
-        non_human_user = create(:user, user_type: :automation_bot)
-        regular_user = create(:user)
+      subject { described_class.filter_items('without_bots') }
 
-        expect(described_class.filter_items('without_bots')).not_to include(non_human_user)
-        expect(described_class.filter_items('without_bots')).to include(regular_user)
+      it 'returns only humans' do
+        is_expected.not_to include(non_human_user)
+        is_expected.to include(regular_user)
       end
     end
 
     context 'with bots filter' do
-      it 'returns only bots' do
-        non_human_user = create(:user, user_type: :automation_bot)
-        regular_user = create(:user)
+      subject { described_class.filter_items('bots') }
 
-        expect(described_class.filter_items('bots')).to include(non_human_user)
-        expect(described_class.filter_items('bots')).not_to include(regular_user)
+      it 'returns only bots' do
+        is_expected.to include(non_human_user)
+        is_expected.not_to include(regular_user)
       end
     end
 
     context 'with placeholder filter' do
-      it 'returns only placeholder users' do
-        placeholder_user = create(:user, user_type: :placeholder)
-        regular_user = create(:user)
+      subject { described_class.filter_items('placeholder') }
 
-        expect(described_class.filter_items('placeholder')).to include(placeholder_user)
-        expect(described_class.filter_items('placeholder')).not_to include(regular_user)
+      it 'returns only placeholder users' do
+        is_expected.to include(placeholder_user)
+        is_expected.not_to include(regular_user)
       end
     end
 
     context 'with without_placeholders filter' do
-      it 'returns users that are not placeholders' do
-        placeholder_user = create(:user, user_type: :placeholder)
-        regular_user = create(:user)
+      subject { described_class.filter_items('without_placeholders') }
 
-        expect(described_class.filter_items('without_placeholders')).to include(regular_user)
-        expect(described_class.filter_items('without_placeholders')).not_to include(placeholder_user)
+      it 'returns users that are not placeholders' do
+        is_expected.to include(regular_user)
+        is_expected.not_to include(placeholder_user)
       end
     end
   end
@@ -3366,7 +3392,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:user) { create(:user, maintainer_of: project) }
     let_it_be(:users_without_project) { create_list(:user, 2) }
 
-    before do
+    before_all do
       # create invite to project
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
 
@@ -3380,7 +3406,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe 'user creation' do
     describe 'normal user' do
-      let(:user) { create(:user, name: 'John Smith') }
+      let_it_be(:user, freeze: true) { create(:user, name: 'John Smith') }
 
       it { expect(user.admin?).to be_falsey }
       it { expect(user.require_ssh_key?).to be_truthy }
@@ -3391,7 +3417,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'with defaults' do
-      let(:user) { described_class.new }
+      let_it_be(:user, freeze: true) { create(:user) }
 
       it 'applies defaults to user' do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
@@ -3403,7 +3429,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'with default overrides' do
-      let(:user) { described_class.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
+      let_it_be(:user) { create(:user, projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it 'applies defaults to user' do
         expect(user.projects_limit).to eq(123)
@@ -3414,7 +3440,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'does not undo projects_limit setting if it matches old DB default of 10' do
         # If the real default project limit is 10 then this test is worthless
         expect(Gitlab.config.gitlab.default_projects_limit).not_to eq(10)
-        user = described_class.new(projects_limit: 10)
+        user = create(:user, projects_limit: 10)
         expect(user.projects_limit).to eq(10)
       end
     end
@@ -3563,6 +3589,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '.by_any_email' do
+    let_it_be(:user, freeze: true) { create(:user) }
+    let_it_be(:unconfirmed_user, freeze: true) { create(:user, :unconfirmed) }
+
     it 'returns an ActiveRecord::Relation' do
       expect(described_class.by_any_email('foo@example.com'))
         .to be_a_kind_of(ActiveRecord::Relation)
@@ -3573,21 +3602,16 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'returns a relation of users for confirmed primary emails' do
-      user = create(:user)
-
       expect(described_class.by_any_email(user.email)).to contain_exactly(user)
       expect(described_class.by_any_email(user.email, confirmed: true)).to contain_exactly(user)
     end
 
     it 'returns a relation of users for unconfirmed primary emails according to confirmed argument' do
-      user = create(:user, :unconfirmed)
-
-      expect(described_class.by_any_email(user.email)).to contain_exactly(user)
-      expect(described_class.by_any_email(user.email, confirmed: true)).to be_empty
+      expect(described_class.by_any_email(unconfirmed_user.email)).to contain_exactly(unconfirmed_user)
+      expect(described_class.by_any_email(unconfirmed_user.email, confirmed: true)).to be_empty
     end
 
     it 'finds users through private commit emails' do
-      user = create(:user)
       private_email = user.private_commit_email
 
       expect(described_class.by_any_email(private_email)).to contain_exactly(user)
@@ -3595,15 +3619,13 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'finds unconfirmed users through private commit emails' do
-      user = create(:user, :unconfirmed)
-      private_email = user.private_commit_email
+      private_email = unconfirmed_user.private_commit_email
 
-      expect(described_class.by_any_email(private_email)).to contain_exactly(user)
-      expect(described_class.by_any_email(private_email, confirmed: true)).to contain_exactly(user)
+      expect(described_class.by_any_email(private_email)).to contain_exactly(unconfirmed_user)
+      expect(described_class.by_any_email(private_email, confirmed: true)).to contain_exactly(unconfirmed_user)
     end
 
     it 'finds user through a private commit email in an array' do
-      user = create(:user)
       private_email = user.private_commit_email
 
       expect(described_class.by_any_email([private_email])).to contain_exactly(user)
@@ -3641,7 +3663,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when primary email is unconfirmed' do
-        let(:user) { create(:user, :unconfirmed) }
+        let(:user) { unconfirmed_user }
 
         context 'when secondary email is confirmed' do
           let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
@@ -3998,7 +4020,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '.find_by_full_path' do
-    let!(:user) { create(:user, namespace: create(:user_namespace)) }
+    let_it_be(:user, freeze: true) { create(:user, namespace: create(:user_namespace)) }
 
     context 'with a route matching the given path' do
       let!(:route) { user.namespace.route }
@@ -4085,7 +4107,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#clear_avatar_caches' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     it 'clears the avatar cache when saving' do
       allow(user).to receive(:avatar_changed?).and_return(true)
@@ -4097,22 +4119,22 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#accept_pending_invitations!' do
-    let(:user) { create(:user, email: 'user@email.com') }
+    let_it_be_with_reload(:user) { create(:user, email: 'user@email.com') }
 
-    let(:confirmed_secondary_email) { create(:email, :confirmed, email: 'confirmedsecondary@example.com', user: user) }
-    let(:unconfirmed_secondary_email) { create(:email, email: 'unconfirmedsecondary@example.com', user: user) }
+    let_it_be_with_reload(:confirmed_secondary_email, freeze: true) { create(:email, :confirmed, email: 'confirmedsecondary@example.com', user: user) }
+    let_it_be_with_reload(:unconfirmed_secondary_email, freeze: true) { create(:email, email: 'unconfirmedsecondary@example.com', user: user) }
 
-    let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+    let_it_be_with_reload(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
     let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
 
-    let!(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
-    let!(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
+    let_it_be_with_reload(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
+    let_it_be_with_reload(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
 
-    let!(:project_member_invite_via_confirmed_secondary_email) { create(:project_member, :invited, invite_email: confirmed_secondary_email.email) }
-    let!(:group_member_invite_via_confirmed_secondary_email) { create(:group_member, :invited, invite_email: confirmed_secondary_email.email) }
+    let_it_be_with_reload(:project_member_invite_via_confirmed_secondary_email) { create(:project_member, :invited, invite_email: confirmed_secondary_email.email) }
+    let_it_be_with_reload(:group_member_invite_via_confirmed_secondary_email) { create(:group_member, :invited, invite_email: confirmed_secondary_email.email) }
 
-    let!(:project_member_invite_via_unconfirmed_secondary_email) { create(:project_member, :invited, invite_email: unconfirmed_secondary_email.email) }
-    let!(:group_member_invite_via_unconfirmed_secondary_email) { create(:group_member, :invited, invite_email: unconfirmed_secondary_email.email) }
+    let_it_be_with_reload(:project_member_invite_via_unconfirmed_secondary_email) { create(:project_member, :invited, invite_email: unconfirmed_secondary_email.email) }
+    let_it_be_with_reload(:group_member_invite_via_unconfirmed_secondary_email) { create(:group_member, :invited, invite_email: unconfirmed_secondary_email.email) }
 
     it 'accepts all the user members pending invitations and returns the accepted_members' do
       accepted_members = user.accept_pending_invitations!
@@ -4138,7 +4160,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'with an uppercase version of the email matches another member' do
-      let!(:uppercase_existing_invite) do
+      let_it_be_with_reload(:uppercase_existing_invite) do
         create(:project_member, :invited, source: project_member_invite.project, invite_email: user.email.upcase)
       end
 
@@ -4198,7 +4220,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#can_create_project?' do
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     context "when projects_limit_left is 0" do
       before do
@@ -4303,9 +4325,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#all_emails' do
-    let(:user) { create(:user) }
-    let!(:unconfirmed_secondary_email) { create(:email, user: user) }
-    let!(:confirmed_secondary_email) { create(:email, :confirmed, user: user) }
+    let_it_be(:user, freeze: true) { create(:user) }
+    let_it_be(:unconfirmed_secondary_email, freeze: true) { create(:email, user: user) }
+    let_it_be(:confirmed_secondary_email, freeze: true) { create(:email, :confirmed, user: user) }
 
     it 'returns all emails' do
       expect(user.all_emails).to contain_exactly(
@@ -4322,7 +4344,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the primary email is unconfirmed' do
-      let!(:user) { create(:user, :unconfirmed) }
+      let_it_be(:user, freeze: true) { create(:user, :unconfirmed) }
 
       it 'includes the primary email' do
         expect(user.all_emails).to include(user.email)
@@ -4330,7 +4352,9 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the primary email is temp email for oauth' do
-      let!(:user) { create(:omniauth_user, :unconfirmed, email: 'temp-email-for-oauth-user@gitlab.localhost') }
+      let_it_be(:user, freeze: true) do
+        create(:omniauth_user, :unconfirmed, email: 'temp-email-for-oauth-user@gitlab.localhost')
+      end
 
       it 'does not include the primary email' do
         expect(user.all_emails).not_to include(user.email)
@@ -4365,10 +4389,10 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#verified_emails' do
-    let(:user) { create(:user) }
-    let!(:confirmed_email) { create(:email, :confirmed, user: user) }
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be(:confirmed_email, freeze: true) { create(:email, :confirmed, user: user) }
 
-    before do
+    before_all do
       create(:email, user: user)
     end
 
@@ -4433,7 +4457,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#public_verified_emails' do
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     it 'returns only confirmed public emails' do
       email_confirmed = create :email, user: user, confirmed_at: Time.current
@@ -4445,20 +4469,25 @@ RSpec.describe User, feature_category: :user_profile do
       )
     end
 
-    it 'returns confirmed public emails plus main user email when user is not confirmed' do
-      user = create(:user, confirmed_at: nil)
-      email_confirmed = create :email, user: user, confirmed_at: Time.current
-      create :email, user: user
+    context 'when user is not confirmed' do
+      before_all do
+        user.update!(confirmed_at: nil)
+      end
 
-      expect(user.public_verified_emails).to contain_exactly(
-        user.email,
-        email_confirmed.email
-      )
+      it 'returns confirmed public emails plus main user email when user is not confirmed' do
+        email_confirmed = create :email, user: user, confirmed_at: Time.current
+        create :email, user: user
+
+        expect(user.public_verified_emails).to contain_exactly(
+          user.email,
+          email_confirmed.email
+        )
+      end
     end
   end
 
   describe '#verified_email?' do
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     it 'returns true when the email is verified/confirmed' do
       email_confirmed = create :email, user: user, confirmed_at: Time.current
@@ -4630,7 +4659,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#full_website_url' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     it 'begins with http if website url omits it' do
       user.website_url = 'test.com'
@@ -4652,7 +4681,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#short_website_url' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     it 'does not begin with http if website url omits it' do
       user.website_url = 'test.com'
@@ -4795,26 +4824,37 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#follow' do
-    it 'follow another user' do
-      user = create :user
-      followee1 = create :user
-      followee2 = create :user
+    let_it_be_with_refind(:user) { create :user }
 
-      expect(user.followees).to be_empty
+    context 'when following another user' do
+      let_it_be_with_refind(:followee1) { create :user }
+      let_it_be_with_refind(:followee2) { create :user }
 
-      expect(user.follow(followee1)).to be_truthy
-      expect(user.follow(followee1)).to be_falsey
+      it 'follow another user' do
+        expect(user.followees).to be_empty
 
-      expect(user.followees).to contain_exactly(followee1)
+        expect(user.follow(followee1)).to be_truthy
+        expect(user.follow(followee1)).to be_falsey
 
-      expect(user.follow(followee2)).to be_truthy
-      expect(user.follow(followee2)).to be_falsey
+        expect(user.followees).to contain_exactly(followee1)
 
-      expect(user.followees).to contain_exactly(followee1, followee2)
+        expect(user.follow(followee2)).to be_truthy
+        expect(user.follow(followee2)).to be_falsey
+
+        expect(user.followees).to contain_exactly(followee1, followee2)
+      end
+
+      it 'provides the number of followees' do
+        expect(user.follow(followee1)).to be_truthy
+        expect(user.follow(followee2)).to be_truthy
+
+        followee1.block!
+
+        expect(user.followees).to contain_exactly(followee2)
+      end
     end
 
     it 'provides the number of followers' do
-      user = create :user
       follower1 = create :user
       follower2 = create :user
 
@@ -4826,22 +4866,7 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.followers).to contain_exactly(follower2)
     end
 
-    it 'provides the number of followees' do
-      user = create :user
-      followee1 = create(:user)
-      followee2 = create(:user)
-
-      expect(user.follow(followee1)).to be_truthy
-      expect(user.follow(followee2)).to be_truthy
-
-      followee1.block!
-
-      expect(user.followees).to contain_exactly(followee2)
-    end
-
     it 'follow itself is not possible' do
-      user = create :user
-
       expect(user.followees).to be_empty
 
       expect(user.follow(user)).to be_falsey
@@ -4849,55 +4874,67 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.followees).to be_empty
     end
 
-    it 'does not follow if max followee limit is reached' do
-      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
+    context 'if max followee limit is reached' do
+      before do
+        stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
 
-      user = create(:user)
-      Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+        Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+      end
 
-      followee = create(:user)
-      user_follow_user = user.follow(followee)
+      it 'does not follow' do
+        followee = create(:user)
+        user_follow_user = user.follow(followee)
 
-      expect(user_follow_user).not_to be_persisted
-      expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
-      expect(user_follow_user.errors.messages[:base].first).to eq(expected_message)
+        expect(user_follow_user).not_to be_persisted
+        expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+        expect(user_follow_user.errors.messages[:base].first).to eq(expected_message)
 
-      expect(user.following?(followee)).to be_falsey
+        expect(user.following?(followee)).to be_falsey
+      end
     end
 
-    it 'does not follow if user disabled following' do
-      user = create(:user)
-      user.enabled_following = false
+    context 'when user disabled following' do
+      before do
+        user.enabled_following = false
+      end
 
-      followee = create(:user)
+      it 'does not follow' do
+        followee = create(:user)
 
-      expect(user.follow(followee)).to eq(false)
+        expect(user.follow(followee)).to eq(false)
 
-      expect(user.following?(followee)).to be_falsey
+        expect(user.following?(followee)).to be_falsey
+      end
     end
 
-    it 'does not follow if followee user disabled following' do
-      user = create(:user)
+    context 'when followee user disabled following' do
+      let(:followee) { create(:user) }
 
-      followee = create(:user)
-      followee.enabled_following = false
+      before do
+        user.enabled_following = false
+      end
 
-      expect(user.follow(followee)).to eq(false)
+      it 'does not follow' do
+        expect(user.follow(followee)).to eq(false)
 
-      expect(user.following?(followee)).to be_falsey
+        expect(user.following?(followee)).to be_falsey
+      end
     end
 
-    it 'does not include follow if follower user is banned' do
-      user = create(:user)
+    context 'when follower user is banned' do
+      let(:follower) { create(:user) }
 
-      follower = create(:user)
-      follower.follow(user)
+      before do
+        follower.follow(user)
+      end
 
-      expect(user.followed_by?(follower)).to be_truthy
+      it 'does not include follow' do
+        expect(user.followed_by?(follower)).to be_truthy
 
-      follower.ban
+        follower.ban
 
-      expect(user.followed_by?(follower)).to be_falsey
+        expect(user.followed_by?(follower)).to be_falsey
+      end
     end
   end
 
@@ -5002,19 +5039,26 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#last_active_at' do
+    let_it_be_with_reload(:user) { create(:user) }
+
     let(:last_activity_on) { 5.days.ago.to_date }
     let(:current_sign_in_at) { 8.days.ago }
 
-    context 'for a user that has `last_activity_on` set' do
-      let(:user) { create(:user, last_activity_on: last_activity_on) }
+    before do
+      user.last_activity_on = last_activity_on
+      user.current_sign_in_at = current_sign_in_at
+    end
+
+    context 'for a user that has `last_activity_on` set and is not signed in' do
+      let(:current_sign_in_at) { nil }
 
       it 'returns `last_activity_on` with current time zone' do
         expect(user.last_active_at).to eq(last_activity_on.to_time.in_time_zone)
       end
     end
 
-    context 'for a user that has `current_sign_in_at` set' do
-      let(:user) { create(:user, current_sign_in_at: current_sign_in_at) }
+    context 'for a user that is signed in and dos not have `current_siglast_activity_onn_in_at` set' do
+      let(:last_activity_on) { nil }
 
       it 'returns `current_sign_in_at`' do
         expect(user.last_active_at).to eq(current_sign_in_at)
@@ -5022,8 +5066,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'for a user that has both `current_sign_in_at` & ``last_activity_on`` set' do
-      let(:user) { create(:user, current_sign_in_at: current_sign_in_at, last_activity_on: last_activity_on) }
-
       it 'returns the latest among `current_sign_in_at` & `last_activity_on`' do
         latest_event = [current_sign_in_at, last_activity_on.to_time.in_time_zone].max
         expect(user.last_active_at).to eq(latest_event)
@@ -5031,7 +5073,8 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'for a user that does not have both `current_sign_in_at` & `last_activity_on` set' do
-      let(:user) { create(:user, current_sign_in_at: nil, last_activity_on: nil) }
+      let(:current_sign_in_at) { nil }
+      let(:last_activity_on) { nil }
 
       it 'returns nil' do
         expect(user.last_active_at).to eq(nil)
@@ -5040,10 +5083,15 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#can_be_deactivated?' do
+    let_it_be_with_refind(:user) { create(:user, name: 'John Smith') }
+
     let(:activity) { {} }
-    let(:user) { create(:user, name: 'John Smith', **activity) }
     let(:day_within_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago }
     let(:day_outside_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago }
+
+    before do
+      user.update!(activity)
+    end
 
     shared_examples 'not eligible for deactivation' do
       it 'returns false' do
@@ -5099,42 +5147,42 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#contributed_projects' do
-    subject { create(:user) }
+    let_it_be(:project1, freeze: true) { create(:project) }
+    let_it_be(:project_aimed_for_deletion, freeze: true) { create(:project, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
+    let_it_be(:user, freeze: true) { create(:user, maintainer_of: [project1, project_aimed_for_deletion]) }
+    let_it_be(:push_event, freeze: true) { create(:push_event, project: project1, author: user) }
 
-    let!(:project1) { create(:project) }
-    let!(:project2) { fork_project(project3) }
     let!(:project3) { create(:project) }
-    let!(:project_aimed_for_deletion) { create(:project, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
-    let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
-    let!(:push_event) { create(:push_event, project: project1, author: subject) }
-    let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
-    let!(:merge_event_2) { create(:event, :created, project: project_aimed_for_deletion, target: merge_request, author: subject) }
+    let!(:project2) { fork_project(project3) }
+    let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: user) }
+    let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: user) }
+    let!(:merge_event_2) { create(:event, :created, project: project_aimed_for_deletion, target: merge_request, author: user) }
+
+    subject { user.contributed_projects }
 
     before do
-      project1.add_maintainer(subject)
-      project2.add_maintainer(subject)
-      project_aimed_for_deletion.add_maintainer(subject)
+      project2.add_maintainer(user)
     end
 
     it 'includes IDs for projects the user has pushed to' do
-      expect(subject.contributed_projects).to include(project1)
+      is_expected.to include(project1)
     end
 
     it 'includes IDs for projects the user has had merge requests merged into' do
-      expect(subject.contributed_projects).to include(project3)
+      is_expected.to include(project3)
     end
 
     it "doesn't include IDs for unrelated projects" do
-      expect(subject.contributed_projects).not_to include(project2)
+      is_expected.not_to include(project2)
     end
 
     it "doesn't include projects aimed for deletion" do
-      expect(subject.contributed_projects).not_to include(project_aimed_for_deletion)
+      is_expected.not_to include(project_aimed_for_deletion)
     end
   end
 
   describe '#fork_of' do
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     it "returns a user's fork of a project" do
       project = create(:project, :public)
@@ -5151,30 +5199,28 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#can_be_removed?' do
-    subject { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be(:organization, freeze: true) { create(:organization) }
 
-    let_it_be(:group) { create(:group) }
-    let_it_be(:organization) { create(:organization) }
+    subject { user.can_be_removed? }
 
-    context 'when feature flag :ui_for_organizations is enabled' do
-      where(:solo_owned_groups, :solo_owned_organizations, :result) do
-        [
-          [[], [], true],
-          [[ref(:group)], [], false],
-          [[], [ref(:organization)], false],
-          [[ref(:group)], [ref(:organization)], false]
-        ]
+    where(:solo_owned_groups, :solo_owned_organizations, :result) do
+      [
+        [[], [], true],
+        [[ref(:group)], [], false],
+        [[], [ref(:organization)], false],
+        [[ref(:group)], [ref(:organization)], false]
+      ]
+    end
+
+    with_them do
+      before do
+        allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+        allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
       end
 
-      with_them do
-        before do
-          stub_feature_flags(ui_for_organizations: true)
-          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
-        end
-
-        it { expect(subject.can_be_removed?).to be(result) }
-      end
+      it { is_expected.to be(result) }
     end
 
     context 'when feature flag :ui_for_organizations is disabled' do
@@ -5190,11 +5236,11 @@ RSpec.describe User, feature_category: :user_profile do
       with_them do
         before do
           stub_feature_flags(ui_for_organizations: false)
-          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+          allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+          allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
         end
 
-        it { expect(subject.can_be_removed?).to be(result) }
+        it { is_expected.to be(result) }
       end
     end
   end
@@ -5209,11 +5255,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'has owned groups' do
-      let(:group) { create(:group) }
-
-      before do
-        group.add_owner(user)
-      end
+      let(:group) { create(:group, owners: user) }
 
       context 'not solo owner' do
         let_it_be(:user2) { create(:user) }
@@ -5426,14 +5468,14 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#authorizations_for_projects' do
-    let!(:user) { create(:user) }
+    let_it_be(:other) { create(:project) }
+    let_it_be(:user) { create(:user) }
 
     subject { Project.where("EXISTS (?)", user.authorizations_for_projects) }
 
     it 'includes projects that belong to a user, but no other projects' do
       owned = create(:project, :private, namespace: user.namespace)
       member = create(:project, :private, maintainers: user)
-      other = create(:project)
 
       is_expected.to include(owned)
       is_expected.to include(member)
@@ -5443,14 +5485,12 @@ RSpec.describe User, feature_category: :user_profile do
     it 'includes projects a user has access to, but no other projects' do
       other_user = create(:user)
       accessible = create(:project, :private, namespace: other_user.namespace, developers: user)
-      other = create(:project)
 
       is_expected.to include(accessible)
       is_expected.not_to include(other)
     end
 
     context 'with min_access_level' do
-      let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project, :private, group: group, developers: user) }
 
@@ -5474,85 +5514,67 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#authorized_projects', :delete do
-    context 'with a minimum access level' do
-      it 'includes projects for which the user is an owner' do
-        user = create(:user)
-        project = create(:project, :private, namespace: user.namespace)
+  describe '#authorized_projects' do
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be(:project, freeze: true) { create(:project, :private) }
+    let_it_be(:project_in_user_namespace, freeze: true) { create(:project, :private, namespace: user.namespace) }
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER))
-          .to contain_exactly(project)
+    subject { user.authorized_projects }
+
+    context 'with a minimum access level' do
+      subject { user.authorized_projects(Gitlab::Access::REPORTER) }
+
+      it 'includes projects for which the user is an owner' do
+        is_expected.to contain_exactly(project_in_user_namespace)
       end
 
       it 'includes projects for which the user is a maintainer' do
-        user = create(:user)
-        project = create(:project, :private)
-
         project.add_maintainer(user)
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER))
-          .to contain_exactly(project)
+        is_expected.to contain_exactly(project, project_in_user_namespace)
       end
     end
 
     it "includes user's personal projects" do
-      user    = create(:user)
-      project = create(:project, :private, namespace: user.namespace)
-
-      expect(user.authorized_projects).to include(project)
+      is_expected.to include(project_in_user_namespace)
     end
 
     it 'includes personal projects user has been given access to' do
-      user1   = create(:user)
-      user2   = create(:user)
-      project = create(:project, :private, namespace: user1.namespace)
+      user2 = create(:user, developer_of: project_in_user_namespace)
 
-      project.add_developer(user2)
-
-      expect(user2.authorized_projects).to include(project)
+      expect(user2.authorized_projects).to include(project_in_user_namespace)
     end
 
-    it 'includes projects of groups user has been added to' do
-      group   = create(:group)
-      project = create(:project, group: group)
-      user    = create(:user)
+    context 'when project belongs to group that user has been added to' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project_in_group) { create(:project, group: group) }
 
-      group.add_developer(user)
+      let!(:member) { group.add_developer(user) }
 
-      expect(user.authorized_projects).to include(project)
-    end
+      it 'includes projects of groups user has been added to' do
+        is_expected.to include(project_in_group)
+      end
 
-    it 'does not include projects of groups user has been removed from', :sidekiq_inline do
-      group   = create(:group)
-      project = create(:project, group: group)
-      user    = create(:user)
+      it 'does not include projects of groups user has been removed from', :sidekiq_inline do
+        is_expected.to include(project_in_group)
 
-      member = group.add_developer(user)
+        member.destroy!
 
-      expect(user.authorized_projects).to include(project)
-
-      member.destroy!
-
-      expect(user.authorized_projects).not_to include(project)
+        is_expected.not_to include(project_in_group)
+      end
     end
 
     it "includes projects shared with user's group" do
-      user    = create(:user)
-      project = create(:project, :private)
-      group   = create(:group) do |group|
-        group.add_reporter(user)
-      end
+      group = create(:group, reporters: user)
       create(:project_group_link, group: group, project: project)
 
-      expect(user.authorized_projects).to include(project)
+      is_expected.to include(project)
     end
 
     it 'does not include destroyed projects user had access to' do
-      user1   = create(:user)
-      user2   = create(:user)
-      project = create(:project, :private, namespace: user1.namespace)
+      user2 = create(:user)
 
-      project.add_developer(user2)
+      project = create(:project, :private, namespace: user.namespace, developers: user2)
 
       expect(user2.authorized_projects).to include(project)
 
@@ -5562,22 +5584,19 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'does not include projects of destroyed groups user had access to' do
-      group   = create(:group)
+      group   = create(:group, developers: user)
       project = create(:project, namespace: group)
-      user    = create(:user)
 
-      group.add_developer(user)
-
-      expect(user.authorized_projects).to include(project)
+      is_expected.to include(project)
 
       group.destroy!
 
-      expect(user.authorized_projects).not_to include(project)
+      is_expected.not_to include(project)
     end
   end
 
   describe '#projects_where_can_admin_issues' do
-    let(:user) { create(:user) }
+    let_it_be(:user, freeze: true) { create(:user) }
 
     it 'includes projects for which the user access level is above or equal to planner' do
       planner_project = create(:project, planners: user)
@@ -5621,7 +5640,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#authorized_project_mirrors' do
     subject { user.authorized_project_mirrors(Gitlab::Access::REPORTER).pluck(:project_id) }
 
-    let(:user) { create(:user) }
+    let_it_be(:user, freeze: true) { create(:user) }
 
     it 'returns project mirrors where the user has access equal to or above the given level' do
       _guest_project = create(:project, guests: user)
@@ -6009,7 +6028,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#all_expanded_groups' do
     # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
-    let!(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     #                group
     #        _______ (foo) _______
@@ -6022,11 +6041,11 @@ RSpec.describe User, feature_category: :user_profile do
     # nested_group_1_1      nested_group_2_1
     # (baz)                 (baz)
     #
-    let!(:group) { create :group }
-    let!(:nested_group_1) { create :group, parent: group, name: 'bar' }
-    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
-    let!(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
-    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
+    let_it_be_with_reload(:group) { create :group }
+    let_it_be_with_reload(:nested_group_1) { create :group, parent: group, name: 'bar' }
+    let_it_be_with_reload(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
+    let_it_be_with_reload(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
+    let_it_be_with_reload(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
 
     subject { user.all_expanded_groups }
 
@@ -6037,7 +6056,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'user is member of all groups' do
-      before do
+      before_all do
         group.add_reporter(user)
         nested_group_1.add_developer(user)
         nested_group_1_1.add_maintainer(user)
@@ -6055,7 +6074,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'user is member of the top group' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -6069,7 +6088,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'user is member of the first child (internal node), branch 1' do
-      before do
+      before_all do
         nested_group_1.add_owner(user)
       end
 
@@ -6082,7 +6101,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'user is member of the first child (internal node), branch 2' do
-      before do
+      before_all do
         nested_group_2.add_owner(user)
       end
 
@@ -6095,7 +6114,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'user is member of the last child (leaf node)' do
-      before do
+      before_all do
         nested_group_1_1.add_owner(user)
       end
 
@@ -6119,7 +6138,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
-    let(:user) { create(:user, guest_of: project2, reporter_of: project1) }
+    let_it_be_with_refind(:user) { create(:user, guest_of: project2, reporter_of: project1) }
 
     before do
       user.project_authorizations.delete_all
@@ -6260,8 +6279,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#can_admin_organization?' do
-    let(:user) { create(:user) }
-    let(:organization) { create(:organization) }
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be_with_refind(:organization) { create(:organization) }
 
     subject(:can_admin_organization) { user.can_admin_organization?(organization) }
 
@@ -6269,8 +6288,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#owns_organization?' do
-    let_it_be(:organization) { create(:organization) }
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:organization) { create(:organization) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     subject(:owns_organization) { user.owns_organization?(organization_param) }
 
@@ -6301,10 +6320,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#update_two_factor_requirement' do
-    let(:user) { create :user }
+    let_it_be_with_refind(:user) { create :user }
 
     context 'with 2FA requirement on groups' do
-      let_it_be(:user) { create :user }
       let_it_be(:group1) do
         create :group, owners: user, require_two_factor_authentication: true, two_factor_grace_period: 23
       end
@@ -6398,14 +6416,13 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#source_groups_of_two_factor_authentication_requirement' do
+    let_it_be(:group_not_requiring_2fa) { create :group }
+    let_it_be_with_refind(:user) { create(:user, owner_of: [group_not_requiring_2fa]) }
+
     subject { user.source_groups_of_two_factor_authentication_requirement }
 
-    let_it_be(:group_not_requiring_2fa) { create :group }
-
-    let(:user) { create :user, owner_of: [group, group_not_requiring_2fa] }
-
     context 'when user is direct member of group requiring 2FA' do
-      let_it_be(:group) { create :group, require_two_factor_authentication: true }
+      let_it_be(:group) { create :group, require_two_factor_authentication: true, owners: user }
 
       it 'returns group requiring 2FA' do
         is_expected.to contain_exactly(group)
@@ -6414,7 +6431,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when user is member of group which parent requires 2FA' do
       let_it_be(:parent_group) { create :group, require_two_factor_authentication: true }
-      let_it_be(:group) { create :group, parent: parent_group }
+      let_it_be(:group) { create :group, parent: parent_group, owners: user }
 
       it 'returns group requiring 2FA' do
         is_expected.to contain_exactly(group)
@@ -6422,7 +6439,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when user is member of group which child requires 2FA' do
-      let_it_be(:group) { create :group }
+      let_it_be(:group) { create :group, owners: user }
       let_it_be(:child_group) { create :group, require_two_factor_authentication: true, parent: group }
 
       it 'returns group requiring 2FA' do
@@ -6444,15 +6461,15 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'preferred language' do
-    it 'is English by default' do
-      user = create(:user)
+    let_it_be(:user, freeze: true) { build(:user) }
 
+    it 'is English by default' do
       expect(user.preferred_language).to eq('en')
     end
   end
 
   describe '#invalidate_issue_cache_counts' do
-    let_it_be(:user) { build_stubbed(:user) }
+    let_it_be(:user, freeze: true) { build_stubbed(:user) }
 
     subject(:invalidate_issue_cache_counts) { user.invalidate_issue_cache_counts }
 
@@ -6757,8 +6774,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'for an existing user' do
-      let(:username) { 'foo' }
-      let(:user) { create(:user, username: username) }
+      let_it_be_with_refind(:user) { create(:user, username: 'foo') }
 
       context 'when the user is updated' do
         context 'when the username or name is changed' do
@@ -6875,7 +6891,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'for an existing user' do
-      let(:user) { create(:user, username: 'old-username') }
+      let_it_be_with_refind(:user) { create(:user, username: 'old-username') }
 
       context 'when the username is changed' do
         let(:new_username) { 'very-new-name' }
@@ -6900,7 +6916,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#will_save_change_to_login?' do
-    let(:user) { create(:user, username: 'old-username', email: 'old-email@example.org') }
+    let_it_be_with_reload(:user) { create(:user, username: 'old-username', email: 'old-email@example.org') }
+
     let(:new_username) { 'new-name' }
     let(:new_email) { 'new-email@example.org' }
 
@@ -6941,7 +6958,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#sync_attribute?' do
-    let(:user) { described_class.new }
+    let_it_be_with_reload(:user) { create(:user) }
 
     context 'oauth user' do
       it 'returns true if name can be synced' do
@@ -7041,8 +7058,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#delete_async' do
-    let(:user) { create(:user, note: "existing note") }
-    let(:deleted_by) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user, note: "existing note") }
+    let_it_be(:deleted_by) { create(:user) }
     let(:delay_user_account_self_deletion_enabled) { true }
 
     before do
@@ -7079,7 +7096,7 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when target user is the same as deleted_by' do
       let(:deleted_by) { user }
 
-      subject { user.delete_async(deleted_by: deleted_by) }
+      subject(:delete_async) { user.delete_async(deleted_by: deleted_by) }
 
       before do
         allow(user).to receive(:has_possible_spam_contributions?).and_return(true)
@@ -7090,7 +7107,7 @@ RSpec.describe User, feature_category: :user_profile do
           freeze_time do
             expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
 
-            subject
+            delete_async
           end
         end
       end
@@ -7098,7 +7115,7 @@ RSpec.describe User, feature_category: :user_profile do
       it_behaves_like 'schedules the record for deletion with the correct delay'
 
       it 'blocks the user' do
-        subject
+        delete_async
 
         expect(user).to be_blocked
         expect(user).not_to be_banned
@@ -7173,7 +7190,7 @@ RSpec.describe User, feature_category: :user_profile do
           it_behaves_like 'schedules the record for deletion with the correct delay'
 
           it 'creates an abuse report with the correct data' do
-            expect { subject }.to change { AbuseReport.count }.from(0).to(1)
+            expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
               reporter_id: Users::Internal.security_bot.id,
               user_id: user.id,
@@ -7183,14 +7200,14 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           it 'adds custom attribute to the user with the correct values' do
-            subject
+            delete_async
 
             custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
             expect(custom_attribute.value).to eq(AbuseReport.last.id.to_s)
           end
 
           it 'bans the user' do
-            subject
+            delete_async
 
             expect(user).to be_banned
           end
@@ -7201,14 +7218,14 @@ RSpec.describe User, feature_category: :user_profile do
             end
 
             it 'updates the abuse report' do
-              subject
+              delete_async
               abuse_report.reload
 
               expect(abuse_report.message).to eq("Existing\n\nPotential spammer account deletion")
             end
 
             it 'adds custom attribute to the user with the correct values' do
-              subject
+              delete_async
 
               custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
               expect(custom_attribute.value).to eq(abuse_report.id.to_s)
@@ -7224,7 +7241,7 @@ RSpec.describe User, feature_category: :user_profile do
           it_behaves_like 'schedules the record for deletion with the correct delay'
 
           it 'blocks the user' do
-            subject
+            delete_async
 
             expect(user).to be_blocked
             expect(user).not_to be_banned
@@ -7458,7 +7475,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { is_expected.to eq(Gitlab::Access::DEVELOPER) }
     end
 
-    context 'when user has access via a multiple groups' do
+    context 'when user has access via multiple permissions' do
       let_it_be(:user) { create(:user, developer_of: group, maintainer_of: group) }
 
       it { is_expected.to eq(Gitlab::Access::MAINTAINER) }
@@ -7631,21 +7648,20 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '.union_with_user' do
+    let_it_be(:user, freeze: true) { create(:user) }
+
     context 'when no user ID is provided' do
       it 'returns the input relation' do
-        user = create(:user)
-
         expect(described_class.union_with_user).to contain_exactly(user)
       end
     end
 
     context 'when a user ID is provided' do
       it 'includes the user object in the returned relation', :aggregate_failures do
-        user1 = create(:user)
         user2 = create(:user)
-        users = described_class.where(id: user1.id).union_with_user(user2.id)
+        users = described_class.where(id: user.id).union_with_user(user2.id)
 
-        expect(users).to include(user1)
+        expect(users).to include(user)
         expect(users).to include(user2)
       end
 

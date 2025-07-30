@@ -20,7 +20,6 @@ ee/spec/frontend/members/components/action_dropdowns/user_action_dropdown_spec.j
 ee/spec/frontend/members/components/table/members_table_spec.js
 ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
-ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
 ee/spec/frontend/related_items_tree/components/related_items_tree_body_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
@@ -75,7 +74,6 @@ spec/frontend/members/components/app_spec.js
 spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
-spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js
 spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js

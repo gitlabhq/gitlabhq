@@ -78,7 +78,7 @@ accDescr: Sequence of actions that make up the advisory ingestion process.
     end
     A --> B{Ingest}
     C --> B
-    B --> |store| D{{"Cloud Storage 
+    B --> |store| D{{"Cloud Storage
                      (NDJSON format)"}}
     F[\GitLab Instance/] --> |pulls data| D
     F --> |stores| G[(Relational Database)]

@@ -22,9 +22,16 @@ module MergeRequests
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
       close_upon_missing_source_branch_ref
-      post_merge_manually_merged
+
+      ::Gitlab::Metrics.measure(:post_merge_manually_merged) do
+        post_merge_manually_merged
+      end
+
       link_forks_lfs_objects
-      reload_merge_requests
+
+      ::Gitlab::Metrics.measure(:reload_merge_requests) do
+        reload_merge_requests
+      end
 
       merge_requests_for_source_branch.each do |mr|
         outdate_suggestions(mr)
@@ -43,7 +50,15 @@ module MergeRequests
 
         notify_about_push(mr)
         mark_mr_as_draft_from_commits(mr)
-        execute_mr_web_hooks(mr)
+      end
+
+      ::Gitlab::Metrics.measure(:execute_mr_web_hooks) do
+        merge_requests_for_source_branch.each do |mr|
+          execute_mr_web_hooks(mr)
+        end
+      end
+
+      merge_requests_for_source_branch.each do |mr|
         # Run at the end of the loop to avoid any potential contention on the MR object
         refresh_pipelines_on_merge_requests(mr) unless @push.branch_removed?
         merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)

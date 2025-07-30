@@ -24,8 +24,8 @@ For a video tutorial, see the [Adding Service Ping metric via instrumentation cl
 
 ## How metrics instrumentation works
 
-All metrics must have a [corresponding metric definition](metrics_dictionary.md) to be included in the [service ping](../service_ping/_index.md#how-service-ping-works) payload. 
-A metric definition may have the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class. 
+All metrics must have a [corresponding metric definition](metrics_dictionary.md) to be included in the [service ping](../service_ping/_index.md#how-service-ping-works) payload.
+A metric definition may have the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
 
 The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `NumbersMetric` or `GenericMetric`.
 

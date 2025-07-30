@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_milestone.vue';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 import { projectMilestonesResponse } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
@@ -117,13 +118,24 @@ describe('WorkItemBulkEditMilestone component', () => {
   });
 
   describe('listbox items', () => {
-    it('renders all milestones', async () => {
+    it('renders all milestones and "No milestone" by default', async () => {
       createComponent();
 
       findListbox().vm.$emit('shown');
       await waitForPromises();
 
-      expect(findListbox().props('items')).toEqual(listResults);
+      expect(findListbox().props('items')).toEqual([
+        {
+          text: 'No milestone',
+          textSrOnly: true,
+          options: [{ text: 'No milestone', value: BULK_EDIT_NO_VALUE }],
+        },
+        {
+          text: 'All',
+          textSrOnly: true,
+          options: listResults,
+        },
+      ]);
     });
 
     describe('with search', () => {
@@ -160,6 +172,16 @@ describe('WorkItemBulkEditMilestone component', () => {
         await openListboxAndSelect('gid://gitlab/Milestone/5');
 
         expect(findListbox().props('toggleText')).toBe('v4.0');
+      });
+    });
+
+    describe('with "No milestone"', () => {
+      it('renders "No milestone"', async () => {
+        createComponent();
+
+        await openListboxAndSelect(BULK_EDIT_NO_VALUE);
+
+        expect(findListbox().props('toggleText')).toBe('No milestone');
       });
     });
   });

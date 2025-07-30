@@ -95,7 +95,7 @@ To create a branch rule:
 1. Choose one of the following options:
    - To enter a specific branch name or pattern:
      1. Select **Branch name or pattern**.
-     1. From the **Create branch rule** dropdown list, select a branch name or create a wildcard by typing `*`.
+     1. From the **Create branch rule** dropdown list, select a branch name or create a [wildcard](protected.md#use-wildcard-rules) with `*`.
    - To protect all branches in the project:
      1. Select **All branches**.
      1. On the rule's details page, under **Merge request approvals**, enter the required number of approvals for the rule.
@@ -329,3 +329,10 @@ To delete a branch rule:
 1. Next to a rule you want to delete, select **View details**.
 1. In the upper-right corner, select **Delete rule**.
 1. On the confirmation dialog, select **Delete branch rule**.
+
+## Related topics
+
+- [Default branch](default.md)
+- [Protected branches](protected.md)
+- [Branching strategies](strategies/_index.md)
+- [Merge request approvals](../../merge_requests/approvals/_index.md)

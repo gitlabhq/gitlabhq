@@ -16,6 +16,7 @@ import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import getAvailableBulkEditWidgets from '~/work_items/graphql/list/get_available_bulk_edit_widgets.query.graphql';
 import {
+  BULK_EDIT_NO_VALUE,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
@@ -170,6 +171,42 @@ describe('WorkItemBulkEditSidebar component', () => {
           });
           expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
           expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
+        });
+
+        it('calls mutation with null values to bulk edit when "No value" is chosen', async () => {
+          createComponent({
+            provide: {
+              hasIssuableHealthStatusFeature: true,
+              glFeatures: { workItemsBulkEdit: true },
+            },
+            props: { isEpicsList: false, fullPath: 'group/project' },
+          });
+          await waitForPromises();
+
+          findAssigneeComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+          findHealthStatusComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+          findMilestoneComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+          findParentComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+
+          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+            input: {
+              fullPath: 'group/project',
+              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+              assigneesWidget: {
+                assigneeIds: [null],
+              },
+              healthStatusWidget: {
+                healthStatus: null,
+              },
+              milestoneWidget: {
+                milestoneId: null,
+              },
+              hierarchyWidget: {
+                parentId: null,
+              },
+            },
+          });
         });
 
         it('calls mutation with namespace fullPath', async () => {

@@ -118,7 +118,7 @@ Run through the following steps sequentially on each component's node to perform
    {{< tabs >}}
 
    {{< tab title="For PostgreSQL nodes only" >}}
-   
+
    Restart the Consul client first, then restart all other services to ensure PostgreSQL failover occurs gracefully:
 
    ```shell

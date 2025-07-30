@@ -380,7 +380,7 @@ data = fetch_license_data()
 if data:
     # Look through each rating section
     target_tiers = ['Gold', 'Silver', 'Bronze']
-    
+
     for rating in data['ratings']:
         if rating['name'] in target_tiers:
             # Print each license name in this tier

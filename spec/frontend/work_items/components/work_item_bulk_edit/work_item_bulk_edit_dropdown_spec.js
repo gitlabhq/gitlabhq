@@ -1,6 +1,7 @@
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import WorkItemBulkEditDropdown from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_dropdown.vue';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 
 describe('WorkItemBulkEditDropdown component', () => {
   let wrapper;
@@ -49,12 +50,32 @@ describe('WorkItemBulkEditDropdown component', () => {
   });
 
   describe('listbox items', () => {
-    it('renders all items', () => {
+    it('renders all items by default', () => {
       createComponent();
 
       expect(findListbox().props('items')).toEqual([
         { text: 'Open', value: 'reopen' },
         { text: 'Closed', value: 'close' },
+      ]);
+    });
+
+    it('renders "No state" when noValueText is provided', () => {
+      createComponent({ noValueText: 'No state' });
+
+      expect(findListbox().props('items')).toEqual([
+        {
+          text: 'No state',
+          textSrOnly: true,
+          options: [{ text: 'No state', value: BULK_EDIT_NO_VALUE }],
+        },
+        {
+          text: 'All',
+          textSrOnly: true,
+          options: [
+            { text: 'Open', value: 'reopen' },
+            { text: 'Closed', value: 'close' },
+          ],
+        },
       ]);
     });
   });
@@ -77,6 +98,14 @@ describe('WorkItemBulkEditDropdown component', () => {
         createComponent({ value });
 
         expect(findListbox().props('toggleText')).toBe(text);
+      });
+    });
+
+    describe('with "No state"', () => {
+      it('renders "No state"', () => {
+        createComponent({ noValueText: 'No state', value: BULK_EDIT_NO_VALUE });
+
+        expect(findListbox().props('toggleText')).toBe('No state');
       });
     });
   });

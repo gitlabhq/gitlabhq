@@ -482,7 +482,7 @@ To resolve this issue, create a new `EmptyDir` volume and mount it at `/tmp`.
 You can do this in either of the following ways:
 
 - From the command line:
-  
+
   ```shell
   oc set volume <object_type>/<name> --add --name=tmpVol --type=emptyDir --mountPoint=/tmp
   ```
@@ -493,7 +493,7 @@ You can do this in either of the following ways:
   volumes:
   - name: tmp-volume
     emptyDir: {}
-  
+
   volumeMounts:
   - name: tmp-volume
     mountPath: "/tmp"

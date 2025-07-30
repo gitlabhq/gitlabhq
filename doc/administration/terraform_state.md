@@ -279,7 +279,7 @@ The following database table helps trace the S3 path back to specific projects:
 The state files are stored in a specific directory structure, where:
 
 - The first three segments of the path are derived from the SHA-2 hash value of the project ID.
-- Each state has a UUID stored on the `terraform_states` database table that forms part of the path.  
+- Each state has a UUID stored on the `terraform_states` database table that forms part of the path.
 
 For example, for a project where the:
 

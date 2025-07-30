@@ -21,7 +21,7 @@ This document provides an overview of GitLab Separation of Duties (SoD) solution
 1. Obtain the invitation code from your account team.
 1. Access the solution component from [the solution component webstore](https://cloud.gitlab-accelerator-marketplace.com) by using your invitation code.
 
-## What is Separation of Duties 
+## What is Separation of Duties
 
 Separation of Duties is a fundamental security principle that ensures no single individual has complete control over critical processes. In software development, SoD prevents unauthorized or accidental code releases into production environments by distributing responsibilities among different roles and teams.
 
@@ -66,7 +66,7 @@ GitLab provides robust audit capabilities to support compliance requirements:
 - Automatically generated release evidence
 - Event logging for default branch activities
 
-### Prerequisites 
+### Prerequisites
 
 To fully implement the GitLab SoD solution, organizations need:
 

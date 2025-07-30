@@ -68,7 +68,7 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
 
    ```plaintext
    hello, world!
-   
+
    # To make the example work, remove
    # the spaces before and after the dash:
    glpat - 12345678901234567890

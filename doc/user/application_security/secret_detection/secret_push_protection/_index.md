@@ -337,7 +337,7 @@ When working with secret push protection, you may encounter the following situat
 
 ### Push blocked unexpectedly
 
-Before GitLab 17.11, secret push protection scanned the contents of all modified files. 
+Before GitLab 17.11, secret push protection scanned the contents of all modified files.
 This can cause a push to be unexpectedly blocked if a modified file contains a secret,
 even if the secret is not part of the diff.
 

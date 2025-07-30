@@ -19,7 +19,7 @@ With GitLab, you can get visibility into [DORA metrics](../../user/analytics/dor
 - **Change failure rate**: % of deployments that cause an incident in production in the given time period
 - **Time to restore service**: median time an incident was open for on a production environment
 
-While the first two metrics are generated from GitLab CI/CD and Merge Requests, the latter two depend on [GitLab incidents](../../operations/incident_management/manage_incidents.md) being created. 
+While the first two metrics are generated from GitLab CI/CD and Merge Requests, the latter two depend on [GitLab incidents](../../operations/incident_management/manage_incidents.md) being created.
 
 For teams using Jira for incident tracking, this means that incidents need to be replicated from Jira to GitLab in real-time. This project walks through setting up that replication.
 
@@ -81,7 +81,7 @@ To automatically trigger the GitLab alert endpoint when a Jira incident is creat
 1. For your trigger, search for and select **Issue created**. Click **Save**.
 1. Next, select **IF: Add a condition**. Here you can specify what conditions to check for, in order to determine if the issue created relates to an incident. For this guide, we'll select **Issue fields condition**. Under **Field**, we'll select **Summary**, the **Condition** will be set to **contains**, and the value will be `incident`. Click **Save**.
 1. With our trigger and condition set, select **THEN: Add an action**. Search for and select **Send web request**.
-1. Set the **Web request URL** to your GitLab **Webhook URL** from the previous section. 
+1. Set the **Web request URL** to your GitLab **Webhook URL** from the previous section.
 1. Check the GitLab docs [here](../../operations/incident_management/integrations.md#authorization) for endpoint authentication options. For this guide, we'll use the [Bearer authorization header](../../operations/incident_management/integrations.md#bearer-authorization-header) method. In your Jira automation configuration, add the following headers:
 
     | Name | Value |

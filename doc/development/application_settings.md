@@ -108,7 +108,7 @@ JSONB accessors take precedence over the `defaults` method.
 
 ### Adding a Duo-related setting
 
-We have several instance-wide GitLab Duo settings in the `application_settings` table. These include `duo_features_enabled` (boolean), `duo_workflow` (jsonb), and `duo_chat` (jsonb). 
+We have several instance-wide GitLab Duo settings in the `application_settings` table. These include `duo_features_enabled` (boolean), `duo_workflow` (jsonb), and `duo_chat` (jsonb).
 
 At some point, we realized it was simpler to add new instance-wide settings to a different table. Going forward, any new Duo-related instance-wide settings should be added to the `ai_settings` table.
 

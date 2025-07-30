@@ -293,9 +293,9 @@ After configuring object storage, you can use the following tasks to migrate pac
 1. Verify that all packages migrated to object storage with the following SQL query. The number of `objectstg` should be the same as `total`:
 
    ```sql
-   SELECT count(*) AS total, 
-          sum(case when file_store = '1' then 1 else 0 end) AS filesystem, 
-          sum(case when file_store = '2' then 1 else 0 end) AS objectstg 
+   SELECT count(*) AS total,
+          sum(case when file_store = '1' then 1 else 0 end) AS filesystem,
+          sum(case when file_store = '2' then 1 else 0 end) AS objectstg
    FROM packages_package_files;
    ```
 
@@ -376,9 +376,9 @@ After configuring object storage, you can use the following tasks to migrate pac
 1. Verify that all packages migrated to local storage with the following SQL query. The number of `filesystem` should be the same as `total`:
 
    ```sql
-   SELECT count(*) AS total, 
-          sum(case when file_store = '1' then 1 else 0 end) AS filesystem, 
-          sum(case when file_store = '2' then 1 else 0 end) AS objectstg 
+   SELECT count(*) AS total,
+          sum(case when file_store = '1' then 1 else 0 end) AS filesystem,
+          sum(case when file_store = '2' then 1 else 0 end) AS objectstg
    FROM packages_package_files;
    ```
 

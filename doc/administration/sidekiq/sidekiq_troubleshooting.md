@@ -244,7 +244,7 @@ securityContext:
     add:
       - SYS_PTRACE
 ```
- 
+
 {{< /tab >}}
 
 {{< tab title="Docker" >}}

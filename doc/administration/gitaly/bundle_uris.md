@@ -270,7 +270,7 @@ The following parameters are supported:
 
 `disable_https` was introduced in the Go Cloud Development Kit v0.40.0 (AWS SDK v2).
 
-`awssdk` was introduced in the Go Cloud Development Kit v0.24.0. 
+`awssdk` was introduced in the Go Cloud Development Kit v0.24.0.
 
 {{< tabs >}}
 

@@ -1190,7 +1190,7 @@ For more information on Gitaly server configuration, see our
 
           ```ruby
           gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-          ```  
+          ```
 
 1. Configure an `internal_api_url`, which is also needed for `git push` operations:
 

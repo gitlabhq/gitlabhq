@@ -207,8 +207,8 @@ For example, if:
 
 - The project is `gitlab.example.com/parent-group/subgroup/my-project`.
 - The Terraform module is `my-infra-package`.
-If duplicates are allowed, `my-infra-package` is a valid module. 
-If duplicates are not allowed, the module name must be unique in all 
+If duplicates are allowed, `my-infra-package` is a valid module.
+If duplicates are not allowed, the module name must be unique in all
 projects in all groups under `parent-group`.
 
 When you name a module, keep these naming conventions in mind:

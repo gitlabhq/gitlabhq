@@ -170,13 +170,13 @@ sufficient or if an additional tool must be used to answer the question.
 
 ## Core Layer Concepts (GitLab-specific)
 
-### Flow 
+### Flow
 
 A **goal-oriented, structured graph** that orchestrates agents and tools to deliver a single, economically-valuable outcome (e.g., *create a code-review MR*, *triage issues*).
 
-- **Structure** – Explicit phases: planning → execution → completion  
+- **Structure** – Explicit phases: planning → execution → completion
 - **Nodes** – Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
-- **Trigger & Terminator** – Every flow has one or many defined start trigger(s) and a defined end state  
+- **Trigger & Terminator** – Every flow has one or many defined start trigger(s) and a defined end state
 - **Input** - Each Flow must have an input. Inputs set the context for the Flow session and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
 - **Session** – One execution of an flow; sessions carry user-specific goals and data
 
@@ -186,12 +186,12 @@ A **goal-oriented, structured graph** that orchestrates agents and tools to deli
 
 A **specialized, LLM-powered decision-maker** that owns a single node inside an flow. Can be defined independently and reused across multiple flows as a reusable component.
 
-- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents    
+- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents
 - **Prompt (Goal)** – Receives the session-specific objective from the flow
 - **Tools** – May call only the tools granted by the flow node definition and the user/company definition of available tools
-- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available 
-- **Reasoning** – Uses an LLM to decompose its goal into dynamic subtasks  
-- **Context awareness** – Gains project / repo / issue data through tool calls  
+- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available
+- **Reasoning** – Uses an LLM to decompose its goal into dynamic subtasks
+- **Context awareness** – Gains project / repo / issue data through tool calls
 
 GitLab agents are **specialists**, not generalists, to maximize reliability and UX.
 
@@ -199,18 +199,18 @@ GitLab agents are **specialists**, not generalists, to maximize reliability and 
 
 A **discrete, deterministic capability** an agent (or flow step) invokes to perform read/write actions. Tools can be used to perform these in GitLab or in 3rd party applications via MCP or other protocols.
 
-*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.  
+*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
 
-## Flow types 
+## Flow types
 
-### Current implementation 
+### Current implementation
 
-- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner 
+- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner
 
-### Future implementations 
+### Future implementations
 
-- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations  
+- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations
 - **Multi Agent** - A pool of agents are working to complete a task in a manner where each agent is getting a chance to solve it, and/or a supervisor chooses the final solution. Can support different graph topologies
 
 ## Supporting Terminology
@@ -227,7 +227,7 @@ Tools expose data or side-effects; they themselves perform **no reasoning**.
 | **Autonomous Agent** | Historical term for an agent that can loop without human approval. In GitLab, autonomy level is governed by flow design, not by a separate agent type. |
 | **Framework** | A platform for building multi-agent systems. GitLab Duo Agent Platform uses **LangGraph**, an extension to LangChain that natively models agent graphs. |
 
-## Execution 
+## Execution
 
 Flows are executed in the following ways:
 

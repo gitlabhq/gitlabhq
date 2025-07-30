@@ -28,7 +28,7 @@ secondary Geo site, you can:
 
 ### Resync and reverify individual components
 
-On the secondary site, visit **Admin** > **Geo** > **Replication** to force a resync or reverify of individual items. 
+On the secondary site, visit **Admin** > **Geo** > **Replication** to force a resync or reverify of individual items.
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
 following sections describe how to use internal application commands in the
