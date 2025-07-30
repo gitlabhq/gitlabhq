@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Package, feature_category: :package_registry do
   include SortingHelper
   using RSpec::Parameterized::TableSyntax
 
@@ -23,7 +23,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
 
-    let!(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
+    let!(:package1) do
+      create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1")
+    end
+
     let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
     let(:package3) { create(:maven_package, project: project, version: '1.1.1', name: 'zzz') }
 
@@ -34,18 +37,18 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     RSpec.shared_examples 'package sorting by attribute' do |order_by|
-      subject { described_class.where(id: packages.map(&:id)).sort_by_attribute("#{order_by}_#{sort}").to_a }
+      subject { described_class.where(id: packages.map(&:id)).sort_by_attribute("#{order_by}_#{sort}") }
 
       let(:packages_desc) { packages.reverse }
 
-      context "sorting by #{order_by}" do
-        context 'ascending order' do
+      context "when sorting by #{order_by}" do
+        context 'for ascending order' do
           let(:sort) { 'asc' }
 
           it { is_expected.to eq packages }
         end
 
-        context 'descending order' do
+        context 'for descending order' do
           let(:sort) { 'desc' }
 
           it { is_expected.to eq(packages_desc) }
@@ -69,9 +72,18 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let(:packages) { [package3, package1, package2] }
     end
 
+    it_behaves_like 'package sorting by attribute', 'project_name' do
+      let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B') }
+      let_it_be(:package4) { create(:generic_package, project: another_project) }
+
+      let(:packages) { [package1, package4] }
+    end
+
     it_behaves_like 'package sorting by attribute', 'project_path' do
       let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
-      let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
+      let_it_be(:package4) do
+        create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar")
+      end
 
       let(:packages) { [package3, package2, package1, package4] }
       let(:packages_desc) { [package4, package3, package2, package1] }
@@ -85,12 +97,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     let(:projects) { ::Project.id_in([package1.project_id, package2.project_id]) }
 
-    subject { described_class.for_projects(projects.select(:id)) }
+    subject(:for_projects) { described_class.for_projects(projects.select(:id)) }
 
     it 'returns package1 and package2' do
       expect(projects).not_to receive(:any?)
 
-      expect(subject).to match_array([package1, package2])
+      expect(for_projects).to match_array([package1, package2])
     end
   end
 
@@ -101,10 +113,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }
 
     Packages::Package.package_types.keys.without('conan').each do |pt|
-      context "project id, name, version and package type uniqueness for package type #{pt}" do
+      context "for project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
 
-        it "will not allow a #{pt} package with same project, name, version and package_type" do
+        it "does not allow a #{pt} package with same project, name, version and package_type" do
           new_package = build("#{pt}_package", project: package.project, name: package.name, version: package.version)
           expect(new_package).not_to be_valid
           expect(new_package.errors.to_a).to include("Name has already been taken")
@@ -113,7 +125,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         context 'with pending_destruction package' do
           let!(:package) { create("#{pt}_package", :pending_destruction) }
 
-          it "will allow a #{pt} package with same project, name, version and package_type" do
+          it "allows a #{pt} package with same project, name, version and package_type" do
             new_package = build("#{pt}_package", project: package.project, name: package.name, version: package.version)
             expect(new_package).to be_valid
           end
@@ -130,7 +142,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     subject(:destroy!) { package.destroy! }
 
     it 'updates the project statistics' do
-      expect(project_statistics).to receive(:increment_counter).with(:packages_size, have_attributes(amount: -package_file.size))
+      expect(project_statistics).to receive(:increment_counter)
+        .with(:packages_size, have_attributes(amount: -package_file.size))
 
       destroy!
     end
@@ -140,14 +153,14 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let!(:package) { create(:npm_package) }
     let!(:package_file) { package.package_files.first }
 
-    subject { described_class }
-
-    it 'finds a package with correct arguiments' do
-      expect(subject.by_name_and_file_name(package.name, package_file.file_name)).to eq(package)
+    it 'finds a package with correct arguments' do
+      expect(described_class.by_name_and_file_name(package.name, package_file.file_name)).to eq(package)
     end
 
-    it 'will raise error if not found' do
-      expect { subject.by_name_and_file_name('foo', 'foo-5.5.5.tgz') }.to raise_error(ActiveRecord::RecordNotFound)
+    it 'raises error if not found' do
+      expect do
+        described_class.by_name_and_file_name('foo', 'foo-5.5.5.tgz')
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -171,10 +184,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to eq([package1]) }
   end
 
-  context 'version scopes' do
-    let!(:package1) { create(:npm_package, version: '1.0.0') }
-    let!(:package2) { create(:npm_package, version: '1.0.1') }
-    let!(:package3) { create(:npm_package, version: '1.0.1') }
+  context 'for version scopes' do
+    let_it_be(:package1) { create(:npm_package, version: '1.0.0') }
+    let_it_be(:package2) { create(:npm_package, version: '1.0.1') }
+    let_it_be(:package3) { create(:npm_package, version: '1.0.1') }
 
     describe '.has_version' do
       subject { described_class.has_version }
@@ -297,7 +310,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to match_array([nuget_package]) }
     end
 
-    context 'status scopes' do
+    context 'for status scopes' do
       let_it_be(:default_package) { create(:maven_package, :default) }
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
@@ -331,21 +344,24 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
   describe '.select_distinct_name' do
     let_it_be(:nuget_package) { create(:nuget_package) }
-    let_it_be(:nuget_packages) { create_list(:nuget_package, 3, name: nuget_package.name, project: nuget_package.project) }
-    let_it_be(:maven_package) { create(:maven_package) }
-    let_it_be(:maven_packages) { create_list(:maven_package, 3, name: maven_package.name, project: maven_package.project) }
+    let_it_be(:nuget_packages) do
+      create_list(:nuget_package, 3, name: nuget_package.name, project: nuget_package.project)
+    end
 
-    subject { described_class.select_distinct_name }
+    let_it_be(:maven_package) { create(:maven_package) }
+    let_it_be(:maven_packages) do
+      create_list(:maven_package, 3, name: maven_package.name, project: maven_package.project)
+    end
+
+    subject(:packages) { described_class.select_distinct_name }
 
     it 'returns only distinct names' do
-      packages = subject
-
       expect(packages.size).to eq(2)
       expect(packages.pluck(:name)).to match_array([nuget_package.name, maven_package.name])
     end
   end
 
-  context 'sorting' do
+  context 'for sorting' do
     let_it_be(:project) { create(:project, path: 'aaa') }
     let_it_be(:project2) { create(:project, path: 'bbb') }
     let_it_be(:package1) { create(:generic_package, project: project) }
@@ -379,11 +395,15 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package2) { create(:maven_package, project: project) }
 
     it 'orders packages their associated package_file\'s created_at date', :aggregate_failures do
-      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2])
+      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array(
+        [package1, package1, package1, package2, package2, package2]
+      )
 
       create(:package_file, :xml, package: package1)
 
-      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
+      expect(::Packages::Maven::Package.for_projects(project).order_by_package_file).to match_array(
+        [package1, package1, package1, package2, package2, package2, package1]
+      )
     end
   end
 
@@ -391,10 +411,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package) { create(:npm_package) }
     let_it_be(:tags) { create_list(:packages_tag, 2, package: package) }
 
-    subject { described_class.preload_tags }
+    subject(:packages) { described_class.preload_tags }
 
     it 'preloads tags' do
-      expect(subject.first.association(:tags)).to be_loaded
+      expect(packages.first.association(:tags)).to be_loaded
     end
   end
 
@@ -422,13 +442,13 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   describe '#pipeline' do
     let_it_be_with_refind(:package) { create(:maven_package) }
 
-    context 'package without pipeline' do
+    context 'for package without pipeline' do
       it 'returns nil if there is no pipeline' do
         expect(package.pipeline).to be_nil
       end
     end
 
-    context 'package with pipeline' do
+    context 'for package with pipeline' do
       let_it_be(:pipeline) { create(:ci_pipeline) }
 
       before do
@@ -446,11 +466,11 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     subject { package.pipelines }
 
-    context 'package without pipeline' do
+    context 'for package without pipeline' do
       it { is_expected.to be_empty }
     end
 
-    context 'package with pipeline' do
+    context 'for package with pipeline' do
       let_it_be(:pipeline) { create(:ci_pipeline) }
       let_it_be(:pipeline2) { create(:ci_pipeline) }
 
@@ -477,7 +497,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         tags.each { |t| create(:packages_tag, name: t, package: package) }
       end
 
-      it { is_expected.to contain_exactly(*tags) }
+      it { is_expected.to match_array(tags) }
     end
   end
 
@@ -489,7 +509,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
                           "#{pt}_max_file_size"
                         end
 
-      context "File size limits for #{pt}" do
+      context "with file size limits for #{pt}" do
         let(:package) { create("#{pt}_package") }
 
         it "plan_limits includes column #{plan_limit_name}" do
@@ -532,13 +552,13 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   describe '#mark_package_files_for_destruction' do
     let_it_be(:package) { create(:npm_package, :pending_destruction) }
 
-    subject { package.mark_package_files_for_destruction }
+    subject(:mark_package_files_for_destruction) { package.mark_package_files_for_destruction }
 
     it 'enqueues a sync worker job' do
       expect(::Packages::MarkPackageFilesForDestructionWorker)
         .to receive(:perform_async).with(package.id)
 
-      subject
+      mark_package_files_for_destruction
     end
 
     context 'for a package non pending destruction' do
@@ -548,7 +568,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         expect(::Packages::MarkPackageFilesForDestructionWorker)
         .not_to receive(:perform_async).with(package.id)
 
-        subject
+        mark_package_files_for_destruction
       end
     end
   end
@@ -557,13 +577,13 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package) { create(:generic_package) }
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
-    let(:build) { double(pipeline: pipeline) }
+    let(:build) { instance_double(Ci::Build, pipeline:) }
 
-    subject { package.create_build_infos!(build) }
+    subject(:create_build_infos) { package.create_build_infos!(build) }
 
     context 'with a valid build' do
       it 'creates a build info' do
-        expect { subject }.to change { ::Packages::BuildInfo.count }.by(1)
+        expect { create_build_infos }.to change { ::Packages::BuildInfo.count }.by(1)
 
         last_build = ::Packages::BuildInfo.last
         expect(last_build.package).to eq(package)
@@ -574,7 +594,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         let_it_be(:build_info) { create(:package_build_info, package: package, pipeline: pipeline) }
 
         it 'does not create a build info' do
-          expect { subject }.not_to change { ::Packages::BuildInfo.count }
+          expect { create_build_infos }.not_to change { ::Packages::BuildInfo.count }
         end
       end
     end
@@ -583,25 +603,32 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let(:build) { nil }
 
       it 'does not create a build info' do
-        expect { subject }.not_to change { ::Packages::BuildInfo.count }
+        expect { create_build_infos }.not_to change { ::Packages::BuildInfo.count }
       end
     end
 
     context 'with a build without a pipeline' do
-      let(:build) { double(pipeline: nil) }
+      let(:build) { instance_double(Ci::Build, pipeline: nil) }
 
       it 'does not create a build info' do
-        expect { subject }.not_to change { ::Packages::BuildInfo.count }
+        expect { create_build_infos }.not_to change { ::Packages::BuildInfo.count }
       end
     end
   end
 
   context 'with identical pending destruction package' do
-    described_class.package_types.keys.each do |package_format|
+    described_class.package_types.each_key do |package_format|
       context "for package format #{package_format}" do
         let_it_be(:package_pending_destruction) { create("#{package_format}_package", :pending_destruction) }
 
-        let(:new_package) { build("#{package_format}_package", name: package_pending_destruction.name, version: package_pending_destruction.version, project: package_pending_destruction.project) }
+        let(:new_package) do
+          build(
+            "#{package_format}_package",
+            name: package_pending_destruction.name,
+            version: package_pending_destruction.version,
+            project: package_pending_destruction.project
+          )
+        end
 
         it { expect(new_package).to be_valid }
       end

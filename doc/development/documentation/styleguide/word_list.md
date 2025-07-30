@@ -2438,7 +2438,7 @@ Do not use **slave**. Another option is **secondary**. ([Vale](../testing/vale.m
 In the context of:
 
 - Gitaly, storage is physical and must be called a **storage**.
-- Gitaly Cluster, storage can be either:
+- Gitaly Cluster (Praefect), storage can be either:
   - Virtual and must be called a **virtual storage**.
   - Physical and must be called a **physical storage**.
 

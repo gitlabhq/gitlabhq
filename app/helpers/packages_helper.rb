@@ -40,7 +40,7 @@ module PackagesHelper
     if project.project_feature.public_packages?
       full_url
     else
-      full_url.sub!('://', '://__token__:<your_personal_token>@')
+      full_url.sub!('://', '://gitlab-ci-token:<your_personal_token>@')
     end
   end
 

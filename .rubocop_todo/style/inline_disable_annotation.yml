@@ -413,7 +413,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/notification_setting.rb'
     - 'app/models/operations/feature_flags/user_list.rb'
     - 'app/models/packages/debian/file_entry.rb'
-    - 'app/models/packages/package.rb'
     - 'app/models/personal_access_token.rb'
     - 'app/models/project.rb'
     - 'app/models/project_feature.rb'

@@ -273,7 +273,7 @@ Gitaly Cluster (Praefect) consists of multiple components:
 Praefect is a router and transaction manager for Gitaly, and a required
 component for running Gitaly Cluster (Praefect).
 
-![Praefect distributing incoming connections to Gitaly cluster nodes](img/praefect_architecture_v12_10.png)
+![Praefect distributing incoming connections to Gitaly Cluster (Praefect) nodes](img/praefect_architecture_v12_10.png)
 
 For more information, see [Gitaly High Availability (HA) Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md).
 

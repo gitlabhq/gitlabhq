@@ -67,7 +67,7 @@ sequenceDiagram
 
 Gitaly Cluster (Praefect) configured storages are backed up in the same way as standalone Gitaly instances.
 
-- When Gitaly Cluster receives the RPC calls from `gitaly-backup`, it rebuilds its own database.
+- When Gitaly Cluster (Praefect) receives the RPC calls from `gitaly-backup`, it rebuilds its own database.
   - There is no need to backup the Gitaly Cluster (Praefect) database separately.
 - Each repository is backed up only once, regardless of the replication factor, because backups operate through RPCs.
 

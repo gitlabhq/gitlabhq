@@ -267,7 +267,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
       end
 
       it 'returns pypi_url correctly' do
-        expect(graphql_data_at(:package, :pypi_url)).to eq("http://__token__:<your_personal_token>@localhost/api/v4/projects/#{project.id}/packages/pypi/simple")
+        expect(graphql_data_at(:package, :pypi_url)).to eq("http://gitlab-ci-token:<your_personal_token>@localhost/api/v4/projects/#{project.id}/packages/pypi/simple")
       end
 
       it 'returns pypi_setup_url correctly' do
@@ -289,7 +289,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         end
 
         it 'returns pypi_url correctly' do
-          expect(graphql_data_at(:package, :pypi_url)).to eq("http://__token__:<your_personal_token>@localhost/api/v4/projects/#{project.id}/packages/pypi/simple")
+          expect(graphql_data_at(:package, :pypi_url)).to eq("http://gitlab-ci-token:<your_personal_token>@localhost/api/v4/projects/#{project.id}/packages/pypi/simple")
         end
       end
 

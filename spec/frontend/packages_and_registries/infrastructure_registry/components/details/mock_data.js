@@ -43,5 +43,5 @@ export const generateMavenSetupXml = () => `<repositories>
 
 export const pypiSetupCommandStr = `[gitlab]
 repository = foo
-username = __token__
+username = gitlab-ci-token
 password = <your personal access token>`;

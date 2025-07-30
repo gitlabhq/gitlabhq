@@ -180,7 +180,7 @@ For example:
 
 ### Gitaly Cluster (Praefect) storage
 
-If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
+If Gitaly Cluster (Praefect) is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
 [Praefect-generated replica paths](gitaly/praefect/_index.md#praefect-generated-replica-paths).
 

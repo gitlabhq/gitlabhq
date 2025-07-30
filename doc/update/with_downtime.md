@@ -129,9 +129,9 @@ The Praefect nodes, however, can be upgraded by using an AMI redeployment proces
      migrations.
   1. Redeploy your other Praefect nodes.
 
-## Upgrade the Gitaly nodes not part of Gitaly cluster
+## Upgrade the Gitaly nodes not part of Gitaly Cluster (Praefect)
 
-For Gitaly servers which are not part of Gitaly cluster, [upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+For Gitaly servers which are not part of Gitaly Cluster (Praefect), [upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 If you have multiple Gitaly shards or have multiple load-balanced Gitaly nodes
 using NFS, it doesn't matter in which order you upgrade the Gitaly servers.

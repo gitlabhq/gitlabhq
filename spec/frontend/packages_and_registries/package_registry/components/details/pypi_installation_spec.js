@@ -18,7 +18,7 @@ describe('PypiInstallation', () => {
   const pipCommandStr = `pip install @gitlab-org/package-15 --index-url ${packageEntity.pypiUrl}`;
   const pypiSetupStr = `[gitlab]
 repository = ${packageEntity.pypiSetupUrl}
-username = __token__
+username = gitlab-ci-token
 password = <your personal access token>`;
 
   const pipCommand = () => wrapper.findByTestId('pip-command');

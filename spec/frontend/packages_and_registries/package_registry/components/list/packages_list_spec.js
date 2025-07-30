@@ -101,10 +101,8 @@ describe('packages_list', () => {
 
     it('shows the registry list with the right props', () => {
       expect(findRegistryList().props()).toMatchObject({
-        title: '2 packages',
         items: defaultProps.list,
         hiddenDelete: false,
-        isLoading: false,
       });
     });
 

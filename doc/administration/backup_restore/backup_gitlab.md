@@ -98,7 +98,7 @@ In general, this data is the single source of truth for most user-generated cont
 PostgreSQL also holds some cached data like HTML-rendered Markdown, and by default, merge request diffs.
 However, merge request diffs can also be configured to be offloaded to the file system or object storage, see [Blobs](#blobs).
 
-Gitaly Cluster's Praefect service uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
+Gitaly Cluster (Praefect) uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
 
 A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/16/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
 

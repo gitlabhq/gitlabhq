@@ -36,7 +36,7 @@ export default {
     pypiSetupCommand() {
       return `[gitlab]
 repository = ${this.packageEntity.pypiSetupUrl}
-username = __token__
+username = gitlab-ci-token
 password = <your personal access token>`;
     },
   },

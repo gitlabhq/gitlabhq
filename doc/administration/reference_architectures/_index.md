@@ -621,9 +621,9 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 #### Stateful components in Kubernetes
 
-[Running stateful components in Kubernetes, such as Gitaly Cluster, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
+[Running stateful components in Kubernetes, such as Gitaly Cluster (Praefect), is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
 
-Gitaly Cluster is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
+Gitaly Cluster (Praefect) is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
 can cause sporadic out of memory (OOM) termination of Gitaly pods. The OOM termination leads to significant disruptions and potential data loss. Hence, Gitaly is not tested
 or supported in Kubernetes. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
@@ -728,7 +728,7 @@ The following components can impact others when they have been significantly sca
 - Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis.
   - Redis is primarily single-threaded. In some cases, you might have to split Redis into separate instances (for example, cache and persistent) if the increased throughput causes CPU exhaustion in a combined cluster.
   - PgBouncer is also single threaded but a scale out might result in a new pool being added that in turn might increase the total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
-- Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
+- Gitaly Cluster (Praefect)/PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 
 #### Scaling from a non-HA to an HA architecture
 
@@ -739,7 +739,7 @@ For more information, see the following documentation:
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect)
+- [Gitaly to Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect)
 
 ### Upgrades
 

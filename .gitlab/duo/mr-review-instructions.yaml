@@ -18,12 +18,11 @@ instructions:
       - "**/*.rb"
       - "!spec/**/*"
     instructions: |
-      1. Check for N+1 queries - use `includes()`, `preload()`, or `eager_load()`
-      2. Be cautious with `update_all`, `delete_all`, `destroy_all` methods
-      3. Consider query performance at GitLab.com scale
-      4. Ensure proper error handling and logging
-      5. Follow Ruby style conventions and DRY principles
-      6. Verify proper authorization checks
+      1. Check for N+1 queries - ensure use of `includes()`, `preload()`, or `eager_load()` when accessing associations
+      2. Ensure `update_all`, `delete_all`, `destroy_all` have proper conditions
+      3. Ensure authorization checks in controller actions and API endpoints
+      4. Ensure input validation for user-provided parameters
+      5. Ensure no information disclosure in error responses
 
   - name: Database Migrations
     fileFilters:
@@ -32,14 +31,12 @@ instructions:
       - "ee/db/geo/migrate/**/*.rb"
       - "lib/gitlab/background_migration/**/*.rb"
     instructions: |
-      1. Migration MUST be reversible
-      2. Consider performance at GitLab.com scale
-      3. Use batched background migrations for large tables
-      4. Test index creation on large tables before migration
-      5. Use post-migrations for time-consuming operations
-      6. Ensure column removals were ignored in previous release
-      7. New tables need proper indexes, foreign keys, and fixtures
-      8. Update db/structure.sql and Database Dictionary
+      1. Ensure migrations are reversible (add explicit down method for complex operations)
+      2. Ensure bulk operations use batched migrations
+      3. Use post-migrations for time-consuming operations
+      4. Ensure indexes on new foreign key columns
+      5. Ensure column removals were ignored in previous release
+      6. Update db/structure.sql and Database Dictionary
 
   - name: Test Coverage
     fileFilters:
@@ -48,7 +45,6 @@ instructions:
       - "!spec/factories/**/*"
       - "!spec/support/**/*"
     instructions: |
-      1. Test both happy paths and edge cases
-      2. Include error scenarios
-      3. Use shared examples to reduce duplication
-      4. Ensure proper database cleanup
+      1. Use shared examples to reduce duplication
+      2. Ensure error handling tests for security-sensitive operations
+      3. Ensure input validation tests for user-facing endpoints

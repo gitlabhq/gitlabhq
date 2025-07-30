@@ -223,9 +223,9 @@ export const tagsMock = [
   },
   {
     digest: 'sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062',
-    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:beta-24753',
-    path: 'gitlab-org/gitlab-test/rails-12009:beta-24753',
-    name: 'beta-24753',
+    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:beta-24758',
+    path: 'gitlab-org/gitlab-test/rails-12009:beta-24758',
+    name: 'beta-24758',
     revision: 'c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b',
     shortRevision: 'c2613843a',
     createdAt: '2020-11-03T13:29:38+00:00',
@@ -241,9 +241,9 @@ export const tagsMock = [
   },
   {
     digest: 'sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062',
-    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:beta-24753',
-    path: 'gitlab-org/gitlab-test/rails-12009:beta-24753',
-    name: 'beta-24753',
+    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:beta-24751',
+    path: 'gitlab-org/gitlab-test/rails-12009:beta-24751',
+    name: 'beta-24751',
     revision: 'c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b',
     shortRevision: 'c2613843a',
     createdAt: '2020-11-03T13:29:38+00:00',
@@ -258,6 +258,25 @@ export const tagsMock = [
     __typename: 'ContainerRepositoryTag',
   },
 ];
+
+export const protectedImageTag = {
+  digest: 'sha256:7f94f97dff89ffd122cafe50cd32329adf682356a7a96f69cbfe313ee589791c',
+  location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:beta-31070',
+  path: 'gitlab-org/gitlab-test/rails-12009:beta-31070',
+  name: 'beta-31070',
+  revision: 'df44e7228f0f255c73e35b6f0699624a615f42746e3e8e2e4b3804a6d6fc3292',
+  shortRevision: 'df44e7228',
+  createdAt: '2020-11-03T13:29:32+00:00',
+  publishedAt: '2020-11-05T13:29:32+00:00',
+  totalSize: '536870912000',
+  referrers: null,
+  mediaType: null,
+  userPermissions: {
+    destroyContainerRepositoryTag: false,
+  },
+  protection: null,
+  __typename: 'ContainerRepositoryTag',
+};
 
 export const imageTagsMock = ({ nodes = tagsMock, userPermissions = {} } = {}) => ({
   data: {

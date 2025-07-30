@@ -105,7 +105,6 @@ Style/HashEachMethods:
     - 'spec/models/ci/job_artifact_spec.rb'
     - 'spec/models/deployment_spec.rb'
     - 'spec/models/network/graph_spec.rb'
-    - 'spec/models/packages/package_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/state_note_spec.rb'
     - 'spec/models/user_spec.rb'

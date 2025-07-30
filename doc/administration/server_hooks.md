@@ -81,7 +81,7 @@ To set server hooks for a repository:
 
    - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
    - Custom hooks tarball must be passed via `stdin`. For example, `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
-1. If you are using Gitaly Cluster, you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
+1. If you are using Gitaly Cluster (Praefect), you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
    [Server hooks on a Gitaly Cluster (Praefect)](#server-hooks-on-a-gitaly-cluster-praefect).
 
 If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.

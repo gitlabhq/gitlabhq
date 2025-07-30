@@ -53,7 +53,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#pypi_registry_url' do
-    let_it_be(:base_url_with_token) { base_url.sub('://', '://__token__:<your_personal_token>@') }
+    let_it_be(:base_url_with_token) { base_url.sub('://', '://gitlab-ci-token:<your_personal_token>@') }
     let_it_be(:public_project) { create(:project, :public) }
 
     it 'returns the pypi registry url with token when project is private' do

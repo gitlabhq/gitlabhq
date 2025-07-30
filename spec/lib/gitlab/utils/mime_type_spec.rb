@@ -56,63 +56,33 @@ RSpec.describe Gitlab::Utils::MimeType, feature_category: :shared do
   describe '.from_filename' do
     using RSpec::Parameterized::TableSyntax
 
-    shared_examples 'log determination' do
-      it 'logs the determination' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          determined_content_type: mime_type
-        )
-
-        subject
-      end
-    end
-
-    shared_examples 'not log determination' do
-      it 'does not log the determination' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-        subject
-      end
-    end
-
     context 'when default value is not given' do
-      where(:filename, :mime_type, :log_enabled, :log_example) do
-        1             | 'application/octet-stream' | false | 'not log determination'
-        'test.tf'     | 'application/octet-stream' | false | 'not log determination'
-        'test.css'    | 'text/css'                 | false | 'not log determination'
-        'test.js'     | 'text/javascript'          | false | 'not log determination'
-        1             | 'application/octet-stream' | true  | 'not log determination'
-        'test.tf'     | 'application/octet-stream' | true  | 'log determination'
-        'test.css'    | 'text/css'                 | true  | 'log determination'
-        'test.js'     | 'text/javascript'          | true  | 'log determination'
+      where(:filename, :mime_type) do
+        1             | 'application/octet-stream'
+        'test.tf'     | 'application/octet-stream'
+        'test.css'    | 'text/css'
+        'test.js'     | 'text/javascript'
       end
 
       with_them do
-        subject { described_class.from_filename(filename, log_enabled: log_enabled) }
+        subject { described_class.from_filename(filename) }
 
         it { is_expected.to eq(mime_type) }
-
-        it_behaves_like params[:log_example]
       end
     end
 
     context 'when default value is given' do
-      where(:filename, :default, :mime_type, :log_enabled, :log_example) do
-        1          | nil          | nil          | false | 'not log determination'
-        'test.tf'  | nil          | nil          | false | 'not log determination'
-        'test.tf'  | 'text/plain' | 'text/plain' | false | 'not log determination'
-        'test.css' | 'text/plain' | 'text/css'   | false | 'not log determination'
-        1          | nil          | nil          | true  | 'not log determination'
-        'test.tf'  | nil          | nil          | true  | 'log determination'
-        'test.tf'  | 'text/plain' | 'text/plain' | true  | 'log determination'
-        'test.css' | 'text/plain' | 'text/css'   | true  | 'log determination'
+      where(:filename, :default, :mime_type) do
+        1          | nil          | nil
+        'test.tf'  | nil          | nil
+        'test.tf'  | 'text/plain' | 'text/plain'
+        'test.css' | 'text/plain' | 'text/css'
       end
 
       with_them do
-        subject { described_class.from_filename(filename, default: default, log_enabled: log_enabled) }
+        subject { described_class.from_filename(filename, default: default) }
 
         it { is_expected.to eq(mime_type) }
-
-        it_behaves_like params[:log_example]
       end
     end
   end

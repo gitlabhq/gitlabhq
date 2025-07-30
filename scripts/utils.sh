@@ -107,7 +107,7 @@ function bundle_install_script() {
   # Call `eval` explicitly to run the shell functions stored inside BUNDLE_INSTALL_FLAGS
   eval "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
-  if [[ $(bundle info pg) ]]; then
+  if [[ "$GLCI_BUNDLE_SKIP_PG_REINSTALL" != "true" && $(bundle info pg) ]]; then
     # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
     # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
     find vendor -type d -exec chmod 700 {} +

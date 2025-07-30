@@ -1157,7 +1157,7 @@ you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#clou
 
 {{< alert type="warning" >}}
 
-**Gitaly Cluster is not supported to be run in Kubernetes**.
+**Gitaly Cluster (Praefect) is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 
 {{< /alert >}}

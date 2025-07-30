@@ -1,13 +1,14 @@
-# Insurance in case a gem needed by one of our releases gets yanked from
-# rubygems.org in the future.
-cache gems:
+# Insurance in case a gem needed by one of our releases gets yanked from rubygems.org in the future.
+backup gems:
   extends:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .setup:rules:cache-gems
+    - .setup:rules:backup-gems
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   variables:
     BUNDLE_WITHOUT: ""
     BUNDLE_WITH: "production:development:test"
@@ -131,14 +132,6 @@ detect-tests:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
   needs: []
   stage: prepare
-  before_script:
-    # Use alternative coverage based mappings for tier-2 pipeline
-    - |
-      if echo "$CI_MERGE_REQUEST_LABELS" | grep -q "pipeline::tier-2"; then
-        MAPPING_TYPE=coverage
-      else
-        MAPPING_TYPE=described_class
-      fi
   script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
@@ -146,7 +139,7 @@ detect-tests:
         tooling/bin/predictive_tests \
           --ci \
           --with-crystalball-mappings \
-          --mapping-type $MAPPING_TYPE \
+          --mapping-type described_class \
           --with-frontend-fixture-mappings \
           --frontend-fixtures-mapping-path $GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH \
           --matching-foss-rspec-test-files-path $GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH \

@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
+import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
@@ -27,6 +27,7 @@ import {
   graphQLDeleteImageRepositoryTagsMock,
   tagsMock,
   imageTagsMock,
+  protectedImageTag,
   tagsPageInfo,
 } from '../../mock_data';
 import { DeleteModal } from '../../stubs';
@@ -71,7 +72,7 @@ describe('Tags List', () => {
     ];
 
     apolloProvider = createMockApollo(requestHandlers);
-    wrapper = shallowMount(component, {
+    wrapper = shallowMount(TagsList, {
       apolloProvider,
       propsData: {
         id: 1,
@@ -79,14 +80,12 @@ describe('Tags List', () => {
         isImageLoading,
       },
       stubs: { RegistryList, DeleteModal },
-      provide() {
-        return {
-          config: {
-            ...defaultConfig,
-            ...config,
-          },
-          glFeatures: { showContainerRegistryTagSignatures },
-        };
+      provide: {
+        config: {
+          ...defaultConfig,
+          ...config,
+        },
+        glFeatures: { showContainerRegistryTagSignatures },
       },
     });
 
@@ -118,8 +117,8 @@ describe('Tags List', () => {
 
     it('binds the correct props', () => {
       expect(findRegistryList().props()).toMatchObject({
-        title: '4 tags',
         items: tags,
+        unSelectableItemIds: [],
         idProperty: 'name',
         hiddenDelete: false,
       });
@@ -368,6 +367,20 @@ describe('Tags List', () => {
     });
 
     it('the correct props are bound to it', async () => {
+      await mountComponent();
+
+      const rows = findTagsListRow();
+
+      expect(rows.at(0).attributes('first')).toBe('true');
+      expect(rows.at(0).props()).toMatchObject({
+        tag: tags[0],
+        selectable: true,
+        selected: false,
+        canDelete: true,
+      });
+    });
+
+    it('disabled prop is bound to it', async () => {
       await mountComponent({ disabled: true });
 
       const rows = findTagsListRow();
@@ -428,16 +441,41 @@ describe('Tags List', () => {
     });
   });
 
-  describe('when user does not have permission to delete list rows', () => {
-    it('sets registry list hiddenDelete prop to true', async () => {
-      resolver = jest
-        .fn()
-        .mockResolvedValue(
-          imageTagsMock({ userPermissions: { destroyContainerRepository: false } }),
-        );
+  describe('when none of the image tags can be deleted', () => {
+    beforeEach(async () => {
+      resolver = jest.fn().mockResolvedValue(imageTagsMock({ nodes: [protectedImageTag] }));
       await mountComponent();
+    });
 
+    it('hides bulk deletion', () => {
       expect(findRegistryList().props('hiddenDelete')).toBe(true);
+    });
+
+    it('sets `canDelete: false` on protected tag', () => {
+      const rows = findTagsListRow();
+
+      expect(rows.at(0).props('canDelete')).toBe(false);
+    });
+  });
+
+  describe('when some image tags can be deleted', () => {
+    const withProtectedTags = tagsMock.concat(protectedImageTag);
+    beforeEach(async () => {
+      resolver = jest.fn().mockResolvedValue(imageTagsMock({ nodes: withProtectedTags }));
+      await mountComponent();
+    });
+
+    it('binds the correct props & shows bulk deletion', () => {
+      expect(findRegistryList().props()).toMatchObject({
+        unSelectableItemIds: ['beta-31070'],
+        hiddenDelete: false,
+      });
+    });
+
+    it('sets `canDelete: false` on tag which can be deleted', () => {
+      const rows = findTagsListRow();
+
+      expect(rows.at(0).props('canDelete')).toBe(true);
     });
   });
 

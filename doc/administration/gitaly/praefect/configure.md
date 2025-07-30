@@ -9,11 +9,11 @@ Configure Gitaly Cluster (Praefect) using either:
 
 - Gitaly Cluster (Praefect) configuration instructions available as part of
   [reference architectures](../../reference_architectures/_index.md) for installations of up to:
-  - [60 RPS or 3,000 users](../../reference_architectures/3k_users.md#configure-gitaly-cluster).
-  - [100 RPS or 5,000 users](../../reference_architectures/5k_users.md#configure-gitaly-cluster).
-  - [200 RPS or 10,000 users](../../reference_architectures/10k_users.md#configure-gitaly-cluster).
-  - [500 RPS or 25,000 users](../../reference_architectures/25k_users.md#configure-gitaly-cluster).
-  - [1000 RPS or 50,000 users](../../reference_architectures/50k_users.md#configure-gitaly-cluster).
+  - [60 RPS or 3,000 users](../../reference_architectures/3k_users.md#configure-gitaly-cluster-praefect).
+  - [100 RPS or 5,000 users](../../reference_architectures/5k_users.md#configure-gitaly-cluster-praefect).
+  - [200 RPS or 10,000 users](../../reference_architectures/10k_users.md#configure-gitaly-cluster-praefect).
+  - [500 RPS or 25,000 users](../../reference_architectures/25k_users.md#configure-gitaly-cluster-praefect).
+  - [1000 RPS or 50,000 users](../../reference_architectures/50k_users.md#configure-gitaly-cluster-praefect).
 - The custom configuration instructions that follow on this page.
 
 Smaller GitLab installations may need only [Gitaly itself](../_index.md).

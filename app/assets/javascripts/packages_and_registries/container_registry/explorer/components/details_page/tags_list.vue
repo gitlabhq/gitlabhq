@@ -1,7 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { n__ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
@@ -109,14 +108,16 @@ export default {
       const fields = this.config.isMetadataDatabaseEnabled ? [PUBLISHED_SORT_FIELD] : [];
       return fields.concat(NAME_SORT_FIELD);
     },
-    listTitle() {
-      return n__('%d tag', '%d tags', this.tags.length);
-    },
     tags() {
       return this.containerRepository?.tags?.nodes || [];
     },
     hideBulkDelete() {
-      return !this.containerRepository?.userPermissions.destroyContainerRepository;
+      return this.hasNoTags || this.tags.length === this.unSelectableItemIds.length;
+    },
+    unSelectableItemIds() {
+      return this.tags
+        .filter((tag) => !tag.userPermissions.destroyContainerRepositoryTag)
+        .map((tag) => tag.name);
     },
     tagsPageInfo() {
       return this.containerRepository?.tags?.pageInfo;
@@ -254,18 +255,20 @@ export default {
       <template v-else>
         <registry-list
           :hidden-delete="hideBulkDelete"
-          :title="listTitle"
           :items="tags"
+          :un-selectable-item-ids="unSelectableItemIds"
           id-property="name"
           @delete="deleteTags"
         >
-          <template #default="{ selectItem, isSelected, item, first }">
+          <template #default="{ selectItem, isSelected, isSelectable, item, first }">
             <tags-list-row
               :tag="item"
               :first="first"
-              :selected="isSelected(item)"
-              :is-mobile="isMobile"
               :disabled="disabled"
+              :selected="isSelected(item)"
+              :selectable="isSelectable(item)"
+              :is-mobile="isMobile"
+              :can-delete="!hideBulkDelete"
               @select="selectItem(item)"
               @delete="deleteTags([item])"
             />

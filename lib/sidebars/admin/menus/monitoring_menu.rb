@@ -10,6 +10,7 @@ module Sidebars
           add_item(background_migrations_menu_item)
           add_item(background_jobs_menu_item)
           add_item(health_check_menu_item)
+          add_item(database_diagnostics_menu_item)
           add_item(metrics_dashboard_menu_item)
           true
         end
@@ -65,6 +66,15 @@ module Sidebars
             active_routes: { controller: 'health_check' },
             item_id: :health_check
           ) { can?(current_user, :read_admin_health_check) }
+        end
+
+        def database_diagnostics_menu_item
+          build_menu_item(
+            title: _('Database diagnostics'),
+            link: admin_database_diagnostics_path,
+            active_routes: { controller: 'database_diagnostics' },
+            item_id: :database_diagnostics
+          ) { can?(current_user, :read_admin_database_diagnostics) }
         end
 
         def metrics_dashboard_menu_item

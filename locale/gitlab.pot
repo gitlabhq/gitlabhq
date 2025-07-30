@@ -431,11 +431,6 @@ msgid_plural "%d options"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d package"
-msgid_plural "%d packages"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] ""
@@ -528,11 +523,6 @@ msgstr[1] ""
 
 msgid "%d template found"
 msgid_plural "%d templates found"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d version"
-msgid_plural "%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3688,6 +3678,9 @@ msgstr ""
 msgid "Activity|An error occurred while retrieving activity. Reload the page to try again."
 msgstr ""
 
+msgid "Actual Version"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -5939,6 +5932,9 @@ msgstr ""
 msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr ""
 
+msgid "Affected Columns"
+msgstr ""
+
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
@@ -7431,6 +7427,9 @@ msgstr ""
 msgid "An error occurred while fetching reference"
 msgstr ""
 
+msgid "An error occurred while fetching results"
+msgstr ""
+
 msgid "An error occurred while fetching reviewers."
 msgstr ""
 
@@ -7585,6 +7584,9 @@ msgid "An error occurred while saving your settings. Try saving them again."
 msgstr ""
 
 msgid "An error occurred while searching for labels, please try again."
+msgstr ""
+
+msgid "An error occurred while starting diagnostics"
 msgstr ""
 
 msgid "An error occurred while subscribing to this page. Please try again later."
@@ -15269,6 +15271,12 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Collation Mismatches"
+msgstr ""
+
+msgid "Collation Name"
+msgstr ""
+
 msgid "Collector hostname"
 msgstr ""
 
@@ -18087,6 +18095,9 @@ msgstr ""
 msgid "ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr ""
 
+msgid "ContainerRegistry|Select tag"
+msgstr ""
+
 msgid "ContainerRegistry|Set cleanup rules"
 msgstr ""
 
@@ -18892,6 +18903,9 @@ msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr ""
 
 msgid "Correlation ID"
+msgstr ""
+
+msgid "Corrupted Indexes"
 msgstr ""
 
 msgid "Cost Factor Settings"
@@ -21241,7 +21255,55 @@ msgstr ""
 msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, but this version of GitLab requires PostgreSQL %{pg_version_minimum}. Please upgrade your environment to a supported PostgreSQL version. See %{pg_requirements_url} for details."
 msgstr ""
 
+msgid "Database Diagnostics"
+msgstr ""
+
+msgid "Database diagnostics"
+msgstr ""
+
 msgid "Database update failed"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Checking for recent diagnostic results..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation Health Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation mismatches are shown for informational purposes and may not indicate a problem."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Contact Support"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Database: %{name}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that may occur after OS upgrades"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Issues detected"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Last checked: %{timestamp}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Learn more"
+msgstr ""
+
+msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Run Collation Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Running diagnostics..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
+msgstr ""
+
+msgid "DatabaseDiagnostics|These issues require manual remediation. Read our documentation on PostgreSQL OS upgrades for step-by-step instructions."
 msgstr ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
@@ -24344,6 +24406,9 @@ msgid "Duplicate packages"
 msgstr ""
 
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
+msgstr ""
+
+msgid "Duplicates"
 msgstr ""
 
 msgid "Duration"
@@ -33511,6 +33576,9 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
+msgid "Index Name"
+msgstr ""
+
 msgid "Index deletion is canceled"
 msgstr ""
 
@@ -41693,6 +41761,9 @@ msgstr ""
 msgid "No child items are currently assigned."
 msgstr ""
 
+msgid "No collation mismatches detected."
+msgstr ""
+
 msgid "No comment templates found."
 msgstr ""
 
@@ -41721,6 +41792,9 @@ msgid "No contributions"
 msgstr ""
 
 msgid "No contributions were found"
+msgstr ""
+
+msgid "No corrupted indexes detected."
 msgstr ""
 
 msgid "No credit card data for matching"
@@ -44472,6 +44546,11 @@ msgstr ""
 
 msgid "Package type must be NuGet"
 msgstr ""
+
+msgid "PackageRegistry|%{count} selected"
+msgid_plural "PackageRegistry|%{count} selected"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr ""
@@ -61496,10 +61575,16 @@ msgstr ""
 msgid "StorageSize|Unknown"
 msgstr ""
 
+msgid "Stored Version"
+msgstr ""
+
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
 msgstr ""
 
 msgid "Strikethrough text"
+msgstr ""
+
+msgid "Structural"
 msgstr ""
 
 msgid "Sub-batch size"
@@ -62265,6 +62350,9 @@ msgid "System started"
 msgstr ""
 
 msgid "TXT"
+msgstr ""
+
+msgid "Table"
 msgstr ""
 
 msgid "Table of contents"
@@ -65947,6 +66035,9 @@ msgstr ""
 msgid "ToolCoverage|Project coverage"
 msgstr ""
 
+msgid "Tools for detecting and resolving database issues in self-managed GitLab instances."
+msgstr ""
+
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
 msgstr ""
 
@@ -66886,6 +66977,9 @@ msgid "Unhappy?"
 msgstr ""
 
 msgid "Unhelpful or irrelevant"
+msgstr ""
+
+msgid "Unique"
 msgstr ""
 
 msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."

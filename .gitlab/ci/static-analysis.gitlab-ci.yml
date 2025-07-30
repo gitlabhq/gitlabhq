@@ -128,6 +128,9 @@ haml-lint:
     - .static-analysis-base
     - .ruby-cache
     - .static-analysis:rules:haml-lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - bundle exec haml-lint --parallel
   artifacts:
@@ -194,7 +197,9 @@ rubocop:docs-site:
 
 rails-next-dependency-check:
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   extends:
     - .ruby-cache
     - .rails:rules:rails-next-dependency-check
@@ -268,7 +273,9 @@ audit-event-types-verify:
     - .default-before_script
     - .audit-event-types:rules:audit-event-types-verify
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - bundle exec rake gitlab:audit_event_types:check_docs
 
@@ -281,7 +288,9 @@ custom-roles-verify:
     - .default-before_script
     - .custom-roles:rules:custom-roles-verify
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - bundle exec rake gitlab:custom_roles:check_docs
 
@@ -294,7 +303,9 @@ ci-job-token-policies-verify:
     - .default-before_script
     - .ci-job-token-policies:rules:ci-job-token-policies-verify
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - bundle exec rake ci:job_tokens:check_policies
 

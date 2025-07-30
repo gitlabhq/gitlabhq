@@ -66,7 +66,17 @@ export default {
       default: true,
       required: false,
     },
+    selectable: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
     selected: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    canDelete: {
       type: Boolean,
       default: false,
       required: false,
@@ -185,8 +195,9 @@ export default {
   <list-item v-bind="$attrs" :selected="selected">
     <template #left-action>
       <gl-form-checkbox
-        v-if="tag.userPermissions.destroyContainerRepositoryTag"
-        :disabled="disabled"
+        v-if="canDelete"
+        :aria-label="s__('ContainerRegistry|Select tag')"
+        :disabled="disabled || !selectable"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"
@@ -287,9 +298,9 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <template v-if="tag.userPermissions.destroyContainerRepositoryTag" #right-action>
+    <template v-if="canDelete" #right-action>
       <gl-disclosure-dropdown
-        :disabled="disabled"
+        :disabled="disabled || !selectable"
         icon="ellipsis_v"
         :toggle-text="$options.i18n.MORE_ACTIONS_TEXT"
         :text-sr-only="true"

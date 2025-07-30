@@ -23,37 +23,37 @@ RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable do
       context 'with one-level constants' do
         context 'when calling histogram(Issue)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(Issue, :project_id, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Issue
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(::Issue)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(::Issue, :project_id, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Issue
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(Issue.closed)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(Issue.closed, :project_id, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Issue
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(::Issue.closed)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(::Issue.closed, :project_id, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Issue
-            CODE
+            RUBY
           end
         end
       end
@@ -61,37 +61,37 @@ RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable do
       context 'with two-level constants' do
         context 'when calling histogram(::Ci::Build)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(::Ci::Build, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Ci::Build
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(::Ci::Build.active)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(::Ci::Build.active, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Ci::Build
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(Ci::Build)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(Ci::Build, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Ci::Build
-            CODE
+            RUBY
           end
         end
 
         context 'when calling histogram(Ci::Build.active)' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               histogram(Ci::Build.active, buckets: 1..100)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg} Ci::Build
-            CODE
+            RUBY
           end
         end
       end

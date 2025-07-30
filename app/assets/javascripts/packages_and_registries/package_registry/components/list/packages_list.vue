@@ -1,5 +1,4 @@
 <script>
-import { n__ } from '~/locale';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
@@ -64,9 +63,6 @@ export default {
         return itemToBeDeleted;
       }
       return null;
-    },
-    listTitle() {
-      return n__('%d package', '%d packages', this.list.length);
     },
     isListEmpty() {
       return !this.list || this.list.length === 0;
@@ -134,9 +130,7 @@ export default {
       <registry-list
         data-testid="packages-table"
         :hidden-delete="!canDeletePackages"
-        :is-loading="isLoading"
         :items="list"
-        :title="listTitle"
         @delete="setItemsToBeDeleted"
       >
         <template #default="{ selectItem, isSelected, item, first }">

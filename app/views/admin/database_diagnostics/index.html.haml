@@ -1,0 +1,15 @@
+- page_title _('Database Diagnostics')
+
+%section.settings.monitoring
+  .settings-header
+    %h1
+      = _('Database Diagnostics')
+    %p
+      = _('Tools for detecting and resolving database issues in self-managed GitLab instances.')
+
+#js-database-diagnostics{
+  data: {
+    run_collation_check_url: run_collation_check_admin_database_diagnostics_path(format: :json),
+    collation_check_results_url: collation_check_results_admin_database_diagnostics_path(format: :json)
+  }
+}

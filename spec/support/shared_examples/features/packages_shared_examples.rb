@@ -71,13 +71,8 @@ RSpec.shared_examples 'package details link' do |property|
     end
 
     it 'shows tab with count' do
-      expect(page).to have_content('Other versions 2')
-    end
-
-    it 'visiting tab shows total on page' do
-      click_link 'Other versions'
-
-      expect(page).to have_content('2 versions')
+      expect(page).to have_content('Other versions')
+      expect(find_by_testid('other-versions-badge')).to have_content('2')
     end
 
     it 'deleting version updates count' do
@@ -90,7 +85,7 @@ RSpec.shared_examples 'package details link' do |property|
       expect(page).to have_content 'Package deleted successfully'
 
       expect(page).to have_content('Other versions 1')
-      expect(page).to have_content('1 version')
+      expect(find_by_testid('other-versions-badge')).to have_content('1')
 
       expect(page).not_to have_content('1.0.0')
       expect(page).to have_content('1.1.0')

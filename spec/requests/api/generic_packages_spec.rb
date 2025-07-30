@@ -1121,28 +1121,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
-    shared_examples 'log content type determination' do
-      it 'logs content type determination' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          determined_content_type: 'application/gzip'
-        )
-
-        subject
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(packages_generic_package_content_type: false)
-        end
-
-        it 'does not log content type determination' do
-          expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-          subject
-        end
-      end
-    end
-
     context 'when object storage is enabled' do
       let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
 
@@ -1160,8 +1138,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         before do
           stub_package_file_object_storage
         end
-
-        it_behaves_like 'log content type determination'
 
         it 'includes response-content-disposition and filename in the redirect file URL' do
           download
@@ -1190,8 +1166,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         before do
           stub_package_file_object_storage(proxy_download: true)
         end
-
-        it_behaves_like 'log content type determination'
 
         it 'sends a file with response-content-disposition and filename' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
