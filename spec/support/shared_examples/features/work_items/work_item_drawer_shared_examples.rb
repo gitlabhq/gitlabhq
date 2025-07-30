@@ -50,6 +50,8 @@ RSpec.shared_examples 'work item drawer' do
       within_testid('work-item-drawer') do
         find_by_testid('work-item-edit-form-button').click
 
+        wait_for_requests
+
         find_by_testid('work-item-title-input').set('Test title')
 
         click_button 'Save changes'
