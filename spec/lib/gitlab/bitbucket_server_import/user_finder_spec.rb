@@ -4,9 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:user) { create(:user) }
+  let_it_be(:user_namespace) { create(:namespace) }
 
   let_it_be_with_reload(:project) do
-    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+    create(
+      :project, :repository, :bitbucket_server_import, :in_group,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
   end
 
   let(:source_user) { build_stubbed(:import_source_user, :completed) }
@@ -31,6 +35,31 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
         user_finder.author_id(user_representation)
       ).to eq(source_user.mapped_user.id)
     end
+
+    context 'when the project is imported into a personal namespace' do
+      before do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'returns the user namespace owner id' do
+        author_id = user_finder.author_id(user_representation)
+
+        expect(author_id).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before do
+          allow(project.import_data).to receive(:user_mapping_to_personal_namespace_owner_enabled?)
+            .and_return(false)
+        end
+
+        it 'returns the mapped user' do
+          expect(
+            user_finder.author_id(user_representation)
+          ).to eq(source_user.mapped_user.id)
+        end
+      end
+    end
   end
 
   describe '#uid' do
@@ -52,6 +81,39 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
       user_id = user_finder.uid(user_representation)
 
       expect(user_id).to be_nil
+    end
+
+    context 'when the project is imported into a personal namespace' do
+      before do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'returns the user namespace owner id' do
+        user_id = user_finder.uid(user_representation)
+
+        expect(user_id).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before do
+          allow(project.import_data).to receive(:user_mapping_to_personal_namespace_owner_enabled?)
+            .and_return(false)
+        end
+
+        it 'takes a user data hash and finds the mapped user ID' do
+          user_id = user_finder.uid(user_representation)
+
+          expect(user_id).to eq(source_user.mapped_user.id)
+        end
+
+        it 'returns nil when username is nil' do
+          user_representation[:username] = nil
+
+          user_id = user_finder.uid(user_representation)
+
+          expect(user_id).to be_nil
+        end
+      end
     end
   end
 

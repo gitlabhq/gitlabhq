@@ -3,7 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Stage::FinishImportWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_started, import_type: :bitbucket_server) }
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :import_started, :in_group,
+      :user_mapping_to_personal_namespace_owner_enabled,
+      import_type: :bitbucket_server
+    )
+  end
 
   subject(:worker) { described_class.new }
 

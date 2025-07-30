@@ -5,6 +5,7 @@ module Import
     module Pusher
       def push_reference(project, record, attribute, source_user_identifier)
         return unless user_mapping_enabled?(project)
+        return if map_to_personal_namespace_owner?(project)
         return if source_user_identifier.nil?
 
         source_user = source_user_mapper(project).find_source_user(source_user_identifier)
@@ -37,6 +38,11 @@ module Import
 
       def user_mapping_enabled?(project)
         !!project.import_data.user_mapping_enabled?
+      end
+
+      def map_to_personal_namespace_owner?(project)
+        project.root_ancestor.user_namespace? &&
+          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
       end
     end
   end

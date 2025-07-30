@@ -78,7 +78,8 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
             repo_slug: repo_slug,
             timeout_strategy: timeout_strategy,
             bitbucket_server_notes_separate_worker: true,
-            user_contribution_mapping_enabled: true
+            user_contribution_mapping_enabled: true,
+            user_mapping_to_personal_namespace_owner_enabled: true
           }
         },
         skip_wiki: true
@@ -90,10 +91,11 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
       creator.execute
     end
 
-    context 'when feature flags are disabled' do
+    context 'when all feature flags are disabled' do
       before do
         stub_feature_flags(bitbucket_server_notes_separate_worker: false)
         stub_feature_flags(bitbucket_server_user_mapping: false)
+        stub_feature_flags(user_mapping_to_personal_namespace_owner: false)
       end
 
       it 'disables these options in the import_data' do
@@ -105,7 +107,64 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
               bitbucket_server_notes_separate_worker: false,
-              user_contribution_mapping_enabled: false
+              user_contribution_mapping_enabled: false,
+              user_mapping_to_personal_namespace_owner_enabled: false
+            }
+          }
+        }
+
+        expect(Projects::CreateService).to receive(:new)
+          .with(current_user, a_hash_including(expected_params))
+
+        creator.execute
+      end
+    end
+
+    context 'when user_mapping_to_personal_namespace_owner is enabled but bitbucket_server_user_mapping is disabled' do
+      before do
+        stub_feature_flags(bitbucket_server_user_mapping: false)
+        stub_feature_flags(user_mapping_to_personal_namespace_owner: true)
+      end
+
+      it 'sets user_mapping_to_personal_namespace_owner_enabled to false' do
+        expected_params = {
+          import_data: {
+            credentials: session_data,
+            data: {
+              project_key: project_key,
+              repo_slug: repo_slug,
+              timeout_strategy: timeout_strategy,
+              bitbucket_server_notes_separate_worker: true,
+              user_contribution_mapping_enabled: false,
+              user_mapping_to_personal_namespace_owner_enabled: false
+            }
+          }
+        }
+
+        expect(Projects::CreateService).to receive(:new)
+          .with(current_user, a_hash_including(expected_params))
+
+        creator.execute
+      end
+    end
+
+    context 'when user_mapping_to_personal_namespace_owner is disabled but bitbucket_server_user_mapping is enabled' do
+      before do
+        stub_feature_flags(bitbucket_server_user_mapping: true)
+        stub_feature_flags(user_mapping_to_personal_namespace_owner: false)
+      end
+
+      it 'sets user_mapping_to_personal_namespace_owner_enabled to false' do
+        expected_params = {
+          import_data: {
+            credentials: session_data,
+            data: {
+              project_key: project_key,
+              repo_slug: repo_slug,
+              timeout_strategy: timeout_strategy,
+              bitbucket_server_notes_separate_worker: true,
+              user_contribution_mapping_enabled: true,
+              user_mapping_to_personal_namespace_owner_enabled: false
             }
           }
         }
