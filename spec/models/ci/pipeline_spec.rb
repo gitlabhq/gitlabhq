@@ -2710,12 +2710,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#has_exposed_artifacts?' do
     let(:pipeline) { create(:ci_pipeline, :success) }
     let(:options) { nil }
+    let!(:job) do
+      create(:ci_build, options: options, pipeline: pipeline).tap do |job|
+        create(:ci_job_artifact, :metadata, job: job)
+      end
+    end
 
     subject { pipeline.has_exposed_artifacts? }
 
     before do
-      create(:ci_build, pipeline: pipeline)
-      create(:ci_build, options: options, pipeline: pipeline)
+      create(:ci_build, pipeline: pipeline) # Job without artifacts
     end
 
     it { is_expected.to eq(false) }
@@ -2735,6 +2739,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:pipeline) { create(:ci_pipeline, :running) }
 
         it { is_expected.to eq(false) }
+      end
+
+      context 'when job_artifacts_metadata.exposed_as is not populated' do
+        before do
+          job.job_artifacts_metadata.update!(exposed_as: nil)
+        end
+
+        it 'reads from job options' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when job metadata record is deleted' do
+        before do
+          job.metadata.delete
+        end
+
+        it 'reads from job_artifacts_metadata' do
+          is_expected.to eq(true)
+        end
+
+        context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+          before do
+            stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
+      context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+        before do
+          stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+        end
+
+        it 'reads from job options' do
+          is_expected.to eq(true)
+        end
       end
     end
   end

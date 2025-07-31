@@ -222,6 +222,16 @@ describe('ProjectsListItem', () => {
         expect(findStorageSizeBadge().text()).toBe('0 B');
       });
     });
+
+    describe('when statistics is null', () => {
+      it('renders Unknown', () => {
+        createComponent({
+          propsData: { project: { ...project, statistics: null } },
+        });
+
+        expect(findStorageSizeBadge().text()).toBe('Unknown');
+      });
+    });
   });
 
   it('renders inactive badge', () => {

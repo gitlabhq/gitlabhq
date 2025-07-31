@@ -84,6 +84,7 @@ module QA
         groups = fetch_resources("groups?owned=true&top_level_only=true")
 
         groups.select do |group|
+          # sandbox groups can't be deleted immediately so ignore ones already marked for deletion
           group[:marked_for_deletion_on].nil? \
           && @exclude_groups.exclude?(group[:path])
         end

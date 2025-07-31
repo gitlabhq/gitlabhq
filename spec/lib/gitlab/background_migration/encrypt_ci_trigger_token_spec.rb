@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_category: :continuous_integration do
+  before do
+    stub_feature_flags(encrypted_trigger_token_lookup: false)
+  end
+
   let(:ci_triggers) do
     table(:ci_triggers, database: :ci) do |ci_trigger|
       ci_trigger.send :attr_encrypted, :encrypted_token_tmp,

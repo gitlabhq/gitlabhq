@@ -33,7 +33,7 @@ module BulkImports
       end
 
       def stream(resource, &block)
-        request(:get, resource, stream_body: true, &block)
+        request(:get, resource, stream_body: true, headers: { 'Accept-Encoding' => 'identity' }, &block)
       end
 
       def each_page(method, resource, query = {}, &block)

@@ -71,10 +71,78 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         end
       end
     end
-  end
 
-  it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
-    let(:record) { create(:ci_trigger_without_token) }
+    it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
+      let(:record) { create(:ci_trigger_without_token) }
+    end
+
+    describe '.with_token' do
+      context 'when ff lookup for encrypted token is enabled' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:trigger_1) { create(:ci_trigger, project: project) }
+        let_it_be(:trigger_2) { create(:ci_trigger, project: project) }
+        let_it_be(:trigger_3) { create(:ci_trigger, project: project) }
+
+        it 'returns the trigger for a valid token' do
+          result = described_class.with_token(trigger_1.token)
+
+          expect(result).to contain_exactly(trigger_1)
+        end
+
+        it 'returns the triggers for multiple valid tokens' do
+          result = described_class.with_token([trigger_1.token, trigger_2.token])
+
+          expect(result).to contain_exactly(trigger_1, trigger_2)
+        end
+
+        it 'ignores blank tokens' do
+          result = described_class.with_token([nil, '', '   '])
+
+          expect(result).to be_empty
+        end
+
+        it 'does not return triggers for invalid token' do
+          result = described_class.with_token('nonexistent-token')
+
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when ff lookup for encrypted token is disabled' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:trigger_1) { create(:ci_trigger, project: project) }
+        let_it_be(:trigger_2) { create(:ci_trigger, project: project) }
+        let_it_be(:trigger_3) { create(:ci_trigger, project: project) }
+
+        before do
+          stub_feature_flags(encrypted_trigger_token_lookup: false)
+        end
+
+        it 'returns the trigger for a valid token' do
+          result = described_class.with_token(trigger_1.token)
+
+          expect(result).to contain_exactly(trigger_1)
+        end
+
+        it 'returns the triggers for multiple valid tokens' do
+          result = described_class.with_token([trigger_1.token, trigger_2.token])
+
+          expect(result).to contain_exactly(trigger_1, trigger_2)
+        end
+
+        it 'ignores blank tokens' do
+          result = described_class.with_token([nil, '', '   '])
+
+          expect(result).to be_empty
+        end
+
+        it 'does not return triggers for invalid token' do
+          result = described_class.with_token('nonexistent-token')
+
+          expect(result).to be_empty
+        end
+      end
+    end
   end
 
   describe '#last_used' do
@@ -179,6 +247,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         expect(trigger.encrypted_token_iv).not_to be_nil
 
         expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
+        expect(trigger.token_encrypted).not_to be_nil
       end
     end
 
@@ -191,6 +260,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         expect(trigger.encrypted_token_iv).not_to be_nil
 
         expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
+        expect(trigger.token_encrypted).not_to be_nil
       end
     end
 
@@ -201,6 +271,8 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
           .to change { trigger.encrypted_token }
           .and change { trigger.encrypted_token_iv }
           .and change { trigger.encrypted_token_tmp }.from("token").to("new token")
+          .and change { trigger.token }.from("token").to("new token")
+          .and change { trigger.token_encrypted }
       end
     end
   end

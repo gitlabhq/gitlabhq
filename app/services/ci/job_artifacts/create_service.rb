@@ -108,17 +108,36 @@ module Ci
       end
 
       def build_metadata_artifact(job_artifact, metadata_file)
-        Ci::JobArtifact.new(
-          job: job_artifact.job,
-          project: job_artifact.project,
-          expire_at: job_artifact.expire_at,
-          locked: job_artifact.locked,
-          file: metadata_file,
-          file_type: :metadata,
-          file_format: :gzip,
-          file_sha256: metadata_file.sha256,
-          accessibility: job_artifact.accessibility
-        )
+        if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
+          exposed_as = job.options.dig(:artifacts, :expose_as)
+          exposed_paths = job.options.dig(:artifacts, :paths) if exposed_as
+
+          Ci::JobArtifact.new(
+            job: job,
+            project: project,
+            expire_at: job_artifact.expire_at,
+            locked: job_artifact.locked,
+            file: metadata_file,
+            file_type: :metadata,
+            file_format: :gzip,
+            file_sha256: metadata_file.sha256,
+            accessibility: job_artifact.accessibility,
+            exposed_as: exposed_as,
+            exposed_paths: exposed_paths
+          )
+        else
+          Ci::JobArtifact.new(
+            job: job_artifact.job,
+            project: job_artifact.project,
+            expire_at: job_artifact.expire_at,
+            locked: job_artifact.locked,
+            file: metadata_file,
+            file_type: :metadata,
+            file_format: :gzip,
+            file_sha256: metadata_file.sha256,
+            accessibility: job_artifact.accessibility
+          )
+        end
       end
 
       def expire_in(params)

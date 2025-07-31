@@ -214,6 +214,8 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
           expect(new_artifact.file_format).to eq('gzip')
           expect(new_artifact.file_sha256).to eq(artifacts_sha256)
           expect(new_artifact.locked).to eq(job.pipeline.locked)
+          expect(new_artifact.exposed_as).to eq(nil)
+          expect(new_artifact.exposed_paths).to eq(nil)
         end
 
         it 'logs the created artifact and metadata' do
@@ -235,6 +237,35 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
           expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)
           expect(archive_artifact.expire_at).to be_within(1.minute).of(expected_expire_at)
           expect(metadata_artifact.expire_at).to be_within(1.minute).of(expected_expire_at)
+        end
+
+        context 'when the job has exposed artifacts' do
+          let(:job) do
+            create(:ci_build, project: project,
+              options: { artifacts: { expose_as: 'test', paths: ['path1', 'test/path2'] } })
+          end
+
+          it 'creates a new metadata job artifact with exposed_* columns populated' do
+            expect { execute }.to change { Ci::JobArtifact.where(file_type: :metadata).count }.by(1)
+
+            new_artifact = job.job_artifacts.last
+            expect(new_artifact.exposed_as).to eq('test')
+            expect(new_artifact.exposed_paths).to match_array(['path1', 'test/path2'])
+          end
+
+          context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+            before do
+              stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+            end
+
+            it 'creates a new metadata job artifact without exposed_* columns populated' do
+              expect { execute }.to change { Ci::JobArtifact.where(file_type: :metadata).count }.by(1)
+
+              new_artifact = job.job_artifacts.last
+              expect(new_artifact.exposed_as).to eq(nil)
+              expect(new_artifact.exposed_paths).to eq(nil)
+            end
+          end
         end
 
         context 'when expire_in params is set to a specific value' do

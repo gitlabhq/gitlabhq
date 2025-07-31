@@ -149,7 +149,9 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
         end
 
         it 'streams the contents via Gitlab::HTTP' do
-          expect(Gitlab::HTTP).to receive(:get).with(url, hash_including(stream_body: true))
+          expect(Gitlab::HTTP).to receive(:get).with(url,
+            hash_including(stream_body: true, headers: { "Accept-Encoding" => "identity" })
+          )
 
           Tempfile.create('test') do |file|
             subject.download(url, file.path)

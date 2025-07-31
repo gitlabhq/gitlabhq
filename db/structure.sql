@@ -12577,9 +12577,11 @@ CREATE TABLE ci_triggers (
     project_id bigint,
     owner_id bigint NOT NULL,
     description character varying,
+    expires_at timestamp with time zone,
+    token_encrypted text,
     encrypted_token bytea,
     encrypted_token_iv bytea,
-    expires_at timestamp with time zone
+    CONSTRAINT check_4905e4c2cb CHECK ((char_length(token_encrypted) <= 255))
 );
 
 CREATE SEQUENCE ci_triggers_id_seq
@@ -35529,6 +35531,8 @@ CREATE INDEX index_ci_triggers_on_owner_id ON ci_triggers USING btree (owner_id)
 CREATE INDEX index_ci_triggers_on_project_id_and_id ON ci_triggers USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_ci_triggers_on_token ON ci_triggers USING btree (token);
+
+CREATE UNIQUE INDEX index_ci_triggers_on_token_encrypted ON ci_triggers USING btree (token_encrypted);
 
 CREATE INDEX index_ci_unit_test_failures_on_build_id ON ci_unit_test_failures USING btree (build_id);
 

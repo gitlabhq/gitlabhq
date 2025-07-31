@@ -35,6 +35,8 @@ module QA
         QA::Resource::Repository::Commit
         QA::Resource::Design
         QA::Resource::InstanceOauthApplication
+        QA::Resource::Ci::RunnerManager
+        QA::Resource::UserGPG
         QA::EE::Resource::ComplianceFramework
         QA::EE::Resource::GroupIteration
         QA::EE::Resource::Settings::Elasticsearch
@@ -147,7 +149,8 @@ module QA
           if !resource_not_found?(resource['api_path'])
             logger.info("Successfully marked #{resource_info} for deletion...")
 
-            failures << resource_info unless delete_resource_permanently(resource, key)
+            failures << resource_info unless delete_resource_permanently(resource,
+              key) || key == 'QA::Resource::Sandbox'
           else
             logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
           end
@@ -317,10 +320,13 @@ module QA
       # Groups first, then projects, then other resources, then users
       def organize_resources(filtered_resources)
         organized_resources = {}
+
+        sandboxes = filtered_resources.delete('QA::Resource::Sandbox')
         groups = filtered_resources.delete('QA::Resource::Group')
         projects = filtered_resources.delete('QA::Resource::Project')
         users = filtered_resources.delete('QA::Resource::User')
 
+        organized_resources['QA::Resource::Sandbox'] = sandboxes if sandboxes
         organized_resources['QA::Resource::Group'] = groups if groups
         organized_resources['QA::Resource::Project'] = projects if projects
         organized_resources.merge!(filtered_resources) unless filtered_resources.empty?

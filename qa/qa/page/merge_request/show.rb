@@ -551,6 +551,10 @@ module QA
           has_link?(name)
         end
 
+        def expand_collapsed_discussions
+          all_elements('left-discussions', minimum: 1).each(&:click)
+        end
+
         private
 
         def submit_commit

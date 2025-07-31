@@ -9868,7 +9868,7 @@ msgstr ""
 msgid "Banned"
 msgstr ""
 
-msgid "Banner message"
+msgid "Banner message (optional)"
 msgstr ""
 
 msgid "Based on"
@@ -37871,6 +37871,9 @@ msgid "Maintainer"
 msgstr ""
 
 msgid "Maintenance mode"
+msgstr ""
+
+msgid "MaintenanceMode|By disabling maintenance mode your banner message will be lost."
 msgstr ""
 
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
@@ -76579,6 +76582,9 @@ msgid "yaml invalid"
 msgstr ""
 
 msgid "you"
+msgstr ""
+
+msgid "you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences."
 msgstr ""
 
 msgid "your GitLab instance"

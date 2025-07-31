@@ -136,12 +136,12 @@ export default {
       return this.isLoadingprotectionRules && !this.containsTableItems;
     },
     drawerTitle() {
-      return this.mutationItem
+      return this.protectionRuleMutationItem
         ? s__('ContainerRegistry|Edit protection rule')
         : s__('ContainerRegistry|Add protection rule');
     },
     toastMessage() {
-      return this.mutationItem
+      return this.protectionRuleMutationItem
         ? s__('ContainerRegistry|Protection rule updated.')
         : s__('ContainerRegistry|Protection rule created.');
     },
@@ -197,11 +197,11 @@ export default {
       this.refetchProtectionRules();
     },
     openEditFormDrawer(item) {
-      this.mutationItem = item;
+      this.protectionRuleMutationItem = item;
       this.showDrawer = true;
     },
     openNewFormDrawer() {
-      this.mutationItem = null;
+      this.protectionRuleMutationItem = null;
       this.showDrawer = true;
     },
     closeDrawer() {
@@ -361,7 +361,7 @@ export default {
           </template>
           <template #default>
             <container-protection-repository-rule-form
-              :rule="mutationItem"
+              :rule="protectionRuleMutationItem"
               @cancel="closeDrawer"
               @submit="handleSubmit"
             />

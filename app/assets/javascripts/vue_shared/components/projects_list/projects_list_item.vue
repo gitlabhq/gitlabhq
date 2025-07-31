@@ -109,9 +109,8 @@ export default {
       return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     storageSize() {
-      if (!this.hasStatistics) {
-        return null;
-      }
+      if (!this.hasStatistics) return null;
+      if (!this.project.statistics) return s__('StorageSize|Unknown');
 
       return numberToHumanSize(this.project.statistics.storageSize || 0, 1);
     },
@@ -300,7 +299,7 @@ export default {
     <template #stats>
       <ci-icon v-if="pipelineStatus" :status="pipelineStatus" />
       <project-list-item-inactive-badge :project="project" />
-      <gl-badge v-if="storageSize" data-testid="storage-size">{{ storageSize }}</gl-badge>
+      <gl-badge v-if="hasStatistics" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <list-item-stat
         :href="starsHref"
         :tooltip-text="$options.i18n.stars"

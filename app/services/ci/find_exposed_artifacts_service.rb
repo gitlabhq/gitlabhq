@@ -32,11 +32,11 @@ module Ci
     def for_job(job)
       return unless job.has_exposed_artifacts?
 
-      metadata_entries = first_2_metadata_entries_for_artifacts_paths(job)
+      metadata_entries = first_2_metadata_entries_for_artifacts_exposed_paths(job)
       return if metadata_entries.empty?
 
       {
-        text: job.artifacts_expose_as,
+        text: job.artifacts_exposed_as,
         url: path_for_entries(metadata_entries, job),
         job_path: project_job_path(job.project, job),
         job_name: job.name
@@ -48,10 +48,10 @@ module Ci
     # we don't need to fetch all artifacts entries for a job because
     # it could contain many. We only need to know whether it has 1 or more
     # artifacts, so fetching the first 2 would be sufficient.
-    def first_2_metadata_entries_for_artifacts_paths(job)
+    def first_2_metadata_entries_for_artifacts_exposed_paths(job)
       return [] unless job.artifacts_metadata
 
-      job.artifacts_paths
+      job.artifacts_exposed_paths
         .lazy
         .map { |path| job.artifacts_metadata_entry(path, recursive: true) }
         .select { |entry| entry.exists? }

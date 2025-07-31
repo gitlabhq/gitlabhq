@@ -588,7 +588,7 @@ With branch-based exceptions, you can configure merge request approval policies 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18112) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_tokens_accounts`. Disabled by default
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18112) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_tokens_accounts`. Enabled by default
 
 {{< /history >}}
 

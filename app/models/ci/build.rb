@@ -753,14 +753,6 @@ module Ci
       Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id, project_id)
     end
 
-    def artifacts_expose_as
-      options.dig(:artifacts, :expose_as)
-    end
-
-    def artifacts_paths
-      options.dig(:artifacts, :paths)
-    end
-
     def needs_touch?
       Time.current - updated_at > 15.minutes.to_i
     end

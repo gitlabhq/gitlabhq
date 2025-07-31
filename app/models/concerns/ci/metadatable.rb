@@ -32,9 +32,16 @@ module Ci
       def self.any_with_exposed_artifacts?
         found_exposed_artifacts = false
 
-        each_batch do |batch|
+        # TODO: Remove :project preload when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is removed
+        includes(:project).each_batch do |batch|
           # We only load what we need for `has_exposed_artifacts?`
-          records = batch.select(:id, :partition_id, :options).to_a
+          records = batch.select(:id, :partition_id, :project_id, :options).to_a
+
+          ActiveRecord::Associations::Preloader.new(
+            records: records,
+            associations: :job_artifacts_metadata,
+            scope: Ci::JobArtifact.select(:job_id, :partition_id, :exposed_as)
+          ).call
 
           ActiveRecord::Associations::Preloader.new(
             records: records,
@@ -57,7 +64,7 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      options.dig(:artifacts, :expose_as).present?
+      artifacts_exposed_as.present?
     end
 
     def ensure_metadata
@@ -121,6 +128,26 @@ module Ci
       # TODO: need to add the timeout to p_ci_builds later
       # See https://gitlab.com/gitlab-org/gitlab/-/work_items/538183#note_2542611159
       try(:timeout) || metadata&.timeout
+    end
+
+    def artifacts_exposed_as
+      if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
+        job_artifacts_metadata&.exposed_as || options.dig(:artifacts, :expose_as)
+      else
+        options.dig(:artifacts, :expose_as)
+      end
+    end
+
+    def artifacts_exposed_paths
+      if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
+        job_artifacts_metadata&.exposed_paths || artifacts_paths
+      else
+        artifacts_paths
+      end
+    end
+
+    def artifacts_paths
+      options.dig(:artifacts, :paths)
     end
 
     private

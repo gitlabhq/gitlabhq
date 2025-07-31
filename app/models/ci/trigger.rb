@@ -6,6 +6,7 @@ module Ci
     include Limitable
     include Expirable
     include Gitlab::EncryptedAttribute
+    include TokenAuthenticatable
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
 
@@ -30,9 +31,16 @@ module Ci
       encode: false
 
     before_validation :set_default_values
-
     before_save :copy_token_to_encrypted_token
 
+    # rubocop:disable Gitlab/TokenWithoutPrefix -- we are doing this ourselves here since ensure_token
+    # does not work as expected
+    add_authentication_token_field(:token,
+      encrypted: -> {
+        Feature.enabled?(:encrypted_trigger_token_lookup, :instance) ? :required : :migrating
+      }
+    )
+    # rubocop:enable Gitlab/TokenWithoutPrefix
     scope :with_last_used, -> do
       ci_pipelines = Ci::Pipeline.arel_table
       last_used_pipelines =
@@ -46,10 +54,24 @@ module Ci
       query.select(:last_used)
     end
 
-    scope :with_token, ->(tokens) { where(token: Array.wrap(tokens).compact.reject(&:blank?)) }
+    scope :with_token, ->(tokens) {
+      tokens = Array.wrap(tokens).compact.reject(&:blank?)
+      if Feature.enabled?(:encrypted_trigger_token_lookup, :instance)
+        encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
+        where(token_encrypted: encrypted_tokens)
+      else
+        where(token: tokens)
+      end
+    }
+
+    def token=(token_value)
+      super
+      self.set_token(token_value)
+    end
 
     def set_default_values
-      self.token = "#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}" if self.token.blank?
+      self.set_token(self.attributes['token']) if self.attributes['token'].present?
+      self.set_token("#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}") if self.token.blank?
     end
 
     def last_used

@@ -6,7 +6,6 @@ import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
-import { useNotes } from '~/notes/store/legacy_notes';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
 
 Vue.use(PiniaVuePlugin);
@@ -48,7 +47,6 @@ describe('Diffs image diff overlay component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    useNotes();
   });
 
   it('renders comment badges', () => {
@@ -116,7 +114,15 @@ describe('Diffs image diff overlay component', () => {
       createComponent();
       getAllImageBadges().at(0).vm.$emit('click');
 
-      expect(useNotes().toggleDiscussion).toHaveBeenCalledWith({ discussionId: '1' });
+      expect(useLegacyDiffs().toggleFileDiscussion).toHaveBeenCalledWith({
+        id: '1',
+        position: {
+          height: 200,
+          width: 100,
+          x: 10,
+          y: 10,
+        },
+      });
     });
   });
 
