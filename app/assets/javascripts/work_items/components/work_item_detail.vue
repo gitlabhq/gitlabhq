@@ -583,7 +583,7 @@ export default {
       return getIdFromGraphQLId(this.workItemProjectId);
     },
     agentPrivileges() {
-      return [1, 2, 5];
+      return [1, 2, 3, 4, 5];
     },
     agentInvokePath() {
       return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);

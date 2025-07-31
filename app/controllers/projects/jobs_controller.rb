@@ -24,6 +24,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_filter_by_name, only: [:index]
+  before_action :push_realtime_job_status, only: [:show]
   layout 'project'
 
   feature_category :continuous_integration
@@ -300,6 +301,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_filter_by_name
     push_frontend_feature_flag(:fe_search_build_by_name, @project)
+  end
+
+  def push_realtime_job_status
+    push_frontend_feature_flag(:ci_job_status_realtime, @project)
   end
 end
 

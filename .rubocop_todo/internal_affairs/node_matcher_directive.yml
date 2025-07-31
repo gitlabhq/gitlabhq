@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 InternalAffairs/NodeMatcherDirective:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/sidekiq_redis_call.rb'
     - 'rubocop/cop/static_translation_definition.rb'

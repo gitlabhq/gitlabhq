@@ -47780,6 +47780,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -54330,6 +54348,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -56172,6 +56208,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.

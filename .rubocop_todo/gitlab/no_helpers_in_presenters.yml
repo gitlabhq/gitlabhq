@@ -1,6 +1,5 @@
 ---
 Gitlab/NoHelpersInPresenters:
-  Details: grace period
   Exclude:
     - 'app/presenters/blob_presenter.rb'
     - 'app/presenters/ci/pipeline_presenter.rb'

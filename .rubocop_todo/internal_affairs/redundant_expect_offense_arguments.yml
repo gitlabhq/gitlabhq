@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 InternalAffairs/RedundantExpectOffenseArguments:
-  Details: grace period
   Exclude:
     - 'spec/rubocop/cop/gitlab/namespaced_class_spec.rb'
     - 'spec/rubocop/cop/search/namespaced_class_spec.rb'

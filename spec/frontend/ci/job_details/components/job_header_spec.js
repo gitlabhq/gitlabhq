@@ -1,4 +1,5 @@
 import { GlButton, GlAvatarLink, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
+import { createMockSubscription } from 'mock-apollo-client';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,6 +10,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobHeader from '~/ci/job_details/components/job_header.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
+import jobCiStatusUpdatedSubscription from '~/ci/job_details/graphql/subscriptions/job_ci_status_updated.subscription.graphql';
 import { mockJobResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -18,6 +20,8 @@ jest.mock('~/alert');
 describe('Header CI Component', () => {
   let wrapper;
   let apolloProvider;
+  let mockSubscription;
+  let subscriptionHandler;
 
   const defaultProps = {
     jobId: 13051,
@@ -48,8 +52,15 @@ describe('Header CI Component', () => {
     return createMockApollo(handlers);
   };
 
-  const createComponent = (props, handlers = defaultHandlers) => {
+  const createComponent = (props, handlers = defaultHandlers, flagEnabled = true) => {
+    mockSubscription = createMockSubscription();
+    subscriptionHandler = jest.fn().mockReturnValue(mockSubscription);
     apolloProvider = createMockApolloProvider(handlers);
+
+    apolloProvider.defaultClient.setRequestHandler(
+      jobCiStatusUpdatedSubscription,
+      subscriptionHandler,
+    );
 
     wrapper = shallowMountExtended(JobHeader, {
       propsData: {
@@ -58,6 +69,9 @@ describe('Header CI Component', () => {
       },
       provide: {
         projectPath: 'gitlab-org/gitlab',
+        glFeatures: {
+          ciJobStatusRealtime: flagEnabled,
+        },
       },
       apolloProvider,
     });
@@ -103,14 +117,6 @@ describe('Header CI Component', () => {
         fullPath: 'gitlab-org/gitlab',
         id: 'gid://gitlab/Ci::Build/13051',
       });
-    });
-
-    it('polls query to receive status updates', () => {
-      expect(successHandler).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(30000);
-
-      expect(successHandler).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -184,17 +190,81 @@ describe('Header CI Component', () => {
     });
   });
 
+  describe('real time updates', () => {
+    describe('with ciJobStatusRealtime enabled', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      it('updates job status', async () => {
+        expect(findCiIcon().props('status')).toEqual({
+          __typename: 'DetailedStatus',
+          detailsPath: '/root/ci-project/-/jobs/13051',
+          icon: 'status_success',
+          id: 'success-13051-13051',
+          text: 'Passed',
+        });
+
+        mockSubscription.next({
+          data: {
+            ciJobStatusUpdated: {
+              id: 'gid://gitlab/Ci::Build/389',
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                detailsPath: '/root/ci-project/-/jobs/389',
+                icon: 'status_running',
+                id: 'running-389-389',
+                text: 'Running',
+              },
+            },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({ jobId: 'gid://gitlab/Ci::Build/13051' });
+        expect(findCiIcon().props('status')).toEqual({
+          __typename: 'DetailedStatus',
+          id: 'running-389-389',
+          icon: 'status_running',
+          text: 'Running',
+          detailsPath: '/root/ci-project/-/jobs/389',
+        });
+      });
+    });
+
+    describe('with ciJobStatusRealtime disabled', () => {
+      beforeEach(async () => {
+        createComponent({}, defaultHandlers, false);
+
+        await waitForPromises();
+      });
+
+      it('updates job status', () => {
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('error', () => {
-    it('shows error alert on GraphQL error', async () => {
+    beforeEach(async () => {
       createComponent(defaultProps, [[getJobQuery, failedHandler]]);
 
       await waitForPromises();
+    });
 
+    it('shows error alert on GraphQL error', () => {
       expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         error: expect.any(Error),
         message: 'An error occurred while fetching the job header data.',
       });
+    });
+
+    it('does not call the graphql subscription when there is no job data', () => {
+      expect(subscriptionHandler).not.toHaveBeenCalled();
     });
   });
 });

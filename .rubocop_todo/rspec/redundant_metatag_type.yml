@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/RedundantMetatagType:
-  Details: grace period
   Exclude:
     - 'ee/spec/components/billing/free_plan_component_spec.rb'
     - 'ee/spec/components/billing/plan_component_spec.rb'

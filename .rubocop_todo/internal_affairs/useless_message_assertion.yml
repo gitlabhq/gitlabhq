@@ -1,6 +1,5 @@
 ---
 InternalAffairs/UselessMessageAssertion:
-  Details: grace period
   Exclude:
     - 'spec/rubocop/cop/api/base_spec.rb'
     - 'spec/rubocop/cop/api/class_level_allow_access_with_scope_spec.rb'

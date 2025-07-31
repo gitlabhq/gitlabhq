@@ -26822,6 +26822,9 @@ msgstr ""
 msgid "Failed to create resources"
 msgstr ""
 
+msgid "Failed to create security category"
+msgstr ""
+
 msgid "Failed to create wiki"
 msgstr ""
 
@@ -74392,6 +74395,9 @@ msgid "cannot have more than %{count} frameworks"
 msgstr ""
 
 msgid "cannot have more than %{count} requirements"
+msgstr ""
+
+msgid "cannot have more than 50 attributes per category"
 msgstr ""
 
 msgid "cannot include leading slash or directory traversal."

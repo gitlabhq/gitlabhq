@@ -1,6 +1,5 @@
 ---
 Database/AvoidScopeTo:
-  Details: grace period
   Exclude:
     - 'lib/gitlab/background_migration/backfill_catalog_resource_version_sem_ver.rb'
     - 'lib/gitlab/background_migration/backfill_default_organization_owners_again.rb'

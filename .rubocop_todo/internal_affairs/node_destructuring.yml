@@ -1,6 +1,5 @@
 ---
 InternalAffairs/NodeDestructuring:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/ban_catch_throw.rb'
     - 'rubocop/cop/gitlab/http_v2.rb'

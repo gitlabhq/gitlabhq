@@ -27029,7 +27029,9 @@ CREATE TABLE x509_commit_signatures (
     project_id bigint NOT NULL,
     x509_certificate_id bigint NOT NULL,
     commit_sha bytea NOT NULL,
-    verification_status smallint DEFAULT 0 NOT NULL
+    verification_status smallint DEFAULT 0 NOT NULL,
+    committer_email text,
+    CONSTRAINT check_f6d2a73190 CHECK ((char_length(committer_email) <= 255))
 );
 
 CREATE SEQUENCE x509_commit_signatures_id_seq

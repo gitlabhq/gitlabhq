@@ -83,6 +83,8 @@ $white-gc-bg: #eaf2f5;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$gl-color-neutral-0};
+  --code-empty-background: #{$gl-color-neutral-10};
+
   --code-old-diff-line-number-background-color: #{$line-number-old};
   --code-old-diff-background-color: #{$line-removed};
   --code-new-diff-line-number-background-color: #{$line-number-new};

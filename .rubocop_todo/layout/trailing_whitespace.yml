@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Layout/TrailingWhitespace:
-  Details: grace period
   Exclude:
     - 'lib/gitlab/database_warnings.rb'

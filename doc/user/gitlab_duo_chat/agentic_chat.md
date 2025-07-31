@@ -12,7 +12,7 @@ title: GitLab Duo Agentic Chat
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 - Status: Beta
-- LLMs: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- LLM: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 

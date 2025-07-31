@@ -105,6 +105,7 @@ $monokai-gh: #75715e;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
   --code-background: #{$monokai-bg};
+  --code-empty-background: #{darken($monokai-bg, 1.5%)};
 
   --code-line-number-background-color: #{$monokai-bg};
   --code-line-number-color: #{$monokai-line-num-color};

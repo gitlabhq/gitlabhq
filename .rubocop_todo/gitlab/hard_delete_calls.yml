@@ -1,6 +1,5 @@
 ---
 Gitlab/HardDeleteCalls:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/groups_controller.rb'
     - 'app/controllers/admin/projects_controller.rb'

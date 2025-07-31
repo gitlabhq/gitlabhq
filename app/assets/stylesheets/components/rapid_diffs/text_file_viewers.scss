@@ -208,6 +208,10 @@
   background-color: var(--background-color);
 }
 
+.rd-line-number-empty {
+  --rd-line-background-color: var(--code-empty-background);
+}
+
 .rd-line-content[data-change=removed] + .rd-line-number[data-change=added] {
   border-left-color: var(--rd-adjacent-line-border-color,
     oklch(

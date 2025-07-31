@@ -27,3 +27,27 @@ data for features.
 | Code Suggestion data in ClickHouse                                                                                | `FILTER=ai_usage_stats bundle exec rake db:seed_fu`                                                           | [94_ai_usage_stats](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/94_ai_usage_stats.rb)                             |
 | GitLab Duo                                                                                                        | `SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu`                                                               | [95_gitlab_duo](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/95_gitlab_duo.rb)                             |
 | GitLab Duo: Seed failed CI jobs for Root Cause Analysis (`/troubleshoot`) evaluation                                                                                                  | `LANGCHAIN_API_KEY=$Key bundle exec rake gitlab:duo_chat:seed:failed_ci_jobs`                                                          | [seed_failed_ci_jobs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/duo_chat/seed_failed_ci_jobs.rake)                        |
+
+### Seed project and group resources for GitLab Duo
+
+The [`gitlab:duo:setup` setup script](ai_features/_index.md#required-run-gitlabduosetup-script) will execute
+the development seed file for GitLab Duo project and group resources.
+However, if you would like to re-create the resources, you can re-run the seed task using the command:
+
+```shell
+SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu
+```
+
+GitLab Duo group and project resources are also used by the [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) for automated GitLab Duo evaluation.
+Some evaluation datasets refer to group or project resources (for instance, `Summarize issue #123` requires a corresponding issue record in PostgreSQL).
+
+Currently, this development seed file and evaluation datasets are managed separately.
+To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
+For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
+
+These fixtures are depended by the following projects:
+
+- [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+- [Evaluation Runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner)
+
+See [this architecture doc](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner/-/blob/main/docs/architecture.md) for more information.

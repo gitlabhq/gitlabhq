@@ -100,18 +100,6 @@ RSpec.describe Projects::UnarchiveService, feature_category: :groups_and_project
                 root_namespace_id: project.root_namespace.id
               )
           end
-
-          it 'publishes ProjectAttributesChangedEvent' do
-            allow(service).to receive(:publish_project_archived_event)
-
-            expect { service.execute }.to publish_event(Projects::ProjectAttributesChangedEvent)
-              .with(
-                project_id: project.id,
-                namespace_id: project.namespace_id,
-                root_namespace_id: project.root_namespace.id,
-                attributes: %w[updated_at archived]
-              )
-          end
         end
       end
     end

@@ -1,6 +1,5 @@
 ---
 Database/AvoidUsingConnectionExecute:
-  Details: grace period
   Exclude:
     - 'app/models/analytics/cycle_analytics/stage_event_hash.rb'
     - 'app/models/concerns/analytics/cycle_analytics/stage_event_model.rb'

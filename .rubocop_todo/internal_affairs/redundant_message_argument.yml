@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 InternalAffairs/RedundantMessageArgument:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/feature_flag_usage.rb'
     - 'rubocop/cop/file_decompression.rb'

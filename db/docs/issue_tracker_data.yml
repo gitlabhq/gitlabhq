@@ -8,5 +8,5 @@ description: Data related to the issue tracker integrations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14187
 milestone: '12.0'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549030
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558260
 table_size: small

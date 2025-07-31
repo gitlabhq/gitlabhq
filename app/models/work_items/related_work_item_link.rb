@@ -56,10 +56,10 @@ module WorkItems
     end
 
     def find_restriction(source_type_id, target_type_id)
-      ::WorkItems::RelatedLinkRestriction.find_by_source_type_id_and_target_type_id_and_link_type(
-        source_type_id,
-        target_type_id,
-        link_type
+      ::WorkItems::SystemDefined::RelatedLinkRestriction.find_by(
+        source_type_id: source_type_id,
+        target_type_id: target_type_id,
+        link_type: link_type
       )
     end
   end

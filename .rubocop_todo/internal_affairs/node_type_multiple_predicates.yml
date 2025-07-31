@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 InternalAffairs/NodeTypeMultiplePredicates:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/gettext/static_identifier.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'

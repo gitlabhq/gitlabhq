@@ -108,6 +108,7 @@ $solarized-dark-il: #2aa198;
   --diff-expansion-background-color: #{lighten($solarized-dark-pre-bg, 10%)};
 
   --code-background: #{$solarized-dark-pre-bg};
+  --code-empty-background: #{darken($solarized-dark-pre-bg, 1.5%)};
 
   --code-line-number-background-color: #{$solarized-dark-line-bg};
   --code-line-number-color: #{$solarized-dark-line-color};

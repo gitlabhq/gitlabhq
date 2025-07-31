@@ -1,6 +1,5 @@
 ---
 Database/JsonbSizeLimit:
-  Details: grace period
   Exclude:
     - 'app/models/abuse_report.rb'
     - 'app/models/activity_pub/releases_subscription.rb'

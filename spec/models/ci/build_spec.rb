@@ -2544,6 +2544,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PROJECT_NAME', value: project.path, public: true, masked: false },
           { key: 'CI_PROJECT_TITLE', value: project.title, public: true, masked: false },
           { key: 'CI_PROJECT_DESCRIPTION', value: project.description, public: true, masked: false },
+          { key: 'CI_PROJECT_TOPICS', value: project.topic_list.first(20).join(',').downcase, public: true, masked: false },
           { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
           { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },

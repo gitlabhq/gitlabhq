@@ -170,6 +170,8 @@ For example:
 
 Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+When referring to the specific component in technical contexts, use `agentk` in backticks.
+
 ## agent access token
 
 The token generated when you create an agent for Kubernetes. Use **agent access token**, not:
@@ -2756,6 +2758,18 @@ For example:
 - The workaround is to temporarily pin your template to the deprecated version.
 
 See also [resolution](#resolution-resolve).
+
+## agent for workspace
+
+Use lowercase **agent for workspace** when referring to the component that runs
+in a workspace and is used to access the workspace. Do not use title case for **Workspace**. For example:
+
+- The agent for workspace handles GitLab integration tasks in the workspace.
+- Configure the agent for workspace to connect your development environment.
+
+When referring to the specific component in technical contexts, use `agentw` in backticks.
+
+Do not confuse with [agent for Kubernetes](#agent-for-kubernetes).
 
 ## while
 

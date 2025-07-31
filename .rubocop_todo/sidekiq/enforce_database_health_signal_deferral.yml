@@ -1,6 +1,5 @@
 ---
 Sidekiq/EnforceDatabaseHealthSignalDeferral:
-  Details: grace period
   Exclude:
     - 'app/workers/analytics/usage_trends/count_job_trigger_worker.rb'
     - 'app/workers/analytics/usage_trends/counter_job_worker.rb'

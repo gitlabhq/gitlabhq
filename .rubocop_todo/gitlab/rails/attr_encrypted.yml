@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/Rails/AttrEncrypted:
-  Details: grace period
   Exclude:
     - 'app/models/alert_management/http_integration.rb'
     - 'app/models/alerting/project_alerting_setting.rb'

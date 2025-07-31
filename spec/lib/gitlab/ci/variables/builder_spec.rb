@@ -69,6 +69,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.title },
       { key: 'CI_PROJECT_DESCRIPTION',
         value: project.description },
+      { key: 'CI_PROJECT_TOPICS',
+        value: project.topic_list.first(20).join(',').downcase },
       { key: 'CI_PROJECT_PATH',
         value: project.full_path },
       { key: 'CI_PROJECT_PATH_SLUG',

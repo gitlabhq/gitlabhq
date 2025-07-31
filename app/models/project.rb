@@ -2728,6 +2728,7 @@ class Project < ApplicationRecord
     end
   end
 
+  # rubocop: disable Metrics/AbcSize -- TODO: Method size will be reduced in follow-up MR, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199182#note_2655958320
   def predefined_project_variables
     strong_memoize(:predefined_project_variables) do
       Gitlab::Ci::Variables::Collection.new
@@ -2736,6 +2737,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_PROJECT_NAME', value: path)
         .append(key: 'CI_PROJECT_TITLE', value: title)
         .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
+        .append(key: 'CI_PROJECT_TOPICS', value: topic_list.first(20).join(',').downcase)
         .append(key: 'CI_PROJECT_PATH', value: full_path)
         .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
         .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
@@ -2751,6 +2753,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def predefined_ci_server_variables
     Gitlab::Ci::Variables::Collection.new

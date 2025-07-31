@@ -121,6 +121,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PROJECT_ROOT_NAMESPACE`                     | Pre-pipeline | The root project namespace (username or group name) of the job. For example, if `CI_PROJECT_NAMESPACE` is `root-group/child-group/grandchild-group`, `CI_PROJECT_ROOT_NAMESPACE` is `root-group`. |
 | `CI_PROJECT_TITLE`                              | Pre-pipeline | The human-readable project name as displayed in the GitLab web interface. |
 | `CI_PROJECT_DESCRIPTION`                        | Pre-pipeline | The project description as displayed in the GitLab web interface. Introduced in GitLab 15.1. |
+| `CI_PROJECT_TOPICS`                             | Pre-pipeline | A comma-separated, lowercase list of [topics](../../user/project/project_topics.md) (limited to the first 20) assigned to the project. Introduced in GitLab 18.3 |
 | `CI_PROJECT_URL`                                | Pre-pipeline | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                         | Pre-pipeline | The project visibility. Can be `internal`, `private`, or `public`. |
 | `CI_PROJECT_CLASSIFICATION_LABEL`               | Pre-pipeline | The project [external authorization classification label](../../administration/settings/external_authorization.md). |

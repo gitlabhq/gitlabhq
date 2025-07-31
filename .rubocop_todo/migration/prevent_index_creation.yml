@@ -1,6 +1,5 @@
 ---
 Migration/PreventIndexCreation:
-  Details: grace period
   Exclude:
     - 'db/migrate/20250428232147_change_unique_contraints_ci_job_artifact_states.rb'
     - 'db/migrate/20250617010202_add_index_to_duo_workflows_checkpoints_on_namespace_id.rb'

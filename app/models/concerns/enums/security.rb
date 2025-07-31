@@ -25,7 +25,7 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     EDITABLE_STATES = {
       locked: 0,
-      cloneable: 10,
+      editable_attributes: 10,
       editable: 20
     }.freeze
 

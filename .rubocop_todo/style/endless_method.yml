@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/EndlessMethod:
-  Details: grace period
   Exclude:
     - 'app/models/concerns/enum_inheritance.rb'
     - 'app/models/pages/project_settings.rb'

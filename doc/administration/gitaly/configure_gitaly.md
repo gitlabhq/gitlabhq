@@ -184,26 +184,42 @@ Gitaly and GitLab use two shared secrets for authentication:
 
 1. Configure the _GitLab Shell token_ in one of two ways:
 
-   - Method 1 (recommended):
-
-     Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
-     (and any other Gitaly clients).
+   - Method 1 (recommended): copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
+     servers and any other Gitaly clients.
 
    - Method 2:
 
-     On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`:
+     1. On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret:
 
-     ```ruby
-     gitlab_shell['secret_token'] = 'shellsecret'
-     ```
+        - GitLab 17.5 and later:
 
-     On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
 
-     ```ruby
-     gitaly['gitlab_secret'] = 'shellsecret'
-     ```
+        - GitLab 17.4 and earlier:
 
-     After those changes, reconfigure GitLab:
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+     1. On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret:
+
+        - GitLab 17.5 and later:
+
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+        - GitLab 17.4 and earlier:
+
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+     1. After those changes, reconfigure GitLab:
 
      ```shell
      sudo gitlab-ctl reconfigure

@@ -1,6 +1,5 @@
 ---
 Rake/TopLevelMethodDefinition:
-  Details: grace period
   Exclude:
     - 'ee/lib/tasks/cloud_connector/keys.rake'
     - 'ee/lib/tasks/duo_pro/bulk_user_assignment.rake'
