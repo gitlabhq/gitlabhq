@@ -7,7 +7,7 @@ module QA
         include SubMenus::CreateNewMenu
 
         def click_ssh_keys
-          click_element('nav-item-link', submenu_item: 'SSH keys')
+          click_element('nav-item-link', submenu_item: 'SSH Keys')
         end
 
         def click_account

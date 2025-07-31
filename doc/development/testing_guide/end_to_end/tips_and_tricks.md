@@ -235,7 +235,7 @@ The [Quality Toolbox](https://gitlab.com/gitlab-org/quality/toolbox) contains se
 
 The [`qa/tools` directory](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/tools/) contains Rake tasks that perform automated tasks on a schedule (such as [deleting subgroups](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/delete_subgroups.rb) after a test run), or that can be run as needed (such as [revoking personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/revoke_all_personal_access_tokens.rb)).
 
-#### Delete Test SSH keys
+#### Delete Test SSH Keys
 
 This script deletes SSH keys for a specific user. It can be executed via the `delete_test_ssh_keys` Rake task in the `qa` directory.
 

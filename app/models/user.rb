@@ -1888,8 +1888,10 @@ class User < ApplicationRecord
 
     namespace_attributes = { path: username, name: name }
 
-    # Do not explicitly assign if organization is `nil`
-    namespace_attributes[:organization] = organization if organization
+    if organization
+      namespace_attributes[:organization] = organization
+      namespace_attributes[:visibility_level] = organization.visibility_level
+    end
 
     build_namespace(namespace_attributes)
     namespace.build_namespace_settings

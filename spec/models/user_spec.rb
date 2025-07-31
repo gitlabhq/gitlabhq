@@ -6871,10 +6871,25 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
         expect(user.namespace.namespace_settings).to be_present
         expect(user.namespace.organization).to eq(organization)
+        expect(user.namespace.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
       end
 
       it 'returns the personal namespace' do
         expect(assign_personal_namespace).to eq(user.namespace)
+      end
+
+      context 'when the organization is private' do
+        let(:organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+        let(:user) { described_class.new attributes_for(:user, organization: organization) }
+
+        it 'builds a new private namespace using assigned organization' do
+          assign_personal_namespace
+
+          expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+          expect(user.namespace.namespace_settings).to be_present
+          expect(user.namespace.organization).to eq(organization)
+          expect(user.namespace.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        end
       end
     end
   end

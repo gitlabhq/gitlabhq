@@ -54,7 +54,7 @@ To delete SSH keys for enterprise users in your group:
 
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
-1. Select the **SSH keys** tab.
+1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.

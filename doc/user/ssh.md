@@ -296,7 +296,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.
@@ -346,7 +346,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
@@ -420,7 +420,7 @@ To view the SSH keys for your account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH keys**.
+1. On the left sidebar, select **SSH Keys**.
 
 Your existing SSH keys are listed at the bottom of the page. The information includes:
 
@@ -455,7 +455,7 @@ To revoke an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. Next to the SSH key you want to revoke, select **Revoke**.
 1. Select **Revoke**.
 
@@ -465,7 +465,7 @@ To delete an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).
 1. Select **Delete**.
 

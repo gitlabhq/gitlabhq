@@ -67,6 +67,7 @@ Prerequisites:
   - Recommended: t3.xlarge (4 vCPU, 16 GB RAM) for production use.
   - At least 100 GB storage space.
 - Docker and Docker Compose must be installed.
+- Your GitLab version must be 18.1 or later
 - Your GitLab instance must be connected to the Observability instance.
 
 ### Provision server and storage

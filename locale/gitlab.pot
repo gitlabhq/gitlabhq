@@ -5239,7 +5239,7 @@ msgstr ""
 msgid "AdminStatistics|Notes"
 msgstr ""
 
-msgid "AdminStatistics|SSH keys"
+msgid "AdminStatistics|SSH Keys"
 msgstr ""
 
 msgid "AdminStatistics|Snippets"
@@ -19608,6 +19608,9 @@ msgid "CredentialsInventory|Revoke"
 msgstr ""
 
 msgid "CredentialsInventory|Revoked"
+msgstr ""
+
+msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
 msgid "CredentialsInventory|SSH keys"
@@ -37864,6 +37867,9 @@ msgstr ""
 msgid "Maintenance mode"
 msgstr ""
 
+msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
+msgstr ""
+
 msgid "Make a merge request to propose changes to this project."
 msgstr ""
 
@@ -54694,6 +54700,12 @@ msgstr ""
 msgid "SSH Key"
 msgstr ""
 
+msgid "SSH Keys"
+msgstr ""
+
+msgid "SSH Keys Help"
+msgstr ""
+
 msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr ""
 
@@ -54716,9 +54728,6 @@ msgid "SSH key was added to your account"
 msgstr ""
 
 msgid "SSH keys"
-msgstr ""
-
-msgid "SSH keys Help"
 msgstr ""
 
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
@@ -64113,9 +64122,6 @@ msgid "There was an error summarizing your pending comments."
 msgstr ""
 
 msgid "There was an error syncing project %{name}"
-msgstr ""
-
-msgid "There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
 msgid "There was an error updating your display preferences."
