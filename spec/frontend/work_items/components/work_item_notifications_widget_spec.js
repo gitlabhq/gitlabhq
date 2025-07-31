@@ -11,8 +11,10 @@ import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getWorkItemNotificationsByIdQuery from '~/work_items/graphql/get_work_item_notifications_by_id.query.graphql';
 import {
   namespaceWorkItemTypesQueryResponse,
+  workItemNotificationsResponse,
   updateWorkItemNotificationsMutationResponse,
 } from '../mock_data';
 
@@ -33,6 +35,12 @@ describe('WorkItemActions component', () => {
   };
 
   const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const notificationOffQueryHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotificationsResponse(false));
+  const notificationOnQueryHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotificationsResponse(true));
   const toggleNotificationsOffHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemNotificationsMutationResponse(false));
@@ -45,22 +53,22 @@ describe('WorkItemActions component', () => {
 
   const createComponent = ({
     canUpdate = true,
-    subscribedToNotifications = false,
     notificationsMutationHandler,
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
+    notificationsQueryHandler = notificationOnQueryHandler,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNotificationsWidget, {
       isLoggedIn: isLoggedIn(),
       apolloProvider: createMockApollo([
         [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
+        [getWorkItemNotificationsByIdQuery, notificationsQueryHandler],
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
       ]),
       propsData: {
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         canUpdate,
-        subscribedToNotifications,
         workItemType,
         workItemReference,
       },
@@ -93,21 +101,22 @@ describe('WorkItemActions component', () => {
     });
 
     it.each`
-      scenario                   | subscribedToNotifications | notificationsMutationHandler     | subscribed | toastMessage
-      ${'notifications are off'} | ${false}                  | ${toggleNotificationsOnHandler}  | ${true}    | ${'Notifications turned on.'}
-      ${'notifications are on'}  | ${true}                   | ${toggleNotificationsOffHandler} | ${false}   | ${'Notifications turned off.'}
+      scenario        | notificationsQueryHandler      | notificationsMutationHandler     | subscribed | toastMessage
+      ${'turned off'} | ${notificationOnQueryHandler}  | ${toggleNotificationsOffHandler} | ${false}   | ${'Notifications turned off.'}
+      ${'turned on'}  | ${notificationOffQueryHandler} | ${toggleNotificationsOnHandler}  | ${true}    | ${'Notifications turned on.'}
     `(
-      'calls mutation and displays toast when notification button is clicked while $scenario',
+      'calls mutation and displays toast when notification toggle is $scenario',
       async ({
-        subscribedToNotifications,
         notificationsMutationHandler,
         subscribed,
         toastMessage,
+        notificationsQueryHandler,
       }) => {
         createComponent({
           notificationsMutationHandler,
-          subscribedToNotifications,
+          notificationsQueryHandler,
         });
+        await waitForPromises();
 
         findNotificationsButton().vm.$emit('click');
         await waitForPromises();
@@ -123,22 +132,26 @@ describe('WorkItemActions component', () => {
     );
 
     it.each`
-      scenario                   | subscribedToNotifications | icon
-      ${'notifications are off'} | ${false}                  | ${'notifications-off'}
-      ${'notifications are on'}  | ${true}                   | ${'notifications'}
-    `('uses the correct icon when $scenario', ({ subscribedToNotifications, icon }) => {
-      createComponent({ subscribedToNotifications });
+      scenario                   | icon                   | notificationsQueryHandler
+      ${'notifications are off'} | ${'notifications-off'} | ${notificationOffQueryHandler}
+      ${'notifications are on'}  | ${'notifications'}     | ${notificationOnQueryHandler}
+    `('uses the correct icon when $scenario', async ({ notificationsQueryHandler, icon }) => {
+      createComponent({ notificationsQueryHandler });
+      await waitForPromises();
+
       expect(findNotificationsButton().findComponent(GlIcon).props('name')).toBe(icon);
     });
 
     it.each`
-      scenario                   | subscribedToNotifications | dataSubscribed
-      ${'notifications are off'} | ${false}                  | ${'false'}
-      ${'notifications are on'}  | ${true}                   | ${'true'}
+      scenario                   | dataSubscribed | notificationsQueryHandler
+      ${'notifications are off'} | ${'false'}     | ${notificationOffQueryHandler}
+      ${'notifications are on'}  | ${'true'}      | ${notificationOnQueryHandler}
     `(
       'has the correct data-subscribed attribute when $scenario',
-      ({ subscribedToNotifications, dataSubscribed }) => {
-        createComponent({ subscribedToNotifications });
+      async ({ notificationsQueryHandler, dataSubscribed }) => {
+        createComponent({ notificationsQueryHandler });
+        await waitForPromises();
+
         expect(findNotificationsButton().attributes('data-subscribed')).toBe(dataSubscribed);
       },
     );
@@ -147,6 +160,7 @@ describe('WorkItemActions component', () => {
       createComponent({
         notificationsMutationHandler: toggleNotificationsFailureHandler,
       });
+      await waitForPromises();
 
       findNotificationsButton().vm.$emit('click');
       await waitForPromises();

@@ -117,7 +117,7 @@ gem 'openid_connect', '~> 2.3.0', feature_category: :system_access
 gem 'omniauth-salesforce', '~> 1.0.5', path: 'vendor/gems/omniauth-salesforce', feature_category: :system_access
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0', feature_category: :system_access
 gem 'rack-oauth2', '~> 2.2.1', feature_category: :system_access
-gem 'jwt', '~> 2.9.3', feature_category: :system_access
+gem 'jwt', '~> 2.10.0', feature_category: :system_access
 
 # Kerberos authentication. EE-only
 gem 'gssapi', '~> 1.3.1', group: :kerberos, feature_category: :system_access

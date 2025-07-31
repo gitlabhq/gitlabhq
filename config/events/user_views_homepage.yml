@@ -1,0 +1,16 @@
+---
+description: When a user visits the personal homepage. Trigger from server-side to ensure we get accurate counts due to potential client-side ad blocking.
+internal_events: true
+status: active
+action: user_views_homepage
+identifiers:
+- user
+product_group: personal_productivity
+product_categories:
+- navigation
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199045
+tiers:
+- free
+- premium
+- ultimate

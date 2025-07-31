@@ -40,7 +40,7 @@ module Ci
 
         def actual_value(param)
           # nil check is to support boolean values.
-          param.nil? ? default : coerced_value(param)
+          param.nil? ? coerced_value(default) : coerced_value(param)
         end
 
         def type

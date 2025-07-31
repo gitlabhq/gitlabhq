@@ -22,6 +22,7 @@ import WorkItemBulkEditDropdown from './work_item_bulk_edit_dropdown.vue';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditMilestone from './work_item_bulk_edit_milestone.vue';
 import WorkItemBulkEditParent from './work_item_bulk_edit_parent.vue';
+import WorkItemBulkMove from './work_item_bulk_move.vue';
 
 const WorkItemBulkEditIteration = () =>
   import('ee_component/work_items/components/list/work_item_bulk_edit_iteration.vue');
@@ -53,6 +54,7 @@ export default {
     WorkItemBulkEditIteration,
     WorkItemBulkEditMilestone,
     WorkItemBulkEditParent,
+    WorkItemBulkMove,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature'],
@@ -109,6 +111,20 @@ export default {
     },
   },
   computed: {
+    hasAttributeValuesSelected() {
+      return [
+        this.addLabelIds.length > 0,
+        this.removeLabelIds.length > 0,
+        this.assigneeId !== undefined,
+        this.confidentiality !== undefined,
+        this.healthStatus !== undefined,
+        this.state !== undefined,
+        this.subscription !== undefined,
+        this.iterationId !== undefined,
+        this.milestoneId !== undefined,
+        this.parentId !== undefined,
+      ].includes(true);
+    },
     legacyBulkEditEndpoint() {
       const domain = gon.relative_url_root || '';
       const basePath = this.isGroup ? `groups/${this.fullPath}` : this.fullPath;
@@ -143,6 +159,9 @@ export default {
     },
     canEditParent() {
       return this.availableWidgets.includes(WIDGET_TYPE_HIERARCHY);
+    },
+    shouldDisableMove() {
+      return !this.hasItemsSelected || this.hasAttributeValuesSelected;
     },
   },
   methods: {
@@ -238,6 +257,9 @@ export default {
 
       return axios.post(this.legacyBulkEditEndpoint, { update });
     },
+    handleMoveSuccess({ toastMessage }) {
+      this.$emit('success', { refetchCounts: true, toastMessage });
+    },
   },
 };
 </script>
@@ -328,5 +350,16 @@ export default {
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditParent"
     />
+    <template v-if="shouldUseGraphQLBulkEdit && !isEpicsList">
+      <hr />
+      <work-item-bulk-move
+        :checked-items="checkedItems"
+        :full-path="fullPath"
+        :disabled="shouldDisableMove"
+        @moveStart="$emit('start')"
+        @moveSuccess="handleMoveSuccess"
+        @moveFinish="$emit('finish')"
+      />
+    </template>
   </gl-form>
 </template>

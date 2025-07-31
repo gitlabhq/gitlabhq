@@ -55111,6 +55111,9 @@ msgstr ""
 msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose which roles can bypass this policy"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
 msgstr ""
 
@@ -55373,6 +55376,9 @@ msgid "ScanResultPolicy|Select licenses"
 msgstr ""
 
 msgid "ScanResultPolicy|Select list type"
+msgstr ""
+
+msgid "ScanResultPolicy|Select role exceptions"
 msgstr ""
 
 msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
@@ -67374,10 +67380,10 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-msgid "Usage Quotas"
+msgid "Usage breakdown"
 msgstr ""
 
-msgid "Usage breakdown"
+msgid "Usage quotas"
 msgstr ""
 
 msgid "Usage statistics"
@@ -67398,7 +67404,7 @@ msgstr ""
 msgid "UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
-msgid "UsageQuotas|Loading Usage Quotas tab content"
+msgid "UsageQuotas|Loading Usage quotas tab content"
 msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"
@@ -67515,7 +67521,7 @@ msgstr ""
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr ""
 
-msgid "UsageQuota|Loading Usage Quotas tabs"
+msgid "UsageQuota|Loading Usage quotas tabs"
 msgstr ""
 
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
@@ -67593,7 +67599,7 @@ msgstr ""
 msgid "UsageQuota|Something went wrong while fetching runner filters"
 msgstr ""
 
-msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
+msgid "UsageQuota|Something went wrong while loading Usage quotas Tabs."
 msgstr ""
 
 msgid "UsageQuota|Storage per project included in %{planName} subscription"
@@ -67656,9 +67662,6 @@ msgstr ""
 msgid "UsageQuota|Usage"
 msgstr ""
 
-msgid "UsageQuota|Usage Quotas"
-msgstr ""
-
 msgid "UsageQuota|Usage breakdown"
 msgstr ""
 
@@ -67681,6 +67684,9 @@ msgid "UsageQuota|Usage of resources across your projects"
 msgstr ""
 
 msgid "UsageQuota|Usage of shared resources across the projects in your instance"
+msgstr ""
+
+msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|User settings %{gt} Usage quotas"
@@ -71769,6 +71775,14 @@ msgstr ""
 msgid "WorkItem|Move"
 msgstr ""
 
+msgid "WorkItem|Move item"
+msgid_plural "WorkItem|Move %d items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "WorkItem|Moved %{movedWorkItemCount} of %{totalCount} items"
+msgstr ""
+
 msgid "WorkItem|Multi select"
 msgstr ""
 
@@ -71823,10 +71837,16 @@ msgstr ""
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr ""
 
+msgid "WorkItem|No destination selected"
+msgstr ""
+
 msgid "WorkItem|No health status"
 msgstr ""
 
 msgid "WorkItem|No items"
+msgstr ""
+
+msgid "WorkItem|No items selected"
 msgstr ""
 
 msgid "WorkItem|No iteration"
@@ -71959,6 +71979,9 @@ msgid "WorkItem|Select a project"
 msgstr ""
 
 msgid "WorkItem|Select a status"
+msgstr ""
+
+msgid "WorkItem|Select destination"
 msgstr ""
 
 msgid "WorkItem|Select parent"
@@ -72201,6 +72224,9 @@ msgstr ""
 msgid "WorkItem|Type changed."
 msgstr ""
 
+msgid "WorkItem|Unable to fetch destination projects."
+msgstr ""
+
 msgid "WorkItem|Unable to find selected template."
 msgstr ""
 
@@ -72265,6 +72291,9 @@ msgid "WorkItem|You don't have the necessary permission to view the ancestors."
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
+msgstr ""
+
+msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
 msgstr ""
 
 msgid "WorkItem|Zoom link"

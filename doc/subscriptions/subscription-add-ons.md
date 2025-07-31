@@ -318,7 +318,7 @@ After the seat has been removed, it becomes available and can be re-assigned to 
 
 ### Unable to use the UI to assign seats to your users
 
-On the **Usage Quotas** page, if you experience both of the following, you will be unable to use the UI to assign seats to your users:
+On the **Usage quotas** page, if you experience both of the following, you will be unable to use the UI to assign seats to your users:
 
 - The **Seats** tab does not load.
 - The following error message is displayed:

@@ -128,16 +128,12 @@ module Ci
 
       def status_of_previous_jobs(job)
         if job.scheduling_type_dag?
-          status_of_previous_jobs_dag(job)
+          # job uses DAG, get status of all dependent needs
+          @collection.status_of_jobs(job.aggregated_needs_names.to_a)
         else
           # job uses Stages, get status of prior stage
           @collection.status_of_jobs_prior_to_stage(job.stage_idx.to_i)
         end
-      end
-
-      def status_of_previous_jobs_dag(job)
-        # job uses DAG, get status of all dependent needs
-        @collection.status_of_jobs(job.aggregated_needs_names.to_a)
       end
 
       # Gets the jobs that changed from stopped to alive status since the initial status collection

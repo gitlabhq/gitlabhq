@@ -3,19 +3,42 @@
 module WorkItemsHelper
   include IssuesHelper
 
+  # overridden in EE
   def work_items_data(resource_parent, current_user)
-    group = resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
+    group = extract_group(resource_parent)
 
+    base_data(resource_parent, current_user, group).tap do |data|
+      data[:releases_path] = project_releases_path(resource_parent, format: :json) if resource_parent.is_a?(Project)
+    end
+  end
+
+  # overridden in EE
+  def add_work_item_show_breadcrumb(resource_parent, _iid)
+    path = resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent)
+
+    add_to_breadcrumbs(_('Issues'), path)
+  end
+
+  # overridden in EE
+  def instance_type_new_trial_path(_group)
+    self_managed_new_trial_url
+  end
+
+  private
+
+  def extract_group(resource_parent)
+    resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
+  end
+
+  def base_data(resource_parent, current_user, group)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
       can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
       full_path: resource_parent.full_path,
       group_path: group&.full_path,
-      issues_list_path:
-        resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent),
-      labels_manage_path:
-        resource_parent.is_a?(Group) ? group_labels_path(resource_parent) : project_labels_path(resource_parent),
+      issues_list_path: issues_path_for(resource_parent),
+      labels_manage_path: labels_path_for(resource_parent),
       register_path: new_user_registration_path(redirect_to_referer: 'yes'),
       sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
       new_trial_path: instance_type_new_trial_path(group),
@@ -35,15 +58,11 @@ module WorkItemsHelper
     }
   end
 
-  # overridden in EE
-  def add_work_item_show_breadcrumb(resource_parent, _iid)
-    path = resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent)
-
-    add_to_breadcrumbs(_('Issues'), path)
+  def issues_path_for(resource_parent)
+    resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent)
   end
 
-  # overridden in EE
-  def instance_type_new_trial_path(_group)
-    self_managed_new_trial_url
+  def labels_path_for(resource_parent)
+    resource_parent.is_a?(Group) ? group_labels_path(resource_parent) : project_labels_path(resource_parent)
   end
 end

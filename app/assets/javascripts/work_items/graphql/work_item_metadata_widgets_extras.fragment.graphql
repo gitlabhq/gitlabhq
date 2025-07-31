@@ -1,8 +1,4 @@
 fragment WorkItemMetadataWidgetsExtras on WorkItemWidget {
-  ... on WorkItemWidgetNotifications {
-    subscribed
-  }
-
   ... on WorkItemWidgetCurrentUserTodos {
     currentUserTodos(state: pending) {
       nodes {

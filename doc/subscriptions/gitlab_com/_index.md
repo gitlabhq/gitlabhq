@@ -36,7 +36,7 @@ through the [GitLab for Open Source program](https://about.gitlab.com/solutions/
 To search seat usage:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. On the **Seats tab**, enter a string in the search field. A minimum of 3 characters are required.
 
 The search returns users whose first name, last name, or username contain the search string.
@@ -82,7 +82,7 @@ You can [disable automatic subscription renewal](../manage_subscription.md#turn-
 ### For your personal namespace
 
 1. Sign in to GitLab.com.
-1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
+1. From either your personal homepage or the group's page, go to **Settings > Usage quotas**.
 1. Select the **Storage** tab.
 1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
@@ -108,7 +108,7 @@ To purchase additional storage for your group on GitLab.com:
 
 1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Storage** tab.
 1. Select **Buy storage**. You are taken to the Customers Portal.
 1. In the **Subscription details** section, enter the desired quantity of storage packs.

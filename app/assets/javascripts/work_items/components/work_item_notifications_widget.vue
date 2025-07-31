@@ -7,7 +7,10 @@ import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
+import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
+
+import { WIDGET_TYPE_NOTIFICATIONS } from '../constants';
 
 const ICON_ON = 'notifications';
 const ICON_OFF = 'notifications-off';
@@ -32,20 +35,44 @@ export default {
       required: false,
       default: null,
     },
-    subscribedToNotifications: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  data() {
+    return {
+      workItemNotificationsSubscribed: false,
+    };
+  },
+  apollo: {
+    workItemNotificationsSubscribed: {
+      query: () => {
+        return getWorkItemNotificationsByIdQuery;
+      },
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      skip() {
+        return !this.workItemId;
+      },
+      update(data) {
+        return Boolean(
+          data?.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTIFICATIONS)
+            ?.subscribed,
+        );
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
     },
   },
   computed: {
     notificationTooltip() {
-      return this.subscribedToNotifications
+      return this.workItemNotificationsSubscribed
         ? this.$options.i18n.labelOn
         : this.$options.i18n.labelOff;
     },
     notificationIcon() {
-      return this.subscribedToNotifications ? ICON_ON : ICON_OFF;
+      return this.workItemNotificationsSubscribed ? ICON_ON : ICON_OFF;
     },
     isLoggedIn() {
       return isLoggedIn();
@@ -60,6 +87,22 @@ export default {
             input: {
               id: this.workItemId,
               subscribed,
+            },
+          },
+          optimisticResponse: {
+            workItemSubscribe: {
+              errors: [],
+              workItem: {
+                __typename: 'WorkItem',
+                id: this.workItemId,
+                widgets: [
+                  {
+                    type: WIDGET_TYPE_NOTIFICATIONS,
+                    subscribed,
+                    __typename: 'WorkItemWidgetNotifications',
+                  },
+                ],
+              },
             },
           },
         })
@@ -89,15 +132,15 @@ export default {
     v-gl-tooltip.hover
     category="secondary"
     data-testid="subscribe-button"
-    :data-subscribed="subscribedToNotifications ? 'true' : 'false'"
+    :data-subscribed="workItemNotificationsSubscribed ? 'true' : 'false'"
     :title="notificationTooltip"
     class="btn-icon"
-    @click="toggleNotifications(!subscribedToNotifications)"
+    @click="toggleNotifications(!workItemNotificationsSubscribed)"
   >
     <gl-icon
       :name="notificationIcon"
       :size="16"
-      :class="{ '!gl-text-status-info': subscribedToNotifications }"
+      :class="{ '!gl-text-status-info': workItemNotificationsSubscribed }"
     />
   </gl-button>
 </template>

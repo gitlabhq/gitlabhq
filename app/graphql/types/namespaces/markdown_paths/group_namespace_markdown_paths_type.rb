@@ -17,25 +17,21 @@ module Types
           url_helpers.group_preview_markdown_path(group, target_type: 'WorkItem', target_id: iid)
         end
 
-        def autocomplete_sources_path(autocomplete_type:, iid: nil, work_item_type_id: nil)
+        def autocomplete_sources_path(iid: nil, work_item_type_id: nil)
           params = build_autocomplete_params(iid: iid, work_item_type_id: work_item_type_id)
 
-          case autocomplete_type
-          when 'members'
-            url_helpers.members_group_autocomplete_sources_path(group, params)
-          when 'issues'
-            url_helpers.issues_group_autocomplete_sources_path(group, params)
-          when 'merge_requests'
-            url_helpers.merge_requests_group_autocomplete_sources_path(group, params)
-          when 'labels'
-            url_helpers.labels_group_autocomplete_sources_path(group, params)
-          when 'milestones'
-            url_helpers.milestones_group_autocomplete_sources_path(group, params)
-          when 'commands'
-            url_helpers.commands_group_autocomplete_sources_path(group, params)
-          end
+          {
+            members: url_helpers.members_group_autocomplete_sources_path(group, params),
+            issues: url_helpers.issues_group_autocomplete_sources_path(group, params),
+            merge_requests: url_helpers.merge_requests_group_autocomplete_sources_path(group, params),
+            labels: url_helpers.labels_group_autocomplete_sources_path(group, params),
+            milestones: url_helpers.milestones_group_autocomplete_sources_path(group, params),
+            commands: url_helpers.commands_group_autocomplete_sources_path(group, params)
+          }
         end
       end
     end
   end
 end
+
+::Types::Namespaces::MarkdownPaths::GroupNamespaceMarkdownPathsType.prepend_mod

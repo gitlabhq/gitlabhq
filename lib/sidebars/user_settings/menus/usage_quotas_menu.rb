@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          s_('UsageQuota|Usage Quotas')
+          s_('UsageQuota|Usage quotas')
         end
 
         override :sprite_icon

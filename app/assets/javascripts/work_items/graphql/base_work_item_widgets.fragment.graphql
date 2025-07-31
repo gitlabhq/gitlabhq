@@ -114,9 +114,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetNotes {
     discussionLocked
   }
-  ... on WorkItemWidgetNotifications {
-    subscribed
-  }
   ... on WorkItemWidgetStartAndDueDate {
     dueDate
     startDate

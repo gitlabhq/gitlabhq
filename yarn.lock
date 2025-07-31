@@ -1457,10 +1457,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.143.0.tgz#8cd8d8a1ece3c397ce612d164871b110b3f2be9f"
   integrity sha512-7bEUgcGGYfQ4caulLPJeTiDBkzqLy1TCMZqqhN+P1Tw5Fz/Rl8YngJN3mqDbpPLUJVlR+bIoX/wRkmI9roIHLw==
 
-"@gitlab/ui@115.9.0":
-  version "115.9.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.9.0.tgz#777903e1d6da7a5ca2991db9f7663ab97dc56dee"
-  integrity sha512-lqEkVoR6tOPkEtCTKJ0tqxJhiuJCWrpqUwKshxGHE7XkcidLvrxf/cIDwwsg7Uaawc6kPw98ajIv3BxC6bIJNQ==
+"@gitlab/ui@115.9.1":
+  version "115.9.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-115.9.1.tgz#908d8b47baae6ddb82bdb726e650dd6b53defa57"
+  integrity sha512-WWGrTF3pC7714BXrP7kL1jdgmoDV2tGNiSnujf5EBOTXtGuG2oWqb0JLc2j4VYZzNWAVsYQonW4HSR8zjNzSqA==
   dependencies:
     "@floating-ui/dom" "1.7.2"
     echarts "^5.6.0"
@@ -8720,6 +8720,11 @@ highlightjs-glimmer@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/highlightjs-glimmer/-/highlightjs-glimmer-2.2.2.tgz#b0219da39312e557c6e218d43434f7667f8b243c"
   integrity sha512-4Mx/BSXeXidvurvGDxA80npLlDPuznbFMKeVzgVNFhmMOWCr7JUw55dMDGarb0OS4ma6dZL+TdpxqD2zhh5vZQ==
+
+highlightjs-veryl@^0.16.3:
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/highlightjs-veryl/-/highlightjs-veryl-0.16.3.tgz#3e4e372bb6222c057824160bcc94f1bcac79e045"
+  integrity sha512-ik9G+d/gtN/tZECx6O1MOM7x733ma+0n9vLIuRluWNVBJ9/RBk8bZtmF32AoLyA2I9tYgmIXqGCVWfr0JItgjw==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"

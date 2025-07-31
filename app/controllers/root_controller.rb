@@ -10,6 +10,7 @@
 # `DashboardController#show`, which is the default.
 class RootController < Dashboard::ProjectsController
   include HomepageData
+  include ::Gitlab::InternalEventsTracking
 
   skip_before_action :authenticate_user!, only: [:index]
 
@@ -24,7 +25,10 @@ class RootController < Dashboard::ProjectsController
 
   def index
     @homepage_app_data = homepage_app_data(current_user)
-    render('root/index') && return if Feature.enabled?(:personal_homepage, current_user)
+    if Feature.enabled?(:personal_homepage, current_user)
+      track_internal_event('user_views_homepage', user: current_user)
+      render('root/index') && return
+    end
 
     super
   end

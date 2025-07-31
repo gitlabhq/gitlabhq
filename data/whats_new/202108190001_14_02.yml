@@ -11,7 +11,7 @@
   release: 14.2
 - name: View historical CI pipeline minute usage
   description: |
-     Before GitLab 14.2, the CI pipeline minutes usage on the [Usage Quotas](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#shared-runners-pipeline-minutes-quota) page only showed the current month's usage. This data would reset every month and there was no way to view activity from the past months for analyzing historical usage.
+     Before GitLab 14.2, the CI pipeline minutes usage on the [Usage quotas](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#shared-runners-pipeline-minutes-quota) page only showed the current month's usage. This data would reset every month and there was no way to view activity from the past months for analyzing historical usage.
 
      Now there are two charts that show historical CI pipeline minutes usage by month or by project, so you can make informed decisions about your pipeline usage.
   stage: Verify

@@ -190,6 +190,7 @@ export default {
     epicDatePopoverEl() {
       return this.$refs?.epicDatePopover?.$el;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- closeForm() is part of the component's public API.
     closeForm() {
       this.$refs.editable.collapse();
       this.$el.dispatchEvent(hideDropdownEvent);

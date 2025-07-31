@@ -1,0 +1,12 @@
+query getWorkItemNotificationsById($id: WorkItemID!) {
+  workItem(id: $id) {
+    id
+    iid
+    widgets(onlyTypes: [NOTIFICATIONS]) {
+      ... on WorkItemWidgetNotifications {
+        type
+        subscribed
+      }
+    }
+  }
+}

@@ -160,7 +160,7 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
       end
     end
 
-    describe 'Usage Quotas' do
+    describe 'Usage quotas' do
       let(:item_id) { :usage_quotas }
 
       it { is_expected.not_to be_nil }

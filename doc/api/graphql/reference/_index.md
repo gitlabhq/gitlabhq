@@ -31582,15 +31582,14 @@ Limited group data accessible to users without full group read access (e.g. non-
 
 ##### `GroupNamespaceMarkdownPaths.autocompleteSourcesPath`
 
-Path for autocomplete sources for a given namespace.
+Supported paths for autocomplete sources for a given namespace.
 
-Returns [`String`](#string).
+Returns [`JSON`](#json).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupnamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
 | <a id="groupnamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
 | <a id="groupnamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
 
@@ -40061,15 +40060,14 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 ##### `ProjectNamespaceMarkdownPaths.autocompleteSourcesPath`
 
-Path for autocomplete sources for a given namespace.
+Supported paths for autocomplete sources for a given namespace.
 
-Returns [`String`](#string).
+Returns [`JSON`](#json).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectnamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
 | <a id="projectnamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
 | <a id="projectnamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
 
@@ -42984,15 +42982,14 @@ fields relate to interactions between the two entities.
 
 ##### `UserNamespaceMarkdownPaths.autocompleteSourcesPath`
 
-Path for autocomplete sources for a given namespace.
+Supported paths for autocomplete sources for a given namespace.
 
-Returns [`String`](#string).
+Returns [`JSON`](#json).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="usernamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
 | <a id="usernamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
 | <a id="usernamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
 
@@ -45569,22 +45566,6 @@ Auto stop setting.
 | ----- | ----------- |
 | <a id="autostopsettingalways"></a>`ALWAYS` | Always. |
 | <a id="autostopsettingwith_action"></a>`WITH_ACTION` | With Action. |
-
-### `AutocompleteType`
-
-Type of autocomplete source.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="autocompletetypecommands"></a>`COMMANDS` | Commands autocomplete source. |
-| <a id="autocompletetypecontacts"></a>`CONTACTS` | Contacts autocomplete source (projects only). |
-| <a id="autocompletetypeissues"></a>`ISSUES` | Issues autocomplete source. |
-| <a id="autocompletetypelabels"></a>`LABELS` | Labels autocomplete source. |
-| <a id="autocompletetypemembers"></a>`MEMBERS` | Members autocomplete source. |
-| <a id="autocompletetypemerge_requests"></a>`MERGE_REQUESTS` | Merge requests autocomplete source. |
-| <a id="autocompletetypemilestones"></a>`MILESTONES` | Milestones autocomplete source. |
-| <a id="autocompletetypesnippets"></a>`SNIPPETS` | Snippets autocomplete source (projects only). |
-| <a id="autocompletetypewikis"></a>`WIKIS` | Wikis autocomplete source (projects only). |
 
 ### `AvailabilityEnum`
 
@@ -51381,15 +51362,14 @@ Implementations:
 
 ###### `MarkdownPaths.autocompleteSourcesPath`
 
-Path for autocomplete sources for a given namespace.
+Supported paths for autocomplete sources for a given namespace.
 
-Returns [`String`](#string).
+Returns [`JSON`](#json).
 
 ####### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="markdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
 | <a id="markdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
 | <a id="markdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
 
@@ -52963,6 +52943,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedworkitemfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Username of a user who didn't author the work item. |
 | <a id="negatedworkitemfilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`[HealthStatus!]`](#healthstatus) | Health status not applied to the work items. Includes work items where health status is not set. |
 | <a id="negatedworkitemfilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | List of iteration Global IDs not applied to the work items. |
+| <a id="negatedworkitemfilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by negated iteration ID wildcard. |
 | <a id="negatedworkitemfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Labels not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |

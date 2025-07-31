@@ -13,6 +13,7 @@ import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/
 import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_milestone.vue';
 import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_parent.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
+import WorkItemBulkMove from '~/work_items/components/work_item_bulk_edit/work_item_bulk_move.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import getAvailableBulkEditWidgets from '~/work_items/graphql/list/get_available_bulk_edit_widgets.query.graphql';
 import {
@@ -72,6 +73,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     props = {},
     mutationHandler = workItemBulkUpdateHandler,
     availableWidgetsHandler = defaultAvailableWidgetsHandler,
+    items = checkedItems,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemBulkEditSidebar, {
       apolloProvider: createMockApollo([
@@ -84,7 +86,7 @@ describe('WorkItemBulkEditSidebar component', () => {
         ...provide,
       },
       propsData: {
-        checkedItems,
+        checkedItems: items,
         fullPath: 'group/project',
         isGroup: false,
         ...props,
@@ -103,6 +105,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     wrapper.findComponentByTestId('bulk-edit-confidentiality');
   const findMilestoneComponent = () => wrapper.findComponent(WorkItemBulkEditMilestone);
   const findParentComponent = () => wrapper.findComponent(WorkItemBulkEditParent);
+  const findBulkMoveComponent = () => wrapper.findComponent(WorkItemBulkMove);
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -748,6 +751,78 @@ describe('WorkItemBulkEditSidebar component', () => {
       await waitForPromises();
 
       expect(findParentComponent().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('bulk move', () => {
+    const mountForBulkMove = (items = checkedItems) => {
+      createComponent({
+        items,
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+    };
+
+    it('renders bulk move when available', () => {
+      mountForBulkMove();
+
+      expect(findBulkMoveComponent().exists()).toBe(true);
+    });
+
+    it('passes checked items and fullPath as a prop', () => {
+      mountForBulkMove();
+
+      expect(findBulkMoveComponent().props('checkedItems')).toBe(checkedItems);
+      expect(findBulkMoveComponent().props('fullPath')).toBe('group/project');
+    });
+
+    it('disables bulk move when there are no checked items', () => {
+      mountForBulkMove([]);
+
+      expect(findBulkMoveComponent().props('disabled')).toBe(true);
+    });
+
+    it('disables bulk move when there are other bulk edit properties set', async () => {
+      mountForBulkMove();
+
+      expect(findBulkMoveComponent().props('disabled')).toBe(false);
+
+      findConfidentialityComponent().vm.$emit('input', 'true');
+
+      await nextTick();
+
+      expect(findBulkMoveComponent().props('disabled')).toBe(true);
+    });
+
+    it('emits "start" when bulk move emits "moveStart"', () => {
+      mountForBulkMove();
+
+      findBulkMoveComponent().vm.$emit('moveStart');
+
+      expect(wrapper.emitted('start')).toHaveLength(1);
+    });
+
+    it('emits "success" when bulk move emits "moveSuccess"', () => {
+      mountForBulkMove();
+
+      findBulkMoveComponent().vm.$emit('moveSuccess', { toastMessage: 'hello!' });
+
+      const events = wrapper.emitted('success');
+
+      expect(events).toHaveLength(1);
+      expect(events[0][0]).toEqual({ refetchCounts: true, toastMessage: 'hello!' });
+    });
+
+    it('emits "finish" when bulk move emits "moveFinish"', () => {
+      mountForBulkMove();
+
+      findBulkMoveComponent().vm.$emit('moveFinish');
+
+      expect(wrapper.emitted('finish')).toHaveLength(1);
     });
   });
 });

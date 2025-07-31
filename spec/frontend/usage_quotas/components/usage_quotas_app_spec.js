@@ -26,7 +26,7 @@ describe('UsageQuotasApp', () => {
 
     it('shows error alert', () => {
       expect(findGlAlert().text()).toContain(
-        'Something went wrong while loading Usage Quotas Tabs',
+        'Something went wrong while loading Usage quotas Tabs',
       );
     });
   });

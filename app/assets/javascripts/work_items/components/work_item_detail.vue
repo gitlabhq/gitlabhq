@@ -29,7 +29,6 @@ import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
@@ -211,7 +210,7 @@ export default {
       showSidebar: true,
       truncationEnabled: true,
       lastRealtimeUpdatedAt: new Date(),
-      isRefetching: false,
+      refetchError: null,
     };
   },
   apollo: {
@@ -243,8 +242,10 @@ export default {
         return data.workspace.workItem ?? {};
       },
       error() {
-        if (this.isRefetching) {
-          this.isRefetching = false;
+        if (this.workItem?.id === this.workItemId || this.workItem?.iid === this.workItemIid) {
+          this.refetchError = s__(
+            'WorkItem|Your data might be out of date. Refresh to see the latest information.',
+          );
           return;
         }
         this.setEmptyState();
@@ -258,6 +259,11 @@ export default {
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
+        if (!res.error) {
+          this.error = null;
+          this.refetchError = null;
+        }
+
         if (!(this.isModal || this.isDrawer) && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
@@ -382,9 +388,6 @@ export default {
     },
     canReorderDesign() {
       return this.hasDesignWidget && this.workspacePermissions.moveDesign;
-    },
-    workItemNotificationsSubscribed() {
-      return Boolean(this.findWidget(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
     workItemCurrentUserTodos() {
       return this.findWidget(WIDGET_TYPE_CURRENT_USER_TODOS);
@@ -531,7 +534,6 @@ export default {
         fullPath: this.workItemFullPath,
         workItemId: this.workItem.id,
         hideSubscribe: this.newTodoAndNotificationsEnabled,
-        subscribedToNotifications: this.workItemNotificationsSubscribed,
         workItemType: this.workItemType,
         workItemIid: this.iid,
         projectId: this.workItemProjectId,
@@ -628,7 +630,7 @@ export default {
       this.editMode = true;
     },
     findWidget(type) {
-      return this.widgets?.find((widget) => widget.type === type);
+      return this.workItem?.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -894,7 +896,6 @@ export default {
       const now = new Date();
       const staleThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
       if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
-        this.isRefetching = true;
         this.$apollo.queries.workItem.refetch();
         this.lastRealtimeUpdatedAt = now;
       }
@@ -927,7 +928,6 @@ export default {
         :is-modal="isModal"
         :work-item="workItem"
         :is-sticky-header-showing="isStickyHeaderShowing"
-        :work-item-notifications-subscribed="workItemNotificationsSubscribed"
         @hideStickyHeader="hideStickyHeader"
         @showStickyHeader="showStickyHeader"
         @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -974,6 +974,25 @@ export default {
         <section v-if="updateError" class="flash-container flash-container-page sticky">
           <gl-alert class="gl-mb-3" variant="danger" @dismiss="updateError = undefined">
             {{ updateError }}
+          </gl-alert>
+        </section>
+        <section
+          v-if="refetchError"
+          :class="isDrawer ? 'gl-sticky gl-top-0' : 'flash-container flash-container-page sticky'"
+          :style="{ zIndex: 100 }"
+          data-testid="work-item-refetch-alert"
+        >
+          <gl-alert class="gl-mb-3" variant="warning" @dismiss="refetchError = null">
+            <span>{{ refetchError }}</span>
+            <gl-button
+              class="gl-ml-2"
+              category="primary"
+              variant="confirm"
+              size="small"
+              @click="$apollo.queries.workItem.refetch()"
+            >
+              {{ __('Refresh') }}
+            </gl-button>
           </gl-alert>
         </section>
         <section :class="workItemBodyClass">
@@ -1038,7 +1057,6 @@ export default {
                 <work-item-notifications-widget
                   v-if="newTodoAndNotificationsEnabled"
                   :work-item-id="workItem.id"
-                  :subscribed-to-notifications="workItemNotificationsSubscribed"
                   @error="updateError = $event"
                 />
                 <work-item-actions

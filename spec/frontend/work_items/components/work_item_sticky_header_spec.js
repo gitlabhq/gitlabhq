@@ -40,7 +40,6 @@ describe('WorkItemStickyHeader', () => {
           promotedToEpicUrl,
         }).data.workItem,
         isStickyHeaderShowing: true,
-        workItemNotificationsSubscribed: true,
         updateInProgress: false,
         showWorkItemCurrentUserTodos: true,
         currentUserTodos: [],

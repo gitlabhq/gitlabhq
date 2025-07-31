@@ -108,7 +108,7 @@ RSpec.shared_context 'project navbar structure' do
           _('CI/CD'),
           _('Packages and registries'),
           _('Monitor'),
-          s_('UsageQuota|Usage Quotas')
+          s_('UsageQuota|Usage quotas')
         ]
       }
     ].compact
@@ -128,7 +128,7 @@ RSpec.shared_context 'project navbar structure' do
       _('Packages and registries'),
       _('Monitor'),
       _('Analytics'),
-      s_('UsageQuota|Usage Quotas')
+      s_('UsageQuota|Usage quotas')
     ]
     structure
   end
@@ -154,7 +154,7 @@ RSpec.shared_context 'group navbar structure' do
         _('CI/CD'),
         _('Applications'),
         _('Packages and registries'),
-        s_('UsageQuota|Usage Quotas'),
+        s_('UsageQuota|Usage quotas'),
         _('Domain Verification')
       ]
     }

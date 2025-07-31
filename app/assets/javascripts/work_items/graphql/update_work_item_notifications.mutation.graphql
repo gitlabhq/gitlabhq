@@ -3,7 +3,7 @@ mutation workItemSubscribe($input: WorkItemSubscribeInput!) {
     errors
     workItem {
       id
-      widgets {
+      widgets(onlyTypes: [NOTIFICATIONS]) {
         ... on WorkItemWidgetNotifications {
           type
           subscribed

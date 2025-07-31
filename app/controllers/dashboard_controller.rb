@@ -4,6 +4,7 @@ class DashboardController < Dashboard::ApplicationController
   include IssuableCollectionsAction
   include FiltersEvents
   include HomepageData
+  include ::Gitlab::InternalEventsTracking
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
@@ -31,6 +32,7 @@ class DashboardController < Dashboard::ApplicationController
 
   def home
     if Feature.enabled?(:personal_homepage, current_user)
+      track_internal_event('user_views_homepage', user: current_user)
       @homepage_app_data = homepage_app_data(current_user)
       render('root/index')
     else

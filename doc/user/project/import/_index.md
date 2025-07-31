@@ -343,7 +343,7 @@ To view your current placeholder user usage and limits:
 
 1. On the left sidebar, select **Search or go to** and
    find your group. This group must be at the top level.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Import** tab.
 
 You cannot determine the number of placeholder users you need in advance.

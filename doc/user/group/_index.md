@@ -374,7 +374,7 @@ For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/i
 
 {{< /alert >}}
 
-To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/manage_users_and_seats.md#view-seat-usage).
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage quotas** page](../../subscriptions/manage_users_and_seats.md#view-seat-usage).
 
 ## Filter and sort members in a group
 

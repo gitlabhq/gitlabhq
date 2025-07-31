@@ -200,6 +200,10 @@ RSpec.describe RootController, feature_category: :shared do
             expect(response).to render_template 'dashboard/projects/index'
           end
 
+          it 'does not track user_views_homepage event' do
+            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
+          end
+
           context 'when the `merge_request_dashboard` feature flag is enabled' do
             before do
               stub_feature_flags(merge_request_dashboard: true)
@@ -249,6 +253,10 @@ RSpec.describe RootController, feature_category: :shared do
 
             expect(response).to render_template 'root/index'
           end
+
+          it 'tracks user_views_homepage event' do
+            expect { get :index }.to trigger_internal_events('user_views_homepage').with(user: user)
+          end
         end
       end
 
@@ -262,6 +270,10 @@ RSpec.describe RootController, feature_category: :shared do
             get :index
 
             expect(response).to render_template 'dashboard/projects/index'
+          end
+
+          it 'does not track user_views_homepage event' do
+            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
           end
         end
 

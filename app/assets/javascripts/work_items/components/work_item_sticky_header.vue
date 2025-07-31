@@ -34,10 +34,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    workItemNotificationsSubscribed: {
-      type: Boolean,
-      required: true,
-    },
     showWorkItemCurrentUserTodos: {
       type: Boolean,
       required: false,
@@ -127,7 +123,6 @@ export default {
           <work-item-notifications-widget
             v-if="newTodoAndNotificationsEnabled"
             :work-item-id="workItem.id"
-            :subscribed-to-notifications="workItemNotificationsSubscribed"
             @error="$emit('error')"
           />
           <slot name="actions"></slot>

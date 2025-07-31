@@ -41,7 +41,7 @@ export default {
 <template>
   <section>
     <gl-alert v-if="!tabs.length" variant="danger" :dismissible="false">
-      {{ s__('UsageQuota|Something went wrong while loading Usage Quotas Tabs.') }}
+      {{ s__('UsageQuota|Something went wrong while loading Usage quotas Tabs.') }}
     </gl-alert>
     <gl-tabs v-else content-class="gl-leading-[unset]">
       <gl-tab

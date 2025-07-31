@@ -185,4 +185,28 @@ describe('ActivityWidget', () => {
       reloadSpy.mockRestore();
     });
   });
+
+  describe('session saved filters', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    afterEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('switches between different filter options and persists them', async () => {
+      createWrapper();
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe(null);
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe('starred');
+
+      findActivityFeedSelector().vm.$emit('select', 'followed');
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe('followed');
+    });
+  });
 });

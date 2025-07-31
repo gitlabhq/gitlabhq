@@ -21,6 +21,10 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
           get :home
           expect(response).to be_not_found
         end
+
+        it 'does not track user_views_homepage event' do
+          expect { get :home }.not_to trigger_internal_events('user_views_homepage')
+        end
       end
 
       context 'when `personal_homepage` feature is enabled' do
@@ -31,6 +35,10 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
         it 'renders the homepage' do
           get :home
           expect(response).to be_successful.and render_template('root/index')
+        end
+
+        it 'tracks user_views_homepage event' do
+          expect { get :home }.to trigger_internal_events('user_views_homepage').with(user: user)
         end
       end
     end

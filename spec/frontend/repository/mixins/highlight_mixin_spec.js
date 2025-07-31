@@ -212,4 +212,16 @@ describe('HighlightMixin', () => {
       });
     });
   });
+
+  describe('Veryl language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to veryl for .veryl files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.veryl' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'veryl',
+      });
+    });
+  });
 });

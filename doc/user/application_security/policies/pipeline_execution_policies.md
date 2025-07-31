@@ -68,12 +68,51 @@ Note the following:
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
-- Regardless of the `needs` keyword, jobs in a pipeline do not begin until the `.pipeline-policy-pre` stage completes. To run non-blocking jobs at the beginning of the pipeline, add a custom stage that runs before the `.pre` stage. For example: `stages: [custom-non-blocking-stage, .pre]`.
 - Choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names, which can lead to unwanted results if a job name exists multiple times in the same pipeline. For example, the `needs` keyword makes one job dependent on another. If there are multiple jobs with the name `example`, a job that `needs` the `example` job name depends on only one of the `example` job instances at random.
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 - The order of the policies matters for the applied suffix.
 - If any policy applied to a given project has `suffix: never`, the pipeline fails if another job with the same name is already present in the pipeline.
 - Pipeline execution policies are enforced on all branches and pipeline sources. You can use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
+
+### `.pipeline-policy-pre` stage
+
+Jobs in the `.pipeline-policy-pre` stage always execute. This stage is designed for security and compliance use cases.
+Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
+
+If you don't require this behavior for your workflow, you can use the `.pre` stage or a custom stage instead.
+
+#### Ensure that `.pipeline-policy-pre` succeeds
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
+This feature is experimental and might change in future releases. Test it thoroughly in
+non-production environments only, as it might be unstable in production.
+
+{{< /alert >}}
+
+To ensure that `.pipeline-policy-pre` completes and succeeds, enable the `ensure_pipeline_policy_pre_succeeds`
+experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML
+configuration file is stored in your security policy project:
+
+```yaml
+experiments:
+  ensure_pipeline_policy_pre_succeeds:
+    enabled: true
+```
+
+If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped, all jobs in later stages are skipped, including:
+
+- Jobs with `needs: []`
+- Jobs with `when: always`
+
+When multiple pipeline execution policies apply, the experiment takes effect if enabled in any of them,
+ensuring that `.pipeline-policy-pre` must succeed.
 
 ### Job naming best practice
 

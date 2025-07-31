@@ -17,7 +17,7 @@ indefinitely. This page covers several options for clearing unused items from th
 
 ## Check dependency proxy storage use
 
-The [**Usage Quotas**](../../storage_usage_quotas.md) page displays storage usage for the dependency proxy for container images.
+The [**Usage quotas**](../../storage_usage_quotas.md) page displays storage usage for the dependency proxy for container images.
 
 ## Use the API to clear the cache
 

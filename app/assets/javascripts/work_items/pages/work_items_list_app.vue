@@ -829,6 +829,9 @@ export default {
     async handleBulkEditSuccess(event) {
       this.showBulkEditSidebar = false;
       this.refetchItems(event);
+      if (event?.toastMessage) {
+        this.$toast.show(event.toastMessage);
+      }
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -1175,16 +1178,18 @@ export default {
         </template>
 
         <template #sidebar-items="{ checkedIssuables }">
-          <work-item-bulk-edit-sidebar
-            v-if="showBulkEditSidebar"
-            :checked-items="checkedIssuables"
-            :full-path="rootPageFullPath"
-            :is-epics-list="isEpicsList"
-            :is-group="isGroup"
-            @finish="bulkEditInProgress = false"
-            @start="bulkEditInProgress = true"
-            @success="handleBulkEditSuccess"
-          />
+          <div class="gl-h-[calc(100%-57px)] gl-overflow-y-auto">
+            <work-item-bulk-edit-sidebar
+              v-if="showBulkEditSidebar"
+              :checked-items="checkedIssuables"
+              :full-path="rootPageFullPath"
+              :is-epics-list="isEpicsList"
+              :is-group="isGroup"
+              @finish="bulkEditInProgress = false"
+              @start="bulkEditInProgress = true"
+              @success="handleBulkEditSuccess"
+            />
+          </div>
         </template>
 
         <template #health-status="{ issuable = {} }">

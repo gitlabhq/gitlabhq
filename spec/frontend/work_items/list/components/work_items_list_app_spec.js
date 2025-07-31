@@ -78,6 +78,8 @@ jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 
+const showToast = jest.fn();
+
 const skipReason = new SkipReason({
   name: 'WorkItemsListApp component',
   reason: 'Caught error after test environment was torn down',
@@ -176,6 +178,11 @@ describeSkipVue3(skipReason, () => {
       },
       stubs: {
         WorkItemBulkEditSidebar: true,
+      },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
       },
     });
   };
@@ -1361,6 +1368,21 @@ describeSkipVue3(skipReason, () => {
       await nextTick();
 
       expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+    });
+
+    it('creates a toast when the success event includes a toast message', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findBulkEditStartButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+
+      findBulkEditSidebar().vm.$emit('success', { toastMessage: 'hello!' });
+      await nextTick();
+
+      expect(showToast).toHaveBeenCalledWith('hello!');
     });
   });
 

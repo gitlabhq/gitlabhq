@@ -6088,12 +6088,29 @@ export const updateWorkItemMutationResponseFactory = (options) => {
   };
 };
 
+export const workItemNotificationsResponse = (subscribed) => ({
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetNotifications',
+          type: 'NOTIFICATIONS',
+          subscribed,
+        },
+      ],
+    },
+  },
+});
+
 export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
   data: {
     workItemSubscribe: {
       workItem: {
         id: 'gid://gitlab/WorkItem/1',
-
+        iid: 1,
         widgets: [
           {
             __typename: 'WorkItemWidgetNotifications',

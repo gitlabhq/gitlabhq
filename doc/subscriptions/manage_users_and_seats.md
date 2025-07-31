@@ -341,7 +341,7 @@ This setting restricts groups from adding new billable users when there are no s
 To view a list of seats being used:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Seats** tab.
 
 For each user, a list shows groups and projects where the user is a direct member.
@@ -360,7 +360,7 @@ To view your subscription information and a summary of seat counts:
 1. Select **Settings > Billing**.
 
 - The usage statistics are updated once per day, which may cause a difference between the information
-  in the **Usage Quotas** page and the **Billing page**.
+  in the **Usage quotas** page and the **Billing page**.
 - The **Last login** field is updated when a user signs in after they have signed out. If there is an active session
   when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
 
@@ -397,7 +397,7 @@ amounts at which the alert displays.
 To export seat usage data as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. In the **Seats** tab, select **Export list**.
 
 ### Export seat usage history
@@ -409,7 +409,7 @@ Prerequisites:
 To export seat usage history as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. In the **Seats** tab, select **Export seat usage history**.
 
 The generated list contains all seats being used,

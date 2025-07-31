@@ -51,7 +51,7 @@ Prerequisites:
 To view storage:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Storage** tab to see namespace storage usage.
 1. To view storage usage for a project, in the table at the bottom, select a project. Storage usage is updated every 90 minutes.
 
@@ -70,7 +70,7 @@ A cost factor is applied to the storage consumed by project forks so that forks 
 To view the amount of namespace storage the fork has used:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Storage** tab. The **Total** column displays the amount of namespace storage used by the fork as a portion of the actual size of the fork on disk.
 
 The cost factor applies to the project repository, LFS objects, job artifacts, packages, snippets, and the wiki.
@@ -93,7 +93,7 @@ for the namespace. After the purchase has completed, the read-only state is remo
 restored. The amount of available purchased storage must always
 be greater than zero.
 
-The **Storage** tab of the **Usage Quotas** page displays the following:
+The **Storage** tab of the **Usage quotas** page displays the following:
 
 - Purchased storage available is running low.
 - Projects that are at risk of becoming read-only if purchased storage available is zero.

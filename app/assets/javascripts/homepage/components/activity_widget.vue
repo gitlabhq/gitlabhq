@@ -43,16 +43,43 @@ export default {
       activityFeedHtml: null,
       isLoading: true,
       hasError: false,
-      filter: null,
+      filter: this.getPersistedFilter(),
     };
   },
   watch: {
-    filter: 'reload',
+    filter: {
+      handler: 'onFilterChange',
+      immediate: false,
+    },
   },
   created() {
     this.reload();
   },
   methods: {
+    getPersistedFilter() {
+      try {
+        const savedFilter = sessionStorage.getItem('homepage-activity-filter');
+        const validValues = this.$options.FILTER_OPTIONS.map((option) => option.value);
+        return validValues.includes(savedFilter) ? savedFilter : null;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    onFilterChange(newFilter) {
+      try {
+        if (newFilter === null) {
+          sessionStorage.removeItem('homepage-activity-filter');
+        } else {
+          sessionStorage.setItem('homepage-activity-filter', newFilter);
+        }
+      } catch (e) {
+        return null;
+      }
+      this.reload();
+      return null;
+    },
+
     async reload() {
       this.isLoading = true;
 

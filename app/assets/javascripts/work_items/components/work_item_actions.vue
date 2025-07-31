@@ -32,11 +32,13 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WIDGET_TYPE_NOTIFICATIONS,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
+import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
@@ -151,11 +153,6 @@ export default {
       required: false,
       default: false,
     },
-    subscribedToNotifications: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemReference: {
       type: String,
       required: false,
@@ -247,6 +244,7 @@ export default {
       isMoveWorkItemModalVisible: false,
       workItemTypes: [],
       updateInProgressPromise: null,
+      workItemNotificationsSubscribed: false,
     };
   },
   apollo: {
@@ -262,6 +260,28 @@ export default {
       },
       skip() {
         return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;
+      },
+    },
+    workItemNotificationsSubscribed: {
+      query: () => {
+        return getWorkItemNotificationsByIdQuery;
+      },
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      skip() {
+        return !this.workItemId;
+      },
+      update(data) {
+        return Boolean(
+          data?.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTIFICATIONS)
+            ?.subscribed,
+        );
+      },
+      error(error) {
+        Sentry.captureException(error);
       },
     },
   },
@@ -452,6 +472,22 @@ export default {
               subscribed,
             },
           },
+          optimisticResponse: {
+            workItemSubscribe: {
+              errors: [],
+              workItem: {
+                __typename: 'WorkItem',
+                id: this.workItemId,
+                widgets: [
+                  {
+                    type: WIDGET_TYPE_NOTIFICATIONS,
+                    subscribed,
+                    __typename: 'WorkItemWidgetNotifications',
+                  },
+                ],
+              },
+            },
+          },
         })
         .then(({ data }) => {
           const { errors } = data.workItemSubscribe;
@@ -537,6 +573,7 @@ export default {
     },
     showDropdown() {
       this.isDropdownVisible = true;
+      this.$emit('dropdown-show');
     },
     hideDropdown() {
       this.isDropdownVisible = false;
@@ -575,11 +612,11 @@ export default {
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="notifications-toggle-form"
-          @action="toggleNotifications(!subscribedToNotifications)"
+          @action="toggleNotifications(!workItemNotificationsSubscribed)"
         >
           <template #list-item>
             <gl-toggle
-              :value="subscribedToNotifications"
+              :value="workItemNotificationsSubscribed"
               label-position="left"
               data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"

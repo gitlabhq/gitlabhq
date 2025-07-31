@@ -27,10 +27,6 @@ export default {
       type: String,
       required: true,
     },
-    issuableType: {
-      required: true,
-      type: String,
-    },
   },
   data() {
     return {

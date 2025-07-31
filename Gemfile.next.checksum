@@ -358,7 +358,7 @@
 {"name":"jsonb_accessor","version":"1.4","platform":"java","checksum":"2c5590d33d89c7b929d5cf38ae3d2c52658bf6f84f03b06ede5c88e9d76f3451"},
 {"name":"jsonb_accessor","version":"1.4","platform":"ruby","checksum":"010e087cb843e76b6a624d68af918a8efd6b0ff2ae25b6f0acebdfea45f776ab"},
 {"name":"jsonpath","version":"1.1.2","platform":"ruby","checksum":"6804124c244d04418218acb85b15c7caa79c592d7d6970195300428458946d3a"},
-{"name":"jwt","version":"2.9.3","platform":"ruby","checksum":"55fd07ccdd64c622d36859748f2290fb9c119ce30b482867504e9f12654d6a65"},
+{"name":"jwt","version":"2.10.2","platform":"ruby","checksum":"31e1ee46f7359883d5e622446969fe9c118c3da87a0b1dca765ce269c3a0c4f4"},
 {"name":"kaminari","version":"1.2.2","platform":"ruby","checksum":"c4076ff9adccc6109408333f87b5c4abbda5e39dc464bd4c66d06d9f73442a3e"},
 {"name":"kaminari-actionview","version":"1.2.2","platform":"ruby","checksum":"1330f6fc8b59a4a4ef6a549ff8a224797289ebf7a3a503e8c1652535287cc909"},
 {"name":"kaminari-activerecord","version":"1.2.2","platform":"ruby","checksum":"0dd3a67bab356a356f36b3b7236bcb81cef313095365befe8e98057dd2472430"},

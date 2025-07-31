@@ -42,8 +42,9 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,
             is_signed_in: current_user.present?.to_s,
-            time_tracking_limit_to_hours: 'false',
-            can_read_crm_organization: 'true'
+            time_tracking_limit_to_hours: "false",
+            can_read_crm_organization: 'true',
+            releases_path: project_releases_path(project, format: :json)
           }
         )
       end
@@ -84,6 +85,10 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             default_branch: nil
           }
         )
+      end
+
+      it 'does not include project-specific data' do
+        expect(helper.work_items_data(group, current_user)).not_to have_key(:releases_path)
       end
     end
   end

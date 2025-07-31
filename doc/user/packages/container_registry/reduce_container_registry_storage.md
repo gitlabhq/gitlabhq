@@ -48,7 +48,7 @@ To view storage usage for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Do one of the following:
-   - To view total storage usage, select **Settings > Usage Quotas**.
+   - To view total storage usage, select **Settings > Usage quotas**.
     Under **Namespace entities**, select **Container Registry** to view individual repositories.
    - To view storage usage by repository directly, select **Deploy > Container Registry**.
 

@@ -185,7 +185,7 @@ export default {
             <help-page-link
               href="user/storage_usage_quotas"
               target="_blank"
-              :aria-label="helpLinkAriaLabel(s__('UsageQuota|Usage Quotas'))"
+              :aria-label="helpLinkAriaLabel(s__('UsageQuota|Usage quotas'))"
               >{{ __('Learn more.') }}</help-page-link
             >
           </p>
