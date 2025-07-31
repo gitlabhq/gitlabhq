@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { joinPaths } from '~/lib/utils/url_utility';
 import Page from './page/index.vue';
 
 let pdfjs;
@@ -39,14 +40,17 @@ export default {
       // eslint-disable-next-line import/extensions
       pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
       ({ getDocument, GlobalWorkerOptions } = pdfjs);
-      GlobalWorkerOptions.workerSrc = process.env.PDF_JS_WORKER_PUBLIC_PATH;
+      GlobalWorkerOptions.workerSrc = joinPaths(
+        gon.relative_url_root,
+        process.env.PDF_JS_WORKER_PUBLIC_PATH,
+      );
     },
     async load() {
       await this.loadPDFJS();
       this.pages = [];
       return getDocument({
         url: this.document,
-        cMapUrl: process.env.PDF_JS_CMAPS_PUBLIC_PATH,
+        cMapUrl: joinPaths(gon.relative_url_root, process.env.PDF_JS_CMAPS_PUBLIC_PATH),
         cMapPacked: true,
         isEvalSupported: true,
       })
