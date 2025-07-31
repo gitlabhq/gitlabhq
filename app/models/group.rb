@@ -161,6 +161,7 @@ class Group < Namespace
   scope :with_integrations, -> { joins(:integrations) }
 
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
+  has_one :jira_integration, class_name: 'Integrations::Jira'
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

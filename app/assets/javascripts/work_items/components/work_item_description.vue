@@ -217,8 +217,6 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          iid: this.workItemIid,
-          workItemTypeId: this.workItem?.workItemType?.id,
         };
       },
       update(data) {

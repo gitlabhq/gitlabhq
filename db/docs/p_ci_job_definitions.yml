@@ -1,0 +1,13 @@
+---
+table_name: p_ci_job_definitions
+classes:
+  - Ci::JobDefinition
+feature_categories:
+- continuous_integration
+description: Unique job configurations across pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199133
+milestone: '18.3'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

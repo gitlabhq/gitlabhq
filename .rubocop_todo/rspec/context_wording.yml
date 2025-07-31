@@ -711,7 +711,6 @@ RSpec/ContextWording:
     - 'ee/spec/support/shared_contexts/status_page/status_page_list_objects.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'
     - 'ee/spec/support/shared_examples/controllers/boards_actions_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/controllers/cluster_metrics_shared_examples.rb'
     - 'ee/spec/support/shared_examples/controllers/concerns/description_diff_actions_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/insights_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/password_complexity_shared_examples.rb'

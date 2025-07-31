@@ -252,6 +252,7 @@ If the work item contains a large amount of text (more than 40,000 words), GitLa
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
@@ -451,6 +452,7 @@ You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask q
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
@@ -496,6 +498,7 @@ For more information, see:
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
@@ -533,6 +536,7 @@ You can include additional instructions to be considered. For example:
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
@@ -613,6 +617,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
@@ -677,6 +682,7 @@ To troubleshoot a failed CI/CD job from the job log:
 - Tier: Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer

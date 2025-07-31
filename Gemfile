@@ -229,7 +229,7 @@ gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :share
 gem 'google-apis-iam_v1', '~> 0.72.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared
-gem 'google-apis-androidpublisher_v3', '~> 0.83.0', feature_category: :shared
+gem 'google-apis-androidpublisher_v3', '~> 0.84.0', feature_category: :shared
 
 gem 'googleauth', '~> 1.14', feature_category: :shared
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared

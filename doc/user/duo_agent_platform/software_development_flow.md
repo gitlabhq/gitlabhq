@@ -10,6 +10,7 @@ title: Agent flows
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 - Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 

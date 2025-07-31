@@ -272,7 +272,6 @@ InitializerConnections.raise_if_new_database_connection do
 
         member do
           Gitlab.ee do
-            get :metrics, format: :json
             get :environments, format: :json
           end
 

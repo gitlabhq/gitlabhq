@@ -35355,6 +35355,9 @@ msgstr ""
 msgid "JiraConnect|Your browser is not supported"
 msgstr ""
 
+msgid "JiraIntegration|Comma-separated list of allowed Jira issue statuses."
+msgstr ""
+
 msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
 msgstr ""
 
@@ -35392,6 +35395,18 @@ msgid "JiraIntegration|The email or username to use with Jira. Use an email for 
 msgstr ""
 
 msgid "JiraIntegration|Turn on Jira issue creation for GitLab vulnerabilities."
+msgstr ""
+
+msgid "JiraIntegration|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraIntegration|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraIntegration|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraIntegration|Verify the status of Jira issues referenced in commit messages."
 msgstr ""
 
 msgid "JiraIntegration|When set to `true`, opens a prefilled form on the Jira instancewhen creating a Jira issue from a vulnerability."
@@ -35448,6 +35463,9 @@ msgstr ""
 msgid "JiraService|API token or password"
 msgstr ""
 
+msgid "JiraService|Allowed statuses"
+msgstr ""
+
 msgid "JiraService|An error occurred while fetching the Jira issue list"
 msgstr ""
 
@@ -35463,7 +35481,19 @@ msgstr ""
 msgid "JiraService|Basic"
 msgstr ""
 
+msgid "JiraService|Check assignee"
+msgstr ""
+
+msgid "JiraService|Check issue exists"
+msgstr ""
+
+msgid "JiraService|Check issue status"
+msgstr ""
+
 msgid "JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys."
+msgstr ""
+
+msgid "JiraService|Comma-separated list of allowed Jira issue statuses."
 msgstr ""
 
 msgid "JiraService|Create Jira issues for vulnerabilities"
@@ -35488,6 +35518,9 @@ msgid "JiraService|Email or username"
 msgstr ""
 
 msgid "JiraService|Enable Jira transitions"
+msgstr ""
+
+msgid "JiraService|Enable Jira verification"
 msgstr ""
 
 msgid "JiraService|Enter a Jira project key to generate issue types."
@@ -35562,6 +35595,9 @@ msgstr ""
 msgid "JiraService|Jira project keys"
 msgstr ""
 
+msgid "JiraService|Jira verification"
+msgstr ""
+
 msgid "JiraService|Leave blank to use your current configuration"
 msgstr ""
 
@@ -35578,6 +35614,9 @@ msgid "JiraService|New Jira personal access token"
 msgstr ""
 
 msgid "JiraService|Open Jira"
+msgstr ""
+
+msgid "JiraService|Ready, In Progress, Review"
 msgstr ""
 
 msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
@@ -35611,6 +35650,21 @@ msgid "JiraService|Use regular expression to match Jira issue keys. The regular 
 msgstr ""
 
 msgid "JiraService|Using Jira for issue tracking?"
+msgstr ""
+
+msgid "JiraService|Verify Jira issues referenced in commit messages against specific rules before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraService|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraService|Verify the status of Jira issues referenced in commit messages."
 msgstr ""
 
 msgid "JiraService|View Jira issues"
