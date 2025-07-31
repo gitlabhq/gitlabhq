@@ -34,7 +34,7 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         let(:user) { create(:user) }
 
         before do
-          group.add_developer(user)
+          group.add_guest(user)
           sign_in(user)
         end
 

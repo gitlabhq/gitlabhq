@@ -971,7 +971,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/views/groups/security/discover/show.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/reporting/show.html.haml_spec.rb'
     - 'ee/spec/views/layouts/application.html.haml_spec.rb'
-    - 'ee/spec/views/layouts/checkout.html.haml_spec.rb'
     - 'ee/spec/views/layouts/header/_ee_subscribable_banner.html.haml_spec.rb'
     - 'ee/spec/views/layouts/header/_read_only_banner.html.haml_spec.rb'
     - 'ee/spec/views/operations/environments.html.haml_spec.rb'

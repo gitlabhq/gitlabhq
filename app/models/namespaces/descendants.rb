@@ -44,14 +44,17 @@ module Namespaces
     end
 
     def self.upsert_with_consistent_data(
-      namespace:, self_and_descendant_group_ids:, all_project_ids:, all_unarchived_project_ids:, outdated_at: nil)
+      namespace:, self_and_descendant_ids:, self_and_descendant_group_ids:,
+      all_project_ids:, all_unarchived_project_ids:, outdated_at: nil)
       query = <<~SQL
         INSERT INTO namespace_descendants
-        (namespace_id, traversal_ids, self_and_descendant_group_ids, all_project_ids, all_unarchived_project_ids, outdated_at, calculated_at)
+        (namespace_id, traversal_ids, self_and_descendant_ids, self_and_descendant_group_ids,
+         all_project_ids, all_unarchived_project_ids, outdated_at, calculated_at)
         VALUES
         (
           ?,
           ARRAY[?]::bigint[],
+          ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
@@ -61,6 +64,7 @@ module Namespaces
         ON CONFLICT(namespace_id)
         DO UPDATE SET
           traversal_ids = EXCLUDED.traversal_ids,
+          self_and_descendant_ids = EXCLUDED.self_and_descendant_ids,
           self_and_descendant_group_ids = EXCLUDED.self_and_descendant_group_ids,
           all_project_ids = EXCLUDED.all_project_ids,
           all_unarchived_project_ids = EXCLUDED.all_unarchived_project_ids,
@@ -72,6 +76,7 @@ module Namespaces
         query,
         namespace.id,
         namespace.traversal_ids,
+        self_and_descendant_ids,
         self_and_descendant_group_ids,
         all_project_ids,
         all_unarchived_project_ids,

@@ -3,16 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :observability do
+  include StubMemberAccessLevel
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:group) { build_stubbed(:group, :private) }
 
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
 
   subject(:observability_menu) { described_class.new(context) }
-
-  before_all do
-    group.add_owner(user)
-  end
 
   describe '#configure_menu_items' do
     context 'when observability_sass_features feature flag is enabled' do
@@ -23,6 +20,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       context 'when observability_group_o11y_setting is persisted' do
         before do
           stub_feature_flags(o11y_settings_access: false)
+          stub_member_access_level(group, developer: user)
           allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
             Observability::GroupO11ySetting, persisted?: true))
         end
@@ -50,6 +48,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       context 'when observability_group_o11y_setting is not persisted' do
         before do
           stub_feature_flags(o11y_settings_access: false)
+          stub_member_access_level(group, developer: user)
           allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
             Observability::GroupO11ySetting, persisted?: false))
         end
@@ -112,9 +111,50 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
     end
   end
 
+  describe 'user login status' do
+    let(:group) { build_stubbed(:group, :private) }
+
+    context 'when user is logged in' do
+      let(:user) { build_stubbed(:user) }
+      let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
+
+      subject(:observability_menu) { described_class.new(context) }
+
+      before do
+        stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
+        allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
+          Observability::GroupO11ySetting, persisted?: true))
+      end
+
+      it 'returns menu items when logged in and features enabled' do
+        expect(observability_menu.configure_menu_items).to be true
+        expect(observability_menu.renderable_items).not_to be_empty
+      end
+    end
+
+    context 'when user is not logged in' do
+      let(:user) { nil }
+      let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
+
+      subject(:observability_menu) { described_class.new(context) }
+
+      before do
+        stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+        allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
+          Observability::GroupO11ySetting, persisted?: true))
+      end
+
+      it 'returns false and does not add any menu items when not logged in' do
+        expect(observability_menu.configure_menu_items).to be false
+        expect(observability_menu.renderable_items).to be_empty
+      end
+    end
+  end
+
   describe '#title, #sprite_icon, #link' do
     before do
       stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+      stub_member_access_level(group, developer: user)
       allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
         Observability::GroupO11ySetting, persisted?: true))
       observability_menu.configure_menu_items
@@ -134,6 +174,14 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
   end
 
   describe '#active_routes' do
+    before do
+      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+      stub_member_access_level(group, developer: user)
+      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
+        Observability::GroupO11ySetting, persisted?: true))
+      observability_menu.configure_menu_items
+    end
+
     it 'has the right active routes' do
       expect(observability_menu.active_routes).to eq({ controller: 'groups/observability' })
     end
@@ -154,6 +202,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
   describe '#menu items links' do
     before do
       stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+      stub_member_access_level(group, developer: user)
       allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
         Observability::GroupO11ySetting, persisted?: true))
       observability_menu.configure_menu_items

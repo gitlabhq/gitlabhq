@@ -81,8 +81,18 @@ class DashboardController < Dashboard::ApplicationController
         current_user.authorized_projects
       end
 
+    finder_params = {
+      offset: params[:offset].to_i,
+      filter: event_filter
+    }
+
+    if params[:limit].present?
+      limit = params[:limit].to_i
+      finder_params[:limit] = limit if limit > 0
+    end
+
     EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .new(projects, **finder_params)
       .to_a
       .map(&:present)
   end

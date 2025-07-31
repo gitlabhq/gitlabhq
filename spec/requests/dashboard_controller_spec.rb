@@ -68,4 +68,50 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
     end
   end
+
+  shared_examples 'load project events' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:events) { create_list(:event, 25, author: user1, project: project) } # rubocop:disable FactoryBot/ExcessiveCreateList -- We need more than 20 events to demonstrate how the controller limits the amount of returned objects
+
+    before_all do
+      project.add_developer(current_user)
+      current_user.toggle_star(project)
+    end
+
+    before do
+      sign_in current_user
+    end
+
+    it 'returns 20 events by default' do
+      get activity_dashboard_path, params: { filter: filter }, as: :json
+
+      expect(json_response['count']).to be(20)
+    end
+
+    it 'returns the requested number of events' do
+      get activity_dashboard_path, params: { filter: filter, limit: 10 }, as: :json
+
+      expect(json_response['count']).to be(10)
+    end
+
+    it 'returns the default amount of events if the `limit` parameter is invalid' do
+      get activity_dashboard_path, params: { filter: filter, limit: 'user input' }, as: :json
+
+      expect(json_response['count']).to be(20)
+    end
+  end
+
+  context "when fetching user's projects activity" do
+    let_it_be(:filter) { 'projects' }
+
+    it_behaves_like 'load project events'
+  end
+
+  context 'when fetching starred projects activity' do
+    let_it_be(:filter) { 'starred' }
+
+    it_behaves_like 'load project events'
+  end
 end

@@ -12,14 +12,19 @@ module Namespaces
 
       override :self_and_descendant_ids
       def self_and_descendant_ids(skope: self.class)
-        # Cache only works for descendants
-        # of the same type as the caller.
-        return super unless skope == self.class
+        column_name = if skope == Namespace
+                        :self_and_descendant_ids
+                      elsif skope == self.class
+                        # Group_ids is a bit misleading because skope can be ProjectNamespace too.
+                        :self_and_descendant_group_ids
+                      end
+
+        return super unless column_name
 
         scope_with_cached_ids(
           super,
           skope,
-          Namespaces::Descendants.arel_table[:self_and_descendant_group_ids]
+          Namespaces::Descendants.arel_table[column_name]
         )
       end
 

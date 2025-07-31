@@ -17,6 +17,7 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
       namespace: subgroup,
       # outdated values:
       traversal_ids: [group.id + 100, subgroup.id],
+      self_and_descendant_ids: [],
       self_and_descendant_group_ids: [],
       all_project_ids: [project1.id],
       all_unarchived_project_ids: [project1.id]
@@ -34,6 +35,8 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
 
     expect(cache).to have_attributes(
       traversal_ids: [group.id, subgroup.id],
+      self_and_descendant_ids: [subgroup.id, subsub_group.id,
+        project1.project_namespace_id, project2.project_namespace_id],
       self_and_descendant_group_ids: [subgroup.id, subsub_group.id],
       all_project_ids: [project1.id, project2.id],
       all_unarchived_project_ids: [project1.id],
@@ -109,6 +112,8 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
 
       expect(cache).to have_attributes(
         traversal_ids: [group.id, subgroup.id],
+        self_and_descendant_ids: [subgroup.id, subsub_group.id,
+          project1.project_namespace_id, project2.project_namespace_id],
         self_and_descendant_group_ids: [subgroup.id, subsub_group.id],
         all_project_ids: [project1.id, project2.id],
         all_unarchived_project_ids: [project1.id],

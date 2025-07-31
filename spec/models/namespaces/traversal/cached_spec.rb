@@ -106,6 +106,7 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
       create(:namespace_descendants,
         :up_to_date,
         namespace: group,
+        self_and_descendant_ids: [group.id, subgroup.id, project1.project_namespace.id],
         self_and_descendant_group_ids: [group.id, subgroup.id],
         all_project_ids: [project1.id],
         all_unarchived_project_ids: [project1.id]
@@ -128,13 +129,23 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
       end
 
       context 'when the scope is specified' do
-        it 'returns uncached values that match the scope' do
-          ids = group.self_and_descendant_ids(skope: Namespace).pluck(:id)
+        subject(:ids) { group.self_and_descendant_ids(skope: Namespace).pluck(:id) }
 
-          expect(ids).to contain_exactly(
-            group.id, subgroup.id, subsubgroup.id, project1.project_namespace.id, project2.project_namespace.id,
-            project3.project_namespace.id
-          )
+        it 'returns the cached values' do
+          expect(ids).to eq(namespace_descendants.self_and_descendant_ids)
+        end
+
+        context 'when the cache is outdated' do
+          it 'returns the values from the uncached self_and_descendant_ids query' do
+            namespace_descendants.update!(outdated_at: Time.current)
+
+            expect(ids.sort).to eq([
+              group.id, subgroup.id, subsubgroup.id,
+              project1.project_namespace_id,
+              project2.project_namespace_id,
+              project3.project_namespace_id
+            ])
+          end
         end
       end
     end

@@ -7,7 +7,7 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless feature_enabled? || o11y_settings_access_enabled?
+          return false unless o11y_settings_access_enabled? || (feature_enabled? && observability_access?)
 
           if context.group.observability_group_o11y_setting&.persisted?
             add_item(services_menu_item)
@@ -62,6 +62,10 @@ module Sidebars
         end
 
         private
+
+        def observability_access?
+          Ability.allowed?(context.current_user, :read_observability_portal, context.group)
+        end
 
         def feature_enabled?
           ::Feature.enabled?(:observability_sass_features, context.group)

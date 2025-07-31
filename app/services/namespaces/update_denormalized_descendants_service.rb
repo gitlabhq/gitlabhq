@@ -5,8 +5,8 @@ module Namespaces
     include Gitlab::Utils::StrongMemoize
 
     NAMESPACE_TYPE_MAPPING = {
-      'Project' => :all_project_ids,
-      'Group' => :self_and_descendant_group_ids
+      'Project' => :project_namespace_ids,
+      'Group' => :group_ids
     }.freeze
 
     def initialize(namespace_id:)
@@ -79,9 +79,10 @@ module Namespaces
 
         Namespaces::Descendants.upsert_with_consistent_data(
           namespace: namespace,
-          self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
-          all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
-          all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          self_and_descendant_ids: (ids[:group_ids] + ids[:project_namespace_ids]).sort,
+          self_and_descendant_group_ids: ids[:group_ids].sort,
+          all_project_ids: Project.where(project_namespace_id: ids[:project_namespace_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:project_namespace_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
             .order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
           outdated_at: descendants.outdated_at
         )
@@ -93,15 +94,16 @@ module Namespaces
 
       Namespaces::Descendants.upsert_with_consistent_data(
         namespace: namespace,
-        self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
-        all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
-        all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        self_and_descendant_ids: (ids[:group_ids] + ids[:project_namespace_ids]).sort,
+        self_and_descendant_group_ids: ids[:group_ids].sort,
+        all_project_ids: Project.where(project_namespace_id: ids[:project_namespace_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:project_namespace_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
           .order(:id).pluck_primary_key # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
       )
     end
 
     def collect_namespace_ids
-      denormalized_ids = { self_and_descendant_group_ids: [], all_project_ids: [] }
+      denormalized_ids = { group_ids: [], project_namespace_ids: [] }
 
       iterator.each_batch do |ids|
         namespaces = Namespace.primary_key_in(ids).select(:id, :type)

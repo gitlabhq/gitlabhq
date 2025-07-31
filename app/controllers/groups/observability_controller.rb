@@ -36,7 +36,7 @@ module Groups
     def authorize_read_observability!
       return render_404 unless ::Feature.enabled?(:observability_sass_features, group)
 
-      render_404 unless current_user.can?(:maintainer_access, group)
+      render_404 unless Ability.allowed?(current_user, :read_observability_portal, group)
     end
   end
 end

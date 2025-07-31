@@ -38,8 +38,9 @@ You cannot use [`$$` to escape the `$` character in a CI/CD variable](../variabl
 when [passing a CI/CD variable to a downstream pipeline](downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
 The downstream pipeline still treats the `$` as the start of a variable reference.
 
-Instead, use the [`variables:expand` keyword](../yaml/_index.md#variablesexpand) to
-set the variable value to not be expanded. This variable can then be passed to the downstream pipeline
+You can [Prevent CI/CD variable expansion](../variables/_index.md#prevent-cicd-variable-expansion) when configuring
+a variable in the UI, or use the [`variables:expand` keyword](../yaml/_index.md#variablesexpand) to
+set a variable value to not be expanded. This variable can then be passed to the downstream pipeline
 without the `$` being interpreted as a variable reference.
 
 ## `Ref is ambiguous`

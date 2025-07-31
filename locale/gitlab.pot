@@ -1784,9 +1784,6 @@ msgstr ""
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
-msgid "(Copy)"
-msgstr ""
-
 msgid "(Limited to %{quota} compute minutes per month)"
 msgstr ""
 
@@ -7768,9 +7765,6 @@ msgstr ""
 msgid "Analytics|Column chart"
 msgstr ""
 
-msgid "Analytics|Configure Dashboard Project"
-msgstr ""
-
 msgid "Analytics|Configure analytics reports."
 msgstr ""
 
@@ -7778,9 +7772,6 @@ msgid "Analytics|Continue creating"
 msgstr ""
 
 msgid "Analytics|Continue editing"
-msgstr ""
-
-msgid "Analytics|Could not clone the dashboard. Refresh the page to try again."
 msgstr ""
 
 msgid "Analytics|Create dashboard %{dashboardSlug}"
@@ -7798,9 +7789,6 @@ msgstr ""
 msgid "Analytics|Custom"
 msgstr ""
 
-msgid "Analytics|Custom dashboards"
-msgstr ""
-
 msgid "Analytics|Dashboard description"
 msgstr ""
 
@@ -7813,16 +7801,7 @@ msgstr ""
 msgid "Analytics|Dashboard title"
 msgstr ""
 
-msgid "Analytics|Dashboard was cloned successfully"
-msgstr ""
-
 msgid "Analytics|Dashboard was saved successfully"
-msgstr ""
-
-msgid "Analytics|Dashboards are created by editing the groups dashboard files."
-msgstr ""
-
-msgid "Analytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
 msgid "Analytics|Data explorer"
@@ -7902,9 +7881,6 @@ msgstr ""
 msgid "Analytics|Line chart"
 msgstr ""
 
-msgid "Analytics|New dashboard"
-msgstr ""
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr ""
 
@@ -7966,9 +7942,6 @@ msgid "Analytics|Tables"
 msgstr ""
 
 msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
-msgstr ""
-
-msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
@@ -12960,9 +12933,6 @@ msgstr ""
 msgid "Checking branch validity…"
 msgstr ""
 
-msgid "Checking group path availability…"
-msgstr ""
-
 msgid "Checking if merge request can be merged…"
 msgstr ""
 
@@ -13718,9 +13688,6 @@ msgid "Clientside DSN"
 msgstr ""
 
 msgid "Clientside traces sample rate"
-msgstr ""
-
-msgid "Clone"
 msgstr ""
 
 msgid "Clone repository"
@@ -19278,9 +19245,6 @@ msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
 msgid "Create your first page"
-msgstr ""
-
-msgid "Create your group"
 msgstr ""
 
 msgid "Create, update, or delete a merge request."
@@ -30615,9 +30579,6 @@ msgstr ""
 msgid "Group SAML must be enabled to test"
 msgstr ""
 
-msgid "Group URL"
-msgstr ""
-
 msgid "Group access token creation is disabled in this group."
 msgstr ""
 
@@ -30699,9 +30660,6 @@ msgstr ""
 msgid "Group milestone"
 msgstr ""
 
-msgid "Group name (your organization)"
-msgstr ""
-
 msgid "Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis."
 msgstr ""
 
@@ -30718,12 +30676,6 @@ msgid "Group or project"
 msgstr ""
 
 msgid "Group overview content"
-msgstr ""
-
-msgid "Group path is already taken. We've suggested one that is available."
-msgstr ""
-
-msgid "Group path is available."
 msgstr ""
 
 msgid "Group project URLs are prefixed with the group namespace"
@@ -47259,9 +47211,6 @@ msgstr ""
 msgid "Please enter your current password."
 msgstr ""
 
-msgid "Please fill in a descriptive name for your group."
-msgstr ""
-
 msgid "Please fill in a name for your topic."
 msgstr ""
 
@@ -56840,9 +56789,6 @@ msgstr ""
 msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
 msgstr ""
 
-msgid "SecurityOrchestration|All pipeline sources"
-msgstr ""
-
 msgid "SecurityOrchestration|All projects in linked groups"
 msgstr ""
 
@@ -58085,6 +58031,9 @@ msgid "SecurityOrchestration|on %{dayText} %{days} of each month"
 msgstr ""
 
 msgid "SecurityOrchestration|on every"
+msgstr ""
+
+msgid "SecurityOrchestration|pipeline sources"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -61735,9 +61684,6 @@ msgid "Subscription has not yet been synchronized. %{cta}"
 msgstr ""
 
 msgid "Subscription service outage"
-msgstr ""
-
-msgid "Subscription successfully applied to \"%{group_name}\""
 msgstr ""
 
 msgid "Subscription successfully created."
@@ -70708,9 +70654,6 @@ msgstr ""
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr ""
 
-msgid "Welcome to GitLab, %{first_name}!"
-msgstr ""
-
 msgid "Welcome to GitLab, %{name}!"
 msgstr ""
 
@@ -72875,9 +72818,6 @@ msgstr ""
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "You can always edit this later"
-msgstr ""
-
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
@@ -73541,9 +73481,6 @@ msgid "Your %{plan_name} subscription will expire on %{expires_on}"
 msgstr ""
 
 msgid "Your %{plan_name} subscription with a temporary extension will expire on %{expires_on}"
-msgstr ""
-
-msgid "Your %{plan} plan will be applied to your group."
 msgstr ""
 
 msgid "Your %{resource_type} access token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{resource_path}%{codeClose} will expire in %{days_to_expire} or less."
