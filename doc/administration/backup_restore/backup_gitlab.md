@@ -1473,7 +1473,7 @@ and port 5432 with the Linux package (Omnibus):
 sudo GITLAB_BACKUP_PGHOST=192.168.1.10 GITLAB_BACKUP_PGPORT=5432 /opt/gitlab/bin/gitlab-backup create
 ```
 
-If you run GitLab on [multiple databases](../postgresql/multiple_databases.md), you can override database settings by including
+If you run GitLab on [multiple databases](../postgresql/_index.md), you can override database settings by including
 the database name in the environment variable. For example if your `main` and `ci` databases are
 hosted on different database servers, you would append their name after the `GITLAB_BACKUP_` prefix,
 leaving the `PG*` names as is:

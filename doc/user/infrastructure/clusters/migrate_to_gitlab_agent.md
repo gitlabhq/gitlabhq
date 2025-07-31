@@ -120,12 +120,12 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
      - apiVersion: v1
        kind: Namespace
        metadata:
-         name: {{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}
+         name: project-{{ .project.id }}-{{ .environment.slug }}
      - apiVersion: rbac.authorization.k8s.io/v1
        kind: RoleBinding
        metadata:
          name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
-         namespace: {{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}
+         namespace: project-{{ .project.id }}-{{ .environment.slug }}
        subjects:
          - kind: Group
            apiGroup: rbac.authorization.k8s.io
@@ -143,12 +143,12 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
      - apiVersion: v1
        kind: Namespace
        metadata:
-         name: {{ .project.slug }}-{{ .project.id }}
+         name: project-{{ .project.id }}
      - apiVersion: rbac.authorization.k8s.io/v1
        kind: RoleBinding
        metadata:
          name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
-         namespace: {{ .project.slug }}-{{ .project.id }}
+         namespace: project-{{ .project.id }}
        subjects:
          - kind: Group
            apiGroup: rbac.authorization.k8s.io

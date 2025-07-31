@@ -66,7 +66,7 @@ The following API resources are available in the project context:
 | [Freeze Periods](freeze_periods.md)                                            | `/projects/:id/freeze_periods` |
 | [Go Proxy](packages/go_proxy.md)                                               | `/projects/:id/packages/go` |
 | [Helm repository](packages/helm.md)                                            | `/projects/:id/packages/helm_repository` |
-| [Integrations](integrations.md) (Formerly "services")                          | `/projects/:id/integrations` |
+| [Integrations](project_integrations.md) (Formerly "services")                          | `/projects/:id/integrations` |
 | [Invitations](invitations.md)                                                  | `/projects/:id/invitations` (also available for groups) |
 | [Issue boards](boards.md)                                                      | `/projects/:id/boards` |
 | [Issue links](issue_links.md)                                                  | `/projects/:id/issues/.../links` |

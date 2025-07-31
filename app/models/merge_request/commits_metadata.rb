@@ -39,6 +39,20 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   validates :trailers, json_schema: { filename: 'git_trailers' }
   # rubocop:enable Database/JsonbSizeLimit
 
+  # Creates a new row, or returns an existing one if a row already exists.
+  def self.find_or_create(metadata = {})
+    find_or_create_by!(project_id: metadata['project_id'], sha: metadata['sha']) do |record|
+      record.committer = metadata['committer']
+      record.commit_author = metadata['commit_author']
+      record.message = metadata['message']
+      record.trailers = metadata['trailers'] || {}
+      record.authored_date = metadata['authored_date']
+      record.committed_date = metadata['committed_date']
+    end
+  rescue ActiveRecord::RecordNotUnique
+    retry
+  end
+
   # Finds many commits by project_id and array of SHAs in bulk.
   # The return value is an array of ID and SHA pairs.
   def self.bulk_find(project_id, shas)

@@ -111,6 +111,15 @@ module Gitlab
           row['committer'] = committer ||
             find_or_create_diff_commit_user(cname, cmail)
 
+          if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+            commit_metadata = row.slice('authored_date', 'committed_date', 'sha', 'message', 'trailers')
+            commit_metadata['project_id'] = project.id
+            commit_metadata['commit_author'] = row['commit_author']
+            commit_metadata['committer'] = row['committer']
+
+            row['merge_request_commits_metadata'] = find_or_create_merge_request_commits_metadata(commit_metadata)
+          end
+
           MergeRequestDiffCommit.new(row)
         end
 
@@ -122,6 +131,12 @@ module Gitlab
               project.organization_id,
               with_organization: Feature.enabled?(:add_organization_to_diff_commit_users, project)
             )
+          end
+        end
+
+        def find_or_create_merge_request_commits_metadata(metadata = {})
+          find_with_cache([MergeRequest::CommitsMetadata, metadata['project_id'], metadata['sha']]) do
+            MergeRequest::CommitsMetadata.find_or_create(metadata)
           end
         end
 

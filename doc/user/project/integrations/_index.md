@@ -238,5 +238,5 @@ You can disable SSL verification when you configure
 
 ## Related topics
 
-- [Integrations API](../../../api/integrations.md)
+- [Integrations API](../../../api/project_integrations.md)
 - [GitLab Developer Portal](https://developer.gitlab.com)

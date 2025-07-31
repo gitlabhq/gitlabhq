@@ -1,5 +1,5 @@
 <script>
-import { GlCard, GlToggle, GlButton } from '@gitlab/ui';
+import { GlToggle, GlButton } from '@gitlab/ui';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
@@ -13,7 +13,6 @@ export default {
   },
   name: 'GitlabDuoSettings',
   components: {
-    GlCard,
     GlToggle,
     GlButton,
     ProjectSettingRow,
@@ -119,11 +118,7 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="project-visibility-setting"
-    body-class="gl-flex gl-flex-col gl-gap-6"
-    data-testid="gitlab-duo-settings-card"
-  >
+  <div class="project-visibility-setting" data-testid="gitlab-duo-settings">
     <project-setting-row
       v-if="duoEnabledSetting"
       data-testid="duo-settings"
@@ -202,15 +197,14 @@ export default {
       />
     </div>
 
-    <template #footer>
-      <gl-button
-        variant="confirm"
-        type="submit"
-        data-testid="gitlab-duo-save-button"
-        :disabled="duoFeaturesLocked"
-      >
-        {{ $options.i18n.saveChanges }}
-      </gl-button>
-    </template>
-  </gl-card>
+    <gl-button
+      variant="confirm"
+      type="submit"
+      class="gl-mt-6"
+      data-testid="gitlab-duo-save-button"
+      :disabled="duoFeaturesLocked"
+    >
+      {{ $options.i18n.saveChanges }}
+    </gl-button>
+  </div>
 </template>

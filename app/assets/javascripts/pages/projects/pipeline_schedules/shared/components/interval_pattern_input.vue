@@ -46,7 +46,6 @@ export default {
   },
   data() {
     return {
-      isEditingCustom: false,
       randomMinute: getRandomCronValue(MINUTE),
       randomHour: getRandomCronValue(HOUR),
       randomWeekDayIndex: getRandomCronValue(WEEKDAY_INDEX),

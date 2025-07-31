@@ -258,7 +258,7 @@ Existing forks are not removed.
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [audit event](../../administration/audit_event_reports.md),
+For example, if you want to lock the group for an [audit event](../../administration/compliance/audit_event_reports.md),
 you can guarantee that project membership cannot be modified during the audit.
 
 If group membership lock is enabled, the group Owner can still:

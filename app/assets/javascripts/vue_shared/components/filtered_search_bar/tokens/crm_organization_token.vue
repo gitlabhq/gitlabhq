@@ -9,8 +9,6 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import searchCrmOrganizationsQuery from '../queries/search_crm_organizations.query.graphql';
 
-import { OPTIONS_NONE_ANY } from '../constants';
-
 import BaseToken from './base_token.vue';
 
 export default {
@@ -40,7 +38,7 @@ export default {
   },
   computed: {
     defaultOrganizations() {
-      return this.config.defaultOrganizations || OPTIONS_NONE_ANY;
+      return this.config.defaultOrganizations;
     },
     namespace() {
       return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;

@@ -25,6 +25,10 @@
   }
 }
 
+.internal-note-bg {
+  background-color: var(--timeline-entry-internal-note-background-color) !important;
+}
+
 .timeline-entry {
   @apply gl-text-default;
 

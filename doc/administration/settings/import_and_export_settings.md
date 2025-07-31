@@ -80,7 +80,7 @@ The same setting
 
 {{< /history >}}
 
-Enable silent admin exports to prevent [audit events](../audit_event_reports.md) when
+Enable silent admin exports to prevent [audit events](../compliance/audit_event_reports.md) when
 instance administrators trigger a [project or group file export](../../user/project/settings/import_export.md) or download the export file.
 Exports from non-administrators still generate audit events.
 

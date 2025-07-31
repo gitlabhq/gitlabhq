@@ -10,7 +10,7 @@ GitLab Duo is a suite of AI-native features that assist you while you work in Gi
 These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
 GitLab Duo features are available in [IDE extensions](../../editor_extensions/_index.md) and the GitLab UI.
-Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat_examples.md).
+Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat/examples.md).
 
 {{< walkthrough data="duo-walkthrough" >}}
 

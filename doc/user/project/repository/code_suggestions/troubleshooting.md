@@ -49,7 +49,7 @@ for the different IDEs:
 
 ## Code Suggestions returns a 401 error
 
-Code Suggestions [depends on a license token](../../../ai_features.md) that
+Code Suggestions [depends on a license token](../../../gitlab_duo/_index.md) that
 [synchronizes your subscription](../../../../administration/license.md) with GitLab.
 
 If the token expires, GitLab Duo Code Suggestions returns the following error
@@ -60,7 +60,7 @@ Token validation failed in Language Server:
 (Failed to check token: Error: Fetching Information about personal access token
 ```
 
-If GitLab has access to the [cloud server](../../../ai_features.md), try
+If GitLab has access to the [cloud server](../../../gitlab_duo/_index.md), try
 [manually synchronizing your license](../../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting

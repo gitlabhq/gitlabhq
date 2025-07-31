@@ -77,7 +77,7 @@ A LLM which cannot be fine-tuned (also Frozen LLM).
 
 ### GitLab Duo
 
-AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/ai_features.md) features page.
+AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/gitlab_duo/_index.md) features page.
 
 ### GitLab Managed Model
 
@@ -97,7 +97,7 @@ A LLM running on a user's workstation. [More information](https://gitlab.com/gro
 
 ### LLM
 
-A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/ai_features.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
+A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/gitlab_duo/_index.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
 
 ### Model Validation
 

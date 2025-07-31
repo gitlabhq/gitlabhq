@@ -6,7 +6,7 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 export default {
   name: 'InputsAdoptionBanner',
   components: { GlAlert, GlButton, GlSprintf, UserCalloutDismisser },
-  inputsDocsPath: helpPagePath('ci/yaml/inputs'),
+  inputsDocsPath: helpPagePath('ci/inputs/_index'),
   inject: ['canViewPipelineEditor', 'pipelineEditorPath'],
   props: {
     featureName: {

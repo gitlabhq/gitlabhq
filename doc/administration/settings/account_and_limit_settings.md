@@ -606,7 +606,7 @@ To turn this setting on or off:
 
 {{< /details >}}
 
-To maintain integrity of user details in [audit events](../audit_event_reports.md),
+To maintain integrity of user details in [audit events](../compliance/audit_event_reports.md),
 GitLab administrators can prevent users from changing their profile name.
 
 To do this:

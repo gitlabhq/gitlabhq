@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+export STABLE_BRANCH_PATTERN="^[0-9-]+-stable(-ee)?$"
+export VERSION_TAG_PATTERN="^v([0-9]+)\.([0-9]+)\.([0-9]+).+(ee)$"
+
 function retry() {
   retry_times_sleep 2 3 "$@"
 }
@@ -485,12 +489,22 @@ function download_local_gems() {
 }
 
 function define_trigger_branch_in_build_env() {
-  target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
-  stable_branch_regex="^[0-9-]+-stable(-ee)?$"
+  target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_BRANCH}}"
+
+  # If target_branch_name is empty and CI_COMMIT_TAG has version format, derive from tag
+  if [[ -z "$target_branch_name" && -n "$CI_COMMIT_TAG" ]]; then
+    # Match pattern like v42.2.0-rc42-ee and extract version parts
+    if [[ $CI_COMMIT_TAG =~ $VERSION_TAG_PATTERN ]]; then
+      major="${BASH_REMATCH[1]}"
+      minor="${BASH_REMATCH[2]}"
+      ee_suffix="${BASH_REMATCH[4]}"
+      target_branch_name="${major}-${minor}-stable-${ee_suffix}"
+    fi
+  fi
 
   echo "target_branch_name: ${target_branch_name}"
 
-  if [[ $target_branch_name =~ $stable_branch_regex  ]]
+  if [[ $target_branch_name =~ $STABLE_BRANCH_PATTERN  ]]
   then
     export TRIGGER_BRANCH="${target_branch_name%-ee}"
   else

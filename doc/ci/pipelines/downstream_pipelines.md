@@ -629,7 +629,7 @@ but not from [merged results pipelines](merged_results_pipelines.md).
 
 ## Pass inputs to a downstream pipeline
 
-You can use the [`inputs`](../yaml/inputs.md) keyword to pass input values to downstream pipelines.
+You can use the [`inputs`](../inputs/_index.md) keyword to pass input values to downstream pipelines.
 Inputs provide advantages over variables including type checking, validation through options,
 descriptions, and default values.
 

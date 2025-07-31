@@ -72,7 +72,7 @@ Prerequisites:
 
 - You must have the GitLab Ultimate subscription tier.
 - Have a paid GitLab Duo Enterprise seat.
-- [GitLab Duo](../../ai_features_enable.md) must be enabled for the group or instance.
+- [GitLab Duo](../../gitlab_duo/turn_on_off.md) must be enabled for the group or instance.
 - You must be a member of the project.
 - The vulnerability must be from a SAST scanner.
 
@@ -147,7 +147,7 @@ Prerequisites:
   - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
 - The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
 
-Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
+Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_on_off.md).
 
 To resolve the vulnerability:
 

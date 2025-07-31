@@ -252,7 +252,7 @@ bundle exec rake gitlab:audit_event_types:check_docs
 ## Event streaming
 
 All events where the entity is a `Group` or `Project` are recorded in the audit log, and also streamed to one or more
-[event streaming destinations](../../administration/audit_event_streaming/_index.md). When the entity is a:
+[event streaming destinations](../../administration/compliance/audit_event_streaming.md). When the entity is a:
 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.

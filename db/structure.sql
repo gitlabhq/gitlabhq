@@ -4850,6 +4850,18 @@ CREATE TABLE p_ci_job_artifacts (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_definitions (
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    interruptible boolean DEFAULT false NOT NULL,
+    checksum bytea NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_job_inputs (
     id bigint NOT NULL,
     job_id bigint NOT NULL,
@@ -19437,18 +19449,6 @@ CREATE SEQUENCE p_ci_job_annotations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
-
-CREATE TABLE p_ci_job_definitions (
-    id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    interruptible boolean DEFAULT false NOT NULL,
-    checksum bytea NOT NULL,
-    config jsonb DEFAULT '{}'::jsonb NOT NULL
-)
-PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE p_ci_job_definitions_id_seq
     START WITH 1

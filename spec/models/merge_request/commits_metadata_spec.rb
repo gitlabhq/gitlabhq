@@ -10,6 +10,65 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
     it { is_expected.to have_many(:merge_request_diff_commits) }
   end
 
+  describe '.find_or_create' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+
+    let(:metadata) do
+      {
+        'project_id' => project.id,
+        'sha' => 'abc123',
+        'commit_author' => commit_author,
+        'committer' => committer,
+        'trailers' => { 'foo' => 'bar' },
+        'message' => 'This is a message',
+        'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+        'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
+      }
+    end
+
+    it 'creates a new row' do
+      commits_metadata = described_class.find_or_create(metadata)
+
+      expect(commits_metadata.id).to be_present
+      expect(commits_metadata.project_id).to eq(metadata['project_id'])
+      expect(commits_metadata.sha).to eq(metadata['sha'])
+      expect(commits_metadata.commit_author).to eq(metadata['commit_author'])
+      expect(commits_metadata.committer).to eq(metadata['committer'])
+      expect(commits_metadata.trailers).to eq(metadata['trailers'])
+      expect(commits_metadata.message).to eq(metadata['message'])
+      expect(commits_metadata.authored_date).to eq(metadata['authored_date'])
+      expect(commits_metadata.committed_date).to eq(metadata['committed_date'])
+    end
+
+    it 'returns an existing row' do
+      existing_row = create(:merge_request_commits_metadata, project: project, sha: 'abc123')
+      found_row = described_class.find_or_create(metadata)
+
+      expect(existing_row).to eq(found_row)
+    end
+
+    it 'retries when ActiveRecord::RecordNotUnique was raised' do
+      existing_row = create(:merge_request_commits_metadata, project: project, sha: 'abc123')
+      call_count = 0
+
+      # Mock to raise exception first time, then let it proceed normally
+      allow(described_class).to receive(:find_or_create_by!).and_wrap_original do |method, *args, &block|
+        call_count += 1
+
+        raise ActiveRecord::RecordNotUnique, 'duplicate' if call_count == 1
+
+        method.call(*args, &block)
+      end
+
+      found_row = described_class.find_or_create(metadata)
+
+      expect(found_row).to eq(existing_row)
+      expect(call_count).to eq(2)
+    end
+  end
+
   describe '.bulk_find' do
     it 'finds records matching project_id and SHAs' do
       project = create(:project)

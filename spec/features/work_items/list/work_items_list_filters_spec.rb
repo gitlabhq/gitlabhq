@@ -267,5 +267,79 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         expect(page).to have_link(incident.title)
       end
     end
+
+    describe 'customer relations organization' do
+      let_it_be(:user_crm) { create(:user) }
+
+      let_it_be(:crm_organization1) { create(:crm_organization, group: group, name: 'GitLab Inc') }
+      let_it_be(:crm_organization2) { create(:crm_organization, group: group, name: 'Acme Corp') }
+
+      # Create contacts belonging to organizations
+      let_it_be(:contact1) { create(:contact, group: group, organization: crm_organization1) }
+      let_it_be(:contact2) { create(:contact, group: group, organization: crm_organization1) }
+      let_it_be(:contact3) { create(:contact, group: group, organization: crm_organization2) }
+
+      # Create issues and relate them to contacts (which belong to organizations)
+      let_it_be(:org1_issue1) { create(:issue, project: project, title: 'GitLab Issue 1') }
+      let_it_be(:org1_issue2) { create(:issue, project: project, title: 'GitLab Issue 2') }
+      let_it_be(:org2_issue) { create(:issue, project: project, title: 'Acme Issue') }
+
+      # Create the relationships between issues and contacts
+      let_it_be(:issue_contact1) { create(:issue_customer_relations_contact, issue: org1_issue1, contact: contact1) }
+      let_it_be(:issue_contact2) { create(:issue_customer_relations_contact, issue: org1_issue2, contact: contact2) }
+      let_it_be(:issue_contact3) { create(:issue_customer_relations_contact, issue: org2_issue, contact: contact3) }
+
+      shared_examples 'filters by CRM organization' do
+        it 'filters by CRM organization', :aggregate_failures do
+          # Organization just supports is operator so no need for passing '='
+          select_tokens 'Organization', crm_organization1.name, submit: true
+
+          expect(page).to have_css('.issue', count: 2)
+          expect(page).to have_link(org1_issue1.title)
+          expect(page).to have_link(org1_issue2.title)
+
+          click_button 'Clear'
+
+          select_tokens 'Organization', crm_organization2.name, submit: true
+
+          expect(page).to have_css('.issue', count: 1)
+          expect(page).to have_link(org2_issue.title)
+        end
+      end
+
+      before_all do
+        group.add_developer(user_crm)
+      end
+
+      before do
+        sign_in(user_crm)
+        allow(user_crm).to receive(:read_crm_organization).and_return(true)
+      end
+
+      context 'when user is on group work items page' do
+        before do
+          visit group_work_items_path(group)
+        end
+
+        include_examples 'filters by CRM organization'
+      end
+
+      context 'when user is on work items page' do
+        before do
+          visit project_work_items_path(project)
+        end
+
+        include_examples 'filters by CRM organization'
+      end
+
+      context 'when user is on project issues page' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+          visit project_issues_path(project)
+        end
+
+        include_examples 'filters by CRM organization'
+      end
+    end
   end
 end

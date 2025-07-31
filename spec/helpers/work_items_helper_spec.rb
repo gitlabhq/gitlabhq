@@ -42,7 +42,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,
             is_signed_in: current_user.present?.to_s,
-            time_tracking_limit_to_hours: "false"
+            time_tracking_limit_to_hours: 'false',
+            can_read_crm_organization: 'true'
           }
         )
       end

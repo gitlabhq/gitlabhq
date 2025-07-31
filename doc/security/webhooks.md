@@ -192,12 +192,12 @@ To work around this error:
 
 ### GitLab Duo functionality is blocked
 
-When you [filter requests](#filter-requests), you might see `401` errors when trying to use [GitLab Duo features](../user/ai_features.md).
+When you [filter requests](#filter-requests), you might see `401` errors when trying to use [GitLab Duo features](../user/gitlab_duo/_index.md).
 
 This error can occur when outbound requests to the GitLab cloud server are not allowed. To work around this error:
 
 1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
-1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)
+1. After GitLab has access to the [cloud server](../user/gitlab_duo/_index.md), [manually synchronize your license](../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)
 
 For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

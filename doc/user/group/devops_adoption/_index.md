@@ -19,7 +19,7 @@ title: DevOps adoption by group
 {{< /history >}}
 
 DevOps adoption shows you how groups in your organization adopt and use GitLab features.
-This information is available for groups and [instances](../../../administration/analytics/dev_ops_reports.md).
+This information is available for groups and [instances](../../../administration/analytics/devops_adoption.md).
 
 Use DevOps adoption for groups to:
 

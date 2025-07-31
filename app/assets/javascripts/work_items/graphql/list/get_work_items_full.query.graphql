@@ -26,6 +26,7 @@ query getWorkItemsFull(
   $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
+  $crmOrganizationId: String
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
@@ -61,6 +62,7 @@ query getWorkItemsFull(
       types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
+      crmOrganizationId: $crmOrganizationId
       in: $in
       not: $not
       or: $or

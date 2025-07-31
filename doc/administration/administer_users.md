@@ -40,7 +40,7 @@ Administer and manage users in GitLab Self-Managed.
 - [User cohorts](user_cohorts.md)
 - [Broadcast messages](broadcast_messages.md)
 - [Email from GitLab](email_from_gitlab.md)
-- [User management Rake tasks](../raketasks/user_management.md)
+- [User management Rake tasks](raketasks/user_management.md)
 
 ## Security and authentication
 

@@ -276,7 +276,7 @@ Information and Event Management (SIEM) solution.
 
 #### Event Types
 
-GitLab outlines the [configurable audit event log types](../administration/audit_event_streaming/_index.md),
+GitLab outlines the [configurable audit event log types](../administration/compliance/audit_event_streaming.md),
 which can be streamed and/or saved to a database. Administrators are
 able to configure the events that they'd like captured for their GitLab
 instance.

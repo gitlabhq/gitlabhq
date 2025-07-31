@@ -44,6 +44,7 @@ import {
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_UPDATED,
+  TOKEN_TYPE_ORGANIZATION,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
@@ -125,6 +126,7 @@ describeSkipVue3(skipReason, () => {
     workItemPlanningView = false,
     props = {},
     additionalHandlers = [],
+    canReadCrmOrganization = true,
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -148,6 +150,7 @@ describeSkipVue3(skipReason, () => {
           okrsMvc: true,
           workItemPlanningView,
         },
+        canReadCrmOrganization,
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
@@ -497,6 +500,7 @@ describeSkipVue3(skipReason, () => {
         TOKEN_TYPE_LABEL,
         TOKEN_TYPE_MILESTONE,
         TOKEN_TYPE_MY_REACTION,
+        TOKEN_TYPE_ORGANIZATION,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_TYPE,
@@ -534,6 +538,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_LABEL,
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -564,10 +569,54 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_LABEL,
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
         ]);
+      });
+    });
+
+    describe('Organization filter token', () => {
+      describe('when canReadCrmOrganization is true', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('configures organization token with correct properties', () => {
+          const organizationToken = findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_ORGANIZATION);
+
+          expect(organizationToken).toMatchObject({
+            fullPath: 'full/path',
+            isProject: true,
+            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-crm-organizations',
+            operators: [{ description: 'is', value: '=' }],
+          });
+        });
+      });
+
+      describe('when canReadCrmOrganization is false', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false, canReadCrmOrganization: false } });
+          await waitForPromises();
+        });
+
+        it('does not include organization token in available tokens', () => {
+          const tokens = findIssuableList()
+            .props('searchTokens')
+            .map((token) => token.type);
+
+          expect(tokens).not.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_ORGANIZATION,
+              }),
+            ]),
+          );
+        });
       });
     });
   });

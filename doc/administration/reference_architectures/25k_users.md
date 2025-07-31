@@ -1227,7 +1227,7 @@ For guidance on:
 
 - Implementing sharded Gitaly instead, follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md)
   instead of this section. Use the same Gitaly specs.
-- Migrating existing repositories that aren't managed by Gitaly Cluster, see
+- Migrating existing repositories that aren't managed by Gitaly Cluster (Praefect), see
   [migrate to Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).
 
 The recommended cluster setup includes the following components:

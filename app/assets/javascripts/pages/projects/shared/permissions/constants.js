@@ -56,7 +56,7 @@ export const extendedPratExpiryWebhooksExecuteHelpPath = helpPagePath(
   { anchor: 'add-additional-webhook-triggers-for-project-access-token-expiration' },
 );
 
-export const duoHelpPath = helpPagePath('user/ai_features');
+export const duoHelpPath = helpPagePath('user/gitlab_duo/_index');
 export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 export const duoContextExclusionHelpPath = helpPagePath('user/gitlab_duo/context_exclusion');
 

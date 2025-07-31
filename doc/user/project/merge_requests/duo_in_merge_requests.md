@@ -314,5 +314,5 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 ## Related topics
 
-- [Control GitLab Duo availability](../../ai_features_enable.md)
-- [All GitLab Duo features](../../ai_features.md)
+- [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
+- [All GitLab Duo features](../../gitlab_duo/_index.md)

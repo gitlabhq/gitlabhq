@@ -37,7 +37,7 @@ describe('GitlabDuoSettings', () => {
     });
   };
 
-  const findCard = () => wrapper.findByTestId('gitlab-duo-settings-card');
+  const findCard = () => wrapper.findByTestId('gitlab-duo-settings');
   const findSaveButton = () => wrapper.findByTestId('gitlab-duo-save-button');
   const findDuoSettings = () => wrapper.findByTestId('duo-settings');
   const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
@@ -80,7 +80,7 @@ describe('GitlabDuoSettings', () => {
 
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
-        helpPath: '/help/user/ai_features',
+        helpPath: '/help/user/gitlab_duo/_index',
         helpText: 'Use AI-native features in this project.',
         label: 'GitLab Duo',
         labelFor: null,

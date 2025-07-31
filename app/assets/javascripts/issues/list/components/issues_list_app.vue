@@ -558,7 +558,7 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_ORGANIZATION,
           title: TOKEN_TITLE_ORGANIZATION,
-          icon: 'users',
+          icon: 'organization',
           token: CrmOrganizationToken,
           fullPath: this.fullPath,
           isProject: this.isProject,

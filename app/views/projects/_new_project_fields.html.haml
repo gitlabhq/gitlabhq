@@ -10,7 +10,7 @@
   .form-group.gl-form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: s_('ProjectsNew|My project'), class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
+    = f.text_field :name, placeholder: s_('ProjectsNew|My project'), class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
     %small#js-project-name-description.form-text.gl-text-subtle
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden

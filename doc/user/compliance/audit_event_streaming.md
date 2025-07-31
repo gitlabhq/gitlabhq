@@ -398,4 +398,4 @@ To delete only the custom HTTP headers for a streaming destination:
 
 ## Related topics
 
-- [Audit event streaming for instances](../../administration/audit_event_streaming/_index.md)
+- [Audit event streaming for instances](../../administration/compliance/audit_event_streaming.md)

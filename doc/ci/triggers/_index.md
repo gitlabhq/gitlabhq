@@ -171,7 +171,7 @@ Using inputs to control pipeline behavior offers improved security and flexibili
 
 ### Pass pipeline inputs in the API call
 
-You can pass pipeline inputs in the trigger API call. [Inputs](../yaml/inputs.md)
+You can pass pipeline inputs in the trigger API call. [Inputs](../inputs/_index.md)
 provide a structured way to parameterize your pipelines with built-in validation and documentation.
 
 The parameter format is `inputs[name]=value`, for example:

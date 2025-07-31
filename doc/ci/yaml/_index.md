@@ -922,7 +922,7 @@ from the rest of the configuration with `---`.
 
 #### `spec:inputs`
 
-You can use `spec:inputs` to define [inputs](inputs.md) for the CI/CD configuration.
+You can use `spec:inputs` to define [inputs](../inputs/_index.md) for the CI/CD configuration.
 
 Use the interpolation format `$[[ inputs.input-id ]]` to reference the values outside of the header section.
 Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation.

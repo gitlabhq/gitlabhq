@@ -43,7 +43,7 @@ To add a pipeline schedule:
      but scheduled pipelines cannot run more frequently than the instance's
      [maximum scheduled pipeline frequency](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency).
    - **Target branch or tag**: Select the branch or tag for the pipeline.
-   - **Inputs**: Set values for any [inputs](../yaml/inputs.md) defined in your pipeline's `spec:inputs` section.
+   - **Inputs**: Set values for any [inputs](../inputs/_index.md) defined in your pipeline's `spec:inputs` section.
      These input values are used every time the scheduled pipeline runs. A schedule can have a maximum of 20 inputs.
    - **Variables**: Add any number of [CI/CD variables](../variables/_index.md) to the schedule.
      These variables are available only when the scheduled pipeline runs,

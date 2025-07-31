@@ -439,7 +439,7 @@ As outlined in the [user access section](_index.md#link-saml-to-your-existing-gi
 If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
 
 - That the top-level group has restricted membership by email domain.
-- That, in [audit events](../../../administration/audit_event_reports.md) for the top-level group:
+- That, in [audit events](../../../administration/compliance/audit_event_reports.md) for the top-level group:
   - You can see **Signed in with GROUP_SAML authentication** action for that user.
   - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
     - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](_index.md#unlink-accounts) from their personal account.

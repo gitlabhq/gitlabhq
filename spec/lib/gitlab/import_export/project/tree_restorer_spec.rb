@@ -286,14 +286,35 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(MergeRequestDiffCommit.count).to eq(77)
         end
 
-        it 'assigns committer and author details to all diff commits' do
+        it 'has the correct data for merge request commits metadata' do
+          expect(MergeRequest::CommitsMetadata.count).to eq(27)
+        end
+
+        it 'assigns committer and author details to all diff commits and commits metadata' do
           MergeRequestDiffCommit.all.each do |commit|
             expect(commit.commit_author_id).not_to be_nil
             expect(commit.committer_id).not_to be_nil
           end
+
+          MergeRequest::CommitsMetadata.all.each do |metadata|
+            expect(metadata.commit_author_id).not_to be_nil
+            expect(metadata.committer_id).not_to be_nil
+          end
         end
 
-        it 'assigns the correct commit users to different diff commits' do
+        it 'assigns the correct commit users to different diff commits and commits metadata' do
+          commit_metadata_1 = MergeRequest::CommitsMetadata
+            .find_by(sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9')
+
+          commit_metadata_2 = MergeRequest::CommitsMetadata
+            .find_by(sha: 'a4e5dfebf42e34596526acb8611bc7ed80e4eb3f')
+
+          expect(commit_metadata_1.commit_author.name).to eq('Dmitriy Zaporozhets')
+          expect(commit_metadata_1.commit_author.email).to eq('dmitriy.zaporozhets@gmail.com')
+
+          expect(commit_metadata_2.commit_author.name).to eq('James Lopez')
+          expect(commit_metadata_2.commit_author.email).to eq('james@jameslopez.es')
+
           commit1 = MergeRequestDiffCommit
             .find_by(sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9')
 
@@ -302,9 +323,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           expect(commit1.commit_author.name).to eq('Dmitriy Zaporozhets')
           expect(commit1.commit_author.email).to eq('dmitriy.zaporozhets@gmail.com')
+          expect(commit1.merge_request_commits_metadata).to eq(commit_metadata_1)
 
           expect(commit2.commit_author.name).to eq('James Lopez')
           expect(commit2.commit_author.email).to eq('james@jameslopez.es')
+          expect(commit2.merge_request_commits_metadata).to eq(commit_metadata_2)
         end
 
         it 'has the correct data for merge request latest_merge_request_diff' do

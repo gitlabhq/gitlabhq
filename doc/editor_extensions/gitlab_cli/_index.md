@@ -98,7 +98,7 @@ glab mr merge
 
 {{< /history >}}
 
-The GitLab CLI includes features powered by [GitLab Duo](../../user/ai_features.md). These include:
+The GitLab CLI includes features powered by [GitLab Duo](../../user/gitlab_duo/_index.md). These include:
 
 - [`glab duo ask`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/duo/ask.md)
 

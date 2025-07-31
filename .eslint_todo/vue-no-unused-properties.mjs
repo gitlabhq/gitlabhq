@@ -104,8 +104,6 @@ export default {
     'app/assets/javascripts/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/packages_protection_rules.vue',
     'app/assets/javascripts/packages_and_registries/shared/components/delete_package_modal.vue',
-    'app/assets/javascripts/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue',
-    'app/assets/javascripts/pages/projects/shared/permissions/components/settings_panel.vue',
     'app/assets/javascripts/performance_bar/components/performance_bar_app.vue',
     'app/assets/javascripts/popovers/components/popovers.vue',
     'app/assets/javascripts/projects/settings/branch_rules/components/edit/protections/merge_protections.vue',
