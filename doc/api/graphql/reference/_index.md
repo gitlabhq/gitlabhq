@@ -11373,6 +11373,28 @@ Input type: `SetGroupSecretPushProtectionInput`
 | <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsetgroupsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.setLicenseConfigurationSource`
+
+Set the license information source for a given project.
+
+Input type: `SetLicenseConfigurationSourceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetlicenseconfigurationsourceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetlicenseconfigurationsourceprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsetlicenseconfigurationsourcesource"></a>`source` | [`SecurityPreferredLicenseSourceConfiguration!`](#securitypreferredlicensesourceconfiguration) | Preferred source of license information for dependencies. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetlicenseconfigurationsourceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetlicenseconfigurationsourceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetlicenseconfigurationsourcelicenseconfigurationsource"></a>`licenseConfigurationSource` | [`SecurityPreferredLicenseSourceConfiguration`](#securitypreferredlicensesourceconfiguration) | Preferred source of license information for dependencies. |
+
 ### `Mutation.setPagesForceHttps`
 
 Input type: `SetPagesForceHttpsInput`
@@ -48365,6 +48387,13 @@ Type of search.
 | <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project/group only. |
 | <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project/group and ancestor groups. |
 | <a id="securitypolicyrelationtypeinherited_only"></a>`INHERITED_ONLY` | Policies defined for the project/group's ancestor groups only. |
+
+### `SecurityPreferredLicenseSourceConfiguration`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitypreferredlicensesourceconfigurationpmdb"></a>`PMDB` | Use internal instance license database as a source of license information for dependencies. |
+| <a id="securitypreferredlicensesourceconfigurationsbom"></a>`SBOM` | Use the SBOM as a source of license information for dependencies. |
 
 ### `SecurityReportTypeEnum`
 

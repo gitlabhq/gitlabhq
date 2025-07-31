@@ -82,13 +82,12 @@ and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
 ![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
 
-### Add a confirmation dialog for manual jobs
+### Require confirmation for manual jobs
 
-Use [`manual_confirmation`](../yaml/_index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
-The confirmation dialog helps to prevent accidental deployments or deletions,
-especially for sensitive jobs like those that deploy to production.
+Use [`manual_confirmation`](../yaml/_index.md#manual_confirmation) with `when: manual` to require confirmation for manual jobs.
+This helps prevent accidental deployments or deletions for sensitive jobs like those that deploy to production.
 
-Users are prompted to confirm the action before the manual job runs, which provides an additional layer of safety and control.
+When you trigger the job, you must confirm the action before it runs.
 
 ### Protect manual jobs
 

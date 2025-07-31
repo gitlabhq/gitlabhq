@@ -6107,7 +6107,7 @@ In this example, the script:
 {{< /history >}}
 
 Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs.
-If there is no manual job defined with `when: manual`, this keyword has no effect.
+If no manual job is defined with `when: manual`, this keyword has no effect.
 
 Manual confirmation works with all manual jobs, including environment stop jobs that use
 [`environment:action: stop`](#environmentaction).
