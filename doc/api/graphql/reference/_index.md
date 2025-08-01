@@ -1043,6 +1043,23 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.mavenVirtualRegistry`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
+
+Returns [`MavenVirtualRegistry`](#mavenvirtualregistry).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymavenvirtualregistryid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | Global ID of the Maven virtual registry. |
+
 ### `Query.memberRole`
 
 {{< details >}}

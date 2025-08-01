@@ -237,6 +237,8 @@ module API
       end
 
       resource :job do
+        helpers ::API::Helpers::KasHelpers
+
         before do
           # Use primary for both main and ci database as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
@@ -293,6 +295,8 @@ module API
               protected_ref: pipeline.protected_ref? },
             pipeline.project
           ).execute
+
+          set_feature_flag_header(user: current_user, project: project)
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api
           {

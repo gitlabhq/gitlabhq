@@ -832,5 +832,23 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'with feature flags' do
+      before do
+        allow(::Feature::Kas).to receive(:server_feature_flags_for_http_response).and_return(
+          { 'feature_flag_a' => 'true', 'feature_flag_b' => 'false' }
+        )
+      end
+
+      it 'returns feature flags in response header' do
+        deployment_project.add_member(user, :developer)
+        token = new_token
+        public_id = stub_user_session(user, token)
+        access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+        send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+        expect(response.headers.to_h).to include({ 'Gitlab-Feature-Flag' => 'feature_flag_a=true, feature_flag_b=false' })
+      end
+    end
   end
 end

@@ -22,11 +22,26 @@ sections_with_no_tw_review = {
 # One exception to the exceptions above: Technical Writing docs should get a TW review.
 TW_DOCS_PATH = 'doc/development/documentation'
 
+# Some docs require a longer pipeline, which cannot be avoided.
+sections_with_tier3_review = {
+  'doc/_index.md' => [],
+  'doc/api/settings.md' => []
+}
+
 docs_paths_to_review.reject! do |doc|
   section_with_no_tw_review = sections_with_no_tw_review.keys.find { |skip_path| doc.start_with?(skip_path) && !doc.start_with?(TW_DOCS_PATH) }
   next unless section_with_no_tw_review
 
   sections_with_no_tw_review[section_with_no_tw_review] << doc
+
+  true
+end
+
+docs_paths_to_review.reject! do |doc|
+  section = sections_with_tier3_review.keys.find { |skip_path| doc.start_with?(skip_path) && !doc.start_with?(TW_DOCS_PATH) }
+  next unless section
+
+  sections_with_tier3_review[section] << doc
 
   true
 end
@@ -48,6 +63,10 @@ MSG
 
 LOCALIZATION_MESSAGE = <<~MSG
 This MR contains files in the /doc-locale directory. These files are translations maintained through a separate process and should not be edited directly. If you are not part of the Localization team, please remove the changes to these files from your MR.
+MSG
+
+DOCS_LONG_PIPELINE_MESSAGE = <<~MSG
+This merge request contains documentation files that require a tier-3 code pipeline before merge. After you complete all needed documentation reviews with short docs pipelines, see the [instructions for running a long pipeline](https://docs.gitlab.com/development/documentation/workflow/#pipelines-and-branch-naming) to this merge request.
 MSG
 
 # For regular pages, prompt for a TW review
@@ -97,6 +116,8 @@ if sections_with_no_tw_review["doc/solutions"].any?
 end
 
 message(LOCALIZATION_MESSAGE) if sections_with_no_tw_review["doc-locale"].any?
+
+message(DOCS_LONG_PIPELINE_MESSAGE) if sections_with_tier3_review.values.flatten.any?
 
 unless docs_paths_to_review.empty?
   message(DOCS_UPDATE_SHORT_MESSAGE)

@@ -3,6 +3,17 @@
 module RuboCop
   module Cop
     module Performance
+      # Cop that encourages streaming file reading instead of reading the entire file into memory.
+      # @example
+      #   # bad
+      #   File.readlines('some_file.txt').each do |line|
+      #      process(line)
+      #   end
+      #
+      #   # good
+      #   File.each_line('some_file.txt') do |line|
+      #      process(line)
+      #   end
       class ReadlinesEach < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 

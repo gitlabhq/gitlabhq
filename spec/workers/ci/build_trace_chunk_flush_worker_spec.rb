@@ -27,5 +27,43 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
         expect(chunk.reload).to be_migrated
       end
     end
+
+    # rubocop: disable RSpec/AnyInstanceOf -- next_instance_of will not work here
+    context 'when save operation fails and self-healing is enabled' do
+      before do
+        stub_feature_flags(self_heal_build_trace_chunk_flushing: true)
+      end
+
+      it 'preserves Redis data on first failure and completes migration on retry' do
+        expect(chunk).to be_live
+
+        allow_any_instance_of(Ci::BuildTraceChunk).to receive(:save!).and_return(false)
+
+        # First run save! fails so we should still have redis data
+        expect do
+          described_class.new.perform(chunk.id)
+        end.to raise_error(Ci::BuildTraceChunk::FailedToPersistDataError)
+
+        chunk.reload
+        expect(chunk).to be_live
+        expect(chunk).not_to be_migrated
+
+        redis_data = Ci::BuildTraceChunks::RedisTraceChunks.new.data(chunk)
+        expect(redis_data).to eq(data)
+
+        allow_any_instance_of(Ci::BuildTraceChunk).to receive(:save!).and_call_original
+
+        # Second run it recovers
+        described_class.new.perform(chunk.id)
+
+        chunk.reload
+        expect(chunk).to be_migrated
+        expect(chunk).not_to be_live
+
+        redis_data = Ci::BuildTraceChunks::RedisTraceChunks.new.data(chunk)
+        expect(redis_data).to be_nil
+      end
+    end
+    # rubocop: enable RSpec/AnyInstanceOf
   end
 end

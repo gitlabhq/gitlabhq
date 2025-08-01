@@ -257,7 +257,13 @@ module Ci
       #
       # TODO consider using callbacks and state machine to remove old data
       #
-      unsafe_set_data!(current_data)
+      saved = unsafe_set_data!(current_data)
+
+      # We've seen save! fail silently so don't delete the redis data to allow
+      # a self-heal to happen automatically the next run, raise to re-try
+      if Feature.enabled?(:self_heal_build_trace_chunk_flushing, build.project) && !saved
+        raise FailedToPersistDataError, 'Check PG logs'
+      end
 
       old_store_class.delete_data(self)
     end

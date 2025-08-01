@@ -3,6 +3,15 @@
 module RuboCop
   module Cop
     module Performance
+      # Cop that encourages efficient use of counts on collection by substituting more than one queries with one query.
+      # @example
+      #   # bad
+      #   users.count
+      #   users.each { |u| work(u) }
+      #
+      #   # good
+      #   users.load.size
+      #   users.each { |u| work(u) }
       class ARCountEach < RuboCop::Cop::Base
         def message(ivar)
           "If #{ivar} is AR relation, avoid `#{ivar}.count ...; #{ivar}.each... `, this will trigger two queries. " \

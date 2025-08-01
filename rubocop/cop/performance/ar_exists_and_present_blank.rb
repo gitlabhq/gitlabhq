@@ -3,6 +3,14 @@
 module RuboCop
   module Cop
     module Performance
+      # Cop that detects inefficient patterns using ActiveRecord's `exists?`, `present?`,
+      # or `blank?` in a suboptimal way.
+      # @example
+      #   # bad
+      #   users.present?
+      #
+      #   # good
+      #   users.any?
       class ARExistsAndPresentBlank < RuboCop::Cop::Base
         def message_present(ivar)
           "Avoid `#{ivar}.present?`, because it will generate database query 'Select TABLE.*' which is expensive. "\

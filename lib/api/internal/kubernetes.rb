@@ -119,6 +119,8 @@ module API
             service_response = ::Clusters::Agents::AuthorizeProxyUserService.new(user, agent).execute
             render_api_error!(service_response[:message], service_response[:reason]) unless service_response.success?
 
+            set_feature_flag_header_for_agent(user: user, agent: agent)
+
             service_response.payload
           end
         end

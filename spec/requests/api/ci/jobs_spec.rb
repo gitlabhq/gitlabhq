@@ -283,6 +283,10 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     before do |example|
+      allow(::Feature::Kas).to receive(:server_feature_flags_for_http_response).and_return(
+        { 'feature_flag_a' => 'true', 'feature_flag_b' => 'false' }
+      )
+
       unless example.metadata[:skip_before_request]
         subject
       end
@@ -314,6 +318,10 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
           expect(json_response['allowed_agents']).to match_array expected_allowed_agents
         end
+
+        it 'returns feature flags in response header' do
+          expect(response.headers.to_h).to include({ 'Gitlab-Feature-Flag' => 'feature_flag_a=true, feature_flag_b=false' })
+        end
       end
 
       shared_examples_for 'valid allowed_agents request for a job with environment' do
@@ -330,6 +338,10 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           end
 
           expect(json_response['allowed_agents']).to match_array(expected_allowed_agents)
+        end
+
+        it 'returns feature flags in response header' do
+          expect(response.headers.to_h).to include({ 'Gitlab-Feature-Flag' => 'feature_flag_a=true, feature_flag_b=false' })
         end
       end
 

@@ -3825,6 +3825,7 @@ Gitlab/BoundedContexts:
     - 'lib/feature/actor_wrapper.rb'
     - 'lib/feature/definition.rb'
     - 'lib/feature/gitaly.rb'
+    - 'lib/feature/kas.rb'
     - 'lib/feature/logger.rb'
     - 'lib/feature/shared.rb'
     - 'lib/file_size_validator.rb'
