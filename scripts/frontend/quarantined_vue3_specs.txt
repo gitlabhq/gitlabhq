@@ -1,7 +1,6 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
-ee/spec/frontend/analytics/analytics_dashboards/components/analytics_data_explorer_spec.js
 ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
 ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
@@ -21,7 +20,6 @@ ee/spec/frontend/members/components/table/members_table_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
-ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js

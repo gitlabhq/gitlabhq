@@ -5013,6 +5013,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#create_merge_request_diff' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    context 'when preload_gitaly is true' do
+      subject(:create_merge_request_diff) { merge_request.create_merge_request_diff(preload_gitaly: true) }
+
+      it 'fetches the ref' do
+        expect(merge_request).to receive(:fetch_ref!).and_call_original
+
+        create_merge_request_diff
+      end
+
+      it 'reloads the diff' do
+        expect { create_merge_request_diff }
+          .to change { merge_request.merge_request_diff }
+      end
+
+      it 'preload the gitaly data' do
+        expect_next_instance_of(MergeRequestDiff) do |diff|
+          expect(diff).to receive(:preload_gitaly_data).and_call_original
+        end
+
+        create_merge_request_diff
+      end
+    end
+
+    context 'when preload_gitaly defaults to false' do
+      subject(:create_merge_request_diff) { merge_request.create_merge_request_diff }
+
+      it 'fetches the ref' do
+        expect(merge_request).to receive(:fetch_ref!).and_call_original
+
+        create_merge_request_diff
+      end
+
+      it 'reloads the diff' do
+        expect { create_merge_request_diff }
+          .to change { merge_request.merge_request_diff }
+      end
+
+      it 'does not preload the gitaly data' do
+        expect_next_instance_of(MergeRequestDiff) do |diff|
+          expect(diff).not_to receive(:preload_gitaly_data).and_call_original
+        end
+
+        create_merge_request_diff
+      end
+    end
+  end
+
   describe '#pipeline_coverage_delta' do
     let!(:merge_request) { create(:merge_request) }
 

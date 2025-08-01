@@ -512,8 +512,10 @@ However, you can make an exception for **right-click** and **click-through demo*
 
 ## cloud licensing
 
-Do not use the phrase **cloud licensing**. Instead, focus on the fact
-that this subscription is synchronized with GitLab.
+Avoid the phrase **cloud licensing**, except when you have to describe the process
+of synchronizing an activation code over the internet.
+
+If you can, rather focus on the fact that this subscription is synchronized with GitLab.
 
 For example:
 
@@ -1556,13 +1558,17 @@ Licenses are different than subscriptions.
 - A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
 - A subscription is the subscription tier that the user purchases.
 
-Do not use the term [**cloud license**](#cloud-licensing).
+Avoid the terms [**cloud license** or **cloud licensing**](#cloud-licensing) if possible.
 
 The following terms are displayed in the UI and in emails. You can use them when necessary:
 
 - **Online license** - a license synchronized with GitLab
 - **Offline license** - a license not synchronized with GitLab
 - **Legacy license** - a license created before synchronization was possible
+
+You can also use the terms **legacy license file** and **offline license file** when
+describing the files that customers receive by email as part of the overall
+licensing and synchronization process.
 
 However, if you can, rather than the relying on the term, use the more specific description instead.
 

@@ -25,9 +25,17 @@ module MergeRequests
     def recreate_merge_head_diff
       merge_request.merge_head_diff&.destroy!
 
+      preload_gitaly = Feature.enabled?(:preload_mr_diff_gitaly_data, merge_request.project)
+
       # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        merge_request.create_merge_head_diff!
+        if preload_gitaly
+          merge_head_diff = merge_request.build_merge_head_diff
+          merge_head_diff.preload_gitaly_data
+          merge_head_diff.save!
+        else
+          merge_request.create_merge_head_diff!
+        end
       end
 
       # Reset the merge request so it won't load the merge head diff as the

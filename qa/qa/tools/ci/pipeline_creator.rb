@@ -5,12 +5,27 @@ require "digest"
 module QA
   module Tools
     module Ci
+      # Pipeline creator class is responsible for creating child pipeline definitions
+      #   of functional e2e tests dynamically. It relies on all child pipelines having the same structure where
+      #   each pipeline will have a set of jobs running functional e2e tests. Dynamic scaling feature requires
+      #   mapping between scenario classes and job names to exist. It also uses knapsack reports for test runtime
+      #   data which is then used to calculate total runtime of particular functional e2e scenario class.
+      #
+      # Class support additional creation of other types of pipelines that will skip any runtime based dynamic logic.
+      # This is useful to still retain functionality to create a noop pipeline when needed and might be otherwise hard
+      #   to implement with pure gitlab CI rules.
+      #
       class PipelineCreator
-        # Supported pipeline types
+        # Supported functional e2e pipeline types that will be generated using dynamic scaling features
         # These are only values permitted in scenario class pipeline mappings
         #
         # @return [Array]
-        SUPPORTED_PIPELINES = %i[test_on_cng test_on_gdk test_on_omnibus test_on_omnibus_nightly].freeze
+        FUNCTIONAL_E2E_PIPELINE_TYPES = %i[test_on_cng test_on_gdk test_on_omnibus test_on_omnibus_nightly].freeze
+
+        # Additional pipeline types that will be created by simply copying pipeline definition without applying
+        #   dynamic scaling logic
+        # @return [Array]
+        NON_FUNCTIONAL_PIPELINE_TYPES = %i[performance_on_cng].freeze
 
         # Runtime target in seconds for test run within single job
         #
@@ -53,20 +68,28 @@ module QA
           @logger = logger
         end
 
-        # Generate E2E test pipelines yaml files
+        # Generate functional E2E test pipelines yaml files
         #
         # @param pipeline_types [Array] pipeline types to generate
         # @return [void]
-        def create(pipeline_types = SUPPORTED_PIPELINES)
-          unless (pipeline_types - SUPPORTED_PIPELINES).empty?
+        def create(pipeline_types = FUNCTIONAL_E2E_PIPELINE_TYPES)
+          unless (pipeline_types - FUNCTIONAL_E2E_PIPELINE_TYPES).empty?
             raise(ArgumentError, "Unsupported pipeline type filter set!")
           end
 
-          updated_pipeline_definitions(pipeline_types).each do |type, yaml|
-            file_name = generated_yml_file_name(type)
-            File.write(file_name, yaml)
-            logger.info("Pipeline definition file created: '#{file_name}'")
+          create_pipeline_definition_files(updated_pipeline_definitions(pipeline_types))
+        end
+
+        # Generate non functional E2E test pipeline yaml files
+        #
+        # @return [void]
+        def create_non_functional
+          base_variables = base_pipeline_variables.map { |k, v| "  #{k}: \"#{v}\"" }.join("\n")
+          definitions = non_functional_test_pipeline_definitions.transform_values do |yml|
+            "#{yml}\nvariables:\n#{base_variables}"
           end
+
+          create_pipeline_definition_files(definitions)
         end
 
         # Create noop pipeline definitions for each supported pipeline type
@@ -75,7 +98,9 @@ module QA
         def create_noop(reason: nil)
           noop_yml = noop_pipeline_yml(reason || "no-op run, nothing will be executed!")
 
-          SUPPORTED_PIPELINES.each { |type| File.write(generated_yml_file_name(type), noop_yml) }
+          (FUNCTIONAL_E2E_PIPELINE_TYPES + NON_FUNCTIONAL_PIPELINE_TYPES).each do |type|
+            File.write(generated_yml_file_name(type), noop_yml)
+          end
           logger.info("Created noop pipeline definitions for all E2E test pipelines")
         end
 
@@ -118,11 +143,20 @@ module QA
                              end
         end
 
-        # Pipeline definitions
+        # Functional test pipeline definitions
         #
         # @return [Hash<Symbol, String>]
-        def pipeline_definitions
-          @pipeline_definitions ||= SUPPORTED_PIPELINES.index_with do |pipeline_type|
+        def functional_pipeline_definitions
+          @functional_pipeline_definitions ||= FUNCTIONAL_E2E_PIPELINE_TYPES.index_with do |pipeline_type|
+            File.read(File.join(ci_files_path, pipeline_type.to_s.tr("_", "-"), "main.gitlab-ci.yml"))
+          end
+        end
+
+        # Non functional test pipeline definitions
+        #
+        # @return [Hash<Symbol, String>]
+        def non_functional_test_pipeline_definitions
+          @non_functional_test_pipeline_definitions ||= NON_FUNCTIONAL_PIPELINE_TYPES.index_with do |pipeline_type|
             File.read(File.join(ci_files_path, pipeline_type.to_s.tr("_", "-"), "main.gitlab-ci.yml"))
           end
         end
@@ -149,16 +183,28 @@ module QA
           @scenario_examples ||= ScenarioExamples.fetch(tests)
         end
 
+        # Base variables included in all pipeline types
+        #
+        # @return [Hash]
+        def base_pipeline_variables
+          @base_pipeline_variables ||= begin
+            ruby_version = File.read(File.join(project_root, ".ruby-version")).strip
+
+            {
+              "RUBY_VERSION" => ENV["RUBY_VERSION"] || ruby_version,
+              "GITLAB_SEMVER_VERSION" => File.read(File.join(project_root, "VERSION")),
+              "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"]
+            }.compact
+          end
+        end
+
         # Additional variables section for generated pipeline
         #
         # @return [String]
         def variables_section
           @pipeline_variables ||= "variables:\n".then do |variables|
-            ruby_version = File.read(File.join(project_root, ".ruby-version")).strip
             vars = {
-              "RUBY_VERSION" => ENV["RUBY_VERSION"] || ruby_version,
-              "GITLAB_SEMVER_VERSION" => File.read(File.join(project_root, "VERSION")),
-              "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
+              **base_pipeline_variables,
               # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
               "QA_SUITES" => executable_qa_suites,
               "QA_TESTS" => tests&.join(" ")
@@ -198,6 +244,18 @@ module QA
             end
         end
 
+        # Create pipeline definition files
+        #
+        # @param definitions [Hash<Symbol, String>]
+        # @return [void]
+        def create_pipeline_definition_files(definitions)
+          definitions.each do |type, yaml|
+            file_name = generated_yml_file_name(type)
+            File.write(file_name, yaml)
+            logger.info("Pipeline definition file created: '#{file_name}'")
+          end
+        end
+
         # Pipeline job runtimes
         #
         # Hash with pipeline type as key and array of runtimes for each job running within that pipeline
@@ -206,7 +264,7 @@ module QA
         def pipeline_job_runtimes
           scenario_runtimes.each_with_object(Hash.new { |hsh, key| hsh[key] = [] }) do |(scenario, runtime), runtimes|
             scenario.pipeline_mapping.each do |pipeline_type, jobs|
-              unless SUPPORTED_PIPELINES.include?(pipeline_type)
+              unless FUNCTIONAL_E2E_PIPELINE_TYPES.include?(pipeline_type)
                 raise "Scenario class '#{scenario}' contains unsupported pipeline type '#{pipeline_type}'"
               end
 
@@ -230,7 +288,7 @@ module QA
               next definitions[pipeline_type] = noop_pipeline_yml("no-op run, pipeline has no executable tests")
             end
 
-            pipeline = jobs.reduce(pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
+            pipeline = jobs.reduce(functional_pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
               runtime_min = (job[:runtime] / 60).ceil
               logger.info("  Updating '#{job[:name]}' job based on total runtime of '#{runtime_min}' minutes")
               updated_job(job[:name], job[:runtime], pipeline_yml, pipeline_type)

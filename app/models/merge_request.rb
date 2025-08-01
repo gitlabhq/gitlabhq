@@ -1302,12 +1302,19 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.persisted? || create_merge_request_diff
   end
 
-  def create_merge_request_diff
+  def create_merge_request_diff(preload_gitaly: false)
     fetch_ref!
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
     Gitlab::GitalyClient.allow_n_plus_1_calls do
-      merge_request_diffs.create!
+      if preload_gitaly
+        new_diff = merge_request_diffs.build
+        new_diff.preload_gitaly_data
+        new_diff.save!
+      else
+        merge_request_diffs.create!
+      end
+
       reload_merge_request_diff
     end
   end

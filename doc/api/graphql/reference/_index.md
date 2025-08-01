@@ -53384,8 +53384,10 @@ Attributes for value stream setting.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetcustomfieldfilterinputtypecustomfieldid"></a>`customFieldId` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="workitemwidgetcustomfieldfilterinputtypecustomfieldid"></a>`customFieldId` | [`IssuablesCustomFieldID`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="workitemwidgetcustomfieldfilterinputtypecustomfieldname"></a>`customFieldName` | [`String`](#string) | Name of the custom field. |
 | <a id="workitemwidgetcustomfieldfilterinputtypeselectedoptionids"></a>`selectedOptionIds` | [`[IssuablesCustomFieldSelectOptionID!]`](#issuablescustomfieldselectoptionid) | Global IDs of the selected options for custom fields with select type. |
+| <a id="workitemwidgetcustomfieldfilterinputtypeselectedoptionvalues"></a>`selectedOptionValues` | [`[String!]`](#string) | Values of the selected options for custom fields with select type. |
 
 ### `WorkItemWidgetCustomFieldValueInputType`
 

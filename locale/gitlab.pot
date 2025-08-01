@@ -7717,9 +7717,6 @@ msgstr ""
 msgid "Analytics|A dashboard with that name already exists."
 msgstr ""
 
-msgid "Analytics|A visualization with that name already exists."
-msgstr ""
-
 msgid "Analytics|Add a visualization"
 msgstr ""
 
@@ -7730,9 +7727,6 @@ msgid "Analytics|Add visualization"
 msgstr ""
 
 msgid "Analytics|Add visualizations"
-msgstr ""
-
-msgid "Analytics|An error occurred while loading data"
 msgstr ""
 
 msgid "Analytics|Analytics dashboards"
@@ -7747,9 +7741,6 @@ msgstr ""
 msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
 msgstr ""
 
-msgid "Analytics|Are you sure you want to cancel creating this visualization?"
-msgstr ""
-
 msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
 msgstr ""
 
@@ -7757,12 +7748,6 @@ msgid "Analytics|Cancel"
 msgstr ""
 
 msgid "Analytics|Charts"
-msgstr ""
-
-msgid "Analytics|Code"
-msgstr ""
-
-msgid "Analytics|Column chart"
 msgstr ""
 
 msgid "Analytics|Configure analytics reports."
@@ -7778,9 +7763,6 @@ msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Create your dashboard"
-msgstr ""
-
-msgid "Analytics|Create your visualization"
 msgstr ""
 
 msgid "Analytics|Created by GitLab"
@@ -7802,12 +7784,6 @@ msgid "Analytics|Dashboard title"
 msgstr ""
 
 msgid "Analytics|Dashboard was saved successfully"
-msgstr ""
-
-msgid "Analytics|Data explorer"
-msgstr ""
-
-msgid "Analytics|Data table"
 msgstr ""
 
 msgid "Analytics|Date range"
@@ -7839,13 +7815,7 @@ msgstr ""
 msgid "Analytics|Enter a dashboard title"
 msgstr ""
 
-msgid "Analytics|Enter a visualization title"
-msgstr ""
-
 msgid "Analytics|Error while saving dashboard"
-msgstr ""
-
-msgid "Analytics|Error while saving visualization."
 msgstr ""
 
 msgid "Analytics|Events received since %{date}"
@@ -7878,9 +7848,6 @@ msgstr ""
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr ""
 
-msgid "Analytics|Line chart"
-msgstr ""
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr ""
 
@@ -7893,22 +7860,7 @@ msgstr ""
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
-msgid "Analytics|Save and add to Dashboard"
-msgstr ""
-
 msgid "Analytics|Save your dashboard"
-msgstr ""
-
-msgid "Analytics|Save your visualization"
-msgstr ""
-
-msgid "Analytics|Select a measurement"
-msgstr ""
-
-msgid "Analytics|Select a visualization type"
-msgstr ""
-
-msgid "Analytics|Single statistic"
 msgstr ""
 
 msgid "Analytics|Single stats"
@@ -7929,9 +7881,6 @@ msgstr ""
 msgid "Analytics|Something went wrong."
 msgstr ""
 
-msgid "Analytics|Start by choosing a measure"
-msgstr ""
-
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr ""
 
@@ -7939,9 +7888,6 @@ msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count
 msgstr ""
 
 msgid "Analytics|Tables"
-msgstr ""
-
-msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
@@ -7962,22 +7908,10 @@ msgstr ""
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr ""
 
-msgid "Analytics|Use the data explorer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
-msgstr ""
-
 msgid "Analytics|View available dashboards"
 msgstr ""
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
-msgstr ""
-
-msgid "Analytics|Visualization"
-msgstr ""
-
-msgid "Analytics|Visualization title"
-msgstr ""
-
-msgid "Analytics|Visualization was saved successfully"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -19040,9 +18974,6 @@ msgstr ""
 msgid "Country or region is required."
 msgstr ""
 
-msgid "Counts"
-msgstr ""
-
 msgid "Counts reflect children you may not have access to."
 msgstr ""
 
@@ -21360,9 +21291,6 @@ msgstr ""
 msgid "Dates"
 msgstr ""
 
-msgid "Day"
-msgstr ""
-
 msgid "Day of month"
 msgstr ""
 
@@ -21851,7 +21779,7 @@ msgstr ""
 msgid "Dependencies|Direct dependents"
 msgstr ""
 
-msgid "Dependencies|Enter at least 3 characters to view available components."
+msgid "Dependencies|Enter at least 2 characters to view available components."
 msgstr ""
 
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
@@ -23324,9 +23252,6 @@ msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""
 
 msgid "Diffs|with %{additions} and %{deletions}"
-msgstr ""
-
-msgid "Dimension"
 msgstr ""
 
 msgid "Direct"
@@ -40020,9 +39945,6 @@ msgstr ""
 msgid "Minimum role required to cancel a pipeline or job"
 msgstr ""
 
-msgid "Minute"
-msgstr ""
-
 msgid "Minutes"
 msgstr ""
 
@@ -47981,13 +47903,7 @@ msgstr ""
 msgid "ProductAnalytics|Current month to date"
 msgstr ""
 
-msgid "ProductAnalytics|Custom event name"
-msgstr ""
-
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
-msgstr ""
-
-msgid "ProductAnalytics|Dimension"
 msgstr ""
 
 msgid "ProductAnalytics|Edit project provider settings"
@@ -48014,9 +47930,6 @@ msgstr ""
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr ""
 
-msgid "ProductAnalytics|Group by"
-msgstr ""
-
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
 msgstr ""
 
@@ -48036,9 +47949,6 @@ msgid "ProductAnalytics|Loading instance"
 msgstr ""
 
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
-msgstr ""
-
-msgid "ProductAnalytics|Measure"
 msgstr ""
 
 msgid "ProductAnalytics|Month"
@@ -51441,9 +51351,6 @@ msgid "Q got your message!"
 msgstr ""
 
 msgid "QualitySummary|Project quality"
-msgstr ""
-
-msgid "Quarter"
 msgstr ""
 
 msgid "Queued"
@@ -55866,9 +55773,6 @@ msgid "Seats"
 msgstr ""
 
 msgid "Seats owed"
-msgstr ""
-
-msgid "Second"
 msgstr ""
 
 msgid "Secondary email:"
@@ -70697,9 +70601,6 @@ msgid "Wed"
 msgstr ""
 
 msgid "Wednesday"
-msgstr ""
-
-msgid "Week"
 msgstr ""
 
 msgid "Weekday"

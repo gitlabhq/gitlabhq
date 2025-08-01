@@ -20,7 +20,7 @@ RSpec.describe Oauth::TokenInfoController do
       end
 
       it 'responds with the token info' do
-        get :show, params: { access_token: access_token.plaintext_token }
+        get :show, params: { access_token: access_token.token }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)).to eq(
@@ -50,7 +50,7 @@ RSpec.describe Oauth::TokenInfoController do
       end
 
       it 'responds with a 401' do
-        get :show, params: { access_token: access_token.plaintext_token }
+        get :show, params: { access_token: access_token.token }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
         expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_token')

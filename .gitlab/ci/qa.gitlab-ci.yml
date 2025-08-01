@@ -262,6 +262,21 @@ e2e:test-on-cng:
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-cng-pipeline.yml
 
+e2e:perf-on-cng:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:e2e:perf-on-cng
+  stage: qa
+  needs:
+    - compile-production-assets
+    - e2e-test-pipeline-generate
+  variables:
+    QA_RUN_TYPE: e2e-perf-on-cng
+    PIPELINE_NAME: E2E Performance CNG
+    DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/performance-on-cng-pipeline.yml
+    PARENT_CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+  allow_failure: true
+
 e2e:code-suggestions-eval:
   extends:
     - .qa:rules:code-suggestions-eval

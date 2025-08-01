@@ -2084,7 +2084,6 @@ Gitlab/BoundedContexts:
     - 'app/workers/web_hook_worker.rb'
     - 'app/workers/x509_certificate_revoke_worker.rb'
     - 'app/workers/x509_issuer_crl_check_worker.rb'
-    - 'ee/app/events/epics/epic_updated_event.rb'
     - 'ee/app/events/namespace_settings/ai_related_settings_changed_event.rb'
     - 'ee/app/finders/app_sec/fuzzing/coverage/corpuses_finder.rb'
     - 'ee/app/finders/approval_rules/group_finder.rb'

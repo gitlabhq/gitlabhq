@@ -27,6 +27,60 @@ This Rake task:
 1. Based on the run time value, [dynamic job scaling](_index.md#dynamic-parallel-job-scaling) calculates the necessary number of parallel CI/CD jobs for each scenario type
    and generates pipeline YAML file with appropriate values.
 
+## `e2e:perf-on-cng`
+
+The `e2e:perf-on-cng` child pipeline runs tests against a [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.
+
+Deployment is managed by the [`orchestrator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-orchestrator/README.md)
+CLI tool, which you can also use to locally recreate CI/CD deployments.
+
+The `e2e:perf-on-cng` child pipeline is executed in merge requests and is a non blocking job. If any test fails, it won't block your merge requests from being merged.
+
+### Setup
+
+This E2E test child pipeline is triggered by the `e2e:perf-on-cng` job using dynamically generated CI/CD YAML file stored as artifacts in the `e2e-test-pipeline-generate`
+CI/CD job. CI/CD YAML files are generated using a [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/test-on-cng/main.gitlab-ci.yml).
+
+### child pipeline jobs
+
+The child pipeline consists of several stages that support E2E test execution.
+
+#### .pre
+
+- `build-cng-env` job is responsible for setting up all environment variables for [CNG](https://gitlab.com/gitlab-org/build/CNG-mirror) downstream pipeline
+- `build-cng` job triggers `CNG` downstream pipeline which is responsible for building all necessary images
+
+#### prepare
+
+- `dotenv-vars` job is responsible to create an artifact out of the `qa/performance_test` folder which consists of all the k6 performance test. This artifact will be downloaded by downstream pipeline jobs to run the tests. It also stores some env vars like `CI_JOB_NAME`, `CI_JOB_ID` and `GITLAB_HELM_CHART_REF` as can be seen in the [job definition](https://gitlab.com/gitlab-org/gitlab/-/blob/andywh/perf_testing_in_mr/.gitlab/ci/performance-on-cng/main.gitlab-ci.yml#L52-54), which will be used by `run-performance-tests` job
+
+#### test
+
+##### `run-performance-test` job
+
+This job triggers a downstream multi-project pipeline in [Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) project. This pipeline performs the following actions
+
+1. Creates two gpc instances in the same region and zone.
+   1. server instance: where CNG instance of GitLab is created using `orchestrator`
+      1. local k8s cluster setup using [`kind`](https://github.com/kubernetes-sigs/kind)
+      1. GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
+   1. test runner instance: which runs the k6 tests download as an artifact from `dotenv-vars` job and runs it against the CNG GitLab instance created on the server instance.
+
+### Troubleshooting
+
+Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatiblity error.
+
+An example of the error is
+
+```shell
+/usr/lib/ruby/gems/3.3.0/gems/bundler-2.6.9/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb:225:in `resolve_conflict': Could not find compatible versions (Bundler::PubGrub::SolveFailure)
+Because every version of gitlab-backup-cli depends on grpc ~> 1.74.0
+  and Gemfile depends on gitlab-backup-cli >= 0,
+  grpc ~> 1.74.0 is required.
+```
+
+This happens because there might have been an update on the Gemfile which your merge request doesn't contain. Rebasing the merge request branch with the master branch should fix this issue.
+
 ## `e2e:test-on-cng`
 
 The `e2e:test-on-cng` child pipeline runs tests against a [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.

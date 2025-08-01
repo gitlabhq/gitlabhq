@@ -174,7 +174,7 @@ cng-qa-min-redis-version:
       export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
     - !reference [.cng-test, before_script]
   rules:
-    - !reference [.rules:test:mr-code-patterns, rules]  # run validation for minimal supported redis version only on application code changes
+    - !reference [.rules:test:mr-code-patterns, rules] # run validation for minimal supported redis version only on application code changes
     - *default-branch
 
 # ==========================================

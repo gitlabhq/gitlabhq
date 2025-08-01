@@ -235,6 +235,13 @@ class MergeRequestDiff < ApplicationRecord
     collected? || without_files? || overflow?
   end
 
+  def preload_gitaly_data
+    ensure_commit_shas
+
+    reversed_compare_commits_preloaded
+    compare_diffs_preloaded
+  end
+
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
@@ -863,10 +870,7 @@ class MergeRequestDiff < ApplicationRecord
     if compare.commits.empty?
       new_attributes[:state] = :empty
     else
-      options = Commit.max_diff_options
-      options[:generated_files] = compare.generated_files
-
-      diff_collection = compare.diffs(options)
+      diff_collection = compare_diffs_preloaded
       new_attributes[:real_size] = diff_collection.real_size
 
       if diff_collection.any?
@@ -889,8 +893,23 @@ class MergeRequestDiff < ApplicationRecord
     assign_attributes(new_attributes)
   end
 
+  def reversed_compare_commits_preloaded
+    strong_memoize(:reversed_commits) do
+      compare.commits.reverse
+    end
+  end
+
+  def compare_diffs_preloaded
+    strong_memoize(:compare_diffs) do
+      options = Commit.max_diff_options
+      options[:generated_files] = compare.generated_files
+
+      compare.diffs(options)
+    end
+  end
+
   def save_commits
-    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, project, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
+    MergeRequestDiffCommit.create_bulk(self.id, reversed_compare_commits_preloaded, project, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
     self.class.uncached { merge_request_diff_commits.reset }
   end
 

@@ -19,7 +19,7 @@ namespace :ci do
       raise "cannot have both pipeline:run-all-e2e and pipeline:skip-e2e labels. Please remove one of these labels"
     end
 
-    pipeline_creator = QA::Tools::Ci::PipelineCreator.new(
+    noop_pipeline_creator = QA::Tools::Ci::PipelineCreator.new(
       [],
       pipeline_path: pipeline_path,
       logger: logger
@@ -27,7 +27,7 @@ namespace :ci do
 
     if run_no_tests_label_present
       logger.info("Merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
-      next pipeline_creator.create_noop(reason: "no-op run, pipeline:skip-e2e label detected")
+      next noop_pipeline_creator.create_noop(reason: "no-op run, pipeline:skip-e2e label detected")
     end
 
     diff = mr_diff
@@ -40,19 +40,21 @@ namespace :ci do
       noop = changes.quarantine_changes? || changes.only_spec_removal? || changes.only_changes_to_non_e2e_spec_files?
 
       if noop && !run_all_label_present
+        msg_prefix = "Skipping e2e test execution because"
+
         if changes.quarantine_changes?
-          logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
-          next pipeline_creator.create_noop(reason: "no-op run, only quarantine changes detected in merge request")
+          logger.info("#{msg_prefix} only quarantine changes detected in merge request!")
+          next noop_pipeline_creator.create_noop(reason: "#{msg_prefix}, quarantine changes detected in merge request")
         end
 
         if changes.only_spec_removal?
-          logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
-          next pipeline_creator.create_noop(reason: "no-op run, only e2e spec removal detected in merge request")
+          logger.info("#{msg_prefix} only e2e spec removal detected in merge request!")
+          next noop_pipeline_creator.create_noop(reason: "#{msg_prefix} e2e spec removal detected in merge request")
         end
 
         if changes.only_changes_to_non_e2e_spec_files?
-          logger.info("Merge request contains only non e2e test changes, e2e test execution will be skipped!")
-          next pipeline_creator.create_noop(reason: "no-op run, only non e2e test changes detected in merge request")
+          logger.info("#{msg_prefix} only non e2e test changes detected in merge request!")
+          next noop_pipeline_creator.create_noop(reason: "#{msg_prefix} non e2e test changes detected in merge request")
         end
       end
 
@@ -77,9 +79,12 @@ namespace :ci do
       logger: logger,
       env: { "QA_FEATURE_FLAGS" => feature_flags_changes }
     }
+    pipeline_creator = QA::Tools::Ci::PipelineCreator.new(tests, **creator_args)
 
-    logger.info("*** Creating E2E test pipeline definitions ***")
-    QA::Tools::Ci::PipelineCreator.new(tests, **creator_args).create
+    logger.info("*** Creating Functional E2E test pipeline definitions ***")
+    pipeline_creator.create
+    logger.info("*** Creating Non-Functional E2E test pipeline definitions ***")
+    pipeline_creator.create_non_functional
     next if run_all_tests
     next unless QA::Runtime::Env.selective_execution_improved_enabled? && !QA::Runtime::Env.mr_targeting_stable_branch?
 

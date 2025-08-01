@@ -53,7 +53,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     post '/oauth/token',
       params: {
         grant_type: 'authorization_code',
-        code: access_grant.plaintext_token,
+        code: access_grant.token,
         redirect_uri: application.redirect_uri,
         client_id: application.uid,
         client_secret: application.secret
@@ -61,7 +61,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
   end
 
   def request_user_info!
-    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.plaintext_token}" }
+    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.token}" }
   end
 
   before do
