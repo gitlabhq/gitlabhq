@@ -679,6 +679,68 @@ sudo gitlab-rake gitlab:db:deduplicate_tags
 
 To run this command in dry-run mode, set the environment variable `DRY_RUN=true`.
 
+## Repair corrupted database indexes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196677) in GitLab 18.2.
+
+{{< /history >}}
+
+The index repair tool fixes corrupted or missing database indexes that can cause data integrity issues.
+The tool addresses specific problematic indexes that are affected by
+collation mismatches or other corruption issues. The tool:
+
+- Deduplicates data when unique indexes are corrupted.
+- Updates references to maintain data integrity.
+- Rebuilds or creates indexes with correct configuration.
+
+Before repairing indexes, run the tool in dry-run mode to analyze potential changes:
+
+```shell
+sudo DRY_RUN=true gitlab-rake gitlab:db:repair_index
+```
+
+The following example output shows the changes:
+
+```shell
+INFO -- : DRY RUN: Analysis only, no changes will be made.
+INFO -- : Running Index repair on database main...
+INFO -- : Processing index 'index_merge_request_diff_commit_users_on_name_and_email'...
+INFO -- : Index is unique. Checking for duplicate data...
+INFO -- : No duplicates found in 'merge_request_diff_commit_users' for columns: name,email.
+INFO -- : Index exists. Reindexing...
+INFO -- : Index reindexed successfully.
+```
+
+To repair all known problematic indexes in all databases:
+
+```shell
+sudo gitlab-rake gitlab:db:repair_index
+```
+
+The command processes each database and repairs the indexes. For example:
+
+```shell
+INFO -- : Running Index repair on database main...
+INFO -- : Processing index 'index_merge_request_diff_commit_users_on_name_and_email'...
+INFO -- : Index is unique. Checking for duplicate data...
+INFO -- : No duplicates found in 'merge_request_diff_commit_users' for columns: name,email.
+INFO -- : Index does not exist. Creating new index...
+INFO -- : Index created successfully.
+INFO -- : Index repair completed for database main.
+```
+
+To repair indexes in a specific database:
+
+```shell
+# Repair indexes in main database
+sudo gitlab-rake gitlab:db:repair_index:main
+
+# Repair indexes in CI database
+sudo gitlab-rake gitlab:db:repair_index:ci
+```
+
 ## Troubleshooting
 
 ### Advisory lock connection information

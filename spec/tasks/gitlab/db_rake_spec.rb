@@ -575,6 +575,83 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'repair_index' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: false)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+
+      it 'respects DRY_RUN environment variable' do
+        stub_env('DRY_RUN', true)
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: true)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
+
+      before do
+        skip_if_multiple_databases_not_setup(:ci)
+
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      end
+
+      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
+        expect(Gitlab::Database::RepairIndex).to receive(:run)
+          .with(logger: logger_double, dry_run: false)
+
+        run_rake_task('gitlab:db:repair_index')
+      end
+
+      context 'when the single database task is used' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'calls Gitlab::Database::RepairIndex with the main database' do
+          expect(Gitlab::Database::RepairIndex).to receive(:run)
+            .with(database_name: 'main', logger: logger_double, dry_run: false)
+
+          run_rake_task('gitlab:db:repair_index:main')
+        end
+
+        it 'calls Gitlab::Database::RepairIndex with the ci database' do
+          expect(Gitlab::Database::RepairIndex).to receive(:run)
+            .with(database_name: 'ci', logger: logger_double, dry_run: false)
+
+          run_rake_task('gitlab:db:repair_index:ci')
+        end
+      end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:repair_index:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:repair_index:geo'/)
+        end
+      end
+    end
+  end
+
   describe 'dictionary generate' do
     let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
 

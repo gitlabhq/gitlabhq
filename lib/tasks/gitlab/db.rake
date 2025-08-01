@@ -598,6 +598,27 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | DB | Repair database indexes according to fixed configuration'
+    task repair_index: :environment do
+      Gitlab::Database::RepairIndex.run(
+        logger: Logger.new($stdout),
+        dry_run: ENV['DRY_RUN'] == 'true'
+      )
+    end
+
+    namespace :repair_index do
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Repair database indexes on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::RepairIndex.run(
+            database_name: database_name,
+            logger: Logger.new($stdout),
+            dry_run: ENV['DRY_RUN'] == 'true'
+          )
+        end
+      end
+    end
+
     namespace :dictionary do
       desc 'Generate database docs yaml'
       task generate: :environment do
