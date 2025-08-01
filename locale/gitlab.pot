@@ -76596,9 +76596,6 @@ msgstr ""
 msgid "you"
 msgstr ""
 
-msgid "you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences."
-msgstr ""
-
 msgid "your GitLab instance"
 msgstr ""
 

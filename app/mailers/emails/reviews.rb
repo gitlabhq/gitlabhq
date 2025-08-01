@@ -39,7 +39,7 @@ module Emails
       @project = @review.project
       @merge_request = @review.merge_request
       @target_url = project_merge_request_url(@project, @merge_request)
-      @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
+      @sent_notification = SentNotification.record(@merge_request, recipient_id)
     end
   end
 end

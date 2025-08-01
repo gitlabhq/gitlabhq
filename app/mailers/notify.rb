@@ -203,7 +203,7 @@ class Notify < ApplicationMailer
   end
 
   def reply_key
-    @reply_key ||= SentNotification.reply_key
+    @sent_notification&.partitioned_reply_key
   end
 
   # This method applies threading headers to the email to identify

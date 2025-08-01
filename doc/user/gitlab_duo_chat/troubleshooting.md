@@ -230,15 +230,6 @@ You might get an error that states
 This error occurs when GitLab Duo Chat is not available in your subscription.
 Try a different request and contact your administrator.
 
-## `Error G3002`
-
-You might get an error that states
-`I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences.`.
-
-This error occurs when you belong to multiple GitLab Duo namespaces, and have not selected a default namespace.
-
-To resolve this, [select a default GitLab Duo namespace](../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace), and try your request again.
-
 ## Header mismatch issue
 
 You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.

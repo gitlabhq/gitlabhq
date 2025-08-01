@@ -16,25 +16,7 @@ module Projects
 
       return unless project
 
-      create_prometheus_integration(project)
       create_incident_management_timeline_event_tags(project)
-    end
-
-    private
-
-    def create_prometheus_integration(project)
-      integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
-      return unless integration
-
-      # If the service has already been inserted in the database, that
-      # means it came from a template, and there's nothing more to do.
-      return if integration.persisted?
-
-      return unless integration.prometheus_available?
-
-      integration.save!
-    rescue ActiveRecord::RecordInvalid => e
-      Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
     end
 
     def create_incident_management_timeline_event_tags(project)

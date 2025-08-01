@@ -4015,7 +4015,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     it 'filters out guests when new note is created' do
-      expect(SentNotification).to receive(:record).with(merge_request, any_args).once
+      expect(SentNotification).to receive(:record).with(merge_request, any_args).once.and_call_original
 
       notification.new_note(note)
 

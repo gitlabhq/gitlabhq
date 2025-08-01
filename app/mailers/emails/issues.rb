@@ -188,7 +188,7 @@ module Emails
       @closed_via = closed_via
       @recipient = User.find(recipient_id)
 
-      @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
+      @sent_notification = SentNotification.record(@issue, recipient_id)
     end
 
     def issue_thread_options(sender_id, reason, confidentiality: false)
