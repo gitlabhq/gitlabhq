@@ -183,7 +183,7 @@ allowed. For more details, see the Ruby Grape [documentation for `declared()`](h
 ### Exclude parameters from parent namespaces
 
 By default `declared(params)` includes parameters that were defined in all
-parent namespaces. For more details, see the Ruby Grape [documetation for `include_parent_namespaces`](https://github.com/ruby-grape/grape#include-parent-namespaces).
+parent namespaces. For more details, see the Ruby Grape [documentation for `include_parent_namespaces`](https://github.com/ruby-grape/grape#include-parent-namespaces).
 
 In most cases you should exclude parameters from the parent namespaces:
 

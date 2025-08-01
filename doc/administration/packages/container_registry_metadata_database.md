@@ -156,9 +156,9 @@ You can import your existing container registry metadata in one step or three st
 A few factors affect the duration of the import:
 
 - The size of your existing registry data.
-- The specifications of your PostgresSQL instance.
+- The specifications of your PostgreSQL instance.
 - The number of registry instances running.
-- Network latency between the registry, PostgresSQL and your configured Object Storage.
+- Network latency between the registry, PostgreSQL and your configured Object Storage.
 
 {{< alert type="note" >}}
 

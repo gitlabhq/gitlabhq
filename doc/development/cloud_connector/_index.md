@@ -183,7 +183,7 @@ include API::Helpers::CloudConnector
 return unauthorized! unless current_user.can?(:access_new_feature)
 
 # For Gitlab.com it will self-issue a token with scopes based on provided resource:
-# - For provided user, it will self-issue a token with scopes based on user assigment permissions
+# - For provided user, it will self-issue a token with scopes based on user assignment permissions
 # - For provided namespace, it will self-issue a token with scopes based on add-on purchased permissions
 #
 # For SM, it will return :CloudConnector::ServiceAccessToken instance token, ignoring provided user, namespace and extra claims

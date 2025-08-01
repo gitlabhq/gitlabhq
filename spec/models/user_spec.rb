@@ -2608,7 +2608,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns feed token with instance prefix' do
         user = create(:user)
 
-        expect(user.feed_token).to start_with("#{instance_prefix}glft-")
+        expect(user.feed_token).to start_with("#{instance_prefix}-glft-")
       end
     end
 

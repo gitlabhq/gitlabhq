@@ -170,6 +170,7 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         showNewWorkItem: true,
         workItemType: null,
+        hasStatusFeature: true,
         ...provide,
       },
       propsData: {

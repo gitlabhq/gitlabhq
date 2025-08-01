@@ -175,7 +175,8 @@ GitLab does not support multiple external URLs, see [issue 21319](https://gitlab
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 
-If your secondary site uses the same external URL as the primary site:
+If your secondary site uses the same external URL as the primary site,
+but you want to change it to use a different URL:
 
 1. On the secondary site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to the desired URL for the secondary site:

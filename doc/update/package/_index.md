@@ -23,7 +23,7 @@ If your package manager reports that no further updates are available, but you k
 [Linux package install guide](https://about.gitlab.com/install/#content) to add the GitLab package repository. Future GitLab upgrades are fetched
 according to your upgraded operating system.
 
-### Corrupted PostgresSQL indexes after upgrading the OS
+### Corrupted PostgreSQL indexes after upgrading the OS
 
 As part of upgrading the operating system, if your `glibc` version changes, then you must follow
 [Upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md) to avoid corrupted indexes.

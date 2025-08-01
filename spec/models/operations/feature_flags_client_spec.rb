@@ -38,7 +38,7 @@ RSpec.describe Operations::FeatureFlagsClient do
       end
 
       it 'starts with instance prefix' do
-        expect(subject.token).to match(/instanceprefixglffct-[A-Za-z0-9_-]{20}/)
+        expect(subject.token).to match(/instanceprefix-glffct-[A-Za-z0-9_-]{20}/)
       end
 
       context 'with feature flag custom_prefix_for_all_token_types disabled' do

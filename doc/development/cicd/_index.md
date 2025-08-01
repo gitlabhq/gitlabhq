@@ -70,13 +70,13 @@ to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_ind
 This section describes the dashboards and metrics that can be used by engineers during development, change validation and incident investigation.
 
 - Dashboards for all GitLab teams are available [here](https://dashboards.gitlab.net/dashboards/f/stage-groups/stage-groups).
-  You can search for the team that owns the feature catagory you are interested in.
+  You can search for the team that owns the feature category you are interested in.
 - The [Pipeline Execution error budget dashboard](https://dashboards.gitlab.net/d/stage-groups-pipeline_execution) contains other useful metrics about pipeline
   creation and job execution.
 - [Production logs](https://log.gprd.gitlab.net/app/discover) also offer many useful information that can be searched and aggregated in Kibana.
 - The [Pipeline creation dashboard](https://log.gprd.gitlab.net/app/r/s/r5Owf) provides useful breakdowns
   of the steps involved in the pipeline creation.
-  Note that this dashboard only contains data of "slow pipelines", those that take longer to be crated or have many jobs in it.
+  Note that this dashboard only contains data of "slow pipelines", those that take longer to be created or have many jobs in it.
   It's similar to a SQL "slow query log".
 - The [CI partitioning dashboard](https://dashboards.gitlab.net/d/ci-partitioning-main/ci-partitioning3a-ci-data-partitions-tracking) contains information about the current partition number, partition sizes, vacuuming, and other database metrics.
 

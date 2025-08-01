@@ -64,7 +64,7 @@ To help identify vulnerabilities of highest severity:
   - **Status**: Confirmed
   - **Activity**: Still detected
   - **Group by**: Severity
-- Prioritize vulnerability triage on your highest-priority projects - for example, applications
+- Prioritize vulnerability analysis of your highest-priority projects - for example, applications
   deployed to customers.
 
 ### Prioritize vulnerabilities that have a solution available

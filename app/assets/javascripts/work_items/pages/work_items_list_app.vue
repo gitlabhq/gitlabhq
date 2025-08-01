@@ -164,6 +164,7 @@ export default {
     'showNewWorkItem',
     'workItemType',
     'canReadCrmOrganization',
+    'hasStatusFeature',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -355,6 +356,7 @@ export default {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        hasStatusFeature: this.hasStatusFeature,
       });
     },
     defaultWorkItemTypes() {

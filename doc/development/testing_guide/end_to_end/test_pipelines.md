@@ -68,7 +68,7 @@ This job triggers a downstream multi-project pipeline in [Component Performance 
 
 ### Troubleshooting
 
-Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatiblity error.
+Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatibility error.
 
 An example of the error is
 

@@ -222,7 +222,7 @@ To run tests, you can use these commands:
 # This will run all of the tests in the codebase
 make test
 
-# Run a specfic test file
+# Run a specific test file
 go test ./internal/serving/disk/
 
 # Run a specific test in a file

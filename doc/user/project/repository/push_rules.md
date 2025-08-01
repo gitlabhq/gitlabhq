@@ -91,7 +91,7 @@ you must add the generated email suffix so that bot tokens can commit and push c
 
 ## Validate commit messages
 
-Use these rules for your commit messages.
+Use these rules for your commit messages:
 
 - **Require expression in commit messages**: Messages must match the
   expression. To allow any commit message, leave empty.

@@ -108,7 +108,7 @@ You can run accessibility tests locally in the same way as you [run any feature 
 After adding accessibility tests, make sure to fix all possible errors.
 For help on how to do it, refer to [this guide](best_practices.md#quick-checklist).
 You can also check accessibility sections in [Pajamas components' documentation](https://design.gitlab.com/components/overview).
-If any of the errors require global changes, create a follow-up issue and assign these labels: `accessability`, `WG::product accessibility`.
+If any of the errors require global changes, create a follow-up issue and assign these labels: `accessibility`, `WG::product accessibility`.
 
 ### Good practices
 

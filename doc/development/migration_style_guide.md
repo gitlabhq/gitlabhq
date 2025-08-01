@@ -1275,7 +1275,7 @@ By default hash keys will be strings. Optionally you can add a custom data type 
 
 ```ruby
 class BuildMetadata
-  attribute :config_options, ::Gitlab::Database::Type::IndifferentJsonb.new # for indifferent accesss or ::Gitlab::Database::Type::SymbolizedJsonb.new if you need symbols only as keys.
+  attribute :config_options, ::Gitlab::Database::Type::IndifferentJsonb.new # for indifferent access or ::Gitlab::Database::Type::SymbolizedJsonb.new if you need symbols only as keys.
 end
 ```
 

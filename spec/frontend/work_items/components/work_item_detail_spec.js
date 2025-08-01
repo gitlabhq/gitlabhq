@@ -1230,11 +1230,11 @@ describe('WorkItemDetail component', () => {
       expect(findStickyHeader().exists()).toBe(true);
     });
 
-    it('sticky header is not visible if is drawer view', async () => {
+    it('sticky header is visible in drawer view', async () => {
       createComponent({ isDrawer: true });
       await waitForPromises();
 
-      expect(findStickyHeader().exists()).toBe(false);
+      expect(findStickyHeader().exists()).toBe(true);
     });
   });
 

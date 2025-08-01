@@ -67,7 +67,7 @@ end
 # good
 module Types
   module Domain
-    # rubocop:disable Graphql/AuthorizeTypes -- already authroized in parent entity
+    # rubocop:disable Graphql/AuthorizeTypes -- already authorized in parent entity
     class SomeType < BaseObject
       if condition # rubocop:todo Style/GuardClause -- Cleanup via https://gitlab.com/gitlab-org/gitlab/-/issues/1234567890
         # more logic...

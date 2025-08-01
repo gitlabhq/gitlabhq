@@ -1462,7 +1462,7 @@ Use lowercase for **issue weights**.
 
 ## IP address
 
-Use **IP address** when refering to addresses used with Internet Protocal (IP). Do not refer to an IP address as an
+Use **IP address** when referring to addresses used with Internet Protocol (IP). Do not refer to an IP address as an
 **IP**.
 
 ## it

@@ -3393,7 +3393,7 @@
   rules:
     - if: '$AIGW_TAGGING_ACCESS_TOKEN == null'
       when: never
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(-ee)?$/'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/'
       # Only run when a version tag is created (release is cut)
 
 ###################

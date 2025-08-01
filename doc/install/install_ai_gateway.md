@@ -40,9 +40,12 @@ The GitLab official Docker image is available:
 
 [View the release process for the self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
-Use the image tag that corresponds to your GitLab version.
-For example, if your GitLab version is `vX.Y.0`, use the `self-hosted-vX.Y.0-ee` tag.
-Ensure that the image version matches your GitLab version to avoid compatibility issues.
+If your GitLab version is `vX.Y.*-ee`, use the AI gateway Docker image with the latest `self-hosted-vX.Y.*-ee` tag. For example, if GitLab is on version `v18.2.1-ee`, and the AI gateway Docker image has:
+
+- Versions `self-hosted-v18.2.0-ee`, `self-hosted-v18.2.1-ee`, and `self-hosted-v18.2.2-ee`, use `self-hosted-v18.2.2-ee`.
+- Versions `self-hosted-v18.2.0-ee` and `self-hosted-v18.2.1-ee`, use `self-hosted-v18.2.1-ee`.
+- Only one version, `self-hosted-v18.2.0-ee`, use `self-hosted-v18.2.0-ee`.
+
 Newer features are available from nightly builds, but backwards compatibility is not guaranteed.
 
 {{< alert type="note" >}}

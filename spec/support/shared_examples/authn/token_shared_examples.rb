@@ -106,7 +106,7 @@ RSpec.shared_examples 'contains instance prefix when enabled' do
     end
 
     it 'keeps gl as part of the prefix' do
-      expect(plaintext).to start_with("#{instance_prefix}gl")
+      expect(plaintext).to start_with("#{instance_prefix}-gl")
     end
 
     it 'can be identified by prefix' do

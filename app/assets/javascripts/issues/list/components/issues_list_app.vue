@@ -208,6 +208,7 @@ export default {
     'rssPath',
     'showNewIssueLink',
     'groupId',
+    'hasStatusFeature',
   ],
   props: {
     eeSearchTokens: {
@@ -370,6 +371,7 @@ export default {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        hasStatusFeature: this.hasStatusFeature,
       });
     },
     urlFilterParams() {

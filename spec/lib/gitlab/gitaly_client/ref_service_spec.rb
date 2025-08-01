@@ -552,6 +552,22 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         end
       end
     end
+
+    context 'with pagination option' do
+      it 'sends a correct list_refs message' do
+        expected_pagination = Gitaly::PaginationParameter.new(
+          limit: 5,
+          page_token: 'refs/tags/v1.0.0'
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:list_refs)
+          .with(gitaly_request_with_params(pagination_params: expected_pagination), kind_of(Hash))
+          .and_return([])
+
+        client.list_refs(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' })
+      end
+    end
   end
 
   describe '#find_refs_by_oid' do

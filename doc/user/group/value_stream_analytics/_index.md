@@ -70,24 +70,25 @@ Value stream analytics supports the following events:
 
 - Issue closed
 - Issue created
-- Issue first added to board
+- Issue first added to a board
 - Issue first added to iteration
 - Issue first assigned
-- Issue first associated with milestone
-- Issue first mentioned
+- Issue first associated with a milestone
+- Issue first mentioned in a commit
 - Issue label added
 - Issue label removed
-- MR closed
-- MR merged
-- MR created
-- MR first commit time
-- MR first assigned
-- MR first reviewer assigned
-- MR first deployed
-- MR label added
-- MR label removed
-- MR last pipeline duration
-- MR last approved at
+- Merge request closed
+- Merge request created
+- Merge request first assigned
+- Merge request first committed
+- Merge request first deployed to production
+- Merge request label added
+- Merge request label removed
+- Merge request last approved
+- Merge request last build finished
+- Merge request last build started
+- Merge request merged
+- Merge request reviewer first assigned
 
 You can share your ideas or feedback about stage events in
 [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).

@@ -145,6 +145,7 @@ describe('CE IssuesListApp component', () => {
     signInPath: 'sign/in/path',
     groupId: '',
     timeTrackingLimitToHours: false,
+    hasStatusFeature: true,
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;

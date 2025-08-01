@@ -834,7 +834,7 @@ def up
       batch_table: <table name>,
       batch_column: <batching column>,
       sub_batch_size: <sub batch size>,
-      pause_ms: <miliseconds between batches>,
+      pause_ms: <milliseconds between batches>,
       job_arguments: <job arguments if any>,
       connection: connection
     )

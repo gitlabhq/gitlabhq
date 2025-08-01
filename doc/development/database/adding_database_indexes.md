@@ -301,7 +301,7 @@ Consult the Database team, reviewers, or maintainers to plan the work.
 
 ## Dropping unused indexes
 
-Unused indexes should be dropped because they increase [maintainence overhead](#maintenance-overhead), consume
+Unused indexes should be dropped because they increase [maintenance overhead](#maintenance-overhead), consume
 disk space, and can degrade query planning efficiency without providing any performance benefit.
 However, dropping an index that's still used could result in query performance degradation or timeouts,
 potentially leading to incidents. It's important to [verify the index is unused](#verifying-that-an-index-is-unused)

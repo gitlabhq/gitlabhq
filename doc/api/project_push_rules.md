@@ -14,6 +14,12 @@ title: Project push rules API
 
 Use the project push rules API to manage [push rules for projects](../user/project/repository/push_rules.md).
 
+{{< alert type="note" >}}
+
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for all regular expressions in push rules.
+
+{{< /alert >}}
+
 ## Get project push rules
 
 Get the push rules of a project.

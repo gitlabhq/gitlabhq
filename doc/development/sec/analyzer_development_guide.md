@@ -363,7 +363,7 @@ This process applies to the following groups:
 - [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
 - [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
 
-Other groups are reponsible for documenting their own major version release process.
+Other groups are responsible for documenting their own major version release process.
 
 Choose one of the following scenarios based on whether the major version release contains breaking changes:
 

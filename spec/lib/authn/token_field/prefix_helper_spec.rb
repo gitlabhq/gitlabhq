@@ -22,7 +22,7 @@ RSpec.describe Authn::TokenField::PrefixHelper, feature_category: :system_access
       end
 
       it 'prepends the instance wide token prefix' do
-        expect(prepend_instance_prefix).to eq("#{instance_prefix}#{prefix}")
+        expect(prepend_instance_prefix).to eq("#{instance_prefix}-#{prefix}")
       end
     end
 

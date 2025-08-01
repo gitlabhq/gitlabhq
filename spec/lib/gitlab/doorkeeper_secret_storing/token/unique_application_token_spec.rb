@@ -18,7 +18,7 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken, f
       end
 
       it 'starts with instance prefix' do
-        expect(generate).to match(/instanceprefixgloas-\h{32}/)
+        expect(generate).to match(/instanceprefix-gloas-\h{32}/)
       end
 
       context 'with feature flag custom_prefix_for_all_token_types disabled' do
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken, f
       end
 
       it 'starts with instance prefix' do
-        expect(prefix_for_oauth_application_secret).to eq('instanceprefixgloas-%{token}')
+        expect(prefix_for_oauth_application_secret).to eq('instanceprefix-gloas-%{token}')
       end
 
       context 'with feature flag custom_prefix_for_all_token_types disabled' do

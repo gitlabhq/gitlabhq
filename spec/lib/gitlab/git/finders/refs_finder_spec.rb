@@ -96,5 +96,77 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         end
       end
     end
+
+    describe 'Pagination' do
+      context 'with per page limit' do
+        let(:params) do
+          { ref_type: :tags, per_page: 2 }
+        end
+
+        it "returns limited results" do
+          refs = subject
+
+          expect(refs.length).to eq(2)
+          expect(refs.map(&:name)).to match_array(["refs/tags/v1.0.0", "refs/tags/v1.1.0"])
+        end
+      end
+
+      context 'with per page limit and token' do
+        let(:params) do
+          { ref_type: :tags, per_page: 2, page_token: 'refs/tags/v1.1.0' }
+        end
+
+        it "returns next page of limited results" do
+          refs = subject
+
+          expect(refs.length).to eq(1)
+          expect(refs.map(&:name)).to match_array(["refs/tags/v1.1.1"])
+        end
+      end
+
+      context 'with only page token' do
+        let(:params) do
+          { ref_type: :tags, page_token: 'refs/tags/v1.1.0' }
+        end
+
+        it "returns next page of limited results with default limit" do
+          refs = subject
+
+          expect(refs.length).to eq(1)
+          expect(refs.map(&:name)).to match_array(["refs/tags/v1.1.1"])
+        end
+      end
+
+      context 'with invalid token' do
+        let(:params) do
+          { ref_type: :tags, per_page: 2, page_token: 'wrong' }
+        end
+
+        it { expect { subject }.to raise_error(Gitlab::Git::InvalidPageToken) }
+      end
+
+      context 'with unknown argument error' do
+        let(:params) { { ref_type: :tags } }
+        let(:argument_error) { ArgumentError.new('unknown error') }
+
+        before do
+          allow(repository).to receive(:list_refs).and_raise(argument_error)
+        end
+
+        it { expect { subject }.to raise_error(argument_error) }
+      end
+
+      context 'with invalid per_page' do
+        let(:params) do
+          { ref_type: :tags, per_page: -2 }
+        end
+
+        it "returns all results" do
+          refs = subject
+
+          expect(refs.length).to eq(3)
+        end
+      end
+    end
   end
 end
