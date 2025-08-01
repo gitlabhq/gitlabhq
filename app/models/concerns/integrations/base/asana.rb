@@ -97,14 +97,22 @@ module Integrations
       end
 
       def check_commit(message, push_msg)
-        # matches either:
+        # matches any of:
         # - #1234
         # - https://app.asana.com/0/{project_gid}/{task_gid}
+        # - https://app.asana.com/1/{workspace_id}/project/{project_gid}/task/{task_gid}
         # optionally preceded with:
         # - fix/ed/es/ing
         # - close/s/d
         # - closing
-        issue_finder = %r{(?:https://app\.asana\.com/\d+/\w+/(\w+)|#(\w+))}i
+        issue_finder = %r{
+          (?:
+            https://app\.asana\.com/0/\d+/ |
+            https://app\.asana\.com/1/\d+/project/\d+/task/ |
+            \#
+          )
+          (\w+)
+        }ix
         proceded_keyword_finder = %r{(fix\w*|clos[ei]\w*)\s*\z}i
 
         message.split(issue_finder).each_slice(2) do |prepended_text, task_id|

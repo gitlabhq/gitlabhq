@@ -12,9 +12,15 @@ title: Asana
 
 {{< /details >}}
 
+{{< history >}}
+
+- Support for V1 Asana URL format [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523692) in GitLab 18.3.
+
+{{< /history >}}
+
 The Asana integration adds commit messages as comments to Asana tasks.
 Once enabled, commit messages are checked for Asana task URLs (for example,
-`https://app.asana.com/0/123456/987654`) or task IDs starting with `#`
+`https://app.asana.com/1/12345/project/67890/task/987654`) or task IDs starting with `#`
 (for example, `#987654`). Every task ID found gets the commit comment added to it.
 
 You can also close a task with a message containing: `fix #123456`.

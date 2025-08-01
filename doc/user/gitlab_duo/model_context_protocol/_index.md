@@ -32,18 +32,17 @@ external tools from MCP servers:
 - [GitLab Duo Agentic Chat](../../../user/gitlab_duo_chat/agentic_chat.md)
 - The [software development flow](../../../user/duo_agent_platform/software_development_flow.md)
 
-This means that, in addition to GitLab information, these features
-can now use context and information external to GitLab to generate more powerful
-answers for customers.
+This connectivity means these features can now use context and information external to GitLab to
+generate more powerful answers for customers.
 
 To use a feature with MCP:
 
 - Turn on MCP for your group.
-- Specify the MCP servers you want the feature to connect to.
+- Configure the MCP servers you want the feature to connect to.
 
 ## Prerequisites
 
-Before you can use a GitLab Duo feature with MCP, you must:
+Before using a GitLab Duo feature with MCP, you must:
 
 - Install [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 - Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). MCP requires version 6.28.2 and later.
@@ -63,26 +62,72 @@ To turn MCP on or off for your group:
    **Turn on Model Context Protocol (MCP) support** checkbox.
 1. Select **Save changes**.
 
-## Specify the MCP servers
+## Configure MCP servers
 
-To specify the MCP servers you want the GitLab Duo feature to connect to:
+To integrate MCP with the Language Server, set up workspace configuration, user configuration, or both.
+The GitLab Language Server loads and merges the configuration files.
 
-1. In VS Code, create a MCP server configuration file:
+### Create workspace configuration
 
-   - If you are not on Windows, create the file in `~/.gitlab/duo/mcp.json`.
-   - If you are on Windows, create the file in `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`.
+Workspace configuration applies to this project only, and overrides any user configuration for the
+same server.
 
-1. Populate this file with the MCP servers you want the feature to connect to.
+To set up workspace configuration:
 
+1. In your project workspace, create the file `<workspace>/.gitlab/duo/mcp.json`.
+1. Using the [configuration format](#configuration-format), add information about the MCP servers
+   your feature connects to.
 1. Save the file.
 
-### Example MCP server configuration files
+### Create user configuration
+
+User configuration settings are good for personal tools and commonly-used servers. They apply to all
+workspaces, but any workspace settings for the same server override the user configuration.
+
+To set up user configuration:
+
+1. In VS Code, open the Command Palette by pressing
+   <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
+   </kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Run the command `GitLab MCP: Open User Settings (JSON)` to create and open the user configuration file.
+1. Using the [configuration format](#configuration-format), add information about the MCP servers
+   your feature connects to.
+1. Save the file.
+
+Alternatively, manually create the file in this location:
+
+- Windows: `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`
+- All other operating systems: `~/.gitlab/duo/mcp.json`
+
+### Configuration format
+
+Both configuration files use the same JSON format:
+
+```json
+{
+  "mcpServers": {
+    "server-name": {
+      "command": "path/to/server",
+      "args": ["--arg1", "value1"],
+      "env": {
+        "ENV_VAR": "value"
+      }
+    },
+    "http-server": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+### Example MCP server configurations
 
 Use the following code examples to help you create your MCP server configuration file.
 
-For more information and examples, see the [MCP example servers documentation](https://modelcontextprotocol.io/examples). You can also find other example servers at [Smithery.ai](https://smithery.ai/) and [Awesome MCP Servers](https://mcpservers.org/).
+For more information and examples, see the [MCP example servers documentation](https://modelcontextprotocol.io/examples).
+Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP Servers](https://mcpservers.org/).
 
-#### Local
+#### Local server
 
 ```json
 {
@@ -96,7 +141,7 @@ For more information and examples, see the [MCP example servers documentation](h
 }
 ```
 
-#### Remote
+#### Remote server
 
 ```json
 {
@@ -107,6 +152,18 @@ For more information and examples, see the [MCP example servers documentation](h
         "mcp-remote",
         "https://knowledge-mcp.global.api.aws"
       ]
+    }
+  }
+}
+```
+
+#### HTTP server
+
+```json
+{
+  "mcpServers": {
+    "local-http-server": {
+      "url": "http://localhost:3000/mcp"
     }
   }
 }
@@ -133,12 +190,12 @@ the feature can use that tool:
    - If you approve the tool, the feature connects to the tool and generates an answer.
 
    - Optional: For Agentic Chat, if you deny the tool, the **Provide Rejection Reason**
-     dialog appears. You can enter a rejection reason into the text box and select
+     dialog appears. Enter a rejection reason into the text box, and select
      **Submit Rejection**.
 
 ## Feedback
 
-Because this is an experimental feature, your feedback is valuable in helping us
+This feature is experimental. Your feedback is valuable in helping us
 to improve it. Share your experiences, suggestions, or issues in
 [issue 552164](https://gitlab.com/gitlab-org/gitlab/-/issues/552164).
 

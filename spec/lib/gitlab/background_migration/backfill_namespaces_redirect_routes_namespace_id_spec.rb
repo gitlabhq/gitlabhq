@@ -37,9 +37,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespacesRedirectRoutesName
     # This trigger ensures the correctness of new rows, preventing the creation of mock entries
     # that simulate old redirect_routes with non-derived namespace_ids.
     connection.execute('ALTER TABLE redirect_routes DISABLE TRIGGER trigger_sync_redirect_routes_namespace_id')
+    # Remove the NOT NULL check constraint to write legacy test rows (added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198933)
+    connection.execute('ALTER TABLE redirect_routes DROP CONSTRAINT IF EXISTS check_e82ff70482')
   end
 
   after do
+    connection.execute(
+      'ALTER TABLE redirect_routes ADD CONSTRAINT check_e82ff70482 CHECK(namespace_id IS NOT NULL) NOT VALID'
+    )
     connection.execute('ALTER TABLE redirect_routes ENABLE TRIGGER trigger_sync_redirect_routes_namespace_id')
   end
 

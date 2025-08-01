@@ -17780,7 +17780,8 @@ CREATE TABLE merge_request_predictions (
     updated_at timestamp with time zone NOT NULL,
     suggested_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL,
     accepted_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_d25609c35e CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
