@@ -650,6 +650,9 @@ Audit event types belong to the following product categories.
 | [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Admin Mode enabled | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) | User |
 | [`authenticated_with_ldap`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175763) | User successfully signed in with LDAP | {{< icon name="check-circle" >}} Yes | GitLab [17.11](https://gitlab.com/gitlab-org/gitlab/-/issues/509377) | User |
 | [`authenticated_with_oauth`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175763) | User successfully signed in with OAuth | {{< icon name="check-circle" >}} Yes | GitLab [17.11](https://gitlab.com/gitlab-org/gitlab/-/issues/509377) | User |
+| [`authenticated_with_password`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with password | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
+| [`authenticated_with_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with two-factor authentication | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
+| [`authenticated_with_webauthn`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with WebAuthn device | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 
 ### Team planning
 

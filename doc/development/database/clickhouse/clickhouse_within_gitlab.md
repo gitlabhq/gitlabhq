@@ -438,6 +438,13 @@ To resolve this, you should add a migration to add the column to ClickHouse too.
 
 If you need further assistance, reach out to `#f_siphon` internally.
 
-### Getting help
+## Troubleshooting
+
+If you experience `MEMORY_LIMIT_EXCEEDED` errors when executing queries, increase the `clickhouse.max_memory_usage` and `clickhouse.max_server_memory_usage` settings
+in your `gdk.yml` file.
+
+Consult the `gdk.example.yml` file for the default settings. You must reconfigure GDK for changes to take effect.
+
+## Getting help
 
 For additional information or specific questions, reach out to the ClickHouse Datastore working group in the `#f_clickhouse` Slack channel, or mention `@gitlab-org/maintainers/clickhouse` in a comment on GitLab.com.

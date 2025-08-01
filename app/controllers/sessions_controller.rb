@@ -280,13 +280,37 @@ class SessionsController < Devise::SessionsController
     user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
+  def audit_event_name_for_authentication_method(method)
+    case method
+    when AuthenticationEvent::TWO_FACTOR
+      'authenticated_with_two_factor'
+    when AuthenticationEvent::TWO_FACTOR_WEBAUTHN
+      'authenticated_with_webauthn'
+    else
+      'authenticated_with_password'
+    end
+  end
+
   def log_audit_event(user, resource, options = {})
     Gitlab::AppLogger.info(
       "Successful Login: username=#{resource.username} ip=#{request.remote_ip} " \
         "method=#{options[:with]} admin=#{resource.admin?}"
     )
-    AuditEventService.new(user, user, options)
-                     .for_authentication.security_event
+
+    event_name = audit_event_name_for_authentication_method(options[:with] || AuthenticationEvent::STANDARD)
+    audit_context = {
+      name: event_name,
+      author: user,
+      scope: user,
+      target: user,
+      message: "Signed in with #{options[:with]} authentication",
+      authentication_event: true,
+      authentication_provider: options[:with],
+      additional_details: {
+        with: options[:with]
+      }
+    }
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 
   def log_user_activity(user)

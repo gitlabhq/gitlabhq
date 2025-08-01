@@ -261,9 +261,17 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end
         end
 
-        it 'creates an audit log record' do
+        it 'creates audit event records' do
           expect { post(:create, params: { user: user_params }) }.to change { AuditEvent.count }.by(1)
-          expect(AuditEvent.last.details[:with]).to eq('standard')
+          .and change { AuditEvents::UserAuditEvent.count }.by(1)
+
+          audit_event = AuditEvent.last
+          expect(audit_event.details[:with]).to eq('standard')
+          expect(audit_event.details[:event_name]).to eq('authenticated_with_password')
+
+          user_audit_event = AuditEvents::UserAuditEvent.last
+          expect(user_audit_event.event_name).to eq('authenticated_with_password')
+          expect(user_audit_event.details[:with]).to eq('standard')
         end
 
         it 'creates an authentication event record' do
@@ -605,9 +613,17 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
-      it "creates an audit log record" do
+      it 'creates audit event records' do
         expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEvent.count }.by(1)
-        expect(AuditEvent.last.details[:with]).to eq("two-factor")
+        .and change { AuditEvents::UserAuditEvent.count }.by(1)
+
+        audit_event = AuditEvent.last
+        expect(audit_event.details[:with]).to eq('two-factor')
+        expect(audit_event.details[:event_name]).to eq('authenticated_with_two_factor')
+
+        user_audit_event = AuditEvents::UserAuditEvent.last
+        expect(user_audit_event.event_name).to eq('authenticated_with_two_factor')
+        expect(user_audit_event.details[:with]).to eq('two-factor')
       end
 
       it "creates an authentication event record" do
@@ -661,12 +677,19 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
-      it "creates an audit log record" do
+      it 'creates audit event records' do
         allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
 
-        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to(
-          change { AuditEvent.count }.by(1))
-        expect(AuditEvent.last.details[:with]).to eq("two-factor-via-webauthn-device")
+        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
+        .and change { AuditEvents::UserAuditEvent.count }.by(1)
+
+        audit_event = AuditEvent.last
+        expect(audit_event.details[:with]).to eq('two-factor-via-webauthn-device')
+        expect(audit_event.details[:event_name]).to eq('authenticated_with_webauthn')
+
+        user_audit_event = AuditEvents::UserAuditEvent.last
+        expect(user_audit_event.event_name).to eq('authenticated_with_webauthn')
+        expect(user_audit_event.details[:with]).to eq('two-factor-via-webauthn-device')
       end
 
       it "creates an authentication event record" do
@@ -716,6 +739,30 @@ RSpec.describe SessionsController, feature_category: :system_access do
           expect(subject.current_user).to eq nil
         end
       end
+    end
+  end
+
+  describe '#audit_event_name_for_authentication_method' do
+    let(:controller) { described_class.new }
+
+    it 'returns correct event name for standard authentication' do
+      expect(controller.send(:audit_event_name_for_authentication_method, AuthenticationEvent::STANDARD))
+        .to eq('authenticated_with_password')
+    end
+
+    it 'returns correct event name for two-factor authentication' do
+      expect(controller.send(:audit_event_name_for_authentication_method, AuthenticationEvent::TWO_FACTOR))
+        .to eq('authenticated_with_two_factor')
+    end
+
+    it 'returns correct event name for WebAuthn authentication' do
+      expect(controller.send(:audit_event_name_for_authentication_method, AuthenticationEvent::TWO_FACTOR_WEBAUTHN))
+        .to eq('authenticated_with_webauthn')
+    end
+
+    it 'returns correct event name for unknown authentication method' do
+      expect(controller.send(:audit_event_name_for_authentication_method, 'unknown'))
+        .to eq('authenticated_with_password')
     end
   end
 
