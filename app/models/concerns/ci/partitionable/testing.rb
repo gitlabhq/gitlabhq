@@ -23,6 +23,7 @@ module Ci
         Ci::JobArtifact
         Ci::JobArtifactReport
         Ci::JobDefinition
+        Ci::JobDefinitionInstance
         Ci::JobInput
         Ci::JobVariable
         Ci::Pipeline

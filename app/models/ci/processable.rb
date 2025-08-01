@@ -17,6 +17,18 @@ module Ci
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
     has_one :trigger, through: :pipeline
     has_one :job_environment, class_name: 'Environments::Job', inverse_of: :job
+    has_one :job_definition_instance, ->(job) { in_partition(job) },
+      class_name: 'Ci::JobDefinitionInstance',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
+
+    has_one :job_definition, ->(job) { in_partition(job) },
+      class_name: 'Ci::JobDefinition',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :jobs,
+      through: :job_definition_instance
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 

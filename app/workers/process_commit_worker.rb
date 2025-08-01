@@ -42,8 +42,14 @@ class ProcessCommitWorker
     commit = Commit.build_from_sidekiq_hash(project, commit_hash)
     author = commit.author || user
 
-    process_commit_message(project, commit, user, author, default)
-    update_issue_metrics(commit, author)
+    closing_user = if Feature.enabled?(:auto_close_issues_stop_using_commit_author, project)
+                     user
+                   else
+                     author
+                   end
+
+    process_commit_message(project, commit, user, closing_user, default)
+    update_issue_metrics(commit, closing_user)
   end
 
   private

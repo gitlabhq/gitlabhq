@@ -8,6 +8,10 @@ import { PathIdSeparator } from '~/related_issues/constants';
 
 jest.mock('~/gfm_auto_complete');
 
+jest.mock('~/graphql_shared/issuable_client', () => ({
+  availableStatuses: jest.fn().mockReturnValue({}),
+}));
+
 describe('RelatedIssuableInput', () => {
   let wrapper;
 

@@ -468,6 +468,8 @@ builds:
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
 - job_artifacts_repository_xray
+- job_definition
+- job_definition_instance
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -493,6 +495,8 @@ bridges:
 - pipeline
 - auto_canceled_by
 - ci_stage
+- job_definition
+- job_definition_instance
 - needs
 - resource
 - sourced_pipeline

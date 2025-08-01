@@ -134,6 +134,7 @@ exceptions:
   - JSONB
   - JVM
   - JWT
+  - KAS
   - KICS
   - LAN
   - LDAP

@@ -42,7 +42,6 @@ describe('your work groups resolver', () => {
     await makeQuery();
 
     expect(mockAxios.history.get[0].params).toEqual({
-      active: true,
       filter: 'foo',
       sort: 'created_desc',
       page: 2,

@@ -1,12 +1,6 @@
 #import "~/graphql_shared/fragments/group.fragment.graphql"
 
-query yourWorkGroups(
-  $active: Boolean = true
-  $search: String
-  $sort: String
-  $parentId: Int
-  $page: Int
-) {
+query yourWorkGroups($active: Boolean, $search: String, $sort: String, $parentId: Int, $page: Int) {
   groups(active: $active, search: $search, sort: $sort, parentId: $parentId, page: $page) @client {
     nodes {
       ...Group

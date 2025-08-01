@@ -464,6 +464,7 @@ module Ci
     scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
     scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
+    scope :unlocked, -> { where(locked: :unlocked) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)

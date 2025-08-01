@@ -601,7 +601,6 @@ lib/gitlab/checks/
 /doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @lyspin
-/doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil @eread
 /doc/administration/dormant_project_deletion.md @phillipwells
@@ -616,6 +615,7 @@ lib/gitlab/checks/
 /doc/administration/get_started.md @gl-docsteam
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
+/doc/administration/gitlab_duo/ @sselhorn
 /doc/administration/gitlab_duo_self_hosted/ @jglassman1
 /doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
@@ -717,7 +717,8 @@ lib/gitlab/checks/
 /doc/administration/wikis/ @msedlakjakubowski
 /doc/api/_index.md @ashrafkhamis
 /doc/api/access_requests.md @idurham
-/doc/api/admin/ @idurham
+/doc/api/admin/data_management.md @axil
+/doc/api/admin/token.md @idurham
 /doc/api/admin_sidekiq_queues.md @axil @eread
 /doc/api/api_resources.md @ashrafkhamis
 /doc/api/appearance.md @idurham
@@ -918,7 +919,6 @@ lib/gitlab/checks/
 /doc/ci/pipeline_security/ @marcel.amirault
 /doc/ci/pipelines/ @lyspin
 /doc/ci/pipelines/_index.md @marcel.amirault
-/doc/ci/pipelines/dedicated_hosted_runner_compute_minutes.md @rsarangadharan
 /doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
 /doc/ci/pipelines/downstream_pipelines_troubleshooting.md @marcel.amirault
 /doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
@@ -948,7 +948,7 @@ lib/gitlab/checks/
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
-/doc/development/cascading_settings.md @gitlab-org/foundations/engineering
+/doc/development/cascading_settings.md @gitlab-org/growth
 /doc/development/cells/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/compromised_password_detection.md @gitlab-org/software-supply-chain-security/authentication/approvers
@@ -959,7 +959,7 @@ lib/gitlab/checks/
 /doc/development/documentation/ @fneill @sselhorn
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
+/doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/growth
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitpod_internals.md @gl-dx/pipeline-maintainers
@@ -970,7 +970,7 @@ lib/gitlab/checks/
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logs.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
+/doc/development/navigation_sidebar.md @gitlab-org/growth
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley
@@ -1007,7 +1007,6 @@ lib/gitlab/checks/
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
 /doc/policy/ @axil @eread
-/doc/policy/maintenance.md @gitlab-org/delivery
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
 /doc/security/compliance_security_policy_management.md @rlehmann1
@@ -1167,6 +1166,7 @@ lib/gitlab/checks/
 /doc/user/project/integrations/hangouts_chat.md @ashrafkhamis
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/irker.md @ashrafkhamis
+/doc/user/project/integrations/linear.md @msedlakjakubowski
 /doc/user/project/integrations/matrix.md @kpaizee
 /doc/user/project/integrations/mattermost.md @ashrafkhamis
 /doc/user/project/integrations/mattermost_slash_commands.md @ashrafkhamis

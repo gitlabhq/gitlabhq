@@ -756,6 +756,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.unlocked' do
+    subject { described_class.unlocked }
+
+    let_it_be(:unlocked_pipeline) { create(:ci_pipeline, locked: :unlocked) }
+    let_it_be(:artifacts_locked_pipeline) { create(:ci_pipeline, locked: :artifacts_locked) }
+
+    it 'contains all unlocked pipelines' do
+      is_expected.to contain_exactly(unlocked_pipeline)
+    end
+  end
+
   describe '.with_pipeline_source' do
     subject { described_class.with_pipeline_source(source) }
 

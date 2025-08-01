@@ -31,7 +31,10 @@ export default class GLForm {
     }
 
     Object.keys(this.enableGFM).forEach((item) => {
-      if (item !== 'emojis' && !dataSources[item]) {
+      // `emojis` and `statuses` can be fetched
+      // without dataSource availability so we would
+      // bypass those in the check.
+      if (!['emojis', 'statuses'].includes(item) && !dataSources[item]) {
         this.enableGFM[item] = false;
       }
     });

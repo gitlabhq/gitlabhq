@@ -1,6 +1,7 @@
 <script>
 import { GlAvatar, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
+import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 
@@ -110,6 +111,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.ITERATION;
     },
 
+    isStatus() {
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.STATUS;
+    },
+
     isMergeRequest() {
       return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
@@ -153,6 +158,8 @@ export default {
   },
 
   methods: {
+    getAdaptiveStatusColor,
+
     getText(item) {
       if (this.isEmoji) return item.emoji.e;
 
@@ -180,6 +187,8 @@ export default {
         case REFERENCE_TYPES.WIKI:
         case REFERENCE_TYPES.ITERATION:
           return item.title;
+        case REFERENCE_TYPES.STATUS:
+          return `${this.char}${item.name}${this.char}`;
         default:
           return '';
       }
@@ -225,6 +234,12 @@ export default {
       if (this.isIteration) {
         Object.assign(props, {
           originalText: item.reference,
+        });
+      }
+
+      if (this.isStatus) {
+        Object.assign(props, {
+          originalText: `${this.char}${item.name}${this.char}`,
         });
       }
 
@@ -369,6 +384,15 @@ export default {
                     class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
+                </span>
+                <span v-if="isStatus">
+                  <gl-icon
+                    class="gl-mr-2"
+                    :name="item.iconName"
+                    :size="12"
+                    :style="`color: ${getAdaptiveStatusColor(item.color)}`"
+                  />
+                  <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.name)"></span>
                 </span>
                 <span v-if="isMilestone">
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>

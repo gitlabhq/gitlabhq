@@ -4850,6 +4850,14 @@ CREATE TABLE p_ci_job_artifacts (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_definition_instances (
+    job_id bigint NOT NULL,
+    job_definition_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_job_definitions (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -31384,6 +31392,9 @@ ALTER TABLE ONLY p_ci_job_artifact_reports
 ALTER TABLE ONLY p_ci_job_artifacts
     ADD CONSTRAINT p_ci_job_artifacts_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_job_definition_instances
+    ADD CONSTRAINT p_ci_job_definition_instances_pkey PRIMARY KEY (job_id, partition_id);
+
 ALTER TABLE ONLY p_ci_job_definitions
     ADD CONSTRAINT p_ci_job_definitions_pkey PRIMARY KEY (id, partition_id);
 
@@ -37411,6 +37422,10 @@ CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ON
 CREATE INDEX index_p_ci_job_annotations_on_project_id ON ONLY p_ci_job_annotations USING btree (project_id);
 
 CREATE INDEX index_p_ci_job_artifact_reports_on_project_id ON ONLY p_ci_job_artifact_reports USING btree (project_id);
+
+CREATE INDEX index_p_ci_job_definition_instances_on_job_definition_id ON ONLY p_ci_job_definition_instances USING btree (job_definition_id);
+
+CREATE INDEX index_p_ci_job_definition_instances_on_project_id ON ONLY p_ci_job_definition_instances USING btree (project_id);
 
 CREATE INDEX index_p_ci_job_definitions_on_interruptible ON ONLY p_ci_job_definitions USING btree (interruptible);
 
@@ -45367,6 +45382,9 @@ ALTER TABLE ONLY geo_node_statuses
 ALTER TABLE ONLY user_synced_attributes_metadata
     ADD CONSTRAINT fk_rails_0f4aa0981f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ci_job_definition_instances
+    ADD CONSTRAINT fk_rails_0f67af8ad0_p FOREIGN KEY (partition_id, job_definition_id) REFERENCES p_ci_job_definitions(partition_id, id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
 ALTER TABLE ONLY project_authorizations
     ADD CONSTRAINT fk_rails_0f84bb11f3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -46128,6 +46146,9 @@ ALTER TABLE ONLY work_item_weights_sources
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_rails_6aee6cd676 FOREIGN KEY (placeholder_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE p_ci_job_definition_instances
+    ADD CONSTRAINT fk_rails_6af6965da7_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;

@@ -172,6 +172,7 @@ export default {
 
     <exclusion-settings
       v-if="shouldShowExclusionSettings"
+      class="gl-mt-6"
       :exclusion-rules="exclusionRules"
       @update="handleExclusionRulesUpdate"
     />

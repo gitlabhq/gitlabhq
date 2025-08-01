@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
-  let(:nested_group) { create(:group, :nested) }
-  let(:another_group) { create(:group) }
+  include ListboxHelpers
+
+  let_it_be(:user) { create(:user) }
+
+  let_it_be(:group) { create(:group, owners: [user]) }
+  let_it_be(:nested_group) { create(:group, :nested, owners: [user]) }
+  let_it_be(:another_group) { create(:group) }
 
   def click_group_caret(group)
     within_testid("groups-list-item-#{group.id}") do
@@ -21,39 +24,94 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
   end
 
-  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_groups_path, :groups
-
-  it 'shows groups user is member of' do
-    group.add_owner(user)
-    nested_group.add_owner(user)
-    expect(another_group).to be_persisted
-
-    sign_in(user)
-    visit dashboard_groups_path
+  def select_tab(tab)
+    find('a[role="tab"]', text: tab).click
     wait_for_requests
-
-    expect(page).to have_content(group.name)
-
-    expect(page).not_to have_content(another_group.name)
   end
 
-  it 'shows subgroups the user is member of' do
-    group.add_owner(user)
-    nested_group.add_owner(user)
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_groups_path, :groups
 
-    sign_in(user)
-    visit dashboard_groups_path
-    wait_for_requests
+  context 'when `Member` tab is selected' do
+    before do
+      expect(another_group).to be_persisted
 
-    expect(page).to have_content(nested_group.parent.name)
-    click_group_caret(nested_group.parent)
-    expect(page).to have_content(nested_group.name)
+      sign_in(user)
+      visit dashboard_groups_path
+      wait_for_requests
+    end
+
+    it 'shows groups user is member of' do
+      expect(page).to have_content(group.name)
+      expect(page).not_to have_content(another_group.name, exact: true)
+    end
+
+    it 'shows subgroups the user is member of' do
+      expect(page).to have_content(nested_group.parent.name)
+      click_group_caret(nested_group.parent)
+      expect(page).to have_content(nested_group.name)
+    end
+
+    context 'when expanding group' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:inactive_subgroup) { create(:group, :archived, parent: group) }
+
+      before do
+        search(group.name)
+        wait_for_requests
+      end
+
+      it 'only shows active subgroups' do
+        expect(page).not_to have_content(subgroup.name)
+        expect(page).not_to have_content(inactive_subgroup.name)
+
+        # Needs to be triggered twice due to a bug: https://gitlab.com/gitlab-org/gitlab/-/issues/558510
+        click_group_caret(group)
+        click_group_caret(group)
+
+        expect(page).to have_content(group.name)
+        expect(page).to have_content(subgroup.name)
+        expect(page).not_to have_content(inactive_subgroup.name)
+      end
+    end
+  end
+
+  context 'when `Inactive` tab is selected' do
+    let_it_be(:inactive_group) { create(:group, :archived, owners: [user]) }
+
+    before do
+      sign_in(user)
+      visit dashboard_groups_path
+
+      select_tab('Inactive')
+    end
+
+    it 'shows inactive group' do
+      expect(page).to have_content(inactive_group.name)
+      expect(page).not_to have_content(group.name)
+    end
+
+    context 'when expanding group' do
+      let_it_be(:subgroup) { create(:group, parent: inactive_group) }
+
+      before do
+        search(inactive_group.name)
+        wait_for_requests
+      end
+
+      it 'shows subgroups' do
+        expect(page).not_to have_content(subgroup.name)
+
+        # Needs to be triggered twice due to a bug: https://gitlab.com/gitlab-org/gitlab/-/issues/558510
+        click_group_caret(inactive_group)
+        click_group_caret(inactive_group)
+
+        expect(page).to have_content(subgroup.name)
+      end
+    end
   end
 
   context 'when filtering groups' do
     before do
-      group.add_owner(user)
-      nested_group.add_owner(user)
       expect(another_group).to be_persisted
 
       sign_in(user)
@@ -94,9 +152,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     let!(:subgroup) { create(:group, :public, parent: group) }
 
     before do
-      group.add_owner(user)
-      subgroup.add_owner(user)
-
       sign_in(user)
 
       visit dashboard_groups_path
@@ -128,12 +183,15 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   context 'group actions dropdown' do
-    let!(:subgroup) { create(:group, :public, parent: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, owners: [user]) }
+
+    let_it_be(:subgroup) { create(:group, :public, parent: group) }
+    let_it_be(:subgroup_owner) { create(:group_member, :owner, group: subgroup, user: create(:user)).user }
 
     context 'user with subgroup ownership' do
       before do
-        subgroup.add_owner(user)
-        sign_in(user)
+        sign_in(subgroup_owner)
 
         visit dashboard_groups_path
       end
@@ -147,7 +205,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
 
     context 'user with parent group ownership' do
       before do
-        group.add_owner(user)
         sign_in(user)
 
         visit dashboard_groups_path
@@ -172,9 +229,10 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
 
     context 'user is a maintainer' do
+      let_it_be(:maintainer) { create(:group_member, :maintainer, group: group, user: create(:user)).user }
+
       before do
-        group.add_maintainer(user)
-        sign_in(user)
+        sign_in(maintainer)
 
         visit dashboard_groups_path
         click_options_menu(group)
@@ -201,13 +259,11 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   context 'when using pagination' do
-    let(:group)  { create(:group, created_at: 5.days.ago) }
-    let(:group2) { create(:group, created_at: 2.days.ago) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group)  { create(:group, created_at: 5.days.ago, owners: [user]) }
+    let_it_be(:group2) { create(:group, created_at: 2.days.ago, owners: [user]) }
 
     before do
-      group.add_owner(user)
-      group2.add_owner(user)
-
       allow(Kaminari.config).to receive(:default_per_page).and_return(1)
 
       sign_in(user)
@@ -238,7 +294,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   context 'when signed in as admin' do
-    let(:admin) { create(:admin) }
+    let_it_be(:admin) { create(:admin) }
 
     it 'shows only groups admin is member of' do
       group.add_owner(admin)
@@ -261,6 +317,8 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   context 'when there are no groups to display' do
+    let_it_be(:user) { create(:user) }
+
     before do
       sign_in(user)
       visit dashboard_groups_path

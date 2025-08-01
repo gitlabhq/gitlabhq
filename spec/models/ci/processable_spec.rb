@@ -9,6 +9,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   describe 'associations' do
     it { is_expected.to have_one(:trigger).through(:pipeline) }
     it { is_expected.to have_one(:job_environment).class_name('Environments::Job').inverse_of(:job) }
+    it { is_expected.to have_one(:job_definition_instance) }
+    it { is_expected.to have_one(:job_definition).through(:job_definition_instance) }
   end
 
   describe 'delegations' do
@@ -100,7 +102,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            queuing_entry runtime_metadata trace_metadata
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
            dast_scanner_profiles_build auto_canceled_by_partition_id execution_config_id execution_config
-           build_source id_value inputs].freeze
+           build_source id_value inputs job_definition job_definition_instance].freeze
       end
 
       before_all do

@@ -40,7 +40,7 @@ RSpec.describe Doorkeeper.configuration do
       allow(controller).to receive(:redirect_to)
       allow(::Gitlab::Auth::OAuth::OauthResourceOwnerRedirectResolver)
         .to receive(:new)
-        .with(nil)
+        .with(any_args)
         .and_return(resolver)
       allow(resolver).to receive(:resolve_redirect_url).and_return('/login')
     end

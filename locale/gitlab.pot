@@ -7714,21 +7714,6 @@ msgstr ""
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr ""
 
-msgid "Analytics|A dashboard with that name already exists."
-msgstr ""
-
-msgid "Analytics|Add a visualization"
-msgstr ""
-
-msgid "Analytics|Add to dashboard"
-msgstr ""
-
-msgid "Analytics|Add visualization"
-msgstr ""
-
-msgid "Analytics|Add visualizations"
-msgstr ""
-
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
@@ -7738,31 +7723,10 @@ msgstr ""
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr ""
 
-msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
-msgstr ""
-
-msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
-msgstr ""
-
-msgid "Analytics|Cancel"
-msgstr ""
-
-msgid "Analytics|Charts"
-msgstr ""
-
 msgid "Analytics|Configure analytics reports."
 msgstr ""
 
-msgid "Analytics|Continue creating"
-msgstr ""
-
-msgid "Analytics|Continue editing"
-msgstr ""
-
 msgid "Analytics|Create dashboard %{dashboardSlug}"
-msgstr ""
-
-msgid "Analytics|Create your dashboard"
 msgstr ""
 
 msgid "Analytics|Created by GitLab"
@@ -7771,19 +7735,7 @@ msgstr ""
 msgid "Analytics|Custom"
 msgstr ""
 
-msgid "Analytics|Dashboard description"
-msgstr ""
-
-msgid "Analytics|Dashboard description (optional)"
-msgstr ""
-
 msgid "Analytics|Dashboard not found"
-msgstr ""
-
-msgid "Analytics|Dashboard title"
-msgstr ""
-
-msgid "Analytics|Dashboard was saved successfully"
 msgstr ""
 
 msgid "Analytics|Date range"
@@ -7801,21 +7753,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
-msgstr ""
-
-msgid "Analytics|Edit"
-msgstr ""
-
-msgid "Analytics|Edit your dashboard"
-msgstr ""
-
-msgid "Analytics|Enter a dashboard description"
-msgstr ""
-
-msgid "Analytics|Enter a dashboard title"
-msgstr ""
-
-msgid "Analytics|Error while saving dashboard"
 msgstr ""
 
 msgid "Analytics|Events received since %{date}"
@@ -7860,19 +7797,10 @@ msgstr ""
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
-msgid "Analytics|Save your dashboard"
-msgstr ""
-
-msgid "Analytics|Single stats"
-msgstr ""
-
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
-msgstr ""
-
-msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
 msgstr ""
 
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -7885,9 +7813,6 @@ msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
-msgstr ""
-
-msgid "Analytics|Tables"
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."

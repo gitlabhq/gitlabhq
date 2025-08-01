@@ -198,6 +198,9 @@ export default {
     workItemTypeKey() {
       return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
     },
+    workItemTypeId() {
+      return this.workItem?.workItemType?.id;
+    },
     showResolveDiscussionToggle() {
       return !this.isNewDiscussion && this.isDiscussionResolvable && this.hasReplies;
     },
@@ -371,6 +374,7 @@ export default {
             :data-work-item-full-path="fullPath"
             :data-work-item-id="workItemId"
             :data-work-item-iid="workItemIid"
+            :data-work-item-type-id="workItemTypeId"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"

@@ -260,7 +260,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
     end
 
     it "creates a note if a pushed commit mentions an issue", :sidekiq_might_not_need_inline do
-      expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
+      expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, user)
 
       subject
     end
@@ -268,17 +268,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
     it "only creates a cross-reference note if one doesn't already exist" do
       SystemNoteService.cross_reference(issue, commit, user)
 
-      expect(SystemNoteService).not_to receive(:cross_reference).with(issue, commit, commit_author)
-
-      subject
-    end
-
-    it "defaults to the pushing user if the commit's author is not known", :sidekiq_inline, :use_clean_rails_redis_caching do
-      allow(commit).to receive_messages(
-        author_name: 'unknown name',
-        author_email: 'unknown@email.com'
-      )
-      expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, user)
+      expect(SystemNoteService).not_to receive(:cross_reference)
 
       subject
     end
@@ -291,7 +281,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
         allow(project.repository).to receive(:commits_between).with(blankrev, newrev).and_return([])
         allow(project.repository).to receive(:commits_between).with("master", newrev).and_return([commit])
 
-        expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
+        expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, user)
 
         subject
       end
@@ -387,7 +377,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
       end
 
       it "creates cross-reference notes", :sidekiq_inline, :use_clean_rails_redis_caching do
-        expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, commit_author)
+        expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, user)
         subject
       end
 

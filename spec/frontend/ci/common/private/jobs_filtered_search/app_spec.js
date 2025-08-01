@@ -93,7 +93,7 @@ describe('Jobs filtered search', () => {
 
     expect(findJobKindToken()).toMatchObject({
       type: TOKEN_TYPE_JOB_KIND,
-      icon: 'preferences',
+      icon: 'kind',
       title: TOKEN_TITLE_JOB_KIND,
       unique: true,
       operators: OPERATORS_IS,

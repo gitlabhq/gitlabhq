@@ -97,4 +97,5 @@ export const COMMANDS = {
   UNLABEL: '/unlabel',
   ITERATION: '/iteration',
   UNLINK: '/unlink',
+  STATUS: '/status',
 };

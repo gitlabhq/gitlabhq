@@ -2,7 +2,7 @@ import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
-import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
+import { currentAssignees, linkedItems, availableStatuses } from '~/graphql_shared/issuable_client';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 import { COMMANDS } from '../constants';
 
@@ -165,6 +165,7 @@ export default class AutocompleteHelper {
       label: ['title'],
       epic: ['iid', 'title'],
       iteration: ['id', 'title'],
+      status: ['title'],
       vulnerability: ['id', 'title'],
       merge_request: ['iid', 'title'],
       milestone: ['title', 'iid'],
@@ -232,6 +233,18 @@ export default class AutocompleteHelper {
         }
 
         return filteredItems;
+      },
+      status: () => {
+        if (command === COMMANDS.STATUS) {
+          const { workItemFullPath, workItemTypeId } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemFullPath && workItemTypeId) {
+            const statuses = availableStatuses()[workItemFullPath];
+            return statuses?.[workItemTypeId] || [];
+          }
+        }
+        return [];
       },
       emoji: (_, query) =>
         query

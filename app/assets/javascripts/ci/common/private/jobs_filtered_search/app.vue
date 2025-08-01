@@ -60,7 +60,7 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_JOB_KIND,
           title: TOKEN_TITLE_JOB_KIND,
-          icon: 'preferences',
+          icon: 'kind',
           unique: true,
           token: JobKindToken,
           operators: OPERATORS_IS,

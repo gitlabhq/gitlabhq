@@ -519,6 +519,10 @@ p_ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_job_definition_instances:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_job_definitions:
   - table: projects
     column: project_id

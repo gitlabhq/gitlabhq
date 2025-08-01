@@ -76,6 +76,48 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
       },
     ],
   }),
+  availableStatuses: jest.fn().mockReturnValue({
+    'gitlab-org/gitlab-test': {
+      'gid://gitlab/WorkItems::Type/1': [
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+          name: 'To do',
+          description: null,
+          iconName: 'status-waiting',
+          color: '#737278',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+          name: 'In progress',
+          description: null,
+          iconName: 'status-running',
+          color: '#1f75cb',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/3',
+          name: 'Done',
+          description: null,
+          iconName: 'status-success',
+          color: '#108548',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/4',
+          name: "Won't do",
+          description: null,
+          iconName: 'status-cancelled',
+          color: '#DD2B0E',
+          position: 0,
+        },
+      ],
+    },
+  }),
 }));
 
 describe('defaultSorter', () => {
@@ -289,6 +331,7 @@ describe('AutocompleteHelper', () => {
             closest: () => ({
               dataset: {
                 workItemFullPath: 'gitlab-org/gitlab-test',
+                workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
                 workItemId: 1,
                 workItemIid: 1,
               },
@@ -317,6 +360,15 @@ describe('AutocompleteHelper', () => {
       const results = await dataSource.search();
 
       expect(results.map(({ iid }) => iid)).toMatchSnapshot();
+    });
+
+    it.each`
+      command
+      ${'/status'}
+    `('filters statuses using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('status', { command });
+      const results = await dataSource.search();
+      expect(results.map(({ name }) => name)).toMatchSnapshot();
     });
   });
 

@@ -55,8 +55,14 @@ module Issues
         return
       end
 
+      closing_user = if Feature.enabled?(:auto_close_issues_stop_using_commit_author, project)
+                       user
+                     else
+                       author
+                     end
+
       commit = Commit.build_from_sidekiq_hash(project, params["commit_hash"])
-      service = Issues::CloseService.new(container: project, current_user: author)
+      service = Issues::CloseService.new(container: project, current_user: closing_user)
 
       service.execute(issue, commit: commit)
     end

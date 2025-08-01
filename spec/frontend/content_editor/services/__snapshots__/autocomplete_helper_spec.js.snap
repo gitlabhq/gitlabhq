@@ -270,6 +270,15 @@ exports[`AutocompleteHelper for reference type "wiki", searches for "ho" correct
 ]
 `;
 
+exports[`AutocompleteHelper for work items filters statuses using apollo cache for command "/status" 1`] = `
+[
+  "To do",
+  "In progress",
+  "Done",
+  "Won't do",
+]
+`;
+
 exports[`AutocompleteHelper for work items filters users using apollo cache for command "/assign" 1`] = `
 [
   "florida.schoen",

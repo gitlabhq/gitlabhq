@@ -93,6 +93,44 @@ RSpec::Matchers.define :have_graphql_field do |field_name, args = {}|
   end
 end
 
+RSpec::Matchers.define :have_graphql_scopes do |*expected_scopes|
+  match do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    actual_scopes.sort == expected_scopes.sort
+  end
+
+  failure_message do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    "expected field to have exactly scopes #{expected_scopes.sort.inspect}, but has #{actual_scopes.sort.inspect}"
+  end
+
+  failure_message_when_negated do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    "expected field not to have exactly scopes #{expected_scopes.sort.inspect}," \
+      "but it has #{actual_scopes.sort.inspect}"
+  end
+end
+
+RSpec::Matchers.define :include_graphql_scopes do |*expected_scopes|
+  match do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    (expected_scopes - actual_scopes).empty?
+  end
+
+  failure_message do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    missing = expected_scopes - actual_scopes
+    "expected field to include scopes #{expected_scopes.inspect}, " \
+      "but missing #{missing.inspect}. Has: #{actual_scopes.inspect}"
+  end
+
+  failure_message_when_negated do |field|
+    actual_scopes = field.instance_variable_get(:@scopes) || []
+    present = expected_scopes & actual_scopes
+    "expected field not to include scopes #{expected_scopes.inspect}, but has #{present.inspect}"
+  end
+end
+
 RSpec::Matchers.define :have_graphql_mutation do |mutation_class|
   match do |mutation_type|
     field = mutation_type.fields[GraphqlHelpers.fieldnamerize(mutation_class.graphql_name)]

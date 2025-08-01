@@ -20,6 +20,8 @@ module Ci
           timestamp = project.ci_delete_pipelines_in_seconds.seconds.ago
           pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp)
           pipelines = pipelines.not_ref_protected if skip_protected_pipelines?(project)
+          pipelines = pipelines.unlocked if skip_locked_pipelines?(project)
+
           pipelines = pipelines.limit(LIMIT).to_a
 
           Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
@@ -54,6 +56,10 @@ module Ci
 
     def skip_protected_pipelines?(project)
       Feature.enabled?(:ci_skip_old_protected_pipelines, project.root_namespace, type: :wip)
+    end
+
+    def skip_locked_pipelines?(project)
+      Feature.enabled?(:ci_skip_locked_pipelines, project.root_namespace, type: :wip)
     end
   end
 end

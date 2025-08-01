@@ -21,7 +21,6 @@ module Ci
       project_ids = fetch_next_project_ids(limit)
       queue_projects_for_processing(project_ids)
       remove_last_processed_id if project_ids.empty? || project_ids.size < limit
-
       Ci::DestroyOldPipelinesWorker.perform_with_capacity
     end
 

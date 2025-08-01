@@ -17,7 +17,7 @@ describe('Job Kind Token', () => {
   const defaultProps = {
     config: {
       type: TOKEN_TYPE_JOB_KIND,
-      icon: 'preferences',
+      icon: 'kind',
       title: TOKEN_TITLE_JOB_KIND,
       unique: true,
     },

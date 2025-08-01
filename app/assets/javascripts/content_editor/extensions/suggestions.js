@@ -184,6 +184,7 @@ export default Node.create({
         filterOnBackend: true,
       }),
       createPlugin('*iteration:', 'reference', REFERENCE_TYPES.ITERATION),
+      createPlugin('"', 'reference', REFERENCE_TYPES.STATUS, { limit: 100 }),
       createPlugin('%', 'reference', REFERENCE_TYPES.MILESTONE),
       createPlugin(':', 'emoji', REFERENCE_TYPES.EMOJI),
       createPlugin('[[', 'link', REFERENCE_TYPES.WIKI),
@@ -204,6 +205,7 @@ export default Node.create({
           [COMMANDS.REASSIGN_REVIEWER]: '@',
           [COMMANDS.MILESTONE]: '%',
           [COMMANDS.ITERATION]: '*iteration:',
+          [COMMANDS.STATUS]: '"',
         },
       }),
     ];

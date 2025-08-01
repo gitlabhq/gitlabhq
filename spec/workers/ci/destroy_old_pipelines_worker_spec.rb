@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
-  let_it_be(:ancient_pipeline) { create(:ci_pipeline, project: project, created_at: 1.year.ago) }
-  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 1.month.ago) }
-  let_it_be(:new_pipeline) { create(:ci_pipeline, project: project, created_at: 1.week.ago) }
+  let_it_be(:ancient_pipeline) { create(:ci_pipeline, project: project, created_at: 1.year.ago, locked: :unlocked) }
+  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 1.month.ago, locked: :unlocked) }
+  let_it_be(:new_pipeline) { create(:ci_pipeline, project: project, created_at: 1.week.ago, locked: :unlocked) }
 
   before do
     Gitlab::Redis::SharedState.with do |redis|
@@ -52,6 +52,28 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
       it 'keeps protected pipelines' do
         expect { perform }.to change { project.all_pipelines.count }.by(-2)
         expect(old_protected_pipeline.reload).to be_present
+      end
+    end
+
+    context 'when artifacts of pipeline are locked' do
+      let_it_be(:pipeline_with_locked_artifact) do
+        create(:ci_pipeline, project: project, created_at: 1.month.ago, locked: :artifacts_locked)
+      end
+
+      it 'keeps pipelines with :artifacts_locked' do
+        expect { perform }.to change { project.all_pipelines.count }.by(-2)
+        expect(pipeline_with_locked_artifact.reload).to be_present
+      end
+
+      context 'with feature flag :ci_skip_locked_pipelines disabled' do
+        before do
+          stub_feature_flags(ci_skip_locked_pipelines: false)
+        end
+
+        it 'does not keep pipelines with :artifacts_locked' do
+          expect { perform }.to change { project.all_pipelines.count }.by(-3)
+          expect { pipeline_with_locked_artifact.reload }.to raise_error ActiveRecord::RecordNotFound
+        end
       end
     end
   end

@@ -15,6 +15,8 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:jobs) }
+    it { is_expected.to have_many(:job_definition_instances) }
   end
 
   describe 'validations' do

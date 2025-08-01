@@ -15,6 +15,14 @@ module Ci
 
     belongs_to :project
 
+    has_many :job_definition_instances, ->(definition) { in_partition(definition) },
+      class_name: 'Ci::JobDefinitionInstance', partition_foreign_key: :partition_id,
+      inverse_of: :job_definition
+
+    has_many :jobs, ->(definition) { in_partition(definition) },
+      through: :job_definition_instances,
+      class_name: 'Ci::Processable', partition_foreign_key: :partition_id
+
     validates :project, presence: true
 
     # rubocop:disable Database/JsonbSizeLimit -- no updates

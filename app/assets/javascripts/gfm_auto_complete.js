@@ -178,6 +178,7 @@ export const defaultAutocompleteConfig = {
   vulnerabilities: true,
   contacts: true,
   wikis: true,
+  statuses: true,
 };
 
 class GfmAutoComplete {
@@ -299,7 +300,7 @@ class GfmAutoComplete {
             tpl += '<%- referencePrefix %>';
           } else {
             [[referencePrefix]] = value.params;
-            if (/^[@%~]/.test(referencePrefix)) {
+            if (/^[@%~"]/.test(referencePrefix)) {
               tpl += '<%- referencePrefix %>';
             } else if (/^[*]/.test(referencePrefix)) {
               // EE-ONLY
@@ -308,7 +309,13 @@ class GfmAutoComplete {
             }
           }
         }
-        return template(tpl, { interpolate: /<%=([\s\S]+?)%>/g })({ referencePrefix });
+
+        // We're post-processing template output to replace `&quot` back to `"`
+        // as that is needed for `/status "` (EE-only) to be inserted correctly.
+        return template(tpl, { interpolate: /<%=([\s\S]+?)%>/g })({ referencePrefix }).replace(
+          /&quot;/g,
+          '"',
+        );
       },
       suffix: '',
       callbacks: {

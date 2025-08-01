@@ -806,7 +806,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
             expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
           end
 
-          it 'passes both author and user_id to CloseWorker' do
+          it 'passes user_id to CloseWorker' do
             expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
 
             last_job = Issues::CloseWorker.jobs.last
@@ -814,12 +814,30 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
               project.id,
               issue.id,
               issue.class.to_s,
-              hash_including('closed_by' => commit.author.id, 'user_id' => user.id)
+              hash_including('closed_by' => user.id, 'user_id' => user.id)
             )
           end
 
+          context 'when auto_close_issues_stop_using_commit_author FF is disabled' do
+            before do
+              stub_feature_flags(auto_close_issues_stop_using_commit_author: false)
+            end
+
+            it 'passes both author and user_id to CloseWorker' do
+              expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+
+              last_job = Issues::CloseWorker.jobs.last
+              expect(last_job['args']).to include(
+                project.id,
+                issue.id,
+                issue.class.to_s,
+                hash_including('closed_by' => commit.author.id, 'user_id' => user.id)
+              )
+            end
+          end
+
           it 'creates cross references' do
-            expect(commit).to receive(:create_cross_references!).with(author, [issue])
+            expect(commit).to receive(:create_cross_references!).with(user, [issue])
 
             perform
           end
@@ -930,7 +948,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
         end
 
         it 'still creates cross references' do
-          expect(commit).to receive(:create_cross_references!).with(commit.author, [])
+          expect(commit).to receive(:create_cross_references!).with(user, [])
 
           perform
         end

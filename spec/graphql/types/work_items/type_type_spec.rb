@@ -35,8 +35,7 @@ RSpec.describe Types::WorkItems::TypeType, feature_category: :team_planning do
   describe 'fields with :ai_workflows scope' do
     %w[id name].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
-        field = described_class.fields[field_name]
-        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+        expect(described_class.fields[field_name]).to include_graphql_scopes(:ai_workflows)
       end
     end
   end
