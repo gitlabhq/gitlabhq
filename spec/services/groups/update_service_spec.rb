@@ -629,41 +629,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
-  context 'EventStore' do
-    let(:service) { described_class.new(group, user, **params) }
-    let(:root_group) { create(:group, path: 'root') }
-    let(:group) do
-      create(:group, parent: root_group, path: 'old-path', owners: user)
-    end
-
-    context 'when changing a group path' do
-      let(:new_path) { SecureRandom.hex }
-      let(:params) { { path: new_path } }
-
-      it 'publishes a GroupPathChangedEvent' do
-        old_path = group.full_path
-
-        expect { service.execute }
-          .to publish_event(Groups::GroupPathChangedEvent)
-          .with(
-            group_id: group.id,
-            root_namespace_id: group.root_ancestor.id,
-            old_path: old_path,
-            new_path: "root/#{new_path}"
-          )
-      end
-    end
-
-    context 'when not changing a group path' do
-      let(:params) { { name: 'very-new-name' } }
-
-      it 'does not publish a GroupPathChangedEvent' do
-        expect { service.execute }
-          .not_to publish_event(Groups::GroupPathChangedEvent)
-      end
-    end
-  end
-
   context 'rename group' do
     let(:new_path) { SecureRandom.hex }
     let!(:service) { described_class.new(internal_group, user, path: new_path) }

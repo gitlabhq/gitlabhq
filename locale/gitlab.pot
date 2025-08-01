@@ -31047,7 +31047,7 @@ msgstr ""
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr ""
 
-msgid "GroupSettings|Disable personal access tokens for enterprise users"
+msgid "GroupSettings|Disable personal access tokens"
 msgstr ""
 
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
@@ -31080,6 +31080,9 @@ msgstr ""
 msgid "GroupSettings|Enterprise user accounts can use the extension marketplace in the Web IDE and workspaces."
 msgstr ""
 
+msgid "GroupSettings|Enterprise users"
+msgstr ""
+
 msgid "GroupSettings|Experiment"
 msgstr ""
 
@@ -31104,13 +31107,19 @@ msgstr ""
 msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr ""
 
+msgid "GroupSettings|Hide email address from public profile"
+msgstr ""
+
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr ""
 
-msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
+msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
 msgstr ""
 
 msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
+msgstr ""
+
+msgid "GroupSettings|If enabled, hides email addresses on public profile pages for enterprise users."
 msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
@@ -31183,6 +31192,9 @@ msgid "GroupSettings|Set a size limit for all content in each Pages site in this
 msgstr ""
 
 msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
+msgstr ""
+
+msgid "GroupSettings|Settings that apply only to enterprise users associated with this group."
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
@@ -41738,6 +41750,9 @@ msgid "No data"
 msgstr ""
 
 msgid "No data available"
+msgstr ""
+
+msgid "No data available."
 msgstr ""
 
 msgid "No data found for this query."
@@ -56124,6 +56139,9 @@ msgstr ""
 msgid "SecurityAttributes|Categories"
 msgstr ""
 
+msgid "SecurityAttributes|Category"
+msgstr ""
+
 msgid "SecurityAttributes|Category details"
 msgstr ""
 
@@ -56170,6 +56188,9 @@ msgid "SecurityAttributes|Name"
 msgstr ""
 
 msgid "SecurityAttributes|Name is required"
+msgstr ""
+
+msgid "SecurityAttributes|Remove attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Save changes"
@@ -58427,6 +58448,9 @@ msgid "SecurityReports|Reachable:"
 msgstr ""
 
 msgid "SecurityReports|Remove project from dashboard"
+msgstr ""
+
+msgid "SecurityReports|Report Type"
 msgstr ""
 
 msgid "SecurityReports|Report export in progress. After the report is generated, an email will be sent with the download link."
@@ -70252,9 +70276,6 @@ msgstr ""
 msgid "Web IDE"
 msgstr ""
 
-msgid "Web IDE and workspaces"
-msgstr ""
-
 msgid "Web terminal"
 msgstr ""
 
@@ -76108,6 +76129,36 @@ msgid "rendered diff"
 msgstr ""
 
 msgid "reply should have same confidentiality as top-level note"
+msgstr ""
+
+msgid "reportType|API Fuzzing"
+msgstr ""
+
+msgid "reportType|Cluster Image Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning for Registry"
+msgstr ""
+
+msgid "reportType|Coverage Fuzzing"
+msgstr ""
+
+msgid "reportType|DAST"
+msgstr ""
+
+msgid "reportType|Dependency Scanning"
+msgstr ""
+
+msgid "reportType|Generic"
+msgstr ""
+
+msgid "reportType|SAST"
+msgstr ""
+
+msgid "reportType|Secret Detection"
 msgstr ""
 
 msgid "repositories"

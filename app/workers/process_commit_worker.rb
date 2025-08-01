@@ -21,7 +21,7 @@ class ProcessCommitWorker
   weight 3
   idempotent!
   loggable_arguments 2, 3
-  deduplicate :until_executed, feature_flag: :deduplicate_process_commit_worker
+  deduplicate :until_executed
 
   concurrency_limit -> { 1000 }
 

@@ -139,18 +139,16 @@ describe('ExtendedDashboardPanel', () => {
     });
   });
 
-  describe('with a body slot', () => {
-    beforeEach(() => {
-      createWrapper({
-        slots: {
-          body: '<div data-testid="panel-body-slot"></div>',
-        },
-      });
+  it.each(['body', 'filters'])('renders the "%s" slot', (slotName) => {
+    const slotTestId = `${slotName}-slot-test-id`;
+
+    createWrapper({
+      slots: {
+        [slotName]: `<div data-testid="${slotTestId}"></div>`,
+      },
     });
 
-    it('renders the panel body', () => {
-      expect(wrapper.findByTestId('panel-body-slot').exists()).toBe(true);
-    });
+    expect(wrapper.findByTestId(slotTestId).exists()).toBe(true);
   });
 
   describe('when loading', () => {

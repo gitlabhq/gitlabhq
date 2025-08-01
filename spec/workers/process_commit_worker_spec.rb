@@ -23,7 +23,6 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
 
   it "is deduplicated" do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
-    expect(described_class.get_deduplication_options).to include(feature_flag: :deduplicate_process_commit_worker)
   end
 
   describe '#track_time_from_commit_message' do

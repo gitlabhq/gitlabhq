@@ -23,6 +23,9 @@ The decision to deprioritize Service Desk has been made to
 focus on building and extending the work item framework which
 the Service Desk category will also benefit from long-term.
 
+For the information on moving Service Desk into the work item framework, 
+see [epic 10772](https://gitlab.com/groups/gitlab-org/-/epics/10772).
+
 {{< /alert >}}
 
 With Service Desk, your customers

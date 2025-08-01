@@ -51,6 +51,7 @@ export default {
         triggers="manual"
         :show-close-button="true"
         :show="value"
+        :css-classes="['glql-popover']"
         @hidden="setValue(false)"
       >
         <template #title>

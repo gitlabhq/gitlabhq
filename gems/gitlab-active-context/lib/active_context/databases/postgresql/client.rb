@@ -99,7 +99,7 @@ module ActiveContext
         end
 
         def handle_error(error)
-          ActiveContext::Logger.exception(error, message: 'Database error occurred')
+          ActiveContext::Logger.exception(error, class: self.class.name, message: 'Database error occurred')
           raise error
         end
 
@@ -181,7 +181,8 @@ module ActiveContext
 
           []
         rescue StandardError => e
-          ActiveContext::Logger.exception(e, message: "Error with #{operation_type} operation for #{collection_name}")
+          ActiveContext::Logger.exception(e, class: self.class.name,
+            message: "Error with #{operation_type} operation for #{collection_name}")
           operations.pluck(:ref)
         end
         # rubocop:enable Rails/SkipsModelValidations

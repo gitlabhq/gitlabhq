@@ -21,7 +21,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
               client_secret: oauth_application.secret,
               client_id: oauth_application.uid,
               redirect_uri: oauth_application.redirect_uri,
-              code: oauth_access_grant.token
+              code: oauth_access_grant.plaintext_token
             }
           )
 
@@ -31,14 +31,14 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       end
 
       context 'when refresh token flow' do
-        let_it_be(:oauth_token) { create(:oauth_access_token, application: oauth_application, scopes: scopes) }
+        let_it_be(:oauth_token) { create(:oauth_access_token, application: oauth_application, scopes: scopes, use_refresh_token: true) }
 
         it 'returns an access token with the dynamic scopes' do
           post(
             '/oauth/token',
             params: {
               grant_type: 'refresh_token',
-              refresh_token: oauth_token.refresh_token,
+              refresh_token: oauth_token.plaintext_refresh_token,
               client_secret: oauth_application.secret,
               client_id: oauth_application.uid,
               redirect_uri: oauth_application.redirect_uri,
@@ -151,7 +151,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
             client_id: oauth_application.uid,
             client_secret: oauth_application.secret,
             redirect_uri: oauth_application.redirect_uri,
-            code: oauth_access_grant.token
+            code: oauth_access_grant.plaintext_token
           }
         end
 
@@ -204,7 +204,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
             client_id: oauth_application.uid,
             client_secret: oauth_application.secret,
             redirect_uri: oauth_application.redirect_uri,
-            code: oauth_access_grant.token
+            code: oauth_access_grant.plaintext_token
           }
         end
 

@@ -54,6 +54,83 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
     end
   end
 
+  describe '.find_by_fallback_token' do
+    let(:plain_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
+    let(:pbkdf2_token) { '$pbkdf2-sha512$20000$$.c0G5XJV...' }
+    let(:sha512_token) { 'a' * 128 }
+    let(:attr) { :token }
+
+    context 'when token is already hashed' do
+      it 'returns nil for PBKDF2 formatted tokens' do
+        expect(described_class.find_by_fallback_token(attr, pbkdf2_token)).to be_nil
+      end
+
+      it 'returns nil for SHA512 formatted tokens (128 hex chars)' do
+        expect(described_class.find_by_fallback_token(attr, sha512_token)).to be_nil
+      end
+    end
+
+    context 'with actual fallback strategies' do
+      let!(:pbkdf2_token) { create(:oauth_access_token, application: app_one) }
+      let!(:sha512_token) { create(:oauth_access_token, application: app_two) }
+      let!(:plain_token) { create(:oauth_access_token, application: app_three) }
+
+      before do
+        allow(described_class).to receive(:upgrade_fallback_value).and_call_original
+      end
+
+      it 'finds token stored with PBKDF2 strategy' do
+        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512.transform_secret(plain_secret)
+        pbkdf2_token.update_column(:token, pbkdf2_hash)
+
+        result = described_class.find_by_fallback_token(:token, plain_secret)
+
+        expect(result).to eq(pbkdf2_token)
+        expect(described_class).to have_received(:upgrade_fallback_value).with(pbkdf2_token, :token,
+          plain_secret)
+      end
+
+      it 'finds token stored with Plain strategy when PBKDF2 fails' do
+        # Create a different plain secret that won't match any PBKDF2 token
+        different_secret = 'different_plain_token_xyz'
+        plain_token.update_column(:token, different_secret)
+
+        result = described_class.find_by_fallback_token(:token, different_secret)
+
+        expect(result).to eq(plain_token)
+        expect(described_class).to have_received(:upgrade_fallback_value).with(plain_token, :token,
+          different_secret)
+      end
+
+      it 'finds token stored with SHA512 strategy when PBKDF2 fails' do
+        plaintext_token_value = "123456"
+        value = Gitlab::DoorkeeperSecretStoring::Token::Sha512Hash.transform_secret(plaintext_token_value)
+        sha512_token.update_column(:token, value)
+
+        result = described_class.find_by_fallback_token(:token, plaintext_token_value)
+
+        expect(result).to eq(sha512_token)
+        expect(described_class).to have_received(:upgrade_fallback_value).with(sha512_token, :token,
+          plaintext_token_value)
+      end
+
+      it 'upgrade legacy plain text tokens' do
+        described_class.find_by_fallback_token(:token, plain_token.plaintext_token)
+        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512.transform_secret(plain_token.plaintext_token)
+        expect(plain_token.reload.token).to eq(pbkdf2_hash)
+      end
+
+      it 'returns nil when no strategy finds a match' do
+        non_existent_secret = 'this_token_does_not_exist_anywhere'
+
+        result = described_class.find_by_fallback_token(:token, non_existent_secret)
+
+        expect(result).to be_nil
+        expect(described_class).not_to have_received(:upgrade_fallback_value)
+      end
+    end
+  end
+
   describe '.matching_token_for' do
     it 'does not find existing tokens' do
       expect(described_class.matching_token_for(app_one, token.resource_owner, token.scopes)).to be_nil

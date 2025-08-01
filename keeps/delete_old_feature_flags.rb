@@ -23,6 +23,7 @@ module Keeps
   class DeleteOldFeatureFlags < ::Gitlab::Housekeeper::Keep
     CUTOFF_MILESTONE_FOR_DISABLED_FLAG = 12
     CUTOFF_MILESTONE_FOR_ENABLED_FLAG = 4
+    MAX_FILES_LIMIT = 80
     Error = Class.new(StandardError)
     GREP_IGNORE = [
       'locale/',
@@ -238,8 +239,14 @@ module Keeps
 
     def ai_patch(feature_flag, change)
       failed_files = []
+      files_to_patch = files_mentioning_feature_flag(feature_flag.name)
 
-      files_mentioning_feature_flag(feature_flag.name).each do |file|
+      if files_to_patch.size > MAX_FILES_LIMIT
+        @logger.puts "More than #{MAX_FILES_LIMIT} are mentioning feature flag #{feature_flag.name}, Skipping."
+        return false
+      end
+
+      files_to_patch.each do |file|
         flag_enabled = get_latest_feature_flag_status(feature_flag) == :enabled
         user_message = remove_feature_flag_prompts.fetch(feature_flag, file, flag_enabled)
 
@@ -437,7 +444,6 @@ module Keeps
         all_files += result if result.any?
       end
 
-      @logger.puts "All files mentioning feature flag #{feature_flag_name}"
       all_files.uniq
     end
 

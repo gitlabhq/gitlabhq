@@ -272,6 +272,8 @@ export default {
     '.js-tanuki-bot-chat-toggle',
     '#super-sidebar-search',
     '#chat-component',
+    '.glql-popover',
+    '.user-popover',
   ],
   DRAWER_Z_INDEX,
 };

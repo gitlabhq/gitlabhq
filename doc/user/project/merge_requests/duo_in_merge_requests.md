@@ -59,7 +59,7 @@ Data usage: The diff of changes between the source branch's head and the target 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): No
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
@@ -73,6 +73,7 @@ Data usage: The diff of changes between the source branch's head and the target 
 - Feature flag `ai_review_merge_request` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190639) in GitLab 18.1.
 - Feature flag `duo_code_review_chat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190640) in GitLab 18.1.
 - Generally available in GitLab 18.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/524929) to be available on GitLab Duo with self-hosted models in beta in GitLab 18.3
 
 {{< /history >}}
 

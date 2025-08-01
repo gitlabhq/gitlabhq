@@ -1132,6 +1132,11 @@ class Group < Namespace
     false
   end
 
+  # overriden in EE
+  def enterprise_user_settings_available?(user = nil)
+    false
+  end
+
   def create_group_level_work_items_feature_flag_enabled?
     ::Feature.enabled?(:create_group_level_work_items, self, type: :wip) && supports_group_work_items?
   end

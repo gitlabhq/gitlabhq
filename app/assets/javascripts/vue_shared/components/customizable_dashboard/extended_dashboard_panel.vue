@@ -134,6 +134,9 @@ export default {
     <template #body>
       <slot name="body"></slot>
     </template>
+    <template #filters>
+      <slot name="filters"></slot>
+    </template>
     <template #alert-message="{ panelId }">
       <gl-popover
         v-if="showAlertPopover"

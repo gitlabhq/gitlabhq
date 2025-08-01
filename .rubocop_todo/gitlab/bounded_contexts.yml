@@ -2,7 +2,6 @@
 Gitlab/BoundedContexts:
   Exclude:
     - 'app/events/groups/group_deleted_event.rb'
-    - 'app/events/groups/group_path_changed_event.rb'
     - 'app/events/groups/group_transfered_event.rb'
     - 'app/events/package_metadata/ingested_advisory_event.rb'
     - 'app/events/project_authorizations/authorizations_added_event.rb'

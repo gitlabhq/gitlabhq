@@ -92,7 +92,7 @@ For more examples of a question you can ask, see
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
 | [Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="dash-circle" >}} No | Not applicable         | Not applicable |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.3 and later         | Beta |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Experiment |
 
 #### GitLab Duo in issues

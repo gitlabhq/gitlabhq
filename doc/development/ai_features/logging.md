@@ -23,11 +23,18 @@ To implement LLM-specific logging, use the `Gitlab::Llm::Logger` class.
 
 ## Feature Flag
 
-A feature flag named `expanded_ai_logging` controls the logging of sensitive data.
-Use the `conditional_info` helper method for conditional logging based on the feature flag status:
+### For GitLab.com
 
-- If the feature flag is enabled for the current user, it logs the information on `info` level (logs are accessible in Kibana).
-- If the feature flag is disabled for the current user, it logs the information on `info` level, but without optional parameters (logs are accessible in Kibana, but only obligatory fields).
+A feature flag named `expanded_ai_logging` controls the logging of sensitive data.
+
+### For GitLab Self-Managed instances
+
+The instance setting `::Ai::Setting.instance.enabled_instance_verbose_ai_logs` controls the logging of sensitive data.
+
+Use the `conditional_info` helper method for conditional logging based on the status of the feature flag or the instance setting:
+
+- If the feature flag is enabled for the current user, or if the instance setting is enabled, that setting logs the information on `info` level (logs are accessible in Kibana).
+- If the feature flag is disabled for the current user, or, if the instance setting is disabled, that setting logs the information on `info` level, but without optional parameters (logs are accessible in Kibana, but only obligatory fields).
 
 ## Best Practices
 

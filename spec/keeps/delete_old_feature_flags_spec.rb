@@ -715,6 +715,140 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     end
   end
 
+  describe '#ai_patch' do
+    let(:feature_flag) do
+      instance_double(
+        Feature::Definition,
+        name: feature_flag_name
+      )
+    end
+
+    let(:change) do
+      instance_double(Gitlab::Housekeeper::Change, changed_files: [])
+    end
+
+    let(:ai_helper) { instance_double(Keeps::Helpers::AiEditor) }
+    let(:logger) { instance_double(Gitlab::Housekeeper::Logger) }
+
+    before do
+      keep.instance_variable_set(:@logger, logger)
+      allow(logger).to receive(:puts)
+      allow(keep).to receive(:ai_helper).and_return(ai_helper)
+      allow(keep).to receive(:get_latest_feature_flag_status).and_return(:enabled)
+      allow(keep).to receive(:remove_feature_flag_prompts).and_return(
+        instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
+      )
+    end
+
+    context 'when files mentioning feature flag exceed MAX_FILES_LIMIT' do
+      let(:files_list) { (1..81).map { |i| "file#{i}.rb" } }
+
+      before do
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return(files_list)
+      end
+
+      it 'logs a message and returns false' do
+        expect(logger).to receive(:puts).with(
+          "More than #{described_class::MAX_FILES_LIMIT} are mentioning feature flag #{feature_flag_name}, Skipping."
+        )
+
+        result = keep.send(:ai_patch, feature_flag, change)
+
+        expect(result).to be false
+      end
+
+      it 'does not attempt to process any files' do
+        expect(ai_helper).not_to receive(:ask_for_and_apply_patch)
+
+        keep.send(:ai_patch, feature_flag, change)
+      end
+    end
+
+    context 'when files mentioning feature flag are within MAX_FILES_LIMIT' do
+      let(:files_list) { %w[file1.rb file2.rb file3.rb] }
+
+      before do
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return(files_list)
+        allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true)
+        allow(Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
+        changed_files_array = []
+        allow(change).to receive(:changed_files).and_return(changed_files_array)
+        allow(changed_files_array).to receive(:<<).and_return(changed_files_array)
+      end
+
+      it 'processes all files and returns true' do
+        expect(ai_helper).to receive(:ask_for_and_apply_patch).exactly(3).times.and_return(true)
+
+        result = keep.send(:ai_patch, feature_flag, change)
+
+        expect(result).to be true
+      end
+
+      it 'adds processed files to change.changed_files' do
+        changed_files_array = []
+        allow(change).to receive(:changed_files).and_return(changed_files_array)
+        expect(changed_files_array).to receive(:<<).with('file1.rb')
+        expect(changed_files_array).to receive(:<<).with('file2.rb')
+        expect(changed_files_array).to receive(:<<).with('file3.rb')
+
+        keep.send(:ai_patch, feature_flag, change)
+      end
+    end
+
+    context 'when exactly at MAX_FILES_LIMIT' do
+      let(:files_list) { (1..80).map { |i| "file#{i}.rb" } }
+
+      before do
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return(files_list)
+        allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true)
+        allow(Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
+        changed_files_array = []
+        allow(change).to receive(:changed_files).and_return(changed_files_array)
+        allow(changed_files_array).to receive(:<<).and_return(changed_files_array)
+      end
+
+      it 'processes all files when exactly at the limit' do
+        expect(ai_helper).to receive(:ask_for_and_apply_patch).exactly(80).times.and_return(true)
+
+        result = keep.send(:ai_patch, feature_flag, change)
+
+        expect(result).to be true
+      end
+    end
+
+    context 'when some AI patches fail' do
+      let(:files_list) { %w[file1.rb file2.rb file3.rb] }
+
+      before do
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return(files_list)
+        allow(Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
+        changed_files_array = []
+        allow(change).to receive(:changed_files).and_return(changed_files_array)
+        allow(changed_files_array).to receive(:<<).and_return(changed_files_array)
+      end
+
+      it 'logs failed files and returns false when some patches fail' do
+        allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true, false, true)
+
+        expect(logger).to receive(:puts).with("#{feature_flag_name}: Failed to apply AI patch for file2.rb, skipping")
+        expect(logger).to receive(:puts).with("failed on 1 files")
+        expect(logger).to receive(:puts).with("Failed files: file2.rb")
+
+        result = keep.send(:ai_patch, feature_flag, change)
+
+        expect(result).to be false
+      end
+
+      it 'returns true when all patches succeed' do
+        allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true, true, true)
+
+        result = keep.send(:ai_patch, feature_flag, change)
+
+        expect(result).to be true
+      end
+    end
+  end
+
   describe '#each_feature_flag' do
     let(:tmp_dir) { Pathname(Dir.mktmpdir) }
     let(:feature_flag_file_1) { tmp_dir.join('feature_flag_1.yml') }
@@ -767,6 +901,34 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
       expect(yielded_flags.map(&:milestone)).to eq(['15.8', '15.9', '15.10'])
       expect(yielded_flags.map(&:name)).to eq(%w[feature_flag_2 feature_flag_3 feature_flag_1])
+    end
+
+    it 'rejects feature flags with nil milestone' do
+      # Create a feature flag with nil milestone
+      feature_flag_file_4 = tmp_dir.join('feature_flag_4.yml')
+      File.write(feature_flag_file_4, {
+        name: 'feature_flag_4',
+        milestone: nil,
+        rollout_issue: 'issue_url',
+        group: 'group::foo',
+        default_enabled: false
+      }.to_yaml)
+
+      allow(keep).to receive(:all_feature_flag_files).and_return([
+        feature_flag_file_1.to_s,
+        feature_flag_file_2.to_s,
+        feature_flag_file_3.to_s,
+        feature_flag_file_4.to_s
+      ])
+
+      yielded_flags = []
+
+      keep.send(:each_feature_flag) do |feature_flag|
+        yielded_flags << feature_flag
+      end
+
+      expect(yielded_flags.map(&:name)).to eq(%w[feature_flag_2 feature_flag_3 feature_flag_1])
+      expect(yielded_flags.map(&:name)).not_to include('feature_flag_4')
     end
   end
 end

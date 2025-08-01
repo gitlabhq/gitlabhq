@@ -50,7 +50,6 @@ module Projects
 
     def success
       commit_status.success
-      publish_deployed_event
       super
     end
 
@@ -127,16 +126,6 @@ module Projects
       Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
     end
     strong_memoize_attr :pages_deployments_failed_total_counter
-
-    def publish_deployed_event
-      event = ::Pages::PageDeployedEvent.new(data: {
-        project_id: project.id,
-        namespace_id: project.namespace_id,
-        root_namespace_id: project.root_namespace.id
-      })
-
-      Gitlab::EventStore.publish(event)
-    end
 
     def handle_deployment_with_open_file
       build.artifacts_file.use_open_file(unlink_early: false) do |file|

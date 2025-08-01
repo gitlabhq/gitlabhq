@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import resolvers from 'ee_else_ce/security_configuration/security_attributes/graphql/resolvers';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
@@ -15,7 +16,7 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient(resolvers),
   });
 
   const {

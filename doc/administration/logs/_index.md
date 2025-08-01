@@ -1186,7 +1186,8 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-LLM prompt input and response output can be logged by enabling the `expanded_ai_logging` feature flag.
+To log the LLM prompt input and response output, enable the `expanded_ai_logging` feature flag. This flag is intended for use on GitLab.com only, and not on GitLab Self-Managed instances.
+
 This flag is disabled by default and can only be enabled:
 
 - For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).

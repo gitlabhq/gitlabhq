@@ -63,7 +63,7 @@ module ActiveContext
       end
 
       def build_structured_payload(**params)
-        { class: self.class.name || ANONYMOUS }.merge(params).stringify_keys
+        params.stringify_keys
       end
     end
   end
