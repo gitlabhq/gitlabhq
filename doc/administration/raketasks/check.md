@@ -424,6 +424,12 @@ To reset broken tokens:
 
    {{< /tabs >}}
 
+The `gitlab:doctor:reset_encrypted_tokens` task has the following limitations:
+
+- Non-token attributes, for example `ApplicationSetting:ci_jwt_signing_key` are not reset.
+- The presence of more than one undecryptable attribute in a single model record causes the task
+  to fail with a `TypeError: no implicit conversion of nil into String ... block in aes256_gcm_decrypt` error.
+
 ## Troubleshooting
 
 The following are solutions to problems you might discover using the Rake tasks

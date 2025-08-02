@@ -47,7 +47,9 @@ At least one attribute, other than `queue_name`, is required.
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/sidekiq/queues/authorized_projects?user=root"
+curl --request DELETE \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
 ```
 
 Example response:
