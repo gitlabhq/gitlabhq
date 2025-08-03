@@ -177,5 +177,11 @@ module Resolvers
     def self.authorized?(object, context)
       authorization.ok?(object, context[:current_user], scope_validator: context[:scope_validator])
     end
+
+    private
+
+    def current_organization
+      context[:current_organization]
+    end
   end
 end
