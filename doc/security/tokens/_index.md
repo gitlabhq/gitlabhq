@@ -22,7 +22,10 @@ To keep your tokens secure:
 - Treat tokens like passwords and keep them secure.
 - When creating a scoped token, use the most limited scope possible to reduce the impact of an accidentally leaked token.
   - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens, one for each scope. If one token leaks, it gives reduced access than a single token with a wide scope like full API access.
-- When creating a token, consider setting a token that expires when your task is complete. For example, if you need to perform a one-time import, set the token to expire after a few hours.
+- When creating a token:
+  - Choose a name that describes the token, e.g. `GITLAB_API_TOKEN-application1` or `GITLAB_READ_API_TOKEN-application2`. Avoid generic names like `GITLAB_API_TOKEN`, `API_TOKEN` or `default`. 
+  - Consider setting a token that expires when your task is complete. For example, if you need to perform a one-time import, set the token to expire after a few hours.
+  - Add a description that provides further context including any relevant URLs.
 - If you set up a demo environment to showcase a project you have been working on, and you record a video or write a blog post describing that project, make sure you don't accidentally leak a secret.
   After the demo is finished, revoke all the secrets created during the demo.
 - Adding tokens to URLs can be a security risk. Instead, pass the token with a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
