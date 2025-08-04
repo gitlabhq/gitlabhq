@@ -525,7 +525,7 @@ see the [feature deprecation guidelines](../deprecation_guidelines/_index.md).
 
 ### Deprecate an integration
 
-You must announce any deprecation [no later than the third milestone preceding intended removal](../deprecation_guidelines/_index.md#when-can-a-feature-be-deprecated).
+You must announce any deprecation no later than the third milestone preceding intended removal.
 To deprecate an integration:
 
 - [Add a deprecation entry](../deprecation_guidelines/_index.md#update-the-deprecations-and-removals-documentation).

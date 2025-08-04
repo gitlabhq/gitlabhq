@@ -16,6 +16,7 @@ RSpec.describe Groups::UploadsController, feature_category: :portfolio_managemen
   end
 
   let(:legacy_version) { UploadsActions::ID_BASED_UPLOAD_PATH_VERSION - 1 }
+  let(:user) { create(:user) }
 
   it_behaves_like 'handle uploads' do
     let(:uploader_class) { NamespaceFileUploader }
@@ -37,8 +38,49 @@ RSpec.describe Groups::UploadsController, feature_category: :portfolio_managemen
     end
   end
 
+  describe 'POST #create' do
+    let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+
+    let(:create_upload) do
+      post :create, params: params.merge(file: file), format: :json
+    end
+
+    context 'when the user is not logged in' do
+      it 'responds with status 404' do
+        create_upload
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user is logged in' do
+      before do
+        sign_in(user)
+      end
+
+      context 'when the user does not have permission to read the group' do
+        before do
+          model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        end
+
+        it 'responds with status 404' do
+          create_upload
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the user has permission to read the group' do
+        it 'does not respond with status 404' do
+          create_upload
+
+          expect(response).not_to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe "GET #show" do
-    let(:user)  { create(:user) }
     let(:filename) { "rails_sample.jpg" }
     let!(:upload) { create(:upload, :namespace_upload, :with_file, model: model, filename: filename) }
 

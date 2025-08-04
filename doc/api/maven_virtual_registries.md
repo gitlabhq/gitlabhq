@@ -210,6 +210,12 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 {{< /history >}}
 
+{{< alert type="warning" >}}
+
+Deleting a virtual registry also deletes all associated upstream registries that are not shared with other virtual registries, along with their cache entries.
+
+{{< /alert >}}
+
 Deletes a specific Maven virtual registry.
 
 ```plaintext

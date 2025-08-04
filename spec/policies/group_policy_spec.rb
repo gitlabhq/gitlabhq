@@ -30,7 +30,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     specify do
       expect_allowed(*public_permissions)
-      expect_disallowed(:upload_file)
+      expect_allowed(:upload_file)
       expect_disallowed(*(guest_permissions - public_permissions))
       expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)

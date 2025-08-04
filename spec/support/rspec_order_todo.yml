@@ -3415,7 +3415,6 @@
 - './spec/finders/packages/packages_finder_spec.rb'
 - './spec/finders/packages/pypi/package_finder_spec.rb'
 - './spec/finders/packages/pypi/packages_finder_spec.rb'
-- './spec/finders/packages/tags_finder_spec.rb'
 - './spec/finders/pending_todos_finder_spec.rb'
 - './spec/finders/personal_access_tokens_finder_spec.rb'
 - './spec/finders/personal_projects_finder_spec.rb'
