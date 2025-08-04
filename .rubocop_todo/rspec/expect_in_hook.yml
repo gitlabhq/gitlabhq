@@ -78,7 +78,6 @@ RSpec/ExpectInHook:
     - 'spec/controllers/projects/boards_controller_spec.rb'
     - 'spec/controllers/projects/commits_controller_spec.rb'
     - 'spec/controllers/projects/compare_controller_spec.rb'
-    - 'spec/controllers/projects/deployments_controller_spec.rb'
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/projects/labels_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/content_controller_spec.rb'

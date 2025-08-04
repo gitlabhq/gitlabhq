@@ -13,7 +13,7 @@ module RuboCop
       def on_send(node)
         return unless using_feature_flag?(node)
 
-        add_offense(node, message: MSG)
+        add_offense(node)
       end
     end
   end

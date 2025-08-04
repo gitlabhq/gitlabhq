@@ -30,7 +30,7 @@ After you set up the external PostgreSQL server:
 1. Log in to your database server.
 1. Set up a `gitlab` user with a password of your choice, create the `gitlabhq_production` database, and make the user an
    owner of the database. You can see an example of this setup in the
-   [self-compiled installation documentation](../../install/installation.md#7-database).
+   [self-compiled installation documentation](../../install/self_compiled/_index.md#7-database).
 1. If you are using a cloud-managed service, you may need to grant additional
    roles to your `gitlab` user:
    - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.

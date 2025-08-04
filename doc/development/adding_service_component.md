@@ -72,7 +72,7 @@ New services to be bundled with GitLab need to be available in the following env
 The first step of bundling a new service is to provide it in the development environment to engage in collaboration and feedback.
 
 - [Include in the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-- [Include in the self-compiled installation instructions](../install/installation.md)
+- [Include in the self-compiled installation instructions](../install/self_compiled/_index.md)
 
 **Standard install methods**
 

@@ -127,6 +127,13 @@ describe('OrganizationSwitcher', () => {
           entityId: getIdFromGraphQLId(secondOrganization.id),
           entityName: secondOrganization.name,
         });
+
+        expect(wrapper.text()).toContain(
+          'Organizations is a new feature. Help us make it better by',
+        );
+        expect(wrapper.findByTestId('feedback-url').attributes('href')).toBe(
+          'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
+        );
       });
 
       describe('when there are no organizations to switch to', () => {

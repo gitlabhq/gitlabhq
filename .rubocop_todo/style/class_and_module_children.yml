@@ -279,7 +279,6 @@ Style/ClassAndModuleChildren:
     - 'app/models/packages/npm/metadatum.rb'
     - 'app/models/packages/nuget/dependency_link_metadatum.rb'
     - 'app/models/packages/nuget/metadatum.rb'
-    - 'app/models/packages/package.rb'
     - 'app/models/packages/package_file_build_info.rb'
     - 'app/models/packages/pypi/metadatum.rb'
     - 'app/models/packages/sem_ver.rb'

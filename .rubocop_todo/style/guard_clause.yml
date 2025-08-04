@@ -43,7 +43,6 @@ Style/GuardClause:
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/snippets_helper.rb'
     - 'app/helpers/tree_helper.rb'
-    - 'app/mailers/emails/notes.rb'
     - 'app/models/alert_management/http_integration.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/ci/build_trace.rb'

@@ -231,14 +231,19 @@ export default {
 </script>
 
 <template>
-  <div class="gl-relative gl-p-2">
-    <ul v-if="hasStaticItems" class="gl-m-0 gl-list-none gl-p-0" data-testid="static-items-section">
+  <div class="gl-relative gl-px-3 gl-py-2">
+    <ul
+      v-if="hasStaticItems"
+      class="gl-m-0 gl-mb-3 gl-list-none gl-p-0"
+      data-testid="static-items-section"
+    >
       <nav-item
         v-for="item in staticItems"
         :key="item.id"
         :item="item"
         is-static
         :async-count="asyncCount"
+        class="gl-font-bold"
       />
     </ul>
     <pinned-section
@@ -250,12 +255,7 @@ export default {
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
-    <hr
-      v-if="supportsPins"
-      aria-hidden="true"
-      class="gl-mx-4 gl-my-2"
-      data-testid="main-menu-separator"
-    />
+    <hr v-if="supportsPins" aria-hidden="true" class="gl-my-4" data-testid="main-menu-separator" />
     <ul
       aria-labelledby="super-sidebar-context-header"
       class="gl-mb-0 gl-list-none gl-p-0"

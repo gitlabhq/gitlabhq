@@ -57,7 +57,7 @@ sudo chmod 0600 /etc/http.keytab
 {{< alert type="note" >}}
 
 For self-compiled installations, make sure the `kerberos` gem group
-[has been installed](../install/installation.md#install-gems).
+[has been installed](../install/self_compiled/_index.md#install-gems).
 
 {{< /alert >}}
 

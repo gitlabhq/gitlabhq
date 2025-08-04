@@ -20,11 +20,10 @@ import {
   NAME_TO_TEXT_MAP,
   WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
-import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
+import { DROPDOWN_Y_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET_BASE = -177;
-const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
+const DROPDOWN_X_OFFSET_BASE = -158;
 
 export default {
   components: {
@@ -41,7 +40,7 @@ export default {
   i18n: {
     createNew: __('Create new…'),
   },
-  inject: ['isGroup', 'isImpersonating', 'fullPath', 'workItemPlanningViewEnabled'],
+  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled'],
   props: {
     groups: {
       type: Array,
@@ -64,7 +63,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
+        crossAxis: DROPDOWN_X_OFFSET_BASE,
       };
     },
     preselectedWorkItemType() {
@@ -137,6 +136,7 @@ export default {
     :toggle-text="$options.i18n.createNew"
     :toggle-id="$options.toggleId"
     :dropdown-offset="dropdownOffset"
+    class="super-sidebar-new-menu-dropdown"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"
     @hidden="dropdownOpen = false"

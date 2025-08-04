@@ -57,16 +57,7 @@ describe('UserMenu component', () => {
     createWrapper();
 
     expect(findDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -211,
-      mainAxis: 4,
-    });
-  });
-
-  it('decreases the dropdown offset when impersonating a user', () => {
-    createWrapper(null, null, { isImpersonating: true });
-
-    expect(findDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -177,
+      crossAxis: -192,
       mainAxis: 4,
     });
   });

@@ -51,25 +51,25 @@ module Gitlab
       'eo' => 0,
       'es' => 45,
       'fil_PH' => 0,
-      'fr' => 96,
+      'fr' => 95,
       'gl_ES' => 0,
       'ga_IE' => 99,
       'id_ID' => 0,
-      'it' => 85,
-      'ja' => 93,
-      'ko' => 97,
+      'it' => 84,
+      'ja' => 94,
+      'ko' => 98,
       'nb_NO' => 14,
       'nl_NL' => 0,
       'pl_PL' => 1,
-      'pt_BR' => 95,
+      'pt_BR' => 97,
       'ro_RO' => 42,
-      'ru' => 74,
+      'ru' => 73,
       'si_LK' => 8,
       'tr_TR' => 4,
       'uk' => 32,
-      'zh_CN' => 94,
+      'zh_CN' => 93,
       'zh_HK' => 0,
-      'zh_TW' => 85
+      'zh_TW' => 84
     }.freeze
     private_constant :TRANSLATION_LEVELS
 

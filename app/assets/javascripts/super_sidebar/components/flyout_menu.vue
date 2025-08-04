@@ -156,7 +156,7 @@ export default {
     @mouseleave="$emit('mouseleave')"
   >
     <ul
-      class="gl-min-w-20 gl-max-w-34 gl-list-none gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-overlap gl-p-2 gl-pb-1 gl-shadow-md"
+      class="gl-min-w-20 gl-max-w-34 gl-list-none gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
       @mouseenter="showSVG = false"
     >
       <nav-item

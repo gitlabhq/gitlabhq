@@ -54,7 +54,6 @@ Lint/AssignmentInCondition:
     - 'app/services/merge_requests/base_service.rb'
     - 'app/services/merge_requests/mergeability_check_service.rb'
     - 'app/services/packages/debian/parse_debian822_service.rb'
-    - 'app/services/projects/operations/update_service.rb'
     - 'app/services/projects/unlink_fork_service.rb'
     - 'app/services/releases/update_service.rb'
     - 'app/services/repositories/changelog_service.rb'

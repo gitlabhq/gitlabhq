@@ -276,7 +276,7 @@ if you can't upgrade to 15.11.12 and later.
 
 ## 15.8.0
 
-- Git 2.38.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.38.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### Geo installations
@@ -589,7 +589,7 @@ if you can't upgrade to 15.11.12 and later.
 ## 15.6.0
 
 - You should use one of the [officially supported PostgreSQL versions](../../administration/package_information/postgresql_versions.md). Some database migrations can cause stability and performance issues with older PostgreSQL versions.
-- Git 2.37.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.37.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - A database change to modify the behavior of four indexes fails on instances
   where these indexes do not exist:
 

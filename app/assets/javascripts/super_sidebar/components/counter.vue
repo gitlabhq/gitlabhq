@@ -51,6 +51,8 @@ export default {
     class="user-bar-button gl-block gl-grow gl-rounded-base gl-py-3 gl-text-center gl-text-sm gl-leading-1 hover:gl-no-underline"
   >
     <gl-icon aria-hidden="true" :name="icon" />
-    <span v-if="count" aria-hidden="true" class="gl-ml-1">{{ formattedCount }}</span>
+    <span v-if="count" aria-hidden="true" class="gl-ml-2 gl-font-semibold">{{
+      formattedCount
+    }}</span>
   </component>
 </template>

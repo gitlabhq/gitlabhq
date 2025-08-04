@@ -22,7 +22,7 @@ module RuboCop
           body_node = node.body
           return unless body_node
 
-          add_offense(node, message: MSG) unless milestone_call?(body_node)
+          add_offense(node) unless milestone_call?(body_node)
         end
       end
     end

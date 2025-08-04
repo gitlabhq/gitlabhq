@@ -135,7 +135,6 @@ Layout/ClassStructure:
     - 'app/services/system_notes/design_management_service.rb'
     - 'app/services/system_notes/issuables_service.rb'
     - 'app/services/web_hook_service.rb'
-    - 'app/services/work_items/import_csv_service.rb'
     - 'app/uploaders/file_uploader.rb'
     - 'app/validators/addressable_url_validator.rb'
     - 'app/validators/html_safety_validator.rb'

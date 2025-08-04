@@ -6926,6 +6926,9 @@ msgstr ""
 msgid "Almost there…"
 msgstr ""
 
+msgid "Alpha"
+msgstr ""
+
 msgid "Already blocked"
 msgstr ""
 
@@ -29935,9 +29938,6 @@ msgstr ""
 msgid "GlobalSearch|Toggle if results have target branch included or excluded"
 msgstr ""
 
-msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
-msgstr ""
-
 msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr ""
 
@@ -44168,6 +44168,9 @@ msgstr ""
 msgid "Organization|Get started with organizations"
 msgstr ""
 
+msgid "Organization|Help improve Organizations"
+msgstr ""
+
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
 msgstr ""
 
@@ -44258,6 +44261,9 @@ msgstr ""
 msgid "Organization|Organizations"
 msgstr ""
 
+msgid "Organization|Organizations is a new feature. Help us make it better by"
+msgstr ""
+
 msgid "Organization|Organizations must have at least one owner."
 msgstr ""
 
@@ -44329,6 +44335,9 @@ msgid "Organization|You don't have any projects yet."
 msgstr ""
 
 msgid "Organization|my-organization"
+msgstr ""
+
+msgid "Organization|sharing your experience"
 msgstr ""
 
 msgid "Organize work with projects"

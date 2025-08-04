@@ -32,7 +32,7 @@ module RuboCop
           # allow Sidekiq::Client.via calls
           next if klass == :Client && ALLOWED_CLIENT_METHODS.include?(methods_called[0])
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
       end
     end

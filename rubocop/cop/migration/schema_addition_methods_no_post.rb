@@ -34,7 +34,7 @@ module RuboCop
           return if rolling_back_migration?(node)
 
           on_forbidden_method(node) do
-            add_offense(node, message: MSG)
+            add_offense(node)
           end
         end
 

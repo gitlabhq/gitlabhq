@@ -93,7 +93,7 @@ ruby -v
 
 ### Update Node.js
 
-To check the minimum required Node.js version, see [Node.js versions](../install/installation.md#software-requirements).
+To check the minimum required Node.js version, see [Node.js versions](../install/self_compiled/_index.md#software-requirements).
 
 GitLab also requires Yarn `>= v1.10.0` to manage JavaScript dependencies.
 
@@ -109,7 +109,7 @@ For more information, see the [Yarn website](https://classic.yarnpkg.com/en/docs
 
 ### Update Go
 
-To check the minimum required Go version, see [Go versions](../install/installation.md#software-requirements).
+To check the minimum required Go version, see [Go versions](../install/self_compiled/_index.md#software-requirements).
 
 You can check which version you are running:
 
@@ -133,7 +133,7 @@ rm go1.22.5.linux-amd64.tar.gz
 ### Update Git
 
 To check you are running the minimum required Git version, see
-[Git versions](../install/installation.md#software-requirements).
+[Git versions](../install/self_compiled/_index.md#software-requirements).
 
 Use the [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729) that:
 

@@ -36,7 +36,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
       end
     end

@@ -27,13 +27,13 @@ module RuboCop
       def on_send(node)
         return unless using_redis_queue_module_as_parameter?(node) || calling_redis_queue_module_methods?(node)
 
-        add_offense(node, message: MSG)
+        add_offense(node)
       end
 
       # offenses caught in assignment may overlap with on_send
       %i[on_lvasgn on_ivasgn on_cvasgn on_gvasgn on_casgn on_masgn on_op_asgn on_or_asgn on_and_asgn].each do |name|
         define_method(name) do |node|
-          add_offense(node, message: MSG) if redis_queue_assignment?(node)
+          add_offense(node) if redis_queue_assignment?(node)
         end
       end
     end

@@ -537,7 +537,7 @@ Specific information applies to Linux package installations:
 
 ## 16.5.0
 
-- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - A regression may sometimes cause an [HTTP 500 error when navigating a group](https://gitlab.com/gitlab-org/gitlab/-/issues/431659). Upgrading to GitLab 16.6 or later resolves the issue.
 - A regression may cause [Unselected Advanced Search facets to not load](https://gitlab.com/gitlab-org/gitlab/-/issues/428246). Upgrading to 16.6 or later resolves the issue.
 - The `unique_batched_background_migrations_queued_migration_version` index was
@@ -1077,7 +1077,7 @@ Specific information applies to Linux package installations:
 
 ### Self-compiled installations
 
-- Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 
 ### Geo installations
 

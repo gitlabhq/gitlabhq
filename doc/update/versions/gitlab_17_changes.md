@@ -456,7 +456,7 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
 ## 17.7.0
 
-- Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - FIPS Linux packages now use the system Libgcrypt, except FIPS Linux packages for AmazonLinux 2. Previous versions of the FIPS Linux packages used the
   same Libgcrypt used by the regular Linux packages, which was a bug. For more information, see
   the GitLab development documentation about FIPS.
@@ -538,7 +538,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
     database migrations as your existing environments. This isn't necessary if you're restoring from backup into the
     new environment as the database restore removes the existing database schema definition and uses the definition
     that's stored as part of the backup.
-- Git 2.46.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.46.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - S3 object storage uploads in Workhorse are now handled by default using the [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597). If you experience issues
   with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags/_index.md#enable-or-disable-the-feature).
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
@@ -562,7 +562,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
 ## 17.3.0
 
-- Git 2.45.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.45.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 
 ### Geo installations 17.3.0
 
@@ -645,7 +645,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 - The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
   For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
 - Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
-  you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+  you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - Upgrading to GitLab 17.1.0 or 17.1.1 or having unfinished background migrations from GitLab 17.0 can result
   in a failure when running the migrations.
   This is due to a bug.

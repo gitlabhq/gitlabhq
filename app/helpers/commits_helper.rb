@@ -69,12 +69,6 @@ module CommitsHelper
     crumbs.html_safe
   end
 
-  # Return Project default branch, if it present in array
-  # Else - first branch in array (mb last actual branch)
-  def commit_default_branch(project, branches)
-    branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
-  end
-
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     gl_badge_tag(text, { variant: :info, icon: 'branch' }, { href: url, class: 'gl-font-monospace gl-mb-1' })

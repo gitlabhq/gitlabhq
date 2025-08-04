@@ -29,7 +29,7 @@ module RuboCop
           on_forbidden_method(node) do
             break if in_post_deployment_migration?(node)
 
-            add_offense(node, message: MSG)
+            add_offense(node)
           end
         end
       end

@@ -34,36 +34,51 @@ On GitLab.com, the **Admin** area feature is not available.
 
 ## Administering projects
 
-To administer all projects in the GitLab instance from the **Admin** area's Projects page:
+{{< history >}}
+
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17782) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/549452) in GitLab 18.3. Feature flag `admin_projects_vue` removed.
+
+{{< /history >}}
+
+To administer all projects in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview** > **Projects**.
-1. Select the **All**, **Private**, **Internal**, or **Public** tab to list only
-   projects of that criteria.
-1. Optional. Combine these filter and sort options to find your desired projects:
+1. Select **Overview** > **Projects**. The page shows each project's:
 
-   - Select **Filter by name**. Enter the project name you want to find, and GitLab filters
-     projects as you enter text.
+   - Name
+   - Description
+   - Visibility level
+   - Role
+   - Topics
+   - Status
+   - Storage size
+   - Number of stars
+   - Number of forks
+   - Number of merge requests
+   - Number of issues
 
-   - Select **Sort by** to sort projects by:
+1. Optional. Select a tab:
 
-     - Updated date
-     - Last created
-     - Name
-     - Most stars
-     - Oldest created
-     - Oldest updated
-     - Largest repository
+   - **Active** shows all active projects.
+   - **Inactive** shows projects that are archived or pending deletion.
 
-   - Select **Sort by** to filter projects:
+1. Optional. Combine filters to find your desired projects. Filter by:
 
-     - Hide (or show) archived projects
-     - Show archived projects only
-     - Owned by anyone
-     - Owned by me
+   - Name. You must enter at least three characters.
+   - Visibility, either public, internal, or private.
+   - Programming language.
+   - Group or user namespace.
+   - Projects where you have the Owner role.
 
-   - To filter to projects in a namespace, select **Namespace**. Enter text to filter for your desired
-     namespace, then select it.
+1. Optional. To change the sort order, select the sort dropdown list and choose the desired order.
+   The available sort options are:
+
+   - Name
+   - Created date
+   - Updated date
+   - Stars
+   - Storage size
 
 ### Edit a project
 
@@ -71,7 +86,7 @@ To edit a project's name or description from the **Admin** area's Projects page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview** > **Projects**.
-1. Next to the project you want to edit, select **Edit**.
+1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
 1. Edit the **Project name** or **Project description**.
 1. Select **Save Changes**.
 
@@ -81,7 +96,8 @@ To delete a project:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview** > **Projects**.
-1. Next to the project you want to edit, select **Delete**.
+1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Yes, delete project**.
 
 ## Administering users
 

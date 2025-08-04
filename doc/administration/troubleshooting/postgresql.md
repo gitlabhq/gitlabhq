@@ -62,7 +62,7 @@ docker exec -it <container-id> gitlab-psql
 
 {{< tab title="Self-compiled (source)" >}}
 
-Use the `psql` command that's part of [your PostgreSQL installation](../../install/installation.md#7-database).
+Use the `psql` command that's part of [your PostgreSQL installation](../../install/self_compiled/_index.md#7-database).
 
 ```shell
 sudo -u git -H psql -d gitlabhq_production

@@ -12,7 +12,7 @@ module RuboCop
       PATTERN
 
       def on_send(node)
-        add_offense(node, message: MSG) if using_sidekiq_redis?(node)
+        add_offense(node) if using_sidekiq_redis?(node)
       end
     end
   end

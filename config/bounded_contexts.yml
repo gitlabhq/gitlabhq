@@ -30,7 +30,6 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - cloud_connector # Also in CloudConnector
       - duo_workflow
       - workflow_catalog
       - knowledge_graph
@@ -94,7 +93,9 @@ domains:
   CloudConnector:
     description:
     feature_categories:
-      - cloud_connector
+      - plan_provisioning
+      - add-on_provisioning
+      - system_access
 
   Clusters:
     description:

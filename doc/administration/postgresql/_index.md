@@ -31,7 +31,7 @@ Read how to [set up a standalone PostgreSQL instance](standalone.md) for Linux p
 
 This setup is for when you have installed GitLab using the
 [Linux package](https://about.gitlab.com/install/) (CE or EE),
-or [self-compiled](../../install/installation.md) your installation, but you want to use
+or [self-compiled](../../install/self_compiled/_index.md) your installation, but you want to use
 your own external PostgreSQL server.
 
 Read how to [set up an external PostgreSQL instance](external.md).

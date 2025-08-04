@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-28 06:19\n"
+"PO-Revision-Date: 2025-07-31 14:41\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -360,10 +360,6 @@ msgid "%d option"
 msgid_plural "%d options"
 msgstr[0] "%d 個選項"
 
-msgid "%d package"
-msgid_plural "%d packages"
-msgstr[0] "%d 個軟體包"
-
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] "%d 待處理評論"
@@ -439,10 +435,6 @@ msgstr[0] "每個圖片名稱 %d 標籤"
 msgid "%d template found"
 msgid_plural "%d templates found"
 msgstr[0] "找到 %d 個模板"
-
-msgid "%d version"
-msgid_plural "%d versions"
-msgstr[0] "%d 版本"
 
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
@@ -1640,9 +1632,6 @@ msgstr "(%{value}) 已經被使用"
 msgid "(+%{count}&nbsp;rules)"
 msgstr "(+%{count}&nbsp;條規則)"
 
-msgid "(Copy)"
-msgstr "(複製)"
-
 msgid "(Limited to %{quota} compute minutes per month)"
 msgstr "（每月僅限 %{quota} 計算分鐘）"
 
@@ -1926,8 +1915,8 @@ msgstr "20-29 項貢獻"
 msgid "2FA"
 msgstr "兩步驟驗證"
 
-msgid "2FADevice|Registered On"
-msgstr "註冊於"
+msgid "2FADevice|Registered on"
+msgstr ""
 
 msgid "30+ contributions"
 msgstr "超過 30 項貢獻"
@@ -2259,6 +2248,9 @@ msgstr "Agent 已成功建立。"
 msgid "AICatalog|Agent deleted successfully."
 msgstr "Agent 已成功刪除。"
 
+msgid "AICatalog|Agent not found."
+msgstr ""
+
 msgid "AICatalog|Agent updated successfully."
 msgstr "已成功更新 Agent。"
 
@@ -2285,9 +2277,6 @@ msgstr ""
 
 msgid "AICatalog|Create agent"
 msgstr "建立 agent"
-
-msgid "AICatalog|Create new agent"
-msgstr "建立新 agent"
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
 msgstr "定義 agent 的個性、專業領域和行為準則。這會影響 agent 回應和處理任務的方式。"
@@ -2373,6 +2362,12 @@ msgstr ""
 msgid "AICatalog|System Prompt is required."
 msgstr ""
 
+msgid "AICatalog|Test Run"
+msgstr ""
+
+msgid "AICatalog|Test run agents to see how they respond."
+msgstr ""
+
 msgid "AICatalog|The agent could not be added. Please try again."
 msgstr "無法新增 agent。請再試一次。"
 
@@ -2405,6 +2400,9 @@ msgstr ""
 
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr "例如：Research Assistant（研究助理）、Creative Writer（創意寫作者）、Code Helper（程式開發助手）"
+
+msgid "AICatalog|unable to validate definition"
+msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"
 msgstr "產生此議題的摘要"
@@ -3475,9 +3473,6 @@ msgstr "已啟用"
 msgid "Active"
 msgstr "使用中"
 
-msgid "Active Sessions"
-msgstr "使用中的工作階段"
-
 msgid "Active group access tokens"
 msgstr "啟用中的群組存取令牌"
 
@@ -3490,6 +3485,9 @@ msgstr "使用中的流水線觸發令牌"
 msgid "Active project access tokens"
 msgstr "啟用中的專案存取令牌"
 
+msgid "Active sessions"
+msgstr ""
+
 msgid "ActiveSessions|with Step-up Authentication"
 msgstr ""
 
@@ -3498,6 +3496,9 @@ msgstr "動態"
 
 msgid "Activity|An error occurred while retrieving activity. Reload the page to try again."
 msgstr "取得動態時發生錯誤。請重新載入頁面再試一次。"
+
+msgid "Actual Version"
+msgstr ""
 
 msgid "Add"
 msgstr "加入"
@@ -5056,7 +5057,7 @@ msgid "AdminStatistics|Notes"
 msgstr "備註"
 
 msgid "AdminStatistics|SSH Keys"
-msgstr "SSH 金鑰"
+msgstr ""
 
 msgid "AdminStatistics|Snippets"
 msgstr "程式碼片段"
@@ -5747,6 +5748,9 @@ msgstr "您有 %{count} 個待處理的 %{migrations_link_start}進階查尋遷�
 
 msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr "您有未完成的過時遷移"
+
+msgid "Affected Columns"
+msgstr ""
 
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr "移除後，只能通過API恢復分叉(fork)關係。該專案將無法再接收或發送合併請求到上游專案或其他分叉(fork)。"
@@ -7235,6 +7239,9 @@ msgstr "抓取待處理留言時發生錯誤"
 msgid "An error occurred while fetching reference"
 msgstr "獲取參考時發生錯誤"
 
+msgid "An error occurred while fetching results"
+msgstr ""
+
 msgid "An error occurred while fetching reviewers."
 msgstr "擷取檢閱者時發生錯誤。"
 
@@ -7391,6 +7398,9 @@ msgstr "儲存您的設定時發生錯誤。試著再次儲存您的設定。"
 msgid "An error occurred while searching for labels, please try again."
 msgstr "搜尋標籤時發生錯誤，請再試一次。"
 
+msgid "An error occurred while starting diagnostics"
+msgstr ""
+
 msgid "An error occurred while subscribing to this page. Please try again later."
 msgstr ""
 
@@ -7518,9 +7528,6 @@ msgstr "分析設定"
 msgid "AnalyticsDashboards|Failed to load namespace metadata."
 msgstr ""
 
-msgid "Analytics| Last updated: %{recordedAt}"
-msgstr "最後更新： %{recordedAt}"
-
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr ""
 
@@ -7575,9 +7582,6 @@ msgstr "代碼"
 msgid "Analytics|Column chart"
 msgstr "長條圖"
 
-msgid "Analytics|Configure Dashboard Project"
-msgstr "配置儀表板專案"
-
 msgid "Analytics|Configure analytics reports."
 msgstr "配置分析報告。"
 
@@ -7586,9 +7590,6 @@ msgstr "繼續建立"
 
 msgid "Analytics|Continue editing"
 msgstr "繼續編輯"
-
-msgid "Analytics|Could not clone the dashboard. Refresh the page to try again."
-msgstr "無法複製儀表板，刷新頁面再試一次。"
 
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr "分析建立儀表板 %{dashboardSlug}"
@@ -7605,9 +7606,6 @@ msgstr "由 GitLab 建立"
 msgid "Analytics|Custom"
 msgstr ""
 
-msgid "Analytics|Custom dashboards"
-msgstr "客製儀表板"
-
 msgid "Analytics|Dashboard description"
 msgstr "儀表板描述"
 
@@ -7620,17 +7618,8 @@ msgstr "未找到儀表板"
 msgid "Analytics|Dashboard title"
 msgstr "儀表板標題"
 
-msgid "Analytics|Dashboard was cloned successfully"
-msgstr "儀表板已成功複製"
-
 msgid "Analytics|Dashboard was saved successfully"
 msgstr "儀表板已成功儲存"
-
-msgid "Analytics|Dashboards are created by editing the groups dashboard files."
-msgstr "分析儀表板是通過編輯儀表板群組檔案建立的。"
-
-msgid "Analytics|Dashboards are created by editing the projects dashboard files."
-msgstr "儀表板是透過編輯專案儀表板檔案建立的。"
 
 msgid "Analytics|Data explorer"
 msgstr "資料瀏覽器"
@@ -7708,9 +7697,6 @@ msgstr "了解更多關於%{docsLinkStart}AI 影響分析%{docsLinkEnd}和%{subs
 msgid "Analytics|Line chart"
 msgstr "折線圖"
 
-msgid "Analytics|New dashboard"
-msgstr "新的儀表板"
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr "沒有與指定 URL 路徑相符的儀表板。"
 
@@ -7765,14 +7751,14 @@ msgstr "從選擇度量開始"
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr "命名空間使用統計，使用資料是累計計數，每月更新一次。"
 
+msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
+msgstr ""
+
 msgid "Analytics|Tables"
 msgstr "表格"
 
 msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
 msgstr "可視化預覽僅顯示最近 7 天的資料，儀表板可視化可顯示整個日期範圍。"
-
-msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
-msgstr "要建立您自己的儀表板，首先要設定一個專案來儲存您的儀表板。"
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
 msgstr "無法更新分析設定，請再試一次。"
@@ -9278,9 +9264,6 @@ msgstr "認證"
 
 msgid "Authentication Failure"
 msgstr "認證失敗"
-
-msgid "Authentication Log"
-msgstr "登入紀錄"
 
 msgid "Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"
 msgstr "Authentication error: 在您的個人資料設置中啟用 2FA 以繼續使用 GitLab：%{mfa_help_page}"
@@ -12739,9 +12722,6 @@ msgstr "檢查分支的有效性"
 msgid "Checking branch validity…"
 msgstr "正在檢查分支是否有效…"
 
-msgid "Checking group path availability…"
-msgstr "正在檢查群組路徑是否可用…"
-
 msgid "Checking if merge request can be merged…"
 msgstr "正在檢查 merge request 是否可以合併…"
 
@@ -13496,9 +13476,6 @@ msgstr "客戶端 DSN"
 
 msgid "Clientside traces sample rate"
 msgstr "客戶端追踪採樣率"
-
-msgid "Clone"
-msgstr "複製 (Clone)"
 
 msgid "Clone repository"
 msgstr "克隆 (Clone) 版本庫"
@@ -15042,6 +15019,12 @@ msgstr "收疊設定部份"
 msgid "Collapse sidebar"
 msgstr "收疊側邊欄"
 
+msgid "Collation Mismatches"
+msgstr ""
+
+msgid "Collation Name"
+msgstr ""
+
 msgid "Collector hostname"
 msgstr "Collector主機名稱"
 
@@ -15134,9 +15117,6 @@ msgstr "評論"
 
 msgid "Comment '%{label}' position"
 msgstr "留言%{label}'的位置"
-
-msgid "Comment Templates"
-msgstr "評論範本"
 
 msgid "Comment added to the timeline."
 msgstr "留言已加入至時間線。"
@@ -17858,6 +17838,9 @@ msgstr "執行清理："
 msgid "ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr "通過自動從容器註冊庫中刪除並保留您想要的標籤來節省儲存空間。%{linkStart}清理工作如何進行？%{linkEnd}"
 
+msgid "ContainerRegistry|Select tag"
+msgstr ""
+
 msgid "ContainerRegistry|Set cleanup rules"
 msgstr "設定清理規則"
 
@@ -18497,9 +18480,6 @@ msgstr "複製SSH公鑰"
 msgid "Copy URL"
 msgstr "複製連結"
 
-msgid "Copy audio URL"
-msgstr "複製音頻URL"
-
 msgid "Copy autocomplete description"
 msgstr "複製自動完成說明"
 
@@ -18536,9 +18516,6 @@ msgstr "複製自訂名稱"
 msgid "Copy descriptive label"
 msgstr "複製描述性標籤"
 
-msgid "Copy diagram URL"
-msgstr "複製圖表網址"
-
 msgid "Copy environment"
 msgstr "複製環境"
 
@@ -18556,9 +18533,6 @@ msgstr "複製文件路徑"
 
 msgid "Copy file permalink"
 msgstr ""
-
-msgid "Copy image URL"
-msgstr "複製映像檔URL"
 
 msgid "Copy issue URL to clipboard"
 msgstr "將議題(issue)URL複製到剪貼簿"
@@ -18604,9 +18578,6 @@ msgstr "複製到剪貼簿"
 
 msgid "Copy value"
 msgstr "複製數值"
-
-msgid "Copy video URL"
-msgstr "複製影像URL"
 
 msgid "Corpus Management"
 msgstr "語詞庫管理"
@@ -18676,6 +18647,9 @@ msgstr "總大小： %{totalSize}"
 
 msgid "Correlation ID"
 msgstr "相關ID"
+
+msgid "Corrupted Indexes"
+msgstr ""
 
 msgid "Cost Factor Settings"
 msgstr "成本因素設定"
@@ -19052,9 +19026,6 @@ msgstr "建立萬用字元：%{searchTerm}"
 msgid "Create your first page"
 msgstr "建立您的第一個頁面"
 
-msgid "Create your group"
-msgstr "建立您的群組"
-
 msgid "Create, update, or delete a merge request."
 msgstr "建立、更新或刪除合併請求。"
 
@@ -19383,7 +19354,7 @@ msgid "CredentialsInventory|Revoked"
 msgstr "撤回"
 
 msgid "CredentialsInventory|SSH Keys"
-msgstr "SSH 金鑰"
+msgstr ""
 
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSH 金鑰"
@@ -21019,8 +20990,56 @@ msgstr "資料類型"
 msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, but this version of GitLab requires PostgreSQL %{pg_version_minimum}. Please upgrade your environment to a supported PostgreSQL version. See %{pg_requirements_url} for details."
 msgstr "「%{database_name}」資料庫使用的是 PostgreSQL %{pg_version_current}，但此版本的 GitLab 需要 PostgreSQL %{pg_version_minimum}。請升級您的環境到支援的 PostgreSQL 版本。請見 %{pg_requirements_url} 以取得詳細資訊。"
 
+msgid "Database Diagnostics"
+msgstr ""
+
+msgid "Database diagnostics"
+msgstr ""
+
 msgid "Database update failed"
 msgstr "數據庫更新失敗"
+
+msgid "DatabaseDiagnostics|Checking for recent diagnostic results..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation Health Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation mismatches are shown for informational purposes and may not indicate a problem."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Contact Support"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Database: %{name}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that may occur after OS upgrades"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Issues detected"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Last checked: %{timestamp}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Learn more"
+msgstr ""
+
+msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Run Collation Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Running diagnostics..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
+msgstr ""
+
+msgid "DatabaseDiagnostics|These issues require manual remediation. Read our documentation on PostgreSQL OS upgrades for step-by-step instructions."
+msgstr ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
 msgstr "用於與 Datadog 進行驗證的 %{link_start}API key%{link_end} 。"
@@ -21343,9 +21362,6 @@ msgstr "刪除帳號"
 msgid "Delete asset"
 msgstr "刪除素材"
 
-msgid "Delete audio"
-msgstr "刪除音頻"
-
 msgid "Delete badge"
 msgstr "刪除徽章"
 
@@ -21377,9 +21393,6 @@ msgstr "刪除部署金鑰"
 msgid "Delete deployment"
 msgstr "刪除部署"
 
-msgid "Delete diagram"
-msgstr "刪除圖表"
-
 msgid "Delete epic"
 msgstr "刪除史詩 (epic)"
 
@@ -21394,9 +21407,6 @@ msgstr "立即刪除群組？"
 
 msgid "Delete identity"
 msgstr "刪除身份"
-
-msgid "Delete image"
-msgstr "刪除映像檔"
 
 msgid "Delete immediately"
 msgstr ""
@@ -21461,9 +21471,6 @@ msgstr "刪除這個史詩並釋放所有子項目？"
 
 msgid "Delete user list"
 msgstr "刪除使用者列表"
-
-msgid "Delete video"
-msgstr "刪除影像"
 
 msgid "DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."
 msgstr "無法移除專案，專案版本庫正在移動中，等移動完成後再試一次。"
@@ -24117,6 +24124,9 @@ msgstr "重複的軟體套件"
 
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
 msgstr "重複頁面：文件中已存在具有該標題的頁面 %{file}"
+
+msgid "Duplicates"
+msgstr ""
 
 msgid "Duration"
 msgstr "時長"
@@ -27869,9 +27879,6 @@ msgstr "差異"
 msgid "Geo"
 msgstr "Geo"
 
-msgid "Geo Replication - %{node_name}"
-msgstr "地理複製 - %{node_name}"
-
 msgid "Geo Settings"
 msgstr "Geo設置"
 
@@ -27930,9 +27937,6 @@ msgstr "全部"
 
 msgid "Geo|All %{replicableType} are being scheduled for %{action}"
 msgstr "所有 %{replicableType} 都被排入 %{action} 排程"
-
-msgid "Geo|All %{replicable_name}"
-msgstr "全部 %{replicable_name}"
 
 msgid "Geo|All projects"
 msgstr "全部專案"
@@ -28075,9 +28079,6 @@ msgstr "文件同步並行限制"
 msgid "Geo|Filter Geo sites"
 msgstr "過濾 Geo 站點"
 
-msgid "Geo|Filter by name"
-msgstr "依名稱過濾"
-
 msgid "Geo|Geo Replication - %{node_name}"
 msgstr ""
 
@@ -28122,9 +28123,6 @@ msgstr "如果啟用，GitLab將使用GEO處理物件儲存複製。"
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
 msgstr "如果您要進行變更，則必須前往主要站點。"
-
-msgid "Geo|In progress"
-msgstr "進行中"
 
 msgid "Geo|Internal URL"
 msgstr "內部 URL"
@@ -30313,9 +30311,6 @@ msgstr "群組擁有者在啟用群組管理帳號前，必須先以 SAML 登入
 msgid "Group SAML must be enabled to test"
 msgstr "必須啟用群組SAML才能進行測試"
 
-msgid "Group URL"
-msgstr "群組URL"
-
 msgid "Group access token creation is disabled in this group."
 msgstr "該群組中禁用群組存取令牌建立。"
 
@@ -30397,9 +30392,6 @@ msgstr "群組成員資格到期日期已移除"
 msgid "Group milestone"
 msgstr "群組里程碑"
 
-msgid "Group name (your organization)"
-msgstr "群組名稱(您的組織)"
-
 msgid "Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis."
 msgstr "群組名稱只能包含字母、數字、破折號、空格、點、底線、括號和表情符號。"
 
@@ -30417,12 +30409,6 @@ msgstr "群組或專案"
 
 msgid "Group overview content"
 msgstr "群組概述內容"
-
-msgid "Group path is already taken. We've suggested one that is available."
-msgstr "群組路徑已被佔用，我們已經推薦了一個可用的。"
-
-msgid "Group path is available."
-msgstr "群組路徑可用。"
 
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr "群組專案的URL以群組命名空間為前綴"
@@ -31781,6 +31767,15 @@ msgstr ""
 
 msgid "Homepage"
 msgstr "主頁"
+
+msgid "HomepageActivityWidget|Followed users"
+msgstr ""
+
+msgid "HomepageActivityWidget|Starred projects"
+msgstr ""
+
+msgid "HomepageActivityWidget|Your activity"
+msgstr ""
 
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
 msgstr ""
@@ -33255,6 +33250,9 @@ msgstr "縮排"
 
 msgid "Index"
 msgstr "索引"
+
+msgid "Index Name"
+msgstr ""
 
 msgid "Index deletion is canceled"
 msgstr "索引刪除已取消"
@@ -35077,6 +35075,9 @@ msgstr "現在，您應該能在 Jira Cloud 議題中看到 GitLab.com 的活動
 msgid "JiraConnect|Your browser is not supported"
 msgstr "您的瀏覽器不受支援"
 
+msgid "JiraIntegration|Comma-separated list of allowed Jira issue statuses."
+msgstr ""
+
 msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
 msgstr "啟用在 GitLab 中查看 Jira 問題。"
 
@@ -35114,6 +35115,18 @@ msgid "JiraIntegration|The email or username to use with Jira. Use an email for 
 msgstr "與 Jira 一起使用的電子郵件或使用者名稱。Jira Cloud 使用電子郵件，Jira Data Center 和 Jira Server 使用使用者名稱。使用 Basic Authentication (`jira_auth_type``為`0`) 時必須使用。"
 
 msgid "JiraIntegration|Turn on Jira issue creation for GitLab vulnerabilities."
+msgstr ""
+
+msgid "JiraIntegration|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraIntegration|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraIntegration|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraIntegration|Verify the status of Jira issues referenced in commit messages."
 msgstr ""
 
 msgid "JiraIntegration|When set to `true`, opens a prefilled form on the Jira instancewhen creating a Jira issue from a vulnerability."
@@ -35170,6 +35183,9 @@ msgstr "Jira Cloud 的 API 令牌或 Jira Data Center 和 Jira Server 的密碼"
 msgid "JiraService|API token or password"
 msgstr "API 令牌或密碼"
 
+msgid "JiraService|Allowed statuses"
+msgstr ""
+
 msgid "JiraService|An error occurred while fetching the Jira issue list"
 msgstr "取得 Jira 議題清單時發生錯誤"
 
@@ -35185,8 +35201,20 @@ msgstr "Jira 執行個體的基本 URL"
 msgid "JiraService|Basic"
 msgstr "基礎"
 
+msgid "JiraService|Check assignee"
+msgstr ""
+
+msgid "JiraService|Check issue exists"
+msgstr ""
+
+msgid "JiraService|Check issue status"
+msgstr ""
+
 msgid "JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys."
 msgstr "逗號分隔的 Jira 專案主鍵清單，保留空白以包含所有可用的主鍵。"
+
+msgid "JiraService|Comma-separated list of allowed Jira issue statuses."
+msgstr ""
 
 msgid "JiraService|Create Jira issues for vulnerabilities"
 msgstr "為弱點建立 Jira 議題"
@@ -35211,6 +35239,9 @@ msgstr "電子郵件或使用者名稱"
 
 msgid "JiraService|Enable Jira transitions"
 msgstr "啟用 Jira 轉換"
+
+msgid "JiraService|Enable Jira verification"
+msgstr ""
 
 msgid "JiraService|Enter a Jira project key to generate issue types."
 msgstr "輸入 Jira 專案金鑰以產生議題類型。"
@@ -35284,6 +35315,9 @@ msgstr "Jira 專案金鑰"
 msgid "JiraService|Jira project keys"
 msgstr "Jira 專案金鑰"
 
+msgid "JiraService|Jira verification"
+msgstr ""
+
 msgid "JiraService|Leave blank to use your current configuration"
 msgstr "留空以使用您目前的配置"
 
@@ -35301,6 +35335,9 @@ msgstr "新 Jira 個人存取令牌"
 
 msgid "JiraService|Open Jira"
 msgstr "開啟 Jira"
+
+msgid "JiraService|Ready, In Progress, Review"
+msgstr ""
 
 msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
 msgstr "推薦，僅適用於 Jira Data Center 和 Jira Server。"
@@ -35334,6 +35371,21 @@ msgstr "使用正則表達式來匹配Jira問題鍵，正則表達式必須遵�
 
 msgid "JiraService|Using Jira for issue tracking?"
 msgstr "使用 Jira 追蹤問題？"
+
+msgid "JiraService|Verify Jira issues referenced in commit messages against specific rules before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraService|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraService|Verify the status of Jira issues referenced in commit messages."
+msgstr ""
 
 msgid "JiraService|View Jira issues"
 msgstr "查看 Jira 議題"
@@ -37134,6 +37186,24 @@ msgstr[0] "線條"
 msgid "Line changes"
 msgstr "變更的行"
 
+msgid "LinearIntegration|Linear workspace URL (for example, https://linear.app/example)"
+msgstr ""
+
+msgid "LinearIntegration|The Linear logo is a trademark of Linear Orbit Inc. in the U.S. and other countries."
+msgstr ""
+
+msgid "LinearIntegration|URL must point to a workspace URL like https://linear.app/example"
+msgstr ""
+
+msgid "LinearIntegration|Use Linear as this project's issue tracker."
+msgstr ""
+
+msgid "LinearIntegration|Workspace URL"
+msgstr ""
+
+msgid "LinearIntegration|https://linear.app/example"
+msgstr ""
+
 msgid "Link"
 msgstr "連結"
 
@@ -37508,6 +37578,9 @@ msgstr "維護者"
 
 msgid "Maintenance mode"
 msgstr "維護模式"
+
+msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
+msgstr ""
 
 msgid "Make a merge request to propose changes to this project."
 msgstr ""
@@ -38583,6 +38656,9 @@ msgstr ""
 msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
 msgstr ""
 
+msgid "MemberRole|To enhance security, we recommend %{linkStart}enabling Admin mode%{linkEnd} when using custom admin roles. Enabling Admin mode will require users to re-authenticate in GitLab before accessing the Admin area."
+msgstr ""
+
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr "無法匯出角色報告，如果此錯誤持續，請聯絡支援人員。"
 
@@ -39389,15 +39465,6 @@ msgstr "指標 - Prometheus"
 
 msgid "Metrics Dashboard"
 msgstr "指標儀表板"
-
-msgid "Metrics Dashboard YAML definition"
-msgstr "指標儀表板YAML定義"
-
-msgid "Metrics Dashboard YAML definition is invalid:"
-msgstr "指標儀表板YAML定義無效:"
-
-msgid "Metrics Dashboard YAML definition is valid."
-msgstr "指標儀表板YAML定義有效。"
 
 msgid "Metrics Explorer"
 msgstr ""
@@ -41394,6 +41461,9 @@ msgstr "沒有符合當前過濾器的子史詩 (epics)"
 msgid "No child items are currently assigned."
 msgstr "目前沒有指派子項目。"
 
+msgid "No collation mismatches detected."
+msgstr ""
+
 msgid "No comment templates found."
 msgstr "未找到評論範本"
 
@@ -41424,6 +41494,9 @@ msgstr "無貢獻"
 msgid "No contributions were found"
 msgstr "未找到任何貢獻者"
 
+msgid "No corrupted indexes detected."
+msgstr ""
+
 msgid "No credit card data for matching"
 msgstr "沒有相符的信用卡資料"
 
@@ -41434,6 +41507,9 @@ msgid "No data available"
 msgstr "沒有可用的資料"
 
 msgid "No data found for this query."
+msgstr ""
+
+msgid "No default Duo group found. Select a default Duo group in your user preferences and try again."
 msgstr ""
 
 msgid "No deployments found"
@@ -41758,8 +41834,8 @@ msgstr "未連線"
 msgid "Not adopted"
 msgstr "未採用"
 
-msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser."
-msgstr "並非所有瀏覽器都支援 WebAuthn，首次註冊雙因子​​身份驗證後，您必須保存您的回復碼才能登入，即使是使用不受支援的瀏覽器也是如此。"
+msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in."
+msgstr ""
 
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr "尚未處理所有資料，因此所選時間範圍內圖表的不一定完全準確。"
@@ -44163,6 +44239,10 @@ msgstr "軟體包(Package)類型必須是Helm"
 
 msgid "Package type must be NuGet"
 msgstr "軟體包(Package)類型必須是Nuget"
+
+msgid "PackageRegistry|%{count} selected"
+msgid_plural "PackageRegistry|%{count} selected"
+msgstr[0] ""
 
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr "支援%{linkStart}萬用字元%{linkEnd}，例如「my-package-*」。"
@@ -46866,9 +46946,6 @@ msgstr "請輸入評論範本的內容。"
 msgid "Please enter your current password."
 msgstr "請輸入您的當前密碼。"
 
-msgid "Please fill in a descriptive name for your group."
-msgstr "請為您的群組填寫描述性名稱。"
-
 msgid "Please fill in a name for your topic."
 msgstr "請填寫您主題的名稱。"
 
@@ -47037,6 +47114,9 @@ msgstr "可能的 LFS 設定問題，此專案包含 LFS 物件，但沒有 .git
 
 msgid "Possible to override in each project."
 msgstr "每個專案都可以覆蓋。"
+
+msgid "PostStart event references command '%{command}' which has no command definition."
+msgstr ""
 
 msgid "PostStart event references command '%{command}' which is not an exec command. Only exec commands are supported in postStart events"
 msgstr ""
@@ -50411,6 +50491,9 @@ msgstr "當直接推送到分支時，無法套用使用者**允許推送**，�
 msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
 msgstr "將保護分支授予合併權限也會提升某些CI/CD功能的權限。"
 
+msgid "ProtectedBranch|How do I use branch rules?"
+msgstr ""
+
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr "繼承 - 該設定可以在群組級別變更"
 
@@ -50449,6 +50532,9 @@ msgstr "受保護的分支已成功建立"
 
 msgid "ProtectedBranch|Protected branches"
 msgstr "受保護分支"
+
+msgid "ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}."
+msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
 msgstr "拒絕程式碼推送更改 CODEOWNERS 文件中列出的文件。"
@@ -50497,6 +50583,9 @@ msgstr "有哪些安全隱患？"
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
 msgstr "您只能增加共享此專案的群組。 %{learn_more_link}"
+
+msgid "ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place."
+msgstr ""
 
 msgid "ProtectedBranch|default"
 msgstr "預設"
@@ -53517,6 +53606,9 @@ msgstr "過去3小時內，分配給該群組的群組執行者未執行任何�
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
 msgstr "在過去的3小時內，執行器未執行任何作業。"
 
+msgid "Runners|No project runners are available to be assigned to this project."
+msgstr ""
+
 msgid "Runners|No project runners found"
 msgstr ""
 
@@ -53587,6 +53679,9 @@ msgid "Runners|Operating systems"
 msgstr "操作系統"
 
 msgid "Runners|Optional configuration details"
+msgstr ""
+
+msgid "Runners|Other available project runners"
 msgstr ""
 
 msgid "Runners|Other projects"
@@ -54258,10 +54353,10 @@ msgid "SSH Key"
 msgstr "SSH金鑰"
 
 msgid "SSH Keys"
-msgstr "SSH 金鑰"
+msgstr ""
 
 msgid "SSH Keys Help"
-msgstr "SSH金鑰幫助"
+msgstr ""
 
 msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr "SSH 指紋驗證客戶端是否連結到正確的主機。檢查 %{config_link_start}目前執行個體的設定 %{config_link_end}"
@@ -54626,6 +54721,9 @@ msgstr ""
 msgid "ScanResultPolicy|Allow specific types of branches to bypass policies based on naming conventions."
 msgstr ""
 
+msgid "ScanResultPolicy|Allow specific users to bypass policies for their specialized workflows."
+msgstr ""
+
 msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
 msgstr "允許合併要求繼續進行，即使並非符合所有條件"
 
@@ -54663,6 +54761,9 @@ msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
+msgstr ""
+
+msgid "ScanResultPolicy|Choose which users can bypass this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Clear all"
@@ -54750,6 +54851,9 @@ msgid "ScanResultPolicy|Grant bypass permissions to users based on their organiz
 msgstr ""
 
 msgid "ScanResultPolicy|Groups"
+msgstr ""
+
+msgid "ScanResultPolicy|If Team frequently needs to push infrastructure configuration changes that trigger policy violations but are pre-approved through your change management process, add specific users to bypass infrastructure policies."
 msgstr ""
 
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
@@ -54935,6 +55039,12 @@ msgstr ""
 msgid "ScanResultPolicy|Select token exceptions"
 msgstr ""
 
+msgid "ScanResultPolicy|Select user exceptions"
+msgstr ""
+
+msgid "ScanResultPolicy|Select users exceptions. Choose which users can bypass this policy."
+msgstr ""
+
 msgid "ScanResultPolicy|Service accounts"
 msgstr ""
 
@@ -54955,6 +55065,9 @@ msgstr ""
 
 msgid "ScanResultPolicy|Unknown"
 msgstr "未知"
+
+msgid "ScanResultPolicy|Users"
+msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
 msgstr "當%{scanType} %{scanners}運行在%{branches} %{branchExceptions}上時，找到了符合以下標準的%{vulnerabilitiesNumber}%{boldDescription}時:"
@@ -56362,9 +56475,6 @@ msgstr "解除警報後，該訊息將不再顯示。"
 msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
 msgstr "合併此合併請求之後，請前往 [%{framework}](%{link}) 並移除合規流水線，以便新的流水線執行政策可以優先執行。"
 
-msgid "SecurityOrchestration|All pipeline sources"
-msgstr ""
-
 msgid "SecurityOrchestration|All projects in linked groups"
 msgstr "連結群組中的所有專案"
 
@@ -56736,6 +56846,9 @@ msgstr "繼承"
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
 msgstr "繼承自 %{namespace}"
+
+msgid "SecurityOrchestration|Inherited policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
 msgstr "無效的合規框架ID(s)"
@@ -57603,6 +57716,9 @@ msgid "SecurityOrchestration|on %{dayText} %{days} of each month"
 msgstr ""
 
 msgid "SecurityOrchestration|on every"
+msgstr ""
+
+msgid "SecurityOrchestration|pipeline sources"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -59154,8 +59270,8 @@ msgstr "配置 CI/CD"
 msgid "Set up Jira Integration"
 msgstr "設定Jira整合"
 
-msgid "Set up a hardware device to enable two-factor authentication (2FA)."
-msgstr "設置硬體設備以啟用雙因子身份驗證 (2FA)。"
+msgid "Set up a WebAuthn device to enable two-factor authentication (2FA)."
+msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr "根據%{docsLinkStart}文件%{icon}%{docsLinkEnd}設定斷言/屬性/聲明（email，first_name，last_name）和NameID"
@@ -61104,11 +61220,17 @@ msgstr "儲存:"
 msgid "StorageSize|Unknown"
 msgstr "未知"
 
+msgid "Stored Version"
+msgstr ""
+
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
 msgstr "刪除線 (%{modifierKey}%{shiftKey}X)"
 
 msgid "Strikethrough text"
 msgstr "刪除線文字"
+
+msgid "Structural"
+msgstr ""
 
 msgid "Sub-batch size"
 msgstr "子批次大小"
@@ -61244,9 +61366,6 @@ msgstr "訂閱尚未同步化。 %{cta}"
 
 msgid "Subscription service outage"
 msgstr "訂閱服務中斷"
-
-msgid "Subscription successfully applied to \"%{group_name}\""
-msgstr "訂閱成功應用於「%{group_name}」"
 
 msgid "Subscription successfully created."
 msgstr "訂閱已成功建立。"
@@ -61874,6 +61993,9 @@ msgstr "系統已啟動"
 
 msgid "TXT"
 msgstr "TXT"
+
+msgid "Table"
+msgstr ""
 
 msgid "Table of contents"
 msgstr "目錄"
@@ -63618,9 +63740,6 @@ msgstr "在總結您待處理的意見時發生錯誤。"
 
 msgid "There was an error syncing project %{name}"
 msgstr "同步專案%{name}時發生錯誤"
-
-msgid "There was an error updating the Maintenance Mode Settings"
-msgstr "更新維護模式設定時發生錯誤"
 
 msgid "There was an error updating your display preferences."
 msgstr "更新您的顯示偏好設定時發生錯誤。"
@@ -65515,6 +65634,9 @@ msgstr ""
 msgid "ToolCoverage|Project coverage"
 msgstr ""
 
+msgid "Tools for detecting and resolving database issues in self-managed GitLab instances."
+msgstr ""
+
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
 msgstr "主題 %{source_topic} 已成功合併至主題 %{target_topic}。"
 
@@ -66451,6 +66573,9 @@ msgstr "不滿意?"
 
 msgid "Unhelpful or irrelevant"
 msgstr "沒有幫助或不相關"
+
+msgid "Unique"
+msgstr ""
 
 msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."
 msgstr "目標聊天的唯一識別碼或目標通道的用戶名（格式為 '@channelusername'）"
@@ -69209,6 +69334,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
 msgstr "無法處理%{issueReference}: %{errorMessage}。"
 
+msgid "VulnerabilityManagement|Could not refresh the validity check. Please try again."
+msgstr ""
+
 msgid "VulnerabilityManagement|Create Jira issue"
 msgstr "建立 Jira 議題"
 
@@ -69776,8 +69904,8 @@ msgstr "Web IDE 和工作區"
 msgid "Web terminal"
 msgstr "Web終端"
 
-msgid "WebAuthn Devices"
-msgstr "WebAuthn 裝置"
+msgid "WebAuthn devices"
+msgstr ""
 
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr "WebAuthn只支援啟用了HTTPS的網站。您可以聯絡管理員獲得更多訊息"
@@ -70147,9 +70275,6 @@ msgstr ""
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr "歡迎回來！您的帳號之前因為沒有活動而被凍結，但目前已被重新啟動。"
-
-msgid "Welcome to GitLab, %{first_name}!"
-msgstr "歡迎來到GitLab, %{first_name}！"
 
 msgid "Welcome to GitLab, %{name}!"
 msgstr "%{name}， 歡迎來到 GitLab！"
@@ -71259,6 +71384,9 @@ msgstr "目前沒有開啟的項目。"
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr ""
 
+msgid "WorkItem|No health status"
+msgstr ""
+
 msgid "WorkItem|No items"
 msgstr ""
 
@@ -71276,6 +71404,9 @@ msgstr "沒有符合的結果"
 
 msgid "WorkItem|No milestone"
 msgstr "沒有里程碑"
+
+msgid "WorkItem|No parent"
+msgstr ""
 
 msgid "WorkItem|No template"
 msgstr "沒有模板"
@@ -72301,14 +72432,11 @@ msgstr "您還可以在 Git 中使用群組存取令牌通過 HTTP(S) 進行身�
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr "您還可以將專案存取令牌與 Git 結合使用以通過 HTTP(S) 進行身份驗證。 %{link_start}了解更多。%{link_end}"
 
-msgid "You can always edit this later"
-msgstr "您也可以稍後編輯此選項。"
-
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr "您可以在 %{pat_link_start}個人存取令牌%{pat_link_end} 中查看它。"
 
-msgid "You can check it in your in your personal access tokens settings %{pat_link}."
-msgstr "您可以在您的個人存取令牌設定 %{pat_link} 中查看它。"
+msgid "You can check it in your personal access tokens settings %{pat_link}."
+msgstr ""
 
 msgid "You can check your tokens or create a new one in your %{pat_link_start}personal access tokens settings%{pat_link_end}."
 msgstr "您可以在您的%{pat_link_start}個人存取令牌設定%{pat_link_end}檢查您的令牌或建立新的。"
@@ -72567,9 +72695,6 @@ msgstr "您沒有更新此環境的權限。"
 
 msgid "You do not have permissions to run the import."
 msgstr "您沒有權限執行匯入。"
-
-msgid "You don't have any WebAuthn devices registered yet."
-msgstr "您尚未註冊任何WebAuthn設備。"
 
 msgid "You don't have any applications."
 msgstr "您尚未擁有任何應用程式"
@@ -72970,9 +73095,6 @@ msgstr "您的 %{plan_name} 訂閱將於 %{expires_on} 到期"
 
 msgid "Your %{plan_name} subscription with a temporary extension will expire on %{expires_on}"
 msgstr "您的 %{plan_name} 訂閱的臨時延長將於 %{expires_on} 到期"
-
-msgid "Your %{plan} plan will be applied to your group."
-msgstr "您的%{plan}方案將套用在您的群組。"
 
 msgid "Your %{resource_type} access token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{resource_path}%{codeClose} will expire in %{days_to_expire} or less."
 msgstr "您的 %{resource_type} 存取令牌 %{codeOpen}%{token_name}%{codeClose} 用於 %{codeOpen}%{resource_path}%{codeClose} 將在 %{days_to_expire} 或更短時間內過期。"

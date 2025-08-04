@@ -211,12 +211,11 @@ describe('AlertManagementTable', () => {
       });
 
       const avatar = findAssignees().at(1).findComponent(GlAvatar);
-      const { src, label } = avatar.attributes();
       const { name, avatarUrl } = mockAlerts[1].assignees.nodes[0];
 
       expect(avatar.exists()).toBe(true);
-      expect(label).toBe(name);
-      expect(src).toBe(avatarUrl);
+      expect(avatar.attributes('label')).toBe(name);
+      expect(avatar.props('src')).toBe(avatarUrl);
     });
 
     it('navigates to the detail page when alert row is clicked', () => {

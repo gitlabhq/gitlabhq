@@ -224,7 +224,7 @@ To use the new Ruby in production, update the following projects:
 
 - [Cloud-native GitLab Docker Images (CNG)](https://gitlab.com/gitlab-org/build/CNG) ([example](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/739))
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) ([example](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5545))
-- [Self-compiled installations](../install/installation.md): update the [Ruby system version check](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/system_check/app/ruby_version_check.rb)
+- [Self-compiled installations](../install/self_compiled/_index.md): update the [Ruby system version check](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/system_check/app/ruby_version_check.rb)
 
 Charts like the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab) should also be updated if
 they use Ruby in some capacity, for example

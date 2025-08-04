@@ -285,7 +285,7 @@ For more information on:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
+1. Make sure GitLab is [configured with HTTPS](../install/self_compiled/_index.md#using-https).
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
@@ -3575,7 +3575,7 @@ To configure group SAML SSO:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
+1. Make sure GitLab is [configured with HTTPS](../install/self_compiled/_index.md#using-https).
 1. Edit `/home/git/gitlab/config/gitlab.yml` to enable OmniAuth and the `group_saml` provider:
 
    ```yaml

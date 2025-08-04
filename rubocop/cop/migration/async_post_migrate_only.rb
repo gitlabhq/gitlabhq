@@ -24,7 +24,7 @@ module RuboCop
           return unless FORBIDDEN_METHODS.include?(node.method_name)
           return if in_post_deployment_migration?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
       end
     end

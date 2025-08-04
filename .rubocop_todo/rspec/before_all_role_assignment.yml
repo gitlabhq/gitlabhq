@@ -1220,7 +1220,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/projects/group_links/destroy_service_spec.rb'
     - 'spec/services/projects/group_links/update_service_spec.rb'
     - 'spec/services/projects/import_export/export_service_spec.rb'
-    - 'spec/services/projects/operations/update_service_spec.rb'
     - 'spec/services/projects/participants_service_spec.rb'
     - 'spec/services/projects/transfer_service_spec.rb'
     - 'spec/services/protected_branches/cache_service_spec.rb'

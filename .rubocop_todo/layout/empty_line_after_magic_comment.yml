@@ -16,7 +16,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/models/packages/maven/metadatum.rb'
     - 'app/models/packages/npm.rb'
     - 'app/models/packages/nuget.rb'
-    - 'app/models/packages/package.rb'
     - 'app/models/packages/pypi.rb'
     - 'app/models/packages/rpm.rb'
     - 'app/models/packages/rpm/repository_file.rb'

@@ -1,7 +1,6 @@
 ---
 RSpec/FeatureCategory:
   Exclude:
-    - 'ee/spec/controllers/admin/clusters_controller_spec.rb'
     - 'ee/spec/controllers/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
@@ -1900,7 +1899,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/auth/saml/config_spec.rb'
     - 'spec/lib/gitlab/auth/saml/identity_linker_spec.rb'
     - 'spec/lib/gitlab/auth/saml/origin_validator_spec.rb'
-    - 'spec/lib/gitlab/auth/two_factor_auth_verifier_spec.rb'
     - 'spec/lib/gitlab/auth/unique_ips_limiter_spec.rb'
     - 'spec/lib/gitlab/auth/user_access_denied_reason_spec.rb'
     - 'spec/lib/gitlab/authorized_keys_spec.rb'
@@ -2493,7 +2491,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/import_export/uploads_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/wiki_repo_saver_spec.rb'
     - 'spec/lib/gitlab/import_formatter_spec.rb'
-    - 'spec/lib/gitlab/dormant_projects_deletion_warning_tracker_spec.rb'
     - 'spec/lib/gitlab/incident_management/pager_duty/incident_issue_description_spec.rb'
     - 'spec/lib/gitlab/insecure_key_fingerprint_spec.rb'
     - 'spec/lib/gitlab/instrumentation/rate_limiting_gates_spec.rb'

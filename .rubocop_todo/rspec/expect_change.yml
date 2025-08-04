@@ -299,7 +299,6 @@ RSpec/ExpectChange:
     - 'spec/services/projects/cleanup_service_spec.rb'
     - 'spec/services/projects/destroy_service_spec.rb'
     - 'spec/services/projects/detect_repository_languages_service_spec.rb'
-    - 'spec/services/projects/operations/update_service_spec.rb'
     - 'spec/services/projects/repository_languages_service_spec.rb'
     - 'spec/services/projects/update_pages_service_spec.rb'
     - 'spec/services/projects/update_repository_storage_service_spec.rb'

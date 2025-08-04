@@ -60,8 +60,6 @@ export const DROPDOWN_Y_OFFSET = 4;
 
 export const NAV_ITEM_LINK_ACTIVE_CLASS = 'super-sidebar-nav-item-current';
 
-export const IMPERSONATING_OFFSET = 34;
-
 // Frequent items constants
 export const FREQUENT_ITEMS = {
   MAX_COUNT: 20,

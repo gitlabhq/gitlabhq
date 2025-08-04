@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-28 06:10\n"
+"PO-Revision-Date: 2025-07-31 14:43\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -573,13 +573,6 @@ msgstr[1] "%d параметра"
 msgstr[2] "%d параметров"
 msgstr[3] "%d параметров"
 
-msgid "%d package"
-msgid_plural "%d packages"
-msgstr[0] "%d пакет"
-msgstr[1] "%d пакета"
-msgstr[2] "%d пакетов"
-msgstr[3] "%d пакетов"
-
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] "%d ожидающий комментарий"
@@ -712,13 +705,6 @@ msgstr[0] "Найден %d шаблон"
 msgstr[1] "Найдено %d шаблона"
 msgstr[2] "Найдено %d шаблонов"
 msgstr[3] "Найдено %d шаблонов"
-
-msgid "%d version"
-msgid_plural "%d versions"
-msgstr[0] "%d версия"
-msgstr[1] "%d версии"
-msgstr[2] "%d версий"
-msgstr[3] "%d версий"
 
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
@@ -2102,9 +2088,6 @@ msgstr "(%{value}) уже используется"
 msgid "(+%{count}&nbsp;rules)"
 msgstr "(+%{count}&nbsp;правил)"
 
-msgid "(Copy)"
-msgstr "(Копия)"
-
 msgid "(Limited to %{quota} compute minutes per month)"
 msgstr ""
 
@@ -2463,8 +2446,8 @@ msgstr "20-29 содействий"
 msgid "2FA"
 msgstr "Двухфакторная аутентификация"
 
-msgid "2FADevice|Registered On"
-msgstr "Зарегистрированы"
+msgid "2FADevice|Registered on"
+msgstr ""
 
 msgid "30+ contributions"
 msgstr "30+ содействий"
@@ -2796,6 +2779,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
+msgid "AICatalog|Agent not found."
+msgstr ""
+
 msgid "AICatalog|Agent updated successfully."
 msgstr ""
 
@@ -2821,9 +2807,6 @@ msgid "AICatalog|Choose who can view and interact with this agent after it is pu
 msgstr ""
 
 msgid "AICatalog|Create agent"
-msgstr ""
-
-msgid "AICatalog|Create new agent"
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
@@ -2910,6 +2893,12 @@ msgstr ""
 msgid "AICatalog|System Prompt is required."
 msgstr ""
 
+msgid "AICatalog|Test Run"
+msgstr ""
+
+msgid "AICatalog|Test run agents to see how they respond."
+msgstr ""
+
 msgid "AICatalog|The agent could not be added. Please try again."
 msgstr ""
 
@@ -2941,6 +2930,9 @@ msgid "AICatalog|cannot change a released item version"
 msgstr ""
 
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
+msgstr ""
+
+msgid "AICatalog|unable to validate definition"
 msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"
@@ -4015,9 +4007,6 @@ msgstr ""
 msgid "Active"
 msgstr "Активно"
 
-msgid "Active Sessions"
-msgstr "Активные сессии"
-
 msgid "Active group access tokens"
 msgstr "Активные токены доступа группы"
 
@@ -4030,6 +4019,9 @@ msgstr "Активные токены запуска конвейера"
 msgid "Active project access tokens"
 msgstr "Активные токены доступа проекта"
 
+msgid "Active sessions"
+msgstr ""
+
 msgid "ActiveSessions|with Step-up Authentication"
 msgstr ""
 
@@ -4038,6 +4030,9 @@ msgstr "Активность"
 
 msgid "Activity|An error occurred while retrieving activity. Reload the page to try again."
 msgstr "Произошла ошибка при получении активности. Обновите страницу, чтобы повторить попытку."
+
+msgid "Actual Version"
+msgstr ""
 
 msgid "Add"
 msgstr "Добавить"
@@ -5602,7 +5597,7 @@ msgid "AdminStatistics|Notes"
 msgstr "Заметки"
 
 msgid "AdminStatistics|SSH Keys"
-msgstr "Ключи SSH"
+msgstr ""
 
 msgid "AdminStatistics|Snippets"
 msgstr "Сниппеты"
@@ -6293,6 +6288,9 @@ msgstr "У вас есть %{count} ожидающих выполнения %{mi
 
 msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr "У вас есть отложенные устаревшие миграции"
+
+msgid "Affected Columns"
+msgstr ""
 
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr "После удаления связь форка может быть восстановлена только через API. Этот проект больше не сможет получать или отправлять запросы на слияние в исходный проект или другие форки."
@@ -7787,6 +7785,9 @@ msgstr "Во время извлечения ожидающих коммента
 msgid "An error occurred while fetching reference"
 msgstr "Ошибка при получении ссылки"
 
+msgid "An error occurred while fetching results"
+msgstr ""
+
 msgid "An error occurred while fetching reviewers."
 msgstr "Произошла ошибка при получении рецензентов."
 
@@ -7943,6 +7944,9 @@ msgstr ""
 msgid "An error occurred while searching for labels, please try again."
 msgstr "При поиске меток произошла ошибка, повторите попытку."
 
+msgid "An error occurred while starting diagnostics"
+msgstr ""
+
 msgid "An error occurred while subscribing to this page. Please try again later."
 msgstr ""
 
@@ -8073,9 +8077,6 @@ msgstr "Настройки аналитики"
 msgid "AnalyticsDashboards|Failed to load namespace metadata."
 msgstr "Не удалось загрузить метаданные пространства имён."
 
-msgid "Analytics| Last updated: %{recordedAt}"
-msgstr "Последнее обновление: %{recordedAt}"
-
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr "%{linkStart}Подробнее%{linkEnd} об управлении и работе с аналитическими панелями."
 
@@ -8130,9 +8131,6 @@ msgstr "Код"
 msgid "Analytics|Column chart"
 msgstr ""
 
-msgid "Analytics|Configure Dashboard Project"
-msgstr ""
-
 msgid "Analytics|Configure analytics reports."
 msgstr ""
 
@@ -8141,9 +8139,6 @@ msgstr "Продолжить создание"
 
 msgid "Analytics|Continue editing"
 msgstr "Продолжить редактирование"
-
-msgid "Analytics|Could not clone the dashboard. Refresh the page to try again."
-msgstr "Не удалось клонировать панель. Обновите страницу, чтобы попробовать снова."
 
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
@@ -8160,9 +8155,6 @@ msgstr ""
 msgid "Analytics|Custom"
 msgstr "Настраиваемый"
 
-msgid "Analytics|Custom dashboards"
-msgstr "Пользовательские панели"
-
 msgid "Analytics|Dashboard description"
 msgstr ""
 
@@ -8175,17 +8167,8 @@ msgstr ""
 msgid "Analytics|Dashboard title"
 msgstr ""
 
-msgid "Analytics|Dashboard was cloned successfully"
-msgstr "Панель успешно скопирована"
-
 msgid "Analytics|Dashboard was saved successfully"
 msgstr "Панель успешно сохранена"
-
-msgid "Analytics|Dashboards are created by editing the groups dashboard files."
-msgstr "Панели создаются путём редактирования файлов панели групп."
-
-msgid "Analytics|Dashboards are created by editing the projects dashboard files."
-msgstr ""
 
 msgid "Analytics|Data explorer"
 msgstr "Исследователь данных"
@@ -8266,9 +8249,6 @@ msgstr "Подробнее о %{docsLinkStart}аналитике влияния 
 msgid "Analytics|Line chart"
 msgstr ""
 
-msgid "Analytics|New dashboard"
-msgstr ""
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr "Ни одна панель не соответствует указанному пути URL."
 
@@ -8323,14 +8303,14 @@ msgstr ""
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr "Статистика использования пространства имён. Сведения накапливаются кумулятивно и обновляются ежемесячно."
 
+msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
+msgstr ""
+
 msgid "Analytics|Tables"
 msgstr "Таблицы"
 
 msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
 msgstr "Предпросмотр визуализации отображает только последние 7 дней. Панель мониторинга визуализаций может отображать весь диапазон дат."
-
-msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
-msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
 msgstr ""
@@ -9887,9 +9867,6 @@ msgstr "Аутентификация"
 
 msgid "Authentication Failure"
 msgstr "Ошибка аутентификации"
-
-msgid "Authentication Log"
-msgstr "Журнал аутентификации"
 
 msgid "Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"
 msgstr "Ошибка аутентификации: включите двухфакторную аутентификацию в настройках профиля, чтобы продолжить использовать GitLab: %{mfa_help_page}"
@@ -13378,9 +13355,6 @@ msgstr "Проверка корректности ветки"
 msgid "Checking branch validity…"
 msgstr "Проверка валидности ветки…"
 
-msgid "Checking group path availability…"
-msgstr "Проверка доступности пути группы…"
-
 msgid "Checking if merge request can be merged…"
 msgstr "Проверка возможности слияния…"
 
@@ -14141,9 +14115,6 @@ msgstr "DSN для стороны клиента"
 
 msgid "Clientside traces sample rate"
 msgstr "Частота выборки трассировок на стороне клиента"
-
-msgid "Clone"
-msgstr "Клонировать"
 
 msgid "Clone repository"
 msgstr "Клонировать репозиторий"
@@ -15696,6 +15667,12 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr "Свернуть панель"
 
+msgid "Collation Mismatches"
+msgstr ""
+
+msgid "Collation Name"
+msgstr ""
+
 msgid "Collector hostname"
 msgstr ""
 
@@ -15788,9 +15765,6 @@ msgstr "Комментарий"
 
 msgid "Comment '%{label}' position"
 msgstr ""
-
-msgid "Comment Templates"
-msgstr "Шаблоны комментариев"
 
 msgid "Comment added to the timeline."
 msgstr ""
@@ -18527,6 +18501,9 @@ msgstr "Запустить очистку:"
 msgid "ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr "Сэкономьте место для хранения, автоматически удаляя теги из реестра контейнеров и оставляя только нужные. %{linkStart}Как работает очистка?%{linkEnd}"
 
+msgid "ContainerRegistry|Select tag"
+msgstr ""
+
 msgid "ContainerRegistry|Set cleanup rules"
 msgstr "Установить правила очистки"
 
@@ -19166,9 +19143,6 @@ msgstr "Копировать открытый ключ SSH"
 msgid "Copy URL"
 msgstr "Скопировать URL"
 
-msgid "Copy audio URL"
-msgstr "Скопировать URL аудио"
-
 msgid "Copy autocomplete description"
 msgstr "Скопировать описание автозаполнения"
 
@@ -19205,9 +19179,6 @@ msgstr ""
 msgid "Copy descriptive label"
 msgstr "Скопировать описательную метку"
 
-msgid "Copy diagram URL"
-msgstr "Скопировать URL диаграммы"
-
 msgid "Copy environment"
 msgstr "Скопировать окружение"
 
@@ -19225,9 +19196,6 @@ msgstr "Скопировать путь к файлу"
 
 msgid "Copy file permalink"
 msgstr "Скопировать постоянную ссылку на файл"
-
-msgid "Copy image URL"
-msgstr "Скопировать URL изображения"
 
 msgid "Copy issue URL to clipboard"
 msgstr "Скопировать URL обсуждения в буфер обмена"
@@ -19273,9 +19241,6 @@ msgstr "Скопировать в буфер обмена"
 
 msgid "Copy value"
 msgstr "Скопировать значение"
-
-msgid "Copy video URL"
-msgstr "Скопировать URL видео"
 
 msgid "Corpus Management"
 msgstr "Управление корпусами"
@@ -19344,6 +19309,9 @@ msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr "Общий размер: %{totalSize}"
 
 msgid "Correlation ID"
+msgstr ""
+
+msgid "Corrupted Indexes"
 msgstr ""
 
 msgid "Cost Factor Settings"
@@ -19721,9 +19689,6 @@ msgstr "Создать шаблон: %{searchTerm}"
 msgid "Create your first page"
 msgstr "Создайте вашу первую страницу"
 
-msgid "Create your group"
-msgstr "Создать группу"
-
 msgid "Create, update, or delete a merge request."
 msgstr ""
 
@@ -20052,7 +20017,7 @@ msgid "CredentialsInventory|Revoked"
 msgstr "Отозван"
 
 msgid "CredentialsInventory|SSH Keys"
-msgstr "Ключи SSH"
+msgstr ""
 
 msgid "CredentialsInventory|SSH keys"
 msgstr "Ключи SSH"
@@ -21703,8 +21668,56 @@ msgstr "Тип данных"
 msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, but this version of GitLab requires PostgreSQL %{pg_version_minimum}. Please upgrade your environment to a supported PostgreSQL version. See %{pg_requirements_url} for details."
 msgstr "База данных '%{database_name}' использует PostgreSQL %{pg_version_current}, но данная версия GitLab требует PostgreSQL %{pg_version_minimum}. Пожалуйста, обновите вашу среду до поддерживаемой версии PostgreSQL. Подробности см. в разделе %{pg_requirements_url}."
 
+msgid "Database Diagnostics"
+msgstr ""
+
+msgid "Database diagnostics"
+msgstr ""
+
 msgid "Database update failed"
 msgstr "Ошибка обновления базы данных"
+
+msgid "DatabaseDiagnostics|Checking for recent diagnostic results..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation Health Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Collation mismatches are shown for informational purposes and may not indicate a problem."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Contact Support"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Database: %{name}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that may occur after OS upgrades"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Issues detected"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Last checked: %{timestamp}"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Learn more"
+msgstr ""
+
+msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Run Collation Check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Running diagnostics..."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
+msgstr ""
+
+msgid "DatabaseDiagnostics|These issues require manual remediation. Read our documentation on PostgreSQL OS upgrades for step-by-step instructions."
+msgstr ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
 msgstr "%{link_start}Ключ API%{link_end}, используемый для аутентификации в Datadog."
@@ -22027,9 +22040,6 @@ msgstr "Удалить учётную запись"
 msgid "Delete asset"
 msgstr ""
 
-msgid "Delete audio"
-msgstr ""
-
 msgid "Delete badge"
 msgstr "Удалить значок"
 
@@ -22064,9 +22074,6 @@ msgstr ""
 msgid "Delete deployment"
 msgstr ""
 
-msgid "Delete diagram"
-msgstr "Удалить диаграмму"
-
 msgid "Delete epic"
 msgstr ""
 
@@ -22081,9 +22088,6 @@ msgstr ""
 
 msgid "Delete identity"
 msgstr "Удалить идентификацию"
-
-msgid "Delete image"
-msgstr ""
 
 msgid "Delete immediately"
 msgstr ""
@@ -22151,9 +22155,6 @@ msgstr "Удалить эту цель и отвязать все дочерни
 
 msgid "Delete user list"
 msgstr "Удалить список пользователей"
-
-msgid "Delete video"
-msgstr ""
 
 msgid "DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."
 msgstr "Не удалось удалить проект. Выполняется перемещение хранилища репозитория проекта. Попробуйте еще раз после его завершения."
@@ -24854,6 +24855,9 @@ msgid "Duplicate packages"
 msgstr "Дублирующиеся пакеты"
 
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
+msgstr ""
+
+msgid "Duplicates"
 msgstr ""
 
 msgid "Duration"
@@ -28655,9 +28659,6 @@ msgstr "Различия"
 msgid "Geo"
 msgstr "Geo"
 
-msgid "Geo Replication - %{node_name}"
-msgstr ""
-
 msgid "Geo Settings"
 msgstr "Настройки Geo"
 
@@ -28721,9 +28722,6 @@ msgid "Geo|All"
 msgstr "Все"
 
 msgid "Geo|All %{replicableType} are being scheduled for %{action}"
-msgstr ""
-
-msgid "Geo|All %{replicable_name}"
 msgstr ""
 
 msgid "Geo|All projects"
@@ -28867,9 +28865,6 @@ msgstr ""
 msgid "Geo|Filter Geo sites"
 msgstr "Фильтровать сайты Geo"
 
-msgid "Geo|Filter by name"
-msgstr ""
-
 msgid "Geo|Geo Replication - %{node_name}"
 msgstr "Репликация Geo — %{node_name}"
 
@@ -28914,9 +28909,6 @@ msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
 msgstr ""
-
-msgid "Geo|In progress"
-msgstr "В процессе"
 
 msgid "Geo|Internal URL"
 msgstr "Внутренний URL"
@@ -31123,9 +31115,6 @@ msgstr ""
 msgid "Group SAML must be enabled to test"
 msgstr ""
 
-msgid "Group URL"
-msgstr "URL группы"
-
 msgid "Group access token creation is disabled in this group."
 msgstr "В этой группе отключено создание токенов доступа группы."
 
@@ -31207,9 +31196,6 @@ msgstr ""
 msgid "Group milestone"
 msgstr "Этап группы"
 
-msgid "Group name (your organization)"
-msgstr "Название группы (вашей организации)"
-
 msgid "Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis."
 msgstr "Название группы может содержать только буквы, цифры, тире, пробелы, точки, подчеркивания, круглые скобки и эмодзи."
 
@@ -31227,12 +31213,6 @@ msgstr "Группа или проект"
 
 msgid "Group overview content"
 msgstr "Содержание обзора группы"
-
-msgid "Group path is already taken. We've suggested one that is available."
-msgstr ""
-
-msgid "Group path is available."
-msgstr ""
 
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr "URL проектов группы имеют префикс с пространством имён группы"
@@ -32597,6 +32577,15 @@ msgstr ""
 
 msgid "Homepage"
 msgstr "Стартовая страница"
+
+msgid "HomepageActivityWidget|Followed users"
+msgstr ""
+
+msgid "HomepageActivityWidget|Starred projects"
+msgstr ""
+
+msgid "HomepageActivityWidget|Your activity"
+msgstr ""
 
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
 msgstr ""
@@ -34083,6 +34072,9 @@ msgstr ""
 
 msgid "Index"
 msgstr "Индекс"
+
+msgid "Index Name"
+msgstr ""
 
 msgid "Index deletion is canceled"
 msgstr "Удаление индекса отменено"
@@ -35923,6 +35915,9 @@ msgstr "Теперь вы должны видеть активность GitLab.
 msgid "JiraConnect|Your browser is not supported"
 msgstr "Ваш браузер не поддерживается"
 
+msgid "JiraIntegration|Comma-separated list of allowed Jira issue statuses."
+msgstr ""
+
 msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
 msgstr "Включить отображение задач Jira в GitLab"
 
@@ -35961,6 +35956,18 @@ msgstr "Электронная почта или имя пользователя
 
 msgid "JiraIntegration|Turn on Jira issue creation for GitLab vulnerabilities."
 msgstr "Включить создание задач Jira для уязвимостей GitLab."
+
+msgid "JiraIntegration|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraIntegration|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraIntegration|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraIntegration|Verify the status of Jira issues referenced in commit messages."
+msgstr ""
 
 msgid "JiraIntegration|When set to `true`, opens a prefilled form on the Jira instancewhen creating a Jira issue from a vulnerability."
 msgstr "Если установлено в `true`, при создании задачи Jira из уязвимости открывается предварительно заполненная форма в экземпляре Jira."
@@ -36016,6 +36023,9 @@ msgstr "Токен аутентификации API для Jira Cloud или п�
 msgid "JiraService|API token or password"
 msgstr "Токен аутентификации API или пароль"
 
+msgid "JiraService|Allowed statuses"
+msgstr ""
+
 msgid "JiraService|An error occurred while fetching the Jira issue list"
 msgstr "Произошла ошибка при получении списка задач Jira"
 
@@ -36031,8 +36041,20 @@ msgstr "Базовый URL экземпляра Jira"
 msgid "JiraService|Basic"
 msgstr "Базовая"
 
+msgid "JiraService|Check assignee"
+msgstr ""
+
+msgid "JiraService|Check issue exists"
+msgstr ""
+
+msgid "JiraService|Check issue status"
+msgstr ""
+
 msgid "JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys."
 msgstr "Список ключей проектов Jira, разделённых запятой. Оставьте поле пустым, чтобы включить все доступные ключи."
+
+msgid "JiraService|Comma-separated list of allowed Jira issue statuses."
+msgstr ""
 
 msgid "JiraService|Create Jira issues for vulnerabilities"
 msgstr "Создавать задачи Jira для уязвимостей"
@@ -36057,6 +36079,9 @@ msgstr "Электронная почта или имя пользователя
 
 msgid "JiraService|Enable Jira transitions"
 msgstr "Включить переходы Jira"
+
+msgid "JiraService|Enable Jira verification"
+msgstr ""
 
 msgid "JiraService|Enter a Jira project key to generate issue types."
 msgstr "Введите ключ проекта Jira для получения типов задач."
@@ -36130,6 +36155,9 @@ msgstr "Ключ проекта Jira"
 msgid "JiraService|Jira project keys"
 msgstr "Ключи проектов Jira"
 
+msgid "JiraService|Jira verification"
+msgstr ""
+
 msgid "JiraService|Leave blank to use your current configuration"
 msgstr "Оставьте пустым, чтобы использовать текущую конфигурацию"
 
@@ -36147,6 +36175,9 @@ msgstr "Новый личный токен доступа Jira"
 
 msgid "JiraService|Open Jira"
 msgstr "Открыть Jira"
+
+msgid "JiraService|Ready, In Progress, Review"
+msgstr ""
 
 msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
 msgstr "Рекомендуется. Доступно только для Jira Data Center и Jira Server."
@@ -36180,6 +36211,21 @@ msgstr "Использовать регулярное выражение для 
 
 msgid "JiraService|Using Jira for issue tracking?"
 msgstr "Используете Jira для отслеживания задач?"
+
+msgid "JiraService|Verify Jira issues referenced in commit messages against specific rules before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify Jira issues referenced in commit messages exist before allowing the push."
+msgstr ""
+
+msgid "JiraService|Verify the Jira issues referenced in commit messages exist in Jira."
+msgstr ""
+
+msgid "JiraService|Verify the committer is the assignee of the Jira issues referenced in commit messages."
+msgstr ""
+
+msgid "JiraService|Verify the status of Jira issues referenced in commit messages."
+msgstr ""
 
 msgid "JiraService|View Jira issues"
 msgstr "Просмотреть задачи Jira"
@@ -38022,6 +38068,24 @@ msgstr[3] ""
 msgid "Line changes"
 msgstr "Изменения строк"
 
+msgid "LinearIntegration|Linear workspace URL (for example, https://linear.app/example)"
+msgstr ""
+
+msgid "LinearIntegration|The Linear logo is a trademark of Linear Orbit Inc. in the U.S. and other countries."
+msgstr ""
+
+msgid "LinearIntegration|URL must point to a workspace URL like https://linear.app/example"
+msgstr ""
+
+msgid "LinearIntegration|Use Linear as this project's issue tracker."
+msgstr ""
+
+msgid "LinearIntegration|Workspace URL"
+msgstr ""
+
+msgid "LinearIntegration|https://linear.app/example"
+msgstr ""
+
 msgid "Link"
 msgstr ""
 
@@ -38396,6 +38460,9 @@ msgstr "Мейнтейнер"
 
 msgid "Maintenance mode"
 msgstr "Режим обслуживания"
+
+msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
+msgstr ""
 
 msgid "Make a merge request to propose changes to this project."
 msgstr ""
@@ -39471,6 +39538,9 @@ msgstr ""
 msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
 msgstr ""
 
+msgid "MemberRole|To enhance security, we recommend %{linkStart}enabling Admin mode%{linkEnd} when using custom admin roles. Enabling Admin mode will require users to re-authenticate in GitLab before accessing the Admin area."
+msgstr ""
+
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr "Не удалось экспортировать отчёт о роли. Обратитесь в службу поддержки, если ошибка повторится."
 
@@ -40295,15 +40365,6 @@ msgstr "Метрики - Prometheus"
 
 msgid "Metrics Dashboard"
 msgstr "Панель метрик"
-
-msgid "Metrics Dashboard YAML definition"
-msgstr "Определение YAML для панели метрик"
-
-msgid "Metrics Dashboard YAML definition is invalid:"
-msgstr "Определение YAML для панели метрик некорректно:"
-
-msgid "Metrics Dashboard YAML definition is valid."
-msgstr "Определение YAML для панели метрик корректно."
 
 msgid "Metrics Explorer"
 msgstr "Обозреватель метрик"
@@ -42318,6 +42379,9 @@ msgstr ""
 msgid "No child items are currently assigned."
 msgstr "Нет назначенных дочерних элементов."
 
+msgid "No collation mismatches detected."
+msgstr ""
+
 msgid "No comment templates found."
 msgstr "Шаблоны комментариев не найдены."
 
@@ -42348,6 +42412,9 @@ msgstr "Нет вклада"
 msgid "No contributions were found"
 msgstr "Не найдено ни одного вклада"
 
+msgid "No corrupted indexes detected."
+msgstr ""
+
 msgid "No credit card data for matching"
 msgstr ""
 
@@ -42359,6 +42426,9 @@ msgstr ""
 
 msgid "No data found for this query."
 msgstr "Данные по этому запросу не найдены."
+
+msgid "No default Duo group found. Select a default Duo group in your user preferences and try again."
+msgstr ""
 
 msgid "No deployments found"
 msgstr "Развёртывания не найдены"
@@ -42685,8 +42755,8 @@ msgstr "Не соединено"
 msgid "Not adopted"
 msgstr ""
 
-msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser."
-msgstr "Не все браузеры поддерживают WebAuthn. Вы должны сохранить коды восстановления после первой регистрации двухфакторного аутентификатора, чтобы иметь возможность войти в систему даже из неподдерживаемого браузера."
+msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in."
+msgstr ""
 
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr "Были обработаны не все данные, точность графика для выбранного периода времени ограничена."
@@ -45117,6 +45187,13 @@ msgstr "Тип пакета должен быть Helm"
 
 msgid "Package type must be NuGet"
 msgstr "Тип пакета должен быть NuGet"
+
+msgid "PackageRegistry|%{count} selected"
+msgid_plural "PackageRegistry|%{count} selected"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr "Поддерживаются %{linkStart}шаблоны%{linkEnd}, такие как `my-package-*`."
@@ -47826,9 +47903,6 @@ msgstr "Введите содержимое шаблона комментари�
 msgid "Please enter your current password."
 msgstr ""
 
-msgid "Please fill in a descriptive name for your group."
-msgstr ""
-
 msgid "Please fill in a name for your topic."
 msgstr "Пожалуйста, введите имя тега."
 
@@ -48000,6 +48074,9 @@ msgstr ""
 
 msgid "Possible to override in each project."
 msgstr "Можно переопределить в каждом проекте."
+
+msgid "PostStart event references command '%{command}' which has no command definition."
+msgstr ""
 
 msgid "PostStart event references command '%{command}' which is not an exec command. Only exec commands are supported in postStart events"
 msgstr ""
@@ -51377,6 +51454,9 @@ msgstr "Не применяется к пользователям, **котор�
 msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
 msgstr "Предоставление прав на слияние для защищённой ветки также даёт повышенные разрешения для некоторых функций CI/CD."
 
+msgid "ProtectedBranch|How do I use branch rules?"
+msgstr ""
+
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr "Унаследовано — эту настройку можно изменить на уровне группы"
 
@@ -51415,6 +51495,9 @@ msgstr "Защищённая ветка успешно создана"
 
 msgid "ProtectedBranch|Protected branches"
 msgstr "Защищённые ветки"
+
+msgid "ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}."
+msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
 msgstr "Отклонить код, который изменяет файлы, перечисленные в файле CODEOWNERS."
@@ -51463,6 +51546,9 @@ msgstr "Каковы последствия для безопасности?"
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
 msgstr "Вы можете добавлять только те группы, которые совместно используют этот проект. %{learn_more_link}"
+
+msgid "ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place."
+msgstr ""
 
 msgid "ProtectedBranch|default"
 msgstr "по умолчанию"
@@ -54558,6 +54644,9 @@ msgstr "Средствами выполнения, назначенными эт
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
 msgstr "Средствами выполнения на уровне экземпляра не было выполнено ни одного задания за последние 3 часа."
 
+msgid "Runners|No project runners are available to be assigned to this project."
+msgstr ""
+
 msgid "Runners|No project runners found"
 msgstr ""
 
@@ -54628,6 +54717,9 @@ msgid "Runners|Operating systems"
 msgstr "Операционные системы"
 
 msgid "Runners|Optional configuration details"
+msgstr ""
+
+msgid "Runners|Other available project runners"
 msgstr ""
 
 msgid "Runners|Other projects"
@@ -55314,10 +55406,10 @@ msgid "SSH Key"
 msgstr "Ключ SSH"
 
 msgid "SSH Keys"
-msgstr "Ключи SSH"
+msgstr ""
 
 msgid "SSH Keys Help"
-msgstr "Справка по ключам SSH"
+msgstr ""
 
 msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr "Отпечатки SSH подтверждают, что клиент подключается к правильному хосту. Посмотреть %{config_link_start}текущую конфигурацию экземпляра%{config_link_end}."
@@ -55682,6 +55774,9 @@ msgstr ""
 msgid "ScanResultPolicy|Allow specific types of branches to bypass policies based on naming conventions."
 msgstr ""
 
+msgid "ScanResultPolicy|Allow specific users to bypass policies for their specialized workflows."
+msgstr ""
+
 msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
 msgstr "Разрешить выполнение запроса на слияние, даже если не все критерии выполнены"
 
@@ -55719,6 +55814,9 @@ msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
+msgstr ""
+
+msgid "ScanResultPolicy|Choose which users can bypass this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Clear all"
@@ -55807,6 +55905,9 @@ msgstr ""
 
 msgid "ScanResultPolicy|Groups"
 msgstr "Группы"
+
+msgid "ScanResultPolicy|If Team frequently needs to push infrastructure configuration changes that trigger policy violations but are pre-approved through your change management process, add specific users to bypass infrastructure policies."
+msgstr ""
 
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr "Если выбрано, следующие настройки перезапишут %{linkStart}настройки проекта%{linkEnd}, но будут касаться только веток, выбранных в политике."
@@ -55991,6 +56092,12 @@ msgstr ""
 msgid "ScanResultPolicy|Select token exceptions"
 msgstr ""
 
+msgid "ScanResultPolicy|Select user exceptions"
+msgstr ""
+
+msgid "ScanResultPolicy|Select users exceptions. Choose which users can bypass this policy."
+msgstr ""
+
 msgid "ScanResultPolicy|Service accounts"
 msgstr ""
 
@@ -56011,6 +56118,9 @@ msgstr ""
 
 msgid "ScanResultPolicy|Unknown"
 msgstr "Неизвестно"
+
+msgid "ScanResultPolicy|Users"
+msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
 msgstr "Когда %{scanType} %{scanners} запускается на %{branches} %{branchExceptions} и обнаруживает %{vulnerabilitiesNumber} %{boldDescription} из следующих критериев:"
@@ -57469,9 +57579,6 @@ msgstr ""
 msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
 msgstr "После объединения этого запроса на слияние перейдите в [%{framework}](%{link}) и удалите конвейер соблюдения норм, чтобы новая политика выполнения конвейера вступила в силу."
 
-msgid "SecurityOrchestration|All pipeline sources"
-msgstr ""
-
 msgid "SecurityOrchestration|All projects in linked groups"
 msgstr "Все проекты в связанных группах"
 
@@ -57842,6 +57949,9 @@ msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
+msgstr ""
+
+msgid "SecurityOrchestration|Inherited policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
@@ -58714,6 +58824,9 @@ msgstr ""
 
 msgid "SecurityOrchestration|on every"
 msgstr "день недели"
+
+msgid "SecurityOrchestration|pipeline sources"
+msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr "проекты с регламентами соблюдения норм"
@@ -60267,8 +60380,8 @@ msgstr "Настройка CI/CD"
 msgid "Set up Jira Integration"
 msgstr "Настроить интеграцию с Jira"
 
-msgid "Set up a hardware device to enable two-factor authentication (2FA)."
-msgstr "Настройте аппаратное устройство для включения двухфакторной аутентификации (2ФА)."
+msgid "Set up a WebAuthn device to enable two-factor authentication (2FA)."
+msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr "Настройте утверждения/атрибуты/заявления (email, first_name, last_name) и NameID в соответствии с %{docsLinkStart}документацией %{icon}%{docsLinkEnd}"
@@ -62226,11 +62339,17 @@ msgstr "Хранилище:"
 msgid "StorageSize|Unknown"
 msgstr "Неизвестный"
 
+msgid "Stored Version"
+msgstr ""
+
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
 msgstr "Зачёркнутый текст (%{modifierKey}%{shiftKey}X)"
 
 msgid "Strikethrough text"
 msgstr "Зачёркнутый текст"
+
+msgid "Structural"
+msgstr ""
 
 msgid "Sub-batch size"
 msgstr "Размер подгруппы"
@@ -62365,9 +62484,6 @@ msgid "Subscription has not yet been synchronized. %{cta}"
 msgstr ""
 
 msgid "Subscription service outage"
-msgstr ""
-
-msgid "Subscription successfully applied to \"%{group_name}\""
 msgstr ""
 
 msgid "Subscription successfully created."
@@ -62996,6 +63112,9 @@ msgstr "Система запущена"
 
 msgid "TXT"
 msgstr "TXT"
+
+msgid "Table"
+msgstr ""
 
 msgid "Table of contents"
 msgstr "Содержание"
@@ -64769,9 +64888,6 @@ msgid "There was an error summarizing your pending comments."
 msgstr "Произошла ошибка при обобщении ваших ожидающих комментариев."
 
 msgid "There was an error syncing project %{name}"
-msgstr ""
-
-msgid "There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
 msgid "There was an error updating your display preferences."
@@ -66757,6 +66873,9 @@ msgstr "Покрытие инструментами"
 msgid "ToolCoverage|Project coverage"
 msgstr ""
 
+msgid "Tools for detecting and resolving database issues in self-managed GitLab instances."
+msgstr ""
+
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
 msgstr "Тег %{source_topic} был успешно объединен с тегом %{target_topic}."
 
@@ -67705,6 +67824,9 @@ msgstr ""
 
 msgid "Unhelpful or irrelevant"
 msgstr "Бесполезный или не относящийся к делу"
+
+msgid "Unique"
+msgstr ""
 
 msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."
 msgstr "Уникальный идентификатор целевого чата или имя пользователя целевого канала (в формате `@channelusername`)."
@@ -70508,6 +70630,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
 msgstr ""
 
+msgid "VulnerabilityManagement|Could not refresh the validity check. Please try again."
+msgstr ""
+
 msgid "VulnerabilityManagement|Create Jira issue"
 msgstr "Создать задачу в Jira"
 
@@ -71075,8 +71200,8 @@ msgstr "Web IDE и рабочие пространства"
 msgid "Web terminal"
 msgstr "Web терминал"
 
-msgid "WebAuthn Devices"
-msgstr "Устройства WebAuthn"
+msgid "WebAuthn devices"
+msgstr ""
 
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr "WebAuthn работает только с сайтами, поддерживающими HTTPS. Свяжитесь с вашим администратором для получения дополнительных подробностей."
@@ -71446,9 +71571,6 @@ msgstr ""
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr "С возвращением! Ваша учётная запись была отключена из-за неактивности, но теперь она восстановлена."
-
-msgid "Welcome to GitLab, %{first_name}!"
-msgstr "Добро пожаловать в GitLab, %{first_name}!"
 
 msgid "Welcome to GitLab, %{name}!"
 msgstr "Добро пожаловать в GitLab, %{name}!"
@@ -72579,6 +72701,9 @@ msgstr "В данный момент нет открытых дочерних э
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr ""
 
+msgid "WorkItem|No health status"
+msgstr ""
+
 msgid "WorkItem|No items"
 msgstr "Нет элементов"
 
@@ -72596,6 +72721,9 @@ msgstr "Нет подходящих результатов"
 
 msgid "WorkItem|No milestone"
 msgstr "Нет этапа"
+
+msgid "WorkItem|No parent"
+msgstr ""
 
 msgid "WorkItem|No template"
 msgstr ""
@@ -73624,14 +73752,11 @@ msgstr "Вы также можете использовать токены до�
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr "Вы также можете использовать токены доступа проекта с Git для аутентификации через HTTP(S). %{link_start}Подробнее.%{link_end}"
 
-msgid "You can always edit this later"
-msgstr ""
-
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr "Вы можете проверить его в настройках %{pat_link_start}личных токенов доступа%{pat_link_end}."
 
-msgid "You can check it in your in your personal access tokens settings %{pat_link}."
-msgstr "Вы можете проверить его в настройках личных токенов доступа %{pat_link}."
+msgid "You can check it in your personal access tokens settings %{pat_link}."
+msgstr ""
 
 msgid "You can check your tokens or create a new one in your %{pat_link_start}personal access tokens settings%{pat_link_end}."
 msgstr "Вы можете проверить свои токены или создать новый в %{pat_link_start}настройках личных токенов доступа%{pat_link_end}."
@@ -73890,9 +74015,6 @@ msgstr ""
 
 msgid "You do not have permissions to run the import."
 msgstr ""
-
-msgid "You don't have any WebAuthn devices registered yet."
-msgstr "У вас еще нет зарегистрированных устройств WebAuthn."
 
 msgid "You don't have any applications."
 msgstr "У вас нет приложений."
@@ -74295,9 +74417,6 @@ msgid "Your %{plan_name} subscription will expire on %{expires_on}"
 msgstr ""
 
 msgid "Your %{plan_name} subscription with a temporary extension will expire on %{expires_on}"
-msgstr ""
-
-msgid "Your %{plan} plan will be applied to your group."
 msgstr ""
 
 msgid "Your %{resource_type} access token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{resource_path}%{codeClose} will expire in %{days_to_expire} or less."

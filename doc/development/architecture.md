@@ -379,7 +379,7 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
+| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/self_compiled/_index.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
@@ -455,7 +455,7 @@ GitLab can be considered to have two layers from a process perspective:
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
-  - [Source](../install/installation.md#using-https)
+  - [Source](../install/self_compiled/_index.md#using-https)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
@@ -498,7 +498,7 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
 - Configuration:
   - [Omnibus](../administration/gitaly/_index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitaly/)
-  - [Source](../install/installation.md#install-gitaly)
+  - [Source](../install/self_compiled/_index.md#install-gitaly)
 - Layer: Core Service (Data)
 - Process: `gitaly`
 
@@ -509,7 +509,7 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 - [Project page](https://gitlab.com/gitlab-org/gitaly/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/gitaly/_index.md)
-  - [Source](../install/installation.md#install-gitaly)
+  - [Source](../install/self_compiled/_index.md#install-gitaly)
 - Layer: Core Service (Data)
 - Process: `praefect`
 
@@ -556,7 +556,7 @@ You can use it to sync deployments onto your Kubernetes cluster.
 - Configuration:
   - [Omnibus](../administration/pages/_index.md)
   - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37)
-  - [Source](../install/installation.md#install-gitlab-pages)
+  - [Source](../install/self_compiled/_index.md#install-gitlab-pages)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/pages.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [GitLab Pages](../user/gitlab_com/_index.md#gitlab-pages)
@@ -587,7 +587,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)
-  - [Source](../install/installation.md#install-gitlab-shell)
+  - [Source](../install/self_compiled/_index.md#install-gitlab-shell)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 
@@ -599,7 +599,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
-  - [Source](../install/installation.md#install-gitlab-workhorse)
+  - [Source](../install/self_compiled/_index.md#install-gitlab-workhorse)
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
@@ -672,7 +672,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/nginx.html)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
-  - [Source](../install/installation.md#10-nginx)
+  - [Source](../install/self_compiled/_index.md#10-nginx)
 - Layer: Core Service (Processor)
 - Process: `nginx`
 
@@ -727,7 +727,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
-  - [Source](../install/installation.md#7-database)
+  - [Source](../install/self_compiled/_index.md#7-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
 - GitLab.com: [PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure/database/)
@@ -764,7 +764,7 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
-  - [Source](../install/installation.md#8-redis)
+  - [Source](../install/self_compiled/_index.md#8-redis)
 - Layer: Core Service (Data)
 - Process: `redis`
 
@@ -849,7 +849,7 @@ Starting with GitLab 13.0, Puma is the default web server.
 - Configuration:
   - [Omnibus](../administration/operations/puma.md)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
-  - [Source](../install/installation.md#configure-it)
+  - [Source](../install/self_compiled/_index.md#configure-it)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `puma`
@@ -1031,7 +1031,7 @@ To serve repositories over SSH there's an add-on application called GitLab Shell
 
 ### Installation folder summary
 
-To summarize here's the [directory structure of the `git` user home directory](../install/installation.md#gitlab-directory-structure).
+To summarize here's the [directory structure of the `git` user home directory](../install/self_compiled/_index.md#gitlab-directory-structure).
 
 ### Processes
 

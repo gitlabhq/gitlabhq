@@ -109,7 +109,7 @@ depend on those files.
 ## Self-compiled installations
 
 If you have followed the official installation guide to
-[self-compile your installation](../install/installation.md), run the following command to restart GitLab:
+[self-compile your installation](../install/self_compiled/_index.md), run the following command to restart GitLab:
 
 ```shell
 # For systems running systemd

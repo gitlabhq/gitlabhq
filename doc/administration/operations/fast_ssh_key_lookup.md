@@ -99,7 +99,7 @@ To set up fast lookup with OpenSSH:
    - Linux package installations: `/etc/ssh/sshd_config`
    - Docker installations: `/assets/sshd_config`
    - Self-compiled installations: If you followed the instructions for
-   [installing GitLab Shell from source](../../install/installation.md#install-gitlab-shell), the command should be
+   [installing GitLab Shell from source](../../install/self_compiled/_index.md#install-gitlab-shell), the command should be
    located at `/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check`.
    Consider creating a wrapper script somewhere else because this command must be owned by `root`,
    and not be writable by a group or others.

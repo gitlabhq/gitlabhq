@@ -15,12 +15,11 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
-import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
+import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET_BASE = -211;
-const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
+const DROPDOWN_X_OFFSET_BASE = -192;
 
 export default {
   SET_STATUS_MODAL_ID,
@@ -54,7 +53,6 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isImpersonating'],
   props: {
     data: {
       required: true,
@@ -221,7 +219,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
+        crossAxis: DROPDOWN_X_OFFSET_BASE,
       };
     },
   },
@@ -292,6 +290,7 @@ export default {
     <gl-disclosure-dropdown
       ref="userDropdown"
       :dropdown-offset="dropdownOffset"
+      class="super-sidebar-user-dropdown"
       data-testid="user-dropdown"
       :auto-close="false"
       @shown="onShow"

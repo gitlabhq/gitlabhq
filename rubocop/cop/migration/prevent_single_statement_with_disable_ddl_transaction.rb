@@ -78,7 +78,7 @@ module RuboCop
             end
 
             if disable_ddl_transaction_node && has_validate_foreign_key && statement_count == 1
-              add_offense(disable_ddl_transaction_node, message: MSG)
+              add_offense(disable_ddl_transaction_node)
             end
           end
         end

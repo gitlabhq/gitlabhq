@@ -61,7 +61,7 @@ configured as described previously. Single-server installations are best served 
 this default configuration used by:
 
 - [Linux package installations](https://docs.gitlab.com/omnibus/).
-- [Self-compiled installations](../../install/installation.md).
+- [Self-compiled installations](../../install/self_compiled/_index.md).
 
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
 multiple machines.
@@ -144,7 +144,7 @@ Install Gitaly on each Gitaly server using either:
 
 - A Linux package installation. [Download and install](https://about.gitlab.com/install/) the Linux package you want
   but do not provide the `EXTERNAL_URL=` value.
-- A self-compiled installation. Follow the steps at [Install Gitaly](../../install/installation.md#install-gitaly).
+- A self-compiled installation. Follow the steps at [Install Gitaly](../../install/self_compiled/_index.md#install-gitaly).
 
 ### Configure Gitaly servers
 

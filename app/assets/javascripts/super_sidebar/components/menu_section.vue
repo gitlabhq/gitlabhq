@@ -24,11 +24,6 @@ export default {
       required: false,
       default: false,
     },
-    separated: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     tag: {
       type: String,
       required: false,
@@ -116,10 +111,9 @@ export default {
 
 <template>
   <component :is="tag">
-    <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />
     <button
       :id="`menu-section-button-${itemId}`"
-      class="super-sidebar-nav-item gl-relative gl-mb-2 gl-flex gl-min-h-7 gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-px-3 gl-py-2 gl-text-left !gl-text-default !gl-no-underline focus:gl-focus"
+      class="super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-px-3 gl-py-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
@@ -144,11 +138,11 @@ export default {
         </slot>
       </span>
 
-      <span class="gl-truncate-end gl-grow gl-text-default">
+      <span class="gl-truncate-end gl-grow">
         {{ item.title }}
       </span>
 
-      <span class="gl-text-right gl-text-subtle">
+      <span class="gl-mr-1 gl-text-right gl-text-subtle">
         <gl-animated-chevron-right-down-icon :is-on="isExpanded" />
       </span>
     </button>

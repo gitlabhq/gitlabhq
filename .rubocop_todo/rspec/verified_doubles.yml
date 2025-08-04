@@ -2,9 +2,7 @@
 RSpec/VerifiedDoubles:
   Exclude:
     - 'ee/spec/controllers/concerns/ee/routable_actions/sso_enforcement_redirect_spec.rb'
-    - 'ee/spec/controllers/groups/clusters_controller_spec.rb'
     - 'ee/spec/controllers/oauth/geo_auth_controller_spec.rb'
-    - 'ee/spec/controllers/projects/clusters_controller_spec.rb'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/features/admin/groups/admin_subscription_alerts_spec.rb'
     - 'ee/spec/features/profiles/account_spec.rb'
@@ -789,7 +787,6 @@ RSpec/VerifiedDoubles:
     - 'spec/services/projects/create_service_spec.rb'
     - 'spec/services/projects/destroy_service_spec.rb'
     - 'spec/services/projects/import_service_spec.rb'
-    - 'spec/services/projects/operations/update_service_spec.rb'
     - 'spec/services/projects/overwrite_project_service_spec.rb'
     - 'spec/services/projects/update_pages_service_spec.rb'
     - 'spec/services/projects/update_remote_mirror_service_spec.rb'

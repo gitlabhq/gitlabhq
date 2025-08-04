@@ -1167,7 +1167,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/models/elasticsearch_indexed_namespace.rb'
     - 'ee/app/models/elasticsearch_indexed_project.rb'
     - 'ee/app/models/geo/container_repository_registry.rb'
-    - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/models/incident_management/oncall_rotation.rb'
     - 'ee/app/models/iteration.rb'
