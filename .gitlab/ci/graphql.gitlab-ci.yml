@@ -7,7 +7,9 @@ graphql-verify:
     - .default-before_script
     - .graphql:rules:graphql-verify
   stage: test
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - |
       function graphql_verify() {

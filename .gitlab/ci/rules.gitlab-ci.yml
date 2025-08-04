@@ -1054,6 +1054,12 @@
     - <<: *if-default-refs
       changes: *gitaly-patterns
 
+.shared:rules:update-ruby-cache:
+  rules:
+    - <<: *if-merge-train
+      when: never
+    - when: always
+
 ######################
 # Build images rules #
 ######################
@@ -3017,16 +3023,12 @@
 ###############
 # Setup rules #
 ###############
-.setup:rules:cache-gems:
+.setup:rules:backup-gems:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-default-branch-or-tag
       changes: *code-backstage-qa-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: [".gitlab/ci/setup.gitlab-ci.yml"]
-      when: manual
-      allow_failure: true
 
 .setup:rules:dont-interrupt-me:
   rules:

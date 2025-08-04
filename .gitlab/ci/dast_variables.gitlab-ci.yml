@@ -7,7 +7,9 @@ dast-variables-check-docs:
     - .default-before_script
     - .dast_variables:rules:dast-variables-check-docs
   stage: test
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - |
       function dast_variables_check_docs() {

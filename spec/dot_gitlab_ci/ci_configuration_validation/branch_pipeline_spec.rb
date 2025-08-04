@@ -144,13 +144,6 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
           it_behaves_like 'default branch pipeline'
         end
 
-        context 'with scheduled master pipeline' do
-          let(:ci_pipeline_source) { 'schedule' }
-          let(:expected_job_name) { 'update-ruby-gems-coverage-cache-push' }
-
-          it_behaves_like 'default branch pipeline'
-        end
-
         context 'with auto-deploy branch pipeilne' do
           let(:ci_commit_branch)  { '17-3-auto-deploy-2024080508' }
           let(:expected_job_name) { 'build-qa-image' }
