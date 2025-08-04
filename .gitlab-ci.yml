@@ -48,9 +48,6 @@ default:
 .default-merge-request-variables: &default-merge-request-variables
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
   CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
-  FF_NETWORK_PER_BUILD: "true"
-  FF_TIMESTAMPS: "true"
-  FF_USE_FASTZIP: "true"
   NO_SOURCEMAPS: "true"
   GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
 
@@ -302,6 +299,11 @@ variables:
   CACHE_ASSETS_AS_PACKAGE: "true"
   REUSE_FRONTEND_FIXTURES_ENABLED: "true"
   SIMPLECOV: "true"
+
+  # Runner features
+  FF_NETWORK_PER_BUILD: "true"
+  FF_TIMESTAMPS: "true"
+  FF_USE_FASTZIP: "true"
 
 include:
   - local: .gitlab/ci/_skip.yml

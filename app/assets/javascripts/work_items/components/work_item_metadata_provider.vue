@@ -27,6 +27,8 @@ export default {
       registerPath: computed(() => this.metadata.register),
       reportAbusePath: computed(() => this.metadata.reportAbuse),
       signInPath: computed(() => this.metadata.signIn),
+      issuesSettings: computed(() => this.metadata?.issuesSettings),
+      hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
   },

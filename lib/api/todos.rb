@@ -19,7 +19,7 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       ISSUABLE_TYPES.each do |type, finder|
-        type_id_str = "#{type.singularize}_iid".to_sym
+        type_id_str = :"#{type.singularize}_iid"
 
         desc 'Create a to-do item on an issuable' do
           success Entities::Todo

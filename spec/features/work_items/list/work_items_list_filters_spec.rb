@@ -307,13 +307,31 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         end
       end
 
+      shared_examples 'filters by CRM contacts' do
+        it 'filters by CRM contacts', :aggregate_failures do
+          # Contact just supports `is` operator so no need for passing '='
+          select_tokens 'Contact', contact1.first_name, submit: true
+
+          expect(page).to have_css('.issue', count: 1)
+          expect(page).to have_link(org1_issue1.title)
+
+          click_button 'Clear'
+
+          select_tokens 'Contact', contact2.first_name, submit: true
+
+          expect(page).to have_css('.issue', count: 1)
+          expect(page).to have_link(org1_issue2.title)
+        end
+      end
+
       before_all do
         group.add_developer(user_crm)
       end
 
       before do
+        allow(user_crm).to receive_messages(read_crm_contact: true, read_crm_organization: true)
+
         sign_in(user_crm)
-        allow(user_crm).to receive(:read_crm_organization).and_return(true)
       end
 
       context 'when user is on group work items page' do
@@ -322,6 +340,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         end
 
         include_examples 'filters by CRM organization'
+        include_examples 'filters by CRM contacts'
       end
 
       context 'when user is on work items page' do
@@ -330,6 +349,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         end
 
         include_examples 'filters by CRM organization'
+        include_examples 'filters by CRM contacts'
       end
 
       context 'when user is on project issues page' do
@@ -339,6 +359,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         end
 
         include_examples 'filters by CRM organization'
+        include_examples 'filters by CRM contacts'
       end
     end
   end

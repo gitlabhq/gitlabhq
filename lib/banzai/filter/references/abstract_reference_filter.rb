@@ -107,7 +107,7 @@ module Banzai
         end
 
         def from_ref_cached(ref)
-          cached_call("banzai_#{parent_type}_refs".to_sym, ref) do
+          cached_call(:"banzai_#{parent_type}_refs", ref) do
             parent_from_ref(ref)
           end
         end

@@ -44,7 +44,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             is_signed_in: current_user.present?.to_s,
             time_tracking_limit_to_hours: "false",
             can_read_crm_organization: 'true',
-            releases_path: project_releases_path(project, format: :json)
+            releases_path: project_releases_path(project, format: :json),
+            can_read_crm_contact: 'true'
           }
         )
       end

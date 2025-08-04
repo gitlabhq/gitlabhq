@@ -3,6 +3,7 @@
 RSpec.shared_context 'for terraform modules api setup' do
   include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
+  include HttpBasicAuthHelpers
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group) }

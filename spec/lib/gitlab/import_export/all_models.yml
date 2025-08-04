@@ -287,6 +287,7 @@ merge_requests:
 - running_scan_result_policy_violations
 - failed_scan_result_policy_violations
 - approval_metrics
+- approval_policy_merge_request_bypass_events
 external_pull_requests:
 - project
 merge_request_diff:

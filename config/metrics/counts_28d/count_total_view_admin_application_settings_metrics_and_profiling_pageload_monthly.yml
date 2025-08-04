@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_view_admin_application_settings_metrics_and_profiling_pageload_monthly
 description: Monthly count of total users who visited the admin application settings metrics and profiling page
-product_group: personal_productivity
+product_group: engagement
 performance_indicator_type: []
 value_type: number
 status: active

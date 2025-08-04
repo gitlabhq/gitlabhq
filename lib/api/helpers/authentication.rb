@@ -43,7 +43,11 @@ module API
 
           def access_token_from_namespace_inheritable
             token = token_from_namespace_inheritable
-            token if token.is_a? PersonalAccessToken
+            return unless token.is_a? PersonalAccessToken
+
+            ::PersonalAccessTokens::LastUsedService.new(token).execute
+
+            token
           end
 
           def user_from_namespace_inheritable

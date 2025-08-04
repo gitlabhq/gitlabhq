@@ -6,6 +6,7 @@ module RuboCop
     class SidekiqRedisCall < RuboCop::Cop::Base
       MSG = 'Refrain from directly using Sidekiq.redis unless for migration. For admin operations, use Sidekiq APIs.'
 
+      # @!method using_sidekiq_redis?(node)
       def_node_matcher :using_sidekiq_redis?, <<~PATTERN
         (send (const nil? :Sidekiq) :redis)
       PATTERN

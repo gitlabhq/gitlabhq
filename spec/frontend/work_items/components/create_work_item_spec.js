@@ -146,6 +146,7 @@ describe('Create work item component', () => {
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
+        issuesSettings: '/groups/twitter/-/settings/issues',
         ...provide,
       },
       stubs: {

@@ -95,6 +95,19 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
       end
 
+      context 'using personal access tokens' do
+        let(:personal_access_token) { create(:personal_access_token, scopes: ['read_registry']) }
+        let(:headers) { { authorization: credentials('personal_access_token', personal_access_token.token) } }
+
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        subject { get '/jwt/auth', params: parameters, headers: headers }
+
+        it_behaves_like 'updating personal access token last used'
+      end
+
       context 'using CI token' do
         let(:user) { create(:user) }
         let(:build) { create(:ci_build, :running, user: user) }

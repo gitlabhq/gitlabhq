@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_user_views_homepage
 description: Count of unique users who views the homepage
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - navigation
 performance_indicator_type: []

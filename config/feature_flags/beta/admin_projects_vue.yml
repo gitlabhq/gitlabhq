@@ -1,9 +1,0 @@
----
-name: admin_projects_vue
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/17782
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194685
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549452
-milestone: '18.2'
-group: group::organizations
-type: beta
-default_enabled: false

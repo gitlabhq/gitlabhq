@@ -446,6 +446,10 @@ RSpec.shared_examples 'handling project level terraform module download requests
     let(:headers) { basic_auth_headers(::Gitlab::Auth::CI_JOB_USER, token) }
   end
 
+  it_behaves_like 'updating personal access token last used' do
+    let(:headers) { basic_auth_headers(user.username, tokens[:personal_access_token]) }
+  end
+
   def basic_auth_headers(username = user.username, password = personal_access_token.token)
     { Authorization: "Basic #{Base64.strict_encode64("#{username}:#{password}")}" }
   end

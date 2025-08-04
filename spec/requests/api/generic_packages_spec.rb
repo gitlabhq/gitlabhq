@@ -172,6 +172,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(expected_status)
         end
       end
+
+      it_behaves_like 'updating personal access token last used' do
+        subject { authorize_upload_file(workhorse_headers.merge(personal_access_token_header)) }
+      end
     end
 
     context 'application security' do
@@ -854,6 +858,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      subject { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
+    end
+
     def upload_file(
       params, request_headers, send_rewritten_field: true, package_name: 'mypackage',
       package_version: '0.0.1', file_name: 'myfile.tar.gz')
@@ -1179,6 +1187,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it_behaves_like 'package registry SSRF protection'
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { download_file(personal_access_token_header) }
     end
 
     def download_file(request_headers, package_name: nil, file_name: nil)

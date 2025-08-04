@@ -84,6 +84,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         subject
       end
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { get(url, headers: build_token_auth_header(personal_access_token.token)) }
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags' do
@@ -91,6 +95,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
     it_behaves_like 'handling get dist tags requests', scope: :project
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { get(url, headers: build_token_auth_header(personal_access_token.token)) }
+    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag' do
@@ -105,6 +113,13 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       let(:headers) { build_token_auth_header(personal_access_token.token) }
 
       subject { put(url, env: env, headers: headers) }
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:tag_name) { 'test' }
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+
+      subject { put(url, headers: build_token_auth_header(personal_access_token.token)) }
     end
   end
 
@@ -122,17 +137,36 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       subject { delete(url, headers: headers) }
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:tag_name) { 'test' }
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+
+      subject { delete(url, headers: build_token_auth_header(personal_access_token.token)) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk' do
     it_behaves_like 'handling audit request', path: 'advisories/bulk', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/advisories/bulk") }
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/advisories/bulk") }
+
+      subject { post(url, headers: build_token_auth_header(personal_access_token.token)) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/audits/quick' do
     it_behaves_like 'handling audit request', path: 'audits/quick', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/audits/quick") }
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/audits/quick") }
+
+      subject { post(url, headers: build_token_auth_header(personal_access_token.token)) }
     end
   end
 
@@ -254,6 +288,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         it_behaves_like 'successfully downloads the file'
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_token_auth_header(personal_access_token.token) }
     end
   end
 

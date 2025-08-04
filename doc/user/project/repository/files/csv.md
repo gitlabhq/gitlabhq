@@ -26,3 +26,34 @@ When added to a repository, files with a `.csv` extension are rendered as a tabl
 GitLab:
 
 ![CSV file rendered as a table](img/csv_as_table_v17_10.png)
+
+## CSV parsing considerations
+
+GitLab uses the [Papa Parse](https://github.com/mholt/PapaParse/) library to parse CSV files.
+This library follows [RFC4180](https://datatracker.ietf.org/doc/html/rfc4180) and has strict formatting requirements that can cause parsing issues with certain CSV formats.
+
+For example:
+
+- Spacing around comma (`,`) separators and double quotes (`"`) can cause parsing errors.
+- Fields containing both commas and double quotes can cause the parser to misidentify field boundaries.
+
+The following format causes parsing errors:
+
+```plaintext
+"field1", "field2", "field3"
+```
+
+The following format parses successfully:
+
+```plaintext
+"field1","field2","field3"
+```
+
+If your CSV file doesn't display correctly in GitLab:
+
+- If fields are enclosed in double quotes (`"`), ensure the double quotes and comma (`,`) separators are immediately adjacent, with no spaces in between.
+- Enclose all fields that contain special characters in double quotes (`"`).
+- Test how the CSV file displays in GitLab after making changes.
+
+These parsing requirements only affect the visual rendering of CSV files and do not impact the actual
+file content stored in your repository.

@@ -704,6 +704,10 @@ RSpec.shared_examples 'nuget authorize upload endpoint' do
 
   it_behaves_like 'deploy token for package uploads'
 
+  it_behaves_like 'updating personal access token last used' do
+    let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+  end
+
   it_behaves_like 'job token for package uploads', authorize_endpoint: true do
     let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
   end
@@ -809,6 +813,10 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   end
 
   it_behaves_like 'deploy token for package uploads'
+
+  it_behaves_like 'updating personal access token last used' do
+    let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+  end
 
   it_behaves_like 'job token for package uploads' do
     let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }

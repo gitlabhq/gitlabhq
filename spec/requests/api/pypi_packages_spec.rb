@@ -78,6 +78,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'a pypi user namespace endpoint'
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple' do
@@ -96,6 +100,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple" }
 
         it_behaves_like 'deploy token for package GET requests'
+      end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
       end
     end
   end
@@ -141,6 +149,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'a pypi user namespace endpoint'
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
@@ -159,6 +171,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple/#{package.name}" }
 
         it_behaves_like 'deploy token for package GET requests'
+      end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
       end
     end
   end
@@ -219,6 +235,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     it_behaves_like 'job token for package uploads', authorize_endpoint: true
 
     it_behaves_like 'rejects PyPI access with unknown project id'
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/pypi' do
@@ -516,6 +536,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
           it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status]
         end
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
   end
 

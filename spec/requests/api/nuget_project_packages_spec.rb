@@ -155,7 +155,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
     let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package_name}/index.json" }
 
-    subject { get api(url) }
+    subject { get api(url), headers: }
 
     context 'with valid target' do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
@@ -183,14 +183,16 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
-        subject { get api(url), headers: headers }
-
         before do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
 
     it_behaves_like 'deploy token for package GET requests'
@@ -259,6 +261,10 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
       before do
         update_visibility_to(Gitlab::VisibilityLevel::PRIVATE)
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
 
     it_behaves_like 'rejects nuget access with unknown target id'
@@ -415,6 +421,10 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
         it_behaves_like 'returning response status', :bad_request
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
   end
 

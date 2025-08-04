@@ -1,7 +1,7 @@
 ---
 key_path: counts.instances_matrix_active
 description: Count of instances with active integrations for Matrix
-product_group: personal_productivity
+product_group: engagement
 value_type: number
 status: active
 milestone: "17.3"

@@ -98,6 +98,11 @@ module WorkItems
           value.to_h
         }
 
+      argument :hierarchy_filters, ::Types::WorkItems::HierarchyFilterInputType,
+        description: 'Filtering options related to the work item hierarchy.',
+        required: false,
+        experiment: { milestone: '18.3' }
+
       argument :parent_ids, [::Types::GlobalIDType[::WorkItem]],
         description: 'Filter work items by global IDs of their parent items (maximum is 100 items).',
         required: false,
@@ -124,12 +129,16 @@ module WorkItems
       validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
+
+      validates mutually_exclusive: [:hierarchy_filters, :parent_ids]
+      validates mutually_exclusive: [:hierarchy_filters, :include_descendant_work_items]
     end
 
     MAX_IDS_LIMIT = 100
 
     def resolve(**args)
       validate_field_limits(args, :parent_ids, :release_tag)
+      validate_field_limits(args[:hierarchy_filters], :parent_ids) if args[:hierarchy_filters].present?
       validate_field_limits(args[:not], :release_tag) if args[:not].present?
 
       super
@@ -148,6 +157,9 @@ module WorkItems
 
       rewrite_param_name(params[:or], :author_usernames, :author_username)
       rewrite_param_name(params[:or], :label_names, :label_name)
+
+      # Must be called before we rewrite the parent_ids param below
+      unpack_parent_filtering_args!(params)
 
       rewrite_param_name(params, :parent_ids, :work_item_parent_ids)
       rewrite_param_name(params, :release_tag_wildcard_id, :release_tag)
@@ -168,6 +180,14 @@ module WorkItems
             "You can only provide up to #{MAX_IDS_LIMIT} #{field.to_s.camelize(:lower)} at once."
         end
       end
+    end
+
+    def unpack_parent_filtering_args!(params)
+      return unless params&.dig(:hierarchy_filters)
+
+      wi_hierarchy_filtering = params.delete(:hierarchy_filters).to_h
+
+      params.merge!(wi_hierarchy_filtering.slice(:parent_ids, :include_descendant_work_items).compact)
     end
   end
 end

@@ -1,7 +1,7 @@
 ---
 description: Tracks when the command palette is activated.
 action: activate_command_palette
-product_group: personal_productivity
+product_group: engagement
 milestone: '16.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129483
 tiers:

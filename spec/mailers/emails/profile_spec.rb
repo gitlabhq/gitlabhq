@@ -426,6 +426,57 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'user personal access token has been rotated' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:personal_access_token, user: user) }
+
+    context 'when valid' do
+      subject { Notify.access_token_rotated_email(user, token.name) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^Your personal access token has been rotated$/i)
+      end
+
+      it 'provides the names of the token' do
+        is_expected.to have_body_text(/#{token.name}/)
+      end
+
+      it 'includes a link to personal access tokens page' do
+        is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
+      end
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
+      end
+    end
+
+    context 'when invalid' do
+      context 'when user does not exist' do
+        it do
+          expect { Notify.access_token_rotated_email(nil, token.name) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+
+      context 'when user is not active' do
+        before do
+          user.block!
+        end
+
+        it do
+          expect { Notify.access_token_rotated_email(user, token.name) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+    end
+  end
+
   describe 'SSH key notification' do
     let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }

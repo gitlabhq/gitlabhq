@@ -232,24 +232,6 @@ describe('CrmContactToken', () => {
       expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `OPTIONS_NONE_ANY` as default suggestions', () => {
-      mountComponent({
-        active: true,
-        config: { ...mockCrmContactToken },
-        stubs: { Portal: true },
-      });
-      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
-      const suggestionsSegment = tokenSegments.at(2);
-      suggestionsSegment.vm.$emit('activate');
-
-      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
-
-      expect(suggestions).toHaveLength(OPTIONS_NONE_ANY.length);
-      OPTIONS_NONE_ANY.forEach((contact, index) => {
-        expect(suggestions.at(index).text()).toBe(contact.text);
-      });
-    });
-
     it('emits listeners in the base-token', () => {
       const mockInput = jest.fn();
       mountComponent({ listeners: { input: mockInput } });

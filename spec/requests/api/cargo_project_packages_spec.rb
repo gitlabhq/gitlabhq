@@ -64,6 +64,7 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'successful config response'
+        it_behaves_like 'updating personal access token last used'
       end
 
       context 'with unauthenticated user' do

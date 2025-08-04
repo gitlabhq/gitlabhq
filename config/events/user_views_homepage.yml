@@ -5,7 +5,7 @@ status: active
 action: user_views_homepage
 identifiers:
 - user
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - navigation
 milestone: '18.3'

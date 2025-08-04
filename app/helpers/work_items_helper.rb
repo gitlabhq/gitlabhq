@@ -54,6 +54,7 @@ module WorkItemsHelper
         resource_parent.is_a?(Project) ? resource_parent.namespace.full_path : resource_parent.full_path,
       group_id: group&.id,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
+      can_read_crm_contact: can?(current_user, :read_crm_contact, resource_parent.crm_group).to_s,
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s
     }
   end

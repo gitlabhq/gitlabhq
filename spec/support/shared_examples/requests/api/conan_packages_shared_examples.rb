@@ -224,6 +224,8 @@ RSpec.shared_examples 'conan authenticate endpoint' do
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
+
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'conan check_credentials endpoint' do
@@ -491,6 +493,7 @@ RSpec.shared_examples 'recipe snapshot endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'empty recipe for not found package'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   context 'with existing package' do
     it 'returns a hash of files with their md5 hashes' do
@@ -518,6 +521,7 @@ RSpec.shared_examples 'package snapshot endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'empty recipe for not found package'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   context 'with existing package' do
     it 'returns a hash of md5 values for the files' do
@@ -543,6 +547,7 @@ RSpec.shared_examples 'recipe download_urls endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'recipe download_urls'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'package download_urls endpoint' do
@@ -554,6 +559,7 @@ RSpec.shared_examples 'package download_urls endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'package download_urls'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'recipe upload_urls endpoint' do
@@ -570,6 +576,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns a set of upload urls for the files requested' do
     subject
@@ -635,6 +642,7 @@ RSpec.shared_examples 'package upload_urls endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns a set of upload urls for the files requested' do
     expected_response = {
@@ -672,6 +680,7 @@ RSpec.shared_examples 'delete package endpoint' do
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns unauthorized for users without valid permission' do
     subject
@@ -840,6 +849,7 @@ RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_he
   it_behaves_like 'workhorse authorization'
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling checksum deploy header' if with_checksum_deploy_header
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'protected package main example' do
@@ -919,6 +929,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: fals
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+  it_behaves_like 'updating personal access token last used'
 
   if revision
     it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) }
@@ -962,6 +973,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: fal
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+  it_behaves_like 'updating personal access token last used'
 
   if revision
     it 'creates a recipe and package revision' do

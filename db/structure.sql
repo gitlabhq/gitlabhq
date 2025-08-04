@@ -10006,6 +10006,27 @@ CREATE SEQUENCE approval_merge_request_rules_users_id_seq
 
 ALTER SEQUENCE approval_merge_request_rules_users_id_seq OWNED BY approval_merge_request_rules_users.id;
 
+CREATE TABLE approval_policy_merge_request_bypass_events (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    user_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    reason text NOT NULL,
+    CONSTRAINT check_3169f0d109 CHECK (((length(TRIM(BOTH FROM reason)) >= 1) AND (length(TRIM(BOTH FROM reason)) <= 1024)))
+);
+
+CREATE SEQUENCE approval_policy_merge_request_bypass_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_policy_merge_request_bypass_events_id_seq OWNED BY approval_policy_merge_request_bypass_events.id;
+
 CREATE TABLE approval_policy_rule_project_links (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -27815,6 +27836,8 @@ ALTER TABLE ONLY approval_merge_request_rules_groups ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY approval_merge_request_rules_users ALTER COLUMN id SET DEFAULT nextval('approval_merge_request_rules_users_id_seq'::regclass);
 
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events ALTER COLUMN id SET DEFAULT nextval('approval_policy_merge_request_bypass_events_id_seq'::regclass);
+
 ALTER TABLE ONLY approval_policy_rule_project_links ALTER COLUMN id SET DEFAULT nextval('approval_policy_rule_project_links_id_seq'::regclass);
 
 ALTER TABLE ONLY approval_policy_rules ALTER COLUMN id SET DEFAULT nextval('approval_policy_rules_id_seq'::regclass);
@@ -29935,6 +29958,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT approval_merge_request_rules_users_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events
+    ADD CONSTRAINT approval_policy_merge_request_bypass_events_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT approval_policy_rule_project_links_pkey PRIMARY KEY (id);
 
@@ -30171,6 +30197,9 @@ ALTER TABLE ONLY group_type_ci_runners
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE related_epic_links
+    ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE p_ci_job_artifacts
     ADD CONSTRAINT check_b8fac815e7 CHECK ((char_length(exposed_as) <= 100)) NOT VALID;
@@ -34223,6 +34252,8 @@ CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approv
 
 CREATE INDEX idx_approval_mr_rules_on_config_id_and_id_and_updated_at ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
+CREATE UNIQUE INDEX idx_approval_policy_mr_bypass_events_on_project_mr_policy ON approval_policy_merge_request_bypass_events USING btree (project_id, merge_request_id, security_policy_id);
+
 CREATE INDEX idx_approval_policy_rule_project_links_on_project_id_and_id ON approval_policy_rule_project_links USING btree (project_id, id);
 
 CREATE INDEX idx_approval_policy_rules_security_policy_id_id ON approval_policy_rules USING btree (security_policy_id, id);
@@ -35054,6 +35085,12 @@ CREATE UNIQUE INDEX index_approval_merge_request_rules_users_1 ON approval_merge
 CREATE INDEX index_approval_merge_request_rules_users_2 ON approval_merge_request_rules_users USING btree (user_id);
 
 CREATE INDEX index_approval_mr_rules_on_project_id_policy_rule_id_and_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id, id);
+
+CREATE INDEX index_approval_policy_merge_request_bypass_events_on_mr_id ON approval_policy_merge_request_bypass_events USING btree (merge_request_id);
+
+CREATE INDEX index_approval_policy_merge_request_bypass_events_on_policy_id ON approval_policy_merge_request_bypass_events USING btree (security_policy_id);
+
+CREATE INDEX index_approval_policy_merge_request_bypass_events_on_user_id ON approval_policy_merge_request_bypass_events USING btree (user_id);
 
 CREATE UNIQUE INDEX index_approval_policy_rule_on_project_and_rule ON approval_policy_rule_project_links USING btree (approval_policy_rule_id, project_id);
 
@@ -43067,6 +43104,9 @@ ALTER TABLE ONLY deployment_approvals
 ALTER TABLE ONLY project_relation_export_uploads
     ADD CONSTRAINT fk_0f7fad01a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events
+    ADD CONSTRAINT fk_0fae251483 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_105c1d6d08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -44393,6 +44433,9 @@ ALTER TABLE ONLY ml_candidates
 ALTER TABLE ONLY subscription_add_on_purchases
     ADD CONSTRAINT fk_a1db288990 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events
+    ADD CONSTRAINT fk_a24f768758 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_a3cc825836 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -45146,6 +45189,9 @@ ALTER TABLE ONLY zoekt_indices
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT fk_f3953d86c6 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events
+    ADD CONSTRAINT fk_f39e177609 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_f3b8fc5e4e FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -45520,6 +45566,9 @@ ALTER TABLE ONLY project_ci_feature_usages
 
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_rails_1dfc868911 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_policy_merge_request_bypass_events
+    ADD CONSTRAINT fk_rails_1ebbdcc530 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_1ecfd9f2de FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;

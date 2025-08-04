@@ -65,6 +65,7 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_UPDATED,
   TOKEN_TITLE_ORGANIZATION,
+  TOKEN_TITLE_CONTACT,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CLOSED,
@@ -81,6 +82,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_UPDATED,
   TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_CONTACT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -120,6 +122,8 @@ const UserToken = () => import('~/vue_shared/components/filtered_search_bar/toke
 const LocalBoard = () => import('./local_board/local_board.vue');
 const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
+const CrmContactToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -165,6 +169,7 @@ export default {
     'workItemType',
     'canReadCrmOrganization',
     'hasStatusFeature',
+    'canReadCrmContact',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -620,6 +625,20 @@ export default {
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-crm-organizations`,
+          operators: OPERATORS_IS,
+          unique: true,
+        });
+      }
+
+      if (this.canReadCrmContact) {
+        tokens.push({
+          type: TOKEN_TYPE_CONTACT,
+          title: TOKEN_TITLE_CONTACT,
+          icon: 'user',
+          token: CrmContactToken,
+          fullPath: this.rootPageFullPath,
+          isProject: !this.isGroup,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-crm-contacts`,
           operators: OPERATORS_IS,
           unique: true,
         });

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_user_follows_link_on_homepage
 description: Weekly and monthly count of unique users who click links on the homepage
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - navigation
 performance_indicator_type: []

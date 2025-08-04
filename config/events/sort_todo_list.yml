@@ -7,7 +7,7 @@ identifiers:
 additional_properties:
   label:
     description: Sort direction chosen by the user
-product_group: personal_productivity
+product_group: engagement
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
 tiers:

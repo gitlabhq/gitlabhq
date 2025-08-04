@@ -136,6 +136,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
       it_behaves_like 'rejects helm packages access', :maintainer, :not_found, '{"message":"404 Format prov Not Found"}'
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/helm/api/:channel/charts/authorize' do
@@ -185,6 +189,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     end
 
     it_behaves_like 'rejects helm access with unknown project id'
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/helm/api/:channel/charts' do
@@ -274,6 +282,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'returning response status', :bad_request
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
   end
 end

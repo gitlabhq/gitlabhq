@@ -15,6 +15,10 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
 
         it_behaves_like 'Debian packages GET request', :success
       end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:auth_headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
     end
 
     context 'with invalid parameter' do
@@ -191,6 +195,13 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
 
         it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
       end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:containers) { { private: private_container, public: public_container } }
+        let(:container) { containers[:private] }
+        let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
+        let(:auth_headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
     end
 
     describe 'PUT projects/:id/packages/debian/:file_name/authorize' do
@@ -199,6 +210,13 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/#{file_name}/authorize" }
 
       it_behaves_like 'Debian packages write endpoint', 'upload authorize', :created, nil
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:containers) { { private: private_container, public: public_container } }
+        let(:container) { containers[:private] }
+        let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
+        let(:auth_headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
     end
   end
 end

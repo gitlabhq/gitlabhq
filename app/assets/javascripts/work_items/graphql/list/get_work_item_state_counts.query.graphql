@@ -25,6 +25,7 @@ query getWorkItemStateCounts(
   $updatedAfter: Time
   $updatedBefore: Time
   $crmOrganizationId: String
+  $crmContactId: String
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
@@ -56,6 +57,7 @@ query getWorkItemStateCounts(
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       crmOrganizationId: $crmOrganizationId
+      crmContactId: $crmContactId
       in: $in
       not: $not
       or: $or
@@ -90,6 +92,7 @@ query getWorkItemStateCounts(
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       crmOrganizationId: $crmOrganizationId
+      crmContactId: $crmContactId
       in: $in
       not: $not
       or: $or

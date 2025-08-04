@@ -13705,6 +13705,7 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexportdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="mutationworkitemexportduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="mutationworkitemexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitemexporthierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="mutationworkitemexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
@@ -13924,6 +13925,7 @@ Input type: `WorkItemsCsvExportInput`
 | <a id="mutationworkitemscsvexportdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="mutationworkitemscsvexportduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="mutationworkitemscsvexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitemscsvexporthierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitemscsvexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemscsvexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="mutationworkitemscsvexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
@@ -26797,6 +26799,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkitemscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | Filter by ID of CRM contact organization. |
 | <a id="currentuserworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="currentuserworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="currentuserworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="currentuserworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="currentuserworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="currentuserworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
@@ -31265,6 +31268,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="groupworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -31347,6 +31351,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="groupworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="groupworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -35652,6 +35657,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="namespaceworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="namespaceworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="namespaceworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="namespaceworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -35739,6 +35745,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="namespaceworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="namespaceworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="namespaceworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -39788,6 +39795,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="projectworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="projectworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -39866,6 +39874,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="projectworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="projectworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -52803,6 +52812,15 @@ Labels for the Node Pool of a GKE cluster.
 | <a id="groupprojectrequirementcompliancestatusinputframeworkid"></a>`frameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Filter compliance requirement statuses by compliance framework. |
 | <a id="groupprojectrequirementcompliancestatusinputprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Filter compliance requirement statuses by project. |
 | <a id="groupprojectrequirementcompliancestatusinputrequirementid"></a>`requirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Filter compliance requirement statuses by compliance requirement. |
+
+### `HierarchyFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="hierarchyfilterinputincludedescendantworkitems"></a>`includeDescendantWorkItems` | [`Boolean`](#boolean) | Whether to include work items of descendant parents when filtering by parent_ids. |
+| <a id="hierarchyfilterinputparentids"></a>`parentIds` | [`[WorkItemID!]!`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
 
 ### `ItemConsumerTargetInput`
 

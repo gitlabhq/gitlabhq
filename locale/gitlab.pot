@@ -1734,6 +1734,9 @@ msgstr ""
 msgid "'attributes' for component '%{component_name}' must be a Hash"
 msgstr ""
 
+msgid "'attributes' in component '%{component}' must be a Hash"
+msgstr ""
+
 msgid "'command' must be a Hash"
 msgstr ""
 
@@ -4516,15 +4519,6 @@ msgstr ""
 msgid "AdminLabels|They can be used to categorize issues and merge requests."
 msgstr ""
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
-msgstr ""
-
-msgid "AdminProjects|Delete"
-msgstr ""
-
-msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr ""
-
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr ""
 
@@ -5627,9 +5621,6 @@ msgid "AdminUsers|This user's access level is managed with LDAP. Remove user's m
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{name}"
-msgstr ""
-
-msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}."
@@ -38023,6 +38014,9 @@ msgstr ""
 msgid "Manage security policy settings in your GitLab instance"
 msgstr ""
 
+msgid "Manage statuses"
+msgstr ""
+
 msgid "Manage templates…"
 msgstr ""
 
@@ -50731,10 +50725,16 @@ msgstr ""
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
+msgid "Properties 'command', 'args' for component '%{name}' can only be specified when the 'overrideCommand' attribute is set to false"
+msgstr ""
+
 msgid "Property 'dedicatedPod' of component '%{component}' is not yet supported"
 msgstr ""
 
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
+msgstr ""
+
+msgid "Property 'overrideCommand' of component '%{name}' must be a boolean (true or false)"
 msgstr ""
 
 msgid "Protect"
@@ -72098,6 +72098,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when fetching user permissions"
+msgstr ""
+
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
 msgstr ""
 
@@ -73060,6 +73063,12 @@ msgstr ""
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
 msgstr ""
 
+msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
+msgstr ""
+
+msgid "You can view it in your personal access tokens settings %{pat_link}."
+msgstr ""
+
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr ""
 
@@ -73926,6 +73935,15 @@ msgid "Your password reset token has expired."
 msgstr ""
 
 msgid "Your personal access token has been revoked"
+msgstr ""
+
+msgid "Your personal access token has been rotated"
+msgstr ""
+
+msgid "Your personal access token, named %{code_start}%{token_name}%{code_end}, has been rotated."
+msgstr ""
+
+msgid "Your personal access token, named %{token_name}, has been rotated."
 msgstr ""
 
 msgid "Your personal access tokens have expired"

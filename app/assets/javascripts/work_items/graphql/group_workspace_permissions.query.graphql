@@ -1,0 +1,8 @@
+query groupWorkspacePermissions($fullPath: ID!) {
+  workspace: group(fullPath: $fullPath) {
+    id
+    userPermissions {
+      adminWorkItemLifecycle @gl_introduced(version: "18.3.0-pre")
+    }
+  }
+}

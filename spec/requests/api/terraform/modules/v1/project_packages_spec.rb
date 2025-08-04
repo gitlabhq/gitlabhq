@@ -80,6 +80,10 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
+    end
+
     context 'for use_final_store_path' do
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
 
@@ -278,6 +282,10 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
           end
         end
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
     end
   end
 end

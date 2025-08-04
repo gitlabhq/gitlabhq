@@ -128,6 +128,8 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       it { is_expected.to have_gitlab_http_status(:success) }
     end
 
+    it_behaves_like 'updating personal access token last used'
+
     describe 'user access' do
       where(:valid_token, :user_role, :visibility, :member, :token_type, :expected_status) do
         authorize_permissions_table
@@ -241,6 +243,8 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       end
 
       it_behaves_like 'Not found when model version does not exist'
+
+      it_behaves_like 'updating personal access token last used'
     end
 
     describe 'user access' do
@@ -320,6 +324,8 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
       it_behaves_like 'Endpoint not found if read_model_registry not available'
     end
+
+    it_behaves_like 'updating personal access token last used'
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 end

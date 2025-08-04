@@ -68,7 +68,6 @@ cache:ruby-gems:
   variables:
     BUNDLE_WITHOUT: ""
     GLCI_BUNDLE_SKIP_PG_REINSTALL: "true"
-    FF_USE_FASTZIP: "true"
   before_script:
     - source scripts/utils.sh
   script:

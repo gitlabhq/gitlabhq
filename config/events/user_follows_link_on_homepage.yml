@@ -12,7 +12,7 @@ additional_properties:
     description: Source - a string describing the widget containing the followed link (e.g. "Recently viewed")
   property:
     description: Type - a string describing the type of item followed, optional (e.g. "Merge request")
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - navigation
 milestone: '18.3'

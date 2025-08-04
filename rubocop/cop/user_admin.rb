@@ -9,6 +9,7 @@ module RuboCop
         'and will ignore Admin Mode if enabled. Please use a policy check ' \
         'with `User#can_admin_all_resources?` or `User#can_read_all_resources?`.'
 
+      # @!method admin_call?(node)
       def_node_matcher :admin_call?, <<~PATTERN
         (call _ :admin? ...)
       PATTERN

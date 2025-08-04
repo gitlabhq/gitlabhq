@@ -179,9 +179,8 @@ module SystemNotes
     #   "changed title from **Old** to **New**"
     #
     # Returns the created Note object
-    def change_title(org_title)
-      new_title = ERB::Util.html_escape(noteable.title)
-      old_title = ERB::Util.html_escape(org_title)
+    def change_title(old_title)
+      new_title = noteable.title
 
       old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 

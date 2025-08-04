@@ -67,52 +67,6 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
         expect(page).to have_content(project.name)
       end
     end
-
-    context 'when `admin_projects_vue` is disabled' do
-      let_it_be(:archived_project) { create :project, :public, :archived }
-
-      before do
-        stub_feature_flags(admin_projects_vue: false)
-
-        expect(project).to be_persisted
-        visit admin_projects_path
-      end
-
-      it "renders the correct path" do
-        expect(page).to have_current_path(admin_projects_path, ignore_query: true)
-      end
-
-      it 'renders all projects', :js do
-        find(:css, '#sort-projects-dropdown').click
-        click_link 'Show archived projects'
-
-        expect(page).to have_content(project.name)
-        expect(page).to have_content(archived_project.name)
-        expect(page).to have_xpath("//span[@class='gl-badge badge badge-pill badge-info gl-mr-3']", text: 'Archived')
-      end
-
-      it 'renders projects list without archived project' do
-        expect(page).to have_content(project.name)
-        expect(page).not_to have_content(archived_project.name)
-      end
-
-      it 'has project edit and delete button' do
-        page.within('.project-row') do
-          expect(page).to have_link 'Edit'
-          expect(page).to have_button 'Delete'
-        end
-      end
-
-      context 'when "Show archived projects only" is clicked' do
-        it 'renders only archived projects', :js do
-          find(:css, '#sort-projects-dropdown').click
-          click_link 'Show archived projects only'
-
-          expect(page).to have_content(archived_project.name)
-          expect(page).not_to have_content(project.name)
-        end
-      end
-    end
   end
 
   describe "GET /admin/projects/:namespace_id/:id" do
@@ -154,18 +108,6 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
       end
 
       it_behaves_like 'renders project edit page'
-
-      context 'when `admin_projects_vue` is disabled' do
-        before do
-          stub_feature_flags(admin_projects_vue: false)
-
-          expect(project).to be_persisted
-          visit admin_projects_path
-          click_link project.name
-        end
-
-        it_behaves_like 'renders project edit page'
-      end
     end
   end
 

@@ -163,31 +163,41 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
       end
 
       context 'with parent_ids filter' do
-        context 'when filtering by more than 100 parent ids' do
-          let(:too_many_parent_ids) { (1..101).to_a }
+        shared_examples 'a parent_id filter' do |param_builder|
+          context 'when filtering by more than 100 parent ids' do
+            let(:too_many_parent_ids) { (1..101).to_a }
 
-          it 'throws an error' do
-            response = batch_sync { resolve_items(parent_ids: too_many_parent_ids) }
+            it 'throws an error' do
+              params = param_builder.call(parent_ids: too_many_parent_ids)
+              response = batch_sync { resolve_items(params) }
 
-            expect(response).to be_a(GraphQL::ExecutionError)
-            expect(response.message).to eq('You can only provide up to 100 parentIds at once.')
+              expect(response).to be_a(GraphQL::ExecutionError)
+              expect(response.message).to eq('You can only provide up to 100 parentIds at once.')
+            end
+          end
+
+          context 'when converting global ids to work item ids' do
+            let_it_be(:work_item1) { create(:work_item) }
+            let_it_be(:work_item2) { create(:work_item) }
+
+            let(:global_ids) { [work_item1.to_global_id, work_item2.to_global_id] }
+            let(:context) { { arg_style: :internal_prepared } }
+
+            it 'correctly processes global IDs and maps to work item model_ids' do
+              expect(GitlabSchema).to receive(:parse_gids).with(global_ids, expected_type: ::WorkItem).and_call_original
+
+              params = param_builder.call(parent_ids: global_ids.map(&:to_s))
+              batch_sync { resolve_items(params, context) }
+            end
           end
         end
 
-        context 'when converting global ids to work item ids' do
-          let_it_be(:work_item1) { create(:work_item) }
-          let_it_be(:work_item2) { create(:work_item) }
+        context 'when passed at the top level' do
+          it_behaves_like 'a parent_id filter', ->(args) { args }
+        end
 
-          let(:global_ids) { [work_item1.to_global_id, work_item2.to_global_id] }
-          let(:context) { { arg_style: :internal_prepared } }
-
-          it 'correctly processes global IDs and maps to work item model_ids' do
-            expect(GitlabSchema).to receive(:parse_gids)
-              .with(global_ids, expected_type: ::WorkItem)
-              .and_call_original
-
-            batch_sync { resolve_items({ parent_ids: global_ids.map(&:to_s) }, context) }
-          end
+        context 'when passed through the hierarchy_filters argument' do
+          it_behaves_like 'a parent_id filter', ->(args) { { hierarchy_filters: args } }
         end
       end
 

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_view_admin_broadcast_messages_pageload_monthly
 description: Monthly count of unique users who visited the admin broadcast messages page
-product_group: personal_productivity
+product_group: engagement
 performance_indicator_type: []
 value_type: number
 status: active

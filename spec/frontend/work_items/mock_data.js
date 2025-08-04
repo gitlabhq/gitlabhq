@@ -6723,6 +6723,19 @@ export const mockProjectPermissionsQueryResponse = ({
   },
 });
 
+export const mockGroupPermissionsQueryResponse = ({ adminWorkItemLifecycle = true } = {}) => ({
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/24',
+      userPermissions: {
+        adminWorkItemLifecycle,
+        __typename: 'GroupPermissions',
+      },
+      __typename: 'Group',
+    },
+  },
+});
+
 export const mockUploadDesignMutationResponse = {
   data: {
     designManagementUpload: {

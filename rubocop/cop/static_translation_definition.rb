@@ -63,6 +63,7 @@ module RuboCop
       # See https://api.rubyonrails.org/classes/ActiveSupport/Concern.html
       NON_METHOD_DEFINITIONS = %i[class_methods included prepended].to_set.freeze
 
+      # @!method translation_method?(node)
       def_node_matcher :translation_method?, <<~PATTERN
         (send _ {#{RESTRICT_ON_SEND.map(&:inspect).join(' ')}} {dstr str}+)
       PATTERN

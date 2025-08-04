@@ -204,6 +204,7 @@ Users are notified of the following events:
 | Personal access tokens have been created | User            | Security email, always sent.                                                                                                            |
 | Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
 | Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
+| Personal access token has been rotated   | User            | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199360) in GitLab 18.3.                                                                                                           |
 | Group access tokens expiring soon        | Direct Group Owners | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
 | Project access tokens expiring soon      | Direct Project Owners and Maintainers | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367706) in GitLab 16.4.                 |
 | Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |

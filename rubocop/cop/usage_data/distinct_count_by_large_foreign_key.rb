@@ -19,6 +19,7 @@ module RuboCop
 
         MSG = 'Avoid doing `%s` on foreign keys for large tables having above 100 million rows.'
 
+        # @!method distinct_count?(node)
         def_node_matcher :distinct_count?, <<-PATTERN
           (send _ $:distinct_count $...)
         PATTERN

@@ -149,6 +149,19 @@ module Emails
       )
     end
 
+    def access_token_rotated_email(user, token_name)
+      return unless user&.active?
+
+      @user = user
+      @token_name = token_name
+      @target_url = user_settings_personal_access_tokens_url
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("Your personal access token has been rotated"))
+      )
+    end
+
     def deploy_token_about_to_expire_email(user, token_name, project, params = {})
       params = params.with_indifferent_access
 

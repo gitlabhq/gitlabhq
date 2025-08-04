@@ -45,6 +45,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_UPDATED,
   TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_CONTACT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
@@ -129,6 +130,7 @@ describeSkipVue3(skipReason, () => {
     props = {},
     additionalHandlers = [],
     canReadCrmOrganization = true,
+    canReadCrmContact = true,
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -153,6 +155,7 @@ describeSkipVue3(skipReason, () => {
           workItemPlanningView,
         },
         canReadCrmOrganization,
+        canReadCrmContact,
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
@@ -504,6 +507,7 @@ describeSkipVue3(skipReason, () => {
         TOKEN_TYPE_ASSIGNEE,
         TOKEN_TYPE_AUTHOR,
         TOKEN_TYPE_CONFIDENTIAL,
+        TOKEN_TYPE_CONTACT,
         TOKEN_TYPE_GROUP,
         TOKEN_TYPE_LABEL,
         TOKEN_TYPE_MILESTONE,
@@ -540,6 +544,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_AUTHOR,
           TOKEN_TYPE_CLOSED,
           TOKEN_TYPE_CONFIDENTIAL,
+          TOKEN_TYPE_CONTACT,
           TOKEN_TYPE_CREATED,
           TOKEN_TYPE_DUE_DATE,
           TOKEN_TYPE_GROUP,
@@ -572,6 +577,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_ASSIGNEE,
           TOKEN_TYPE_AUTHOR,
           TOKEN_TYPE_CONFIDENTIAL,
+          TOKEN_TYPE_CONTACT,
           customToken.type,
           TOKEN_TYPE_GROUP,
           TOKEN_TYPE_LABEL,
@@ -621,6 +627,49 @@ describeSkipVue3(skipReason, () => {
             expect.arrayContaining([
               expect.objectContaining({
                 type: TOKEN_TYPE_ORGANIZATION,
+              }),
+            ]),
+          );
+        });
+      });
+    });
+
+    describe('Contact filter token', () => {
+      describe('when canReadCrmOrganization is true', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('configures contact token with correct properties', () => {
+          const contactToken = findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_CONTACT);
+
+          expect(contactToken).toMatchObject({
+            fullPath: 'full/path',
+            isProject: true,
+            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-crm-contacts',
+            operators: [{ description: 'is', value: '=' }],
+          });
+        });
+      });
+
+      describe('when canReadCrmContact is false', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false, canReadCrmContact: false } });
+          await waitForPromises();
+        });
+
+        it('does not include contact token in available tokens', () => {
+          const tokens = findIssuableList()
+            .props('searchTokens')
+            .map((token) => token.type);
+
+          expect(tokens).not.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_CONTACT,
               }),
             ]),
           );

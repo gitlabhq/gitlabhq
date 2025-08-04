@@ -25,10 +25,12 @@ module RuboCop
 
         BASE_PATTERN = "(const nil? !#allowed_class?)"
 
+        # @!method class_definition(node)
         def_node_matcher :class_definition, <<~PATTERN
           (class (const _ !#allowed_class?) #{BASE_PATTERN} ...)
         PATTERN
 
+        # @!method class_new_definition(node)
         def_node_matcher :class_new_definition, <<~PATTERN
           [!^(casgn {nil? cbase} #allowed_class? ...)
            !^^(casgn {nil? cbase} #allowed_class? (block ...))

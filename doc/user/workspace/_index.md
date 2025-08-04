@@ -214,16 +214,58 @@ You can specify the base image, dependencies, and other settings.
 
 The `container` component type supports the following schema properties only:
 
-| Property       | Description                                                                                                                    |
-|----------------| -------------------------------------------------------------------------------------------------------------------------------|
-| `image`        | Name of the container image to use for the workspace.                                                                          |
-| `memoryRequest`| Minimum amount of memory the container can use.                                                                                |
-| `memoryLimit`  | Maximum amount of memory the container can use.                                                                                |
-| `cpuRequest`   | Minimum amount of CPU the container can use.                                                                                   |
-| `cpuLimit`     | Maximum amount of CPU the container can use.                                                                                   |
-| `env`          | Environment variables to use in the container. Names must not start with `gl-`.                                                |
-| `endpoints`    | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
-| `volumeMounts` | Storage volume to mount in the container.                                                                                      |
+| Property          | Description                                                                                                                    |
+|----------------   | -------------------------------------------------------------------------------------------------------------------------------|
+| `image`           | Name of the container image to use for the workspace.                                                                          |
+| `memoryRequest`   | Minimum amount of memory the container can use.                                                                                |
+| `memoryLimit`     | Maximum amount of memory the container can use.                                                                                |
+| `cpuRequest`      | Minimum amount of CPU the container can use.                                                                                   |
+| `cpuLimit`        | Maximum amount of CPU the container can use.                                                                                   |
+| `env`             | Environment variables to use in the container. Names must not start with `gl-`.                                                |
+| `endpoints`       | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
+| `volumeMounts`    | Storage volume to mount in the container.                                                                                      |
+| `overrideCommand` | Override the container entrypoint with a keep-alive command. Defaults vary by component type.                                  |
+
+#### `overrideCommand` attribute
+
+The `overrideCommand` attribute is a boolean that controls how Workspaces handle container entrypoints.
+This attribute determines whether the container's original entrypoint is preserved or replaced
+with a keep-alive command.
+
+The default value for `overrideCommand` depends on the component type:
+
+- Main component with attribute `gl/inject-editor: true`: Defaults to `true` when not specified.
+- All other components: Defaults to `false` when not specified.
+
+When `true`, the container entrypoint is replaced with `tail -f /dev/null` to keep the
+container running.
+When `false`, the container uses either the devfile component `command`/`args` or the built container
+image's `Entrypoint`/`Cmd`.
+
+The following table shows how `overrideCommand` affects container behavior. For clarity, these terms
+are used in the table:
+
+- Devfile component: The `command` and `args` properties in the devfile component entry.
+- Container image: The `Entrypoint` and `Cmd` fields in the OCI container image.
+
+| `overrideCommand` | Devfile component | Container image | Result |
+|-------------------|-------------------|-----------------|--------|
+| `true`            | Specified         | Specified       | Validation error: Devfile component `command`/`args` cannot be specified when `overrideCommand` is `true`. |
+| `true`            | Specified         | Not specified   | Validation error: Devfile component `command`/`args` cannot be specified when `overrideCommand` is `true`. |
+| `true`            | Not specified     | Specified       | Container entrypoint replaced with `tail -f /dev/null`. |
+| `true`            | Not specified     | Not specified   | Container entrypoint replaced with `tail -f /dev/null`. |
+| `false`           | Specified         | Specified       | Devfile component `command`/`args` used as entrypoint. |
+| `false`           | Specified         | Not specified   | Devfile component `command`/`args` used as entrypoint. |
+| `false`           | Not specified     | Specified       | Container image `Entrypoint`/`Cmd` used. |
+| `false`           | Not specified     | Not specified   | Container exits prematurely (`CrashLoopBackOff`). <sup>1</sup> |
+
+**Footnotes**:
+
+1. When you create a workspace, it cannot access container image details, for example, from private
+or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
+or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
+You must ensure that either the Devfile or container specifies these fields, or the container exits
+prematurely and the workspace fails to start.
 
 ### User-defined `postStart` events
 
