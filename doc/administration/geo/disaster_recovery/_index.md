@@ -418,6 +418,20 @@ Now we need to make each **secondary** site listen to changes on the new **prima
 to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** site. All the old replication settings are overwritten.
 
+Existing secondary sites will all have populated databases so you may see a message like this:
+
+```shell
+Found data inside the gitlabhq_production database! If you are sure you are in the secondary server, override with --force
+```
+
+After you have confirmed that you are on the appropriate secondary site, initiate the replication with `--force`.
+
+{{< alert type="warning" >}}
+
+Using `--force` causes **all existing data in the database on that secondary server to be deleted**.
+
+{{< /alert >}}
+
 ## Promoting a secondary Geo cluster in the GitLab Helm chart
 
 When updating a cloud-native Geo deployment, the process for updating any node that is external to the secondary Kubernetes cluster does not differ from the non cloud-native approach. As such, you can always defer to [Promoting a secondary Geo site in single-secondary configurations](#promoting-a-secondary-geo-site-in-single-secondary-configurations) for more information.

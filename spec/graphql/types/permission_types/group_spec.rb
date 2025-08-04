@@ -50,4 +50,30 @@ RSpec.describe Types::PermissionTypes::Group, feature_category: :groups_and_proj
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#admin_all_resources' do
+    let_it_be(:group) { create(:group) }
+
+    subject { resolve_field(:admin_all_resources, group, current_user: user) }
+
+    context 'when authenticated', :enable_admin_mode do
+      context 'when user is an admin' do
+        let_it_be(:user) { create(:admin) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user is not an admin' do
+        let_it_be(:user) { create(:user) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when unauthenticated' do
+      let_it_be(:user) { nil }
+
+      it { is_expected.to be(false) }
+    end
+  end
 end

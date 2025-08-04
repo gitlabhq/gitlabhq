@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Types::PermissionTypes::Project do
+  include GraphqlHelpers
+
   it do
     expected_permissions = [
       :change_namespace, :change_visibility_level, :rename_project,
@@ -24,6 +26,32 @@ RSpec.describe Types::PermissionTypes::Project do
 
     expected_permissions.each do |permission|
       expect(described_class).to have_graphql_field(permission)
+    end
+  end
+
+  describe '#admin_all_resources' do
+    let_it_be(:project) { create(:project) }
+
+    subject { resolve_field(:admin_all_resources, project, current_user: user) }
+
+    context 'when authenticated', :enable_admin_mode do
+      context 'when user is an admin' do
+        let_it_be(:user) { create(:admin) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user is not an admin' do
+        let_it_be(:user) { create(:user) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when unauthenticated' do
+      let_it_be(:user) { nil }
+
+      it { is_expected.to be(false) }
     end
   end
 end

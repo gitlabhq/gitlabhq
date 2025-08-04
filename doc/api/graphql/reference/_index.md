@@ -31628,6 +31628,7 @@ Returns [`String`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppermissionsadminallresources"></a>`adminAllResources` | [`Boolean!`](#boolean) | If `true`, the user is an instance administrator. |
 | <a id="grouppermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
 | <a id="grouppermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
 | <a id="grouppermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this group. |
@@ -40106,6 +40107,7 @@ Returns [`String`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectpermissionsadminallresources"></a>`adminAllResources` | [`Boolean!`](#boolean) | If `true`, the user is an instance administrator. |
 | <a id="projectpermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
 | <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_operations` on this resource. |
 | <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_path_locks` on this resource. |

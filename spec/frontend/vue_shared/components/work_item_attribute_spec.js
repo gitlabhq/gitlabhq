@@ -126,6 +126,41 @@ describe('WorkItemAttribute Component', () => {
     });
   });
 
+  describe('click events', () => {
+    it('emits click event when clicked', () => {
+      const mockEvent = {
+        stopPropagation: jest.fn(),
+      };
+      createComponent({ isLink: true });
+      findLink().vm.$emit('click', mockEvent);
+
+      expect(wrapper.emitted().click).toHaveLength(1);
+      expect(wrapper.emitted().click[0][0]).toBe(mockEvent);
+    });
+
+    it('stops event propagation when href is provided', () => {
+      const mockEvent = {
+        stopPropagation: jest.fn(),
+      };
+      createComponent({ isLink: true, href: 'https://example.com' });
+
+      findLink().vm.$emit('click', mockEvent);
+
+      expect(mockEvent.stopPropagation).toHaveBeenCalled();
+    });
+
+    it('does not stop propagation when href is not provided', () => {
+      const mockEvent = {
+        stopPropagation: jest.fn(),
+      };
+      createComponent({ isLink: true });
+
+      findLink().vm.$emit('click', mockEvent);
+
+      expect(mockEvent.stopPropagation).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when slots are provided', () => {
     it('renders icon slot if provided', () => {
       createComponent({}, { icon: '<gl-icon name="rocket"></gl-icon>' });

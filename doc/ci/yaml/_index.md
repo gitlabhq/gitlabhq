@@ -3281,7 +3281,7 @@ This example creates four paths of execution:
 - The maximum number of jobs that a single job can have in the `needs` array is limited:
   - For GitLab.com, the limit is 50. For more information, see
     [issue 350398](https://gitlab.com/gitlab-org/gitlab/-/issues/350398).
-  - For GitLab Self-Managed, the default limit is 50. This limit [can be changed](../../administration/cicd/_index.md#set-the-needs-job-limit).
+  - For GitLab Self-Managed and GitLab Dedicated, the default limit is 50. This limit can be changed by [updating the CI/CD limits in the Admin area](../../administration/settings/continuous_integration.md#set-cicd-limits).
 - If `needs` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same

@@ -2062,7 +2062,6 @@
 
 .qa:rules:e2e:perf-on-cng:
   rules:
-    - when: never # change reverted due to rules not synced with e2e-test-pipeline-generate job
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
@@ -2076,7 +2075,6 @@
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
-    - <<: *if-default-branch-refs
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
       when: manual
