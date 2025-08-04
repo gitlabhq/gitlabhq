@@ -84,9 +84,7 @@ describe('BoardContent', () => {
         fullPath: 'project-path',
       },
       stubs: {
-        BoardContentSidebar: stubComponent(BoardContentSidebar, {
-          template: '<div></div>',
-        }),
+        BoardContentSidebar,
         BoardDrawerWrapper: stubComponent(BoardDrawerWrapper, {
           template: `
             <div>

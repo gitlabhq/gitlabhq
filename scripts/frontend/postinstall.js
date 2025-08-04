@@ -2,6 +2,7 @@
 const { spawnSync } = require('child_process');
 const { join, resolve } = require('path');
 const { existsSync } = require('fs');
+const { env } = require('process');
 const chalk = require('chalk');
 const semver = require('semver');
 
@@ -80,9 +81,13 @@ if (!checkDuoUiPeerDependency()) {
 
 console.log(`${chalk.green('success')} Dependency postinstall check passed.`);
 
-// Apply any patches to our packages
-// See https://gitlab.com/gitlab-org/gitlab/-/issues/336138
-process.exitCode =
-  spawnSync('node_modules/.bin/patch-package', ['--error-on-fail', '--error-on-warn'], {
-    stdio: ['ignore', 'inherit', 'inherit'],
-  }).status ?? 1;
+// skip patching when populating cache on CI to not change file metadata and allow install commands to re-apply patch
+// if patch files are ever updated
+if (env.GLCI_SKIP_NODE_MODULES_PATCHING !== 'true') {
+  // Apply any patches to our packages
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/336138
+  process.exitCode =
+    spawnSync('node_modules/.bin/patch-package', ['--error-on-fail', '--error-on-warn'], {
+      stdio: ['ignore', 'inherit', 'inherit'],
+    }).status ?? 1;
+}

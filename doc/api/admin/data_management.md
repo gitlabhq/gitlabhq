@@ -83,7 +83,7 @@ Example response:
     "id": 1,
     "model_class": "Project",
     "created_at": "2025-02-05T11:27:10.173Z",
-    "size": null,
+    "file_size": null,
     "checksum_information": {
       "checksum": "<object checksum>",
       "last_checksum": "2025-07-24T14:22:18.643Z",
@@ -97,7 +97,7 @@ Example response:
     "id": 2,
     "model_class": "Project",
     "created_at": "2025-02-05T11:27:14.402Z",
-    "size": null,
+    "file_size": null,
     "checksum_information": {
       "checksum": "<object checksum>",
       "last_checksum": "2025-07-24T14:22:18.214Z",
@@ -108,4 +108,49 @@ Example response:
     }
   }
 ]
+```
+
+## Get information about a specific model record
+
+```plaintext
+GET /admin/data_management/:model_name/:id
+```
+
+| Attribute    | Type    | Required | Description                                                                   |
+|--------------|---------|----------|-------------------------------------------------------------------------------|
+| `model_name` | string  | Yes      | The name of the requested model. Must belong to the `:model_name` list above. |
+| `id`         | integer | Yes      | The ID of the requested model.                                                |
+
+If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. It includes the following
+response attributes:
+
+| Attribute              | Type      | Description                                      |
+|------------------------|-----------|--------------------------------------------------|
+| `checksum_information` | JSON      | Geo-specific checksum information, if available. |
+| `created_at`           | timestamp | Creation timestamp, if available.                |
+| `id`                   | integer   | Unique ID of the record.                         |
+| `model_class`          | string    | Class name of the model.                         |
+| `file_size`            | integer   | Size of the object, if available.                |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/project/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "model_class": "Project",
+  "created_at": "2025-02-05T11:27:10.173Z",
+  "file_size": null,
+  "checksum_information": {
+    "checksum": "<object checksum>",
+    "last_checksum": "2025-07-24T14:22:18.643Z",
+    "checksum_state": 2,
+    "checksum_retry_count": 0,
+    "checksum_retry_at": null,
+    "checksum_failure": null
+  }
+}
 ```

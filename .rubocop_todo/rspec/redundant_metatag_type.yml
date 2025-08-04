@@ -222,7 +222,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/requests/projects/security/secret_detection_configuration_controller_spec.rb'
     - 'ee/spec/requests/registrations/groups_controller_spec.rb'
     - 'ee/spec/requests/repositories/git_http_controller_spec.rb'
-    - 'ee/spec/requests/search_controller_spec.rb'
     - 'ee/spec/requests/smartcard_controller_spec.rb'
     - 'ee/spec/requests/users/targeted_message_dismissals_controller_spec.rb'
     - 'ee/spec/routing/project_routing_spec.rb'

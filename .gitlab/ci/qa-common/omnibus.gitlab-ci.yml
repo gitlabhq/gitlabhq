@@ -24,7 +24,7 @@ include:
 trigger-omnibus-env:
   stage: .pre
   extends:
-    - .ruby-image
+    - .with-ruby-slim-image
     - .rules:trigger-omnibus
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.

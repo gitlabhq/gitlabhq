@@ -27696,6 +27696,9 @@ msgstr ""
 msgid "FloC|Participate in FLoC"
 msgstr ""
 
+msgid "Focus file browser"
+msgstr ""
+
 msgid "Focus filter bar"
 msgstr ""
 
@@ -39685,7 +39688,7 @@ msgstr ""
 msgid "MergeRequest|Reviewer started review"
 msgstr ""
 
-msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
+msgid "MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})"
 msgstr ""
 
 msgid "MergeRequest|There are no changes yet"
@@ -54599,6 +54602,9 @@ msgstr ""
 msgid "Runners|You've registered a new runner!"
 msgstr ""
 
+msgid "Runners|You've registered a new runner! Your runner is online and ready to run jobs."
+msgstr ""
+
 msgid "Runners|Your runner is online and ready to run jobs."
 msgstr ""
 
@@ -63150,9 +63156,6 @@ msgid "Thanks for your purchase!"
 msgstr ""
 
 msgid "That's OK, I don't want to renew"
-msgstr ""
-
-msgid "The %{old} shortcut is deprecated. Use %{new} shortcut instead."
 msgstr ""
 
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."

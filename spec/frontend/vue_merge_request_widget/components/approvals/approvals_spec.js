@@ -105,6 +105,7 @@ describe('MRWidget approvals', () => {
   };
   const findSummary = () => wrapper.findComponent(ApprovalsSummary);
   const findOptionalSummary = () => wrapper.findComponent(ApprovalsSummaryOptional);
+  const findStateContainer = () => wrapper.findComponent('[data-testid="state-container"]');
 
   beforeEach(() => {
     service = {
@@ -421,6 +422,30 @@ describe('MRWidget approvals', () => {
       mockedSubscription.next(subscriptionResponse);
 
       expect(mr.setApprovals).toHaveBeenCalledWith(subscriptionApproval);
+    });
+  });
+
+  describe('isCollapsible prop', () => {
+    describe('when isCollapsible is true', () => {
+      beforeEach(async () => {
+        createComponent({ props: { isCollapsible: true } });
+        await waitForPromises();
+      });
+
+      it('passes true to StateContainer', () => {
+        expect(findStateContainer().props('isCollapsible')).toBe(true);
+      });
+    });
+
+    describe('when isCollapsible is false', () => {
+      beforeEach(async () => {
+        createComponent({ props: { isCollapsible: false } });
+        await waitForPromises();
+      });
+
+      it('passes false to StateContainer', () => {
+        expect(findStateContainer().props('isCollapsible')).toBe(false);
+      });
     });
   });
 });

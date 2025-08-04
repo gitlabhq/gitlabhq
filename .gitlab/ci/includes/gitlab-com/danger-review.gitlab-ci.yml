@@ -16,6 +16,8 @@ danger-review:
   needs:
     - job: cache:ruby-gems
       optional: true
+    - job: cache:node-modules
+      optional: true
   variables:
     BUNDLE_WITH: "danger"
   before_script:

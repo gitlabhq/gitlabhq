@@ -23,9 +23,7 @@ spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/alert_management/components/alert_management_table_spec.js
-spec/frontend/boards/components/board_content_spec.js
 spec/frontend/boards/components/board_options_spec.js
-spec/frontend/boards/components/toggle_focus_spec.js
 spec/frontend/cascading_settings/components/cascading_lock_icon_spec.js
 spec/frontend/ci/artifacts/components/artifacts_bulk_delete_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js

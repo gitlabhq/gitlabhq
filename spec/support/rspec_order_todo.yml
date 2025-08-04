@@ -1767,7 +1767,6 @@
 - './ee/spec/requests/rack_attack_global_spec.rb'
 - './ee/spec/requests/rack_attack_spec.rb'
 - './ee/spec/requests/repositories/git_http_controller_spec.rb'
-- './ee/spec/requests/search_controller_spec.rb'
 - './ee/spec/requests/smartcard_controller_spec.rb'
 - './ee/spec/requests/trial_registrations_controller_spec.rb'
 - './ee/spec/requests/user_activity_spec.rb'

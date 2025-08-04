@@ -7,6 +7,10 @@ RSpec.shared_examples 'user applies wiki templates' do
 
     find_by_testid('wiki-more-dropdown').click
     click_link "New page"
+
+    # Capybara workaround: Fill in title to prevent blur validation from interfering with dropdown
+    # In real browser usage, clicking the template dropdown doesn't trigger this timing issue
+    fill_in :wiki_title, with: "Test Page"
   end
 
   it 'shows the templates in the dropdown' do

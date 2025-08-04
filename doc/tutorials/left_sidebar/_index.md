@@ -56,7 +56,7 @@ To start, we will find the project we want to work on.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
-   ![Search projects](img/search_projects_v16_4.png)
+   ![Search bar to find your projects and frequently visited projects.](img/search_projects_v16_4.png)
 
 The left sidebar now shows project-specific options.
 
@@ -69,11 +69,11 @@ You can pin menu items if you tend to use them frequently.
 1. Expand the sections until you are viewing the item you want to pin.
 1. Hover over and select the pin ({{< icon name="thumbtack" >}}).
 
-   ![pin](img/pin_v16_0.png)
+   ![A selected pin icon.](img/pin_v16_0.png)
 
 The item is displayed in the **Pinned** section:
 
-![pinned item](img/pinned_v16_0.png)
+![An item in the Pinned section.](img/pinned_v16_0.png)
 
 {{< alert type="note" >}}
 
@@ -86,7 +86,7 @@ The items you pin while you're viewing a project are different than the items yo
 On the left sidebar, you can also choose a more focused view into the areas you have access to.
 Select **Search or go to** and then select **Your work**:
 
-![Your work](img/your_work_v16_4.png)
+![The search bar and the Your work item.](img/your_work_v16_4.png)
 
 Then, on the left sidebar, **Your work** is displayed.
 
@@ -94,7 +94,7 @@ Then, on the left sidebar, **Your work** is displayed.
 
 The **Admin** area is also available on the left sidebar at the bottom:
 
-![**Admin** area](img/admin_area_v16_7.png)
+![The Admin area button.](img/admin_area_v16_7.png)
 
 ## Access What's new
 

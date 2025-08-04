@@ -178,7 +178,6 @@ module Keeps
       change.changelog_type = 'removed'
       change.title = "Delete the `#{feature_flag.name}` feature flag"
       change.identifiers = identifiers
-      change.description = build_description(feature_flag, latest_feature_flag_status)
 
       FileUtils.rm(feature_flag.path)
       change.changed_files = [feature_flag.path]
@@ -199,6 +198,7 @@ module Keeps
         feature_flag.group
       ]
 
+      change.description = build_description(feature_flag, latest_feature_flag_status)
       change.reviewers = assignees(feature_flag.rollout_issue_url)
 
       if change.reviewers.empty?

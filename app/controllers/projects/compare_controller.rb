@@ -222,7 +222,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :wip) &&
+    ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :beta) &&
       !rapid_diffs_force_disabled? &&
       params.permit(:format)[:format].blank?
   end
