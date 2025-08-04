@@ -77,7 +77,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/container_repository.rb'
     - 'app/models/customer_relations/contact_state_counts.rb'
     - 'app/models/deploy_token.rb'
-    - 'app/models/deployment_metrics.rb'
     - 'app/models/design_management/design.rb'
     - 'app/models/design_management/design_at_version.rb'
     - 'app/models/design_management/version.rb'

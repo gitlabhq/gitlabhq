@@ -1133,6 +1133,11 @@ class Group < Namespace
   end
 
   # overriden in EE
+  def has_active_hooks?(hooks_scope = :push_hooks)
+    false
+  end
+
+  # overriden in EE
   def enterprise_user_settings_available?(user = nil)
     false
   end

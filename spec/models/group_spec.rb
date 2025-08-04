@@ -4373,7 +4373,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     subject { group.supports_group_work_items? }
 
-    it { is_expected.to be false }
+    it 'returns false' do
+      expect(subject).to be false
+    end
+  end
+
+  describe '#has_active_hooks?' do
+    let(:group) { build(:group) }
+
+    subject { group.has_active_hooks? }
+
+    # Would work in plain CE-version since it's implementation always returns false.
+    # Would work in EE-version since licensed features are disabled for specs in specs/ by deafult.
+    it 'returns false' do
+      expect(subject).to be false
+    end
   end
 
   describe '#glql_load_on_click_feature_flag_enabled?' do

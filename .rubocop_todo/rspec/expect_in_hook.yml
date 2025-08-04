@@ -240,7 +240,6 @@ RSpec/ExpectInHook:
     - 'spec/models/concerns/featurable_spec.rb'
     - 'spec/models/concerns/issuable_spec.rb'
     - 'spec/models/container_repository_spec.rb'
-    - 'spec/models/deployment_metrics_spec.rb'
     - 'spec/models/design_management/version_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/group_spec.rb'

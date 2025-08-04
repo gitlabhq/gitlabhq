@@ -301,29 +301,6 @@ To configure an IP-based firewall, you must allow both [AWS IP address ranges](h
 
 See how to look up [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
-## Logs on GitLab.com
-
-[Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
-parses our logs, then sends them to:
-
-- [Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver),
-  which stores logs long-term in Google Cold Storage (GCS).
-- [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub),
-  which forwards logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
-
-For more information, see our runbooks:
-
-- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging)
-- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
-- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
-
-### Job logs
-
-By default, GitLab does not expire job logs. Job logs are retained indefinitely,
-and can't be configured on GitLab.com to expire. You can erase job logs
-[manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
-[deleting a pipeline](../../ci/pipelines/_index.md#delete-a-pipeline)
-
 ## Maximum number of reviewers and assignees
 
 {{< history >}}

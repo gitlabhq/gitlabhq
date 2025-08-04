@@ -139,5 +139,61 @@ RSpec.describe 'Destroying a container repository', feature_category: :container
         it_behaves_like 'destroying the container repository'
       end
     end
+
+    context 'with delete protection rule', :enable_admin_mode do
+      let_it_be(:maintainer) { create(:user, maintainer_of: [project]) }
+      let_it_be(:owner) { create(:user, owner_of: [project]) }
+      let_it_be(:instance_admin) { create(:admin) }
+
+      let_it_be_with_reload(:container_registry_protection_rule) do
+        create(:container_registry_protection_rule, project: project)
+      end
+
+      before do
+        container_registry_protection_rule.update!(
+          repository_path_pattern: container_repository.path,
+          minimum_access_level_for_delete: minimum_access_level_for_delete
+        )
+      end
+
+      shared_examples 'protected deletion of container repository' do
+        it_behaves_like 'returning response status', :success
+
+        it 'returns error message' do
+          subject
+
+          expect(mutation_response).to include 'errors' => ['Deleting the protected repository path is forbidden']
+        end
+
+        context 'when feature flag :container_registry_protected_containers_delete is disabled' do
+          before do
+            stub_feature_flags(container_registry_protected_containers_delete: false)
+          end
+
+          it_behaves_like 'destroying the container repository'
+        end
+      end
+
+      where(:minimum_access_level_for_delete, :current_user, :expected_shared_example) do
+        nil         | ref(:maintainer)     | 'destroying the container repository'
+        nil         | ref(:owner)          | 'destroying the container repository'
+
+        :maintainer | ref(:maintainer)     | 'destroying the container repository'
+        :maintainer | ref(:owner)          | 'destroying the container repository'
+        :maintainer | ref(:instance_admin) | 'destroying the container repository'
+
+        :owner      | ref(:maintainer)     | 'protected deletion of container repository'
+        :owner      | ref(:owner)          | 'destroying the container repository'
+        :owner      | ref(:instance_admin) | 'destroying the container repository'
+
+        :admin      | ref(:maintainer)     | 'protected deletion of container repository'
+        :admin      | ref(:owner)          | 'protected deletion of container repository'
+        :admin      | ref(:instance_admin) | 'destroying the container repository'
+      end
+
+      with_them do
+        it_behaves_like params[:expected_shared_example]
+      end
+    end
   end
 end

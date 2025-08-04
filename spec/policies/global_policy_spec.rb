@@ -386,6 +386,96 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
+  describe 'receive confirmation instructions' do
+    describe 'regular user' do
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+
+      context 'with unconfirmed email address' do
+        before do
+          current_user.update!(unconfirmed_email: 'custom_email@example.com')
+        end
+
+        it { is_expected.to be_allowed(:receive_confirmation_instructions) }
+      end
+    end
+
+    describe 'admin' do
+      let(:current_user) { admin_user }
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+
+      context 'with unconfirmed email address' do
+        before do
+          current_user.update!(unconfirmed_email: 'custom_email@example.com')
+        end
+
+        it { is_expected.to be_allowed(:receive_confirmation_instructions) }
+      end
+    end
+
+    describe 'anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+
+    describe 'blocked user' do
+      before do
+        current_user.block
+      end
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+
+    describe 'deactivated user' do
+      before do
+        current_user.deactivate
+      end
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+
+    context 'project bot' do
+      let(:current_user) { project_bot }
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+
+    context 'service account' do
+      let(:current_user) { service_account }
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+
+      context 'with unconfirmed email address' do
+        let(:current_user) { build(:user, :service_account, unconfirmed_email: 'custom_email@example.com') }
+
+        it { is_expected.to be_allowed(:receive_confirmation_instructions) }
+      end
+
+      context 'with unconfirmed email address ending with no-reply domain' do
+        let(:current_user) do
+          build(:user, :service_account, unconfirmed_email: "custom_email@#{User::NOREPLY_EMAIL_DOMAIN}")
+        end
+
+        it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+      end
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
+
+      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
+    end
+  end
+
   describe 'git access' do
     describe 'regular user' do
       it { is_expected.to be_allowed(:access_git) }

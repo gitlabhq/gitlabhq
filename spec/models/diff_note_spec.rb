@@ -189,8 +189,6 @@ RSpec.describe DiffNote do
         )
       end
 
-      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
-
       let(:diff_file_from_repository) do
         position.diff_file(project.repository)
       end
@@ -209,6 +207,8 @@ RSpec.describe DiffNote do
       let(:diff_line) { diff_file.diff_lines.first }
 
       let(:line_code) { '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14' }
+
+      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
 
       before do
         allow(subject.position).to receive(:line_code).and_return('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14')

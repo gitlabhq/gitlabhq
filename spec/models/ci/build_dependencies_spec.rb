@@ -180,9 +180,9 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
         options: { cross_dependencies: dependencies })
     end
 
-    subject { described_class.new(job) }
-
     let(:cross_pipeline_deps) { subject.all }
+
+    subject { described_class.new(job) }
 
     context 'when dependency specifications are valid' do
       context 'when pipeline exists in the hierarchy' do
@@ -222,6 +222,17 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
           let(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
 
+          let(:dependencies) do
+            [
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-0', artifacts: true },
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-1', artifacts: true },
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-2', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-3', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-4', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-5', artifacts: true }
+            ]
+          end
+
           before do
             cross_pipeline_limit.times do |index|
               create(:ci_build, :success,
@@ -234,17 +245,6 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
                 stage_idx: 1, ci_stage: build_stage, user: user
               )
             end
-          end
-
-          let(:dependencies) do
-            [
-              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-0', artifacts: true },
-              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-1', artifacts: true },
-              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-2', artifacts: true },
-              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-3', artifacts: true },
-              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-4', artifacts: true },
-              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-5', artifacts: true }
-            ]
           end
 
           it 'returns a limited number of dependencies with the right match' do

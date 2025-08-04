@@ -22,6 +22,7 @@ module Gitlab
           object_kind: 'milestone',
           event_type: 'milestone',
           project: milestone.project&.hook_attrs,
+          group: milestone.group&.hook_attrs,
           object_attributes: milestone.hook_attrs,
           action: action
         }

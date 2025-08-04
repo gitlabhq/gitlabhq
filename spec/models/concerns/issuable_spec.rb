@@ -936,15 +936,15 @@ RSpec.describe Issuable, feature_category: :team_planning do
     let(:contributor) { create(:user) }
     let(:first_time_contributor) { create(:user) }
 
+    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+
     before do
       project.add_guest(guest)
       project.add_guest(contributor)
       project.add_guest(first_time_contributor)
     end
-
-    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
-    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
       it "is true when you don't have any merged MR" do

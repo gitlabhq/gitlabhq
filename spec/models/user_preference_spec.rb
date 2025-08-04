@@ -311,7 +311,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
-  describe '#text_editor' do
+  describe '#text_editor', :allow_rich_text_editor_for_new_users do
     let(:pref) { described_class.new(text_editor_type: text_editor_type) }
     let(:text_editor_type) { :not_set }
 
@@ -336,6 +336,15 @@ RSpec.describe UserPreference, feature_category: :user_profile do
         it 'returns true for default_text_editor_enabled' do
           expect(pref.default_text_editor_enabled).to be true
         end
+      end
+    end
+
+    context 'when creating a new user' do
+      it 'sets rich text editor as default' do
+        pref = described_class.new
+        expect(pref.text_editor_type).to eq('rich_text_editor')
+        expect(pref.text_editor).to eq('rich_text_editor')
+        expect(pref.default_text_editor_enabled).to be true
       end
     end
   end

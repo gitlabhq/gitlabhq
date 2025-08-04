@@ -43,6 +43,10 @@ class GlobalPolicy < BasePolicy
       @user.email.end_with?(User::NOREPLY_EMAIL_DOMAIN)
   end
 
+  condition(:unconfirmed_email) do
+    @user.unconfirmed_email.present? && !@user.unconfirmed_email.end_with?(User::NOREPLY_EMAIL_DOMAIN)
+  end
+
   rule { bot & ~bot_with_quick_actions_permitted }.policy do
     prevent :use_quick_actions
   end
@@ -92,6 +96,10 @@ class GlobalPolicy < BasePolicy
 
   rule { project_bot | service_account_generated_email }.policy do
     prevent :receive_notifications
+  end
+
+  rule { unconfirmed_email & ~(blocked | internal | anonymous | deactivated | project_bot) }.policy do
+    enable :receive_confirmation_instructions
   end
 
   rule { deactivated }.policy do

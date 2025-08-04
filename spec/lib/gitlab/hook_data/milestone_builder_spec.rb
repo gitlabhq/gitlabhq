@@ -11,7 +11,7 @@ RSpec.describe Gitlab::HookData::MilestoneBuilder, feature_category: :webhooks d
     subject(:data) { builder.build }
 
     it 'includes safe attributes' do
-      expect(data.keys).to match_array(described_class::SAFE_HOOK_ATTRIBUTES.map(&:to_s))
+      expect(data.keys).to match_array(described_class.safe_hook_attributes.map(&:to_s))
     end
 
     it 'returns indifferent access hash' do

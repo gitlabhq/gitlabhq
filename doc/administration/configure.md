@@ -44,6 +44,7 @@ Customize and configure GitLab Self-Managed.
 - [Terraform limits](settings/terraform_limits.md)
 - [Packages](packages/_index.md)
 - [Web terminals](integration/terminal.md)
+- [What's new](whats-new.md)
 - [Wikis](wikis/_index.md)
 - [Invalidate Markdown cache](invalidate_markdown_cache.md)
 - [Issue closing pattern](issue_closing_pattern.md)

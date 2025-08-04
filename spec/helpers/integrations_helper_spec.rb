@@ -405,6 +405,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       :deployment_events | 'Deployment events'
       :feature_flag_events | 'Feature flag events'
       :releases_events | 'Releases events'
+      :milestone_events | 'Milestone events'
       :resource_access_token_events | 'Project or group access token events'
       :vulnerability_events | 'Vulnerability events'
     end

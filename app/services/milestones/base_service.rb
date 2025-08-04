@@ -16,8 +16,6 @@ module Milestones
     private
 
     def execute_hooks(milestone, action)
-      # At the moment, only project milestones support webhooks, not group milestones
-      return unless milestone.project_milestone?
       return unless milestone.parent.has_active_hooks?(:milestone_hooks)
 
       payload = Gitlab::DataBuilder::Milestone.build(milestone, action)

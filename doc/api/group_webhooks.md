@@ -70,6 +70,7 @@ Example response:
     "deployment_events": false,
     "feature_flag_events": false,
     "releases_events": false,
+    "milestone_events": false,
     "subgroup_events": false,
     "emoji_events": false,
     "resource_access_token_events": false,
@@ -130,6 +131,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": false,
   "releases_events": true,
+  "milestone_events": false,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -500,6 +502,7 @@ Supported attributes:
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
 | `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
 | `project_events`             | boolean        | no       | Trigger hook on project events. |
@@ -543,6 +546,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": true,
   "releases_events": true,
+  "milestone_events": true,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -589,6 +593,7 @@ Supported attributes:
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
 | `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
 | `project_events`             | boolean        | no       | Trigger hook on project events. |
@@ -633,6 +638,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": true,
   "releases_events": true,
+  "milestone_events": true,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -699,7 +705,7 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 |-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                                                                                           |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
 

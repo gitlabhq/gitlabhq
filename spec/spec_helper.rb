@@ -556,6 +556,16 @@ RSpec.configure do |config|
     # data loader class in the context.
     Gitlab::CloudConnector::Configuration.data_loader_class = Gitlab::CloudConnector::DataModel::YamlDataLoader
   end
+
+  # Force markdown editor for all feature tests to avoid issues with rich text editor default
+  # Tests can override this by adding :allow_rich_text_editor_for_new_users tag
+  config.before(:each, type: :feature) do
+    # Skip the override if the test specifically wants rich text editor
+    next if RSpec.current_example.metadata[:allow_rich_text_editor_for_new_users]
+
+    # Set default editor preference for new users in tests to not set (value derived from local storage)
+    allow_any_instance_of(UserPreference).to receive(:text_editor_type).and_return(0) # not_set
+  end
 end
 
 # Disabled because it's causing N+1 queries.

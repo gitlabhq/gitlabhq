@@ -2,6 +2,7 @@
 - :add_ci_connection
 - :aggregate_failures
 - :allow_forgery_protection
+- :allow_rich_text_editor_for_new_users
 - :allow_unrouted_sidekiq_calls
 - :allowed_to_be_slow
 - :api

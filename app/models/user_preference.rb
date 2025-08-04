@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class UserPreference < ApplicationRecord
+  include SafelyChangeColumnDefault
   include IgnorableColumns
 
   ignore_columns(:home_organization_id, remove_with: '18.5', remove_after: '2025-09-20')
+
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
@@ -11,6 +13,8 @@ class UserPreference < ApplicationRecord
   TIME_DISPLAY_FORMATS = { system: 0, non_iso_format: 1, iso_format: 2 }.freeze
 
   belongs_to :user
+
+  columns_changing_default :text_editor_type
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
@@ -48,6 +52,7 @@ class UserPreference < ApplicationRecord
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
   attribute :dpop_enabled, default: false
+  attribute :text_editor_type, default: 2
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
 

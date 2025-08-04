@@ -95,3 +95,14 @@ Then, on the left sidebar, **Your work** is displayed.
 The **Admin** area is also available on the left sidebar at the bottom:
 
 ![**Admin** area](img/admin_area_v16_7.png)
+
+## Access What's new
+
+The **What's new** feature shows users some of the highlights of new features from the last 10 GitLab versions.
+
+To access the unread **What's new** items, on the left sidebar, at the bottom, select **What's new**.
+
+To access previously read **What's new** items:
+
+1. On the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
+1. Select **What's new** from the menu.

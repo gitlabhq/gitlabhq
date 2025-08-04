@@ -3300,7 +3300,6 @@ Layout/LineLength:
     - 'spec/models/context_commits_diff_spec.rb'
     - 'spec/models/customer_relations/issue_contact_spec.rb'
     - 'spec/models/deploy_key_spec.rb'
-    - 'spec/models/deployment_metrics_spec.rb'
     - 'spec/models/diff_discussion_spec.rb'
     - 'spec/models/discussion_spec.rb'
     - 'spec/models/environment_spec.rb'

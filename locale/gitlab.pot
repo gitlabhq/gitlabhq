@@ -70600,6 +70600,9 @@ msgstr ""
 msgid "Webhooks|Merge request events"
 msgstr ""
 
+msgid "Webhooks|Milestone events"
+msgstr ""
+
 msgid "Webhooks|Must match part of URL"
 msgstr ""
 

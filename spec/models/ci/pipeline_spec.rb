@@ -3208,12 +3208,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       subject(:latest_successful_for_refs) { described_class.latest_successful_for_refs(refs) }
 
       context 'when refs are specified' do
-        let(:refs) { %w[first_ref second_ref third_ref] }
-
         before do
           create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
           create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
+
+        let(:refs) { %w[first_ref second_ref third_ref] }
 
         let!(:latest_successful_pipeline_for_first_ref) do
           create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')

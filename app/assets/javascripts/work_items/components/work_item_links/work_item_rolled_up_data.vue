@@ -69,13 +69,10 @@ export default {
       return findHealthStatusWidget(this.workItem);
     },
     shouldRolledUpWeightBeVisible() {
-      return this.showRolledUpWeight && this.rolledUpWeight !== null;
+      return this.rolledUpWeight !== null;
     },
     showRolledUpProgress() {
       return this.rolledUpWeight && this.rolledUpCompletedWeight !== null;
-    },
-    showRolledUpWeight() {
-      return this.workItemWeight?.widgetDefinition?.rollUp;
     },
     rolledUpWeight() {
       return this.workItemWeight?.rolledUpWeight;

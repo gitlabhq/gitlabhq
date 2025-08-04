@@ -946,7 +946,6 @@ Gitlab/BoundedContexts:
     - 'app/models/deployment.rb'
     - 'app/models/deployment_cluster.rb'
     - 'app/models/deployment_merge_request.rb'
-    - 'app/models/deployment_metrics.rb'
     - 'app/models/description_version.rb'
     - 'app/models/design_user_mention.rb'
     - 'app/models/dev_ops_report/card.rb'

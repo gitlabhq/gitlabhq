@@ -111,16 +111,17 @@ To change the layout width of your UI:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+- Default for new users [set to rich text editor](https://gitlab.com/gitlab-org/gitlab/-/issues/536611) in 18.2.
 
 {{< /history >}}
 
-You can set a default editor for editing content in GitLab.
-If you do not choose a default text editor, your last used choice is preserved.
+By default, all new users see the **Rich text editor** when editing content.
+You can change the default editor for editing content in GitLab.
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
-1. Under **Default text editor**, select the **Enable default text editor** checkbox.
+1. Under **Default text editor**, enssure the **Enable default text editor** checkbox is selected.
 1. Choose either **Rich text editor** or **Plain text editor** as your default.
 1. Select **Save changes**.
 

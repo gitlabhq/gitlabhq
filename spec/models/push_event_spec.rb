@@ -17,14 +17,13 @@ RSpec.describe PushEvent do
     let(:event1) { create(:push_event) }
     let(:event2) { create(:push_event) }
     let(:event3) { create(:push_event) }
+    let(:relation) { described_class.created_or_pushed }
 
     before do
       create(:push_event_payload, event: event1, action: :pushed)
       create(:push_event_payload, event: event2, action: :created)
       create(:push_event_payload, event: event3, action: :removed)
     end
-
-    let(:relation) { described_class.created_or_pushed }
 
     it 'includes events for pushing to existing refs' do
       expect(relation).to include(event1)
@@ -42,13 +41,12 @@ RSpec.describe PushEvent do
   describe '.branch_events' do
     let(:event1) { create(:push_event) }
     let(:event2) { create(:push_event) }
+    let(:relation) { described_class.branch_events }
 
     before do
       create(:push_event_payload, event: event1, ref_type: :branch)
       create(:push_event_payload, event: event2, ref_type: :tag)
     end
-
-    let(:relation) { described_class.branch_events }
 
     it 'includes events for branches' do
       expect(relation).to include(event1)
@@ -66,6 +64,7 @@ RSpec.describe PushEvent do
     let(:event3) { create(:push_event, project: project) }
     let(:event4) { create(:push_event, project: project) }
     let(:event5) { create(:push_event, project: project) }
+    let(:relation) { described_class.without_existing_merge_requests }
 
     before do
       create(:push_event_payload, event: event1, ref: 'foo', action: :created)
@@ -93,8 +92,6 @@ RSpec.describe PushEvent do
         source_branch: 'qux'
       )
     end
-
-    let(:relation) { described_class.without_existing_merge_requests }
 
     it 'includes events that do not have a corresponding merge request' do
       expect(relation).to include(event1)

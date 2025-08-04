@@ -3097,7 +3097,6 @@ RSpec/FeatureCategory:
     - 'spec/models/deploy_keys_project_spec.rb'
     - 'spec/models/deployment_cluster_spec.rb'
     - 'spec/models/deployment_merge_request_spec.rb'
-    - 'spec/models/deployment_metrics_spec.rb'
     - 'spec/models/description_version_spec.rb'
     - 'spec/models/design_management/action_spec.rb'
     - 'spec/models/design_management/design_action_spec.rb'

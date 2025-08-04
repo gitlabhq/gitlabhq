@@ -277,11 +277,11 @@ RSpec.describe DesignManagement::DesignAtVersion do
     let(:id_e)   { id_of(version_c.designs.first,  version_c) }
     let(:bad_id) { id_of(version_c.designs.first,  version_a) }
 
+    let(:db_calls) { 2 }
+
     def find(the_id)
       described_class.lazy_find(the_id)
     end
-
-    let(:db_calls) { 2 }
 
     it 'issues fewer queries than the naive approach would' do
       expect do
