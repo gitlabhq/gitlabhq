@@ -6,7 +6,7 @@ class DisableAiEventsBackfillToChForCom < Gitlab::Database::Migration[2.2]
   milestone '17.11'
 
   def up
-    ::Feature.disable(:ai_events_backfill_to_ch) if Gitlab.org_or_com?
+    # no-op
   end
 
   def down

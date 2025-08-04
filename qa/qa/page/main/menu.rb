@@ -156,8 +156,11 @@ module QA
           has_no_element?('user-avatar-content', wait: wait)
         end
 
-        def click_stop_impersonation_link
+        def stop_impersonation
           click_element('stop-impersonation-btn')
+          wait_until(max_duration: 10, reload: false) do
+            has_no_element?('stop-impersonation-btn')
+          end
         end
 
         # To verify whether the user has been directed to a canary web node

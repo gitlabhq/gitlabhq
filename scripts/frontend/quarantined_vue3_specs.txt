@@ -19,7 +19,6 @@ ee/spec/frontend/members/components/action_dropdowns/user_action_dropdown_spec.j
 ee/spec/frontend/members/components/table/members_table_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
-ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
