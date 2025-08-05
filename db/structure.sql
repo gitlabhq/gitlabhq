@@ -30219,6 +30219,9 @@ ALTER TABLE sprints
 ALTER TABLE redirect_routes
     ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE approval_merge_request_rules_users
+    ADD CONSTRAINT check_eca70345f1 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE instance_type_ci_runners
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
 
