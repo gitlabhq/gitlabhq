@@ -123,22 +123,6 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
   end
 
-  describe '#valid?' do
-    context 'when detect_abuse is disabled' do
-      let(:detect_abuse) { false }
-
-      it 'does NOT validate AbuseDetector' do
-        expect(Gitlab::Search::AbuseDetection).not_to receive(:new)
-        search_params.valid?
-      end
-    end
-
-    it 'validates AbuseDetector on validation' do
-      expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
-      search_params.valid?
-    end
-  end
-
   describe '#abusive?' do
     let(:abuse_detection) { instance_double(Gitlab::Search::AbuseDetection) }
 

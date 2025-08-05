@@ -208,6 +208,15 @@ potential replication issues. The Linux package automatically configures a track
 when `roles ['geo_secondary_role']` is set.
 If you want to run this database external to your Linux package installation, use the following instructions.
 
+#### Understanding internal and external tracking databases
+
+You can configure the tracking database to be either:
+
+- Internal (`geo_postgresql['enable'] = true`): The tracking database runs as a managed PostgreSQL instance on the same server as the Rails application. This is the default.
+- External (`geo_postgresql['enable'] = false`): The tracking database runs on a separate server or as a cloud-managed service.
+
+In multi-node secondary site setups, if you enable the tracking database on one Rails node, it becomes "external" to all other Rails nodes in the site. All other Rails nodes must set `geo_postgresql['enable'] = false` and specify connection details to connect to that tracking database.
+
 #### Cloud-managed database services
 
 If you are using a cloud-managed service for the tracking database, you may need
@@ -251,6 +260,7 @@ Create and configure the tracking database in your PostgreSQL instance:
    ##
    host    all         all               <trusted tracking IP>/32      md5
    host    all         all               <trusted secondary IP>/32     md5
+   # In multi-node setups, add entries for all Rails nodes that will connect
    ```
 
 #### Configure GitLab
@@ -274,6 +284,8 @@ Configure GitLab to use this database. These steps are for Linux package and Doc
    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
    geo_postgresql['enable'] = false     # don't use internal managed instance
    ```
+   
+   In multi-node setups, apply this configuration to each Rails node that needs to connect to the external tracking database.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 

@@ -543,6 +543,84 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
+    context 'when <testsuite> has the `time` attribute' do
+      let(:junit) { '<testsuites><testsuite time="6.15"><testcase name="test"/></testsuite></testsuites>' }
+
+      it 'sets `total_time`' do
+        expect { subject }.not_to raise_error
+
+        expect(test_suite.total_time).to eq(6.15)
+      end
+    end
+
+    context 'when <testsuites> has the `time` attribute' do
+      let(:junit) { '<testsuites time="1.5"><testsuite time="6.5"><testcase name="test"/></testsuite></testsuites>' }
+
+      it 'falls back to <testsuites> `time`' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.total_time).to eq(1.5)
+      end
+    end
+
+    context 'when there is a single <testsuite> at root level' do
+      let(:junit) { '<testsuite time="6.66"><testcase time="2.0"/></testsuite>' }
+
+      it 'sets total_time from <testsuite>' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.total_time).to eq(6.66)
+      end
+    end
+
+    context 'when <testsuite> has no `time` attribute' do
+      let(:junit) { '<testsuites><testsuite><testcase name="test"/></testsuite></testsuites>' }
+
+      context 'when <testcase> elements have a `time` attribute' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase name="test1" time="1.02"/>
+                <testcase name="test2" time="2.08"/>
+              </testsuite>
+            </testsuites>
+          EOF
+        end
+
+        it 'calculates `total_time` from individual test cases' do
+          expect { subject }.not_to raise_error
+
+          expect(test_suite.total_time).to eq(3.1)
+        end
+      end
+
+      it 'does not sets `total_time`' do
+        expect { subject }.not_to raise_error
+
+        expect(test_suite.total_time).to eq(0.0)
+      end
+    end
+
+    context 'when <testsuites> have multiple <testsuite>s' do
+      let(:junit) do
+        <<-EOF.strip_heredoc
+          <testsuites>
+            <testsuite time="7.02">
+              <testcase name="test1" />
+            </testsuite>
+            <testsuite time="6.66">
+              <testcase name="test2"/>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      it 'calculates `total_time` by summin testsuite `time` attributes' do
+        expect { subject }.not_to raise_error
+
+        expect(test_suite.total_time).to eq(13.68)
+      end
+    end
+
     private
 
     def flattened_test_cases(test_suite)

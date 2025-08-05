@@ -57,11 +57,6 @@ export default {
       type: Array,
       required: true,
     },
-    refParam: {
-      type: String,
-      required: false,
-      default: '',
-    },
     editing: {
       type: Boolean,
       required: true,

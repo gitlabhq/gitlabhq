@@ -46731,9 +46731,6 @@ msgstr ""
 msgid "Pipelines|Removing the merge request from the merge train will restart the pipelines for all merge requests queued after it. For more information, see the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
-msgid "Pipelines|Retry %{jobName} Job"
-msgstr ""
-
 msgid "Pipelines|Revoke trigger"
 msgstr ""
 

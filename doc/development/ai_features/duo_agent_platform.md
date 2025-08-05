@@ -11,7 +11,50 @@ This guide explains how to work with the Duo Agent Platform.
 
 The Duo Agent Platform is a Single Page Application (SPA) built with Vue.js that provides a unified interface for AI-powered automation features. The platform uses a scoped routing system that allows multiple navigation items to coexist under the `/automate` path.
 
+The platform is architected with a flexible namespace system that allows the same frontend infrastructure to be reused across different contexts (projects, groups, etc.) while providing context-specific functionality through a component mapping system.
+
 This page is behind the feature flag `duo_workflow_in_ci`
+
+## Namespace Architecture
+
+The namespace system is built around a central mapping mechanism that:
+
+1. **Checks the namespace** - Determines which context the platform is running in
+1. **Maps to Vue components** - Routes to the appropriate Vue component for that namespace
+1. **Passes GraphQL queries as props** - Provides namespace-specific data through dependency injection
+
+### Entry Point
+
+The main entry point is located at:
+
+```markdown
+ee/app/assets/javascripts/pages/projects/duo_agents_platform/index.js
+```
+
+This file imports and initializes the platform:
+
+```javascript
+import { initDuoAgentsPlatformProjectPage } from 'ee/ai/duo_agents_platform/namespace/project';
+
+initDuoAgentsPlatformProjectPage();
+```
+
+### App Structure
+
+```mermaid
+graph TD
+    A[Entry Point] --> B[initDuoAgentsPlatformPage]
+    B --> C[Extract Namespace Data]
+    C --> D[Create Router with Namespace]
+    D --> E[Component Mapping]
+    E --> F[Namespace-Specific Component]
+    F --> G[GraphQL Query with Props]
+    G --> H[Rendered UI]
+
+    I[Dataset Properties] --> C
+    J[Namespace Constant] --> E
+    K[Component Mappings] --> E
+```
 
 ## Adding a New Navigation Item
 
@@ -102,7 +145,7 @@ import YourFeatureIndex from '../pages/your_feature/your_feature_index.vue';
 import YourFeatureNew from '../pages/your_feature/your_feature_new.vue';
 import YourFeatureShow from '../pages/your_feature/your_feature_show.vue';
 
-export const createRouter = (base) => {
+export const createRouter = (base, namespace) => {
   return new VueRouter({
     base,
     mode: 'history',
@@ -115,6 +158,11 @@ export const createRouter = (base) => {
           text: s__('DuoAgentsPlatform|Agent sessions'),
         },
         children: [
+          {
+            name: AGENTS_PLATFORM_INDEX_ROUTE,
+            path: '',
+            component: getNamespaceIndexComponent(namespace),
+          },
           // ... existing children
         ],
       },
@@ -224,6 +272,114 @@ export default {
 </template>
 ```
 
+## Adding New Namespaces
+
+To add a new namespace (e.g., for groups):
+
+### 1. Define the Namespace Constant
+
+```javascript
+// ee/app/assets/javascripts/ai/duo_agents_platform/constants.js
+export const AGENT_PLATFORM_GROUP_PAGE = 'group';
+```
+
+### 2. Create Namespace Directory Structure
+
+```markdown
+ee/app/assets/javascripts/ai/duo_agents_platform/namespace/group/
+├── index.js
+├── group_agents_platform_index.vue
+└── graphql/
+    └── queries/
+        └── get_group_agent_flows.query.graphql
+```
+
+### 3. Implement Namespace Initialization
+
+```javascript
+// ee/app/assets/javascripts/ai/duo_agents_platform/namespace/group/index.js
+import { initDuoAgentsPlatformPage } from '../../index';
+import { AGENT_PLATFORM_GROUP_PAGE } from '../../constants';
+
+export const initDuoAgentsPlatformGroupPage = () => {
+  initDuoAgentsPlatformPage({
+    namespace: AGENT_PLATFORM_GROUP_PAGE,
+    namespaceDatasetProperties: ['groupPath', 'groupId'],
+  });
+};
+```
+
+### 4. Create Namespace-Specific Component
+
+```vue
+<!-- ee/app/assets/javascripts/ai/duo_agents_platform/namespace/group/group_agents_platform_index.vue -->
+<script>
+import getGroupAgentFlows from './graphql/queries/get_group_agent_flows.query.graphql';
+import DuoAgentsPlatformIndex from '../../pages/index/duo_agents_platform_index.vue';
+
+export default {
+  components: { DuoAgentsPlatformIndex },
+  inject: ['groupPath'], // Group-specific injection
+  apollo: {
+    workflows: {
+      query: getGroupAgentFlows, // Group-specific query
+      variables() {
+        return {
+          groupPath: this.groupPath,
+          // ...
+        };
+      },
+      // ...
+    },
+  },
+};
+</script>
+
+<template>
+  <duo-agents-platform-index
+    :is-loading-workflows="isLoadingWorkflows"
+    :workflows="workflows"
+    :workflows-page-info="workflowsPageInfo"
+    :workflow-query="$apollo.queries.workflows"
+  />
+</template>
+```
+
+### 5. Update Component Mappings
+
+```javascript
+// ee/app/assets/javascripts/ai/duo_agents_platform/router/utils.js
+import { AGENT_PLATFORM_PROJECT_PAGE, AGENT_PLATFORM_GROUP_PAGE } from '../constants';
+import ProjectAgentsPlatformIndex from '../namespace/project/project_agents_platform_index.vue';
+import GroupAgentsPlatformIndex from '../namespace/group/group_agents_platform_index.vue';
+
+export const getNamespaceIndexComponent = (namespace) => {
+  const componentMappings = {
+    [AGENT_PLATFORM_PROJECT_PAGE]: ProjectAgentsPlatformIndex,
+    [AGENT_PLATFORM_GROUP_PAGE]: GroupAgentsPlatformIndex, // New mapping
+  };
+
+  return componentMappings[namespace];
+};
+```
+
+### 6. Create Entry Point
+
+```javascript
+// ee/app/assets/javascripts/pages/groups/duo_agents_platform/index.js
+import { initDuoAgentsPlatformGroupPage } from 'ee/ai/duo_agents_platform/namespace/group';
+
+initDuoAgentsPlatformGroupPage();
+```
+
+## Benefits of This Architecture
+
+1. **Code Reuse**: The same frontend infrastructure works across different contexts
+1. **Separation of Concerns**: Each namespace handles its own data fetching and business logic
+1. **Scalability**: Easy to add new namespaces without modifying existing code
+1. **Type Safety**: Clear contracts through namespace constants and required properties
+1. **Maintainability**: Isolated namespace implementations reduce coupling
+
 ### Key Implementation Details
 
 #### Router-Driven Breadcrumbs
@@ -291,6 +447,16 @@ This creates the breadcrumb hierarchy:
 - `/automate/agent-sessions/new` → "Automate > Agent sessions > New"
 - `/automate/agent-sessions/123` → "Automate > Agent sessions > 123"
 
+## Key Files Reference
+
+- **Entry Point**: `ee/app/assets/javascripts/pages/projects/duo_agents_platform/index.js`
+- **Main Initialization**: `ee/app/assets/javascripts/ai/duo_agents_platform/index.js`
+- **Router**: `ee/app/assets/javascripts/ai/duo_agents_platform/router/index.js`
+- **Component Mapping**: `ee/app/assets/javascripts/ai/duo_agents_platform/router/utils.js`
+- **Constants**: `ee/app/assets/javascripts/ai/duo_agents_platform/constants.js`
+- **Utilities**: `ee/app/assets/javascripts/ai/duo_agents_platform/utils.js`
+- **Project Namespace**: `ee/app/assets/javascripts/ai/duo_agents_platform/namespace/project/`
+
 ## Best Practices
 
 1. **Router Structure**: Use nested routes with `meta.text` properties to define breadcrumb hierarchy
@@ -299,6 +465,9 @@ This creates the breadcrumb hierarchy:
 1. **Component Organization**: Place feature components in `pages/[feature]/` directories
 1. **Breadcrumb Text**: Use internationalized strings (`s__()`) for all `meta.text` values
 1. **Consistent Patterns**: Follow the existing nested route pattern with `NestedRouteApp`
+1. **Namespace Separation**: Keep namespace-specific logic in dedicated directories under `namespace/`
+1. **Component Mapping**: Use the component mapping system to route to namespace-specific components
+1. **Data Injection**: Use Vue's provide/inject pattern for namespace-specific data
 
 ## Troubleshooting
 

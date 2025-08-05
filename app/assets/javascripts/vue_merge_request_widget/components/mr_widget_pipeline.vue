@@ -278,12 +278,7 @@ export default {
                     :upstream-pipeline="pipeline.triggered_by"
                   />
                 </div>
-                <pipeline-artifacts
-                  v-if="hasArtifacts"
-                  :pipeline-id="pipeline.id"
-                  :artifacts="artifacts"
-                  class="gl-ml-3"
-                />
+                <pipeline-artifacts v-if="hasArtifacts" :artifacts="artifacts" class="gl-ml-3" />
               </div>
             </div>
 

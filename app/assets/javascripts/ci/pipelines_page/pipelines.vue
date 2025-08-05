@@ -223,6 +223,7 @@ export default {
 
       this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs, property: scope });
     },
+    // eslint-disable-next-line vue/no-unused-properties -- successCallback() is part of the component's public API.
     successCallback(resp) {
       // Because we are polling & the user is interacting verify if the response received
       // matches the last request made

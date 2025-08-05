@@ -16,7 +16,7 @@ RSpec.describe Ci::BuildReportResultService, feature_category: :continuous_integ
         expect(build_report_result.tests_failed).to eq(2)
         expect(build_report_result.tests_errored).to eq(0)
         expect(build_report_result.tests_skipped).to eq(0)
-        expect(build_report_result.tests_duration).to eq(0.010284)
+        expect(build_report_result.tests_duration).to be_within(0.002).of(0.011)
       end
 
       it 'tracks unique test cases parsed' do

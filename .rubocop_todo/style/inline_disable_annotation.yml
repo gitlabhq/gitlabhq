@@ -1924,7 +1924,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/runtime.rb'
     - 'lib/gitlab/safe_device_detector.rb'
     - 'lib/gitlab/sanitizers/exif.rb'
-    - 'lib/gitlab/search/params.rb'
     - 'lib/gitlab/search/recent_items.rb'
     - 'lib/gitlab/search_context.rb'
     - 'lib/gitlab/search_results.rb'

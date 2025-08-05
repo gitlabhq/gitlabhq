@@ -20,14 +20,10 @@ describe('Pipelines Artifacts dropdown', () => {
       path: '/download/path-two',
     },
   ];
-  const pipelineId = 108;
 
   const createComponent = ({ mockArtifacts = artifacts } = {}) => {
     wrapper = shallowMount(PipelineArtifacts, {
-      propsData: {
-        pipelineId,
-        artifacts: mockArtifacts,
-      },
+      propsData: { artifacts: mockArtifacts },
       stubs: {
         GlSprintf,
         GlDisclosureDropdown,

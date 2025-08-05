@@ -416,21 +416,6 @@ RSpec.describe SearchService, feature_category: :global_search do
     it_behaves_like 'a redacted search results'
   end
 
-  describe '#valid_request?' do
-    let(:scope) { 'issues' }
-    let(:search) { 'foobar' }
-    let(:params) { instance_double(Gitlab::Search::Params) }
-
-    before do
-      allow(Gitlab::Search::Params).to receive(:new).and_return(params)
-      allow(params).to receive(:valid?).and_return(true)
-    end
-
-    it 'is the return value of params.valid?' do
-      expect(search_service.valid_request?).to eq(params.valid?)
-    end
-  end
-
   describe '#abuse_messages' do
     let(:scope) { 'issues' }
     let(:search) { 'foobar' }

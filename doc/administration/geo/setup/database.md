@@ -35,6 +35,24 @@ Ensure the **secondary** site is running the same version of GitLab Enterprise E
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.
 
+## Database password consistency requirements
+
+Each database-related password type must have matching values across
+all Geo sites (primary and secondary). This includes:
+
+- `postgresql['sql_replication_password']` (replication user password, MD5)
+- `postgresql['sql_user_password']` (GitLab database user password, MD5)
+- `gitlab_rails['db_password']` (GitLab database user password, in plain text)
+- `patroni['replication_password']` (for Patroni setups, in plain text)
+- `patroni['password']` (for Patroni API authentication, in plain text)
+- `postgresql['pgbouncer_user_password']` (when using PgBouncer, MD5)
+
+For example, the `patroni['password']` value configured on the primary
+site must be identical to the `patroni['password']` value on all secondary sites.
+
+These passwords are used for database authentication and replication between primary and secondary sites.
+Using different passwords causes replication failures and prevent Geo from functioning correctly.
+
 ## Single instance database replication
 
 A single instance database replication is easier to set up and still provides the same Geo capabilities
@@ -450,6 +468,10 @@ change this behavior.
    This step is similar to how you configured the **primary** instance.
    You must enable this, even if using a single node.
 
+   {{< alert type="warning" >}}
+   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
+   {{< /alert >}}
+
    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
    addresses with addresses appropriate to your network configuration:
 
@@ -599,6 +621,10 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 ### Changing the replication password
 
+{{< alert type="warning" >}}
+When changing the replication password, you must update it on **all** Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
+{{< /alert >}}
+
 To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
 
@@ -738,6 +764,10 @@ Leader instance**:
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+   {{< alert type="warning" >}}
+   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
+   {{< /alert >}}
 
    ```ruby
    roles(['patroni_role'])
@@ -984,6 +1014,10 @@ For each node running a Patroni instance on the secondary site:
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+   {{< alert type="warning" >}}
+   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
+   {{< /alert >}}
 
    ```ruby
    roles(['consul_role', 'patroni_role'])

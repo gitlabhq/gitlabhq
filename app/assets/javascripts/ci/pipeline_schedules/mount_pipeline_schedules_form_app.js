@@ -50,7 +50,6 @@ export default (selector, editing = false) => {
       return createElement(PipelineSchedulesForm, {
         props: {
           timezoneData: JSON.parse(timezoneData),
-          refParam: defaultBranch,
           editing,
           canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
         },

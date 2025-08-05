@@ -14098,7 +14098,8 @@ CREATE TABLE deploy_tokens (
     write_virtual_registry boolean DEFAULT false NOT NULL,
     seven_days_notification_sent_at timestamp with time zone,
     thirty_days_notification_sent_at timestamp with time zone,
-    sixty_days_notification_sent_at timestamp with time zone
+    sixty_days_notification_sent_at timestamp with time zone,
+    CONSTRAINT check_e2ab92a2f6 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -30194,6 +30195,9 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE gpg_signatures
+    ADD CONSTRAINT check_271c7cad6d CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -38226,6 +38230,8 @@ CREATE INDEX index_resource_label_events_on_label_id_and_action ON resource_labe
 
 CREATE INDEX index_resource_label_events_on_merge_request_id_label_id_action ON resource_label_events USING btree (merge_request_id, label_id, action);
 
+CREATE INDEX index_resource_label_events_on_namespace_id ON resource_label_events USING btree (namespace_id);
+
 CREATE INDEX index_resource_label_events_on_user_id ON resource_label_events USING btree (user_id);
 
 CREATE INDEX index_resource_link_events_on_child_work_item_id ON resource_link_events USING btree (child_work_item_id);
@@ -44913,7 +44919,7 @@ ALTER TABLE ONLY user_admin_roles
     ADD CONSTRAINT fk_d3e201cb93 FOREIGN KEY (admin_role_id) REFERENCES admin_roles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_iteration_events
-    ADD CONSTRAINT fk_d405f1c11a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_d405f1c11a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7_p FOREIGN KEY (source_partition_id, source_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

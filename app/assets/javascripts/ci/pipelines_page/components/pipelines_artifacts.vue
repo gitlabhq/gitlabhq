@@ -24,10 +24,6 @@ export default {
     },
   },
   props: {
-    pipelineId: {
-      type: Number,
-      required: true,
-    },
     artifacts: {
       type: Array,
       required: false,

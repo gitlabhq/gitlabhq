@@ -15,14 +15,14 @@ class SearchService
   end
 
   def project
-    return unless params[:project_id].present? && valid_request?
+    return unless params[:project_id].present?
 
     the_project = Project.find_by_id(params[:project_id])
     can?(current_user, :read_project, the_project) ? the_project : nil
   end
   strong_memoize_attr :project
   def group
-    return unless params[:group_id].present? && valid_request?
+    return unless params[:group_id].present?
 
     the_group = Group.find_by_id(params[:group_id])
     can?(current_user, :read_group, the_group) ? the_group : nil
@@ -82,11 +82,6 @@ class SearchService
 
     params.abuse_detection.errors.full_messages
   end
-
-  def valid_request?
-    params.valid?
-  end
-  strong_memoize_attr :valid_request?
 
   def level
     @level ||=
