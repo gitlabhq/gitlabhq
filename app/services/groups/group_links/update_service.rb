@@ -19,10 +19,20 @@ module Groups
         if requires_authorization_refresh?(group_link_params)
           shared_with_group = group_link.shared_with_group
 
-          shared_with_group.refresh_members_authorized_projects(
-            priority: priority_for_refresh(shared_with_group),
-            direct_members_only: true
+          if Feature.enabled?(
+            :project_authorizations_update_in_background_for_group_shares,
+            shared_with_group.root_ancestor
           )
+            AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(
+              shared_with_group.id,
+              { 'priority' => priority_for_refresh(shared_with_group).to_s, 'direct_members_only' => true }
+            )
+          else
+            shared_with_group.refresh_members_authorized_projects(
+              priority: priority_for_refresh(shared_with_group),
+              direct_members_only: true
+            )
+          end
         end
 
         group_link

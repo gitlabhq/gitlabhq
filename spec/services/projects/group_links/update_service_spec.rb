@@ -47,7 +47,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
         expect(link.expires_at).to eq(expiry_date)
       end
 
-      context 'project authorizations update' do
+      context 'project authorizations update', :sidekiq_inline do
         it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
           expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
             .to receive(:perform_async).with(link.project.id)
@@ -70,11 +70,25 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
           subject
         end
 
-        it 'updates project authorizations of users who had access to the project via the group share',
-          :sidekiq_inline do
+        it 'updates project authorizations of users who had access to the project via the group share' do
           expect { subject }.to(
             change { Ability.allowed?(group_user, :developer_access, project) }
               .from(true).to(false))
+        end
+
+        context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
+          before do
+            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
+          end
+
+          it 'executes refresh_members_authorized_projects' do
+            expect(group)
+              .to receive(:refresh_members_authorized_projects)
+              .with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+              .once
+
+            subject
+          end
         end
       end
 
@@ -82,7 +96,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
         let(:group_link_params) { { expires_at: Date.tomorrow } }
 
         it 'does not perform any project authorizations update using ' \
-           '`AuthorizedProjectUpdate::ProjectRecalculateWorker`' do
+           '`AuthorizedProjectUpdate::ProjectRecalculateWorker`', :sidekiq_inline do
           expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).not_to receive(:perform_async)
 
           subject

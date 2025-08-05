@@ -146,6 +146,13 @@ export default {
     },
   },
   methods: {
+    async focusButton() {
+      this.$nextTick(() => {
+        window.requestAnimationFrame(() => {
+          this.$refs.followButton.$el.focus();
+        });
+      });
+    },
     async toggleFollow() {
       if (this.user.isFollowed) {
         this.unfollow();
@@ -172,6 +179,7 @@ export default {
         });
       } finally {
         this.toggleFollowLoading = false;
+        this.focusButton();
       }
     },
     async unfollow() {
@@ -192,6 +200,7 @@ export default {
         });
       } finally {
         this.toggleFollowLoading = false;
+        this.focusButton();
       }
     },
   },
@@ -240,6 +249,7 @@ export default {
         <template v-else>
           <gl-button
             v-if="shouldRenderToggleFollowButton"
+            ref="followButton"
             class="gl-mt-3 gl-self-start"
             :variant="toggleFollowButtonVariant"
             :loading="toggleFollowLoading"

@@ -40,13 +40,27 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
     expect { subject }.to change { group_member_user.can?(:create_release, project) }.from(true).to(false)
   end
 
-  it 'executes UserProjectAccessChangedService with medium priority' do
-    expect(group)
-      .to receive(:refresh_members_authorized_projects)
-      .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-      .once
+  it 'schedules worker with with medium priority' do
+    expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to receive(:perform_async)
+      .with(group.id, { 'priority' => 'medium', 'direct_members_only' => true })
+      .and_call_original
 
     subject
+  end
+
+  context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
+    before do
+      stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
+    end
+
+    it 'executes refresh_members_authorized_projects' do
+      expect(group)
+        .to receive(:refresh_members_authorized_projects)
+        .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+        .once
+
+      subject
+    end
   end
 
   context 'when feature-flag `change_priority_for_user_access_refresh_for_group_links` is disabled' do
@@ -54,11 +68,10 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
       stub_feature_flags(change_priority_for_user_access_refresh_for_group_links: false)
     end
 
-    it 'executes UserProjectAccessChangedService with high priority' do
-      expect(group)
-        .to receive(:refresh_members_authorized_projects)
-        .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
-        .once
+    it 'schedules worker with high priority' do
+      expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to receive(:perform_async)
+        .with(group.id, { 'priority' => 'high', 'direct_members_only' => true })
+        .and_call_original
 
       subject
     end
@@ -67,7 +80,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
   context 'with only param not requiring authorization refresh' do
     let(:group_link_params) { { expires_at: Date.tomorrow } }
 
-    it 'does not execute UserProjectAccessChangedService' do
+    it 'does not execute UserProjectAccessChangedService', :sidekiq_inline do
       expect(UserProjectAccessChangedService).not_to receive(:new)
 
       subject

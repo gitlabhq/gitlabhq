@@ -75,3 +75,9 @@ group_or_project_milestone_path:
   file: app/helpers/timeboxes_helper.rb
 all_visibility_levels_restricted?:
   file: app/helpers/visibility_level_helper.rb
+commit_branches_links:
+  file: app/helpers/commits_helper.rb
+commit_tags_links:
+  file: app/helpers/commits_helper.rb
+sort_title_stars:
+  file: app/helpers/sorting_titles_values_helper.rb

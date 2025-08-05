@@ -63,7 +63,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
           group.add_developer(other_user)
         end
 
-        it 'schedules authorization update for users with access to group' do
+        it 'schedules authorization update for users with access to group', :sidekiq_inline do
           stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
 
           expect(AuthorizedProjectsWorker).not_to(
@@ -81,6 +81,21 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
               batch_delay: 30.seconds, batch_size: 100
             ).and_call_original
           )
+
+          subject.execute
+        end
+      end
+
+      context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
+        before do
+          stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
+        end
+
+        it 'executes refresh_members_authorized_projects' do
+          expect(group)
+            .to receive(:refresh_members_authorized_projects)
+            .with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+            .once
 
           subject.execute
         end

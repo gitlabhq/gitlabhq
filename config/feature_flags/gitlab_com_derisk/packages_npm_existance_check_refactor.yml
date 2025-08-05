@@ -1,0 +1,10 @@
+---
+name: packages_npm_existance_check_refactor
+description: Refactor existance check for npm packages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548761
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199774
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558119
+milestone: '18.3'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

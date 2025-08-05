@@ -3266,6 +3266,8 @@ class Project < ApplicationRecord
     ids
   end
 
+  # TODO: remove this with the rollout of
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/558119
   def package_already_taken?(package_name, package_version, package_type:)
     Packages::Package.with_name(package_name)
       .with_version(package_version)

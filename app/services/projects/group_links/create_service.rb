@@ -53,9 +53,18 @@ module Projects
         # compare the inconsistency rates of both approaches, we still run
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
-        shared_with_group.refresh_members_authorized_projects(
-          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        if Feature.enabled?(
+          :project_authorizations_update_in_background_for_group_shares,
+          shared_with_group.root_ancestor
         )
+          AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(
+            shared_with_group.id
+          )
+        else
+          shared_with_group.refresh_members_authorized_projects(
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        end
       end
 
       def remove_unallowed_params

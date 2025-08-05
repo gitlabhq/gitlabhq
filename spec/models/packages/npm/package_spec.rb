@@ -136,6 +136,37 @@ RSpec.describe Packages::Npm::Package, type: :model, feature_category: :package_
             it_behaves_like 'not validating the second package', field_with_error: :name
             it_behaves_like 'validating both if the first package is pending destruction'
           end
+
+          context 'with packages_npm_existance_check_refactor feature flag disabled' do
+            before do
+              stub_feature_flags(packages_npm_existance_check_refactor: false)
+            end
+
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@#{group.path}/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'not validating the second package', field_with_error: :name
+              it_behaves_like 'validating both if the first package is pending destruction'
+            end
+          end
         end
 
         context 'with the second package in a different project than the first package' do
@@ -166,6 +197,37 @@ RSpec.describe Packages::Npm::Package, type: :model, feature_category: :package_
             it_behaves_like 'validating the first package'
             it_behaves_like 'not validating the second package', field_with_error: :base
             it_behaves_like 'validating both if the first package is pending destruction'
+          end
+
+          context 'with packages_npm_existance_check_refactor feature flag disabled' do
+            before do
+              stub_feature_flags(packages_npm_existance_check_refactor: false)
+            end
+
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@#{group.path}/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'not validating the second package', field_with_error: :base
+              it_behaves_like 'validating both if the first package is pending destruction'
+            end
           end
         end
       end
