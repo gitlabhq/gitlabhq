@@ -897,3 +897,4 @@ RSpec/VerifiedDoubles:
     - 'spec/workers/propagate_integration_project_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
     - 'spec/workers/system_hook_push_worker_spec.rb'
+    - 'ee/spec/models/secrets_management/project_secrets_manager_spec.rb'

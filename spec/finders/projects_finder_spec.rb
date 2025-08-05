@@ -321,7 +321,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
           end
 
           it 'does not perform search' do
-            is_expected.to eq([public_project_2, public_project])
+            is_expected.to match_array([public_project, public_project_2])
           end
         end
 
@@ -414,7 +414,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         describe 'filter by archived only' do
           let(:params) { { archived: 'only' } }
 
-          it { is_expected.to eq([archived_project, archived_group_project]) }
+          it { is_expected.to match_array([archived_project, archived_group_project]) }
         end
 
         describe 'filter by archived for backward compatibility' do

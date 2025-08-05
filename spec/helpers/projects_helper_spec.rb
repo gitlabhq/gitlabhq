@@ -850,6 +850,16 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
             it { is_expected.to be_falsey }
           end
+
+          context 'when user has dismissed the callout' do
+            before do
+              allow(user).to receive(:dismissed_callout_for_project?)
+                .with(feature_name: :lfs_misconfiguration_banner, project: project)
+                .and_return(true)
+            end
+
+            it { is_expected.to be_falsey }
+          end
         end
       end
 

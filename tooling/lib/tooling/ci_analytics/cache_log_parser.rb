@@ -14,11 +14,10 @@ module Tooling
 
       PACKAGE_REGISTRY_PATTERNS = {
         fetching_assets: /\*\* Fetching cached assets with assets hash ([a-f0-9]{64}) \*\*/,
-        downloading_package: %r{Downloading archive at https://.*/packages/generic/assets/},
         package_not_found: /The archive was not found\. The server returned status 404\./,
-        package_downloaded: /Archive downloaded successfully|Extracted \d+ files/,
-        uploading_package: /Uploading assets package/,
-        package_uploaded: /Assets package uploaded successfully/
+        package_downloaded: /Successfully fetched assets, skipping assets compilation/,
+        pushing_assets: /Pushing assets cache to GitLab/,
+        package_uploaded: /\{"message":"201 Created"\}/
       }.freeze
 
       OPERATION_PATTERNS = {
@@ -106,14 +105,12 @@ module Tooling
         when PACKAGE_REGISTRY_PATTERNS[:fetching_assets]
           assets_hash = ::Regexp.last_match(1)
           handle_fetching_assets(timestamp, current_package_cache, assets_hash)
-        when PACKAGE_REGISTRY_PATTERNS[:downloading_package]
-          handle_downloading_package(current_package_cache)
         when PACKAGE_REGISTRY_PATTERNS[:package_downloaded]
           handle_package_downloaded(timestamp, current_package_cache, events)
         when PACKAGE_REGISTRY_PATTERNS[:package_not_found]
           handle_package_not_found(timestamp, current_package_cache, events)
-        when PACKAGE_REGISTRY_PATTERNS[:uploading_package]
-          handle_uploading_package(timestamp, events)
+        when PACKAGE_REGISTRY_PATTERNS[:pushing_assets]
+          handle_pushing_assets(timestamp, events)
         when PACKAGE_REGISTRY_PATTERNS[:package_uploaded]
           handle_package_uploaded(timestamp, events)
         end
@@ -132,16 +129,11 @@ module Tooling
         })
       end
 
-      def self.handle_downloading_package(current_package_cache)
+      def self.handle_package_downloaded(timestamp, current_package_cache, events)
         return unless current_package_cache[:cache_key]
 
+        # Successfully fetched assets = cache hit
         current_package_cache[:cache_result] = 'hit'
-        current_package_cache[:cache_size_bytes] = nil
-      end
-
-      def self.handle_package_downloaded(timestamp, current_package_cache, events)
-        return unless current_package_cache[:cache_key] && current_package_cache[:cache_result] == 'hit'
-
         current_package_cache[:duration] = calculate_duration(current_package_cache[:started_at], timestamp)
         events << current_package_cache.dup
         current_package_cache.clear
@@ -157,7 +149,7 @@ module Tooling
         current_package_cache.clear
       end
 
-      def self.handle_uploading_package(timestamp, events)
+      def self.handle_pushing_assets(timestamp, events)
         events << {
           cache_key: "assets-package-upload",
           cache_type: 'assets-package',

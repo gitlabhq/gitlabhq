@@ -21,10 +21,6 @@ RSpec.describe Import::GitlabGroupsController, :with_current_organization, featu
     stub_uploads_object_storage(ImportExportUploader)
   end
 
-  before_all do
-    current_organization.users << user
-  end
-
   after do
     FileUtils.rm_rf(import_path, secure: true)
   end

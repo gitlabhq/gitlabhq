@@ -319,6 +319,7 @@ class Environment < ApplicationRecord
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_ENVIRONMENT_ID', value: id.to_s)
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
   end

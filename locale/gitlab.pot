@@ -2419,9 +2419,6 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
-msgid "AICatalog|Agent"
-msgstr ""
-
 msgid "AICatalog|Agent created successfully."
 msgstr ""
 
@@ -2438,6 +2435,9 @@ msgid "AICatalog|Agents"
 msgstr ""
 
 msgid "AICatalog|Anyone can view and use the agent without authorization. Only maintainers and owners of this project can edit or delete the agent."
+msgstr ""
+
+msgid "AICatalog|Anyone can view and use the flow without authorization. Only maintainers and owners of this project can edit or delete the flow."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
@@ -2491,9 +2491,6 @@ msgstr ""
 msgid "AICatalog|Failed to run agent."
 msgstr ""
 
-msgid "AICatalog|Flow"
-msgstr ""
-
 msgid "AICatalog|Flow created successfully."
 msgstr ""
 
@@ -2527,13 +2524,13 @@ msgstr ""
 msgid "AICatalog|New flow"
 msgstr ""
 
-msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners  of this project can edit or delete the agent."
+msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners of this project can edit or delete the agent."
+msgstr ""
+
+msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the flow. Only maintainers and owners of this project can edit or delete the flow."
 msgstr ""
 
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
-msgstr ""
-
-msgid "AICatalog|Private"
 msgstr ""
 
 msgid "AICatalog|Project ID"
@@ -2546,9 +2543,6 @@ msgid "AICatalog|Provide default instructions or context that will be included w
 msgstr ""
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
-msgstr ""
-
-msgid "AICatalog|Public"
 msgstr ""
 
 msgid "AICatalog|Run"
@@ -33237,9 +33231,6 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|60-day trial period"
-msgstr ""
-
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
@@ -33249,7 +33240,7 @@ msgstr ""
 msgid "InProductMarketing|End-to-end security and compliance"
 msgstr ""
 
-msgid "InProductMarketing|Enjoy 60 days of full access to our best plan, after which you'll have access to our free tier forever. Upgrade to the best plan that suits you at any point - Premium or Ultimate."
+msgid "InProductMarketing|Enjoy %{duration} days of full access to our best plan, after which you'll have access to our free tier forever. Upgrade to the best plan that suits you at any point - Premium or Ultimate."
 msgstr ""
 
 msgid "InProductMarketing|Ensure compliance"
@@ -36809,6 +36800,9 @@ msgstr ""
 msgid "LFS objects"
 msgstr ""
 
+msgid "LFS objects detected. Git supports adding a `.gitattributes` file in subdirectories, but GitLab only checks for this file in the root directory of the default branch. Dismiss this message if your LFS is configured in subdirectories, on a different branch, or is working correctly."
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr ""
 
@@ -37220,12 +37214,6 @@ msgstr ""
 msgid "LearnGitLab|Create an issue"
 msgstr ""
 
-msgid "LearnGitLab|Create or import your first repository into your new project."
-msgstr ""
-
-msgid "LearnGitLab|Create/import issues (tickets) to collaborate on ideas and plan work."
-msgstr ""
-
 msgid "LearnGitLab|Enable require merge approvals"
 msgstr ""
 
@@ -37256,9 +37244,6 @@ msgstr ""
 msgid "LearnGitLab|GitLab University"
 msgstr ""
 
-msgid "LearnGitLab|GitLab works best as a team. Invite your colleague to enjoy all features."
-msgstr ""
-
 msgid "LearnGitLab|In this tutorial, we explore 10 tips and best practices to integrate GitLab Duo Chat into your AI-native DevSecOps workflows and refine your prompts for the best results."
 msgstr ""
 
@@ -37283,19 +37268,7 @@ msgstr ""
 msgid "LearnGitLab|Plan and execute work together"
 msgstr ""
 
-msgid "LearnGitLab|Prevent unexpected changes to important assets by assigning ownership of files and paths."
-msgstr ""
-
 msgid "LearnGitLab|Quick start"
-msgstr ""
-
-msgid "LearnGitLab|Review and edit proposed changes to source code."
-msgstr ""
-
-msgid "LearnGitLab|Route code reviews to the right reviewers, every time."
-msgstr ""
-
-msgid "LearnGitLab|Save time by automating your integration and deployment tasks."
 msgstr ""
 
 msgid "LearnGitLab|Scan dependencies for licenses"
@@ -37305,9 +37278,6 @@ msgid "LearnGitLab|Scan dependencies for vulnerabilities"
 msgstr ""
 
 msgid "LearnGitLab|Secure your deployment"
-msgstr ""
-
-msgid "LearnGitLab|Set up CI/CD"
 msgstr ""
 
 msgid "LearnGitLab|Set up your code"
@@ -37326,12 +37296,6 @@ msgid "LearnGitLab|Suggests completions to the current line you are typing. Use 
 msgstr ""
 
 msgid "LearnGitLab|Support for multiple languages:"
-msgstr ""
-
-msgid "LearnGitLab|Try GitLab Ultimate for free"
-msgstr ""
-
-msgid "LearnGitLab|Try all GitLab features for 60 days, no credit card required."
 msgstr ""
 
 msgid "LearnGitLab|Try the walkthrough in a new tab"
@@ -44025,6 +43989,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open GitLab Duo Chat"
+msgstr ""
+
 msgid "Open Selection"
 msgstr ""
 
@@ -47559,9 +47526,6 @@ msgid "Popularity"
 msgstr ""
 
 msgid "Port"
-msgstr ""
-
-msgid "Possible LFS configuration issue. This project contains LFS objects but there is no .gitattributes file. You can ignore this message if you recently added a `.gitattributes` file."
 msgstr ""
 
 msgid "Possible to override in each project."

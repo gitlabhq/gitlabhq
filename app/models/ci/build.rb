@@ -596,6 +596,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted? && persisted_environment.present?
 
+        variables.append(key: 'CI_ENVIRONMENT_ID', value: persisted_environment.id.to_s)
         variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
 
         # Here we're passing unexpanded environment_url for runner to expand,

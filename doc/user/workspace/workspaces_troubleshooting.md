@@ -101,6 +101,45 @@ This error can occur for the following reasons:
       kubectl rollout restart deployment -n gitlab-workspaces gitlab-workspaces-proxy
       ```
 
+## Error: `Workspace does not exist`
+
+You might get an error in VS Code that states
+
+```plaintext
+Workspace does not exist
+
+Please select another workspace to open.
+```
+
+This issue occurs when the workspace starts successfully, but the expected project directory is
+missing because the Git clone operation failed. Git clone operations fail due to network issues,
+infrastructure problems, or revoked repository permissions.
+
+To resolve this issue:
+
+1. When prompted to select another workspace in the error dialog, select **Cancel**.
+1. From the VS Code menu, select **File** > **Open Folder**.
+1. Go to the `/projects` directory and select **OK**.
+1. In the **EXPLORER** panel, check for a directory with the same name as your project.
+   - If the directory is missing, the Git clone operation failed completely.
+   - If the directory exists but is empty, the clone operation started but didn't complete.
+1. Open a terminal. From the menu, select **Terminal** > **New Terminal**.
+1. Go to the workspace logs directory:
+
+   ```shell
+   cd /tmp/workspace-logs/
+   ```
+
+1. Check the logs for error output that might indicate why Git clone failed:
+
+   ```shell
+   less poststart-stderr.log
+   ```
+
+1. Resolve the identified issue and restart your workspace.
+
+If the issue persists, create a new workspace with a working container image that includes Git.
+
 <!--- Other suggested topics:
 
 ## DNS configuration

@@ -592,7 +592,7 @@ This is a code block that uses Markdown to demonstrate **bold** and `backticks`.
 When you use code blocks:
 
 - Add a blank line above and below code blocks.
-- Use one of the [supported syntax names](https://github.com/alecthomas/chroma?tab=readme-ov-file#supported-languages).
+- Use one of the [supported syntax names](https://gohugo.io/content-management/syntax-highlighting/#languages).
   Use `plaintext` if no better option is available.
 - Use quadruple backticks (````` ```` `````) when the code block contains another (nested) code block
   which has triple backticks already. The example above uses quadruple backticks internally

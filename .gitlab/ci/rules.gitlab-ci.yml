@@ -198,6 +198,12 @@
 .if-default-branch-schedule-weekly: &if-default-branch-schedule-weekly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
 
+.if-ruby-branch-schedule: &if-ruby-branch-schedule
+  if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+
+.if-rails-branch-schedule: &if-rails-branch-schedule
+  if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule" && $RUN_WITH_NEXT_RAILS_VERSION == "true"'
+
 .if-ruby-branch-schedule-nightly: &if-ruby-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
@@ -2069,6 +2075,12 @@
       when: never
     - <<: *if-not-canonical-namespace
       when: never
+    # Do not run for scheduled pipeline for ruby-next branch
+    - <<: *if-ruby-branch-schedule
+      when: never
+    # Do not run for scheduled pipeline for rails-next branch
+    - <<: *if-rails-branch-schedule
+      when: never
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
@@ -2076,9 +2088,7 @@
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables: *qa-e2e-test-schedule-variables
-      when: manual
+    - *if-dot-com-gitlab-org-schedule
 
 .qa:rules:test-on-omnibus-nightly:
   rules:

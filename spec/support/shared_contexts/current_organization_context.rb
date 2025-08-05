@@ -4,7 +4,7 @@
 # in the middleware for non-feature spec level specs.
 RSpec.shared_context 'with current_organization setting' do
   unless method_defined?(:current_organization)
-    let_it_be(:current_organization, reload: true) { create(:organization, name: 'Current Organization') }
+    let_it_be(:current_organization, reload: true) { create(:common_organization) }
   end
 
   before do

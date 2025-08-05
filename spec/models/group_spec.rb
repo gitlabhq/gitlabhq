@@ -301,7 +301,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'does not allow a subgroup to have the same name as an existing subgroup' do
           sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
-          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: organization)
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: sub_group1.organization)
 
           expect(sub_group1).to be_valid
           expect(sub_group2).not_to be_valid
@@ -2516,9 +2516,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     context 'when organization owner' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:org_owner) do
-        create(:organization_owner, organization: organization).user
-      end
+      let_it_be(:org_owner) { create(:user, owner_of: group.organization) }
 
       it 'returns OWNER by default' do
         expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)

@@ -38,10 +38,6 @@ FactoryBot.define do
       group.add_creator(evaluator.creator) if evaluator.creator
     end
 
-    trait :with_organization do
-      association :organization
-    end
-
     trait :public do
       visibility_level { Gitlab::VisibilityLevel::PUBLIC }
     end

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'value stream analytics stage' do
-  let_it_be(:group) { create(:group, :with_organization) }
-  let_it_be(:other_group) { create(:group, :with_organization) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:other_organization) { create(:organization) }
+  let_it_be(:other_group) { create(:group, organization: other_organization) }
 
   let(:valid_params) do
     {

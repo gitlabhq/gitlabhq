@@ -185,7 +185,6 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     let(:project) { create(:project) }
 
     before do
-      current_organization.users << user
       allow_any_instance_of(Bitbucket::Client).to receive(:repo).and_return(bitbucket_repo)
       allow_any_instance_of(Bitbucket::Client).to receive(:user).and_return(bitbucket_user)
       assign_session_tokens

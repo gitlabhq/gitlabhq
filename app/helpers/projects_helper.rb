@@ -431,6 +431,10 @@ module ProjectsHelper
   def show_lfs_misconfiguration_banner?(project)
     return false unless project.repository && project.lfs_enabled?
 
+    if current_user&.dismissed_callout_for_project?(feature_name: :lfs_misconfiguration_banner, project: project)
+      return false
+    end
+
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
       project.lfs_objects_projects.project_repository_type.any? && !project.repository.has_gitattributes?
     end

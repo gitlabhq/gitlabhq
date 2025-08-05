@@ -132,6 +132,12 @@ export const TOGGLE_CANARY = {
   defaultKeys: ['g x'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
+export const DUO_CHAT = {
+  id: 'globalShortcuts.duoChat',
+  description: __('Open GitLab Duo Chat'),
+  defaultKeys: ['d'],
+};
+
 export const BOLD_TEXT = {
   id: 'editing.boldText',
   description: __('Bold text'),
@@ -617,6 +623,7 @@ const GLOBAL_SHORTCUTS_GROUP = {
     TOGGLE_PERFORMANCE_BAR,
     HIDE_APPEARING_CONTENT,
     TOGGLE_SUPER_SIDEBAR,
+    DUO_CHAT,
   ],
 };
 

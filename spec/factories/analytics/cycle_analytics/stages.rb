@@ -10,7 +10,7 @@ FactoryBot.define do
     start_event_identifier { Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestCreated.identifier }
     end_event_identifier { Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestMerged.identifier }
 
-    namespace { association(:group, :with_organization) }
+    namespace { association(:group) }
     value_stream { association(:cycle_analytics_value_stream, namespace: namespace) }
 
     after(:build) do |stage, evaluator|

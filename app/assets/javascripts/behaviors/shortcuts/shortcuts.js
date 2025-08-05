@@ -28,6 +28,7 @@ import {
   GO_TO_MILESTONE_LIST,
   GO_TO_YOUR_SNIPPETS,
   GO_TO_YOUR_REVIEW_REQUESTS,
+  DUO_CHAT,
 } from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
@@ -108,6 +109,7 @@ export default class Shortcuts {
       [GO_TO_YOUR_SNIPPETS, () => findAndFollowLink('.dashboard-shortcuts-snippets')],
 
       [TOGGLE_MARKDOWN_PREVIEW, Shortcuts.toggleMarkdownPreview],
+      [DUO_CHAT, Shortcuts.focusDuoChat],
     ]);
 
     addStopCallback((e, element, combo) =>
@@ -313,6 +315,14 @@ export default class Shortcuts {
     elements.forEach((element) => {
       element.style.display = 'none';
     });
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+  }
+
+  static focusDuoChat(e) {
+    document.querySelector('.js-tanuki-bot-chat-toggle')?.click();
 
     if (e.preventDefault) {
       e.preventDefault();

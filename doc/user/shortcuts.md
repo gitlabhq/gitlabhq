@@ -48,6 +48,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/_index.md). |
+| <kbd>d</kbd>                       | Open GitLab Duo Chat |
 
 Additionally, the following shortcuts are available when editing text in text
 fields (for example, comments, replies, issue descriptions, and merge request

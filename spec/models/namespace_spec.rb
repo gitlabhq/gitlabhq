@@ -267,7 +267,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     describe '#parent_organization_match' do
-      let_it_be(:group) { create(:group, :with_organization) }
+      let_it_be(:group) { create(:group) }
 
       subject(:namespace) { build(:group, parent: group, organization: organization) }
 

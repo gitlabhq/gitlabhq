@@ -112,6 +112,7 @@ module Users
       explore_duo_core_banner: 108, # EE-only
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110 # EE-only
+
     }
 
     validates :feature_name,

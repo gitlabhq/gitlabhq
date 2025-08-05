@@ -637,28 +637,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         it { is_expected.to be(false) }
       end
     end
-
-    context 'when the feature optimize_container_repository_has_tags is disabled' do
-      before do
-        stub_feature_flags(optimize_container_repository_has_tags: false)
-      end
-
-      context 'when there are no tags' do
-        before do
-          allow(repository).to receive(:tags).and_return([])
-        end
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'when there are tags' do
-        before do
-          allow(repository).to receive(:tags).and_return([ContainerRegistry::Tag.new(repository, 'tag1')])
-        end
-
-        it { is_expected.to be(true) }
-      end
-    end
   end
 
   describe '#delete_tags!' do

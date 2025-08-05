@@ -8198,7 +8198,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#parent_organization_match' do
-    let_it_be(:group) { create(:group, :with_organization) }
+    let_it_be(:group) { create(:group) }
 
     subject(:project) { build(:project, namespace: group, organization: organization) }
 

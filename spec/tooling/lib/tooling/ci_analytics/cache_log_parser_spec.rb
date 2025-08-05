@@ -6,26 +6,73 @@ require_relative '../../../../../tooling/lib/tooling/ci_analytics/cache_log_pars
 RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling do
   describe '.extract_cache_events' do
     context 'with package registry operations' do
-      let(:log_content) do
-        <<~LOG
-          2025-07-25T13:35:12.734729Z ** Fetching cached assets with assets hash 16ac23511b7abbf45496caa79ec34f27107a7ba209e6e46750ffd85ca12f4e8e **
-          2025-07-25T13:35:15.234729Z The archive was not found. The server returned status 404.
-          2025-07-25T13:35:16.234729Z Compiling frontend assets
-          2025-07-25T13:35:45.234729Z gitlab:assets:fix_urls finished
-        LOG
+      context 'when package is found (hit)' do
+        let(:log_content) do
+          <<~LOG
+            2025-07-25T13:35:12.734729Z Installing Yarn packages
+            2025-07-25T13:35:13.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
+            2025-07-25T13:35:14.734729Z Downloading archive at https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz...
+            2025-07-25T13:35:16.734729Z Successfully fetched assets, skipping assets compilation.
+            2025-07-25T13:35:17.234729Z Compiling frontend assets
+            2025-07-25T13:35:45.234729Z gitlab:assets:fix_urls finished
+          LOG
+        end
+
+        it 'extracts package registry hit events' do
+          events = described_class.extract_cache_events(log_content)
+
+          expect(events.size).to eq(1)
+          event = events.first
+          expect(event[:cache_key]).to eq('assets-package-75866ebef35d')
+          expect(event[:cache_type]).to eq('assets-package')
+          expect(event[:cache_operation]).to eq('pull')
+          expect(event[:cache_result]).to eq('hit')
+          expect(event[:duration]).to be_within(0.1).of(3.0)
+          expect(event[:operation_command]).to eq('assets compilation')
+          expect(event[:operation_success]).to be(true)
+        end
       end
 
-      it 'extracts package registry miss events without crashing' do
-        expect { described_class.extract_cache_events(log_content) }.not_to raise_error
+      context 'when package is not found (miss)' do
+        let(:log_content) do
+          <<~LOG
+            2025-07-25T13:35:12.734729Z ** Fetching cached assets with assets hash 16ac23511b7abbf45496caa79ec34f27107a7ba209e6e46750ffd85ca12f4e8e **
+            2025-07-25T13:35:15.234729Z The archive was not found. The server returned status 404.
+            2025-07-25T13:35:16.234729Z Compiling frontend assets
+            2025-07-25T13:35:45.234729Z gitlab:assets:fix_urls finished
+          LOG
+        end
 
-        events = described_class.extract_cache_events(log_content)
+        it 'extracts package registry miss events without crashing' do
+          expect { described_class.extract_cache_events(log_content) }.not_to raise_error
 
-        expect(events.size).to eq(1)
-        event = events.first
-        expect(event[:cache_key]).to eq('assets-package-16ac23511b7a')
-        expect(event[:cache_type]).to eq('assets-package')
-        expect(event[:cache_operation]).to eq('pull')
-        expect(event[:cache_result]).to eq('miss')
+          events = described_class.extract_cache_events(log_content)
+
+          expect(events.size).to eq(1)
+          event = events.first
+          expect(event[:cache_key]).to eq('assets-package-16ac23511b7a')
+          expect(event[:cache_type]).to eq('assets-package')
+          expect(event[:cache_operation]).to eq('pull')
+          expect(event[:cache_result]).to eq('miss')
+        end
+      end
+
+      context 'when package is downloaded without intermediate steps' do
+        let(:log_content) do
+          <<~LOG
+            2025-07-25T13:35:12.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
+            2025-07-25T13:35:16.734729Z Successfully fetched assets, skipping assets compilation.
+          LOG
+        end
+
+        it 'treats as hit when successfully downloaded' do
+          events = described_class.extract_cache_events(log_content)
+
+          expect(events.size).to eq(1)
+          event = events.first
+          expect(event[:cache_result]).to eq('hit')
+          expect(event[:duration]).to be_within(0.1).of(4.0)
+        end
       end
     end
 
@@ -153,17 +200,24 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
         .not_to raise_error
     end
 
-    it 'handles downloading package pattern' do
-      line = "Downloading archive at https://gitlab.com/api/v4/projects/278964/packages/generic/assets/test-ee-hash/assets-test-ee-hash-v2.tar.gz..."
-      current_cache[:cache_key] = 'test-package'
+    it 'handles package downloaded pattern' do
+      line = "Successfully fetched assets, skipping assets compilation."
+      # Simulate the state after fetching_assets pattern was matched
+      current_cache[:cache_key] = 'assets-package-test'
+      current_cache[:cache_type] = 'assets-package'
+      current_cache[:cache_operation] = 'pull'
+      current_cache[:started_at] = timestamp - 10
 
       described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
 
-      expect(current_cache[:cache_result]).to eq('hit')
+      expect(events.size).to eq(1)
+      expect(events.first[:cache_key]).to eq('assets-package-test')
+      expect(events.first[:cache_result]).to eq('hit')
+      expect(events.first[:duration]).to eq(10.0)
     end
 
-    it 'handles uploading package pattern' do
-      line = "Uploading assets package"
+    it 'handles pushing assets pattern' do
+      line = "Pushing assets cache to GitLab"
 
       described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
 
@@ -181,18 +235,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
       expect(events.first[:cache_result]).to eq('miss')
     end
 
-    it 'handles package downloaded pattern' do
-      line = "Archive downloaded successfully"
-      current_cache[:cache_key] = 'test-package'
-      current_cache[:cache_result] = 'hit'
-      current_cache[:started_at] = timestamp - 10
-
-      described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
-
-      expect(events.size).to eq(1)
-      expect(events.first[:cache_key]).to eq('test-package')
-    end
-
     it 'handles package uploaded pattern' do
       events << {
         cache_operation: 'push',
@@ -200,7 +242,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
         cache_result: 'creating',
         started_at: timestamp - 30
       }
-      line = "Assets package uploaded successfully"
+      line = '{"message":"201 Created"}'
 
       described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
 
@@ -209,32 +251,13 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     end
   end
 
-  describe '.handle_downloading_package' do
-    it 'sets cache result to hit when cache key exists' do
-      current_cache = { cache_key: 'test-package' }
-      described_class.handle_downloading_package(current_cache)
-
-      expect(current_cache[:cache_result]).to eq('hit')
-      expect(current_cache[:cache_size_bytes]).to be_nil
-    end
-
-    it 'returns early when no cache key' do
-      current_cache = {}
-      result = described_class.handle_downloading_package(current_cache)
-
-      expect(result).to be_nil
-      expect(current_cache[:cache_result]).to be_nil
-    end
-  end
-
   describe '.handle_package_downloaded' do
     let(:timestamp) { Time.now }
     let(:events) { [] }
 
-    it 'processes successful package download' do
+    it 'processes successful package download as hit' do
       current_cache = {
         cache_key: 'test-package',
-        cache_result: 'hit',
         started_at: timestamp - 10
       }
 
@@ -242,6 +265,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
 
       expect(events.size).to eq(1)
       expect(events.first[:cache_key]).to eq('test-package')
+      expect(events.first[:cache_result]).to eq('hit')
       expect(current_cache).to be_empty
     end
 
@@ -253,23 +277,14 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
       expect(result).to be_nil
       expect(events).to be_empty
     end
-
-    it 'returns early when cache result is not hit' do
-      current_cache = { cache_key: 'test', cache_result: 'miss' }
-
-      result = described_class.handle_package_downloaded(timestamp, current_cache, events)
-
-      expect(result).to be_nil
-      expect(events).to be_empty
-    end
   end
 
-  describe '.handle_uploading_package' do
+  describe '.handle_pushing_assets' do
     let(:timestamp) { Time.now }
     let(:events) { [] }
 
     it 'creates package upload event' do
-      described_class.handle_uploading_package(timestamp, events)
+      described_class.handle_pushing_assets(timestamp, events)
 
       expect(events.size).to eq(1)
       event = events.first
@@ -572,6 +587,65 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
         expect(event[:cache_operation]).to eq('push')
         expect(event[:cache_result]).to eq('created')
         expect(event[:duration]).to be_within(1).of(135)
+      end
+    end
+
+    context 'with complete package registry hit scenario' do
+      let(:package_hit_log) do
+        <<~LOG
+          2025-07-25T13:35:12.734729Z Installing Yarn packages
+          2025-07-25T13:35:13.734729Z GITLAB_ASSETS_HASH: 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416
+          2025-07-25T13:35:14.734729Z CACHE_ASSETS_AS_PACKAGE: true
+          2025-07-25T13:35:15.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
+          2025-07-25T13:35:16.734729Z Downloading archive at https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz...
+          2025-07-25T13:35:18.734729Z Downloading from https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz ...
+          2025-07-25T13:35:19.734729Z Extracting archive to .
+          2025-07-25T13:35:20.734729Z Successfully fetched assets, skipping assets compilation.
+          2025-07-25T13:35:21.734729Z Compiling frontend assets
+          2025-07-25T13:35:45.734729Z gitlab:assets:fix_urls finished
+        LOG
+      end
+
+      it 'processes complete package hit scenario with proper timing and correlation' do
+        events = described_class.extract_cache_events(package_hit_log)
+
+        expect(events.size).to eq(1)
+        event = events.first
+        expect(event[:cache_key]).to eq('assets-package-75866ebef35d')
+        expect(event[:cache_type]).to eq('assets-package')
+        expect(event[:cache_operation]).to eq('pull')
+        expect(event[:cache_result]).to eq('hit')
+        expect(event[:duration]).to be_within(0.5).of(5.0) # From 15s to 20s
+        expect(event[:operation_command]).to eq('assets compilation')
+        expect(event[:operation_success]).to be(true)
+        expect(event[:operation_duration]).to be_within(1).of(24.0) # From 21s to 45s
+      end
+    end
+
+    context 'with complete package push scenario' do
+      let(:package_push_log) do
+        <<~LOG
+          2025-07-25T13:35:12.734729Z CACHE_ASSETS_AS_PACKAGE: true
+          2025-07-25T13:35:13.734729Z ** Fetching cached assets with assets hash 898f673a19041aa68e5a0964d4e8c5cd89b6227a95143ee47a488ea74286d737 **
+          2025-07-25T13:35:15.734729Z Compiling frontend assets
+          2025-07-25T13:35:45.734729Z Pushing assets cache to GitLab
+          2025-07-25T13:36:30.734729Z {"message":"201 Created"}
+          2025-07-25T13:36:31.734729Z gitlab:assets:fix_urls finished
+        LOG
+      end
+
+      it 'processes complete package push scenario' do
+        events = described_class.extract_cache_events(package_push_log)
+
+        expect(events.size).to eq(1)
+        event = events.first
+        expect(event[:cache_key]).to eq('assets-package-upload')
+        expect(event[:cache_type]).to eq('assets-package')
+        expect(event[:cache_operation]).to eq('push')
+        expect(event[:cache_result]).to eq('created')
+        expect(event[:duration]).to be_within(1).of(45.0) # From pushing to created
+        expect(event[:operation_command]).to eq('assets compilation')
+        expect(event[:operation_success]).to be(true)
       end
     end
   end
