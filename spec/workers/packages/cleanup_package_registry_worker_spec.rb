@@ -86,6 +86,28 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, type: :worker, feature_ca
       end
     end
 
+    context 'with helm metadata caches pending destruction' do
+      let_it_be(:helm_metadata_cache) { create(:helm_metadata_cache, :pending_destruction) }
+
+      it_behaves_like 'an idempotent worker'
+
+      it 'queues the cleanup job' do
+        expect(Packages::Helm::CleanupStaleMetadataCacheWorker).to receive(:perform_with_capacity)
+
+        perform
+      end
+    end
+
+    context 'with no helm metadata caches pending destruction' do
+      it_behaves_like 'an idempotent worker'
+
+      it 'does not queue the cleanup job' do
+        expect(Packages::Helm::CleanupStaleMetadataCacheWorker).not_to receive(:perform_with_capacity)
+
+        perform
+      end
+    end
+
     context 'with nuget symbols pending destruction' do
       let_it_be(:nuget_symbol) { create(:nuget_symbol, :orphan) }
 

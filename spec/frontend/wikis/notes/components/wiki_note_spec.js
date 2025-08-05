@@ -40,6 +40,10 @@ describe('WikiNote', () => {
     return shallowMountExtended(WikiNote, {
       propsData: {
         noteableId,
+        resolvable: true,
+        isResolved: true,
+        discussionId: '1',
+        resolvedBy: { name: 'user1', id: '1' },
         ...props,
       },
       mocks: {
@@ -116,7 +120,26 @@ describe('WikiNote', () => {
         showEdit: false,
         canReportAsAbuse: true,
         accessLevel: 'Maintainer',
+        canResolve: true,
+        isResolved: false,
+        discussionId: '1',
       });
+    });
+
+    it('renders note actions without resolve button when the user cannot resolve', () => {
+      const noteWithoutPermission = {
+        ...note,
+        userPermissions: {
+          ...note.userPermissions,
+          resolveNote: false,
+        },
+      };
+
+      wrapper = createWrapper({ note: noteWithoutPermission });
+
+      const noteActions = wrapper.findComponent(NoteActions);
+
+      expect(noteActions.props('canResolve')).not.toBe(true);
     });
 
     it('renders note body correctly', () => {

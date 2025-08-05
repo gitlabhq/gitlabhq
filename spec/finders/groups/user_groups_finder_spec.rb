@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { user.organization }
     let_it_be(:root_group) { create(:group, name: 'Root group', path: 'root-group') }
     let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest') }
     let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_group) }
@@ -264,6 +265,20 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
 
       it_behaves_like 'user group finder searching by name or path' do
         let(:keyword_search_expected_groups) { [public_maintainer_group] }
+      end
+    end
+
+    context 'when scoping by organization' do
+      let_it_be(:different_organization) { create(:organization, name: "different org") }
+      let_it_be(:different_group) { create(:group, organization: different_organization, name: 'a different public owner') }
+      let_it_be(:arguments) { { organization: different_organization } }
+
+      before_all do
+        different_group.add_owner(user)
+      end
+
+      it 'only returns scoped results' do
+        is_expected.to contain_exactly(different_group)
       end
     end
   end

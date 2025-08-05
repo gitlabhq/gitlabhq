@@ -2,6 +2,6 @@
 
 - if @project
   - integrations_link = tag_pair(link_to('', scoped_integrations_path(project: @project)), :integrations_link_start, :integrations_link_end)
-  = safe_format(_("%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{integrations_link_end} in preference to a webhook."), webhooks_link, integrations_link, webhook_type: hook.pluralized_name)
+  = safe_format(_("Use %{webhooks_link_start}webhooks%{webhooks_link_end} to send notifications to external applications in response to events in a GitLab project or group. Consider using an %{integrations_link_start}integration%{integrations_link_end} instead."), webhooks_link, integrations_link)
 - else
-  = safe_format(_("%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project."), webhooks_link, webhook_type: hook.pluralized_name)
+  = safe_format(_("Use %{webhooks_link_start}webhooks%{webhooks_link_end} to send notifications to external applications in response to events in a GitLab project or group."), webhooks_link)

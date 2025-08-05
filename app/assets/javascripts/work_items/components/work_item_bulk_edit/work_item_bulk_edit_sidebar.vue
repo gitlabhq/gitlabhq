@@ -276,7 +276,6 @@ export default {
       data-testid="bulk-edit-state"
     />
     <work-item-bulk-edit-assignee
-      v-if="isEditableUnlessEpicList"
       v-model="assigneeId"
       :full-path="fullPath"
       :is-group="isGroup"
@@ -302,7 +301,7 @@ export default {
       @select="removeLabelIds = $event"
     />
     <work-item-bulk-edit-dropdown
-      v-if="hasIssuableHealthStatusFeature && isEditableUnlessEpicList"
+      v-if="hasIssuableHealthStatusFeature"
       v-model="healthStatus"
       :header-text="__('Select health status')"
       :items="$options.healthStatusItems"
@@ -312,7 +311,6 @@ export default {
       data-testid="bulk-edit-health-status"
     />
     <work-item-bulk-edit-dropdown
-      v-if="isEditableUnlessEpicList"
       v-model="subscription"
       :header-text="__('Select subscription')"
       :items="$options.subscriptionItems"
@@ -321,7 +319,6 @@ export default {
       data-testid="bulk-edit-subscription"
     />
     <work-item-bulk-edit-dropdown
-      v-if="isEditableUnlessEpicList"
       v-model="confidentiality"
       :header-text="__('Select confidentiality')"
       :items="$options.confidentialityItems"
@@ -337,7 +334,7 @@ export default {
       :disabled="!hasItemsSelected || !canEditIteration"
     />
     <work-item-bulk-edit-milestone
-      v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
+      v-if="shouldUseGraphQLBulkEdit"
       v-model="milestoneId"
       :full-path="fullPath"
       :is-group="isGroup"

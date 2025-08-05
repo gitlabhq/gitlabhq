@@ -32,44 +32,10 @@ To view insights for a project or group:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Insights**.
 1. To view a report, from the **Select report** dropdown list, select the report you want to view.
-
-### Access insights reports with deep links
-
-You can direct users to a specific report in insights by using the deep-linked URL.
-
-To create a deep link, append the report key to the end of the insights report URL.
-For example, a GitLab report with the key `bugsCharts` has the deep link URL `https://gitlab.com/gitlab-org/gitlab/insights/#/bugsCharts`.
-
-## Interact with insights charts
-
-You can interact with the insights charts to view details about your group's activity.
-
-### Display different reports
-
-To display one of the available reports on the insights page:
-
-- From the **Select report** dropdown list, select the report you want to display.
-
-### View bar chart annotations
-
-To view annotations:
-
-- Hover over each bar in the chart.
-
-### Zoom in on chart
-
-Insights display data from the last 90 days. You can zoom in to display data only from a subset of the 90-day range.
-
-To do this, select the pause icons ({{< icon name="status-paused" >}}) and slide them along the horizontal axis:
-
-- To change the start date, slide the left pause icon to the left or right.
-- To change the end date, slide the right pause icon to the left or right.
-
-### Exclude dimensions from charts
-
-By default, insights display all available dimensions on the chart.
-
-To exclude a dimension, from the legend below the chart, select the name of the dimension.
+   To view annotations, hover over each bar in the chart.
+1. Optional. Filter the results:
+   - To display data only from a subset of the 90-day range, select the pause icons ({{< icon name="status-paused" >}}) and slide them along the horizontal axis.
+   - To exclude a dimension from the chart, from the legend below the chart, select the name of the dimension.
 
 ### Drill down on charts
 
@@ -85,6 +51,13 @@ You can drill down into the data of all charts whose `query.data_source` is `iss
 To view a drill-down report of the data for a specific priority or severity in a month:
 
 - On the chart, select the bar stack you want to drill down on.
+
+### Create a report deep link
+
+You can direct users to a specific report in insights by using the deep-linked URL.
+
+To create a deep link, append the report key to the end of the insights report URL.
+For example, a GitLab report with the key `bugsCharts` has the deep link URL `https://gitlab.com/gitlab-org/gitlab/insights/#/bugsCharts`.
 
 ## Configuration
 

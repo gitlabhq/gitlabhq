@@ -58,6 +58,7 @@ The table below provides an overview of all available query fields and their spe
 | [Closed at](#closed-at)                 | `closed`, `closedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Issues, epics |
 | [Confidential](#confidential)           | `confidential`                               | `=`, `!=`                 | Issues, epics |
 | [Created at](#created-at)               | `created`, `createdAt`, `opened`, `openedAt` | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
+| [Custom field](#custom-field)           | `customField("Field name")`                  | `=`                       | Issues, epics |
 | [Deployed at](#deployed-at)             | `deployed`, `deployedAt`                     | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
 | [Draft](#draft)                         | `draft`                                      | `=`, `!=`                 | Merge requests |
 | [Due date](#due-date)                   | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=` | Issues, epics |
@@ -72,11 +73,13 @@ The table below provides an overview of all available query fields and their spe
 | [Merged at](#merged-at)                 | `merged`, `mergedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
 | [Merged by user](#merged-by-user)       | `merger`, `mergedBy`                         | `=`                       | Merge requests |
 | [Milestone](#milestone)                 | `milestone`                                  | `=`, `in`, `!=`           | Issues, epics, merge requests |
+| [My reaction emoji](#my-reaction-emoji) | `myReaction`, `myReactionEmoji`              | `=`, `!=`                 | Issues, epics, merge requests |
 | [Project](#project)                     | `project`                                    | `=`                       | Issues, merge requests |
 | [Reviewers](#reviewers)                 | `reviewer`, `reviewers`, `reviewedBy`        | `=`, `!=`                 | Merge requests |
 | [Source branch](#source-branch)         | `sourceBranch`                               | `=`, `in`, `!=`           | Merge requests |
 | [State](#state)                         | `state`                                      | `=`                       | Issues, epics, merge requests |
 | [Status](#status)                       | `status`                                     | `=`                       | Issues |
+| [Subscribed](#subscribed)               | `subscribed`                                 | `=`, `!=`                 | Issues, epics, merge requests |
 | [Target branch](#target-branch)         | `targetBranch`                               | `=`, `in`, `!=`           | Merge requests |
 | [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, epics, merge requests |
 | [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
@@ -360,6 +363,58 @@ The table below provides an overview of all available query fields and their spe
 
   ```plaintext
   created > 2025-01-01 and created < 2025-01-31 and state = opened
+  ```
+
+### Custom field
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/233) in GitLab 18.3.
+
+{{< /history >}}
+
+**Description**: Query issues or epics by [custom fields](../work_items/custom_fields.md).
+
+**Allowed value types**:
+
+- `String` (for single-select custom fields)
+- `List` (of `String`, for multi-select custom fields)
+
+**Additional details**:
+
+- Custom field names and values are not case-sensitive.
+
+**Examples**
+
+- List all issues where the single-select "Subscription" custom field is set to "Free":
+
+  ```plaintext
+  customField("Subscription") = "Free"
+  ```
+
+- List all issues where the single-select "Subscription" and "Team" custom fields are set to
+  "Free" and "Engineering" respectively:
+
+  ```plaintext
+  customField("Subscription") = "Free" and customField("Team") = "Engineering"
+  ```
+
+- List all issues where the multi-select "Category" custom field is set to "Markdown" and "Text Editors":
+
+  ```plaintext
+  customField("Category") = ("Markdown", "Text Editors")
+  ```
+
+  Alternatively:
+
+  ```plaintext
+  customField("Category") = "Markdown" and customField("Category") = "Text Editors"
   ```
 
 ### Deployed at
@@ -916,6 +971,32 @@ The table below provides an overview of all available query fields and their spe
   milestone != (%17.7, %17.8)
   ```
 
+### My reaction emoji
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
+
+{{< /history >}}
+
+**Description**: Query issues, epics, or merge requests by the current user's [emoji reaction](../emoji_reactions.md) on it.
+
+**Allowed value types**: `String`
+
+**Examples**:
+
+- List all issues where the current user reacted with the thumbs-up emoji:
+
+  ```plaintext
+  myReaction = "thumbsup"
+  ```
+
+- List all merge requests where the current user did not react with the thumbs-down emoji:
+
+  ```plaintext
+  type = MergeRequest and myReaction != "thumbsdown"
+  ```
+
 ### Project
 
 **Description**: Query issues or merge requests within a particular project.
@@ -1069,6 +1150,34 @@ The table below provides an overview of all available query fields and their spe
   status = "To do"
   ```
 
+### Subscribed
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
+
+{{< /history >}}
+
+**Description**: Query issues, epics, or merge requests by whether the current user has
+[set notifications](../profile/notifications.md)
+on or off.
+
+**Allowed value types**: `Boolean`
+
+**Examples**:
+
+- List all open issues where the current user has set notifications on:
+
+  ```plaintext
+  state = opened and subscribed = true
+  ```
+
+- List all merge requests where the current user has set notifications off:
+
+  ```plaintext
+  type = MergeRequest and subscribed = false
+  ```
+
 ### Target branch
 
 {{< history >}}
@@ -1135,6 +1244,8 @@ The table below provides an overview of all available query fields and their spe
 
 - If omitted when used inside an embedded view, the default `type` is `Issue`.
 - `type = Epic` queries can only be used together with the [group](#group) field.
+- The `in` operator cannot be used to combine `Epic` and `MergeRequest` types with other types
+  in the same query.
 
 **Examples**:
 
@@ -1248,6 +1359,7 @@ The table below provides an overview of all available query fields and their spe
 - Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 - Fields `status`, `sourceBranch`, `targetBranch`, `sourceProject`, and `targetProject` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
 - Fields `health`, and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Field `subscribed` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -1281,6 +1393,7 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Start date       | `start`, `startDate`                  | Epics                         | Display the start date of the epic |
 | State            | `state`                               | Issues, epics, merge requests | Display a badge indicating the state of the object. For issues and epics, values are `Open` or `Closed`. For merge requests, values are `Open`, `Closed`, or `Merged` |
 | Status           | `status`                              | Issues                        | Display a badge indicating the status of the issue. For example, "To do" or "Complete". Available in the Premium and Ultimate tiers. |
+| Subscribed       | `subscribed`                          | Issues, epics, merge requests | Display `Yes` or `No` indicating whether the current user is subscribed to the object or not |
 | Target branch    | `targetBranch`                        | Merge requests                | Display the target branch of the merge request |
 | Target project   | `targetProject`                       | Merge requests                | Display the target project of the merge request |
 | Title            | `title`                               | Issues, epics, merge requests | Display the title of the object |

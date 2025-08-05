@@ -986,9 +986,6 @@ msgstr ""
 msgid "%{icon} %{severity} - %{name}"
 msgstr ""
 
-msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
-msgstr ""
-
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -1671,12 +1668,6 @@ msgstr ""
 msgid "%{viewer} could not be displayed: %{reason}. Options to address this: %{options}."
 msgstr ""
 
-msgid "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project."
-msgstr ""
-
-msgid "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{integrations_link_end} in preference to a webhook."
-msgstr ""
-
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
@@ -1949,9 +1940,6 @@ msgid "."
 msgstr ""
 
 msgid ".git-blame-ignore-revs is not a file"
-msgstr ""
-
-msgid ".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."
 msgstr ""
 
 msgid "/"
@@ -3618,6 +3606,12 @@ msgstr ""
 msgid "Achievements|Avatar"
 msgstr ""
 
+msgid "Achievements|Award"
+msgstr ""
+
+msgid "Achievements|Award achievements"
+msgstr ""
+
 msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
 msgstr ""
 
@@ -3643,6 +3637,9 @@ msgid "Achievements|View your achievements on your %{link_start}profile%{link_en
 msgstr ""
 
 msgid "Achievements|View your achievements on your profile."
+msgstr ""
+
+msgid "Achievements|You're awarding users the %{achievementName} achievement"
 msgstr ""
 
 msgid "Acknowledge"
@@ -67882,6 +67879,15 @@ msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%
 msgstr ""
 
 msgid "Use %{code_start}authorized_keys%{code_end} file to authenticate SSH keys"
+msgstr ""
+
+msgid "Use %{integrations_link_start}integrations%{link_end} to make external applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
+msgstr ""
+
+msgid "Use %{webhooks_link_start}webhooks%{webhooks_link_end} to send notifications to external applications in response to events in a GitLab project or group."
+msgstr ""
+
+msgid "Use %{webhooks_link_start}webhooks%{webhooks_link_end} to send notifications to external applications in response to events in a GitLab project or group. Consider using an %{integrations_link_start}integration%{integrations_link_end} instead."
 msgstr ""
 
 msgid "Use .gitlab-ci.yml"

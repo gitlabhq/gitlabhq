@@ -1058,6 +1058,7 @@ module API
         args = declared_params(include_missing: false)
         args[:permission_scope] = :transfer_projects
         args[:exact_matches_first] = true
+        args[:organization] = Current.organization
 
         groups = ::Groups::UserGroupsFinder.new(current_user, current_user, args).execute
         groups = groups.excluding_groups(user_project.group).with_route

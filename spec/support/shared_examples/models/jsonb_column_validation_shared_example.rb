@@ -46,13 +46,17 @@ end
 
 RSpec.shared_context 'with JSONB validated columns' do # rubocop:disable RSpec/SharedContext -- We cannot include `shared_examples` conditionally based on `type: :model`
   model = described_class
+  is_jsonb = ->(c) { c.type == :jsonb }
+  is_encrypted = ->(c) { model.encrypted_attributes&.include?(c.name.to_sym) }
+  filter = ->(c) { is_jsonb.call(c) && !is_encrypted.call(c) }
+
   jsonb_columns = \
     model &&
     model < ApplicationRecord &&
     model.name && # skip unnamed/anonymous models
     !model.abstract_class? &&
     !model.table_name&.start_with?('_test') && # skip test models that define the tables in specs
-    model.columns.select { |c| c.type == :jsonb }.map(&:name).map(&:to_sym)
+    model.columns.select(&filter).map(&:name).map(&:to_sym)
 
   if jsonb_columns && jsonb_columns.any?
     include_examples 'Model validates JSONB columns', described_class, jsonb_columns

@@ -389,6 +389,13 @@ RSpec.describe Snippets::BlobsController, "routing" do
     expect(get('/-/snippets/1/raw/master/lib/version.rb'))
       .to route_to('snippets/blobs#raw', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
   end
+
+  context 'when reference has special symbols' do
+    it "to #raw" do
+      expect(get('/-/snippets/1/raw/0.0.x-rc/lib/version.rb'))
+        .to route_to('snippets/blobs#raw', snippet_id: '1', ref: '0.0.x-rc', path: 'lib/version.rb')
+    end
+  end
 end
 
 RSpec.describe RunnerSetupController, 'routing' do

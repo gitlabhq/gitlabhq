@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-31 14:42\n"
+"PO-Revision-Date: 2025-08-05 11:19\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -2187,6 +2187,9 @@ msgstr "Caithfidh 'allow: %{allow}' a bheith ina theaghrán"
 msgid "'attributes' for component '%{component_name}' must be a Hash"
 msgstr "Ní mór 'tréithe' don chomhpháirt '%{component_name}' a bheith ina hais"
 
+msgid "'attributes' in component '%{component}' must be a Hash"
+msgstr ""
+
 msgid "'command' must be a Hash"
 msgstr "Ní mór 'ordú' a bheith ina hais"
 
@@ -2974,17 +2977,26 @@ msgstr "An bhfuil tú cinnte gur mian leat gníomhaire %{name} a scriosadh?"
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr "Déan cur síos gairid ar a bhfuil an gníomhaire seo ceaptha a dhéanamh agus a phríomhchumais."
 
+msgid "AICatalog|Briefly describe what this flow is designed to do and its key capabilities."
+msgstr ""
+
 msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and processes."
 msgstr "Tóg gníomhairí agus sreafaí AI chun tascanna agus próisis athchleachtacha a uathoibriú."
 
 msgid "AICatalog|Choose a memorable name for your AI agent."
 msgstr "Roghnaigh ainm cuimhneacháin do do ghníomhaire AI."
 
+msgid "AICatalog|Choose a memorable name for your AI flow."
+msgstr ""
+
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
 msgstr "Roghnaigh cé a fhéadfaidh an gníomhaire seo a fheiceáil agus idirghníomhú leis tar éis é a fhoilsiú sa chatalóg phoiblí AI."
 
 msgid "AICatalog|Create agent"
 msgstr "Cruthaigh gníomhaire"
+
+msgid "AICatalog|Create flow"
+msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
 msgstr "Sainmhínigh pearsantacht, saineolas agus treoirlínte iompraíochta an ghníomhaire. Múnlaíonn sé seo an chaoi a bhfreagraíonn an gníomhaire agus a dtéann sé i ngleic le tascanna."
@@ -3001,6 +3013,9 @@ msgstr "Cuir in Eagar"
 msgid "AICatalog|Edit agent"
 msgstr "Gníomhaire a chur in eagar"
 
+msgid "AICatalog|Edit flow"
+msgstr ""
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr "Theip ar an ngníomhaire a scriosadh. %{error}"
 
@@ -3009,6 +3024,15 @@ msgstr "Theip ar an ngníomhaire a rith."
 
 msgid "AICatalog|Flow"
 msgstr "Sreabhadh"
+
+msgid "AICatalog|Flow created successfully."
+msgstr ""
+
+msgid "AICatalog|Flow not found."
+msgstr ""
+
+msgid "AICatalog|Flow updated successfully."
+msgstr ""
 
 msgid "AICatalog|Flows"
 msgstr "Sreafaí"
@@ -3022,11 +3046,17 @@ msgstr "Ní féidir níos mó ná %{value} carachtar a bheith san ionchur. Giorr
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr "Modhnaigh socruithe agus cumraíocht an ghníomhaire."
 
+msgid "AICatalog|Modify the flow settings and configuration."
+msgstr ""
+
 msgid "AICatalog|Name is required."
 msgstr "Tá ainm ag teastáil."
 
 msgid "AICatalog|New agent"
 msgstr "Gníomhaire nua"
+
+msgid "AICatalog|New flow"
+msgstr ""
 
 msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners  of this project can edit or delete the agent."
 msgstr ""
@@ -3064,6 +3094,9 @@ msgstr "Sábháil athruithe"
 msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr "Roghnaigh tionscadal a mbeidh do ghníomhaire AI bainteach leis."
 
+msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
 msgid "AICatalog|System Prompt"
 msgstr "Pras Córais"
 
@@ -3082,11 +3115,17 @@ msgstr "Níorbh fhéidir an gníomhaire a chur leis. Déan iarracht arís."
 msgid "AICatalog|The agent could not be updated. Please try again."
 msgstr "Níorbh fhéidir an gníomhaire a nuashonrú. Déan iarracht arís."
 
+msgid "AICatalog|The flow could not be added. Please try again."
+msgstr ""
+
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr "Is féidir an gníomhaire seo a dhéanamh príobháideach mura n-úsáidtear é."
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr "Speisialtóireacht an ghníomhaire seo i... Is féidir leis cabhrú leat le... Is fearr a oireann do..."
+
+msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
+msgstr ""
 
 msgid "AICatalog|User Prompt"
 msgstr "Leid Úsáideora"
@@ -5056,15 +5095,6 @@ msgstr "Cuirfear lipéid a cruthaíodh anseo go huathoibríoch le tionscadail nu
 msgid "AdminLabels|They can be used to categorize issues and merge requests."
 msgstr "Is féidir iad a úsáid chun saincheisteanna a chatagóiriú agus iarrataí a chumasc."
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
-msgstr "Tá tú ar tí an tionscadal %{projectName}, a stór, agus na hacmhainní gaolmhara go léir a scriosadh go buan, lena n-áirítear saincheisteanna agus iarratais a chumasc. Tar éis duit %{strong_start} Scrios tionscad %{strong_end} a dhearbhú agus a bhrú, ní féidir é a chur ar ais nó a aisghabháil."
-
-msgid "AdminProjects|Delete"
-msgstr "Scrios"
-
-msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr "Scrios Tionscadal %{projectName}?"
-
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr "Ainm uathúil tuairisciúil do d'imscaradh."
 
@@ -6168,9 +6198,6 @@ msgstr "Déantar leibhéal rochtana an úsáideora seo a bhainistiú le LDAP. Ba
 
 msgid "AdminUsers|To confirm, type %{name}"
 msgstr "Le deimhniú, clóscríobh %{name}"
-
-msgid "AdminUsers|To confirm, type %{projectName}"
-msgstr "Chun a dhearbhú, clóscríobh %{projectName}"
 
 msgid "AdminUsers|To confirm, type %{username}."
 msgstr "Chun a dhearbhú, clóscríobh %{username}."
@@ -7481,6 +7508,9 @@ msgstr "Ligeann sé do thionscadail earráidí a rianú ag úsáid comhtháthú 
 msgid "Almost there…"
 msgstr "Beagnach ann…"
 
+msgid "Alpha"
+msgstr ""
+
 msgid "Already blocked"
 msgstr "Cuireadh bac cheana féin"
 
@@ -8263,27 +8293,6 @@ msgstr "Theip ar lódáil meiteashonraí ainmspáis."
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr "%{linkStart}Foghlaim tuilleadh%{linkEnd} faoi bhainistiú agus idirghníomhú le deais na hanailíse."
 
-msgid "Analytics|A dashboard with that name already exists."
-msgstr "Tá deais leis an ainm sin ann cheana féin."
-
-msgid "Analytics|A visualization with that name already exists."
-msgstr "Tá léirshamhlú leis an ainm sin ann cheana féin."
-
-msgid "Analytics|Add a visualization"
-msgstr "Cuir léirshamhlú leis"
-
-msgid "Analytics|Add to dashboard"
-msgstr "Cuir leis an deais"
-
-msgid "Analytics|Add visualization"
-msgstr "Cuir léirshamhlú leis"
-
-msgid "Analytics|Add visualizations"
-msgstr "Cuir amharclúcháin"
-
-msgid "Analytics|An error occurred while loading data"
-msgstr "Tharla earráid agus sonraí á luchtú"
-
 msgid "Analytics|Analytics dashboards"
 msgstr "Anailísíocht deais"
 
@@ -8293,44 +8302,11 @@ msgstr "Rinneadh suíomhanna anailíse do '%{group_name}' a nuashonrú go rathú
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr "Rinneadh suíomhanna anailíse do '%{project_name}' a nuashonrú go rathúil."
 
-msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
-msgstr "An bhfuil tú cinnte gur mhaith leat an deais seo a chruthú a chealú?"
-
-msgid "Analytics|Are you sure you want to cancel creating this visualization?"
-msgstr "An bhfuil tú cinnte gur mhaith leat an léirshamhlú seo a chruthú a chealú?"
-
-msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
-msgstr "An bhfuil tú cinnte gur mhaith leat eagarthóireacht an deais seo a chealú?"
-
-msgid "Analytics|Cancel"
-msgstr "Cealaigh"
-
-msgid "Analytics|Charts"
-msgstr "Cairteanna"
-
-msgid "Analytics|Code"
-msgstr "Cód"
-
-msgid "Analytics|Column chart"
-msgstr "Cairt colún"
-
 msgid "Analytics|Configure analytics reports."
 msgstr "Cumraigh tuarascálacha anailíse."
 
-msgid "Analytics|Continue creating"
-msgstr "Lean ar aghaidh ag cruthú"
-
-msgid "Analytics|Continue editing"
-msgstr "Lean ort ag eagarthóireacht"
-
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr "Cruthaigh %{dashboardSlug} deais"
-
-msgid "Analytics|Create your dashboard"
-msgstr "Cruthaigh do deais"
-
-msgid "Analytics|Create your visualization"
-msgstr "Cruthaigh do léirshamhlú"
 
 msgid "Analytics|Created by GitLab"
 msgstr "Cruthaithe ag GitLab"
@@ -8338,26 +8314,8 @@ msgstr "Cruthaithe ag GitLab"
 msgid "Analytics|Custom"
 msgstr "Saincheaptha"
 
-msgid "Analytics|Dashboard description"
-msgstr "Cur síos ar an deais"
-
-msgid "Analytics|Dashboard description (optional)"
-msgstr "Cur síos ar an bpainéal (roghnach)"
-
 msgid "Analytics|Dashboard not found"
 msgstr "Níor aimsíodh an deais"
-
-msgid "Analytics|Dashboard title"
-msgstr "Teideal deais"
-
-msgid "Analytics|Dashboard was saved successfully"
-msgstr "Sábháiltear an deais go rathúil"
-
-msgid "Analytics|Data explorer"
-msgstr "Taiscéalaí sonraí"
-
-msgid "Analytics|Data table"
-msgstr "Tábla sonraí"
 
 msgid "Analytics|Date range"
 msgstr "Raon dáta"
@@ -8378,27 +8336,6 @@ msgstr[4] "Taispeántar dátaí agus amanna i gcrios ama UTC. Tá an raon dáta 
 
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
 msgstr "Níl an raon dáta réamhshocraithe '%{defaultOption}' san áireamh sa liosta roghanna dateRange"
-
-msgid "Analytics|Edit"
-msgstr "Cuir in eagar"
-
-msgid "Analytics|Edit your dashboard"
-msgstr "Cuir do phainéal in eagar"
-
-msgid "Analytics|Enter a dashboard description"
-msgstr "Iontráil cur síos ar an deais"
-
-msgid "Analytics|Enter a dashboard title"
-msgstr "Iontráil teideal deais"
-
-msgid "Analytics|Enter a visualization title"
-msgstr "Iontráil teideal léirshamhlú"
-
-msgid "Analytics|Error while saving dashboard"
-msgstr "Earráid agus deais á shábháil"
-
-msgid "Analytics|Error while saving visualization."
-msgstr "Earráid agus léirshamhlú á shábháil."
 
 msgid "Analytics|Events received since %{date}"
 msgstr "Imeachtaí a fuarthas ó %{date}"
@@ -8430,9 +8367,6 @@ msgstr "Nuashonrú is déanaí: %{recordedAt}"
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr "Foghlaim tuilleadh faoi %{docsLinkStart}anailís tionchair AI%{docsLinkEnd} agus %{subscriptionLinkStart}suíocháin GitLab Duo%{subscriptionLinkEnd}."
 
-msgid "Analytics|Line chart"
-msgstr "Cairt líne"
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr "Níl aon phainéal ag teacht leis an gcosán URL sonraithe."
 
@@ -8445,35 +8379,11 @@ msgstr "Forbhreathnú"
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "Athnuaigh an leathanach chun triail eile a bhaint as nó féach ar %{linkStart}doiciméadúchán fabhtcheartaithe%{linkEnd}."
 
-msgid "Analytics|Save and add to Dashboard"
-msgstr "Sábháil agus cuir leis an Deais"
-
-msgid "Analytics|Save your dashboard"
-msgstr "Sábháil do phainéal"
-
-msgid "Analytics|Save your visualization"
-msgstr "Sábháil do léirshamhlú"
-
-msgid "Analytics|Select a measurement"
-msgstr "Roghnaigh tomhas"
-
-msgid "Analytics|Select a visualization type"
-msgstr "Roghnaigh cineál léirshamhlú"
-
-msgid "Analytics|Single statistic"
-msgstr "Staitisticí aonair"
-
-msgid "Analytics|Single stats"
-msgstr "Staitisticí Aonair"
-
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "Tá rud éigin cearr le do chumraíocht léirshamhlú painéil. Féach %{linkStart}doiciméadú fabhtcheartaithe %{linkEnd}."
 
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "Chuaigh rud éigin mícheart agus tú ag nascadh le do fhoinse sonraí. Féach %{linkStart}doiciméadú fabhtcheartaithe %{linkEnd}."
-
-msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
-msgstr "Chuaigh rud éigin mícheart agus na radhairc atá ar fáil á luchtú. Athnuachan an leathanach chun triail a bhaint as arís."
 
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "Chuaigh rud éigin mícheart agus an deais á luchtú. Athnuaigh an leathanach chun iarracht a dhéanamh arís nó%{linkStart} doiciméadú fabhtcheartaithe %{linkEnd}a fheiceáil."
@@ -8481,20 +8391,11 @@ msgstr "Chuaigh rud éigin mícheart agus an deais á luchtú. Athnuaigh an leat
 msgid "Analytics|Something went wrong."
 msgstr "Chuaigh rud éigin mícheart."
 
-msgid "Analytics|Start by choosing a measure"
-msgstr "Tosaigh trí bheart a roghnú"
-
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr "Staitisticí maidir le húsáid spás ainmneacha. Is comhaireamh carnach iad sonraí úsáide, agus nuashonraítear iad go míosúil."
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
 msgstr "Staitisticí ar úsáid ainmspáis. Is comhaireamh carnach é sonraí úsáide, agus déantar iad a nuashonrú go míosúil. Nuashonraithe go deireanach: %{recordedAt}"
-
-msgid "Analytics|Tables"
-msgstr "Táblaí"
-
-msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
-msgstr "Ní thaispeánann an réamhamharc léirshamhlú ach an 7 lá anuas. Is féidir le léamhairc deais an raon dáta iomlán a thaispeáint."
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
 msgstr "Ní féidir socruithe anailíse a nuashonrú. Bain triail as arís."
@@ -8514,23 +8415,11 @@ msgstr "Is comhaireamh carnach é sonraí úsáide agus déantar iad a nuashonr�
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr "Úsáid ClickHouse le haghaidh tuarascálacha anailíse tacaithe. Ar fáil nuair a %{link_start}chumraítear ClickHouse %{link_end}."
 
-msgid "Analytics|Use the data explorer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
-msgstr "Úsáid an taiscéalaí sonraí chun léirshamhlú saincheaptha a chruthú. Tar éis duit léirshamhlú a shábháil, is féidir leat é a chur le deais."
-
 msgid "Analytics|View available dashboards"
 msgstr "Féach ar na deais atá ar fáil"
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr "Féach ar méadrachtaí amháin d'úsáideoirí a thug toiliú le rianú gníomhaíochta."
-
-msgid "Analytics|Visualization"
-msgstr "Amharclú"
-
-msgid "Analytics|Visualization title"
-msgstr "Teideal léirshamhlú"
-
-msgid "Analytics|Visualization was saved successfully"
-msgstr "Sábháiltear an léirshamhlú go rathúil"
 
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr "Déan anailís ar do spleáchais le haghaidh leochaileachtaí aitheanta."
@@ -10471,8 +10360,8 @@ msgstr "Úsáideoir le rochtain API ar an bhfreastalaí Bamboo."
 msgid "Banned"
 msgstr "Coiscthe"
 
-msgid "Banner message"
-msgstr "Teachtaireacht meirge"
+msgid "Banner message (optional)"
+msgstr "Teachtaireacht meirge (roghnach)"
 
 msgid "Based on"
 msgstr "Bunaithe ar"
@@ -16983,9 +16872,6 @@ msgstr "Mar sin féin, tá píblíne comhlíonta cumraithe ann fós nach mór a 
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr "Níos lú ná 2 cheadaitheoirí"
 
-msgid "ComplianceReport|Location"
-msgstr "Suíomh"
-
 msgid "ComplianceReport|Migrate pipeline to a policy"
 msgstr "Píblíne a aistriú chuig polasaí"
 
@@ -17021,6 +16907,9 @@ msgstr "Ar feitheamh"
 
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr "Bain cumraíocht na píblíne comhlíonta ón gcreat comhlíonta le do thoil ionas gur féidir leis an mbeartas nua forghníomhaithe píblíne tosaíocht a fháil."
+
+msgid "ComplianceReport|Project"
+msgstr ""
 
 msgid "ComplianceReport|Projects covered by frameworks"
 msgstr "Tionscadail atá clúdaithe ag creatlacha"
@@ -17135,6 +17024,9 @@ msgstr "Cumraítear riail chun iarratais chumasc a chosc a cheadaíonn coistí."
 msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
 msgstr "Cumraítear riail chun dhá cheadú a bheith ag teastáil."
 
+msgid "ComplianceStandardsAdherence|API security running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Add adequate administrators"
 msgstr "Cuir riarthóirí leordhóthanacha leis"
 
@@ -17150,11 +17042,26 @@ msgstr "Coigeartaigh ceadanna chun a rialú cé atá in ann brú go díreach chu
 msgid "ComplianceStandardsAdherence|All attached frameworks"
 msgstr "Gach creataí ceangailte"
 
+msgid "ComplianceStandardsAdherence|At least one approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|At least one non-author approval"
 msgstr "Ceadú neamh-údar amháin ar a laghad"
 
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr "Dhá cheadú ar a laghad"
+
+msgid "ComplianceStandardsAdherence|Auth SSO enabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Author approved merge request is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Branch deletion disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|CI/CD job token scope enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Change your project visibility settings to comply with organizational security requirements."
 msgstr "Athraigh do shocruithe infheictheachta tionscadail chun cloí le ceanglais slándála eagraíochta."
@@ -17167,6 +17074,18 @@ msgstr "Seiceáil"
 
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr "Seiceálacha"
+
+msgid "ComplianceStandardsAdherence|Code changes requires code owners"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code owner approval required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code quality running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Committers approved merge request is forbidden"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues."
 msgstr "Cumraigh DAST i do phíblíne CI/CD chun d’iarratas a thástáil go huathoibríoch le haghaidh saincheisteanna slándála."
@@ -17276,6 +17195,9 @@ msgstr "Cumraigh do thionscadal chun dhá cheadú ar a laghad a éileamh ar iarr
 msgid "ComplianceStandardsAdherence|Configure your project to reset approvals when new changes are pushed."
 msgstr "Cumraigh do thionscadal chun ceaduithe a athshocrú nuair a bhrúitear athruithe nua."
 
+msgid "ComplianceStandardsAdherence|Container scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Controls whether users can merge changes to the default branch."
 msgstr "Rialaíonn sé cibé an féidir le húsáideoirí athruithe ar an mbrainse réamhshocraithe a chumasc."
 
@@ -17288,6 +17210,9 @@ msgstr "Cruthaigh forc den tionscadal."
 msgid "ComplianceStandardsAdherence|Create valid CI configuration"
 msgstr "Cruthaigh cumraíocht CI bailí"
 
+msgid "ComplianceStandardsAdherence|DAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|DAST scan"
 msgstr "Scanadh DAST"
 
@@ -17299,6 +17224,21 @@ msgstr "Níl an scanóir DAST cumraithe sa chumraíocht píblíne don bhrainse r
 
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr "Dáta ón athrú stádas deireanach"
+
+msgid "ComplianceStandardsAdherence|Default branch protected"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch protected from direct push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can merge"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Dependency scanning running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Disable branch deletion"
 msgstr "Díchumasaigh scriosadh brainse"
@@ -17371,6 +17311,9 @@ msgstr "Forfheidhmiú ceadú úinéara an chóid"
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
 msgstr "Cinntigh go bhfuil ar a laghad beirt riarthóirí sannta le haghaidh iomarcaíochta i ngach stór."
+
+msgid "ComplianceStandardsAdherence|Ensure two administrators per repository"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensure version control is properly configured for your project."
 msgstr "Cinntigh go bhfuil rialú leagan cumraithe i gceart do do thionscadal."
@@ -17534,6 +17477,9 @@ msgstr "Cinntíonn sé go dtugtar aghaidh ar leochaileachtaí laistigh de thairs
 msgid "ComplianceStandardsAdherence|Ensures webhooks are securely configured."
 msgstr "Cinntíonn sé go bhfuil cuaillí gréasáin cumraithe go slán."
 
+msgid "ComplianceStandardsAdherence|Error tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and archive inactive repositories."
 msgstr "Próiseas a bhunú chun taisclanna neamhghníomhacha a athbhreithniú agus a chur i gcartlann go tréimhsiúil."
 
@@ -17558,14 +17504,29 @@ msgstr "Deisigh ar fáil"
 msgid "ComplianceStandardsAdherence|Fix suggestions"
 msgstr "Moltaí a shocrú"
 
+msgid "ComplianceStandardsAdherence|Force push disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Forks exist for the project"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Framework"
 msgstr "Creatlach"
 
 msgid "ComplianceStandardsAdherence|Frameworks"
 msgstr "Creataí"
 
+msgid "ComplianceStandardsAdherence|Fuzz testing running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|GitLab license level Ultimate"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr "Grúpa de réir"
+
+msgid "ComplianceStandardsAdherence|Has valid CI/CD configuration"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Have DAST scanner configured in pipeline configuration"
 msgstr "Bíodh scanóir DAST cumraithe i gcumraíocht píblíne"
@@ -17588,6 +17549,9 @@ msgstr "Bíodh riail bhailí agat a chuireann cosc ​​ar úsáideoirí iarrat
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr "Conas a shocrú"
 
+msgid "ComplianceStandardsAdherence|IaC scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Implement API security testing"
 msgstr "Tástáil slándála API a chur i bhfeidhm"
 
@@ -17609,8 +17573,17 @@ msgstr "Próiseas athbhreithnithe úsáideora a chur i bhfeidhm"
 msgid "ComplianceStandardsAdherence|Implement vulnerability SLOs"
 msgstr "SLOanna leochaileachta a chur i bhfeidhm"
 
+msgid "ComplianceStandardsAdherence|Internal visibility is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Issue tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Last scanned"
 msgstr "Scanadh an uair dheireanach"
+
+msgid "ComplianceStandardsAdherence|License compliance running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Lock approval rules"
 msgstr "Rialacha formheasa glasála"
@@ -17618,8 +17591,20 @@ msgstr "Rialacha formheasa glasála"
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr "Rialacha ceadaithe iarratais cumaisc"
 
+msgid "ComplianceStandardsAdherence|Merge request commit reset approvals"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests approval rules prevent editing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|More information"
 msgstr "Tuilleadh eolais"
+
+msgid "ComplianceStandardsAdherence|More members than admins"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
 msgstr "Níor aimsíodh aon tionscadal le seiceálacha cloí caighdeáin"
@@ -17641,6 +17626,9 @@ msgstr "Aon cheann"
 
 msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr "Creata comhlíonta eile curtha i bhfeidhm ar %{linkStart}%{projectName}%{linkEnd}"
+
+msgid "ComplianceStandardsAdherence|Package Hunter no findings untriaged"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Passed"
 msgstr "Rathúil"
@@ -17684,11 +17672,29 @@ msgstr "Cuireann sé cosc ​​ar úsáideoirí a thug gealltanas d’iarratas 
 msgid "ComplianceStandardsAdherence|Project"
 msgstr "Tionscadal"
 
+msgid "ComplianceStandardsAdherence|Project not archived"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project not marked for deletion"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project pipelines not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Project repository exists"
 msgstr "Tá stór tionscadail ann"
 
+msgid "ComplianceStandardsAdherence|Project visibility not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Projects"
 msgstr "Tionscadail"
+
+msgid "ComplianceStandardsAdherence|Protected branches exist"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Push protection enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Raw filter values is not currently supported. Please use available values."
 msgstr "Ní thacaítear le luachanna scagairí amha faoi láthair. Bain úsáid as na luachanna atá ar fáil le do thoil."
@@ -17696,8 +17702,20 @@ msgstr "Ní thacaítear le luachanna scagairí amha faoi láthair. Bain úsáid 
 msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. Please use the available filters."
 msgstr "Ní thacaítear le cuardach téacs amh faoi láthair. Bain úsáid as na scagairí atá ar fáil."
 
+msgid "ComplianceStandardsAdherence|Require MFA at organization level"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require MFA for contributors"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require branch up to date"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Require code owner approval"
 msgstr "Teastaíonn ceadú úinéir an chóid"
+
+msgid "ComplianceStandardsAdherence|Require linear history"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Require resolved discussions"
 msgstr "Pléití réitithe a éileamh"
@@ -17708,20 +17726,41 @@ msgstr "Riachtanas"
 msgid "ComplianceStandardsAdherence|Requirements"
 msgstr "Riachtanais"
 
+msgid "ComplianceStandardsAdherence|Requires signed commits"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Reset approvals on push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Resolve discussions required"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict pipeline access"
 msgstr "Srian a chur ar rochtain píblíne"
 
 msgid "ComplianceStandardsAdherence|Restrict pipeline visibility"
 msgstr "Srian a chur ar infheictheacht píblíne"
 
+msgid "ComplianceStandardsAdherence|Restrict push/merge access"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict variable creation"
 msgstr "Srian a chur le cruthú athróg"
+
+msgid "ComplianceStandardsAdherence|Restricted build access"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Restricts access to build artifacts and pipeline outputs."
 msgstr "Cuireann sé srian le rochtain ar dhéantáin tógála agus aschuir píblíne."
 
 msgid "ComplianceStandardsAdherence|Restricts who can push to or merge into protected branches."
 msgstr "Srianta ar féidir leo brú go dtí brainsí cosanta nó iad a chumasc."
+
+msgid "ComplianceStandardsAdherence|Review and archive stale repositories"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Review and remove inactive users"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Review and secure all webhook configurations to prevent unauthorized access."
 msgstr "Déan athbhreithniú agus slán ar gach cumraíocht cuaille gréasáin chun rochtain neamhúdaraithe a chosc."
@@ -17741,6 +17780,9 @@ msgstr "Déan athbhreithniú ar stádas an tionscadail"
 msgid "ComplianceStandardsAdherence|Review the project archive status and unarchive if necessary for active projects."
 msgstr "Athbhreithniú a dhéanamh ar stádas cartlainne an tionscadail agus unarchive más gá do thionscadail ghníomhacha."
 
+msgid "ComplianceStandardsAdherence|SAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|SAST scan"
 msgstr "Scanadh SAST"
 
@@ -17750,8 +17792,14 @@ msgstr "Tá scanóir SAST cumraithe sa chumraíocht píblíne don bhrainse réam
 msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."
 msgstr "Níl an scanóir SAST cumraithe sa chumraíocht píblíne don bhrainse réamhshocraithe."
 
+msgid "ComplianceStandardsAdherence|Secret detection running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Secure webhook configurations"
 msgstr "Cumraíochtaí cúnta gréasáin slán"
+
+msgid "ComplianceStandardsAdherence|Secure webhooks"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
 msgstr "Srianta scóip chomharthaí poist CI/CD chun slándáil píblíne a fheabhsú."
@@ -17822,6 +17870,9 @@ msgstr "Socraigh rialuithe ceada dochta le haghaidh rochtain stórtha."
 msgid "ComplianceStandardsAdherence|Set up your project to maintain a clean, linear commit history."
 msgstr "Socraigh do thionscadal chun stair ghlan líneach gealltanais a choinneáil."
 
+msgid "ComplianceStandardsAdherence|Stale branch cleanup enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Standard"
 msgstr "Caighdeán"
 
@@ -17831,8 +17882,20 @@ msgstr "Caighdeáin"
 msgid "ComplianceStandardsAdherence|Status"
 msgstr "Stádas"
 
+msgid "ComplianceStandardsAdherence|Status checks required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Status page configured"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Strict Permission for Repository"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Success reason"
 msgstr "Cúis rathúlachta"
+
+msgid "ComplianceStandardsAdherence|Terraform enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr "Cuidíonn na gnéithe seo a leanas leis an riachtanas seo a shásamh."
@@ -17861,6 +17924,9 @@ msgstr "Uasghrádú go dtí ceadúnas deiridh"
 msgid "ComplianceStandardsAdherence|Upgrade your GitLab license to Ultimate to access all security and compliance features."
 msgstr "Uasghrádaigh do cheadúnas GitLab go Ultimate chun rochtain a fháil ar na gnéithe slándála agus comhlíonta go léir."
 
+msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers."
 msgstr "Athróga CI/CD sainmhínithe ag an úsáideoir srianta do chothaitheoirí."
 
@@ -17869,6 +17935,9 @@ msgstr "Féach ar na sonraí"
 
 msgid "ComplianceStandardsAdherence|View details (fix available)"
 msgstr "Féach ar na sonraí (socrú ar fáil)"
+
+msgid "ComplianceStandardsAdherence|Vulnerabilities SLO days over threshold"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Your standards adherence CSV export for the group \"%{group_name}\" is attached to this email."
 msgstr "Tá easpórtáil CSV cloí do chaighdeáin don ghrúpa \"%{group_name}\" ceangailte leis an ríomhphost seo."
@@ -19702,9 +19771,6 @@ msgstr "Tír nó réigiún"
 
 msgid "Country or region is required."
 msgstr "Tá tír nó réigiún riachtanach."
-
-msgid "Counts"
-msgstr "Comhaireann"
 
 msgid "Counts reflect children you may not have access to."
 msgstr "Léiríonn comhaireanta leanaí nach mbeidh rochtain agat orthu."
@@ -22038,9 +22104,6 @@ msgstr "%{start_date}–%{end_date}"
 msgid "Dates"
 msgstr "Dátaí"
 
-msgid "Day"
-msgstr "Lá"
-
 msgid "Day of month"
 msgstr "Lá na míosa"
 
@@ -22550,8 +22613,8 @@ msgstr "Easpórtáil liosta spleáchais"
 msgid "Dependencies|Direct dependents"
 msgstr "Cleithiúnaithe díreacha"
 
-msgid "Dependencies|Enter at least 3 characters to view available components."
-msgstr "Cuir isteach 3 charachtar ar a laghad chun na comhpháirteanna atá ar fáil a fheiceáil."
+msgid "Dependencies|Enter at least 2 characters to view available components."
+msgstr ""
 
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr "Earráid agus an liosta spleáchais á easpórtáil. Athlódáil an leathanach le do thoil."
@@ -24054,9 +24117,6 @@ msgstr "Chuaigh rud éigin mícheart agus línte éagsúla á fháil."
 
 msgid "Diffs|with %{additions} and %{deletions}"
 msgstr "le %{additions} agus %{deletions}"
-
-msgid "Dimension"
-msgstr "Toise"
 
 msgid "Direct"
 msgstr "Díreach"
@@ -27593,6 +27653,9 @@ msgstr "Theip ar stóras a chruthú"
 msgid "Failed to create resources"
 msgstr "Theip ar acmhainní a chruthú"
 
+msgid "Failed to create security category"
+msgstr "Theip ar chatagóir slándála a chruthú"
+
 msgid "Failed to create wiki"
 msgstr "Theip ar vicí a chruthú"
 
@@ -28448,6 +28511,9 @@ msgstr "Foghlaim Chónaidhme na gCohóirt (FLoC)"
 
 msgid "FloC|Participate in FLoC"
 msgstr "Páirt a ghlacadh i FLoC"
+
+msgid "Focus file browser"
+msgstr ""
 
 msgid "Focus filter bar"
 msgstr "Barra scagaire fócas"
@@ -30709,9 +30775,6 @@ msgstr "Scoránaigh má tá brainse foinse curtha san áireamh nó curtha as an 
 msgid "GlobalSearch|Toggle if results have target branch included or excluded"
 msgstr "Scoraigh an bhfuil brainse sprice san áireamh nó eisiata i dtorthaí"
 
-msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
-msgstr "Cineál%{kbdOpen}/%{kbdClose} le cuardach"
-
 msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr "Clóscríobh chun moltaí nua le feiceáil thíos."
 
@@ -31923,8 +31986,8 @@ msgstr "Saincheapadh suaitheantais an ghrúpa seo."
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr "Réamhshocraithe go píblíne Auto DevOps do gach tionscadal laistigh den ghrúpa seo"
 
-msgid "GroupSettings|Disable personal access tokens for enterprise users"
-msgstr "Díchumasaigh comharthaí rochtana pearsanta d'úsáideoirí fiontar"
+msgid "GroupSettings|Disable personal access tokens"
+msgstr ""
 
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
 msgstr "Díchumasaigh cuireadh úsáideoirí chuig grúpaí agus tionscadail laistigh de %{group}"
@@ -31956,6 +32019,9 @@ msgstr "Teastais SSH a fhorfheidhmiú"
 msgid "GroupSettings|Enterprise user accounts can use the extension marketplace in the Web IDE and workspaces."
 msgstr "Is féidir le cuntais úsáideora fiontar an margadh síneadh a úsáid sa IDE Gréasáin agus sa spásanna oibre."
 
+msgid "GroupSettings|Enterprise users"
+msgstr ""
+
 msgid "GroupSettings|Experiment"
 msgstr "Turgnamh"
 
@@ -31980,14 +32046,20 @@ msgstr "Tá luaitheanna grúpa faoi dhíchumasú"
 msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr "Ní féidir le cosán grúpa a bheith níos faide ná carachtair %{length}."
 
+msgid "GroupSettings|Hide email address from public profile"
+msgstr ""
+
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "Conas is féidir liom deimhnithe SSH grúpa a bhainistiú?"
 
-msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
-msgstr "Má tá sé cumasaithe, ní bheidh cuntais úsáideoirí fiontair in ann comharthaí rochtana pearsanta a úsáid. %{learn_more_link}."
+msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
+msgstr ""
 
 msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
 msgstr "Má tá sé cumasaithe, cuireann grúpchomharthaí rochtana éaga cuacha gréasáin i gcrích 60, 30, agus 7 lá sula dtéann an comhartha in éag. Má tá sé díchumasaithe, ní fheidhmíonn na cuacha gréasáin seo ach 7 lá sula dtéann an comhartha in éag."
+
+msgid "GroupSettings|If enabled, hides email addresses on public profile pages for enterprise users."
+msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
 msgstr "Má tá sé cumasaithe, ní bheidh cuntais úsáideora aonair in ann ach teastais SSH eisithe a úsáid le haghaidh rochtana Git. Ní bhaineann sé le cuntais seirbhíse, eochracha a imscaradh, agus cineálacha eile cuntas inmheánacha."
@@ -32060,6 +32132,9 @@ msgstr "Socraigh teorainn méide do gach ábhar i ngach suíomh Leathanaigh sa g
 
 msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
 msgstr "Socraigh an t-ainm tosaigh agus na cosaintí don bhrainse réamhshocraithe de stórais nua a cruthaíodh sa ghrúpa."
+
+msgid "GroupSettings|Settings that apply only to enterprise users associated with this group."
+msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr "Ritheann píblíne Auto DevOps mura bhfaightear aon chomhad cumraíochta CI malartach."
@@ -36196,7 +36271,7 @@ msgid "JiraConnect|Your browser is not supported"
 msgstr "Ní thacaítear le do bhrabhsálaí"
 
 msgid "JiraIntegration|Comma-separated list of allowed Jira issue statuses."
-msgstr ""
+msgstr "Liosta de stádais saincheisteanna Jira atá ceadaithe, scartha le camóga."
 
 msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
 msgstr "Cumasaigh breathnú ar shaincheisteanna Jira i GitLab."
@@ -36238,16 +36313,16 @@ msgid "JiraIntegration|Turn on Jira issue creation for GitLab vulnerabilities."
 msgstr "Cas air cruthú saincheisteanna Jira le haghaidh leochaileachtaí GitLab."
 
 msgid "JiraIntegration|Verify Jira issues referenced in commit messages exist before allowing the push."
-msgstr ""
+msgstr "Fíoraigh go bhfuil fadhbanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe ann sula gceadaítear an bhrú."
 
 msgid "JiraIntegration|Verify the Jira issues referenced in commit messages exist in Jira."
-msgstr ""
+msgstr "Fíoraigh go bhfuil na saincheisteanna Jira dá dtagraítear sna teachtaireachtaí tiomnaithe ann i Jira."
 
 msgid "JiraIntegration|Verify the committer is the assignee of the Jira issues referenced in commit messages."
-msgstr ""
+msgstr "Fíoraigh gurb é an tiomnóir sannaí na saincheisteanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe."
 
 msgid "JiraIntegration|Verify the status of Jira issues referenced in commit messages."
-msgstr ""
+msgstr "Fíoraigh stádas na saincheisteanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe."
 
 msgid "JiraIntegration|When set to `true`, opens a prefilled form on the Jira instancewhen creating a Jira issue from a vulnerability."
 msgstr "Nuair a shocraítear go `fíor` é, osclaítear foirm réamhlíonta ar an gcás Jira agus saincheist Jira á cruthú ó leochaileacht."
@@ -36304,7 +36379,7 @@ msgid "JiraService|API token or password"
 msgstr "Comhartha API nó pasfhocal"
 
 msgid "JiraService|Allowed statuses"
-msgstr ""
+msgstr "Stádas ceadaithe"
 
 msgid "JiraService|An error occurred while fetching the Jira issue list"
 msgstr "Tharla earráid agus an liosta saincheisteanna Jira á bhfaigheann"
@@ -36322,19 +36397,19 @@ msgid "JiraService|Basic"
 msgstr "Bunúsach"
 
 msgid "JiraService|Check assignee"
-msgstr ""
+msgstr "Seiceáil sannaí"
 
 msgid "JiraService|Check issue exists"
-msgstr ""
+msgstr "Seiceáil go bhfuil fadhb ann"
 
 msgid "JiraService|Check issue status"
-msgstr ""
+msgstr "Seiceáil stádas na faidhbe"
 
 msgid "JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys."
 msgstr "Liosta d'eochracha tionscadail Jira scartha le camóg. Fág bán chun gach eochracha atá ar fáil a áireamh."
 
 msgid "JiraService|Comma-separated list of allowed Jira issue statuses."
-msgstr ""
+msgstr "Liosta de stádais saincheisteanna Jira atá ceadaithe, scartha le camóga."
 
 msgid "JiraService|Create Jira issues for vulnerabilities"
 msgstr "Cruthaigh saincheisteanna Jira le haghaidh leochaileachtaí"
@@ -36361,7 +36436,7 @@ msgid "JiraService|Enable Jira transitions"
 msgstr "Cumasaigh aistrithe Jira"
 
 msgid "JiraService|Enable Jira verification"
-msgstr ""
+msgstr "Cumasaigh fíorú Jira"
 
 msgid "JiraService|Enter a Jira project key to generate issue types."
 msgstr "Iontráil eochair tionscadail Jira chun cineálacha saincheisteanna a ghiniúint."
@@ -36436,7 +36511,7 @@ msgid "JiraService|Jira project keys"
 msgstr "Eochracha tionscadail Jira"
 
 msgid "JiraService|Jira verification"
-msgstr ""
+msgstr "Fíorú Jira"
 
 msgid "JiraService|Leave blank to use your current configuration"
 msgstr "Fág bán chun do chumraíocht reatha a úsáid"
@@ -36457,7 +36532,7 @@ msgid "JiraService|Open Jira"
 msgstr "Oscail Jira"
 
 msgid "JiraService|Ready, In Progress, Review"
-msgstr ""
+msgstr "Réidh, Ar Siúl, Athbhreithniú"
 
 msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
 msgstr "Molta. Ar fáil ach amháin le haghaidh Ionad Sonraí Jira agus Freastalaí Jira."
@@ -36493,19 +36568,19 @@ msgid "JiraService|Using Jira for issue tracking?"
 msgstr "Ag baint úsáide as Jira le haghaidh rianú saincheisteanna?"
 
 msgid "JiraService|Verify Jira issues referenced in commit messages against specific rules before allowing the push."
-msgstr ""
+msgstr "Fíoraigh saincheisteanna Jira dá dtagraítear i dteachtaireachtaí tiomantais i gcoinne rialacha sonracha sula gceadaítear an bhrú."
 
 msgid "JiraService|Verify Jira issues referenced in commit messages exist before allowing the push."
-msgstr ""
+msgstr "Fíoraigh go bhfuil fadhbanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe ann sula gceadaítear an bhrú."
 
 msgid "JiraService|Verify the Jira issues referenced in commit messages exist in Jira."
-msgstr ""
+msgstr "Fíoraigh go bhfuil na saincheisteanna Jira dá dtagraítear sna teachtaireachtaí tiomnaithe ann i Jira."
 
 msgid "JiraService|Verify the committer is the assignee of the Jira issues referenced in commit messages."
-msgstr ""
+msgstr "Fíoraigh gurb é an tiomnóir sannaí na saincheisteanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe."
 
 msgid "JiraService|Verify the status of Jira issues referenced in commit messages."
-msgstr ""
+msgstr "Fíoraigh stádas na saincheisteanna Jira dá dtagraítear i dteachtaireachtaí tiomnaithe."
 
 msgid "JiraService|View Jira issues"
 msgstr "Féach ar shaincheisteanna Jira"
@@ -38755,6 +38830,9 @@ msgstr "Cothabhálaí"
 msgid "Maintenance mode"
 msgstr "Modh cothabhála"
 
+msgid "MaintenanceMode|By disabling maintenance mode your banner message will be lost."
+msgstr "Trí mhodh cothabhála a dhíchumasú caillfear do theachtaireacht meirge."
+
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
 msgstr "Tharla earráid agus Socruithe an Mhód Cothabhála á nuashonrú"
 
@@ -38856,6 +38934,9 @@ msgstr "Bainistigh iompar braite rúnda do gach tionscadal i do shampla GitLab"
 
 msgid "Manage security policy settings in your GitLab instance"
 msgstr "Bainistigh socruithe polasaí slándála i do chás GitLab"
+
+msgid "Manage statuses"
+msgstr ""
 
 msgid "Manage templates…"
 msgstr "Bainistigh teimpléid…"
@@ -40543,8 +40624,8 @@ msgstr "D'iarr athbhreithneoir athruithe"
 msgid "MergeRequest|Reviewer started review"
 msgstr "Thosaigh athbhreithnitheoir athbhreithni"
 
-msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
-msgstr "Cuardaigh (m.sh.*.vue) (%{MODIFIER_KEY} P)"
+msgid "MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})"
+msgstr ""
 
 msgid "MergeRequest|There are no changes yet"
 msgstr "Níl aon athruithe ann go fóill"
@@ -40916,9 +40997,6 @@ msgstr "Faomhadh íosta riachtanacha"
 
 msgid "Minimum role required to cancel a pipeline or job"
 msgstr "An ról íosta atá ag teastáil chun píblíne nó post a chealú"
-
-msgid "Minute"
-msgstr "Nóiméad"
 
 msgid "Minutes"
 msgstr "Nóiméad"
@@ -42729,6 +42807,9 @@ msgstr "Gan aon sonraí"
 
 msgid "No data available"
 msgstr "Níl aon sonraí ar fáil"
+
+msgid "No data available."
+msgstr ""
 
 msgid "No data found for this query."
 msgstr "Níor aimsíodh aon sonraí don cheist seo."
@@ -45065,6 +45146,9 @@ msgstr "Eagraíocht reatha"
 msgid "Organization|Get started with organizations"
 msgstr "Cuir tús le heagraíochtaí"
 
+msgid "Organization|Help improve Organizations"
+msgstr ""
+
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
 msgstr "Má leanann tú ar aghaidh leis an athrú seo caillfidh tú do cheadanna úinéara don eagraíocht seo, lena n-áirítear rochtain ar an leathanach seo."
 
@@ -45155,6 +45239,9 @@ msgstr "An eagraíocht go rathúil."
 msgid "Organization|Organizations"
 msgstr "Eagraíochtaí"
 
+msgid "Organization|Organizations is a new feature. Help us make it better by"
+msgstr ""
+
 msgid "Organization|Organizations must have at least one owner."
 msgstr "Ní mór úinéir amháin ar a laghad a bheith ag eagraíochtaí."
 
@@ -45233,6 +45320,9 @@ msgstr "Níl aon tionscadal agat fós."
 
 msgid "Organization|my-organization"
 msgstr "Mo-eagraíocht"
+
+msgid "Organization|sharing your experience"
+msgstr ""
 
 msgid "Organize work with projects"
 msgstr "Eagraigh obair le tionscadail"
@@ -48935,14 +49025,8 @@ msgstr "Eochair API Ciúb"
 msgid "ProductAnalytics|Current month to date"
 msgstr "An mhí reatha go dtí seo"
 
-msgid "ProductAnalytics|Custom event name"
-msgstr "Ainm imeachta saincheaptha"
-
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr "Sonraí ar conas anailísíocht táirge a chumrú chun sonraí a bhailiú."
-
-msgid "ProductAnalytics|Dimension"
-msgstr "Toise"
 
 msgid "ProductAnalytics|Edit project provider settings"
 msgstr "Cuir socruithe soláthraí tionscadail in eagar"
@@ -48968,9 +49052,6 @@ msgstr "Tosaigh le hanailísíocht táirgí"
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr "Soláthraí faoi bhainistiú GITLAB"
 
-msgid "ProductAnalytics|Group by"
-msgstr "Grúpa de réir"
-
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
 msgstr "Cabhraigh linn Deais Anailísíochta Táirge a fheabhsú trí d’eispéireas a roinnt."
 
@@ -48991,9 +49072,6 @@ msgstr "Sampla luchtaithe"
 
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
 msgstr "Bainistigh do sholáthraí anailíse féin chun sonraí anailíse a phróiseáil, a stóráil agus a cheistiú."
-
-msgid "ProductAnalytics|Measure"
-msgstr "Beart"
 
 msgid "ProductAnalytics|Month"
 msgstr "Mí"
@@ -51658,11 +51736,17 @@ msgstr "Taisce Pras"
 msgid "Prompt users to upload SSH keys"
 msgstr "Spreag úsáideoirí chun eochracha SSH a uaslódáil"
 
+msgid "Properties 'command', 'args' for component '%{name}' can only be specified when the 'overrideCommand' attribute is set to false"
+msgstr ""
+
 msgid "Property 'dedicatedPod' of component '%{component}' is not yet supported"
 msgstr "Ní thacaítear leis an maoin 'dedicatedPod' de chomhpháirt '%{component}' go fóill."
 
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
 msgstr "Ní mór don mhaoin 'hotReloadCapable' don ordú exec '%{command}' a bheith bréagach nuair a shonraítear í"
+
+msgid "Property 'overrideCommand' of component '%{name}' must be a boolean (true or false)"
+msgstr ""
 
 msgid "Protect"
 msgstr "Cosaint"
@@ -52405,9 +52489,6 @@ msgstr "Fuair ​​​​Q do theachtaireacht!"
 
 msgid "QualitySummary|Project quality"
 msgstr "Cáilíocht tionscadail"
-
-msgid "Quarter"
-msgstr "Ceathrú"
 
 msgid "Queued"
 msgstr "Ciúáilte"
@@ -55616,6 +55697,9 @@ msgstr "Féadfaidh tú rochtain a chailleadh ar an chomhartha rádaitheora má f
 msgid "Runners|You've registered a new runner!"
 msgstr "Tá rádálaí nua cláraithe agat!"
 
+msgid "Runners|You've registered a new runner! Your runner is online and ready to run jobs."
+msgstr ""
+
 msgid "Runners|Your runner is online and ready to run jobs."
 msgstr "Tá do reathnóir ar líne agus réidh le poist a reáchtáil."
 
@@ -56164,6 +56248,9 @@ msgstr "Roghnaigh cineál critéar"
 msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr "Roghnaigh cé na grúpaí ar féidir leo an polasaí seo a sheachbhóthar"
 
+msgid "ScanResultPolicy|Choose which roles can bypass this policy"
+msgstr "Roghnaigh cé na róil ar féidir leo an polasaí seo a sheachbhóthar"
+
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
 msgstr "Roghnaigh cé na cuntais seirbhíse ar féidir leo an polasaí seo a sheachbhóthar."
 
@@ -56427,6 +56514,9 @@ msgstr "Roghnaigh ceadúnais"
 
 msgid "ScanResultPolicy|Select list type"
 msgstr "Roghnaigh cineál liosta"
+
+msgid "ScanResultPolicy|Select role exceptions"
+msgstr "Roghnaigh eisceachtaí róil"
 
 msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
 msgstr "Roghnaigh eisceachtaí róil. Roghnaigh cé na róil ar féidir leo an polasaí seo a sheachbhóthar."
@@ -56942,9 +57032,6 @@ msgstr "Suíocháin"
 msgid "Seats owed"
 msgstr "Suíocháin dlite"
 
-msgid "Second"
-msgstr "Soicind"
-
 msgid "Secondary email:"
 msgstr "R-phost tánaisteach:"
 
@@ -57300,6 +57387,9 @@ msgstr "Cealaigh"
 msgid "SecurityAttributes|Categories"
 msgstr "Catagóirí"
 
+msgid "SecurityAttributes|Category"
+msgstr ""
+
 msgid "SecurityAttributes|Category details"
 msgstr "Sonraí na catagóire"
 
@@ -57347,6 +57437,9 @@ msgstr "Ainm"
 
 msgid "SecurityAttributes|Name is required"
 msgstr "Tá ainm ag teastáil"
+
+msgid "SecurityAttributes|Remove attribute"
+msgstr ""
 
 msgid "SecurityAttributes|Save changes"
 msgstr "Sábháil athruithe"
@@ -59619,6 +59712,9 @@ msgstr "Insroichte:"
 
 msgid "SecurityReports|Remove project from dashboard"
 msgstr "Bain tionscadal ón deais"
+
+msgid "SecurityReports|Report Type"
+msgstr ""
 
 msgid "SecurityReports|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr "Tuairiscigh easpórtáil ar siúl. Tar éis don tuarascáil a bheith ginte, seolfar ríomhphost leis an nasc íoslódála."
@@ -64238,9 +64334,6 @@ msgstr "Go raibh maith agat as do cheannach!"
 msgid "That's OK, I don't want to renew"
 msgstr "Tá sé sin ceart go leor, níl mé ag iarraidh athnuachan a dhéanamh"
 
-msgid "The %{old} shortcut is deprecated. Use %{new} shortcut instead."
-msgstr "Tá an aicearra %{old} imithe i léig. Bain úsáid as aicearra %{new} ina ionad."
-
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr "Níl %{plan_name} ar fáil le ceannach a thuilleadh. Le haghaidh tuilleadh eolais faoin tionchar a bheidh aige ort, seiceáil ár %{faq_link_start}ceisteanna coitianta%{faq_link_end}."
 
@@ -68628,11 +68721,11 @@ msgstr "Vótaí suas"
 msgid "Usage"
 msgstr "Úsáid"
 
-msgid "Usage Quotas"
-msgstr "Cuótaí Úsáide"
-
 msgid "Usage breakdown"
 msgstr "Miondealú úsáide"
+
+msgid "Usage quotas"
+msgstr "Cuótaí úsáide"
 
 msgid "Usage statistics"
 msgstr "Staitisticí úsáide"
@@ -68652,8 +68745,8 @@ msgstr "Tharla earráid ag luchtú na sonraí aistrithe. Athnuaigh an leathanach
 msgid "UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr "Ní úsáidtear staitisticí stórála clárlainne coimeádán chun stóráil iomlán an tionscadail a ríomh. Ríomhtar stóráil iomlán an tionscadail tar éis dí-dhúbailt coimeádán ainmspáis, áit a gcuirtear iomlán na gcoimeádán uathúla go léir leis an iomlán stórála ainmspáis."
 
-msgid "UsageQuotas|Loading Usage Quotas tab content"
-msgstr "Ábhar cluaisín Cuótaí Úsáide á lódáil"
+msgid "UsageQuotas|Loading Usage quotas tab content"
+msgstr "Ag lódáil ábhar an chluaisín Cuótaí Úsáide"
 
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr "Úsáideadh sonraí aistrithe ainmspáis"
@@ -68769,8 +68862,8 @@ msgstr "Déantáin phoist a chruthaigh CI/CD."
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr "Tuilleadh eolais a fhoghlaim faoi chuótaí úsáide."
 
-msgid "UsageQuota|Loading Usage Quotas tabs"
-msgstr "Cluaisíní Cuóta Úsáide á lódáil"
+msgid "UsageQuota|Loading Usage quotas tabs"
+msgstr "Ag luchtú na gcluaisíní cuótaí úsáide"
 
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr "Seachfhreastalaí áitiúil a úsáidtear le haghaidh íomhánna Docker in aghaidh an tsrutha a bhfuil rochtain orthu go minic."
@@ -68847,8 +68940,8 @@ msgstr "Chuaigh rud éigin mícheart agus staitisticí stórála tionscadail á 
 msgid "UsageQuota|Something went wrong while fetching runner filters"
 msgstr "Tharla earráid agus scagairí rádala á bhfáil"
 
-msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
-msgstr "Chuaigh rud éigin mícheart agus tú ag luchtú Cluaisíní Cuótaí Úsáide."
+msgid "UsageQuota|Something went wrong while loading Usage quotas Tabs."
+msgstr "Tharla fadhb agus na cluaisíní Cuótaí Úsáide á lódáil."
 
 msgid "UsageQuota|Storage per project included in %{planName} subscription"
 msgstr "Stóráil in aghaidh an tionscadail san áireamh i síntiús %{planName}"
@@ -68910,9 +69003,6 @@ msgstr "Briseadh úsáide aistrithe"
 msgid "UsageQuota|Usage"
 msgstr "Úsáid"
 
-msgid "UsageQuota|Usage Quotas"
-msgstr "Cuótaí Úsáide"
-
 msgid "UsageQuota|Usage breakdown"
 msgstr "Miondealú úsáide"
 
@@ -68936,6 +69026,9 @@ msgstr "Úsáid acmhainní ar fud do thionscadail"
 
 msgid "UsageQuota|Usage of shared resources across the projects in your instance"
 msgstr "Úsáid acmhainní comhroinnte ar fud na dtionscadal i do chás"
+
+msgid "UsageQuota|Usage quotas"
+msgstr "Cuótaí úsáide"
 
 msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr "Socruithe úsáideora %{gt} Cuótaí úsáide"
@@ -70738,6 +70831,9 @@ msgstr "Cuir URL bailí ar fáil le do thoil."
 msgid "VirtualRegistry|Registry types"
 msgstr "Cineálacha clárlainne"
 
+msgid "VirtualRegistry|Something went wrong while creating the upstream. Please try again."
+msgstr "Tharla fadhb agus an sruth suas á chruthú. Déan iarracht arís."
+
 msgid "VirtualRegistry|Test upstream"
 msgstr "Tástáil suas an sruth"
 
@@ -70755,6 +70851,9 @@ msgstr "Nuashonraithe %{date}"
 
 msgid "VirtualRegistry|Upstream URL"
 msgstr "URL suas an sruth"
+
+msgid "VirtualRegistry|Upstream created successfully"
+msgstr "Cruthaíodh an sruth suas go rathúil"
 
 msgid "VirtualRegistry|Upstreams"
 msgstr "In aghaidh srutha"
@@ -71626,9 +71725,6 @@ msgstr "Thugamar faoi deara úsáid stórála neamhghnách ard ar %{strong_start
 msgid "Web IDE"
 msgstr "IDE Gréasáin"
 
-msgid "Web IDE and workspaces"
-msgstr "IDE Gréasáin agus spásanna oibre"
-
 msgid "Web terminal"
 msgstr "Teirminéal gréasáin"
 
@@ -71848,6 +71944,9 @@ msgstr "Imeachtaí comhaltaí"
 msgid "Webhooks|Merge request events"
 msgstr "Imeachtaí iarratais cumaisc"
 
+msgid "Webhooks|Milestone events"
+msgstr ""
+
 msgid "Webhooks|Must match part of URL"
 msgstr "Caithfidh cuid den URL a mheaitseáil"
 
@@ -71976,9 +72075,6 @@ msgstr "Céad"
 
 msgid "Wednesday"
 msgstr "Dé Céadaoin"
-
-msgid "Week"
-msgstr "Seachtain"
 
 msgid "Weekday"
 msgstr "Lá seachtaine"
@@ -72345,7 +72441,7 @@ msgid "WikiPage|Write your content or drag files here…"
 msgstr "Scríobh d'ábhar nó tarraing comhaid anseo…"
 
 msgid "WikiPage|{Give this page a title}"
-msgstr ""
+msgstr "{Give this page a title}"
 
 msgid "Wiki|Add custom sidebar"
 msgstr "Cuir barra taobh saincheaptha"
@@ -73086,6 +73182,17 @@ msgstr "Tuilleadh gníomhartha"
 msgid "WorkItem|Move"
 msgstr "Bog"
 
+msgid "WorkItem|Move item"
+msgid_plural "WorkItem|Move %d items"
+msgstr[0] "Bog mír"
+msgstr[1] "Bog %d míreanna"
+msgstr[2] "Bog %d míreanna"
+msgstr[3] "Bog %d míreanna"
+msgstr[4] "Bog %d míreanna"
+
+msgid "WorkItem|Moved %{movedWorkItemCount} of %{totalCount} items"
+msgstr "Bogadh %{movedWorkItemCount} de %{totalCount} míreanna"
+
 msgid "WorkItem|Multi select"
 msgstr "Il-roghnú"
 
@@ -73140,11 +73247,17 @@ msgstr "Níl aon earraí leanaí ar oscailt faoi láthair."
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr "Níor cuireadh aon réimsí saincheaptha sa chartlann. Cuir réimsí saincheaptha sa chartlann chun iad a bhaint de mhíreanna oibre gníomhacha agus a gcuid sonraí á gcaomhnú."
 
+msgid "WorkItem|No destination selected"
+msgstr "Níl aon cheann scríbe roghnaithe"
+
 msgid "WorkItem|No health status"
 msgstr "Gan stádas sláinte"
 
 msgid "WorkItem|No items"
 msgstr "Uimh míreanna"
+
+msgid "WorkItem|No items selected"
+msgstr "Níl aon mhíreanna roghnaithe"
 
 msgid "WorkItem|No iteration"
 msgstr "Gan atriall"
@@ -73278,6 +73391,9 @@ msgstr "Roghnaigh tionscadal"
 msgid "WorkItem|Select a status"
 msgstr "Roghnaigh stádas"
 
+msgid "WorkItem|Select destination"
+msgstr "Roghnaigh ceann scríbe"
+
 msgid "WorkItem|Select parent"
 msgstr "Roghnaigh tuismitheoir"
 
@@ -73349,6 +73465,9 @@ msgstr "Chuaigh rud éigin mícheart agus lipéid á fháil. Bain triail as arí
 
 msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr "Chuaigh rud éigin mícheart agus stádas á fháil. Bain triail eile as."
+
+msgid "WorkItem|Something went wrong when fetching user permissions"
+msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
 msgstr "Chuaigh rud éigin mícheart agus cineálacha earraí oibre á fháil. Bain triail as arís"
@@ -73518,6 +73637,9 @@ msgstr "Cineál"
 msgid "WorkItem|Type changed."
 msgstr "Athraíodh an cineál."
 
+msgid "WorkItem|Unable to fetch destination projects."
+msgstr "Ní féidir tionscadail cheann scríbe a fháil."
+
 msgid "WorkItem|Unable to find selected template."
 msgstr "Ní féidir an teimpléad roghnaithe a aimsiú."
 
@@ -73583,6 +73705,9 @@ msgstr "Níl an cead riachtanach agat chun féachaint ar na sinsear."
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr "Níl tú ag feiceáil ach %{boldStart} gníomhaíocht eile %{boldEnd} sa bheatha. Chun trácht a chur leis, aistrigh go ceann de na roghanna seo a leanas."
+
+msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
+msgstr "B’fhéidir go bhfuil do shonraí as dáta. Athnuaigh chun an fhaisnéis is déanaí a fheiceáil."
 
 msgid "WorkItem|Zoom link"
 msgstr "Nasc súmáil"
@@ -74308,6 +74433,12 @@ msgstr "Is féidir leat comharthaí atá ann cheana a úsáid agus a bhainistiú
 
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
 msgstr "Is féidir leat díliostáil ó thuilleadh nuashonruithe ar an ticéad seo. Chun nuashonruithe a fháil amach anseo, beidh ort a chur leis arís mar rannpháirtí."
+
+msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
+msgstr ""
+
+msgid "You can view it in your personal access tokens settings %{pat_link}."
+msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr "Is féidir leat féachaint ar an bhfoinse nó %{linkStart} %{cloneIcon} clónáil an stóras %{linkEnd}"
@@ -75183,6 +75314,15 @@ msgstr "Tá do chomhartha athshocraithe pasfhocail imithe in éag."
 msgid "Your personal access token has been revoked"
 msgstr "Tá do chomhartha rochtana pearsanta curtha ar ceal"
 
+msgid "Your personal access token has been rotated"
+msgstr ""
+
+msgid "Your personal access token, named %{code_start}%{token_name}%{code_end}, has been rotated."
+msgstr ""
+
+msgid "Your personal access token, named %{token_name}, has been rotated."
+msgstr ""
+
 msgid "Your personal access tokens have expired"
 msgstr "Tá do chomharthaí rochtana pearsanta in éag"
 
@@ -75702,6 +75842,9 @@ msgstr "ní féidir níos mó ná creataí %{count} a bheith acu"
 
 msgid "cannot have more than %{count} requirements"
 msgstr "ní féidir níos mó ná %{count} riachtanas a bheith ann"
+
+msgid "cannot have more than 50 attributes per category"
+msgstr "ní féidir níos mó ná 50 tréith a bheith in aghaidh an chatagóire"
 
 msgid "cannot include leading slash or directory traversal."
 msgstr "ní féidir slaise tosaigh nó trasnú eolaire a áireamh."
@@ -77586,6 +77729,36 @@ msgstr "difríocht rindreáilte"
 
 msgid "reply should have same confidentiality as top-level note"
 msgstr "ba chóir go mbeadh an rúndacht chéanna ag an bhfreagra le nóta"
+
+msgid "reportType|API Fuzzing"
+msgstr ""
+
+msgid "reportType|Cluster Image Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning for Registry"
+msgstr ""
+
+msgid "reportType|Coverage Fuzzing"
+msgstr ""
+
+msgid "reportType|DAST"
+msgstr ""
+
+msgid "reportType|Dependency Scanning"
+msgstr ""
+
+msgid "reportType|Generic"
+msgstr ""
+
+msgid "reportType|SAST"
+msgstr ""
+
+msgid "reportType|Secret Detection"
+msgstr ""
 
 msgid "repositories"
 msgstr "stórais"

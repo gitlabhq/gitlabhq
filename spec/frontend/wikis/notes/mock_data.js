@@ -73,6 +73,7 @@ export const note = {
     adminNote: false,
     awardEmoji: false,
     createNote: true,
+    resolveNote: true,
   },
   discussion: {
     __typename: 'Discussion',
@@ -119,4 +120,22 @@ export const wikiCommentFormProvideData = {
   noteableType,
   markdownDocsPath,
   isContainerArchived,
+};
+
+export const discussion = {
+  __typename: 'Discussion',
+  id: 'gid://gitlab/Discussion/1',
+  resolvable: true,
+  resolved: false,
+  resolvedAt: null,
+  resolvedBy: {
+    id: 'gid://gitlab/User/1',
+    name: 'user1',
+  },
+  userPermissions: {
+    resolveNote: true,
+  },
+  notes: {
+    nodes: [note],
+  },
 };

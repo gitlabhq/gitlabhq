@@ -2201,6 +2201,17 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :package_cleanup
+- :name: package_cleanup:packages_helm_cleanup_stale_metadata_cache
+  :worker_name: Packages::Helm::CleanupStaleMetadataCacheWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags:
+  - :cronjob_child
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
   :feature_category: :package_registry

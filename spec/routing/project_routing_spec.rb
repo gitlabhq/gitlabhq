@@ -999,6 +999,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
         .to route_to('projects/snippets/blobs#raw',
           namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
     end
+
+    context 'when reference has special symbols' do
+      it "to #raw" do
+        expect(get('/gitlab/gitlabhq/-/snippets/1/raw/0.0.x-rc/lib/version.rb'))
+          .to route_to('projects/snippets/blobs#raw',
+            namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: '0.0.x-rc', path: 'lib/version.rb')
+      end
+    end
   end
 
   context 'with a non-existent project' do

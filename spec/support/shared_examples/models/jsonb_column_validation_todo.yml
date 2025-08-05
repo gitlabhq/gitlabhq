@@ -1,6 +1,5 @@
 # TODO list for `spec/support/shared_examples/models/jsonb_column_validation_shared_example.rb`
 # Ideally, this list should only shrink and never grow.
-- Ai::ActiveContext::Connection#options
 - Ai::ActiveContext::Migration#metadata
 - Ai::Catalog::ItemVersion#definition # Tested in `validate_json_schema` method using the JsonSchemaValidator
 - Ai::Conversation::Message#error_details
@@ -12,14 +11,9 @@
 - ApplicationSetting#oauth_provider
 - ApplicationSetting#rate_limits_unauthenticated_git_http
 - ApplicationSetting#repository_storages_weighted
-- ApplicationSetting#tmp_asset_proxy_secret_key
 - ApplicationSetting#token_prefixes
 - Ci::BuildMetadata#config_options
 - Ci::BuildMetadata#config_variables
-- Ci::PipelineScheduleInput#value
-- CloudConnector::Keys#secret_key
-- DependencyProxy::GroupSetting#identity
-- DependencyProxy::GroupSetting#secret
 - GeoNodeStatus#status
 - Geo::Event#payload
 - Geo::SecondaryUsageData#payload
@@ -41,7 +35,5 @@
 - ServicePing::NonSqlServicePing#metadata
 - ServicePing::NonSqlServicePing#payload
 - ServicePing::QueriesServicePing#payload
-- VirtualRegistries::Packages::Maven::Upstream#password
-- VirtualRegistries::Packages::Maven::Upstream#username
 - Vulnerabilities::Finding::Evidence#data
 - Vulnerabilities::Finding#location

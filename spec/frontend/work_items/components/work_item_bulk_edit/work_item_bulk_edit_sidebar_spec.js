@@ -319,6 +319,65 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
   });
 
+  describe('widget visibility', () => {
+    it('shows the correct widgets when GraphQL is disabled', () => {
+      createComponent({ provide: { hasIssuableHealthStatusFeature: true } });
+
+      // visible
+      expect(findStateComponent().exists()).toBe(true);
+      expect(findAssigneeComponent().exists()).toBe(true);
+      expect(findAddLabelsComponent().exists()).toBe(true);
+      expect(findRemoveLabelsComponent().exists()).toBe(true);
+      expect(findHealthStatusComponent().exists()).toBe(true);
+      expect(findSubscriptionComponent().exists()).toBe(true);
+      expect(findConfidentialityComponent().exists()).toBe(true);
+
+      // hidden
+      expect(findMilestoneComponent().exists()).toBe(false);
+      expect(findParentComponent().exists()).toBe(false);
+      expect(findBulkMoveComponent().exists()).toBe(false);
+    });
+
+    it('shows the correct widgets when GraphQL is enabled', () => {
+      createComponent({
+        provide: { hasIssuableHealthStatusFeature: true, glFeatures: { workItemsBulkEdit: true } },
+      });
+
+      // visible
+      expect(findStateComponent().exists()).toBe(true);
+      expect(findAssigneeComponent().exists()).toBe(true);
+      expect(findAddLabelsComponent().exists()).toBe(true);
+      expect(findRemoveLabelsComponent().exists()).toBe(true);
+      expect(findHealthStatusComponent().exists()).toBe(true);
+      expect(findSubscriptionComponent().exists()).toBe(true);
+      expect(findConfidentialityComponent().exists()).toBe(true);
+      expect(findMilestoneComponent().exists()).toBe(true);
+      expect(findParentComponent().exists()).toBe(true);
+      expect(findBulkMoveComponent().exists()).toBe(true);
+    });
+
+    it('shows the correct widgets when GraphQL is enabled and on epics list', () => {
+      createComponent({
+        props: { isEpicsList: true },
+        provide: { hasIssuableHealthStatusFeature: true, glFeatures: { workItemsBulkEdit: true } },
+      });
+
+      // visible
+      expect(findAssigneeComponent().exists()).toBe(true);
+      expect(findAddLabelsComponent().exists()).toBe(true);
+      expect(findRemoveLabelsComponent().exists()).toBe(true);
+      expect(findHealthStatusComponent().exists()).toBe(true);
+      expect(findSubscriptionComponent().exists()).toBe(true);
+      expect(findConfidentialityComponent().exists()).toBe(true);
+      expect(findMilestoneComponent().exists()).toBe(true);
+
+      // hidden
+      expect(findStateComponent().exists()).toBe(false);
+      expect(findParentComponent().exists()).toBe(false);
+      expect(findBulkMoveComponent().exists()).toBe(false);
+    });
+  });
+
   describe('getAvailableBulkEditWidgets query', () => {
     beforeEach(() => {
       createComponent({ provide: { glFeatures: { workItemsBulkEdit: true } } });
@@ -366,12 +425,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Assignee" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({ props: { isEpicsList } });
-
-      expect(findAssigneeComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates assignee when "Assignee" component emits "input" event', async () => {
       createComponent();
 
@@ -526,18 +579,19 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Health status" component', () => {
-    it.each`
-      isEpicsList | hasIssuableHealthStatusFeature | expected
-      ${false}    | ${false}                       | ${false}
-      ${false}    | ${true}                        | ${true}
-      ${true}     | ${false}                       | ${false}
-      ${true}     | ${true}                        | ${false}
-    `(
-      'renders only when isEpicsList=false and hasIssuableHealthStatusFeature=true',
-      ({ isEpicsList, hasIssuableHealthStatusFeature, expected }) => {
-        createComponent({ provide: { hasIssuableHealthStatusFeature }, props: { isEpicsList } });
+    it.each([true, false])(
+      'renders depending on hasIssuableHealthStatusFeature feature',
+      (hasIssuableHealthStatusFeature) => {
+        createComponent({
+          provide: {
+            glFeatures: {
+              workItemsBulkEdit: true,
+            },
+            hasIssuableHealthStatusFeature,
+          },
+        });
 
-        expect(findHealthStatusComponent().exists()).toBe(expected);
+        expect(findHealthStatusComponent().exists()).toBe(hasIssuableHealthStatusFeature);
       },
     );
 
@@ -589,12 +643,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Subscription" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({ props: { isEpicsList } });
-
-      expect(findSubscriptionComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates subscription when "Subscription" component emits "input" event', async () => {
       createComponent();
 
@@ -606,12 +654,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Confidentiality" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({ props: { isEpicsList } });
-
-      expect(findConfidentialityComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates confidentiality when "Confidentiality" component emits "input" event', async () => {
       createComponent();
 
@@ -623,19 +665,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Milestone" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
-        props: { isEpicsList },
-      });
-
-      expect(findMilestoneComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates milestone when "Milestone" component emits "input" event', async () => {
       createComponent({
         provide: {

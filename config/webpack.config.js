@@ -545,6 +545,7 @@ module.exports = {
   optimization: {
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',
+    chunkIds: 'named', // at least makes named chunks stable,
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 20,
@@ -597,6 +598,29 @@ module.exports = {
   },
 
   plugins: [
+    // A custom function is needed because chunkIds: "named" alone only
+    // affects chunks that already have names (entry points, chunks with
+    // magic comments such as:
+    //
+    // /* webpackChunkName: "my-chunk" */
+    //
+    // Anonymous chunks, such as dynamic imports without names, would
+    // still get incremental IDs and could cause different IDs to be
+    // assigned across different runs.
+    //
+    // See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20271.
+    // This should not be needed with Webpack 5.
+    new webpack.NamedChunksPlugin((chunk) => {
+      // Keep named chunks as-is (entries, magic comments)
+      if (chunk.name) return chunk.name;
+
+      // Get all module IDs in this chunk, sorted for stability
+      const ids = Array.from(chunk.modulesIterable, (m) => m.id).sort();
+
+      const hash = crypto.createHash('sha256').update(ids.join('_')).digest('hex');
+
+      return hash.slice(0, 8);
+    }),
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
     new StatsWriterPlugin({

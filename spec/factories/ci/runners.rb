@@ -14,6 +14,7 @@ FactoryBot.define do
     transient do
       groups { [] }
       projects { [] }
+      token { nil }
       token_expires_at { nil }
       creator { nil }
       without_projects { false }
@@ -33,6 +34,8 @@ FactoryBot.define do
       end
 
       runner.creator = evaluator.creator if evaluator.creator
+
+      runner.set_token(evaluator.token) if evaluator.token
 
       case runner.runner_type
       when 'group_type'

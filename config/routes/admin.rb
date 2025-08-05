@@ -124,6 +124,8 @@ namespace :admin do
     collection do
       post :run_collation_check
       get :collation_check_results
+      post :run_schema_check
+      get :schema_check_results
     end
   end
 

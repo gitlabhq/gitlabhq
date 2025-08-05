@@ -26967,7 +26967,19 @@ Represents a customizable dashboard panel.
 | <a id="customizabledashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
 | <a id="customizabledashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
 | <a id="customizabledashboardpaneltitle"></a>`title` | [`String`](#string) | Title of the panel. |
+| <a id="customizabledashboardpaneltooltip"></a>`tooltip` | [`CustomizableDashboardPanelTooltip`](#customizabledashboardpaneltooltip) | Tooltip for the panel containing descriptive text and an optional link. |
 | <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | Visualization of the panel. |
+
+### `CustomizableDashboardPanelTooltip`
+
+Tooltip for a customizable dashboard panel.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardpaneltooltipdescription"></a>`description` | [`String!`](#string) | Popover text content. When `descriptionLink` is provided, must include %{linkStart} and %{linkEnd} placeholders around the link text. |
+| <a id="customizabledashboardpaneltooltipdescriptionlink"></a>`descriptionLink` | [`String`](#string) | Optional URL for link insertion in the `description` between %{linkStart} and %{linkEnd} placeholders. |
 
 ### `CustomizableDashboardVisualization`
 

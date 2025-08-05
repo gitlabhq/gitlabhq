@@ -68,12 +68,13 @@ module Security
         return if root_ref.nil?
 
         @gitlab_ci_yml ||= project.ci_config_for(root_ref)
-        YAML.safe_load(@gitlab_ci_yml) if @gitlab_ci_yml
-      rescue Psych::BadAlias
-        raise CiContentParseError, _(".gitlab-ci.yml with aliases/anchors is not supported. " \
-                                     "Please change the CI configuration manually.")
-      rescue Psych::Exception => e
+        Gitlab::Ci::Config::Yaml.load!(@gitlab_ci_yml, ::Gitlab::Ci::Config::Yaml::Context.new) if @gitlab_ci_yml
+      rescue Gitlab::Config::Loader::FormatError => e
         Gitlab::AppLogger.error("Failed to process existing .gitlab-ci.yml: #{e.message}")
+
+        raise CiContentParseError, "#{name} merge request creation failed"
+      rescue ::Gitlab::Ci::Config::Yaml::LoadError => e
+        Gitlab::AppLogger.error("Failed to load existing .gitlab-ci.yml: #{e.message}")
 
         raise CiContentParseError, "#{name} merge request creation failed"
       end

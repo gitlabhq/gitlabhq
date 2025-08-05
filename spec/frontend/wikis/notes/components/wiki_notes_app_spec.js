@@ -44,6 +44,7 @@ const mockDiscussion = (...children) => {
           adminNote: true,
           awardEmoji: true,
           createNote: true,
+          resolveNote: true,
         },
         discussion: null,
       })),

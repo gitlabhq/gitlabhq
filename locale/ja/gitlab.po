@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-31 14:42\n"
+"PO-Revision-Date: 2025-08-05 11:02\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -1583,6 +1583,9 @@ msgstr "'allow: %{allow}' は文字列でなければなりません"
 msgid "'attributes' for component '%{component_name}' must be a Hash"
 msgstr ""
 
+msgid "'attributes' in component '%{component}' must be a Hash"
+msgstr ""
+
 msgid "'command' must be a Hash"
 msgstr ""
 
@@ -2266,17 +2269,26 @@ msgstr "%{name}エージェントを削除しますか?"
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr "このエージェントの設計目的とその主な機能を簡単に説明します。"
 
+msgid "AICatalog|Briefly describe what this flow is designed to do and its key capabilities."
+msgstr ""
+
 msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and processes."
 msgstr "AIエージェントとフローを構築して、反復的なタスクとプロセスを自動化します。"
 
 msgid "AICatalog|Choose a memorable name for your AI agent."
 msgstr "AIエージェントに覚えておける名前を選びます。"
 
+msgid "AICatalog|Choose a memorable name for your AI flow."
+msgstr ""
+
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
 msgstr ""
 
 msgid "AICatalog|Create agent"
 msgstr "エージェントを作成"
+
+msgid "AICatalog|Create flow"
+msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
 msgstr ""
@@ -2293,6 +2305,9 @@ msgstr "編集"
 msgid "AICatalog|Edit agent"
 msgstr "エージェントの編集"
 
+msgid "AICatalog|Edit flow"
+msgstr ""
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr "エージェントの削除に失敗しました。%{error}"
 
@@ -2301,6 +2316,15 @@ msgstr "エージェントの実行に失敗しました。"
 
 msgid "AICatalog|Flow"
 msgstr "フロー"
+
+msgid "AICatalog|Flow created successfully."
+msgstr ""
+
+msgid "AICatalog|Flow not found."
+msgstr ""
+
+msgid "AICatalog|Flow updated successfully."
+msgstr ""
 
 msgid "AICatalog|Flows"
 msgstr "フロー"
@@ -2314,11 +2338,17 @@ msgstr "入力は最大%{value}文字までです。入力を短くしてくだ�
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr "エージェントの設定を修正します。"
 
+msgid "AICatalog|Modify the flow settings and configuration."
+msgstr ""
+
 msgid "AICatalog|Name is required."
 msgstr "名前は必須です。"
 
 msgid "AICatalog|New agent"
 msgstr "新しいエージェント"
+
+msgid "AICatalog|New flow"
+msgstr ""
 
 msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners  of this project can edit or delete the agent."
 msgstr ""
@@ -2327,40 +2357,43 @@ msgid "AICatalog|Please consider my background in... When explaining concepts, u
 msgstr ""
 
 msgid "AICatalog|Private"
-msgstr ""
+msgstr "非公開"
 
 msgid "AICatalog|Project ID"
-msgstr ""
+msgstr "プロジェクトID"
 
 msgid "AICatalog|Project ID is required."
-msgstr ""
+msgstr "プロジェクトIDは必須です。"
 
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
-msgstr ""
+msgstr "すべてのユーザーとのやりとりに含まれる、デフォルトの指示やコンテキストを提供します。"
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
-msgstr ""
+msgstr "この実行に含まれる手順やコンテキストを提供します。"
 
 msgid "AICatalog|Public"
-msgstr ""
+msgstr "公開"
 
 msgid "AICatalog|Run"
-msgstr ""
+msgstr "実行"
 
 msgid "AICatalog|Run agent"
-msgstr ""
+msgstr "エージェントの実行"
 
 msgid "AICatalog|Save changes"
-msgstr ""
+msgstr "変更を保存"
 
 msgid "AICatalog|Select a project for your AI agent to be associated with."
+msgstr "関連するAIエージェントのプロジェクトを選択してください。"
+
+msgid "AICatalog|Select a project for your AI flow to be associated with."
 msgstr ""
 
 msgid "AICatalog|System Prompt"
-msgstr ""
+msgstr "システムプロンプト"
 
 msgid "AICatalog|System Prompt is required."
-msgstr ""
+msgstr "システムプロンプトは必須です。"
 
 msgid "AICatalog|Test Run"
 msgstr ""
@@ -2374,10 +2407,16 @@ msgstr ""
 msgid "AICatalog|The agent could not be updated. Please try again."
 msgstr ""
 
+msgid "AICatalog|The flow could not be added. Please try again."
+msgstr ""
+
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
 msgstr ""
 
 msgid "AICatalog|User Prompt"
@@ -4049,7 +4088,7 @@ msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr "AIネイティブ機能"
 
 msgid "AdminAIPoweredFeatures|AI-native features that help users accomplish tasks during the lifecycle of a merge request. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
+msgstr "AIネイティブな機能は、マージリクエストがオープンの間ユーザーがタスクを完了することをサポートします。%{linkStart}詳しくはこちら%{linkEnd}"
 
 msgid "AdminAIPoweredFeatures|AI-native features that support users outside of Chat or Code Suggestions. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
@@ -4335,15 +4374,6 @@ msgstr "ここに作成されたラベルは自動的に新しいプロジェク
 
 msgid "AdminLabels|They can be used to categorize issues and merge requests."
 msgstr "イシューとマージリクエストを分類するために使用できます。"
-
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
-msgstr "プロジェクトの%{projectName}、そのリポジトリ、イシュー、マージリクエストなどのすべての関連リソースを永久に削除しようとしています。再度確認して%{strong_start}プロジェクトを削除%{strong_end}を押してください。削除してから、元に戻すことはできません。"
-
-msgid "AdminProjects|Delete"
-msgstr "削除"
-
-msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr "プロジェクト%{projectName}を削除しますか ?"
 
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr "一意で説明的なデプロイ名。"
@@ -5057,7 +5087,7 @@ msgid "AdminStatistics|Notes"
 msgstr "ノート"
 
 msgid "AdminStatistics|SSH Keys"
-msgstr ""
+msgstr "SSHキー"
 
 msgid "AdminStatistics|Snippets"
 msgstr "スニペット"
@@ -5449,9 +5479,6 @@ msgstr "このユーザーのアクセスレベルはLDAPで管理されてい�
 msgid "AdminUsers|To confirm, type %{name}"
 msgstr "確認のため、%{name}を入力してください"
 
-msgid "AdminUsers|To confirm, type %{projectName}"
-msgstr "確認のため、%{projectName}を入力してください"
-
 msgid "AdminUsers|To confirm, type %{username}."
 msgstr "確認する場合は、%{username}と入力してください。"
 
@@ -5783,7 +5810,7 @@ msgid "Agent not found for provided id."
 msgstr "指定されたエージェントIDは見つかりません。"
 
 msgid "Agent sessions"
-msgstr ""
+msgstr "エージェントセッション"
 
 msgid "AiAgents|Agent Name"
 msgstr "エージェント名"
@@ -5801,7 +5828,7 @@ msgid "AiImpactAnalytics|Assigned Duo seat engagement"
 msgstr ""
 
 msgid "AiImpactAnalytics|Code Suggestions: Acceptance rate"
-msgstr ""
+msgstr "コード提案の受け入れ率"
 
 msgid "AiImpactAnalytics|Code Suggestions: Usage"
 msgstr ""
@@ -5864,7 +5891,7 @@ msgid "AiPowered|Amazon Q Setup"
 msgstr "Amazon Qセットアップ"
 
 msgid "AiPowered|Are you sure you want to turn off GitLab Duo Agent Platform?"
-msgstr ""
+msgstr "GitLab Duo Agent Platformを無効にしますか?"
 
 msgid "AiPowered|Assign models to AI-native features."
 msgstr "モデルをAIネイティブ機能にアサインします。"
@@ -5963,7 +5990,7 @@ msgid "AiPowered|Explore GitLab Duo Core"
 msgstr "GitLab Duo Coreを試す"
 
 msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
-msgstr ""
+msgstr "GitLab Duo Agent Platformの無効にできませんでした。"
 
 msgid "AiPowered|Failed to enable GitLab Duo Agent Platform."
 msgstr ""
@@ -5984,7 +6011,7 @@ msgid "AiPowered|Get started with GitLab Duo Core"
 msgstr "GitLab Duo Coreを始めよう"
 
 msgid "AiPowered|GitLab Duo Agent Platform"
-msgstr ""
+msgstr "GitLab Duo Agent Platform"
 
 msgid "AiPowered|GitLab Duo Agent Platform has successfully been turned off."
 msgstr ""
@@ -6041,7 +6068,7 @@ msgid "AiPowered|Local AI gateway URL"
 msgstr "ローカルAIゲートウェイのURL"
 
 msgid "AiPowered|Lock tooltip icon"
-msgstr ""
+msgstr "ロックツールチップアイコン"
 
 msgid "AiPowered|Might result in requests having higher latency."
 msgstr "リクエストのレイテンシーが長くなる可能性があります。"
@@ -6752,6 +6779,9 @@ msgstr "Opstrace統合を使用してプロジェクトがエラーをトラッ�
 
 msgid "Almost there…"
 msgstr "登録完了まであと少しです…"
+
+msgid "Alpha"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "ブロック済み"
@@ -7531,27 +7561,6 @@ msgstr "ネームスペースのメタデータの読み込みに失敗しまし
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr "解析ダッシュボードを使った管理ややりとりについて%{linkStart}詳しく学ぶ%{linkEnd}。"
 
-msgid "Analytics|A dashboard with that name already exists."
-msgstr "同じ名前のダッシュボードがすでに存在します。"
-
-msgid "Analytics|A visualization with that name already exists."
-msgstr "同名の可視化が存在します。"
-
-msgid "Analytics|Add a visualization"
-msgstr "可視化を追加"
-
-msgid "Analytics|Add to dashboard"
-msgstr "ダッシュボードに追加"
-
-msgid "Analytics|Add visualization"
-msgstr "可視化を追加"
-
-msgid "Analytics|Add visualizations"
-msgstr "可視化を追加"
-
-msgid "Analytics|An error occurred while loading data"
-msgstr "データの読み込み中にエラーが発生しました"
-
 msgid "Analytics|Analytics dashboards"
 msgstr "分析ダッシュボード"
 
@@ -7561,44 +7570,11 @@ msgstr "%{group_name}の分析設定を正常に更新しました。"
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr "%{project_name} の分析設定を正常に更新しました。"
 
-msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
-msgstr "本当にこのダッシュボードの作成をキャンセルしますか?"
-
-msgid "Analytics|Are you sure you want to cancel creating this visualization?"
-msgstr "本当にこのビジュアライゼーションの作成をキャンセルしますか?"
-
-msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
-msgstr "本当にこのダッシュボードの編集をキャンセルしますか?"
-
-msgid "Analytics|Cancel"
-msgstr "キャンセル"
-
-msgid "Analytics|Charts"
-msgstr "チャート"
-
-msgid "Analytics|Code"
-msgstr "コード"
-
-msgid "Analytics|Column chart"
-msgstr "縦棒チャート"
-
 msgid "Analytics|Configure analytics reports."
 msgstr "分析レポートを設定します。"
 
-msgid "Analytics|Continue creating"
-msgstr "作成を続ける"
-
-msgid "Analytics|Continue editing"
-msgstr "編集を続ける"
-
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr "ダッシュボード %{dashboardSlug}を作成"
-
-msgid "Analytics|Create your dashboard"
-msgstr "ダッシュボードを作成する"
-
-msgid "Analytics|Create your visualization"
-msgstr "可視化を作成"
 
 msgid "Analytics|Created by GitLab"
 msgstr "GitLabにより作成"
@@ -7606,26 +7582,8 @@ msgstr "GitLabにより作成"
 msgid "Analytics|Custom"
 msgstr "カスタム"
 
-msgid "Analytics|Dashboard description"
-msgstr "ダッシュボードの説明"
-
-msgid "Analytics|Dashboard description (optional)"
-msgstr "ダッシュボードの説明(オプション)"
-
 msgid "Analytics|Dashboard not found"
 msgstr "ダッシュボードが見つかりません"
-
-msgid "Analytics|Dashboard title"
-msgstr "ダッシュボードタイトル"
-
-msgid "Analytics|Dashboard was saved successfully"
-msgstr "ダッシュボードは正常に保存されました"
-
-msgid "Analytics|Data explorer"
-msgstr "データエクスプローラー"
-
-msgid "Analytics|Data table"
-msgstr "データ表"
 
 msgid "Analytics|Date range"
 msgstr "日付範囲"
@@ -7642,27 +7600,6 @@ msgstr[0] "日付と時刻はUTCタイムゾーンで表示されます。日付
 
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
 msgstr "デフォルトの日付範囲「%{defaultOption}」はdateRangeオプションのリストに含まれていません。"
-
-msgid "Analytics|Edit"
-msgstr "編集"
-
-msgid "Analytics|Edit your dashboard"
-msgstr "ダッシュボードを編集"
-
-msgid "Analytics|Enter a dashboard description"
-msgstr "ダッシュボードの説明を入力"
-
-msgid "Analytics|Enter a dashboard title"
-msgstr "ダッシュボードタイトルを入力"
-
-msgid "Analytics|Enter a visualization title"
-msgstr "可視化のタイトルを入力"
-
-msgid "Analytics|Error while saving dashboard"
-msgstr "ダッシュボードの保存中にエラーが発生しました"
-
-msgid "Analytics|Error while saving visualization."
-msgstr "可視化の保存中にエラーが発生しました。"
 
 msgid "Analytics|Events received since %{date}"
 msgstr "%{date}日以降に受信したイベント"
@@ -7694,9 +7631,6 @@ msgstr "最終更新日: %{recordedAt}"
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr "%{docsLinkStart}AIインパクト分析%{docsLinkEnd}および%{subscriptionLinkStart}GitLab Duoシート%{subscriptionLinkEnd}の詳細を確認してください。"
 
-msgid "Analytics|Line chart"
-msgstr "折れ線チャート"
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr "指定された URL パスに一致するダッシュボードがありません。"
 
@@ -7709,35 +7643,11 @@ msgstr "概要"
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "ページを更新してもう一度試すか、 %{linkStart}トラブルシューティングドキュメント%{linkEnd} を参照してください。"
 
-msgid "Analytics|Save and add to Dashboard"
-msgstr "保存してダッシュボードに追加"
-
-msgid "Analytics|Save your dashboard"
-msgstr "ダッシュボードを保存"
-
-msgid "Analytics|Save your visualization"
-msgstr "可視化を保存"
-
-msgid "Analytics|Select a measurement"
-msgstr "測定を選択"
-
-msgid "Analytics|Select a visualization type"
-msgstr "可視化の種類を選択"
-
-msgid "Analytics|Single statistic"
-msgstr "単一統計"
-
-msgid "Analytics|Single stats"
-msgstr "単一統計"
-
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "パネルの可視化設定に問題があります。%{linkStart}トラブルシューティングのドキュメント%{linkEnd}を参照してください。"
 
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "データソースへの接続中に問題が発生しました。 %{linkStart}トラブルシューティングドキュメント%{linkEnd} を参照してください。"
-
-msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
-msgstr "利用可能な可視化の読み込み中に問題が発生しました。ページを更新してもう一度お試しください。"
 
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "ダッシュボードの読み込み中に問題が発生しました。 %{linkStart}トラブルシューティングドキュメント%{linkEnd} を参照するかこのページを再読み込みしてください。"
@@ -7745,20 +7655,11 @@ msgstr "ダッシュボードの読み込み中に問題が発生しました。
 msgid "Analytics|Something went wrong."
 msgstr "問題が発生しました。"
 
-msgid "Analytics|Start by choosing a measure"
-msgstr "最初に測定を選択する"
-
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr "ネームスペースの使用状況に関する統計。使用状況データは累積値であり、毎月更新されます。"
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
 msgstr ""
-
-msgid "Analytics|Tables"
-msgstr "表"
-
-msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
-msgstr "視覚化プレビューには過去7日間のみが表示されます。ダッシュボードの視覚化を使用すると日付範囲全体を表示できます。"
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
 msgstr "分析設定を更新できません。もう一度やり直してください。"
@@ -7778,23 +7679,11 @@ msgstr "使用状況データは累積値であり、毎月更新されます。
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr "サポートされている分析レポートにClickHouseを使用します。%{link_start}ClickHouseが設定されている%{link_end}場合に使用できます。"
 
-msgid "Analytics|Use the data explorer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
-msgstr "データエクスプローラーを使用してカスタムの可視化を作成します。可視化を保存した後、ダッシュボードに追加できます。"
-
 msgid "Analytics|View available dashboards"
 msgstr "利用可能なダッシュボードを表示"
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr "アクティビティーのトラッキングに同意したユーザーのみのメトリクスを表示します。"
-
-msgid "Analytics|Visualization"
-msgstr "可視化"
-
-msgid "Analytics|Visualization title"
-msgstr "可視化のタイトル"
-
-msgid "Analytics|Visualization was saved successfully"
-msgstr "可視化は正常に保存されました"
 
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr "依存関係に含まれている既知の脆弱性を分析します。"
@@ -9431,7 +9320,7 @@ msgid "Autocomplete usage hint"
 msgstr "オートコンプリート使用方法のヒント"
 
 msgid "Automate"
-msgstr ""
+msgstr "自動化"
 
 msgid "Automatic certificate management using %{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end}"
 msgstr "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} を用いて自動的に証明書を管理"
@@ -9667,8 +9556,8 @@ msgstr "BambooサーバーへのAPIアクセス権を持つユーザー。"
 msgid "Banned"
 msgstr "BANされました"
 
-msgid "Banner message"
-msgstr "バナーメッセージ"
+msgid "Banner message (optional)"
+msgstr "バナーメッセージ (オプション)"
 
 msgid "Based on"
 msgstr "に基づいた"
@@ -11495,7 +11384,7 @@ msgid "BulkImport|Import groups by direct transfer"
 msgstr "直接転送でグループをインポート"
 
 msgid "BulkImport|Import user memberships. %{helpLink}"
-msgstr ""
+msgstr "ユーザーのメンバーシップをインポートします。%{helpLink}"
 
 msgid "BulkImport|Import with projects"
 msgstr "プロジェクトを含めてインポート"
@@ -11561,7 +11450,7 @@ msgid "BulkImport|Placeholder reassignments completed with errors"
 msgstr "プレースホルダーの再割り当てが完了しましたが、エラーが発生しました"
 
 msgid "BulkImport|Please re-enter your credentials to reconnect."
-msgstr ""
+msgstr "再接続するために認証情報を再入力してください。"
 
 msgid "BulkImport|Project import history"
 msgstr "プロジェクトインポートの履歴"
@@ -11570,7 +11459,7 @@ msgid "BulkImport|Re-import creates a new group and does not sync with the exist
 msgstr "再インポートすると新しいグループが作成されますが、既存のグループとは同期されません。"
 
 msgid "BulkImport|Reconnect to instance"
-msgstr ""
+msgstr "インスタンスへ再接続"
 
 msgid "BulkImport|Review results"
 msgstr "結果を表示する"
@@ -12810,7 +12699,7 @@ msgid "Ci config already present"
 msgstr "Ci configはすでに存在します"
 
 msgid "CiCatalogComponent|CI/CD Catalog"
-msgstr ""
+msgstr "CI/CDカタログ"
 
 msgid "CiCatalogComponent|Component details not available"
 msgstr "コンポーネントの詳細が利用できません。"
@@ -15020,10 +14909,10 @@ msgid "Collapse sidebar"
 msgstr "サイドバーを折りたたむ"
 
 msgid "Collation Mismatches"
-msgstr ""
+msgstr "照合の不一致"
 
 msgid "Collation Name"
-msgstr ""
+msgstr "照合名"
 
 msgid "Collector hostname"
 msgstr "コレクターのホスト名"
@@ -15032,7 +14921,7 @@ msgid "Color"
 msgstr "色"
 
 msgid "ColorMode|Auto"
-msgstr ""
+msgstr "自動"
 
 msgid "ColorMode|Dark"
 msgstr ""
@@ -15198,7 +15087,7 @@ msgid "Commit SHA"
 msgstr "コミットの SHA"
 
 msgid "Commit SHA copied to clipboard."
-msgstr ""
+msgstr "コミットSHAをクリップボードにコピーしました。"
 
 msgid "Commit actions"
 msgstr ""
@@ -15492,19 +15381,19 @@ msgid "Compliance Center|Frameworks"
 msgstr "フレームワーク"
 
 msgid "Compliance Center|Overview"
-msgstr ""
+msgstr "概要"
 
 msgid "Compliance Center|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
 msgstr "グループのコンプライアンスのステータス、違反、コンプライアンスフレームワークを報告し管理します。%{linkStart}詳しく見る%{linkEnd}。"
 
 msgid "Compliance Center|Status"
-msgstr ""
+msgstr "状態"
 
 msgid "Compliance Center|Violations"
 msgstr "違反"
 
 msgid "Compliance and security policy group"
-msgstr ""
+msgstr "コンプライアンスとセキュリティポリシーグループ"
 
 msgid "Compliance center"
 msgstr "コンプライアンスセンター"
@@ -15519,19 +15408,19 @@ msgid "Compliance report|Actions"
 msgstr ""
 
 msgid "Compliance report|Edit framework"
-msgstr ""
+msgstr "フレームワークを編集"
 
 msgid "Compliance report|Framework name"
-msgstr ""
+msgstr "フレームワーク名"
 
 msgid "Compliance report|Policies"
-msgstr ""
+msgstr "ポリシー"
 
 msgid "Compliance report|Projects"
-msgstr ""
+msgstr "プロジェクト"
 
 msgid "Compliance report|Requirements"
-msgstr ""
+msgstr "要求"
 
 msgid "Compliance report|Requirements without controls"
 msgstr ""
@@ -16053,7 +15942,7 @@ msgid "ComplianceReport|Compliance pipelines are deprecated"
 msgstr "コンプライアンスパイプラインが非推奨になっています"
 
 msgid "ComplianceReport|Controls"
-msgstr ""
+msgstr "制御"
 
 msgid "ComplianceReport|Create a new framework"
 msgstr "新しいフレームワークを作成"
@@ -16077,7 +15966,7 @@ msgid "ComplianceReport|Edit the framework"
 msgstr "フレームワークを編集"
 
 msgid "ComplianceReport|Failed"
-msgstr ""
+msgstr "失敗"
 
 msgid "ComplianceReport|Failed to load the compliance violation. Refresh the page and try again."
 msgstr ""
@@ -16115,9 +16004,6 @@ msgstr "ただし、削除しなければならないコンプライアンスパ
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr "2 人未満の承認者"
 
-msgid "ComplianceReport|Location"
-msgstr ""
-
 msgid "ComplianceReport|Migrate pipeline to a policy"
 msgstr "パイプラインをポリシーに移行する"
 
@@ -16153,6 +16039,9 @@ msgstr ""
 
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr "新しいパイプライン実行ポリシーが適用されるように、コンプライアンスフレームワークからコンプライアンスパイプライン設定を削除してください。"
+
+msgid "ComplianceReport|Project"
+msgstr ""
 
 msgid "ComplianceReport|Projects covered by frameworks"
 msgstr ""
@@ -16263,6 +16152,9 @@ msgstr "コミッターによって承認されたマージリクエストを防
 msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
 msgstr "二人の承認を必要とするように設定されたルール。"
 
+msgid "ComplianceStandardsAdherence|API security running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Add adequate administrators"
 msgstr "適切な管理者の追加"
 
@@ -16278,11 +16170,26 @@ msgstr "デフォルトのブランチに直接プッシュする人を決定す
 msgid "ComplianceStandardsAdherence|All attached frameworks"
 msgstr "すべての付属フレームワーク"
 
+msgid "ComplianceStandardsAdherence|At least one approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|At least one non-author approval"
 msgstr "少なくとも1個の非作成者の承認"
 
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr "少なくとも 2 つの承認"
+
+msgid "ComplianceStandardsAdherence|Auth SSO enabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Author approved merge request is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Branch deletion disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|CI/CD job token scope enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Change your project visibility settings to comply with organizational security requirements."
 msgstr "組織のセキュリティ要件を満たすために、プロジェクトの表示レベルの設定を変更します。"
@@ -16295,6 +16202,18 @@ msgstr "チェック"
 
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr "チェック"
+
+msgid "ComplianceStandardsAdherence|Code changes requires code owners"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code owner approval required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code quality running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Committers approved merge request is forbidden"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues."
 msgstr "セキュリティ上の問題からアプリケーションを自動的にテストするために、お使いのCI/CDパイプラインにDASTを設定します。"
@@ -16404,6 +16323,9 @@ msgstr "あなたのプロジェクトの設定を変更して、コード品質
 msgid "ComplianceStandardsAdherence|Configure your project to reset approvals when new changes are pushed."
 msgstr "プロジェクトを設定して新しい変更がプッシュされたときに承認をリセットする。"
 
+msgid "ComplianceStandardsAdherence|Container scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Controls whether users can merge changes to the default branch."
 msgstr "ユーザーがデフォルトのブランチに変更をマージできるかどうかを制御します。"
 
@@ -16416,6 +16338,9 @@ msgstr "プロジェクトのフォークを作成します。"
 msgid "ComplianceStandardsAdherence|Create valid CI configuration"
 msgstr "有効なCI設定の作成"
 
+msgid "ComplianceStandardsAdherence|DAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|DAST scan"
 msgstr "DASTスキャン"
 
@@ -16427,6 +16352,21 @@ msgstr "DASTスキャナには、デフォルトブランチのパイプライ�
 
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr "ステータスが最後に変更されてからの日付"
+
+msgid "ComplianceStandardsAdherence|Default branch protected"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch protected from direct push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can merge"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Dependency scanning running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Disable branch deletion"
 msgstr "ブランチの削除を無効にする"
@@ -16499,6 +16439,9 @@ msgstr "コードオーナーの承認を適用する"
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
 msgstr "バックアップ体制として、それぞれのリポジトリに2人以上の管理者をアサインしてください。"
+
+msgid "ComplianceStandardsAdherence|Ensure two administrators per repository"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensure version control is properly configured for your project."
 msgstr "プロジェクトでバージョンコントロールが適切に設定されていることを確実してください。"
@@ -16662,6 +16605,9 @@ msgstr "脆弱性がSLOのしきい値内になっていることを確認して
 msgid "ComplianceStandardsAdherence|Ensures webhooks are securely configured."
 msgstr "Webhookがセキュアに設定されていることを確認してください。"
 
+msgid "ComplianceStandardsAdherence|Error tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and archive inactive repositories."
 msgstr "アクティブではないリポジトリを定期的にレビューして削除するプロセスを確立します。"
 
@@ -16686,14 +16632,29 @@ msgstr "修正が利用可能"
 msgid "ComplianceStandardsAdherence|Fix suggestions"
 msgstr "修正の提案"
 
+msgid "ComplianceStandardsAdherence|Force push disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Forks exist for the project"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Framework"
 msgstr "フレームワーク"
 
 msgid "ComplianceStandardsAdherence|Frameworks"
 msgstr "フレームワーク"
 
+msgid "ComplianceStandardsAdherence|Fuzz testing running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|GitLab license level Ultimate"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr "グループ化"
+
+msgid "ComplianceStandardsAdherence|Has valid CI/CD configuration"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Have DAST scanner configured in pipeline configuration"
 msgstr "パイプライン設定でDASTスキャナーが設定されている"
@@ -16716,6 +16677,9 @@ msgstr "コミットを追加したマージリクエストを承認しないよ
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr "修正方法"
 
+msgid "ComplianceStandardsAdherence|IaC scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Implement API security testing"
 msgstr "APIセキュリティテストの実装"
 
@@ -16737,8 +16701,17 @@ msgstr "ユーザーレビュープロセスの実装"
 msgid "ComplianceStandardsAdherence|Implement vulnerability SLOs"
 msgstr "脆弱性SLOの実装"
 
+msgid "ComplianceStandardsAdherence|Internal visibility is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Issue tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Last scanned"
 msgstr "前回スキャンした日"
+
+msgid "ComplianceStandardsAdherence|License compliance running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Lock approval rules"
 msgstr "承認ルールのロック"
@@ -16746,8 +16719,20 @@ msgstr "承認ルールのロック"
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr "マージリクエストの承認ルール"
 
+msgid "ComplianceStandardsAdherence|Merge request commit reset approvals"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests approval rules prevent editing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|More information"
 msgstr "詳細情報"
+
+msgid "ComplianceStandardsAdherence|More members than admins"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
 msgstr "標準遵守チェックのあるプロジェクトは見つかりません"
@@ -16769,6 +16754,9 @@ msgstr "なし"
 
 msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr "%{linkStart}%{projectName}%{linkEnd}に適用されるその他のコンプライアンスフレームワーク"
+
+msgid "ComplianceStandardsAdherence|Package Hunter no findings untriaged"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Passed"
 msgstr "合格"
@@ -16812,11 +16800,29 @@ msgstr "マージリクエストにコミットしたユーザーがそれを承
 msgid "ComplianceStandardsAdherence|Project"
 msgstr "プロジェクト"
 
+msgid "ComplianceStandardsAdherence|Project not archived"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project not marked for deletion"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project pipelines not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Project repository exists"
 msgstr "プロジェクトリポジトリが存在する"
 
+msgid "ComplianceStandardsAdherence|Project visibility not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Projects"
 msgstr "プロジェクト"
+
+msgid "ComplianceStandardsAdherence|Protected branches exist"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Push protection enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Raw filter values is not currently supported. Please use available values."
 msgstr "Rawフィルタの値は現在サポートされていません。利用可能な値を使用してください。"
@@ -16824,8 +16830,20 @@ msgstr "Rawフィルタの値は現在サポートされていません。利用
 msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. Please use the available filters."
 msgstr "Rawテキスト検索は現在サポートされていません。利用可能なフィルタを使用してください。"
 
+msgid "ComplianceStandardsAdherence|Require MFA at organization level"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require MFA for contributors"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require branch up to date"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Require code owner approval"
 msgstr "コードオーナーの承認の要求"
+
+msgid "ComplianceStandardsAdherence|Require linear history"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Require resolved discussions"
 msgstr "ディスカッションの解決は必須"
@@ -16836,20 +16854,41 @@ msgstr "要求事項"
 msgid "ComplianceStandardsAdherence|Requirements"
 msgstr "要求"
 
+msgid "ComplianceStandardsAdherence|Requires signed commits"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Reset approvals on push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Resolve discussions required"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict pipeline access"
 msgstr "パイプラインへのアクセスを制限する"
 
 msgid "ComplianceStandardsAdherence|Restrict pipeline visibility"
 msgstr "パイプラインの表示を制限する"
 
+msgid "ComplianceStandardsAdherence|Restrict push/merge access"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict variable creation"
 msgstr "変数の作成を制限する"
+
+msgid "ComplianceStandardsAdherence|Restricted build access"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Restricts access to build artifacts and pipeline outputs."
 msgstr "ビルドアーティファクトおよびパイプライン出力へのアクセスを制限します。"
 
 msgid "ComplianceStandardsAdherence|Restricts who can push to or merge into protected branches."
 msgstr "保護ブランチへのプッシュやマージを実行できる人を制限します。"
+
+msgid "ComplianceStandardsAdherence|Review and archive stale repositories"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Review and remove inactive users"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Review and secure all webhook configurations to prevent unauthorized access."
 msgstr "すべてのWebhook設定を確認し、認証されていないアクセスから保護します。"
@@ -16869,6 +16908,9 @@ msgstr "プロジェクトの状態を確認する"
 msgid "ComplianceStandardsAdherence|Review the project archive status and unarchive if necessary for active projects."
 msgstr "プロジェクトのアーカイブステータスを確認し、必要に応じて有効なプロジェクトのアーカイブを解除します。"
 
+msgid "ComplianceStandardsAdherence|SAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|SAST scan"
 msgstr "SASTスキャン"
 
@@ -16878,8 +16920,14 @@ msgstr "SASTスキャナーは、デフォルトブランチのパイプライ�
 msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."
 msgstr "デフォルトブランチには、パイプライン設定でSASTスキャナーが設定されていません。"
 
+msgid "ComplianceStandardsAdherence|Secret detection running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Secure webhook configurations"
 msgstr "安全なWebhook設定"
+
+msgid "ComplianceStandardsAdherence|Secure webhooks"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
 msgstr "パイプラインのセキュリティを向上するために、CI/CDジョブトークンのスコープを制限するように設定します。"
@@ -16950,6 +16998,9 @@ msgstr "リポジトリアクセスに対して厳格な権限管理を設定す
 msgid "ComplianceStandardsAdherence|Set up your project to maintain a clean, linear commit history."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Stale branch cleanup enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Standard"
 msgstr "標準"
 
@@ -16959,8 +17010,20 @@ msgstr "標準"
 msgid "ComplianceStandardsAdherence|Status"
 msgstr "ステータス"
 
+msgid "ComplianceStandardsAdherence|Status checks required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Status page configured"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Strict Permission for Repository"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Success reason"
 msgstr "成功理由"
+
+msgid "ComplianceStandardsAdherence|Terraform enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr "次の機能は、この要求事項を満たすのに役立ちます。"
@@ -16989,6 +17052,9 @@ msgstr "Ultimateライセンスへのアップグレード"
 msgid "ComplianceStandardsAdherence|Upgrade your GitLab license to Ultimate to access all security and compliance features."
 msgstr "GitLabのライセンスをUltimateにアップグレードすると、すべてのセキュリティとコンプライアンスに関する機能にアクセスできます。"
 
+msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers."
 msgstr "ユーザー定義のCI/CD変数をメンテナーに制限する。"
 
@@ -16997,6 +17063,9 @@ msgstr "詳細を見る"
 
 msgid "ComplianceStandardsAdherence|View details (fix available)"
 msgstr "詳細を表示(修正可能)"
+
+msgid "ComplianceStandardsAdherence|Vulnerabilities SLO days over threshold"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Your standards adherence CSV export for the group \"%{group_name}\" is attached to this email."
 msgstr "「%{group_name}」グループの標準準拠CSVエクスポートがこのメールに添付されました。"
@@ -17017,7 +17086,7 @@ msgid "ComplianceViolation|Audit event captured"
 msgstr "監査イベントがキャプチャされました"
 
 msgid "ComplianceViolation|Control"
-msgstr ""
+msgstr "制御"
 
 msgid "ComplianceViolation|Detected"
 msgstr "検出済み"
@@ -17029,10 +17098,10 @@ msgid "ComplianceViolation|Fix suggestion generated for this failed control"
 msgstr ""
 
 msgid "ComplianceViolation|Framework"
-msgstr ""
+msgstr "フレームワーク"
 
 msgid "ComplianceViolation|Go to project settings"
-msgstr ""
+msgstr "プロジェクト設定へ移動"
 
 msgid "ComplianceViolation|In review"
 msgstr "確認中"
@@ -17041,7 +17110,7 @@ msgid "ComplianceViolation|Registered event IP"
 msgstr "登録されたイベントIP"
 
 msgid "ComplianceViolation|Requirement"
-msgstr ""
+msgstr "要求"
 
 msgid "ComplianceViolation|Resolved"
 msgstr "解決済み"
@@ -18819,9 +18888,6 @@ msgstr "国またはリージョン"
 msgid "Country or region is required."
 msgstr "国またはリージョンは必須です。"
 
-msgid "Counts"
-msgstr "カウント"
-
 msgid "Counts reflect children you may not have access to."
 msgstr "カウントにはあなたがアクセスできない可能性がある子要素を含んでいることがあります。"
 
@@ -19354,7 +19420,7 @@ msgid "CredentialsInventory|Revoked"
 msgstr "取り消し済み"
 
 msgid "CredentialsInventory|SSH Keys"
-msgstr ""
+msgstr "SSHキー"
 
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSHキー"
@@ -20525,13 +20591,13 @@ msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to
 msgstr "並列でパッシブスキャンを実行するワーカーの数。デフォルトで使用可能なCPU数です。"
 
 msgid "DastProfiles|OTP field"
-msgstr ""
+msgstr "OTPフィールド"
 
 msgid "DastProfiles|OTP secret key"
-msgstr ""
+msgstr "OTPシークレットキー"
 
 msgid "DastProfiles|OTP submit field"
-msgstr ""
+msgstr "OTP送信フィールド"
 
 msgid "DastProfiles|PKCS12 certificate"
 msgstr "PKCS12証明書"
@@ -20991,10 +21057,10 @@ msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, bu
 msgstr "データベース「%{database_name}」では、PostgreSQL %{pg_version_current}が使用されていますが、このバージョンのGitLabには少なくともPostgreSQL %{pg_version_minimum}が必要です。サポートされているPostgreSQLバージョンにご利用環境をアップグレードしてください。詳細については、%{pg_requirements_url}を参照してください。"
 
 msgid "Database Diagnostics"
-msgstr ""
+msgstr "データベース診断"
 
 msgid "Database diagnostics"
-msgstr ""
+msgstr "データベース診断"
 
 msgid "Database update failed"
 msgstr "データベースの更新に失敗しました"
@@ -21003,7 +21069,7 @@ msgid "DatabaseDiagnostics|Checking for recent diagnostic results..."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Collation Health Check"
-msgstr ""
+msgstr "ヘルスチェックの照合"
 
 msgid "DatabaseDiagnostics|Collation mismatches are shown for informational purposes and may not indicate a problem."
 msgstr ""
@@ -21133,9 +21199,6 @@ msgstr "%{start_date}–%{end_date}"
 
 msgid "Dates"
 msgstr "日付"
-
-msgid "Day"
-msgstr "日"
 
 msgid "Day of month"
 msgstr "日"
@@ -21618,8 +21681,8 @@ msgstr "依存関係リストのエクスポート"
 msgid "Dependencies|Direct dependents"
 msgstr "直接の依存関係"
 
-msgid "Dependencies|Enter at least 3 characters to view available components."
-msgstr "利用可能なコンポーネントを表示するには、少なくとも3文字を入力してください。"
+msgid "Dependencies|Enter at least 2 characters to view available components."
+msgstr ""
 
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr "依存関係リストのエクスポートにエラーが発生しました。ページをリロードしてください。"
@@ -23083,9 +23146,6 @@ msgstr "差分行の取得中に問題が発生しました。"
 msgid "Diffs|with %{additions} and %{deletions}"
 msgstr "%{additions}と%{deletions}"
 
-msgid "Dimension"
-msgstr "サイズ"
-
 msgid "Direct"
 msgstr "ダイレクト"
 
@@ -23580,40 +23640,40 @@ msgid "DuoAgentsPlatform|Agent sessions"
 msgstr "エージェントセッション"
 
 msgid "DuoAgentsPlatform|Automate"
-msgstr ""
+msgstr "自動化"
 
 msgid "DuoAgentsPlatform|Convert Jenkins to CI"
-msgstr ""
+msgstr "JenkinsをCIに変換"
 
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
-msgstr ""
+msgstr "ログを表示できません。もう一度やり直してください。"
 
 msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
-msgstr ""
+msgstr "Jenkinsファイルへのパスを入力してください。"
 
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
-msgstr ""
+msgstr "ワークフローの取得に失敗しました"
 
 msgid "DuoAgentsPlatform|Fetching logs..."
-msgstr ""
+msgstr "ログを取得中…"
 
 msgid "DuoAgentsPlatform|ID"
-msgstr ""
+msgstr "ID"
 
 msgid "DuoAgentsPlatform|Name"
-msgstr ""
+msgstr "名前"
 
 msgid "DuoAgentsPlatform|New"
-msgstr ""
+msgstr "新規"
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
-msgstr ""
+msgstr "新しいエージェントセッションがここに表示されます。"
 
 msgid "DuoAgentsPlatform|New session"
-msgstr ""
+msgstr "新しいセッション"
 
 msgid "DuoAgentsPlatform|No agent sessions yet"
-msgstr ""
+msgstr "エージェントセッションはまだありません"
 
 msgid "DuoAgentsPlatform|No logs available yet."
 msgstr "利用可能なログはまだありません。"
@@ -23739,10 +23799,10 @@ msgid "DuoCoreTrialDiscover|Advanced CI/CD"
 msgstr "高度なCI/CD"
 
 msgid "DuoCoreTrialDiscover|Automate coding and delivery"
-msgstr ""
+msgstr "コーディングとデリバリーを自動化"
 
 msgid "DuoCoreTrialDiscover|Automated compliance"
-msgstr ""
+msgstr "自動化したコンプライアンス"
 
 msgid "DuoCoreTrialDiscover|Boost productivity with smart code assistance"
 msgstr ""
@@ -23931,58 +23991,58 @@ msgid "DuoFeatures|Allows the specified file in the specified directory, even if
 msgstr ""
 
 msgid "DuoFeatures|Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 msgid "DuoFeatures|Delete exclusion rule?"
-msgstr ""
+msgstr "除外ルールを削除しますか？"
 
 msgid "DuoFeatures|Do you want to delete this exclusion rule?"
-msgstr ""
+msgstr "この除外ルールを削除しますか?"
 
 msgid "DuoFeatures|Excludes all .env files"
-msgstr ""
+msgstr "すべての .envファイルを除外"
 
 msgid "DuoFeatures|Excludes all .key files in any subdirectory"
-msgstr ""
+msgstr "サブディレクトリ中のすべての .keyファイルを除外"
 
 msgid "DuoFeatures|Excludes entire secrets directory"
 msgstr ""
 
 msgid "DuoFeatures|Excludes the specified file"
-msgstr ""
+msgstr "指定ファイルを除外"
 
 msgid "DuoFeatures|Failed to delete the exclusion rule. Try again."
-msgstr ""
+msgstr "除外ルールの削除に失敗しました。もう一度試してください。"
 
 msgid "DuoFeatures|Files or directories"
-msgstr ""
+msgstr "ファイルまたはディレクトリ"
 
 msgid "DuoFeatures|GitLab Duo context exclusions"
 msgstr ""
 
 msgid "DuoFeatures|Manage Exclusions"
-msgstr ""
+msgstr "除外の管理"
 
 msgid "DuoFeatures|Manage exclusions"
-msgstr ""
+msgstr "除外の管理"
 
 msgid "DuoFeatures|No exclusion rules defined. Add a rule to exclude files from GitLab Duo context."
-msgstr ""
+msgstr "除外ルールが定義されていません。GitLab Duoのコンテキストからファイルを除外するルールを追加してください。"
 
 msgid "DuoFeatures|Pattern"
-msgstr ""
+msgstr "パターン"
 
 msgid "DuoFeatures|Save exclusions"
-msgstr ""
+msgstr "除外を保存"
 
 msgid "DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}learn more%{linkEnd}."
 msgstr ""
 
 msgid "DuoFeatures|The exclusion rule was deleted."
-msgstr ""
+msgstr "この除外ルールは削除されました。"
 
 msgid "DuoFeatures|View examples of exclusions."
-msgstr ""
+msgstr "除外の例を表示します。"
 
 msgid "DuoProDiscover|A single platform integrates the best AI model for each use case across the entire development workflow."
 msgstr "開発ワークフロー全体にわたるユースケースで利用できる、優れたAIをインテグレートした単一プラットフォームです。"
@@ -24108,7 +24168,7 @@ msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive
 msgstr "ワークフロー内で直接質問をしたり、概念を検索したり、アイデアをテストしながら、すぐにフィードバックを受け取ることができます。"
 
 msgid "DuoWorkflowSettings|Model Context Protocol"
-msgstr ""
+msgstr "Model Context Protocol"
 
 msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Agentic Chat and GitLab Duo Agent Platform"
 msgstr "GitLab Duo Agentic ChatとGitLab Duo Agent PlatformのMCPサポートを有効にする"
@@ -24126,7 +24186,7 @@ msgid "Duplicate page: A page with that title already exists in the file %{file}
 msgstr "重複ページ: そのタイトルのページは既にファイル「%{file}」に存在します"
 
 msgid "Duplicates"
-msgstr ""
+msgstr "重複"
 
 msgid "Duration"
 msgstr "期間"
@@ -26565,6 +26625,9 @@ msgstr "リポジトリの作成に失敗しました"
 msgid "Failed to create resources"
 msgstr "リソースの作成に失敗しました"
 
+msgid "Failed to create security category"
+msgstr "セキュリティカテゴリを作成できませんでした"
+
 msgid "Failed to create wiki"
 msgstr "wiki を作成できませんでした"
 
@@ -27102,7 +27165,7 @@ msgid "FeaturedUpdate|Discover AI-native features including Code Suggestions and
 msgstr ""
 
 msgid "FeaturedUpdate|Featured updates"
-msgstr ""
+msgstr "機能の更新"
 
 msgid "FeaturedUpdate|GitLab Premium and Ultimate with Duo"
 msgstr ""
@@ -27413,6 +27476,9 @@ msgstr "コホートの連合学習 (FLoC)"
 msgid "FloC|Participate in FLoC"
 msgstr "FLoCへ参加"
 
+msgid "Focus file browser"
+msgstr ""
+
 msgid "Focus filter bar"
 msgstr "フィルターバーにフォーカス"
 
@@ -27693,7 +27759,7 @@ msgid "Frameworks"
 msgstr "フレームワーク"
 
 msgid "France"
-msgstr ""
+msgstr "フランス"
 
 msgid "Free Ultimate Trial with GitLab Duo Enterprise"
 msgstr "GitLab Duo Enterpriseが付属したUltimateの無料トライアル"
@@ -27823,7 +27889,7 @@ msgid "Generate API key at %{site}"
 msgstr "%{site}でAPIキーを生成"
 
 msgid "Generate MR with Duo"
-msgstr ""
+msgstr "Duoでマージリクエストを生成"
 
 msgid "Generate a default set of labels"
 msgstr "デフォルトのラベルセットを生成"
@@ -27835,7 +27901,7 @@ msgid "Generate group access tokens scoped to this group for your applications t
 msgstr "GitLab API へのアクセスが必要なアプリケーションのために、このグループに適用されるグループアクセストークンを生成します。"
 
 msgid "Generate merge request with Duo"
-msgstr ""
+msgstr "Duoでマージリクエストを生成"
 
 msgid "Generate new export"
 msgstr "新しい エクスポートを生成"
@@ -28596,7 +28662,7 @@ msgid "GetStarted|Use GitLab Duo locally"
 msgstr "GitLab Duoをローカルで使用"
 
 msgid "GetStarted|You've ended the tutorial."
-msgstr ""
+msgstr "チュートリアルを終了しました。"
 
 msgid "GiB"
 msgstr "GiB"
@@ -28962,7 +29028,7 @@ msgid "GitLabPages|Configure pages"
 msgstr "ページを設定"
 
 msgid "GitLabPages|DNS check successful"
-msgstr ""
+msgstr "DNSのチェック完了"
 
 msgid "GitLabPages|DNS check unsuccessful"
 msgstr "DNSのチェック失敗"
@@ -29388,7 +29454,7 @@ msgid "GlobalSearch|Files"
 msgstr "ファイル"
 
 msgid "GlobalSearch|Files count summary"
-msgstr ""
+msgstr "ファイル件数の概要"
 
 msgid "GlobalSearch|Filters"
 msgstr "フィルター"
@@ -29580,7 +29646,7 @@ msgid "GlobalSearch|Search results are loading"
 msgstr "検索結果を読み込み中"
 
 msgid "GlobalSearch|Search results summary"
-msgstr ""
+msgstr "検索結果の概要"
 
 msgid "GlobalSearch|Settings"
 msgstr "設定"
@@ -29640,9 +29706,6 @@ msgstr "結果にソースブランチを含めるか除外するかを切り替
 
 msgid "GlobalSearch|Toggle if results have target branch included or excluded"
 msgstr ""
-
-msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
-msgstr "こちらに入力すると検索できます%{kbdOpen} %{kbdClose}"
 
 msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr "新しい候補を表示するには入力してください。"
@@ -29864,7 +29927,7 @@ msgid "Go to your snippets"
 msgstr "あなたのスニペットへ移動"
 
 msgid "Good job!"
-msgstr ""
+msgstr "おつかれさまです！"
 
 msgid "Google Artifact Registry"
 msgstr "Googleアーティファクトのレジストリ"
@@ -30303,7 +30366,7 @@ msgid "Group Git LFS status:"
 msgstr "グループGit LFSの状態:"
 
 msgid "Group Name"
-msgstr ""
+msgstr "グループ名"
 
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
 msgstr "グループ管理アカウントを有効にする前に、グループ所有者が SAML でサインインしている必要があります"
@@ -30396,7 +30459,7 @@ msgid "Group name can contain only letters, digits, dashes, spaces, dots, unders
 msgstr "グループ名には、文字、数字、ダッシュ、スペース、ドット、アンダースコア、括弧、絵文字のみを使用できます。"
 
 msgid "Group name is required."
-msgstr ""
+msgstr "グループ名が必要です。"
 
 msgid "Group name must start with a letter, digit, emoji, or underscore."
 msgstr "グループ名は、文字、数字、絵文字、またはアンダースコアで始めてください。"
@@ -30444,7 +30507,7 @@ msgid "Group-level wiki is disabled."
 msgstr "グループレベルのwikiは無効です。"
 
 msgid "Group/project"
-msgstr ""
+msgstr "グループ/プロジェクト"
 
 msgid "Group: %{group_name}"
 msgstr "グループ: %{group_name}"
@@ -30492,13 +30555,13 @@ msgid "GroupPage|Group settings"
 msgstr "グループ設定"
 
 msgid "GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page an try again."
-msgstr ""
+msgstr "グループのアーカイブ中にエラーが発生しました。ページを更新して、もう一度試してください。"
 
 msgid "GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page an try again."
-msgstr ""
+msgstr "プロジェクトのアーカイブ中にエラーが発生しました。ページを更新して、もう一度試してください。"
 
 msgid "GroupProjectArchiveSettings|Archive"
-msgstr ""
+msgstr "アーカイブ"
 
 msgid "GroupProjectArchiveSettings|Archive group"
 msgstr ""
@@ -30708,7 +30771,7 @@ msgid "GroupSAML|SAML group link was successfully removed."
 msgstr "SAMLグループのリンクが正常に削除されました。"
 
 msgid "GroupSAML|SCIM Identifier"
-msgstr ""
+msgstr "SCIM識別"
 
 msgid "GroupSAML|SCIM Token"
 msgstr "SCIM トークン"
@@ -30851,8 +30914,8 @@ msgstr "このグループのバッジをカスタマイズします。"
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr "このグループ内のすべてのプロジェクトに対してデフォルトの Auto DevOps パイプライン"
 
-msgid "GroupSettings|Disable personal access tokens for enterprise users"
-msgstr "エンタープライズユーザーのパーソナルアクセストークンを無効にする"
+msgid "GroupSettings|Disable personal access tokens"
+msgstr "パーソナルアクセストークンを無効にする"
 
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
 msgstr ""
@@ -30884,6 +30947,9 @@ msgstr "SSH証明書の適用"
 msgid "GroupSettings|Enterprise user accounts can use the extension marketplace in the Web IDE and workspaces."
 msgstr "Enterpriseユーザーアカウントは、Web IDEおよびワークスペースで拡張機能マーケットプレイスを使用できます。"
 
+msgid "GroupSettings|Enterprise users"
+msgstr "エンタープライズのユーザー"
+
 msgid "GroupSettings|Experiment"
 msgstr "Experiment版"
 
@@ -30908,14 +30974,20 @@ msgstr "グループメンションは無効です"
 msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr "グループパスは%{length}文字以下で設定する必要があります。"
 
+msgid "GroupSettings|Hide email address from public profile"
+msgstr ""
+
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "グループのSSH証明書はどのように管理しますか?"
 
-msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
-msgstr "有効にすると、エンタープライズユーザーアカウントはパーソナルアクセストークンを使用できなくなります。%{learn_more_link}"
+msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
+msgstr ""
 
 msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
 msgstr "有効にすると、グループアクセストークンの有効期限Webhookは、トークンの有効期限が切れる60日前、30日前、7日前に実行されます。無効にすると、これらのWebhookはトークンの有効期限が切れる7日前にのみ実行されます。"
+
+msgid "GroupSettings|If enabled, hides email addresses on public profile pages for enterprise users."
+msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
 msgstr "有効にすると、個々のユーザーアカウントはGitアクセスに発行されたSSH証明書のみを使用することができます。 サービスアカウント、デプロイキー、その他のタイプの内部アカウントには適用されません。"
@@ -30988,6 +31060,9 @@ msgstr "このグループの各Pagesサイトのすべてのコンテンツの�
 
 msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
 msgstr "グループで作成された新しいリポジトリの、デフォルトブランチの初期名と保護を設定します。"
+
+msgid "GroupSettings|Settings that apply only to enterprise users associated with this group."
+msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr "代替のCI設定ファイルが見つからない場合は、Auto DevOpsパイプラインが実行されます。"
@@ -31742,7 +31817,7 @@ msgid "History of authentications"
 msgstr "認証履歴"
 
 msgid "Home"
-msgstr ""
+msgstr "ホーム"
 
 msgid "Home page URL"
 msgstr "ホームページのURL"
@@ -31754,7 +31829,7 @@ msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available
 msgstr ""
 
 msgid "HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again."
-msgstr ""
+msgstr "To Doアイテムは利用できません。このページを更新してもう一度試してください。"
 
 msgid "HomePageWorkItemsWidget|Assigned to you"
 msgstr ""
@@ -31775,10 +31850,10 @@ msgid "HomepageActivityWidget|Starred projects"
 msgstr ""
 
 msgid "HomepageActivityWidget|Your activity"
-msgstr ""
+msgstr "アクティビティー"
 
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
-msgstr ""
+msgstr "アクテイビティフィードは利用できません。このページを更新してもう一度試してください。"
 
 msgid "Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
 msgstr ""
@@ -31805,7 +31880,7 @@ msgid "Hour (UTC)"
 msgstr "時間 (UTC)"
 
 msgid "Hours"
-msgstr ""
+msgstr "時間"
 
 msgid "Housekeeping"
 msgstr "ハウスキーピング"
@@ -31835,7 +31910,7 @@ msgid "How do I rename an environment?"
 msgstr "環境の名前を変更するにはどうすればいいですか?"
 
 msgid "How do I renew my subscription?"
-msgstr ""
+msgstr "サブスクリプションを更新する方法"
 
 msgid "How do I set up a Google Chat webhook?"
 msgstr "Google Chat Webhookを設定するには?"
@@ -31868,7 +31943,7 @@ msgid "HttpDestinationValidator validates only http external audit event destina
 msgstr "HttpDestinationValidatorは、HTTP外部監査イベントの宛先のみを検証します。"
 
 msgid "Human"
-msgstr ""
+msgstr "ヒト"
 
 msgid "I agree that GitLab can contact me by email or telephone about its product, services, or events."
 msgstr "GitLabが、製品、サービス、またはイベントに関してメールまたは電話で私に連絡することに同意します。"
@@ -32003,7 +32078,7 @@ msgid "IP Address"
 msgstr "IPアドレス"
 
 msgid "IP address"
-msgstr ""
+msgstr "IPアドレス"
 
 msgid "IP address expiration time"
 msgstr "IP アドレスの有効期限"
@@ -32018,7 +32093,7 @@ msgid "IP subnet restriction only allowed for top-level groups"
 msgstr "IP サブネット制限は最上位グループにのみ許可されます"
 
 msgid "IaC security"
-msgstr ""
+msgstr "IaCセキュリティ"
 
 msgid "Icon"
 msgstr "アイコン"
@@ -32088,7 +32163,7 @@ msgid "IdentityVerification|Country or region"
 msgstr "国または地域"
 
 msgid "IdentityVerification|Email Verification"
-msgstr ""
+msgstr "メール認証"
 
 msgid "IdentityVerification|Enter a code."
 msgstr "コードを入力"
@@ -32136,10 +32211,10 @@ msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} an
 msgstr "最大ログイン試行回数を超えました。%{interval}を待って再度お試し下さい。"
 
 msgid "IdentityVerification|Payment Method Verification"
-msgstr ""
+msgstr "支払い方法の認証"
 
 msgid "IdentityVerification|Phone Number Verification"
-msgstr ""
+msgstr "電話番号の認証"
 
 msgid "IdentityVerification|Phone number"
 msgstr "電話番号"
@@ -32582,7 +32657,7 @@ msgid "ImportProjects|All organizations"
 msgstr "すべての組織"
 
 msgid "ImportProjects|Are you sure you want to import the project to a personal namespace?"
-msgstr ""
+msgstr "このプロジェクトを個人のネームスペースにインポートしますか?"
 
 msgid "ImportProjects|Blocked import URL: %{message}"
 msgstr "ブロックされたインポートURL: %{message}"
@@ -32865,13 +32940,13 @@ msgid "InProductMarketing|Ensure compliance"
 msgstr "コンプライアンスを確保する"
 
 msgid "InProductMarketing|Experience the power of Ultimate + GitLab Duo Enterprise"
-msgstr ""
+msgstr "UltimateとGitLab Duoエンタープライズの機能を経験"
 
 msgid "InProductMarketing|Free guest users"
 msgstr "無料ゲストユーザー"
 
 msgid "InProductMarketing|Get Started with GitLab"
-msgstr ""
+msgstr "GitLabを始めましょう"
 
 msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
 msgstr "GitLab Duo Enterprise：ソフトウェア開発ライフサイクル全体にわたるAI"
@@ -33012,7 +33087,7 @@ msgid "IncidentManagement|Paged"
 msgstr "通知"
 
 msgid "IncidentManagement|Paging status"
-msgstr ""
+msgstr "ページングステータス"
 
 msgid "IncidentManagement|Published"
 msgstr "公開済み"
@@ -33252,7 +33327,7 @@ msgid "Index"
 msgstr "インデックス"
 
 msgid "Index Name"
-msgstr ""
+msgstr "インデックス名"
 
 msgid "Index deletion is canceled"
 msgstr "インデックスの削除がキャンセルされました"
@@ -34201,7 +34276,7 @@ msgid "InviteReminderEmail|Hey there!"
 msgstr "こんにちは！"
 
 msgid "InviteReminderEmail|In case you missed it…"
-msgstr ""
+msgstr "見逃した場合…"
 
 msgid "InviteReminderEmail|Invitation pending"
 msgstr "招待は保留中です"
@@ -35562,7 +35637,7 @@ msgid "JobSource|Container Registry Push"
 msgstr "コンテナレジストリのプッシュ"
 
 msgid "JobSource|Duo Agent Platform"
-msgstr ""
+msgstr "Duo Agent Platform"
 
 msgid "JobSource|Duo Workflow"
 msgstr "Duo Workflow"
@@ -35749,7 +35824,7 @@ msgid "Job|Browse"
 msgstr "閲覧"
 
 msgid "Job|Build"
-msgstr ""
+msgstr "ビルド"
 
 msgid "Job|Cancel"
 msgstr "キャンセル"
@@ -35812,7 +35887,7 @@ msgid "Job|Keep"
 msgstr "維持"
 
 msgid "Job|Kind"
-msgstr ""
+msgstr "種類"
 
 msgid "Job|Log timestamps in UTC."
 msgstr "ログのUTCタイムスタンプ。"
@@ -35917,7 +35992,7 @@ msgid "Job|This job is stuck because you don't have any active runners that can 
 msgstr "このジョブを実行できるアクティブなRunnerがないため、このジョブは停止しています。"
 
 msgid "Job|Trigger"
-msgstr ""
+msgstr "トリガー"
 
 msgid "Job|Update CI/CD variables"
 msgstr "CI/CD変数を更新"
@@ -35959,7 +36034,7 @@ msgid "Join Zoom meeting"
 msgstr "Zoom ミーティングに参加する"
 
 msgid "Join an existing project"
-msgstr ""
+msgstr "既存のプロジェクトに参加"
 
 msgid "Joined %{user_created_time}"
 msgstr "%{user_created_time}に参加しました"
@@ -36019,7 +36094,7 @@ msgid "Key features"
 msgstr "主な機能"
 
 msgid "Key length should be at least 2048 bits."
-msgstr ""
+msgstr "キーの長さは少くとも2048ビットにしてください。"
 
 msgid "Key:"
 msgstr "キー:"
@@ -36328,10 +36403,10 @@ msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_
 msgstr "%{group_name}のLDAPグループメンバーのデフォルトの最小権限レベル。"
 
 msgid "LDAP|Ended at:"
-msgstr ""
+msgstr "終了日時:"
 
 msgid "LDAP|Group cn"
-msgstr ""
+msgstr "グループ cn"
 
 msgid "LDAP|If you do not belong to this LDAP user filter you will lose ownership of %{group_name}."
 msgstr "このLDAPユーザーフィルターに属していない場合、%{group_name}の所有権がなくなります。"
@@ -36352,7 +36427,7 @@ msgid "LDAP|LDAP user filter"
 msgstr "LDAPユーザーフィルター"
 
 msgid "LDAP|Last successful sync:"
-msgstr ""
+msgstr "最後に完了した同期の日時:"
 
 msgid "LDAP|Never synced"
 msgstr ""
@@ -36364,7 +36439,7 @@ msgid "LDAP|Select LDAP group"
 msgstr "LDAPグループを選択"
 
 msgid "LDAP|Select a server to fetch groups."
-msgstr ""
+msgstr "グループを読み込むサーバーを選択します。"
 
 msgid "LDAP|Select server"
 msgstr "サーバーを選択"
@@ -36376,10 +36451,10 @@ msgid "LDAP|Start typing"
 msgstr "ここに入力"
 
 msgid "LDAP|Started at:"
-msgstr ""
+msgstr "開始日時:"
 
 msgid "LDAP|Sync created at:"
-msgstr ""
+msgstr "同期の作成日時:"
 
 msgid "LDAP|Sync error:"
 msgstr ""
@@ -36418,13 +36493,13 @@ msgid "LFSStatus|Enabled"
 msgstr "有効"
 
 msgid "Label"
-msgstr ""
+msgstr "ラベル"
 
 msgid "Label %{labelName} was not found"
 msgstr "%{labelName}ラベルが見つかりませんでした"
 
 msgid "Label '%{command_label}' for command id '%{command}' must not start with '%{prefix}'"
-msgstr ""
+msgstr "コマンドID「%{command}」のラベル「%{command_label}」を「%{prefix}」で始めることはできません"
 
 msgid "Label actions dropdown"
 msgstr "ラベルアクションドロップダウン"
@@ -36585,7 +36660,7 @@ msgid "Last name"
 msgstr "お名前(姓)"
 
 msgid "Last name is required."
-msgstr ""
+msgstr "姓は必須です。"
 
 msgid "Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages."
 msgstr "前回のリポジトリチェックは (%{last_check_timestamp}) 失敗しました。エラーメッセージは `repocheck.log` ファイルを参照してください。"
@@ -37579,6 +37654,9 @@ msgstr "メンテナー"
 msgid "Maintenance mode"
 msgstr "メンテナンスモード"
 
+msgid "MaintenanceMode|By disabling maintenance mode your banner message will be lost."
+msgstr ""
+
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
@@ -37680,6 +37758,9 @@ msgstr "GitLabインスタンス内のすべてのプロジェクトにおける
 
 msgid "Manage security policy settings in your GitLab instance"
 msgstr "GitLabインスタンスのセキュリティポリシー設定を管理する"
+
+msgid "Manage statuses"
+msgstr ""
 
 msgid "Manage templates…"
 msgstr "テンプレートを管理…"
@@ -39343,8 +39424,8 @@ msgstr "レビュアーが変更をリクエスト"
 msgid "MergeRequest|Reviewer started review"
 msgstr "レビュアーがレビューを開始"
 
-msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
-msgstr "検索(例 *.vue)（%{MODIFIER_KEY}P）"
+msgid "MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})"
+msgstr ""
 
 msgid "MergeRequest|There are no changes yet"
 msgstr "変更はまだありません"
@@ -39712,9 +39793,6 @@ msgstr "最低限必要な承認"
 
 msgid "Minimum role required to cancel a pipeline or job"
 msgstr "パイプラインまたはジョブをキャンセルするために必要な最小のロール"
-
-msgid "Minute"
-msgstr "分"
 
 msgid "Minutes"
 msgstr "分"
@@ -41505,6 +41583,9 @@ msgstr "データがありません"
 
 msgid "No data available"
 msgstr "利用可能なデータがありません。"
+
+msgid "No data available."
+msgstr ""
 
 msgid "No data found for this query."
 msgstr "このクエリに該当するデータは見つかりませんでした。"
@@ -43809,6 +43890,9 @@ msgstr "現在の組織"
 msgid "Organization|Get started with organizations"
 msgstr "組織の利用を開始する"
 
+msgid "Organization|Help improve Organizations"
+msgstr ""
+
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
 msgstr "この変更を続行すると、この組織に対するオーナー権限を失います。また、このページへのアクセスもできなくなります。"
 
@@ -43899,6 +43983,9 @@ msgstr "組織が正常に変更されました。"
 msgid "Organization|Organizations"
 msgstr "組織"
 
+msgid "Organization|Organizations is a new feature. Help us make it better by"
+msgstr ""
+
 msgid "Organization|Organizations must have at least one owner."
 msgstr "組織には、少なくとも一人のオーナーを設定する必要があります。"
 
@@ -43969,6 +44056,9 @@ msgstr "まだプロジェクトがありません。"
 
 msgid "Organization|my-organization"
 msgstr "私の組織"
+
+msgid "Organization|sharing your experience"
+msgstr ""
 
 msgid "Organize work with projects"
 msgstr "プロジェクトで作業を整理する"
@@ -45911,7 +46001,7 @@ msgid "PipelineSource|Container Registry Push"
 msgstr "コンテナレジストリのプッシュ"
 
 msgid "PipelineSource|Duo Agent Platform"
-msgstr ""
+msgstr "Duo Agent Platform"
 
 msgid "PipelineSource|External"
 msgstr "外部"
@@ -47290,7 +47380,7 @@ msgid "Preferences|Dark color scheme"
 msgstr ""
 
 msgid "Preferences|Default GitLab Duo namespace"
-msgstr ""
+msgstr "デフォルトのGitLab Duoのネームスペース"
 
 msgid "Preferences|Default text editor"
 msgstr "デフォルトテキストエディタ"
@@ -47655,14 +47745,8 @@ msgstr "Cube APIキー"
 msgid "ProductAnalytics|Current month to date"
 msgstr "現在の月の累計"
 
-msgid "ProductAnalytics|Custom event name"
-msgstr "カスタムイベント名"
-
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr "データを収集するためにプロダクト分析を構成する方法の詳細。"
-
-msgid "ProductAnalytics|Dimension"
-msgstr "ディメンション"
 
 msgid "ProductAnalytics|Edit project provider settings"
 msgstr "プロジェクトプロバイダー設定を編集する"
@@ -47688,9 +47772,6 @@ msgstr "プロダクト分析を始める"
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr "GitLab管理のプロバイダー"
 
-msgid "ProductAnalytics|Group by"
-msgstr "グループ化対象"
-
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
 msgstr "プロダクト分析ダッシュボードの改善にご協力ください。"
 
@@ -47711,9 +47792,6 @@ msgstr "インスタンスの読み込み中"
 
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
 msgstr "分析データを処理、保存、およびクエリするために、独自の分析プロバイダーを管理します。"
-
-msgid "ProductAnalytics|Measure"
-msgstr "測定"
 
 msgid "ProductAnalytics|Month"
 msgstr "月"
@@ -49195,7 +49273,7 @@ msgid "ProjectSettings|Configure %{link_start}data sources%{link_end} to be used
 msgstr "ダッシュボードに使用できる%{link_start}データソース%{link_end}を設定します。"
 
 msgid "ProjectSettings|Configure GitLab Duo features for this project."
-msgstr ""
+msgstr "このプロジェクトのGitLab Duo機能を設定します。"
 
 msgid "ProjectSettings|Configure your infrastructure."
 msgstr "インフラストラクチャを構成します。"
@@ -50374,11 +50452,17 @@ msgstr "プロンプトキャッシュ"
 msgid "Prompt users to upload SSH keys"
 msgstr "SSHキーをアップロードするようにユーザーに促す"
 
+msgid "Properties 'command', 'args' for component '%{name}' can only be specified when the 'overrideCommand' attribute is set to false"
+msgstr ""
+
 msgid "Property 'dedicatedPod' of component '%{component}' is not yet supported"
 msgstr ""
 
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
 msgstr "実行コマンド「%{command}」のプロパティ「hotReloadCapable」を指定するときは必ずfalseにしてください。"
+
+msgid "Property 'overrideCommand' of component '%{name}' must be a boolean (true or false)"
+msgstr ""
 
 msgid "Protect"
 msgstr "保護"
@@ -51113,9 +51197,6 @@ msgstr "Qがメッセージを受け取りました！"
 
 msgid "QualitySummary|Project quality"
 msgstr "プロジェクトの品質"
-
-msgid "Quarter"
-msgstr "四半期"
 
 msgid "Queued"
 msgstr "キュー済"
@@ -54216,6 +54297,9 @@ msgstr "このページを離れると、Runnerトークンへのアクセスが
 msgid "Runners|You've registered a new runner!"
 msgstr "新しいRunnerを登録しました！"
 
+msgid "Runners|You've registered a new runner! Your runner is online and ready to run jobs."
+msgstr ""
+
 msgid "Runners|Your runner is online and ready to run jobs."
 msgstr "Runnerがオンラインになっていて、ジョブを実行できる状態です。"
 
@@ -54760,6 +54844,9 @@ msgstr "基準の種類を選択"
 msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose which roles can bypass this policy"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
 msgstr ""
 
@@ -55023,6 +55110,9 @@ msgstr "ライセンスを選択"
 
 msgid "ScanResultPolicy|Select list type"
 msgstr "リストタイプを選択"
+
+msgid "ScanResultPolicy|Select role exceptions"
+msgstr ""
 
 msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
 msgstr ""
@@ -55494,9 +55584,6 @@ msgstr "シート"
 msgid "Seats owed"
 msgstr "不足しているシート数"
 
-msgid "Second"
-msgstr "秒"
-
 msgid "Secondary email:"
 msgstr "セカンダリメール:"
 
@@ -55844,6 +55931,9 @@ msgstr ""
 msgid "SecurityAttributes|Categories"
 msgstr ""
 
+msgid "SecurityAttributes|Category"
+msgstr ""
+
 msgid "SecurityAttributes|Category details"
 msgstr ""
 
@@ -55890,6 +55980,9 @@ msgid "SecurityAttributes|Name"
 msgstr ""
 
 msgid "SecurityAttributes|Name is required"
+msgstr ""
+
+msgid "SecurityAttributes|Remove attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Save changes"
@@ -58143,6 +58236,9 @@ msgstr "到達可能性:"
 
 msgid "SecurityReports|Remove project from dashboard"
 msgstr "ダッシュボードのプロジェクトを削除"
+
+msgid "SecurityReports|Report Type"
+msgstr ""
 
 msgid "SecurityReports|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr "レポートをエクスポート中です。このレポートが生成されたあとで、ダウンロードリンクつきのメールを送信します。"
@@ -62730,9 +62826,6 @@ msgstr "ご購入ありがとうございます!"
 msgid "That's OK, I don't want to renew"
 msgstr "大丈夫です。更新はしません"
 
-msgid "The %{old} shortcut is deprecated. Use %{new} shortcut instead."
-msgstr ""
-
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr "%{plan_name} はもう購入できません。これがあなたにどのような影響を与えるかについては、%{faq_link_start}よくある質問%{faq_link_end}をご確認ください。"
 
@@ -66956,11 +67049,11 @@ msgstr "いいね"
 msgid "Usage"
 msgstr "使い方"
 
-msgid "Usage Quotas"
-msgstr "使用量クォータ"
-
 msgid "Usage breakdown"
 msgstr "使用状況の内訳"
+
+msgid "Usage quotas"
+msgstr ""
 
 msgid "Usage statistics"
 msgstr "使用状況の統計"
@@ -66980,7 +67073,7 @@ msgstr "転送データの読み込み中にエラーが発生しました。ペ
 msgid "UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
-msgid "UsageQuotas|Loading Usage Quotas tab content"
+msgid "UsageQuotas|Loading Usage quotas tab content"
 msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"
@@ -67097,8 +67190,8 @@ msgstr "CI/CDが作成したジョブのアーティファクト。"
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr "使用クォータの詳細はこちら。"
 
-msgid "UsageQuota|Loading Usage Quotas tabs"
-msgstr "使用クォータタブの読み込み中"
+msgid "UsageQuota|Loading Usage quotas tabs"
+msgstr ""
 
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr "アクセス頻度の高いupstream Dockerイメージに使用されるローカルプロキシ。"
@@ -67175,8 +67268,8 @@ msgstr "プロジェクトストレージの統計情報の取得中に問題が
 msgid "UsageQuota|Something went wrong while fetching runner filters"
 msgstr "Runnerフィルターの取得中に問題が発生しました"
 
-msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
-msgstr "使用クォータタブの読み込み中に問題が発生しました。"
+msgid "UsageQuota|Something went wrong while loading Usage quotas Tabs."
+msgstr ""
 
 msgid "UsageQuota|Storage per project included in %{planName} subscription"
 msgstr "%{planName} サブスクリプションに含まれているプロジェクト毎のストレージ"
@@ -67238,9 +67331,6 @@ msgstr "使用状況の内訳を転送する"
 msgid "UsageQuota|Usage"
 msgstr "使用量"
 
-msgid "UsageQuota|Usage Quotas"
-msgstr "使用量割り当て"
-
 msgid "UsageQuota|Usage breakdown"
 msgstr "使用状況の内訳"
 
@@ -67263,6 +67353,9 @@ msgid "UsageQuota|Usage of resources across your projects"
 msgstr "プロジェクト全体のリソースの使用状況"
 
 msgid "UsageQuota|Usage of shared resources across the projects in your instance"
+msgstr ""
+
+msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|User settings %{gt} Usage quotas"
@@ -69010,6 +69103,9 @@ msgstr ""
 msgid "VirtualRegistry|Registry types"
 msgstr "レジストリタイプ"
 
+msgid "VirtualRegistry|Something went wrong while creating the upstream. Please try again."
+msgstr ""
+
 msgid "VirtualRegistry|Test upstream"
 msgstr "アップストリームのテスト"
 
@@ -69027,6 +69123,9 @@ msgstr "更新日: %{date}"
 
 msgid "VirtualRegistry|Upstream URL"
 msgstr "アップストリームのURL"
+
+msgid "VirtualRegistry|Upstream created successfully"
+msgstr ""
 
 msgid "VirtualRegistry|Upstreams"
 msgstr "アップストリーム"
@@ -69898,9 +69997,6 @@ msgstr "%{strong_start}%{project_name}%{strong_end}でディスクの使用量�
 msgid "Web IDE"
 msgstr "Web IDE"
 
-msgid "Web IDE and workspaces"
-msgstr "Web IDEとワークスペース"
-
 msgid "Web terminal"
 msgstr "Webターミナル"
 
@@ -70120,6 +70216,9 @@ msgstr "メンバーイベント"
 msgid "Webhooks|Merge request events"
 msgstr "マージリクエストイベント"
 
+msgid "Webhooks|Milestone events"
+msgstr ""
+
 msgid "Webhooks|Must match part of URL"
 msgstr "URLの一部と一致する必要があります"
 
@@ -70248,9 +70347,6 @@ msgstr "水"
 
 msgid "Wednesday"
 msgstr "水曜日"
-
-msgid "Week"
-msgstr "週間"
 
 msgid "Weekday"
 msgstr "平日"
@@ -71330,6 +71426,13 @@ msgstr "その他のアクション"
 msgid "WorkItem|Move"
 msgstr "移動"
 
+msgid "WorkItem|Move item"
+msgid_plural "WorkItem|Move %d items"
+msgstr[0] ""
+
+msgid "WorkItem|Moved %{movedWorkItemCount} of %{totalCount} items"
+msgstr ""
+
 msgid "WorkItem|Multi select"
 msgstr "複数選択"
 
@@ -71384,11 +71487,17 @@ msgstr "現在開かれている子アイテムはありません。"
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr "カスタムフィールドはアーカイブされていません。データが保護されている間に、カスタムフィールドをアーカイブして、アーカイブ作業アイテムから削除します。"
 
+msgid "WorkItem|No destination selected"
+msgstr ""
+
 msgid "WorkItem|No health status"
 msgstr ""
 
 msgid "WorkItem|No items"
 msgstr "アイテムなし"
+
+msgid "WorkItem|No items selected"
+msgstr ""
 
 msgid "WorkItem|No iteration"
 msgstr "反復なし"
@@ -71522,6 +71631,9 @@ msgstr "プロジェクトを選択する"
 msgid "WorkItem|Select a status"
 msgstr "ステータスを選択する"
 
+msgid "WorkItem|Select destination"
+msgstr ""
+
 msgid "WorkItem|Select parent"
 msgstr "親を選択"
 
@@ -71593,6 +71705,9 @@ msgstr "ラベルを取得するときに問題が発生しました。もう一
 
 msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr "ステータスの取得中に問題が発生しました。もう一度お試しください。"
+
+msgid "WorkItem|Something went wrong when fetching user permissions"
+msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
 msgstr "作業アイテムの種類を取得するときに問題が発生しました。もう一度やり直してください。"
@@ -71762,6 +71877,9 @@ msgstr "タイプ"
 msgid "WorkItem|Type changed."
 msgstr "種類を変更しました。"
 
+msgid "WorkItem|Unable to fetch destination projects."
+msgstr ""
+
 msgid "WorkItem|Unable to find selected template."
 msgstr "選択したテンプレートが見つかりません。"
 
@@ -71827,6 +71945,9 @@ msgstr "祖先を表示する権限がありません。"
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr "フィードには%{boldStart}ほかのアクティビティー%{boldEnd}のみが表示されています。コメントを追加するには次のいずれかのオプションに切り替えます。"
+
+msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
+msgstr ""
 
 msgid "WorkItem|Zoom link"
 msgstr ""
@@ -72548,6 +72669,12 @@ msgstr "既存のトークンを使用して、管理できます。 %{link_star
 
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
 msgstr "このチケットに関する今後のお知らせの購読を解除できます。今後お知らせを受信するには、参加者として再度登録する必要があります。"
+
+msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
+msgstr ""
+
+msgid "You can view it in your personal access tokens settings %{pat_link}."
+msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr "ソースを表示できます。または%{linkStart}%{cloneIcon}このリポジトリをクローン%{linkEnd}できます"
@@ -73415,6 +73542,15 @@ msgstr "パスワードリセットトークンは有効期限切れです。"
 msgid "Your personal access token has been revoked"
 msgstr "パーソナルアクセストークンが失効しました"
 
+msgid "Your personal access token has been rotated"
+msgstr ""
+
+msgid "Your personal access token, named %{code_start}%{token_name}%{code_end}, has been rotated."
+msgstr ""
+
+msgid "Your personal access token, named %{token_name}, has been rotated."
+msgstr ""
+
 msgid "Your personal access tokens have expired"
 msgstr "パーソナルアクセストークンの有効期限が切れました"
 
@@ -73914,6 +74050,9 @@ msgstr "フレームワークの数は%{count}以上に超えてはいけませ�
 
 msgid "cannot have more than %{count} requirements"
 msgstr "要件数は%{count}個以上にできません"
+
+msgid "cannot have more than 50 attributes per category"
+msgstr ""
 
 msgid "cannot include leading slash or directory traversal."
 msgstr "先頭にスラッシュを含むことやディレクトリトラバーサルを含むことはできません。"
@@ -75690,6 +75829,36 @@ msgstr "差分を表示"
 
 msgid "reply should have same confidentiality as top-level note"
 msgstr "返信にはトップレベルのメモと同じ公開設定が求められます"
+
+msgid "reportType|API Fuzzing"
+msgstr ""
+
+msgid "reportType|Cluster Image Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning for Registry"
+msgstr ""
+
+msgid "reportType|Coverage Fuzzing"
+msgstr ""
+
+msgid "reportType|DAST"
+msgstr ""
+
+msgid "reportType|Dependency Scanning"
+msgstr ""
+
+msgid "reportType|Generic"
+msgstr ""
+
+msgid "reportType|SAST"
+msgstr ""
+
+msgid "reportType|Secret Detection"
+msgstr ""
 
 msgid "repositories"
 msgstr "リポジトリ"

@@ -410,7 +410,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           to: 'snippets/blobs#raw',
           format: false,
           as: :snippet_blob_raw,
-          constraints: { snippet_id: /\d+/ }
+          constraints: { snippet_id: /\d+/, ref: %r{[^\/]+} }
 
         draw :issues
         draw :merge_requests

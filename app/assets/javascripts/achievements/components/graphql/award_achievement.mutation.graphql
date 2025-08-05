@@ -1,0 +1,8 @@
+mutation awardAchievement($input: AchievementsAwardInput!) {
+  achievementsAward(input: $input) {
+    userAchievement {
+      id
+    }
+    errors
+  }
+}

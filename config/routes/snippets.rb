@@ -19,7 +19,7 @@ get '/snippets/:snippet_id/raw/:ref/*path',
   to: 'snippets/blobs#raw',
   as: :snippet_blob_raw,
   format: false,
-  constraints: { snippet_id: /\d+/ }
+  constraints: { snippet_id: /\d+/, ref: %r{[^\/]+} }
 
 get '/s/:username', to: redirect('users/%{username}/snippets'),
   constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }

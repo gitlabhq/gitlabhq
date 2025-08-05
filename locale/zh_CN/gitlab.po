@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-07-31 14:40\n"
+"PO-Revision-Date: 2025-08-05 11:00\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -1583,6 +1583,9 @@ msgstr "'allow: %{allow}' 必须是字符串"
 msgid "'attributes' for component '%{component_name}' must be a Hash"
 msgstr ""
 
+msgid "'attributes' in component '%{component}' must be a Hash"
+msgstr ""
+
 msgid "'command' must be a Hash"
 msgstr ""
 
@@ -2266,16 +2269,25 @@ msgstr ""
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr ""
 
+msgid "AICatalog|Briefly describe what this flow is designed to do and its key capabilities."
+msgstr ""
+
 msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and processes."
 msgstr ""
 
 msgid "AICatalog|Choose a memorable name for your AI agent."
 msgstr ""
 
+msgid "AICatalog|Choose a memorable name for your AI flow."
+msgstr ""
+
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
 msgstr ""
 
 msgid "AICatalog|Create agent"
+msgstr ""
+
+msgid "AICatalog|Create flow"
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
@@ -2293,6 +2305,9 @@ msgstr ""
 msgid "AICatalog|Edit agent"
 msgstr ""
 
+msgid "AICatalog|Edit flow"
+msgstr ""
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
@@ -2300,6 +2315,15 @@ msgid "AICatalog|Failed to run agent."
 msgstr ""
 
 msgid "AICatalog|Flow"
+msgstr ""
+
+msgid "AICatalog|Flow created successfully."
+msgstr ""
+
+msgid "AICatalog|Flow not found."
+msgstr ""
+
+msgid "AICatalog|Flow updated successfully."
 msgstr ""
 
 msgid "AICatalog|Flows"
@@ -2314,10 +2338,16 @@ msgstr ""
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
+msgid "AICatalog|Modify the flow settings and configuration."
+msgstr ""
+
 msgid "AICatalog|Name is required."
 msgstr ""
 
 msgid "AICatalog|New agent"
+msgstr ""
+
+msgid "AICatalog|New flow"
 msgstr ""
 
 msgid "AICatalog|Only developers, maintainers and owners of this project can view and use the agent. Only maintainers and owners  of this project can edit or delete the agent."
@@ -2356,6 +2386,9 @@ msgstr ""
 msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
+msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
 msgid "AICatalog|System Prompt"
 msgstr ""
 
@@ -2374,10 +2407,16 @@ msgstr ""
 msgid "AICatalog|The agent could not be updated. Please try again."
 msgstr ""
 
+msgid "AICatalog|The flow could not be added. Please try again."
+msgstr ""
+
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
 msgstr ""
 
 msgid "AICatalog|User Prompt"
@@ -4336,15 +4375,6 @@ msgstr "在此处创建的标记将自动添加到新的项目。"
 msgid "AdminLabels|They can be used to categorize issues and merge requests."
 msgstr "它们可以用来分类议题和合并请求。"
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
-msgstr "您将要永久删除项目 %{projectName}、 其仓库以及所有相关的资源，包括议题和合并请求。 当您确认并按 %{strong_start}删除项目%{strong_end} 之后，不能撤消或恢复。"
-
-msgid "AdminProjects|Delete"
-msgstr "删除"
-
-msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr "删除项目 %{projectName}？"
-
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr "部署的唯一且描述性名称。"
 
@@ -5448,9 +5478,6 @@ msgstr "此用户的访问级别由 LDAP 管理。删除用户的映射或更改
 
 msgid "AdminUsers|To confirm, type %{name}"
 msgstr "要确认，请输入 %{name}"
-
-msgid "AdminUsers|To confirm, type %{projectName}"
-msgstr "请输入 %{projectName} 来确认"
 
 msgid "AdminUsers|To confirm, type %{username}."
 msgstr "要确认，请输入 %{username}."
@@ -6753,6 +6780,9 @@ msgstr "允许项目使用 Opstrace 集成跟踪错误。"
 msgid "Almost there…"
 msgstr "快到了..."
 
+msgid "Alpha"
+msgstr ""
+
 msgid "Already blocked"
 msgstr "已被禁用"
 
@@ -7531,27 +7561,6 @@ msgstr "加载命名空间元数据失败。"
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr "%{linkStart}了解更多%{linkEnd}关于管理和与分析仪表板交互的信息。"
 
-msgid "Analytics|A dashboard with that name already exists."
-msgstr "此名称的仪表盘已存在。"
-
-msgid "Analytics|A visualization with that name already exists."
-msgstr "已存在使用该名称的可视化分析。"
-
-msgid "Analytics|Add a visualization"
-msgstr "添加可视化"
-
-msgid "Analytics|Add to dashboard"
-msgstr "添加到仪表盘"
-
-msgid "Analytics|Add visualization"
-msgstr "添加可视化"
-
-msgid "Analytics|Add visualizations"
-msgstr "添加可视化"
-
-msgid "Analytics|An error occurred while loading data"
-msgstr "加载数据时出错"
-
 msgid "Analytics|Analytics dashboards"
 msgstr "分析仪表盘"
 
@@ -7561,44 +7570,11 @@ msgstr "'%{group_name}' 的分析设置已成功更新。"
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr "%{project_name} 的分析设置已成功更新。"
 
-msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
-msgstr "您确定要取消创建此仪表盘吗？"
-
-msgid "Analytics|Are you sure you want to cancel creating this visualization?"
-msgstr "您确定要取消创建此可视化吗？"
-
-msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
-msgstr "您确定要取消编辑此仪表盘吗？"
-
-msgid "Analytics|Cancel"
-msgstr "取消"
-
-msgid "Analytics|Charts"
-msgstr "图表"
-
-msgid "Analytics|Code"
-msgstr "代码"
-
-msgid "Analytics|Column chart"
-msgstr "柱形图"
-
 msgid "Analytics|Configure analytics reports."
 msgstr "配置分析报告。"
 
-msgid "Analytics|Continue creating"
-msgstr "继续创建"
-
-msgid "Analytics|Continue editing"
-msgstr "继续编辑"
-
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr "创建仪表盘 %{dashboardSlug}"
-
-msgid "Analytics|Create your dashboard"
-msgstr "创建仪表盘"
-
-msgid "Analytics|Create your visualization"
-msgstr "创建您的可视化"
 
 msgid "Analytics|Created by GitLab"
 msgstr "由极狐GitLab 创建"
@@ -7606,26 +7582,8 @@ msgstr "由极狐GitLab 创建"
 msgid "Analytics|Custom"
 msgstr "自定义"
 
-msgid "Analytics|Dashboard description"
-msgstr "仪表盘描述"
-
-msgid "Analytics|Dashboard description (optional)"
-msgstr "仪表板描述（可选）"
-
 msgid "Analytics|Dashboard not found"
 msgstr "未找到仪表盘"
-
-msgid "Analytics|Dashboard title"
-msgstr "仪表盘标题"
-
-msgid "Analytics|Dashboard was saved successfully"
-msgstr "仪表盘保存成功"
-
-msgid "Analytics|Data explorer"
-msgstr "数据探索器"
-
-msgid "Analytics|Data table"
-msgstr "数据表格"
 
 msgid "Analytics|Date range"
 msgstr "日期范围"
@@ -7642,27 +7600,6 @@ msgstr[0] "日期和时间以 UTC 时区显示。日期范围限制为 %d 天。
 
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
 msgstr "默认日期范围'%{defaultOption}'未包含在 dateRange 选项列表中"
-
-msgid "Analytics|Edit"
-msgstr "编辑"
-
-msgid "Analytics|Edit your dashboard"
-msgstr "编辑仪表盘"
-
-msgid "Analytics|Enter a dashboard description"
-msgstr "输入仪表盘描述"
-
-msgid "Analytics|Enter a dashboard title"
-msgstr "输入仪表盘标题"
-
-msgid "Analytics|Enter a visualization title"
-msgstr "输入可视化标题"
-
-msgid "Analytics|Error while saving dashboard"
-msgstr "保存仪表盘时出错"
-
-msgid "Analytics|Error while saving visualization."
-msgstr "保存可视化分析时出错。"
 
 msgid "Analytics|Events received since %{date}"
 msgstr "自%{date}以来收到的事件"
@@ -7694,9 +7631,6 @@ msgstr "上次更新：%{recordedAt}"
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr "了解更多关于%{docsLinkStart}AI 影响分析%{docsLinkEnd}和%{subscriptionLinkStart}GitLab Duo 座位%{subscriptionLinkEnd}。"
 
-msgid "Analytics|Line chart"
-msgstr "折线图"
-
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr "没有与指定 URL 路径匹配的仪表盘。"
 
@@ -7709,35 +7643,11 @@ msgstr "概览"
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "刷新页面重试或参阅 %{linkStart}故障排除文档%{linkEnd}。"
 
-msgid "Analytics|Save and add to Dashboard"
-msgstr "保存并添加到仪表盘"
-
-msgid "Analytics|Save your dashboard"
-msgstr "保存仪表盘"
-
-msgid "Analytics|Save your visualization"
-msgstr "保存您的可视化"
-
-msgid "Analytics|Select a measurement"
-msgstr "选择一种度量"
-
-msgid "Analytics|Select a visualization type"
-msgstr "选择可视化分析类型"
-
-msgid "Analytics|Single statistic"
-msgstr "单一统计"
-
-msgid "Analytics|Single stats"
-msgstr "单次统计"
-
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "您的面板可视化配置有问题。请参阅 %{linkStart}故障排除文档%{linkEnd}。"
 
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "连接到数据源时出错。请参阅%{linkStart}故障排除文档%{linkEnd}。"
-
-msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
-msgstr "加载可用的可视化文件时出错。刷新页面以重试。"
 
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "加载仪表盘时出现问题。请刷新页面重试或查阅 %{linkStart}故障排除文档%{linkEnd}。"
@@ -7745,20 +7655,11 @@ msgstr "加载仪表盘时出现问题。请刷新页面重试或查阅 %{linkSt
 msgid "Analytics|Something went wrong."
 msgstr "出错了。"
 
-msgid "Analytics|Start by choosing a measure"
-msgstr "从选择一个度量开始"
-
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr "命名空间使用统计信息。使用数据是一个累积计数，并每月更新。"
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
 msgstr ""
-
-msgid "Analytics|Tables"
-msgstr "表格"
-
-msgid "Analytics|The visualization preview displays only the last 7 days. Dashboard visualizations can display the entire date range."
-msgstr "可视化预览仅显示最近 7 天的数据。仪表板可视化可以显示整个日期范围。"
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
 msgstr "无法更新分析设置。请重试。"
@@ -7778,23 +7679,11 @@ msgstr "使用数据是累积计数，每月更新。"
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr "使用 ClickHouse 获取支持的分析报告。当 %{link_start}ClickHouse 配置时%{link_end}可用。"
 
-msgid "Analytics|Use the data explorer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
-msgstr "使用数据探索器创建自定义可视化效果。保存可视化效果后，您可以将其添加到仪表板中。"
-
 msgid "Analytics|View available dashboards"
 msgstr "查看可用的仪表盘"
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr "只有同意活动跟踪的用户可以查看指标。"
-
-msgid "Analytics|Visualization"
-msgstr "可视化"
-
-msgid "Analytics|Visualization title"
-msgstr "可视化标题"
-
-msgid "Analytics|Visualization was saved successfully"
-msgstr "可视化分析保存成功"
 
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr "分析依赖项查找已知漏洞."
@@ -9667,8 +9556,8 @@ msgstr "对 Bamboo 服务器具有 API 访问权限的用户。"
 msgid "Banned"
 msgstr "已封禁"
 
-msgid "Banner message"
-msgstr "横幅消息"
+msgid "Banner message (optional)"
+msgstr ""
 
 msgid "Based on"
 msgstr "基于"
@@ -16115,9 +16004,6 @@ msgstr "但是，仍旧有一个必需移除的已配置的合规流水线。否
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr "少于 2 个核准人"
 
-msgid "ComplianceReport|Location"
-msgstr ""
-
 msgid "ComplianceReport|Migrate pipeline to a policy"
 msgstr "将流水线迁移到策略"
 
@@ -16153,6 +16039,9 @@ msgstr ""
 
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr "请从合规框架中删除合规流水线配置，以便新的流水线执行策略可以优先执行。"
+
+msgid "ComplianceReport|Project"
+msgstr ""
 
 msgid "ComplianceReport|Projects covered by frameworks"
 msgstr ""
@@ -16263,6 +16152,9 @@ msgstr "已配置禁止提交者批准合并请求的规则。"
 msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
 msgstr "已配置需要两次批准的规则。"
 
+msgid "ComplianceStandardsAdherence|API security running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Add adequate administrators"
 msgstr "添加足够的管理员"
 
@@ -16278,11 +16170,26 @@ msgstr "调整权限以控制谁可以直接推送到默认分支。"
 msgid "ComplianceStandardsAdherence|All attached frameworks"
 msgstr "所有附加的框架"
 
+msgid "ComplianceStandardsAdherence|At least one approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|At least one non-author approval"
 msgstr "至少一名非作者批准"
 
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr "至少两个批准"
+
+msgid "ComplianceStandardsAdherence|Auth SSO enabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Author approved merge request is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Branch deletion disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|CI/CD job token scope enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Change your project visibility settings to comply with organizational security requirements."
 msgstr "更改您的项目可见性设置以符合组织安全要求。"
@@ -16295,6 +16202,18 @@ msgstr "检查"
 
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr "检查"
+
+msgid "ComplianceStandardsAdherence|Code changes requires code owners"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code owner approval required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code quality running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Committers approved merge request is forbidden"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues."
 msgstr "在您的 CI/CD 流水线中配置 DAST 以自动测试您的应用程序的安全问题。"
@@ -16404,6 +16323,9 @@ msgstr "配置项目以要求合并请求至少获得两次批准以提高代码
 msgid "ComplianceStandardsAdherence|Configure your project to reset approvals when new changes are pushed."
 msgstr "配置项目以在推送新变更时重置批准。"
 
+msgid "ComplianceStandardsAdherence|Container scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Controls whether users can merge changes to the default branch."
 msgstr "控制用户是否可以将变更合并到默认分支。"
 
@@ -16416,6 +16338,9 @@ msgstr "创建项目的分支。"
 msgid "ComplianceStandardsAdherence|Create valid CI configuration"
 msgstr "创建有效的 CI 配置"
 
+msgid "ComplianceStandardsAdherence|DAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|DAST scan"
 msgstr "DAST 扫描"
 
@@ -16427,6 +16352,21 @@ msgstr "DAST 扫描器未在默认分支的流水线配置中配置。"
 
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr "自上次状态更改以来的日期"
+
+msgid "ComplianceStandardsAdherence|Default branch protected"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch protected from direct push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can merge"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Default branch users can push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Dependency scanning running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Disable branch deletion"
 msgstr "禁用分支删除"
@@ -16499,6 +16439,9 @@ msgstr "强制要求代码所有者批准"
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
 msgstr "确保每个代码库至少分配了两个管理员以实现冗余。"
+
+msgid "ComplianceStandardsAdherence|Ensure two administrators per repository"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensure version control is properly configured for your project."
 msgstr "确保为项目正确配置了版本控制。"
@@ -16662,6 +16605,9 @@ msgstr "确保在 SLO 阈值内解决漏洞。"
 msgid "ComplianceStandardsAdherence|Ensures webhooks are securely configured."
 msgstr "确保 webhook 已安全配置。"
 
+msgid "ComplianceStandardsAdherence|Error tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and archive inactive repositories."
 msgstr "建立定期审查和归档不活跃代码库的流程。"
 
@@ -16686,14 +16632,29 @@ msgstr "可用修复"
 msgid "ComplianceStandardsAdherence|Fix suggestions"
 msgstr "修复建议"
 
+msgid "ComplianceStandardsAdherence|Force push disabled"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Forks exist for the project"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Framework"
 msgstr "框架"
 
 msgid "ComplianceStandardsAdherence|Frameworks"
 msgstr "框架"
 
+msgid "ComplianceStandardsAdherence|Fuzz testing running"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|GitLab license level Ultimate"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr "分组"
+
+msgid "ComplianceStandardsAdherence|Has valid CI/CD configuration"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Have DAST scanner configured in pipeline configuration"
 msgstr "在流水线配置中配置 DAST 扫描器"
@@ -16716,6 +16677,9 @@ msgstr "设置一条有效的规则，禁止用户批准他们添加了提交的
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr "如何解决"
 
+msgid "ComplianceStandardsAdherence|IaC scanning running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Implement API security testing"
 msgstr "实施 API 安全测试"
 
@@ -16737,8 +16701,17 @@ msgstr "实施用户审查流程"
 msgid "ComplianceStandardsAdherence|Implement vulnerability SLOs"
 msgstr "实施漏洞 SLOs"
 
+msgid "ComplianceStandardsAdherence|Internal visibility is forbidden"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Issue tracking enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Last scanned"
 msgstr "上次扫描"
+
+msgid "ComplianceStandardsAdherence|License compliance running"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Lock approval rules"
 msgstr "锁定批准规则"
@@ -16746,8 +16719,20 @@ msgstr "锁定批准规则"
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr "合并请求的批准规则"
 
+msgid "ComplianceStandardsAdherence|Merge request commit reset approvals"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests approval rules prevent editing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|More information"
 msgstr "更多信息"
+
+msgid "ComplianceStandardsAdherence|More members than admins"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
 msgstr "未找到遵循标准检查的项目"
@@ -16769,6 +16754,9 @@ msgstr "无"
 
 msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr "应用于 %{linkStart}%{projectName}%{linkEnd} 的其他合规性框架"
+
+msgid "ComplianceStandardsAdherence|Package Hunter no findings untriaged"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Passed"
 msgstr "通过"
@@ -16812,11 +16800,29 @@ msgstr "防止提交到合并请求的用户批准它。"
 msgid "ComplianceStandardsAdherence|Project"
 msgstr "项目"
 
+msgid "ComplianceStandardsAdherence|Project not archived"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project not marked for deletion"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project pipelines not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Project repository exists"
 msgstr "项目代码库存在"
 
+msgid "ComplianceStandardsAdherence|Project visibility not public"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Projects"
 msgstr "项目"
+
+msgid "ComplianceStandardsAdherence|Protected branches exist"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Push protection enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Raw filter values is not currently supported. Please use available values."
 msgstr "目前不支持原始过滤器值。请使用可用值。"
@@ -16824,8 +16830,20 @@ msgstr "目前不支持原始过滤器值。请使用可用值。"
 msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. Please use the available filters."
 msgstr "目前不支持原始文本搜索。请使用可用的过滤器。"
 
+msgid "ComplianceStandardsAdherence|Require MFA at organization level"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require MFA for contributors"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Require branch up to date"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Require code owner approval"
 msgstr "需要代码所有者批准"
+
+msgid "ComplianceStandardsAdherence|Require linear history"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Require resolved discussions"
 msgstr "需要解决的讨论"
@@ -16836,20 +16854,41 @@ msgstr "需求"
 msgid "ComplianceStandardsAdherence|Requirements"
 msgstr "要求"
 
+msgid "ComplianceStandardsAdherence|Requires signed commits"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Reset approvals on push"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Resolve discussions required"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict pipeline access"
 msgstr "限制流水线访问"
 
 msgid "ComplianceStandardsAdherence|Restrict pipeline visibility"
 msgstr "限制流水线可见性"
 
+msgid "ComplianceStandardsAdherence|Restrict push/merge access"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict variable creation"
 msgstr "限制变量创建"
+
+msgid "ComplianceStandardsAdherence|Restricted build access"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Restricts access to build artifacts and pipeline outputs."
 msgstr "限制对构建产物和流水线输出的访问。"
 
 msgid "ComplianceStandardsAdherence|Restricts who can push to or merge into protected branches."
 msgstr "限制谁可以推送到或合并到受保护的分支。"
+
+msgid "ComplianceStandardsAdherence|Review and archive stale repositories"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Review and remove inactive users"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Review and secure all webhook configurations to prevent unauthorized access."
 msgstr "审查并保护所有 webhook 配置以防止未经授权的访问。"
@@ -16869,6 +16908,9 @@ msgstr "审查项目状态"
 msgid "ComplianceStandardsAdherence|Review the project archive status and unarchive if necessary for active projects."
 msgstr "审查项目归档状态，并在必要时为活动项目取消归档。"
 
+msgid "ComplianceStandardsAdherence|SAST running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|SAST scan"
 msgstr "SAST 扫描"
 
@@ -16878,8 +16920,14 @@ msgstr "SAST 扫描器已在默认分支的流水线中配置。"
 msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."
 msgstr "SAST 扫描器未在默认分支的流水线中配置。"
 
+msgid "ComplianceStandardsAdherence|Secret detection running"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Secure webhook configurations"
 msgstr "保护 webhook 配置"
+
+msgid "ComplianceStandardsAdherence|Secure webhooks"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
 msgstr "设置 CI/CD 作业令牌范围限制以增强流水线安全性。"
@@ -16950,6 +16998,9 @@ msgstr "设置严格的仓库访问权限控制。"
 msgid "ComplianceStandardsAdherence|Set up your project to maintain a clean, linear commit history."
 msgstr "设置您的项目以保持干净、线性的提交历史。"
 
+msgid "ComplianceStandardsAdherence|Stale branch cleanup enabled"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Standard"
 msgstr "标准"
 
@@ -16959,8 +17010,20 @@ msgstr "标准"
 msgid "ComplianceStandardsAdherence|Status"
 msgstr "状态"
 
+msgid "ComplianceStandardsAdherence|Status checks required"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Status page configured"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Strict Permission for Repository"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Success reason"
 msgstr "成功原因"
+
+msgid "ComplianceStandardsAdherence|Terraform enabled"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr "以下功能有助于满足此需求。"
@@ -16989,6 +17052,9 @@ msgstr "升级到旗舰版许可证"
 msgid "ComplianceStandardsAdherence|Upgrade your GitLab license to Ultimate to access all security and compliance features."
 msgstr "升级您的极GitLab 许可证到旗舰版以访问所有安全和合规功能。"
 
+msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers."
 msgstr ""
 
@@ -16997,6 +17063,9 @@ msgstr "查看详情"
 
 msgid "ComplianceStandardsAdherence|View details (fix available)"
 msgstr "查看详情（可用的修复）"
+
+msgid "ComplianceStandardsAdherence|Vulnerabilities SLO days over threshold"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Your standards adherence CSV export for the group \"%{group_name}\" is attached to this email."
 msgstr "您的组“%{group_name}”的标准遵守 CSV 导出已附加到此电子邮件中。"
@@ -18818,9 +18887,6 @@ msgstr "国家或地区"
 
 msgid "Country or region is required."
 msgstr ""
-
-msgid "Counts"
-msgstr "总数"
 
 msgid "Counts reflect children you may not have access to."
 msgstr "计数反映您可能没有访问权限的子项。"
@@ -21134,9 +21200,6 @@ msgstr "%{start_date} - %{end_date}"
 msgid "Dates"
 msgstr "日期"
 
-msgid "Day"
-msgstr "日期"
-
 msgid "Day of month"
 msgstr "一个月中的每天"
 
@@ -21618,8 +21681,8 @@ msgstr "依赖列表导出"
 msgid "Dependencies|Direct dependents"
 msgstr "直接依赖项"
 
-msgid "Dependencies|Enter at least 3 characters to view available components."
-msgstr "输入至少 3 个字符以查看可用组件。"
+msgid "Dependencies|Enter at least 2 characters to view available components."
+msgstr ""
 
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr "导出依赖项列表时出错。请重新加载页面。"
@@ -23082,9 +23145,6 @@ msgstr "获取差异线时发生错误。"
 
 msgid "Diffs|with %{additions} and %{deletions}"
 msgstr "有 %{additions} 和 %{deletions}"
-
-msgid "Dimension"
-msgstr "维度"
 
 msgid "Direct"
 msgstr "直接"
@@ -26565,6 +26625,9 @@ msgstr "创建仓库失败"
 msgid "Failed to create resources"
 msgstr "创建资源失败"
 
+msgid "Failed to create security category"
+msgstr ""
+
 msgid "Failed to create wiki"
 msgstr "创建Wiki失败"
 
@@ -27412,6 +27475,9 @@ msgstr "Federated Learning of Cohorts (FLoC)"
 
 msgid "FloC|Participate in FLoC"
 msgstr "参加 FLoC"
+
+msgid "Focus file browser"
+msgstr ""
 
 msgid "Focus filter bar"
 msgstr "聚焦过滤栏"
@@ -29641,9 +29707,6 @@ msgstr "切换结果是否包含源分支或排除源分支"
 msgid "GlobalSearch|Toggle if results have target branch included or excluded"
 msgstr ""
 
-msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
-msgstr "输入 %{kbdOpen}/%{kbdClose} 进行搜索"
-
 msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr "新建议在下面显示。"
 
@@ -30851,8 +30914,8 @@ msgstr "自定义此群组的徽章。"
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr "默认为此群组中所有项目的 Auto DevOps 流水线"
 
-msgid "GroupSettings|Disable personal access tokens for enterprise users"
-msgstr "禁用企业用户的个人访问令牌"
+msgid "GroupSettings|Disable personal access tokens"
+msgstr ""
 
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
 msgstr "禁用 %{group} 内群组和项目的用户邀请"
@@ -30884,6 +30947,9 @@ msgstr "启用 SSH 证书"
 msgid "GroupSettings|Enterprise user accounts can use the extension marketplace in the Web IDE and workspaces."
 msgstr "企业用户帐户可以在 Web IDE 和工作区中使用扩展市场。"
 
+msgid "GroupSettings|Enterprise users"
+msgstr ""
+
 msgid "GroupSettings|Experiment"
 msgstr "实验"
 
@@ -30908,14 +30974,20 @@ msgstr "群组提及已禁用"
 msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr "群组路径不能超过%{length}个字符。"
 
+msgid "GroupSettings|Hide email address from public profile"
+msgstr ""
+
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "如何管理群组SSH证书？"
 
-msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
-msgstr "如果启用，企业用户帐户将无法使用个人访问令牌。%{learn_more_link}。"
+msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
+msgstr ""
 
 msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
 msgstr "如果启用，则群组访问令牌过期 webhook 在令牌过期前 60、30 和 7 天执行。如果禁用，则这些 webhook 只在令牌过期前 7 天执行。"
+
+msgid "GroupSettings|If enabled, hides email addresses on public profile pages for enterprise users."
+msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
 msgstr "启用后，个人用户账户将只能使用已颁发的SSH证书进行 Git 访问。此设置不适用于服务账户、部署密钥及其它类型的内部账户。"
@@ -30988,6 +31060,9 @@ msgstr "为该群组中每个 Pages 站点中的所有内容设置大小限制�
 
 msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
 msgstr "设置群组中创建的新仓库的默认分支的初始名称和保护。"
+
+msgid "GroupSettings|Settings that apply only to enterprise users associated with this group."
+msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr "如果找不到替代 CI 配置文件，则Auto DevOps 流水线将运行。"
@@ -37579,6 +37654,9 @@ msgstr "维护者"
 msgid "Maintenance mode"
 msgstr "维护模式"
 
+msgid "MaintenanceMode|By disabling maintenance mode your banner message will be lost."
+msgstr ""
+
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
@@ -37680,6 +37758,9 @@ msgstr "管理您 GitLab 实例中所有项目的密钥检测行为"
 
 msgid "Manage security policy settings in your GitLab instance"
 msgstr "在您的极狐GitLab 实例中管理安全策略设置"
+
+msgid "Manage statuses"
+msgstr ""
 
 msgid "Manage templates…"
 msgstr "管理模板…"
@@ -39343,8 +39424,8 @@ msgstr "审阅者请求更改"
 msgid "MergeRequest|Reviewer started review"
 msgstr "审阅者已开始审阅"
 
-msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
-msgstr "搜索（例如 *.vue）（%{MODIFIER_KEY}P）"
+msgid "MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})"
+msgstr ""
 
 msgid "MergeRequest|There are no changes yet"
 msgstr "尚无更改。"
@@ -39712,9 +39793,6 @@ msgstr "所需的最低批准数"
 
 msgid "Minimum role required to cancel a pipeline or job"
 msgstr "取消管道或作业所需的最低角色"
-
-msgid "Minute"
-msgstr "分钟"
 
 msgid "Minutes"
 msgstr "分钟"
@@ -41505,6 +41583,9 @@ msgstr "无数据"
 
 msgid "No data available"
 msgstr "无可用数据"
+
+msgid "No data available."
+msgstr ""
 
 msgid "No data found for this query."
 msgstr "未找到此查询的数据。"
@@ -43809,6 +43890,9 @@ msgstr "当前组织"
 msgid "Organization|Get started with organizations"
 msgstr "开始使用组织"
 
+msgid "Organization|Help improve Organizations"
+msgstr ""
+
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
 msgstr "如果您继续进行此更改，您将失去对此组织的所有者权限，包括对本页的访问权限。"
 
@@ -43899,6 +43983,9 @@ msgstr "组织已成功更新。"
 msgid "Organization|Organizations"
 msgstr "组织"
 
+msgid "Organization|Organizations is a new feature. Help us make it better by"
+msgstr ""
+
 msgid "Organization|Organizations must have at least one owner."
 msgstr "组织必须至少有一个所有者。"
 
@@ -43969,6 +44056,9 @@ msgstr "您还没有创建任何项目。"
 
 msgid "Organization|my-organization"
 msgstr "我的组织"
+
+msgid "Organization|sharing your experience"
+msgstr ""
 
 msgid "Organize work with projects"
 msgstr "使用项目组织工作"
@@ -47655,14 +47745,8 @@ msgstr "Cube API 密钥"
 msgid "ProductAnalytics|Current month to date"
 msgstr "本月至今"
 
-msgid "ProductAnalytics|Custom event name"
-msgstr "自定义事件名称"
-
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr "如何配置产品分析来收集数据的详情。"
-
-msgid "ProductAnalytics|Dimension"
-msgstr "维度"
 
 msgid "ProductAnalytics|Edit project provider settings"
 msgstr "编辑项目提供者设置"
@@ -47688,9 +47772,6 @@ msgstr "开始产品分析"
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr "GitLab 管理的提供者"
 
-msgid "ProductAnalytics|Group by"
-msgstr "按组"
-
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
 msgstr "分享您的经验，帮助我们改进产品分析仪表板。"
 
@@ -47711,9 +47792,6 @@ msgstr "正在加载实例"
 
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
 msgstr "管理自己的分析提供程序以处理、存储和查询分析数据。"
-
-msgid "ProductAnalytics|Measure"
-msgstr "测量"
 
 msgid "ProductAnalytics|Month"
 msgstr "月"
@@ -50374,10 +50452,16 @@ msgstr "提示缓存"
 msgid "Prompt users to upload SSH keys"
 msgstr "提示用户上传SSH密钥"
 
+msgid "Properties 'command', 'args' for component '%{name}' can only be specified when the 'overrideCommand' attribute is set to false"
+msgstr ""
+
 msgid "Property 'dedicatedPod' of component '%{component}' is not yet supported"
 msgstr ""
 
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
+msgstr ""
+
+msgid "Property 'overrideCommand' of component '%{name}' must be a boolean (true or false)"
 msgstr ""
 
 msgid "Protect"
@@ -51113,9 +51197,6 @@ msgstr "Q 已收到您的消息！"
 
 msgid "QualitySummary|Project quality"
 msgstr "项目质量"
-
-msgid "Quarter"
-msgstr "季度"
 
 msgid "Queued"
 msgstr "队列中"
@@ -54216,6 +54297,9 @@ msgstr "如果您离开此页面，您可能会失去对 runner 令牌的访问�
 msgid "Runners|You've registered a new runner!"
 msgstr "您已注册了一个新的运行器！"
 
+msgid "Runners|You've registered a new runner! Your runner is online and ready to run jobs."
+msgstr ""
+
 msgid "Runners|Your runner is online and ready to run jobs."
 msgstr "您的运行器在线并准备好运行作业。"
 
@@ -54760,6 +54844,9 @@ msgstr "选择条件类型"
 msgid "ScanResultPolicy|Choose which groups can bypass this policy"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose which roles can bypass this policy"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
 msgstr ""
 
@@ -55023,6 +55110,9 @@ msgstr "选择许可证"
 
 msgid "ScanResultPolicy|Select list type"
 msgstr "选择列表类型"
+
+msgid "ScanResultPolicy|Select role exceptions"
+msgstr ""
 
 msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
 msgstr ""
@@ -55494,9 +55584,6 @@ msgstr "席位"
 msgid "Seats owed"
 msgstr "所欠席位数"
 
-msgid "Second"
-msgstr "秒"
-
 msgid "Secondary email:"
 msgstr "次要邮箱："
 
@@ -55844,6 +55931,9 @@ msgstr ""
 msgid "SecurityAttributes|Categories"
 msgstr ""
 
+msgid "SecurityAttributes|Category"
+msgstr ""
+
 msgid "SecurityAttributes|Category details"
 msgstr ""
 
@@ -55890,6 +55980,9 @@ msgid "SecurityAttributes|Name"
 msgstr ""
 
 msgid "SecurityAttributes|Name is required"
+msgstr ""
+
+msgid "SecurityAttributes|Remove attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Save changes"
@@ -58143,6 +58236,9 @@ msgstr "可达："
 
 msgid "SecurityReports|Remove project from dashboard"
 msgstr "从仪表盘删除项目"
+
+msgid "SecurityReports|Report Type"
+msgstr ""
 
 msgid "SecurityReports|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr "报告导出进行中。报告生成后，将发送包含下载链接的电子邮件。"
@@ -62730,9 +62826,6 @@ msgstr "感谢购买！"
 msgid "That's OK, I don't want to renew"
 msgstr "好的，我不希望续约"
 
-msgid "The %{old} shortcut is deprecated. Use %{new} shortcut instead."
-msgstr ""
-
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr "%{plan_name} 已无法购买。欲了解更多关于这将如何影响您的信息，请查看我们的 %{faq_link_start}常见问题%{faq_link_end}。"
 
@@ -66956,11 +67049,11 @@ msgstr "顶"
 msgid "Usage"
 msgstr "使用情况"
 
-msgid "Usage Quotas"
-msgstr "使用配额"
-
 msgid "Usage breakdown"
 msgstr "使用情况细分"
+
+msgid "Usage quotas"
+msgstr ""
 
 msgid "Usage statistics"
 msgstr "使用情况统计"
@@ -66980,8 +67073,8 @@ msgstr "加载传输数据时出错。请刷新页面重试。"
 msgid "UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr "容器镜像仓库存储统计不用于计算项目总存储。项目总存储是在命名空间容器去重后计算的，其中所有唯一容器的总和被添加到命名空间存储总量中。"
 
-msgid "UsageQuotas|Loading Usage Quotas tab content"
-msgstr "正在加载使用配额选项卡内容"
+msgid "UsageQuotas|Loading Usage quotas tab content"
+msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr "已使用命名空间传输数据"
@@ -67097,8 +67190,8 @@ msgstr "由 CI/CD 创建的作业产物。"
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr "了解有关使用配额的更多信息。"
 
-msgid "UsageQuota|Loading Usage Quotas tabs"
-msgstr "正在加载使用配额标签"
+msgid "UsageQuota|Loading Usage quotas tabs"
+msgstr ""
 
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr "经常访问的 Docker 上游镜像使用的本地代理"
@@ -67175,8 +67268,8 @@ msgstr "获取项目存储统计时出现错误"
 msgid "UsageQuota|Something went wrong while fetching runner filters"
 msgstr "获取 runner 过滤器时出错"
 
-msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
-msgstr "加载使用配额标签时出现问题"
+msgid "UsageQuota|Something went wrong while loading Usage quotas Tabs."
+msgstr ""
 
 msgid "UsageQuota|Storage per project included in %{planName} subscription"
 msgstr "%{planName} 订阅中包含的每个项目的存储空间"
@@ -67238,9 +67331,6 @@ msgstr "传输量使用详情"
 msgid "UsageQuota|Usage"
 msgstr "使用量"
 
-msgid "UsageQuota|Usage Quotas"
-msgstr "使用量配额"
-
 msgid "UsageQuota|Usage breakdown"
 msgstr "使用明细"
 
@@ -67264,6 +67354,9 @@ msgstr "您的项目中资源使用情况"
 
 msgid "UsageQuota|Usage of shared resources across the projects in your instance"
 msgstr "您的实例中项目间共享资源的使用"
+
+msgid "UsageQuota|Usage quotas"
+msgstr ""
 
 msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr "用户设置 %{gt} 使用配额"
@@ -69010,6 +69103,9 @@ msgstr ""
 msgid "VirtualRegistry|Registry types"
 msgstr "仓库类型"
 
+msgid "VirtualRegistry|Something went wrong while creating the upstream. Please try again."
+msgstr ""
+
 msgid "VirtualRegistry|Test upstream"
 msgstr "测试上游"
 
@@ -69027,6 +69123,9 @@ msgstr "更新于 %{date}"
 
 msgid "VirtualRegistry|Upstream URL"
 msgstr "上游 URL"
+
+msgid "VirtualRegistry|Upstream created successfully"
+msgstr ""
 
 msgid "VirtualRegistry|Upstreams"
 msgstr "上游"
@@ -69898,9 +69997,6 @@ msgstr "我们注意到 %{strong_start}%{project_name}%{strong_end} 的存储使
 msgid "Web IDE"
 msgstr "Web IDE"
 
-msgid "Web IDE and workspaces"
-msgstr "Web IDE 和工作区"
-
 msgid "Web terminal"
 msgstr "Web终端"
 
@@ -70120,6 +70216,9 @@ msgstr "成员事件"
 msgid "Webhooks|Merge request events"
 msgstr "合并请求事件"
 
+msgid "Webhooks|Milestone events"
+msgstr ""
+
 msgid "Webhooks|Must match part of URL"
 msgstr "必须匹配部分 URL"
 
@@ -70248,9 +70347,6 @@ msgstr "星期三"
 
 msgid "Wednesday"
 msgstr "星期三"
-
-msgid "Week"
-msgstr "周"
 
 msgid "Weekday"
 msgstr "工作日"
@@ -71330,6 +71426,13 @@ msgstr "更多操作"
 msgid "WorkItem|Move"
 msgstr "移动"
 
+msgid "WorkItem|Move item"
+msgid_plural "WorkItem|Move %d items"
+msgstr[0] ""
+
+msgid "WorkItem|Moved %{movedWorkItemCount} of %{totalCount} items"
+msgstr ""
+
 msgid "WorkItem|Multi select"
 msgstr "多选"
 
@@ -71384,11 +71487,17 @@ msgstr "当前没有打开的子项"
 msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
 msgstr "没有自定义字段被归档。归档自定义字段以将其从活动工作项目中移除，同时保留其数据。"
 
+msgid "WorkItem|No destination selected"
+msgstr ""
+
 msgid "WorkItem|No health status"
 msgstr ""
 
 msgid "WorkItem|No items"
 msgstr "没有项目"
+
+msgid "WorkItem|No items selected"
+msgstr ""
 
 msgid "WorkItem|No iteration"
 msgstr "无迭代"
@@ -71522,6 +71631,9 @@ msgstr "选择一个项目"
 msgid "WorkItem|Select a status"
 msgstr ""
 
+msgid "WorkItem|Select destination"
+msgstr ""
+
 msgid "WorkItem|Select parent"
 msgstr "选择父项"
 
@@ -71593,6 +71705,9 @@ msgstr "获取标记时出错。请重试。"
 
 msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr "获取状态时出现问题。请重试。"
+
+msgid "WorkItem|Something went wrong when fetching user permissions"
+msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
 msgstr "获取工作项类型时出现错误，请再试一次。"
@@ -71762,6 +71877,9 @@ msgstr "类型"
 msgid "WorkItem|Type changed."
 msgstr "类型已更改。"
 
+msgid "WorkItem|Unable to fetch destination projects."
+msgstr ""
+
 msgid "WorkItem|Unable to find selected template."
 msgstr "无法找到所选模板。"
 
@@ -71827,6 +71945,9 @@ msgstr "您没有查看祖先的必要权限。"
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr "您只能在信息流中看到%{boldStart}其他活动%{boldEnd} 。要添加评论，请切换到以下选项之一。"
+
+msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
+msgstr ""
 
 msgid "WorkItem|Zoom link"
 msgstr ""
@@ -72548,6 +72669,12 @@ msgstr "您仍然可以使用和管理现有令牌。 %{link_start}了解更多�
 
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
 msgstr "您可以取消订阅此工单的进一步更新。要在将来接收更新，您将需要再次添加为参与者。"
+
+msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
+msgstr ""
+
+msgid "You can view it in your personal access tokens settings %{pat_link}."
+msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr "您可以查看源代码或%{linkStart}%{cloneIcon}克隆仓库%{linkEnd}"
@@ -73415,6 +73542,15 @@ msgstr "您的密码重置令牌已过期。"
 msgid "Your personal access token has been revoked"
 msgstr "您的个人访问令牌已被撤销"
 
+msgid "Your personal access token has been rotated"
+msgstr ""
+
+msgid "Your personal access token, named %{code_start}%{token_name}%{code_end}, has been rotated."
+msgstr ""
+
+msgid "Your personal access token, named %{token_name}, has been rotated."
+msgstr ""
+
 msgid "Your personal access tokens have expired"
 msgstr "您的个人访问令牌已过期"
 
@@ -73914,6 +74050,9 @@ msgstr "能有超过 %{count} 个框架"
 
 msgid "cannot have more than %{count} requirements"
 msgstr "能有超过 %{count} 个需求"
+
+msgid "cannot have more than 50 attributes per category"
+msgstr ""
 
 msgid "cannot include leading slash or directory traversal."
 msgstr "不能以斜线开头或转到仓库以外目录。"
@@ -75690,6 +75829,36 @@ msgstr "渲染差异"
 
 msgid "reply should have same confidentiality as top-level note"
 msgstr "回复应与顶级备注具有相同的机密性"
+
+msgid "reportType|API Fuzzing"
+msgstr ""
+
+msgid "reportType|Cluster Image Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning"
+msgstr ""
+
+msgid "reportType|Container Scanning for Registry"
+msgstr ""
+
+msgid "reportType|Coverage Fuzzing"
+msgstr ""
+
+msgid "reportType|DAST"
+msgstr ""
+
+msgid "reportType|Dependency Scanning"
+msgstr ""
+
+msgid "reportType|Generic"
+msgstr ""
+
+msgid "reportType|SAST"
+msgstr ""
+
+msgid "reportType|Secret Detection"
+msgstr ""
 
 msgid "repositories"
 msgstr "仓库"

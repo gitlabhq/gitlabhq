@@ -114,7 +114,8 @@ module Types
     field :namespace,
       type: Types::NamespaceType,
       null: true,
-      description: 'Personal namespace of the user.'
+      description: 'Personal namespace of the user.',
+      resolver_method: :resolve_user_namespace
 
     field :todos,
       Types::TodoType.connection_type,
@@ -265,6 +266,12 @@ module Types
 
     def redacted_name
       object.redacted_name(context[:current_user])
+    end
+
+    def resolve_user_namespace
+      return object.namespace if object.namespace&.organization_id == context[:current_organization].id
+
+      nil
     end
   end
 end

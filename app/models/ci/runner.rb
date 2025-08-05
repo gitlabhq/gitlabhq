@@ -20,8 +20,10 @@ module Ci
 
     self.primary_key = :id
 
+    ignore_column :token, remove_with: '18.5', remove_after: '2025-09-21'
+
     add_authentication_token_field :token,
-      encrypted: :optional,
+      encrypted: :required,
       expires_at: :compute_token_expiration,
       format_with_prefix: :prefix_for_new_and_legacy_runner,
       routable_token: {
@@ -288,7 +290,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      where(token: query).or(fuzzy_search(query, [:description]))
+      with_encrypted_tokens(encode(query)).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline

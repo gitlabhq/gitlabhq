@@ -15,11 +15,13 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { NEW_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
+import AwardButton from './award_button.vue';
 
 const ENTRIES_PER_PAGE = 20;
 
 export default {
   components: {
+    AwardButton,
     PageHeading,
     CrudComponent,
     GlAvatarLabeled,
@@ -31,6 +33,10 @@ export default {
   },
   inject: {
     canAdminAchievement: {
+      type: Boolean,
+      required: true,
+    },
+    canAwardAchievement: {
       type: Boolean,
       required: true,
     },
@@ -163,7 +169,9 @@ export default {
             :sub-label="achievement.description"
           />
         </template>
-
+        <template v-if="canAwardAchievement" #actions>
+          <award-button :achievement-id="achievement.id" :achievement-name="achievement.name" />
+        </template>
         <user-avatar-list
           v-if="achievement.userAchievements.nodes.length"
           :items="uniqueRecipients(achievement.userAchievements.nodes)"
