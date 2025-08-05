@@ -78,6 +78,11 @@ module Gitlab
           sleep(sleep_interval)
           while running
             wrap_sampler { safe_sample }
+
+            # A signal may have caused the sampler to stop, so check the
+            # running state to minimize shutdown delay.
+            break unless running
+
             sleep(sleep_interval)
           end
         end
