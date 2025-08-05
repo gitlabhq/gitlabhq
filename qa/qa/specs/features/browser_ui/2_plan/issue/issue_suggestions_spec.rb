@@ -19,9 +19,11 @@ module QA
 
         page_type.perform do |new_page|
           new_page.fill_title("issue")
+
           expect(new_page).to have_content(issue_title)
 
           new_page.fill_title("Issue Board")
+
           expect(new_page).not_to have_content(issue_title)
         end
       end

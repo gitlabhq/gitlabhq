@@ -585,8 +585,41 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       is_expected.to match({
         resource_type: 'group',
         resource_id: group.id,
-        resource_path: including(group.path)
+        resource_path: including(group.full_path)
       })
+    end
+  end
+
+  describe '#group_unarchive_settings_app_data' do
+    let_it_be_with_reload(:ancestor) { create(:group) }
+    let_it_be(:group) { create(:group, parent: ancestor) }
+
+    subject { helper.group_unarchive_settings_app_data(group) }
+
+    context 'when ancestor is not archived' do
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'group',
+          resource_id: group.id,
+          resource_path: including(group.full_path),
+          ancestors_archived: 'false'
+        })
+      end
+    end
+
+    context 'when ancestor is archived' do
+      before do
+        ancestor.archive
+      end
+
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'group',
+          resource_id: group.id,
+          resource_path: including(group.full_path),
+          ancestors_archived: 'true'
+        })
+      end
     end
   end
 

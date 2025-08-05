@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Microsoft Teams notifications
+description: "Configure the Microsoft Teams integration to receive notifications from GitLab in Microsoft Teams."
 ---
 
 {{< details >}}

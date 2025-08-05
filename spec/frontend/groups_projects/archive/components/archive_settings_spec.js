@@ -128,7 +128,7 @@ describe('ArchiveSettings', () => {
 
         it('shows error alert', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: `An error occurred while archiving the ${resourceType}. Please refresh the page an try again.`,
+            message: `An error occurred while archiving the ${resourceType}. Please refresh the page and try again.`,
             error,
             captureError: true,
           });

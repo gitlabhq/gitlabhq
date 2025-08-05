@@ -142,7 +142,7 @@ export default {
     },
     toastMessage() {
       return this.protectionRuleMutationItem
-        ? s__('ContainerRegistry|Protection rule updated.')
+        ? s__('ContainerRegistry|Changes saved.')
         : s__('ContainerRegistry|Protection rule created.');
     },
     getDrawerHeaderHeight() {

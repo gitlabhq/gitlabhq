@@ -616,6 +616,10 @@ project_states:
   - table: projects
     column: project_id
     on_delete: async_delete
+project_to_security_attributes:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 projects:
   - table: users
     column: marked_for_deletion_by_user_id

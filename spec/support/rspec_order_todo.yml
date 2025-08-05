@@ -3395,7 +3395,6 @@
 - './spec/finders/namespaces/projects_finder_spec.rb'
 - './spec/finders/notes_finder_spec.rb'
 - './spec/finders/packages/build_infos_finder_spec.rb'
-- './spec/finders/packages/composer/packages_finder_spec.rb'
 - './spec/finders/packages/conan/package_file_finder_spec.rb'
 - './spec/finders/packages/conan/package_finder_spec.rb'
 - './spec/finders/packages/debian/distributions_finder_spec.rb'

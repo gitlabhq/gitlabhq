@@ -593,7 +593,7 @@ describe('Container protection repository rules project settings', () => {
   describe.each`
     description                                       | beforeFn                                                | rule                                         | title                     | toastMessage
     ${'when `Add protection rule` button is clicked'} | ${() => findAddProtectionRuleButton().trigger('click')} | ${null}                                      | ${'Add protection rule'}  | ${'Protection rule created.'}
-    ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')}     | ${containerProtectionRepositoryRulesData[0]} | ${'Edit protection rule'} | ${'Protection rule updated.'}
+    ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')}     | ${containerProtectionRepositoryRulesData[0]} | ${'Edit protection rule'} | ${'Changes saved.'}
   `('$description', ({ beforeFn, title, rule, toastMessage }) => {
     beforeEach(async () => {
       createComponent();

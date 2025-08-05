@@ -63,16 +63,6 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
               it_behaves_like 'Composer package index', member_role: params[:member_role], expected_status: :success, package_returned: params[:package_returned]
             end
           end
-
-          context 'when packages_composer_finder_refactor is disabled' do
-            before do
-              stub_feature_flags(packages_composer_finder_refactor: false)
-            end
-
-            include_context 'Composer api project access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
-              it_behaves_like 'Composer package index', member_role: :developer, expected_status: :success, package_returned: true
-            end
-          end
         end
 
         context 'with token auth' do
@@ -201,16 +191,6 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
           end
         end
-
-        context 'when packages_composer_finder_refactor is disabled' do
-          before do
-            stub_feature_flags(packages_composer_finder_refactor: false)
-          end
-
-          include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
-            it_behaves_like 'Composer provider index', member_role: :developer, expected_status: :success
-          end
-        end
       end
 
       context 'with token auth' do
@@ -297,16 +277,6 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         with_them do
           include_context 'Composer api group access', auth_method: :basic, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
-          end
-        end
-
-        context 'when packages_composer_finder_refactor is disabled' do
-          before do
-            stub_feature_flags(packages_composer_finder_refactor: false)
-          end
-
-          include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
-            it_behaves_like 'Composer package api request', member_role: :developer, expected_status: :success
           end
         end
       end
@@ -402,16 +372,6 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         with_them do
           include_context 'Composer api group access', auth_method: :basic, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
-          end
-        end
-
-        context 'when packages_composer_finder_refactor is disabled' do
-          before do
-            stub_feature_flags(packages_composer_finder_refactor: false)
-          end
-
-          include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
-            it_behaves_like 'Composer package api request', member_role: :developer, expected_status: :success
           end
         end
       end
@@ -717,16 +677,6 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
                 it_behaves_like 'process Composer api request', member_role: params[:member_role], expected_status: params[:expected_status]
               end
-            end
-          end
-
-          context 'when packages_composer_finder_refactor is disabled' do
-            before do
-              stub_feature_flags(packages_composer_finder_refactor: false)
-            end
-
-            include_context 'Composer api project access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
-              it_behaves_like 'process Composer api request', member_role: :developer, expected_status: :success
             end
           end
         end

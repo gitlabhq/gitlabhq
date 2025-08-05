@@ -1,6 +1,7 @@
 schemaVersion: 2.2.0
 variables:
-  gdkRoot: /home/gitlab-workspaces/workspace/gitlab-development-kit
+  homeDir: "/home/gitlab-workspaces"
+  gdkRoot: "/home/gitlab-workspaces/workspace/gitlab-development-kit"
 components:
   - name: gitlab-development-kit
     attributes:
@@ -38,6 +39,10 @@ components:
         - name: router-9393
           targetPort: 9393
 commands:
+  - id: chdir-gdk-root
+    exec:
+      component: gitlab-development-kit
+      commandLine: "[ -n \"$GDK_ROOT_DIR\" ] && echo '[ -d \"$GDK_ROOT_DIR/gitlab\" ] && cd \"$GDK_ROOT_DIR/gitlab\"' >> {{homeDir}}/.bashrc"
   - id: setup-workspace
     exec:
       component: gitlab-development-kit
@@ -45,8 +50,9 @@ commands:
   - id: wait-for-setup
     exec:
       component: gitlab-development-kit
-      commandLine: "[ -n \"$GDK_ROOT_DIR\" ] && /home/gitlab-workspaces/.local/bin/mise x ruby -- {{gdkRoot}}/support/gitlab-remote-development/send_telemetry.rb"
+      commandLine: "[ -n \"$GDK_ROOT_DIR\" ] && {{homeDir}}/.local/bin/mise x ruby -- {{gdkRoot}}/support/gitlab-remote-development/send_telemetry.rb"
 events:
   postStart:
+    - chdir-gdk-root
     - setup-workspace
     - wait-for-setup

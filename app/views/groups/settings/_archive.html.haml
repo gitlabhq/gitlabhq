@@ -1,6 +1,6 @@
 - return unless Feature.enabled?(:archive_group, group)
 
 - if group.self_or_ancestors_archived?
-  -# TODO: Add unarchive settings in https://gitlab.com/gitlab-org/gitlab/-/work_items/556337
+  #js-unarchive-settings{ data: group_unarchive_settings_app_data(group) }
 - else
   #js-archive-settings{ data: group_archive_settings_app_data(group) }

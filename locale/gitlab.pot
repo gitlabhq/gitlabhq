@@ -17300,10 +17300,16 @@ msgstr ""
 msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
+msgid "ComplianceViolation|Add existing issue"
+msgstr ""
+
 msgid "ComplianceViolation|Audit event captured"
 msgstr ""
 
 msgid "ComplianceViolation|Control"
+msgstr ""
+
+msgid "ComplianceViolation|Could not process %{issueReference}: %{errorMessage}."
 msgstr ""
 
 msgid "ComplianceViolation|Detected"
@@ -17327,13 +17333,22 @@ msgstr ""
 msgid "ComplianceViolation|Registered event IP"
 msgstr ""
 
+msgid "ComplianceViolation|Related issues"
+msgstr ""
+
 msgid "ComplianceViolation|Requirement"
 msgstr ""
 
 msgid "ComplianceViolation|Resolved"
 msgstr ""
 
+msgid "ComplianceViolation|Something went wrong while trying to unlink the issue. Please try again later."
+msgstr ""
+
 msgid "ComplianceViolation|Violation created based on associated framework"
+msgstr ""
+
+msgid "ComplianceViolation|invalid issue link or ID"
 msgstr ""
 
 msgid "Compliance|Framework deleted successfully"
@@ -17784,6 +17799,9 @@ msgstr ""
 msgid "ContainerRegistry|CLI commands"
 msgstr ""
 
+msgid "ContainerRegistry|Changes saved."
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup disabled"
 msgstr ""
 
@@ -18076,9 +18094,6 @@ msgid "ContainerRegistry|Protected container repositories"
 msgstr ""
 
 msgid "ContainerRegistry|Protection rule created."
-msgstr ""
-
-msgid "ContainerRegistry|Protection rule updated."
 msgstr ""
 
 msgid "ContainerRegistry|Protection type"
@@ -20044,6 +20059,9 @@ msgstr ""
 msgid "CycleAnalytics|Date"
 msgstr ""
 
+msgid "CycleAnalytics|Failed to load chart data."
+msgstr ""
+
 msgid "CycleAnalytics|Failed to parse default stages."
 msgstr ""
 
@@ -20101,9 +20119,6 @@ msgid "CycleAnalytics|There is no data for 'Stage time' available. Adjust the cu
 msgstr ""
 
 msgid "CycleAnalytics|There is no data for 'Total time' available. Adjust the current filters."
-msgstr ""
-
-msgid "CycleAnalytics|There was an error while fetching data for the stage time chart."
 msgstr ""
 
 msgid "CycleAnalytics|Time to restore service"
@@ -30822,10 +30837,10 @@ msgstr ""
 msgid "GroupPage|Group settings"
 msgstr ""
 
-msgid "GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page an try again."
+msgid "GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page and try again."
 msgstr ""
 
-msgid "GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page an try again."
+msgid "GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page and try again."
 msgstr ""
 
 msgid "GroupProjectArchiveSettings|Archive"
@@ -30847,6 +30862,33 @@ msgid "GroupProjectArchiveSettings|Make your group read-only. You can still acce
 msgstr ""
 
 msgid "GroupProjectArchiveSettings|Make your project read-only. You can still access its data, work items, and merge requests."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|An error occurred while unarchiving the group. Please refresh the page and try again."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|An error occurred while unarchiving the project. Please refresh the page and try again."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|Restore your group to an active state. You'll be able to modify its content and settings again."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|Restore your project to an active state. You'll be able to modify its content and settings again."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|To unarchive this group, you must unarchive its parent group."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|To unarchive this project, you must unarchive its parent group."
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|Unarchive"
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|Unarchive group"
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|Unarchive project"
 msgstr ""
 
 msgid "GroupRoadmap|%{dateWord} – No end date"
@@ -44705,6 +44747,9 @@ msgstr ""
 msgid "PackageRegistry|By default, the NuGet package validates the %{code_open}projectUrl%{code_close}, %{code_open}iconUrl%{code_close}, and %{code_open}licenseUrl%{code_close} metadata. In an offline environment, you cannot upload the NuGet package with this validation because these URLs cannot be resolved. You might want to select the checkbox to skip validation."
 msgstr ""
 
+msgid "PackageRegistry|Changes saved."
+msgstr ""
+
 msgid "PackageRegistry|Composer"
 msgstr ""
 
@@ -45038,9 +45083,6 @@ msgid "PackageRegistry|Package protection rule created."
 msgstr ""
 
 msgid "PackageRegistry|Package protection rule deleted."
-msgstr ""
-
-msgid "PackageRegistry|Package protection rule updated."
 msgstr ""
 
 msgid "PackageRegistry|Package registry"
@@ -64238,9 +64280,6 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics data."
 msgstr ""
 
-msgid "There was an error while fetching value stream analytics duration data."
-msgstr ""
-
 msgid "There was an error while running this job again"
 msgstr ""
 
@@ -76126,6 +76165,9 @@ msgid "only available on top-level groups."
 msgstr ""
 
 msgid "only supports valid HTTP(S) URLs"
+msgstr ""
+
+msgid "opened"
 msgstr ""
 
 msgid "or"

@@ -42,7 +42,7 @@ export default {
       ),
       helpLink: s__('GroupProjectArchiveSettings|How do I archive a group?'),
       error: s__(
-        'GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page an try again.',
+        'GroupProjectArchiveSettings|An error occurred while archiving the group. Please refresh the page and try again.',
       ),
     },
     [RESOURCE_TYPES.PROJECT]: {
@@ -52,7 +52,7 @@ export default {
       ),
       helpLink: s__('GroupProjectArchiveSettings|How do I archive a project?'),
       error: s__(
-        'GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page an try again.',
+        'GroupProjectArchiveSettings|An error occurred while archiving the project. Please refresh the page and try again.',
       ),
     },
   },

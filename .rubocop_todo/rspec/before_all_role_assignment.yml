@@ -811,7 +811,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/finders/labels_finder_spec.rb'
     - 'spec/finders/merge_request/metrics_finder_spec.rb'
     - 'spec/finders/merge_requests_finder_spec.rb'
-    - 'spec/finders/packages/composer/packages_finder_spec.rb'
     - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/finders/packages/maven/package_finder_spec.rb'
     - 'spec/finders/packages/nuget/package_finder_spec.rb'

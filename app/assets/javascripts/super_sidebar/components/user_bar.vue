@@ -205,7 +205,7 @@ export default {
       </div>
     </div>
 
-    <div class="gl-grow gl-pb-3">
+    <div class="gl-mx-1 gl-grow gl-pb-3">
       <gl-button
         id="super-sidebar-search"
         v-gl-modal="$options.SEARCH_MODAL_ID"

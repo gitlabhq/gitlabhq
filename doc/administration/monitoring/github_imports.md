@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Monitoring GitHub imports
+description: "Use Prometheus metrics to monitor GitHub imports into your GitLab Self-Managed instance."
 ---
 
 {{< details >}}

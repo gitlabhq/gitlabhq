@@ -7,7 +7,6 @@ import { GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
 import component from '~/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
-  UPDATE_SETTINGS_SUCCESS_MESSAGE,
   KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
   KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION,
 } from '~/packages_and_registries/settings/project/constants';
@@ -303,7 +302,7 @@ describe('Packages Cleanup Policy Settings Form', () => {
 
         await submitForm();
 
-        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Changes saved.');
       });
 
       it('shows error toast when mutation responds with errors', async () => {

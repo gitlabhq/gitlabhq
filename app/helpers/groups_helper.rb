@@ -178,6 +178,15 @@ module GroupsHelper
     }
   end
 
+  def group_unarchive_settings_app_data(group)
+    {
+      resource_type: 'group',
+      resource_id: group.id,
+      resource_path: group_path(group),
+      ancestors_archived: group.ancestors_archived?.to_s
+    }
+  end
+
   def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""

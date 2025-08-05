@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Items migrated when using direct transfer
+description: "Project and group items included or excluded when using direct transfer."
 ---
 
 {{< details >}}

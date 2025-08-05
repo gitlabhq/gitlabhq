@@ -1936,3 +1936,9 @@ frontend/**/geo_* @zcuddy
 /doc/user/application_security/dast/browser/checks @gitlab-org/secure/dynamic-analysis @gitlab-org/secure/vulnerability-research @phillipwells
 # File is used as SSOT for site profiles and DAST docs
 /lib/gitlab/security/dast_variables.rb @gitlab-org/secure/dynamic-analysis @gitlab-org/security-risk-management/security-platform-management-group @phillipwells
+
+[Delivery]
+/doc/policy/maintenance.md @gitlab-org/delivery
+/.gitlab/merge_request_templates/Security\ Fix.md @gitlab-org/delivery
+/.gitlab/merge_request_templates/Stable\ Branch.md @gitlab-org/delivery
+/.gitlab/issue_templates/Security\ developer\ workflow.md @gitlab-org/delivery

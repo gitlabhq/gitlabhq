@@ -301,6 +301,8 @@
   - 1
 - - compliance_management_project_framework_export_mailer
   - 1
+- - compliance_management_project_settings_destroy
+  - 1
 - - compliance_management_standards_adherence_export_mailer
   - 1
 - - compliance_management_standards_base
@@ -1009,7 +1011,9 @@
   - 2
 - - security_scans_purge_by_job_id
   - 1
-- - security_secret_detection_update_token_status
+- - security_secret_detection_gitlab_token_verification
+  - 1
+- - security_secret_detection_partner_token_verification
   - 1
 - - security_sync_linked_pipeline_execution_policy_configs
   - 1

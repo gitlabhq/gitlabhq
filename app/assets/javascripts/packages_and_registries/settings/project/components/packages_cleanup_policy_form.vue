@@ -1,9 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { sprintf } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
-  UPDATE_SETTINGS_SUCCESS_MESSAGE,
   KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION,
   KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME,
   KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
@@ -114,7 +113,7 @@ export default {
           if (errorMessage) {
             throw errorMessage;
           } else {
-            this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+            this.$toast.show(s__('PackageRegistry|Changes saved.'));
           }
         })
         .catch(() => {

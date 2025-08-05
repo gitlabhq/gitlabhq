@@ -9723,6 +9723,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_4f8b811780 CHECK ((char_length(sentry_dsn) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_5688c70478 CHECK ((char_length(error_tracking_access_token_encrypted) <= 255)),
+    CONSTRAINT check_56fb3d74a1 CHECK ((char_length(sdrs_url) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
     CONSTRAINT check_5a84c3ffdc CHECK ((char_length(content_validation_endpoint_url) <= 255)),
     CONSTRAINT check_5bcba483c4 CHECK ((char_length(sentry_environment) <= 255)),
@@ -9734,7 +9735,6 @@ CREATE TABLE application_settings (
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_8dca35398a CHECK ((char_length(public_runner_releases_url) <= 255)),
     CONSTRAINT check_8e7df605a1 CHECK ((char_length(cube_api_base_url) <= 512)),
-    CONSTRAINT check_9a42a7cfdd CHECK ((char_length(sdrs_url) <= 255)),
     CONSTRAINT check_9a719834eb CHECK ((char_length(secret_detection_token_revocation_url) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_a5704163cc CHECK ((char_length(secret_detection_revocation_token_types_url) <= 255)),
@@ -22199,6 +22199,24 @@ CREATE SEQUENCE project_statistics_id_seq
 
 ALTER SEQUENCE project_statistics_id_seq OWNED BY project_statistics.id;
 
+CREATE TABLE project_to_security_attributes (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    security_attribute_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+);
+
+CREATE SEQUENCE project_to_security_attributes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_to_security_attributes_id_seq OWNED BY project_to_security_attributes.id;
+
 CREATE TABLE project_topic_uploads (
     id bigint NOT NULL,
     size bigint NOT NULL,
@@ -28766,6 +28784,8 @@ ALTER TABLE ONLY project_states ALTER COLUMN id SET DEFAULT nextval('project_sta
 
 ALTER TABLE ONLY project_statistics ALTER COLUMN id SET DEFAULT nextval('project_statistics_id_seq'::regclass);
 
+ALTER TABLE ONLY project_to_security_attributes ALTER COLUMN id SET DEFAULT nextval('project_to_security_attributes_id_seq'::regclass);
+
 ALTER TABLE ONLY project_topics ALTER COLUMN id SET DEFAULT nextval('project_topics_id_seq'::regclass);
 
 ALTER TABLE ONLY project_wiki_repositories ALTER COLUMN id SET DEFAULT nextval('project_wiki_repositories_id_seq'::regclass);
@@ -31781,6 +31801,9 @@ ALTER TABLE ONLY project_states
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT project_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_to_security_attributes
+    ADD CONSTRAINT project_to_security_attributes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_topic_uploads
     ADD CONSTRAINT project_topic_uploads_pkey PRIMARY KEY (id, model_type);
@@ -37915,6 +37938,10 @@ CREATE INDEX index_project_saved_replies_on_project_id ON project_saved_replies 
 
 CREATE UNIQUE INDEX index_project_secrets_managers_on_project_id ON project_secrets_managers USING btree (project_id);
 
+CREATE UNIQUE INDEX index_project_security_attributes_project_id_unique ON project_to_security_attributes USING btree (project_id, security_attribute_id);
+
+CREATE INDEX index_project_security_attributes_traversal_ids ON project_to_security_attributes USING btree (traversal_ids);
+
 CREATE INDEX index_project_security_exclusions_on_project_id ON project_security_exclusions USING btree (project_id);
 
 CREATE INDEX index_project_settings_on_legacy_os_license_project_id ON project_settings USING btree (project_id) WHERE (legacy_open_source_license_available = true);
@@ -37946,6 +37973,8 @@ CREATE INDEX index_project_statistics_on_root_namespace_id ON project_statistics
 CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON project_statistics USING btree (storage_size, project_id);
 
 CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON project_statistics USING btree (wiki_size, project_id);
+
+CREATE INDEX index_project_to_security_attributes_on_security_attribute_id ON project_to_security_attributes USING btree (security_attribute_id);
 
 CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_topics USING btree (project_id, topic_id);
 
@@ -46085,6 +46114,9 @@ ALTER TABLE ONLY observability_logs_issues_connections
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_rails_5fb4dd100b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_to_security_attributes
+    ADD CONSTRAINT fk_rails_5fe496b3fb FOREIGN KEY (security_attribute_id) REFERENCES security_attributes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_5fe86ea341 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
