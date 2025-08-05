@@ -4028,7 +4028,6 @@ Gitlab/BoundedContexts:
     - 'lib/sidebars/your_work/menus/issues_menu.rb'
     - 'lib/sidebars/your_work/menus/merge_requests_menu.rb'
     - 'lib/sidebars/your_work/menus/milestones_menu.rb'
-    - 'lib/sidebars/your_work/menus/organizations_menu.rb'
     - 'lib/sidebars/your_work/menus/projects_menu.rb'
     - 'lib/sidebars/your_work/menus/snippets_menu.rb'
     - 'lib/sidebars/your_work/menus/todos_menu.rb'

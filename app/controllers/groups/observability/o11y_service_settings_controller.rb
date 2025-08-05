@@ -2,7 +2,7 @@
 
 module Groups
   module Observability
-    class O11yServiceSettingsController < Groups::ApplicationController
+    class O11yServiceSettingsController < ApplicationController
       include Gitlab::Utils::StrongMemoize
 
       before_action :authenticate_user!

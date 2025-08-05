@@ -2234,7 +2234,6 @@ RSpec/NamedSubject:
     - 'spec/lib/sidebars/user_settings/menus/comment_templates_menu_spec.rb'
     - 'spec/lib/sidebars/user_settings/menus/password_menu_spec.rb'
     - 'spec/lib/sidebars/user_settings/panel_spec.rb'
-    - 'spec/lib/sidebars/your_work/menus/organizations_menu_spec.rb'
     - 'spec/lib/sidebars/your_work/panel_spec.rb'
     - 'spec/lib/system_check/app/hashed_storage_all_projects_check_spec.rb'
     - 'spec/lib/system_check/app/hashed_storage_enabled_check_spec.rb'

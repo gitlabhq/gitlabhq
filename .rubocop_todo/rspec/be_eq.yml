@@ -967,7 +967,6 @@ RSpec/BeEq:
     - 'spec/lib/sidebars/projects/menus/snippets_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/work_items_menu_spec.rb'
     - 'spec/lib/sidebars/search/panel_spec.rb'
-    - 'spec/lib/sidebars/your_work/menus/organizations_menu_spec.rb'
     - 'spec/lib/system_check/app/authorized_keys_permission_check_spec.rb'
     - 'spec/lib/system_check/app/gitlab_cable_config_exists_check_spec.rb'
     - 'spec/lib/system_check/app/gitlab_resque_config_exists_check_spec.rb'
