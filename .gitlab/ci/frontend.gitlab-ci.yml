@@ -24,7 +24,9 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - run_with_custom_exit_code scripts/compile_assets
     - run_with_custom_exit_code scripts/build_assets_image
@@ -258,7 +260,9 @@ graphql-schema-dump:
     - .default-before_script
     - .frontend:rules:default-frontend-jobs
   stage: fixtures
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - run_with_custom_exit_code bundle exec rake gitlab:graphql:schema:dump
   artifacts:

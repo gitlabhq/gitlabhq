@@ -2,7 +2,6 @@
   stage: preflight
   extends:
     - .default-retry
-  needs: []
 
 .rails-production-server-boot:
   extends:
@@ -12,6 +11,9 @@
     - .ruby-cache
     - .use-pg16
     - .preflight:rules:rails-production-server-boot
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   artifacts:
     expire_in: 7d
     when: always

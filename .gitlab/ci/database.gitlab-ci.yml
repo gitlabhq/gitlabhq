@@ -3,7 +3,9 @@ include:
 
 .db:setup pg16:
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   extends:
     - .use-pg16
     - .default-before_script
@@ -285,7 +287,9 @@ db:invalidate-old-pipeline-results:
     - .db-job-base
     - .db:rules:invalidate-old-pipeline-results
   stage: post-test
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - |
       git fetch origin $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME

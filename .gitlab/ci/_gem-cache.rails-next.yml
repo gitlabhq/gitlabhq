@@ -1,0 +1,10 @@
+# This file is included dynamically via rules for rails-next pipeline to override `files` array in cache key definition.
+# This is needed because key:files do not support environment variables in the files array entries
+#
+# Note: gitlab generates checksum based on the last git commit rather than file contents
+#       when Gemfile.lock and Gemfile.next.lock are updated via same comment, checksum will also be the same
+.ruby-gems-cache:
+  key:
+    files:
+      - Gemfile.next.lock
+      - Gemfile.next.checksum
