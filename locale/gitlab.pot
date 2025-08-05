@@ -21600,6 +21600,9 @@ msgstr ""
 msgid "Define rules for who can push, merge, and the required approvals for each branch."
 msgstr ""
 
+msgid "Define the preferred source for license information."
+msgstr ""
+
 msgid "Definition"
 msgstr ""
 
@@ -37409,6 +37412,9 @@ msgstr ""
 msgid "License includes access to Code Suggestions."
 msgstr ""
 
+msgid "License information source"
+msgstr ""
+
 msgid "License key"
 msgstr ""
 
@@ -37477,6 +37483,15 @@ msgid "LicenseCompliance|Out-of-compliance with the project's policies and shoul
 msgstr ""
 
 msgid "LicenseCompliance|Uncategorized"
+msgstr ""
+
+msgid "LicenseConfigurationSource|License configuration source set to PMDB"
+msgstr ""
+
+msgid "LicenseConfigurationSource|License configuration source set to SBOM"
+msgstr ""
+
+msgid "LicenseConfigurationSource|Something went wrong. Please try again."
 msgstr ""
 
 msgid "LicenseManagement|Allowed"

@@ -53,6 +53,10 @@ class MergeRequestDiffFile < ApplicationRecord
     end
   end
 
+  def new_path
+    super.presence || old_path
+  end
+
   private
 
   def update_project_id

@@ -2,6 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_feature_mixin';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { VSA_METRICS_GROUPS, FLOW_METRICS_QUERY_TYPE } from '~/analytics/shared/constants';
 import {
@@ -27,6 +28,7 @@ export default {
     ValueStreamMetrics,
     UrlSync,
   },
+  mixins: [glLicensedFeaturesMixin()],
   props: {
     noDataSvgPath: {
       type: String,
@@ -41,7 +43,6 @@ export default {
       'selectedStageEvents',
       'selectedStageError',
       'stageCounts',
-      'features',
       'createdBefore',
       'createdAfter',
       'pagination',
@@ -85,7 +86,7 @@ export default {
       return 0;
     },
     showLinkToDashboard() {
-      return Boolean(this.features?.groupLevelAnalyticsDashboard && this.groupPath);
+      return Boolean(this.glLicensedFeatures.groupLevelAnalyticsDashboard && this.groupPath);
     },
     dashboardsPath() {
       return this.showLinkToDashboard

@@ -27,7 +27,8 @@ module Projects
           validity_checks_available: validity_checks_available,
           validity_checks_enabled: validity_checks_enabled,
           user_is_project_admin: user_is_project_admin?,
-          secret_detection_configuration_path: secret_detection_configuration_path
+          secret_detection_configuration_path: secret_detection_configuration_path,
+          license_configuration_source: license_configuration_source
         }
       end
 
@@ -65,6 +66,7 @@ module Projects
         # These scans are "fake" (non job) entries. Add them manually.
         scans << scan(:corpus_management, configured: true)
         scans << scan(:dast_profiles, configured: true)
+        scans << scan(:license_information_source, configured: true)
 
         # Add pre-receive before secret detection
         if project.licensed_feature_available?(:secret_push_protection)
@@ -109,6 +111,7 @@ module Projects
       def container_scanning_for_registry_enabled; end
       def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end
+      def license_configuration_source; end
     end
   end
 end

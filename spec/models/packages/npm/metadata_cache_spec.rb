@@ -9,6 +9,8 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a Packages::Downloadable }
 
+  it_behaves_like 'destructible', factory: :npm_metadata_cache
+
   describe 'loose foreign keys' do
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:model) { create(:npm_metadata_cache, status: :default) }
@@ -95,33 +97,6 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
 
     it_behaves_like 'object_storage_key readonly attributes' do
       let_it_be(:model) { create(:npm_metadata_cache, project: project, package_name: package_name) }
-    end
-  end
-
-  describe '.pending_destruction' do
-    let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
-    let_it_be(:npm_metadata_cache_processing) { create(:npm_metadata_cache, :processing) }
-    let_it_be(:npm_metadata_cache_pending_destruction) { create(:npm_metadata_cache, :pending_destruction) }
-
-    subject { described_class.pending_destruction }
-
-    it { is_expected.to contain_exactly(npm_metadata_cache_pending_destruction) }
-  end
-
-  describe '.next_pending_destruction' do
-    let_it_be(:npm_metadata_cache1) { create(:npm_metadata_cache, created_at: 1.month.ago, updated_at: 1.day.ago) }
-    let_it_be(:npm_metadata_cache2) { create(:npm_metadata_cache, created_at: 1.year.ago, updated_at: 1.year.ago) }
-
-    let_it_be(:npm_metadata_cache3) do
-      create(:npm_metadata_cache, :pending_destruction, created_at: 2.years.ago, updated_at: 1.month.ago)
-    end
-
-    let_it_be(:npm_metadata_cache4) do
-      create(:npm_metadata_cache, :pending_destruction, created_at: 3.years.ago, updated_at: 2.weeks.ago)
-    end
-
-    it 'returns the oldest pending destruction item based on updated_at' do
-      expect(described_class.next_pending_destruction(order_by: :updated_at)).to eq(npm_metadata_cache3)
     end
   end
 end

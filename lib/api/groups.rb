@@ -4,11 +4,14 @@ module API
   class Groups < ::API::Base
     include PaginationParams
     include Helpers::CustomAttributes
+    include APIGuard
 
     before do
       authenticate_non_get!
       set_current_organization
     end
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     helpers Helpers::GroupsHelpers
 

@@ -64,10 +64,16 @@ function createStore({ initialState = {}, initialGetters = {} }) {
   });
 }
 
-function createComponent({ initialState, initialGetters } = {}) {
+function createComponent({ initialState, initialGetters, glLicensedFeatures = {} } = {}) {
   return extendedWrapper(
     shallowMount(BaseComponent, {
       store: createStore({ initialState, initialGetters }),
+      provide: {
+        glLicensedFeatures: {
+          groupLevelAnalyticsDashboard: false,
+          ...glLicensedFeatures,
+        },
+      },
       propsData: {
         noDataSvgPath,
       },
@@ -176,8 +182,8 @@ describe('Value stream analytics component', () => {
   describe('with `groupLevelAnalyticsDashboard=true` license', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        initialState: {
-          features: { groupLevelAnalyticsDashboard: true },
+        glLicensedFeatures: {
+          groupLevelAnalyticsDashboard: true,
         },
       });
     });

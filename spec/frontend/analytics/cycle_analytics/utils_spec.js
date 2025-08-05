@@ -136,10 +136,6 @@ describe('Value stream analytics utils', () => {
       it('returns null when there is no stage', () => {
         expect(res.selectedStage).toBeNull();
       });
-
-      it('returns false for missing features', () => {
-        expect(res.features.cycleAnalyticsForGroups).toBe(false);
-      });
     });
 
     describe('with a stage set', () => {
@@ -152,21 +148,6 @@ describe('Value stream analytics utils', () => {
 
         expect(stage.id).toBe('fakeStage');
         expect(stage.title).toBe('fakeStage');
-      });
-    });
-
-    describe('with features set', () => {
-      const fakeFeatures = { cycleAnalyticsForGroups: true };
-
-      beforeEach(() => {
-        window.gon = { licensed_features: fakeFeatures };
-      });
-
-      it('sets the feature flags', () => {
-        res = buildCycleAnalyticsInitialData({
-          ...rawData,
-        });
-        expect(res.features).toMatchObject(fakeFeatures);
       });
     });
   });

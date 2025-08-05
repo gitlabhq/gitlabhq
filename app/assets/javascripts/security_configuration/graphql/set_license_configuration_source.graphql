@@ -1,0 +1,6 @@
+mutation SetLicenseConfigurationSource($input: SetLicenseConfigurationSourceInput!) {
+  setLicenseConfigurationSource(input: $input) {
+    licenseConfigurationSource
+    errors
+  }
+}

@@ -25,7 +25,6 @@ let state;
 const rawEvents = rawIssueEvents.events;
 const convertedEvents = issueEvents.events;
 const mockGroupPath = 'groups/path';
-const mockFeatures = { some: 'feature' };
 const mockCreatedAfter = '2020-06-18';
 const mockCreatedBefore = '2020-07-18';
 
@@ -71,7 +70,6 @@ describe('Project Value Stream Analytics mutations', () => {
     id: 1337,
     groupPath: mockGroupPath,
     namespace: mockNamespace,
-    features: mockFeatures,
     ...mockSetDatePayload,
   };
   const mockInitializedObj = {
@@ -80,7 +78,6 @@ describe('Project Value Stream Analytics mutations', () => {
 
   it.each`
     mutation                | stateKey           | value
-    ${types.INITIALIZE_VSA} | ${'features'}      | ${mockFeatures}
     ${types.INITIALIZE_VSA} | ${'namespace'}     | ${mockNamespace}
     ${types.INITIALIZE_VSA} | ${'groupPath'}     | ${mockGroupPath}
     ${types.INITIALIZE_VSA} | ${'createdAfter'}  | ${mockCreatedAfter}

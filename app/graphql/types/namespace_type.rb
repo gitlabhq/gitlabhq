@@ -135,6 +135,7 @@ module Types
       resolver: ::Resolvers::WorkItems::WidgetsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::WorkItems::TypesResolver,
       experiment: { milestone: '17.2' },
       description: 'Work item types available to the namespace.'

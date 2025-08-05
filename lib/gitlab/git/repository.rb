@@ -514,6 +514,15 @@ module Gitlab
         end
       end
 
+      # Returns an array of DiffBlob objects that represent diffs between
+      # pairs of blobs in a repository using raw changed path information.
+      # More efficient for large batches of files compared to diff_blobs.
+      def diff_blobs_with_raw_info(...)
+        wrapped_gitaly_errors do
+          gitaly_diff_client.diff_blobs_with_raw_info(...)
+        end
+      end
+
       # Return an array of Diff objects that represent the diff
       # between +from+ and +to+.  See Diff::filter_diff_options for the allowed
       # diff options.  The +options+ hash can also include :break_rewrites to

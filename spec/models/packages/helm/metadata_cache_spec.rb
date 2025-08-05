@@ -9,6 +9,8 @@ RSpec.describe Packages::Helm::MetadataCache, feature_category: :package_registr
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a Packages::Downloadable }
 
+  it_behaves_like 'destructible', factory: :helm_metadata_cache
+
   describe 'loose foreign keys' do
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:model) { create(:helm_metadata_cache, status: :default) }
@@ -71,6 +73,28 @@ RSpec.describe Packages::Helm::MetadataCache, feature_category: :package_registr
 
     it_behaves_like 'object_storage_key readonly attributes' do
       let_it_be(:model) { create(:helm_metadata_cache, project: project, channel: channel) }
+    end
+  end
+
+  describe '.find_or_build' do
+    subject(:helm_metadata_cache) { described_class.find_or_build(project_id: project.id, channel: channel) }
+
+    context 'when a metadata cache exists' do
+      let_it_be(:existed_helm_metadata_cache) { create(:helm_metadata_cache, project: project, channel: channel) }
+
+      it 'finds an existing metadata cache' do
+        expect(helm_metadata_cache).to eq(existed_helm_metadata_cache)
+      end
+    end
+
+    context 'when a metadata cache not found' do
+      let(:channel) { 'not_existing' }
+
+      it 'builds a new instance', :aggregate_failures do
+        expect(helm_metadata_cache).not_to be_persisted
+        expect(helm_metadata_cache.channel).to eq(channel)
+        expect(helm_metadata_cache.project_id).to eq(project.id)
+      end
     end
   end
 end

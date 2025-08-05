@@ -90,6 +90,9 @@ To be able to replicate new container images, the container registry must send n
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
+   # Configure the registry to listen on the public/internal interface
+   # Replace with the appropriate interface (for example, '0.0.0.0' for all interfaces)
+   registry['registry_http_addr'] = '0.0.0.0:5000'
    registry['notifications'] = [
      {
        'name' => 'geo_event',

@@ -87,6 +87,14 @@ module Gitlab
               'user/application_security/container_scanning/_index.md', anchor: 'container-scanning-for-registry'),
             type: 'container_scanning_for_registry'
           },
+          license_information_source: {
+            name: _('License information source'),
+            description: _('Define the preferred source for license information.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/compliance/license_scanning_of_cyclonedx_files/_index.md',
+              anchor: 'use-cyclonedx-report-as-a-source-of-license-information'),
+            type: 'license_information_source'
+          },
           secret_push_protection: {
             name: _('Secret push protection'),
             description: _('Block secrets such as keys and API tokens from being pushed to your repositories. ' \

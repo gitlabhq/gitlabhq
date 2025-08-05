@@ -145,24 +145,6 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     end
   end
 
-  describe 'read_dependency' do
-    before do
-      allow(policy).to receive(:can?).with(:read_dependency, project).and_return(can_read_project_dependencies)
-    end
-
-    context 'when user is allowed to read project dependencies' do
-      let(:can_read_project_dependencies) { true }
-
-      it { is_expected.to be_allowed(:read_dependency) }
-    end
-
-    context 'when user is not allowed to read project dependencies' do
-      let(:can_read_project_dependencies) { false }
-
-      it { is_expected.not_to be_allowed(:read_dependency) }
-    end
-  end
-
   describe 'read_build' do
     before do
       allow(policy).to receive(:can?).with(:read_build, project).and_return(can_read_project_build)

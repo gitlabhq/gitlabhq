@@ -6,13 +6,12 @@ import * as types from './mutation_types';
 export default {
   [types.INITIALIZE_VSA](
     state,
-    { groupPath, features, createdBefore, createdAfter, pagination = {}, namespace = {} },
+    { groupPath, createdBefore, createdAfter, pagination = {}, namespace = {} },
   ) {
     state.groupPath = groupPath;
     state.namespace = namespace;
     state.createdBefore = createdBefore;
     state.createdAfter = createdAfter;
-    state.features = features;
 
     state.pagination = {
       page: pagination.page ?? state.pagination.page,

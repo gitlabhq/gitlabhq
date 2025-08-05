@@ -15,6 +15,7 @@ import {
   i18n,
   SECRET_PUSH_PROTECTION,
   SECRET_DETECTION,
+  LICENSE_INFORMATION_SOURCE,
 } from '../constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
@@ -53,6 +54,10 @@ export default {
     PageHeading,
     VulnerabilityArchives: () =>
       import('ee_component/security_configuration/components/vulnerability_archives.vue'),
+    LicenseInformationSourceFeatureCard: () =>
+      import(
+        'ee_component/security_configuration/components/license_information_source_feature_card.vue'
+      ),
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
@@ -133,6 +138,9 @@ export default {
       }
       if (feature.type === SECRET_DETECTION) {
         return 'pipeline-secret-detection-feature-card';
+      }
+      if (feature.type === LICENSE_INFORMATION_SOURCE) {
+        return 'license-information-source-feature-card';
       }
 
       return 'feature-card';

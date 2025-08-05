@@ -152,7 +152,7 @@ RSpec.describe API::API, feature_category: :system_access do
             'correlation_id' => an_instance_of(String),
             'meta.auth_fail_reason' => "insufficient_scope",
             'meta.auth_fail_token_id' => "PersonalAccessToken/#{token.id}",
-            'meta.auth_fail_requested_scopes' => "api read_api",
+            'meta.auth_fail_requested_scopes' => "ai_workflows api read_api",
             'route' => '/api/:version/groups'
           )
         end

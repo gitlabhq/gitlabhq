@@ -29,8 +29,10 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       editable: 20
     }.freeze
 
+    DEFAULT_CONFIGURATION_SOURCE = :sbom
+
     CONFIGURATION_SOURCE_TYPES = {
-      sbom: 0,
+      DEFAULT_CONFIGURATION_SOURCE => 0,
       pmdb: 1
     }.with_indifferent_access.freeze
 

@@ -1,4 +1,3 @@
-import { extractVSAFeaturesFromGON } from '~/analytics/shared/utils';
 import { parseSeconds, newDate } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -91,7 +90,6 @@ export const buildCycleAnalyticsInitialData = ({
     createdAfter: newDate(createdAfter),
     createdBefore: newDate(createdBefore),
     selectedStage: stage ? JSON.parse(stage) : null,
-    features: extractVSAFeaturesFromGON(),
   };
 };
 

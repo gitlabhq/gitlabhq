@@ -18,10 +18,6 @@ module Ci
       @subject.triggered_by?(@user)
     end
 
-    condition(:project_allows_read_dependency) do
-      can?(:read_dependency, @subject.project)
-    end
-
     condition(:project_allows_read_build) do
       can?(:read_build, @subject.project)
     end
@@ -65,10 +61,6 @@ module Ci
 
     rule { can?(:read_pipeline) }.policy do
       enable :read_pipeline_metadata
-    end
-
-    rule { project_allows_read_dependency }.policy do
-      enable :read_dependency
     end
 
     def ref_protected?(user, project, tag, ref)

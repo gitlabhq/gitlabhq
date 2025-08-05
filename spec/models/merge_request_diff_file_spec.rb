@@ -35,6 +35,24 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#new_path' do
+    context 'file[:new_path] exists' do
+      it 'returns [:new_path]' do
+        expect(file.new_path).to eq(file[:new_path])
+      end
+    end
+
+    context 'file[:new_path] is nil' do
+      before do
+        file.new_path = nil
+      end
+
+      it 'returns old_path' do
+        expect(file.new_path).to eq(file.old_path)
+      end
+    end
+  end
+
   describe '#diff' do
     let(:file) { build(:merge_request_diff_file) }
 

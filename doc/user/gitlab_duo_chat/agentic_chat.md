@@ -97,7 +97,7 @@ To use Agentic Chat:
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** tab.
 1. Select **Refresh page** if prompted.
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
@@ -119,9 +119,55 @@ To use Agentic Chat:
 1. Restart your IDE if prompted.
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** tab.
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
+
+### Have multiple conversations
+
+{{< history >}}
+
+- Multiple conversations and conversation history [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556875) in GitLab 18.3.
+
+{{< /history >}}
+
+You can have an unlimited number of simultaneous conversations with Agentic Chat.
+
+Your conversations synchronize across Agentic Chat in the GitLab UI and your IDE:
+
+- In the GitLab UI, all of the conversations in your Agentic Chat history are visible.
+- In your IDE, the last 20 conversations are visible.
+  [Issue 1308](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1308)
+  proposes to change this.
+
+To manage your conversations and view your Agentic Chat history:
+
+1. Open Agentic Chat in the GitLab UI or your IDE.
+1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
+1. Create a new Agentic Chat conversation:
+
+   - In the GitLab UI: In the upper-right corner of the drawer, select **New chat**
+     ({{< icon name="duo-chat-new" >}}).
+   - In your IDE: In the upper-right corner of the message box, select **New chat**
+     ({{< icon name="plus" >}}).
+
+1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
+1. To view your Agentic Chat history:
+
+   - In the GitLab UI: In the upper-right corner of the Chat drawer, select
+     **Chat history** ({{< icon name="history" >}}).
+   - In your IDE: In the upper-right corner of the message box, select
+     **Chat history** ({{< icon name="history" >}}).
+
+1. To switch between conversations, in your Agentic Chat history, select the
+   appropriate conversation.
+1. IDE only: To search your Chat history, in the **Search chats** text box, enter
+   your search term.
+
+#### Truncation of conversation content
+
+Because of LLM context window limits, conversations are truncated to 200,000 tokens
+(roughly 800,000 characters).
 
 ### Create custom rules
 

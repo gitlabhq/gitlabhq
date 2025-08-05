@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Helm::PackagesFinder do
+RSpec.describe ::Packages::Helm::PackagesFinder, feature_category: :package_registry do
   let_it_be(:project1) { create(:project) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:helm_package) { create(:helm_package, project: project1) }
@@ -81,6 +81,16 @@ RSpec.describe ::Packages::Helm::PackagesFinder do
             expect(packages.size).to eq(2)
             expect(packages).to all(be_a(Packages::Helm::Package))
             expect(packages).to all(have_attributes(project_id: project.id))
+          end
+        end
+
+        context 'with with_recent_limit as false' do
+          let(:finder) { described_class.new(project, channel, with_recent_limit: false) }
+
+          it 'returns all the packages' do
+            packages = limited_packages_finder
+
+            expect(packages.size).to eq(4)
           end
         end
       end

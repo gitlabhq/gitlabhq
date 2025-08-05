@@ -5,9 +5,10 @@ module Packages
     class PackagesFinder
       include ::Packages::FinderHelper
 
-      def initialize(project, channel)
+      def initialize(project, channel, with_recent_limit: true)
         @project = project
         @channel = channel
+        @with_recent_limit = with_recent_limit
       end
 
       def execute
@@ -17,9 +18,11 @@ module Packages
 
         # we use a subquery to get unique packages and at the same time
         # order + limit them.
-        ::Packages::Package
-          .limit_recent(max_packages_count)
-          .id_in(pkg_files.select(:package_id))
+        query = ::Packages::Package.id_in(pkg_files.select(:package_id))
+
+        query = query.limit_recent(max_packages_count) if @with_recent_limit
+
+        query
       end
 
       private

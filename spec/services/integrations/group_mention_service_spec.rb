@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Integrations::GroupMentionService, feature_category: :integrations do
   subject(:execute) { described_class.new(mentionable, hook_data: hook_data, is_confidential: is_confidential).execute }
 
-  let(:group_mention_access_check_ff_enabled) { nil }
-
   let_it_be(:author) { create(:user) }
   let_it_be(:member) { create(:user) }
   let_it_be(:group_1) { create(:group) }
@@ -36,110 +34,56 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
 
   before do
     allow(mentionable).to receive(:referenced_groups).with(author).and_return(groups)
-    stub_feature_flags(group_mention_access_check: group_mention_access_check_ff_enabled)
   end
 
   shared_examples 'public_group_mention_hooks' do
-    context "when the 'group_mention_access_check' feature flag is disabled" do
-      let(:groups) { all_groups }
-      let(:group_mention_access_check_ff_enabled) { false }
+    let(:groups) { groups_with_integrations }
 
-      specify do
-        allow(Gitlab::Metrics).to receive(:measure).and_call_original
-        expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
+    specify do
+      allow(Gitlab::Metrics).to receive(:measure).and_call_original
+      expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
 
-        expect(groups).not_to receive(:with_integrations)
+      expect(groups).to receive_message_chain(:with_integrations,
+        :merge).with(Integration.group_mention_hooks).and_return(groups)
 
-        expect(group_1).to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_1).to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(group_2).to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_2).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_2).to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_2).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(group_3).to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(execute).to be_success
-      end
-    end
-
-    context "when the 'group_mention_access_check' feature flag is enabled" do
-      let(:groups) { groups_with_integrations }
-      let(:group_mention_access_check_ff_enabled) { true }
-
-      specify do
-        allow(Gitlab::Metrics).to receive(:measure).and_call_original
-        expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
-
-        expect(groups).to receive_message_chain(:with_integrations,
-          :merge).with(Integration.group_mention_hooks).and_return(groups)
-
-        expect(group_1).to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(group_2).to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_2).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(execute).to be_success
-      end
+      expect(execute).to be_success
     end
   end
 
   shared_examples 'confidential_group_mention_hooks' do
-    context "when the 'group_mention_access_check' feature flag is disabled" do
-      let(:groups) { all_groups }
-      let(:group_mention_access_check_ff_enabled) { false }
+    let(:groups) { groups_with_integrations }
 
-      specify do
-        allow(Gitlab::Metrics).to receive(:measure).and_call_original
-        expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
+    specify do
+      allow(Gitlab::Metrics).to receive(:measure).and_call_original
+      expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
 
-        expect(groups).not_to receive(:with_integrations)
+      expect(groups).to receive_message_chain(:with_integrations,
+        :merge).with(Integration.group_confidential_mention_hooks).and_return(groups)
 
-        expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_1).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_1).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_2).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_2).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_3).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-        expect(execute).to be_success
-      end
-    end
-
-    context "when the 'group_mention_access_check' feature flag is enabled" do
-      let(:groups) { groups_with_integrations }
-      let(:group_mention_access_check_ff_enabled) { true }
-
-      specify do
-        allow(Gitlab::Metrics).to receive(:measure).and_call_original
-        expect(Gitlab::Metrics).to receive(:measure).with(:integrations_group_mention_execution).and_call_original
-
-        expect(groups).to receive_message_chain(:with_integrations,
-          :merge).with(Integration.group_confidential_mention_hooks).and_return(groups)
-
-        expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_1).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_2).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-        expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
-
-        expect(execute).to be_success
-      end
+      expect(execute).to be_success
     end
   end
 
   shared_examples 'no_group_mention_hooks' do
     let(:groups) { groups_with_integrations }
-    let(:group_mention_access_check_ff_enabled) { true }
 
     specify do
       allow(Gitlab::Metrics).to receive(:measure).and_call_original
@@ -467,10 +411,9 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
     end
 
     let(:groups) { groups_with_integrations }
-    let(:group_mention_access_check_ff_enabled) { true }
 
     it 'limits which groups are processed' do
-      stub_const("#{described_class.name}::GroupMentionCheckAllUsers::GROUP_MENTION_LIMIT", 1)
+      stub_const("#{described_class.name}::GROUP_MENTION_LIMIT", 1)
 
       expect(groups).to receive_message_chain(:with_integrations,
         :merge).with(Integration.group_mention_hooks).and_return(groups)

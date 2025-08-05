@@ -11,7 +11,7 @@ module Mutations
 
       field :note,
         Types::Notes::NoteType,
-        null: true,
+        null: true, scopes: [:api, :ai_workflows],
         description: 'Note after mutation.'
 
       field :quick_actions_status,

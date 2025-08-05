@@ -20,6 +20,13 @@ module Packages
       before_validation :set_object_storage_key
       attr_readonly :object_storage_key
 
+      def self.find_or_build(project_id:, channel:)
+        find_or_initialize_by(
+          project_id: project_id,
+          channel: channel
+        )
+      end
+
       private
 
       def set_object_storage_key

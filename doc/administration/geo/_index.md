@@ -219,6 +219,7 @@ The following table lists basic ports that must be open between the **primary** 
 | Secondary   | Any         | Primary          | 80               | TCP (HTTP)  |
 | Secondary   | Any         | Primary          | 443              | TCP (HTTPS) |
 | Secondary   | Any         | Primary          | 5432             | TCP         |
+| Secondary   | Any         | Primary          | 5000             | TCP (HTTPS) |
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
