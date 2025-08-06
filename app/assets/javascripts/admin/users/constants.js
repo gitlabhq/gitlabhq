@@ -1,5 +1,4 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
-
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { s__, __, sprintf } from '~/locale';
 
@@ -31,7 +30,7 @@ const createTokenConfig = (options) => ({
 });
 
 // This is exported so the EE version of constants.js can call it.
-export const getTokenConfigs = (accessLevelOptions) => [
+export const getFilterTokenConfigs = (accessLevelOptions) => [
   createTokenConfig({
     title: s__('AdminUsers|Access level'),
     type: 'access_level',
@@ -74,10 +73,13 @@ export const getTokenConfigs = (accessLevelOptions) => [
   }),
 ];
 
-export const TOKEN_CONFIGS = getTokenConfigs([
+// Overridden in EE.
+export const getStandardTokenConfigs = () => [];
+// Overridden in EE.
+export const ACCESS_LEVEL_OPTIONS = [
   { value: 'admins', title: s__('AdminUsers|Administrator') },
   { value: 'external', title: s__('AdminUsers|External') },
-]);
+];
 
 export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;
 

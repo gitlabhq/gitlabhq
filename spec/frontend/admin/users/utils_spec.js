@@ -1,7 +1,11 @@
-import { TOKEN_CONFIGS, SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
+import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import { initializeValuesFromQuery, getSoloOwnedOrganizations } from '~/admin/users/utils';
 import { OPERATOR_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import { oneSoloOwnedOrganization } from './mock_data';
+import {
+  oneSoloOwnedOrganization,
+  STANDARD_TOKEN_CONFIGS,
+  FILTER_TOKEN_CONFIGS,
+} from './mock_data';
 
 jest.mock('~/admin/users', () => ({
   apolloClient: {
@@ -9,7 +13,7 @@ jest.mock('~/admin/users', () => ({
   },
 }));
 
-const allFilters = TOKEN_CONFIGS.flatMap(({ type, options }) =>
+const allFilterTokenOptions = FILTER_TOKEN_CONFIGS.flatMap(({ type, options }) =>
   options.map(({ value }) => ({ value, type })),
 );
 
@@ -21,16 +25,16 @@ describe('initializeValuesFromQuery', () => {
   it('parses `search_query` query parameter correctly', () => {
     setQuerystring('?search_query=dummy');
 
-    expect(initializeValuesFromQuery()).toMatchObject({
+    expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: ['dummy'],
       sort: undefined,
     });
   });
 
-  it.each(allFilters)('parses `filter` query parameter `$value`', ({ value, type }) => {
+  it.each(allFilterTokenOptions)('parses `filter` query parameter `$value`', ({ value, type }) => {
     setQuerystring(`?search_query=dummy&filter=${value}`);
 
-    expect(initializeValuesFromQuery()).toMatchObject({
+    expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: [{ type, value: { data: value, operator: OPERATOR_IS } }, 'dummy'],
       sort: undefined,
     });
@@ -39,7 +43,7 @@ describe('initializeValuesFromQuery', () => {
   it('parses `sort` query parameter correctly', () => {
     setQuerystring('?sort=last_activity_on_asc');
 
-    expect(initializeValuesFromQuery()).toMatchObject({
+    expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: [],
       sort: 'last_activity_on_asc',
     });
@@ -48,7 +52,7 @@ describe('initializeValuesFromQuery', () => {
   it('ignores `filter` query parameter not found in the TOKEN options', () => {
     setQuerystring('?filter=unknown');
 
-    expect(initializeValuesFromQuery()).toMatchObject({
+    expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: [],
       sort: undefined,
     });
@@ -57,7 +61,7 @@ describe('initializeValuesFromQuery', () => {
   it('ignores other query parameters other than `filter` and `search_query` and `sort`', () => {
     setQuerystring('?other=value');
 
-    expect(initializeValuesFromQuery()).toMatchObject({
+    expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: [],
       sort: undefined,
     });

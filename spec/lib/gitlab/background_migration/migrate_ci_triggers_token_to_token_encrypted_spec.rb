@@ -8,9 +8,9 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateCiTriggersTokenToTokenEncrypt
     table(:ci_triggers, database: :ci)
   end
 
-  let!(:trigger1) { ci_triggers.create!(token: 'foo', owner_id: 1) }
-  let!(:trigger2) { ci_triggers.create!(token: 'bar', owner_id: 1) }
-  let!(:trigger3) { ci_triggers.create!(token: 'baz', owner_id: 1) }
+  let!(:trigger1) { ci_triggers.create!(token: 'foo', owner_id: 1, project_id: 1) }
+  let!(:trigger2) { ci_triggers.create!(token: 'bar', owner_id: 1, project_id: 1) }
+  let!(:trigger3) { ci_triggers.create!(token: 'baz', owner_id: 1, project_id: 1) }
 
   subject(:perform_migration) do
     described_class.new(

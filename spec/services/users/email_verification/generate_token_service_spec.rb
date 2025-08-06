@@ -12,7 +12,7 @@ RSpec.describe Users::EmailVerification::GenerateTokenService, feature_category:
 
   describe '#execute' do
     context 'with a valid attribute' do
-      where(:attr) { [:unlock_token, :confirmation_token] }
+      where(:attr) { [:unlock_token, :confirmation_token, :email_otp] }
 
       with_them do
         before do

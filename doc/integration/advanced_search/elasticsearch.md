@@ -1035,43 +1035,20 @@ For basic guidance on choosing a cluster configuration, see also [Elastic Cloud 
 
 #### Number of Elasticsearch shards
 
-For single-node clusters, set the number of Elasticsearch shards per index to the number of
-CPU cores on the Elasticsearch data nodes. Keep the average shard size between a few GB and 30 GB.
-
-For multi-node clusters, set the number of Elasticsearch shards per index to at least `5`.
-
-To update the shard size for an index, change the setting and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
-
-##### Indices with database data
-
 {{< history >}}
 
 - `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
+- `gitlab:elastic:estimate_shard_sizes` [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/348452) in GitLab 18.3 to include sizing for indices that contain repository data.
 
 {{< /history >}}
 
-For indices that contain database data:
+For single-node clusters, set the number of Elasticsearch shards per index
+to the number of CPU cores on the Elasticsearch data nodes.
 
-- `gitlab-production-projects`
-- `gitlab-production-issues`
-- `gitlab-production-epics`
-- `gitlab-production-merge_requests`
-- `gitlab-production-notes`
-- `gitlab-production-users`
-
-Run the Rake task `gitlab:elastic:estimate_shard_sizes` to determine the number of shards.
-The task returns approximate document counts and recommendations for shard and replica sizes.
-
-##### Indices with repository data
-
-For indices that contain repository data:
-
-- `gitlab-production`
-- `gitlab-production-wikis`
-- `gitlab-production-commits`
-
-Run the Rake task `gitlab:elastic:estimate_cluster_size` to determine the number of shards.
-The task returns approximate index sizes for code (`gitlab-production`) and wiki (`gitlab-production-wikis`).
+For multi-node clusters, run the Rake task `gitlab:elastic:estimate_shard_sizes`
+to determine the number of shards for each index.
+The task returns recommendations for shard and replica sizes and
+approximate document counts for indices that contain database data.
 
 Keep the average shard size between a few GB and 30 GB.
 If the average shard size grows to more than 30 GB, increase the shard size
@@ -1080,12 +1057,28 @@ To ensure the cluster is healthy, the number of shards per node
 must not exceed 20 times the configured heap size.
 For example, a node with a 30 GB heap must have a maximum of 600 shards.
 
+To update the number of shards for an index, change the setting
+and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+
 #### Number of Elasticsearch replicas
 
 For single-node clusters, set the number of Elasticsearch replicas per index to `0`.
 
 For multi-node clusters, set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
 The number must not be `0` because losing one node corrupts the index.
+
+If [shard allocation awareness](https://www.elastic.co/docs/deploy-manage/distributed-architecture/shard-allocation-relocation-recovery/shard-allocation-awareness) is enabled,
+the total number of copies per shard must be evenly divisible
+by the number of awareness attributes (typically nodes or zones).
+The even distribution of shard copies across all awareness attributes
+ensures optimal fault tolerance and load distribution.
+
+```plaintext
+(1 + `number_of_replicas`) / `number_of_awareness_attributes` = whole number
+```
+
+To update the number of replicas for an index, change the setting
+and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
 
 ### Index large instances efficiently
 

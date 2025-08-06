@@ -12633,7 +12633,8 @@ CREATE TABLE ci_triggers (
     encrypted_token_iv bytea,
     expires_at timestamp with time zone,
     token_encrypted text,
-    CONSTRAINT check_4905e4c2cb CHECK ((char_length(token_encrypted) <= 255))
+    CONSTRAINT check_4905e4c2cb CHECK ((char_length(token_encrypted) <= 255)),
+    CONSTRAINT check_8120a40ce8 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_triggers_id_seq
@@ -18683,6 +18684,7 @@ CREATE TABLE namespace_settings (
     allow_enterprise_bypass_placeholder_confirmation boolean DEFAULT false NOT NULL,
     enterprise_bypass_expires_at timestamp with time zone,
     hide_email_on_profile boolean DEFAULT false NOT NULL,
+    allow_personal_snippets boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
@@ -21359,13 +21361,21 @@ CREATE VIEW postgres_table_sizes AS
  SELECT (((schemaname)::text || '.'::text) || (relname)::text) AS identifier,
     schemaname AS schema_name,
     relname AS table_name,
-    pg_size_pretty(pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) AS total_size,
-    pg_size_pretty(pg_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) AS table_size,
-    pg_size_pretty((pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) - pg_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass))) AS index_size,
-    pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) AS size_in_bytes
-   FROM pg_stat_user_tables
-  WHERE (pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) IS NOT NULL)
-  ORDER BY (pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) DESC;
+    pg_size_pretty(total_bytes) AS total_size,
+    pg_size_pretty(table_bytes) AS table_size,
+    pg_size_pretty(index_bytes) AS index_size,
+    pg_size_pretty(toast_bytes) AS toast_size,
+    pg_size_pretty((((total_bytes - table_bytes) - index_bytes) - toast_bytes)) AS auxiliary_size,
+    total_bytes AS size_in_bytes
+   FROM ( SELECT pg_stat_user_tables.schemaname,
+            pg_stat_user_tables.relname,
+            pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) AS total_bytes,
+            pg_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) AS table_bytes,
+            pg_indexes_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) AS index_bytes,
+            ((pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) - pg_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass)) - pg_indexes_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass)) AS toast_bytes
+           FROM pg_stat_user_tables
+          WHERE (pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) IS NOT NULL)) t
+  ORDER BY total_bytes DESC;
 
 CREATE TABLE programming_languages (
     id bigint NOT NULL,

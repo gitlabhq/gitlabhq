@@ -92,6 +92,21 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
       include_examples 'common token validation failures'
     end
 
+    context 'when validating email_otp' do
+      let(:token) { '001122' }
+      let(:encrypted_token) { Devise.token_generator.digest(User, email, token) }
+      let(:user) do
+        user_detail = build(:user_detail, email_otp: encrypted_token, email_otp_last_sent_at: 1.second.ago)
+        build(:user, email: email, user_detail: user_detail)
+      end
+
+      let(:provided_token) { token }
+      let(:service) { described_class.new(attr: :email_otp, user: user, token: provided_token) }
+
+      include_examples 'successful token validation'
+      include_examples 'common token validation failures'
+    end
+
     context 'with an invalid attr' do
       let(:user) { build(:user) }
       let(:service) { described_class.new(attr: :username, user: user, token: '001122') }
@@ -143,6 +158,13 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
       let(:service) { described_class.new(attr: :confirmation_token, user: user, token: token) }
 
       include_examples 'token expiry logic', :confirmation_sent_at
+    end
+
+    context 'when attribute is email_otp' do
+      let(:user) { build(:user) }
+      let(:service) { described_class.new(attr: :email_otp, user: user, token: token) }
+
+      include_examples 'token expiry logic', :email_otp_last_sent_at
     end
   end
 end

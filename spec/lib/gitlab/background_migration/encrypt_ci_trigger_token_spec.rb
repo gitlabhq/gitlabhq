@@ -18,9 +18,11 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_categ
     end
   end
 
-  let(:without_encryption) { ci_triggers.create!(token: "token", owner_id: 1) }
-  let(:without_encryption_2) { ci_triggers.create!(token: "token 2", owner_id: 1) }
-  let(:with_encryption) { ci_triggers.create!(token: 'token 3', owner_id: 1, encrypted_token_tmp: 'token 3') }
+  let(:without_encryption) { ci_triggers.create!(token: "token", owner_id: 1, project_id: 1) }
+  let(:without_encryption_2) { ci_triggers.create!(token: "token 2", owner_id: 1, project_id: 1) }
+  let(:with_encryption) do
+    ci_triggers.create!(token: 'token 3', owner_id: 1, encrypted_token_tmp: 'token 3', project_id: 1)
+  end
 
   let(:start_id) { ci_triggers.minimum(:id) }
   let(:end_id) { ci_triggers.maximum(:id) }

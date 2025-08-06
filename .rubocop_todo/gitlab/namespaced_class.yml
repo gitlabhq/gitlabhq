@@ -1149,7 +1149,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/shell.rb'
     - 'lib/gitlab/sidekiq_migrate_jobs.rb'
     - 'lib/gitlab/sidekiq_queue.rb'
-    - 'lib/gitlab/signed_commit.rb'
     - 'lib/gitlab/signed_tag.rb'
     - 'lib/gitlab/snippet_search_results.rb'
     - 'lib/gitlab/ssh_public_key.rb'

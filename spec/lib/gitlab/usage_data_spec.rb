@@ -410,7 +410,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:ci_pipeline, :auto_devops_source, user: user)
         create(:ci_pipeline, :repository_source, user: user)
         create(:ci_pipeline_schedule, owner: user)
-        create(:ci_trigger, owner: user)
+        create(:ci_trigger, owner: user, project: create(:project, maintainers: [user]))
       end
 
       expect(described_class.usage_activity_by_stage_verify({})).to include(

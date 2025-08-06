@@ -28231,6 +28231,23 @@ Events that describe the history and progress of a GitLab Duo Agent Platform ses
 | ---- | ---- | ----------- |
 | <a id="emailparticipanttypeemail"></a>`email` | [`String!`](#string) | Email address of the email participant. For guests, the email address is obfuscated. |
 
+### `EnabledSecurityScans`
+
+Types of scans enabled on a merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="enabledsecurityscansapifuzzing"></a>`apiFuzzing` | [`Boolean!`](#boolean) | `true` if there is a Api fuzzing scan in the pipeline. |
+| <a id="enabledsecurityscansclusterimagescanning"></a>`clusterImageScanning` | [`Boolean!`](#boolean) | `true` if there is a Cluster image scanning scan in the pipeline. |
+| <a id="enabledsecurityscanscontainerscanning"></a>`containerScanning` | [`Boolean!`](#boolean) | `true` if there is a Container scanning scan in the pipeline. |
+| <a id="enabledsecurityscanscoveragefuzzing"></a>`coverageFuzzing` | [`Boolean!`](#boolean) | `true` if there is a Coverage fuzzing scan in the pipeline. |
+| <a id="enabledsecurityscansdast"></a>`dast` | [`Boolean!`](#boolean) | `true` if there is a Dast scan in the pipeline. |
+| <a id="enabledsecurityscansdependencyscanning"></a>`dependencyScanning` | [`Boolean!`](#boolean) | `true` if there is a Dependency scanning scan in the pipeline. |
+| <a id="enabledsecurityscanssast"></a>`sast` | [`Boolean!`](#boolean) | `true` if there is a Sast scan in the pipeline. |
+| <a id="enabledsecurityscanssecretdetection"></a>`secretDetection` | [`Boolean!`](#boolean) | `true` if there is a Secret detection scan in the pipeline. |
+
 ### `Environment`
 
 Describes where code is deployed for a project.
@@ -36769,6 +36786,8 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinedetailedstatus"></a>`detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
 | <a id="pipelinedownstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Pipelines the pipeline will trigger. (see [Connections](#connections)) |
 | <a id="pipelineduration"></a>`duration` | [`Int`](#int) | Duration of the pipeline in seconds. |
+| <a id="pipelineenabledpartialsecurityscans"></a>`enabledPartialSecurityScans` {{< icon name="warning-solid" >}} | [`EnabledSecurityScans!`](#enabledsecurityscans) | **Introduced** in GitLab 18.3. **Status**: Experiment. Partial scans present in the pipeline and its descendents for each report type. |
+| <a id="pipelineenabledsecurityscans"></a>`enabledSecurityScans` {{< icon name="warning-solid" >}} | [`EnabledSecurityScans!`](#enabledsecurityscans) | **Introduced** in GitLab 18.3. **Status**: Experiment. Security scans present in the pipeline and its descendents for each report type. |
 | <a id="pipelineerrormessages"></a>`errorMessages` | [`PipelineMessageConnection`](#pipelinemessageconnection) | Pipeline error messages. (see [Connections](#connections)) |
 | <a id="pipelinefailurereason"></a>`failureReason` | [`String`](#string) | Reason why the pipeline failed. |
 | <a id="pipelinefinishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of the pipeline's completion. |

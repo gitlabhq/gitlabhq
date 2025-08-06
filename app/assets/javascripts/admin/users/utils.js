@@ -3,7 +3,6 @@ import getSoloOwnedOrganizationsQuery from '~/admin/users/graphql/queries/get_so
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import {
-  TOKEN_CONFIGS,
   SOLO_OWNED_ORGANIZATIONS_EMPTY,
   SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT,
 } from 'ee_else_ce/admin/users/constants';
@@ -17,6 +16,11 @@ export const generateUserPaths = (paths, id) => {
   );
 };
 
+const createTokenValue = (type, value) => ({
+  type,
+  value: { data: value, operator: OPERATOR_IS },
+});
+
 /**
  * @typedef {{type: string, value: {data: string, operator: string}}} Token
  */
@@ -26,27 +30,36 @@ export const generateUserPaths = (paths, id) => {
  *
  * @returns {{tokenValues: Array<string|Token>, sort: string}}
  */
-export function initializeValuesFromQuery() {
+export function initializeValuesFromQuery(filterTokenConfigs, standardTokenConfigs) {
   const tokenValues = [];
+  const {
+    filter,
+    search_query: searchQuery,
+    sort,
+    ...otherProperties
+  } = queryToObject(window.location.search);
 
-  const { filter, search_query: searchQuery, sort } = queryToObject(window.location.search);
-
+  // If there's a filter querystring, check if it's for a filter token config, and if so, add it.
   if (filter) {
-    const tokenConfig = TOKEN_CONFIGS.find(({ options }) =>
+    // Get the token config that has an option with the same value as the querystring value.
+    const tokenConfig = filterTokenConfigs.find(({ options }) =>
       options.some(({ value }) => value === filter),
     );
 
     if (tokenConfig) {
-      tokenValues.push({
-        type: tokenConfig.type,
-        value: { data: filter, operator: OPERATOR_IS },
-      });
+      tokenValues.push(createTokenValue(tokenConfig.type, filter));
     }
   }
-
+  // If there's a text search, add it as a token.
   if (searchQuery) {
     tokenValues.push(searchQuery);
   }
+  // For all other properties, check if it's for a standard token config, and if so, add it.
+  Object.entries(otherProperties).forEach(([type, value]) => {
+    if (standardTokenConfigs.some((token) => token.type === type)) {
+      tokenValues.push(createTokenValue(type, value));
+    }
+  });
 
   return { tokenValues, sort };
 }

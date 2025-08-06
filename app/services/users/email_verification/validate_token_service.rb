@@ -25,6 +25,7 @@ module Users
         generated_at = case attr
                        when :unlock_token then user.locked_at
                        when :confirmation_token then user.confirmation_sent_at
+                       when :email_otp then user.email_otp_last_sent_at
                        end
 
         generated_at.nil? ||
@@ -36,13 +37,13 @@ module Users
       attr_reader :user
 
       def verification_rate_limited?
-        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: user[attr])
+        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: attr_value)
       end
 
       def valid?
         return false unless token.present?
 
-        Devise.secure_compare(user[attr], digest)
+        Devise.secure_compare(attr_value, digest)
       end
 
       def success

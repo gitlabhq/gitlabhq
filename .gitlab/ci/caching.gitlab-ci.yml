@@ -76,7 +76,6 @@ cache:ruby-gems:
   stage: sync
   variables:
     BUNDLE_WITHOUT: ""
-    GLCI_BUNDLE_SKIP_PG_REINSTALL: "true"
   before_script:
     - source scripts/utils.sh
   script:

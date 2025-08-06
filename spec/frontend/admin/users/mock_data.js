@@ -107,26 +107,15 @@ export const multipleWithExtrasSoloOwnedOrganizations = {
   nodes: range(SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT).map((index) => organization(index)),
 };
 
-export const expectedAccessLevelToken = {
-  title: 'Access level',
-  type: 'access_level',
-  token: GlFilteredSearchToken,
-  operators: OPERATORS_IS,
-  unique: true,
-  options: IS_EE
-    ? [
-        { value: 'admins', title: 'Administrator' },
-        { value: 'auditors', title: 'Auditor' },
-        { value: 'external', title: 'External' },
-      ]
-    : [
-        { value: 'admins', title: 'Administrator' },
-        { value: 'external', title: 'External' },
-      ],
-};
-
-export const expectedTokens = [
-  expectedAccessLevelToken,
+export const getExpectedFilterTokenConfigs = (accessLevelOptions) => [
+  {
+    title: 'Access level',
+    type: 'access_level',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: accessLevelOptions,
+  },
   {
     title: 'State',
     type: 'state',
@@ -175,3 +164,9 @@ export const expectedTokens = [
     options: [{ value: 'ldap_sync', title: 'True' }],
   },
 ];
+
+export const FILTER_TOKEN_CONFIGS = getExpectedFilterTokenConfigs([
+  { value: 'admins', title: 'Administrator' },
+  { value: 'external', title: 'External' },
+]);
+export const STANDARD_TOKEN_CONFIGS = [];

@@ -13,6 +13,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:owner) }
+    it { is_expected.to validate_presence_of(:project) }
   end
 
   describe 'before_validation' do
@@ -32,7 +33,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
   describe 'scopes' do
     describe '.with_last_used' do
-      let_it_be(:ci_trigger) { create(:ci_trigger) }
+      let_it_be(:ci_trigger) { create(:ci_trigger, project: create(:project)) }
 
       context 'when no pipelines' do
         it 'returns the trigger with last_used as nil' do
@@ -73,7 +74,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     end
 
     it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
-      let(:record) { create(:ci_trigger_without_token) }
+      let(:record) { create(:ci_trigger_without_token, project: project) }
     end
 
     describe '.with_token' do
@@ -172,7 +173,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   end
 
   describe '#short_token' do
-    let(:trigger) { create(:ci_trigger) }
+    let(:trigger) { create(:ci_trigger, project: project) }
 
     subject { trigger.short_token }
 
@@ -216,6 +217,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :ci_trigger }
+    let(:factory_attributes) { { project: project } }
   end
 
   it_behaves_like 'loose foreign key with custom delete limit' do
@@ -226,7 +228,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   context 'loose foreign key on ci_triggers.owner_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:user) }
-      let!(:model) { create(:ci_trigger, owner: parent) }
+      let!(:model) { create(:ci_trigger, owner: parent, project: project) }
     end
   end
 

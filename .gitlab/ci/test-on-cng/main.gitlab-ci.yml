@@ -55,6 +55,7 @@ workflow:
     QA_PARALLEL_PROCESSES: 4
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     GIT_STRATEGY: "none"
+  timeout: 30m
   before_script:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]

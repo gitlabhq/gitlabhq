@@ -281,8 +281,8 @@ RSpec.describe User, feature_category: :user_profile do
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }
-      let_it_be(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, owner: user) }
-      let_it_be(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, owner: user) }
+      let_it_be(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, owner: user, project: create(:project, maintainers: [user])) }
+      let_it_be(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, owner: user, project: create(:project, maintainers: [user])) }
 
       it { is_expected.to have_many(:triggers).class_name('Ci::Trigger').with_foreign_key('owner_id') }
 

@@ -529,7 +529,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/search/found_blob.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/deduplicates_when_scheduling.rb'
-    - 'lib/gitlab/signed_commit.rb'
     - 'lib/gitlab/ssh/signature.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/task_helpers.rb'

@@ -2,7 +2,7 @@
 
 module Gitlab
   module Gpg
-    class Commit < Gitlab::SignedCommit
+    class Commit < Gitlab::Repositories::BaseSignedCommit
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
           update_signature_with_keychain!(cached_signature, gpg_key)

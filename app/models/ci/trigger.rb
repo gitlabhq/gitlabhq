@@ -20,6 +20,7 @@ module Ci
 
     validates :token, presence: true, uniqueness: true
     validates :owner, presence: true
+    validates :project, presence: true
 
     validate :expires_at_before_instance_max_expiry_date, on: :create
 
