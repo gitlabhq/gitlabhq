@@ -879,34 +879,15 @@ $diff-file-header-top: 11px;
   @apply gl-bg-default gl-border;
 }
 
-.review-preview-item-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 4px;
-
-  > .bold {
-    display: flex;
-    min-width: 0;
-    line-height: 16px;
-  }
+.pending-review-item:not(:last-child)::before {
+  @include vertical-line(20px, 10px);
+  height: 100%;
+  @apply gl-bg-strong;
 }
 
-.review-preview-item-footer {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-}
-
-.review-preview-item-content {
-  p {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-bottom: 0;
-  }
+.review-comment-icon {
+  min-width: 22px;
+  height: 22px;
 }
 
 .commits ol:not(:last-of-type) {

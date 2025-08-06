@@ -59,6 +59,7 @@ In the report, you can:
 - Change the status of violations using the status dropdown list.
 - Navigate through multiple pages of violations by using pagination.
 - View detailed information about each violation.
+- Export the report as a CSV file.
 
 ## Violation details
 
@@ -94,6 +95,46 @@ To change a violation status:
 1. Choose the new status from the dropdown list menu.
 
 The status updates immediately and is reflected in the report.
+
+## Export compliance violations report
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/551244) in GitLab 18.3.
+
+{{< /history >}}
+
+Export a CSV report of compliance violations for all projects in a group. The exported report includes:
+
+- Detected at (DateTime most current first)
+- Violation ID
+- Status
+- Framework
+- Compliance Control
+- Compliance Requirement
+- Audit Event Author
+- Audit Event Type
+- Audit Event Name
+- Audit Event Message
+- Project ID
+
+Reports:
+
+- Are truncated at 15 MB so the email attachment is not too large.
+- Include all violations regardless of current filters applied to the web interface.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export a compliance violations report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export violations report**.
+
+A report is compiled and delivered to your email inbox as an attachment.
 
 ## Static compliance violations report
 

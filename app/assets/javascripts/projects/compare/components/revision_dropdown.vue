@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { logError } from '~/lib/logger';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { ENTER_KEY } from '~/lib/utils/keys';
+import { ENTER_KEY, NUMPAD_ENTER_KEY } from '~/lib/utils/keys';
 
 const EMPTY_DROPDOWN_TEXT = s__('CompareRevisions|Select branch/tag');
 const SEARCH_DEBOUNCE_MS = 300;
@@ -153,7 +153,7 @@ export default {
       // temporary hacks to support searching for commits on enter
       // more elegant solution comes up in https://gitlab.com/gitlab-org/gitlab/-/issues/525192
       const { code, target } = e;
-      if (code === ENTER_KEY) {
+      if (code === ENTER_KEY || code === NUMPAD_ENTER_KEY) {
         this.setSelectedRevision(target.value);
         const listbox = this.$refs.collapsibleDropdown;
         const dropdown = listbox.$refs.baseDropdown;

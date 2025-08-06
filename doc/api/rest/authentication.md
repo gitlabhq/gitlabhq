@@ -55,13 +55,16 @@ the `access_token` parameter or the `Authorization` header.
 Example of using the OAuth 2.0 token in a parameter:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects?access_token=OAUTH-TOKEN"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/projects?access_token=OAUTH-TOKEN"
 ```
 
 Example of using the OAuth 2.0 token in a header:
 
 ```shell
-curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --header "Authorization: Bearer OAUTH-TOKEN" \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
@@ -82,19 +85,24 @@ parameter or the `PRIVATE-TOKEN` header.
 Example of using the personal, project, or group access token in a parameter:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
 ```
 
 Example of using the personal, project, or group access token in a header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 You can also use personal, project, or group access tokens with OAuth-compliant headers:
 
 ```shell
-curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 ## Job tokens
@@ -106,13 +114,17 @@ GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
 Example of using the job token in a parameter:
 
 ```shell
-curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"
+curl --request GET \
+  --location --output artifacts.zip \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"
 ```
 
 Example of using the job token in a header:
 
 ```shell
-curl --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/releases"
+curl --request GET \
+  --header "JOB-TOKEN:$CI_JOB_TOKEN" \
+  --url "https://gitlab.example.com/api/v4/projects/1/releases"
 ```
 
 ## Session cookie
@@ -228,7 +240,10 @@ GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Sudo: username" \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API request and a request using cURL with sudo request, providing an ID:
@@ -238,5 +253,8 @@ GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Sudo: 23" \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```

@@ -51,7 +51,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/2/placeholder_reassignments"
 ```
@@ -81,9 +81,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --form "file=@placeholder_reassignments_for_group_2_1741253695.csv" \
-  "http://gdk.test:3000/api/v4/groups/2/placeholder_reassignments"
+  --url "http://gdk.test:3000/api/v4/groups/2/placeholder_reassignments"
 ```
 
 Example response:

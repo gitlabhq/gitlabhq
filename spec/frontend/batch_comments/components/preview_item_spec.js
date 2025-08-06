@@ -38,19 +38,21 @@ describe('Batch comments draft preview item component', () => {
     });
   }
 
+  const findTitle = () => wrapper.findByTestId('review-preview-item-header-text');
+  const findContent = () => wrapper.findByTestId('review-preview-item-content');
+  const findDraftResolution = () => wrapper.findByTestId('draft-note-resolution');
+
   it('renders text content', () => {
     createComponent({ note_html: '<img src="" /><p>Hello world</p>' });
 
-    expect(wrapper.find('.review-preview-item-content').element.innerHTML).toBe(
-      '<p>Hello world</p>',
-    );
+    expect(findContent().element.innerHTML).toContain('Hello world');
   });
 
   describe('for file', () => {
     it('renders file path', () => {
       createComponent({ file_path: 'index.js', file_hash: 'abc', position: {} });
 
-      expect(wrapper.find('.review-preview-item-header-text').text()).toContain('index.js');
+      expect(findTitle().text()).toContain('index.js');
     });
 
     it('renders new line position', () => {
@@ -115,13 +117,11 @@ describe('Batch comments draft preview item component', () => {
     });
 
     it('renders title', () => {
-      expect(wrapper.find('.review-preview-item-header-text').text()).toContain(
-        "Author 'Nick' Name's thread",
-      );
+      expect(findTitle().text()).toContain("Author 'Nick' Name's thread");
     });
 
     it('renders thread resolved text', () => {
-      expect(wrapper.find('.draft-note-resolution').text()).toContain('Thread will be resolved');
+      expect(findDraftResolution().text()).toContain('Thread will be resolved');
     });
   });
 
@@ -129,7 +129,7 @@ describe('Batch comments draft preview item component', () => {
     it('renders title', () => {
       createComponent();
 
-      expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
+      expect(findTitle().text()).toContain('Your new comment');
     });
   });
 });

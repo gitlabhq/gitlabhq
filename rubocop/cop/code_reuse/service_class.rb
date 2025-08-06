@@ -5,7 +5,54 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that enforces various code reuse rules for Service classes.
+      # Cop that prevents Service class from being used in Finder,
+      # Presenter, Serializer, and model to maintain
+      # proper separation of concerns and avoid circular dependencies.
+      # Services should primarily be used in controllers, API endpoints, and other services.
+      #
+      # @example
+      #   # bad - Service class in a Finder
+      #   class SomeFinder
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Service class in a Presenter
+      #   class SomePresenter
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Service class in a Serializer
+      #   class SomeSerializer
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Service class in a model
+      #   class SomeModel < ApplicationRecord
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
+      #   # good - Service class in a controller
+      #   class SomeController
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
+      #   # good - Service class in API endpoint
+      #   class Api::SomeController
+      #     def some_method
+      #       SomeService.new(@data)
+      #     end
+      #   end
+      #
       class ServiceClass < RuboCop::Cop::Base
         include CodeReuseHelpers
 

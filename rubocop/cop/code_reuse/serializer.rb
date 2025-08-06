@@ -5,7 +5,67 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that enforces various code reuse rules for Serializer classes.
+      # Cop that prevents Serializers from being used in Service class,
+      # Finder, Presenter, Serializer, model, and worker to maintain
+      # proper separation of concerns and avoid circular dependencies.
+      #
+      # @example
+      #   # bad - Serializer used in a Service class
+      #   class SomeService
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Serializer used in a Finder
+      #   class SomeFinder
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Serializer used in a Presenter
+      #   class SomePresenter
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Serializer used in another Serializer
+      #   class FooSerializer
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Serializer used in a model
+      #   class SomeModel < ApplicationRecord
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Serializer used in a worker
+      #   class SomeWorker
+      #     def perform
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # good - Serializer used in a controller
+      #   class SomeController
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
+      #   # good - Serializer used in API endpoint
+      #   class Api::SomeController
+      #     def some_method
+      #       SomeSerializer.new(@data)
+      #     end
+      #   end
+      #
       class Serializer < RuboCop::Cop::Base
         include CodeReuseHelpers
 

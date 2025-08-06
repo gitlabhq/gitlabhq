@@ -51,19 +51,23 @@ Example:
 
 ```shell
 GRAPHQL_TOKEN=<your-token>
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
-     --header "Content-Type: application/json" --request POST \
-     --data "{\"query\": \"query {currentUser {name}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 To nest strings in the query string,
 wrap the data in single quotes or escape the strings with ` \\ `:
 
 ```shell
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
-    --header "Content-Type: application/json" --request POST \
-    --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
-      # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
+  # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
 
 ### Rails console

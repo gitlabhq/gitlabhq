@@ -335,7 +335,7 @@ export default {
       :title="tooltipText"
       :href="detailsPath"
       :class="jobClasses"
-      class="gl-w-full gl-pr-7 !gl-no-underline"
+      class="gl-w-full !gl-no-underline"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
@@ -344,7 +344,7 @@ export default {
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
           <div
-            class="gl-truncate gl-pr-6 gl-text-left gl-leading-normal gl-text-default"
+            class="gl-line-clamp-2 gl-pr-6 gl-text-left gl-leading-normal gl-text-default gl-wrap-anywhere"
             :title="job.name"
           >
             {{ job.name }}

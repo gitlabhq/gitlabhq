@@ -77,7 +77,7 @@ ERROR
     end
   end
 
-  def partitioned_table(name, database: nil, by: :created_at, strategy: :monthly)
+  def partitioned_table(name, database: nil, by: :created_at, strategy: :monthly, retain_for: nil)
     klass = Class.new(active_record_base(database: database)) do
       include PartitionedTable
 
@@ -85,7 +85,7 @@ ERROR
       self.inheritance_column = :_type_disabled
       self.primary_key = :id
 
-      partitioned_by by, strategy: strategy
+      partitioned_by by, strategy: strategy, retain_for: retain_for
 
       def self.name
         table_name.singularize.camelcase

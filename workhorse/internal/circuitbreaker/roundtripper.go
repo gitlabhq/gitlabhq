@@ -12,7 +12,7 @@ import (
 	"time"
 
 	redis "github.com/redis/go-redis/v9"
-	"github.com/sony/gobreaker/v2"
+	gobreaker "github.com/sony/gobreaker/v2"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"

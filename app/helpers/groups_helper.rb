@@ -207,9 +207,7 @@ module GroupsHelper
 
   def access_level_roles_user_can_assign(group, roles)
     max_access_level = group.max_member_access_for_user(current_user)
-    roles.select do |_name, access_level|
-      access_level <= max_access_level
-    end
+    Authz::Role.roles_user_can_assign(max_access_level, roles)
   end
 
   def groups_projects_more_actions_dropdown_data(source)

@@ -289,6 +289,8 @@
   - 1
 - - compliance_management_framework_export_mailer
   - 1
+- - compliance_management_groups_compliance_violations_export_mailer
+  - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
 - - compliance_management_pending_status_check
@@ -1009,6 +1011,8 @@
   - 1
 - - security_scans
   - 2
+- - security_scans_ingest_reports
+  - 1
 - - security_scans_purge_by_job_id
   - 1
 - - security_secret_detection_gitlab_token_verification

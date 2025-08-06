@@ -9,23 +9,29 @@ RSpec.describe InviteMembersHelper do
   let_it_be(:group) { create(:group, projects: [project]) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let(:owner) { project.owner }
+  let_it_be(:owner) { create(:user, owner_of: project) }
 
   describe '#common_invite_group_modal_data' do
-    it 'has expected common attributes' do
-      attributes = {
-        id: project.id,
-        root_id: project.root_ancestor.id,
-        name: project.name,
-        default_access_level: Gitlab::Access::GUEST,
-        invalid_groups: project.related_group_ids,
-        help_link: help_page_url('user/permissions.md'),
-        is_project: 'true',
-        access_levels: ProjectMember.access_level_roles.to_json,
-        full_path: project.full_path
-      }
+    context 'when current user is an owner' do
+      before do
+        allow(helper).to receive(:current_user).and_return(owner)
+      end
 
-      expect(helper.common_invite_group_modal_data(project, ProjectMember)).to include(attributes)
+      it 'has expected common attributes' do
+        attributes = {
+          id: project.id,
+          root_id: project.root_ancestor.id,
+          name: project.name,
+          default_access_level: Gitlab::Access::GUEST,
+          invalid_groups: project.related_group_ids,
+          help_link: help_page_url('user/permissions.md'),
+          is_project: 'true',
+          access_levels: Gitlab::Access.options_with_owner.to_json,
+          full_path: project.full_path
+        }
+
+        expect(helper.common_invite_group_modal_data(project, ProjectMember)).to include(attributes)
+      end
     end
 
     context 'when sharing with groups outside the hierarchy is disabled' do

@@ -41,7 +41,8 @@ In the following example, the API request retrieves the list of all projects on 
 `gitlab.example.com`:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 Access to some endpoints require authentication. For more information, see
@@ -77,14 +78,16 @@ send the payload body:
 - Query string:
 
   ```shell
-  curl --request POST "https://gitlab.example.com/api/v4/projects?name=<example-name>&description=<example-description>"
+  curl --request POST \
+    --url "https://gitlab.example.com/api/v4/projects?name=<example-name>&description=<example-description>"
   ```
 
 - Request payload (JSON):
 
   ```shell
-  curl --request POST --header "Content-Type: application/json" \
-       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
+  curl --request POST \
+    --header "Content-Type: application/json" \
+    --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large
@@ -109,7 +112,9 @@ shouldn't be included.
 The resulting cURL request for a project with ID `5` and a group ID of `17` is then:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
 Path parameters that are required to be URL-encoded must be followed. If not,
@@ -180,10 +185,11 @@ You can request the API with `array` and `hash` types parameters:
 `import_sources` is a parameter of type `array`:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
--d "import_sources[]=github" \
--d "import_sources[]=bitbucket" \
-"https://gitlab.example.com/api/v4/some_endpoint"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  -d "import_sources[]=github" \
+  -d "import_sources[]=bitbucket" \
+  --url "https://gitlab.example.com/api/v4/some_endpoint"
 ```
 
 ##### `hash`
@@ -191,13 +197,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 `override_params` is a parameter of type `hash`:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
---form "namespace=email" \
---form "path=impapi" \
---form "file=@/path/to/somefile.txt" \
---form "override_params[visibility]=private" \
---form "override_params[some_other_param]=some_value" \
-"https://gitlab.example.com/api/v4/projects/import"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "namespace=email" \
+  --form "path=impapi" \
+  --form "file=@/path/to/somefile.txt" \
+  --form "override_params[visibility]=private" \
+  --form "override_params[some_other_param]=some_value" \
+  --url "https://gitlab.example.com/api/v4/projects/import"
 ```
 
 ##### Array of hashes
@@ -206,13 +213,15 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 `[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`:
 
 ```shell
-curl --globoff --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[0][key]=VAR1&variables[0][value]=hello&variables[1][key]=VAR2&variables[1][value]=world"
+curl --globoff --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[0][key]=VAR1&variables[0][value]=hello&variables[1][key]=VAR2&variables[1][value]=world"
 
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
---header "Content-Type: application/json" \
---data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
-"https://gitlab.example.com/api/v4/projects/169/pipeline"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
+  --url "https://gitlab.example.com/api/v4/projects/169/pipeline"
 ```
 
 #### Encoding `+` in ISO 8601 dates
@@ -262,7 +271,9 @@ the endpoint specified in the `Location` header.
 Example of a project moved to a different path:
 
 ```shell
-curl --verbose "https://gitlab.example.com/api/v4/projects/gitlab-org%2Fold-path-project"
+curl --request GET \
+  --verbose \
+  --url "https://gitlab.example.com/api/v4/projects/gitlab-org%2Fold-path-project"
 ```
 
 The response is:
@@ -306,7 +317,9 @@ pass the following parameters:
 In the following example, we list 50 [namespaces](../namespaces.md) per page:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
 {{< alert type="note" >}}
@@ -328,7 +341,10 @@ In the following cURL example, we limit the output to three items per page
 of the issue with ID `8` which belongs to the project with ID `9`:
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
+curl --request GET \
+  --head \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
 ```
 
 The response is:
@@ -386,7 +402,9 @@ In the following example, we list 50 [projects](../projects.md) per page, ordere
 by `id` ascending.
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
 ```
 
 The response header includes a link to the next page. For example:
@@ -406,7 +424,9 @@ As another example, the following request lists 50 [groups](../groups.md) per pa
 by `name` ascending using keyset pagination:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc"
 ```
 
 The response header includes a link to the next page:

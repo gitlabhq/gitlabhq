@@ -957,7 +957,7 @@ module Ci
     end
 
     def publishes_artifacts_reports?
-      options&.dig(:artifacts, :reports)&.any?
+      reports_definitions&.any?
     end
 
     def supports_artifacts_exclude?
@@ -1204,6 +1204,11 @@ module Ci
     end
 
     private
+
+    def reports_definitions
+      options.dig(:artifacts, :reports)
+    end
+    strong_memoize_attr :reports_definitions
 
     def use_jwt_for_ci_cd_job_token?
       namespace&.root_ancestor&.namespace_settings&.jwt_ci_cd_job_token_enabled?

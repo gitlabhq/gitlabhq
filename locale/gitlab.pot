@@ -15573,6 +15573,12 @@ msgstr ""
 msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
 msgstr ""
 
+msgid "Compliance Center Export|Export compliance violations as a CSV file."
+msgstr ""
+
+msgid "Compliance Center Export|Export compliance violations report"
+msgstr ""
+
 msgid "Compliance Center Export|Export contents of the compliance frameworks report as a CSV file."
 msgstr ""
 
@@ -15597,13 +15603,16 @@ msgstr ""
 msgid "Compliance Center Export|Export merge request violations as a CSV file."
 msgstr ""
 
+msgid "Compliance Center Export|Export merge request violations report"
+msgstr ""
+
+msgid "Compliance Center Export|Export merge request violations report (legacy)"
+msgstr ""
+
 msgid "Compliance Center Export|Export standards adherence report"
 msgstr ""
 
 msgid "Compliance Center Export|Export status report"
-msgstr ""
-
-msgid "Compliance Center Export|Export violations report"
 msgstr ""
 
 msgid "Compliance Center Export|Invalid hash"
@@ -23934,6 +23943,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Create a new automated AI workflow trigger."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
 msgstr ""
 
@@ -23943,7 +23955,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Fetching logs..."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Flow trigger details"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Flow triggers"
+msgstr ""
+
 msgid "DuoAgentsPlatform|ID"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Manage automated AI workflows within your project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Name"
@@ -23953,6 +23974,9 @@ msgid "DuoAgentsPlatform|New"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
+msgstr ""
+
+msgid "DuoAgentsPlatform|New flow trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New session"
@@ -23992,6 +24016,9 @@ msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Updated"
+msgstr ""
+
+msgid "DuoAgentsPlatform|View and manage this flow trigger."
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"
@@ -27775,6 +27802,9 @@ msgid "FloC|Federated Learning of Cohorts (FLoC)"
 msgstr ""
 
 msgid "FloC|Participate in FLoC"
+msgstr ""
+
+msgid "Flow triggers"
 msgstr ""
 
 msgid "Focus file browser"
@@ -69985,6 +70015,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Name is a required field"
 msgstr ""
 
+msgid "VulnerabilityManagement|No data available"
+msgstr ""
+
 msgid "VulnerabilityManagement|No longer detected %{timeago} as of commit %{commitShaLink}"
 msgstr ""
 
@@ -70073,9 +70106,6 @@ msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
 
 msgid "VulnerabilityManagement|invalid issue link or ID"
-msgstr ""
-
-msgid "VulnerabilityManagement|not available"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Confirmed"

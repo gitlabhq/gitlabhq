@@ -123,22 +123,20 @@ export default {
 
     <organization-switcher v-if="shouldShowOrganizationSwitcher" />
 
-    <div class="gl-mx-1 gl-grow">
-      <gl-button
-        id="super-sidebar-search"
-        v-gl-modal="$options.SEARCH_MODAL_ID"
-        class="user-bar-button !gl-rounded-lg !gl-px-3 !gl-py-1"
-        button-text-classes="gl-flex gl-w-full !gl-py-3"
-        block
-        data-testid="super-sidebar-search-button"
-        @click="trackEvent('click_search_button_to_activate_command_palette')"
-      >
-        <gl-icon name="search" />
-        <span class="gl-grow gl-text-left">{{ $options.i18n.searchBtnText }}</span>
-        <gl-icon name="quick-actions" />
-      </gl-button>
-      <search-modal />
-    </div>
+    <gl-button
+      id="super-sidebar-search"
+      v-gl-modal="$options.SEARCH_MODAL_ID"
+      class="user-bar-button !gl-rounded-lg !gl-px-3 !gl-py-1"
+      button-text-classes="gl-flex gl-w-full !gl-py-3"
+      block
+      data-testid="super-sidebar-search-button"
+      @click="trackEvent('click_search_button_to_activate_command_palette')"
+    >
+      <gl-icon name="search" />
+      <span class="gl-grow gl-text-left">{{ $options.i18n.searchBtnText }}</span>
+      <gl-icon name="quick-actions" />
+    </gl-button>
+    <search-modal />
 
     <user-counts v-if="sidebarData.is_logged_in" :sidebar-data="sidebarData" />
 

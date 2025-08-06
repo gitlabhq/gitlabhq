@@ -5,7 +5,6 @@ import {
   GlModal,
   GlButton,
   GlFormRadioGroup,
-  GlTooltipDirective as GlTooltip,
   GlLoadingIcon,
   GlFormInput,
   GlForm,
@@ -67,7 +66,6 @@ export default {
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
-  directives: { GlTooltip },
   mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
@@ -287,113 +285,119 @@ export default {
     @close="setDrawerOpened(false)"
   >
     <template #title>
-      <h4 class="gl-m-0">{{ __('Submit your review') }}</h4>
+      <h2 class="gl-heading-3 gl-m-0">{{ __('Submit your review') }}</h2>
     </template>
-    <div class="gl-border-b-0">
-      <h5 class="h6 gl-mb-5 gl-mt-0">
-        {{ __('Review approval') }}
-      </h5>
-      <gl-form data-testid="submit-gl-form" @submit.prevent="submitReview">
-        <gl-form-radio-group
-          v-model="noteData.reviewer_state"
-          :options="radioGroupOptions"
-          class="gl-mt-4"
-          data-testid="reviewer_states"
-        />
-        <approval-password
-          v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
-          v-show="noteData.reviewer_state === $options.REVIEW_STATES.APPROVED"
-          v-model="noteData.approval_password"
-          class="gl-mt-3"
-          data-testid="approve_password"
-        />
-        <div v-if="showMarkdownEditor" class="common-note-form gfm-form gl-mb-5 gl-mt-3">
-          <markdown-editor
-            ref="markdownEditor"
-            v-model="noteData.note"
-            class="js-no-autosize"
-            :is-submitting="isSubmitting"
-            :render-markdown-path="getNoteableData.preview_note_path"
-            :markdown-docs-path="getNotesData.markdownDocsPath"
-            :form-field-props="$options.formFieldProps"
-            enable-autocomplete
-            :autocomplete-data-sources="autocompleteDataSources"
-            :disabled="isSubmitting"
-            :restricted-tool-bar-items="$options.restrictedToolbarItems"
-            :force-autosize="false"
-            :autosave-key="autosaveKey"
-            supports-quick-actions
-            autofocus
-            @input="$emit('input', $event)"
-            @keydown.meta.enter="submitReview"
-            @keydown.ctrl.enter="submitReview"
-          >
-            <template v-if="canSummarize" #header-buttons>
-              <markdown-header-divider class="gl-ml-2" />
-              <summarize-my-review
-                :id="getNoteableData.id"
-                v-model="summarizeReviewLoading"
-                @input="updateNote"
-              />
+
+    <div class="gl-flex gl-h-full gl-flex-col">
+      <div class="gl-border-b gl-mb-6 gl-pb-6">
+        <h3 class="gl-heading-4">
+          {{ __('Review approval') }}
+        </h3>
+        <gl-form data-testid="submit-gl-form" @submit.prevent="submitReview">
+          <gl-form-radio-group
+            v-model="noteData.reviewer_state"
+            :options="radioGroupOptions"
+            class="gl-mt-4"
+            data-testid="reviewer_states"
+          />
+          <approval-password
+            v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
+            v-show="noteData.reviewer_state === $options.REVIEW_STATES.APPROVED"
+            v-model="noteData.approval_password"
+            class="gl-mt-3"
+            data-testid="approve_password"
+          />
+          <div class="common-note-form gfm-form gl-mb-5 gl-mt-3">
+            <markdown-editor
+              v-if="showMarkdownEditor"
+              ref="markdownEditor"
+              v-model="noteData.note"
+              class="js-no-autosize"
+              :is-submitting="isSubmitting"
+              :render-markdown-path="getNoteableData.preview_note_path"
+              :markdown-docs-path="getNotesData.markdownDocsPath"
+              :form-field-props="$options.formFieldProps"
+              enable-autocomplete
+              :autocomplete-data-sources="autocompleteDataSources"
+              :disabled="isSubmitting"
+              :restricted-tool-bar-items="$options.restrictedToolbarItems"
+              :force-autosize="false"
+              :autosave-key="autosaveKey"
+              supports-quick-actions
+              autofocus
+              @input="$emit('input', $event)"
+              @keydown.meta.enter="submitReview"
+              @keydown.ctrl.enter="submitReview"
+            >
+              <template v-if="canSummarize" #header-buttons>
+                <markdown-header-divider class="gl-ml-2" />
+                <summarize-my-review
+                  :id="getNoteableData.id"
+                  v-model="summarizeReviewLoading"
+                  @input="updateNote"
+                />
+              </template>
+              <template v-if="summarizeReviewLoading" #toolbar>
+                <div class="gl-ml-auto gl-mr-2 gl-inline-flex">
+                  {{ __('Generating review summary') }}
+                  <gl-loading-icon class="gl-ml-2 gl-mt-2" />
+                </div>
+              </template>
+            </markdown-editor>
+            <gl-form-input
+              v-else
+              class="reply-placeholder-input-field gl-mb-5 gl-mt-3"
+              :placeholder="__('Add optional summary content…')"
+              data-testid="placeholder-input-field"
+              @focus="showMarkdownEditor = true"
+            />
+          </div>
+          <div class="gl-mt-3 gl-flex gl-gap-3">
+            <gl-button
+              type="submit"
+              variant="confirm"
+              :loading="isSubmitting"
+              class="js-no-auto-disable"
+              data-testid="submit-review-button"
+            >
+              {{ __('Submit review') }}
+            </gl-button>
+            <gl-button @click="setDrawerOpened(false)">{{ __('Continue review') }}</gl-button>
+          </div>
+        </gl-form>
+      </div>
+
+      <div>
+        <div class="gl-mb-5 gl-flex gl-items-center gl-justify-between gl-gap-3">
+          <h3 class="gl-heading-4 gl-mb-0" data-testid="reviewer-drawer-heading">
+            <template v-if="draftsCount > 0">
+              {{ n__('%d pending comment', '%d pending comments', draftsCount) }}
             </template>
-            <template v-if="summarizeReviewLoading" #toolbar>
-              <div class="gl-ml-auto gl-mr-2 gl-inline-flex">
-                {{ __('Generating review summary') }}
-                <gl-loading-icon class="gl-ml-2 gl-mt-2" />
-              </div>
+            <template v-else>
+              {{ __('No pending comments') }}
             </template>
-          </markdown-editor>
-        </div>
-        <gl-form-input
-          v-else
-          class="reply-placeholder-input-field gl-mb-5 gl-mt-3"
-          :placeholder="__('Add optional summary content…')"
-          data-testid="placeholder-input-field"
-          @focus="showMarkdownEditor = true"
-        />
-        <div class="gl-mt-3 gl-flex gl-gap-3">
-          <gl-button
-            type="submit"
-            variant="confirm"
-            :loading="isSubmitting"
-            class="js-no-auto-disable"
-            data-testid="submit-review-button"
-          >
-            {{ __('Submit review') }}
-          </gl-button>
-          <gl-button @click="setDrawerOpened(false)">{{ __('Continue review') }}</gl-button>
+          </h3>
           <gl-button
             v-if="draftsCount > 0"
-            v-gl-tooltip
-            icon="remove"
-            category="tertiary"
-            class="gl-ml-auto"
-            :title="__('Discard review')"
-            :aria-label="__('Discard review')"
+            size="small"
+            category="secondary"
             :loading="discarding"
             data-testid="discard-review-btn"
             @click="showDiscardModal = true"
-          />
+          >
+            {{ __('Discard review') }}
+          </gl-button>
         </div>
-      </gl-form>
+
+        <preview-item
+          v-for="draft in sortedDrafts"
+          :key="draft.id"
+          :draft="draft"
+          @click="onClickDraft"
+        />
+      </div>
     </div>
-    <div>
-      <h5 class="h6 gl-mb-5 gl-mt-0" data-testid="reviewer-drawer-heading">
-        <template v-if="draftsCount > 0">
-          {{ n__('%d pending comment', '%d pending comments', draftsCount) }}
-        </template>
-        <template v-else>
-          {{ __('No pending comments') }}
-        </template>
-      </h5>
-      <preview-item
-        v-for="draft in sortedDrafts"
-        :key="draft.id"
-        :draft="draft"
-        class="gl-mb-3 gl-block"
-        @click="onClickDraft"
-      />
-    </div>
+
     <gl-modal
       v-model="showDiscardModal"
       modal-id="discard-review-modal"

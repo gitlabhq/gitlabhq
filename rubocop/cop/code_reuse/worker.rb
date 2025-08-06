@@ -5,7 +5,60 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that enforces various code reuse rules for workers.
+      # Cop that prevents Workers from being used in controller,
+      # API endpoint, Finder, Presenter, Serializer, and model to maintain
+      # proper separation of concerns and avoid circular dependencies.
+      #
+      # @example
+      #   # bad - Worker used in a controller
+      #   class SomeController
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Worker used in API endpoint
+      #   class Api::SomeController
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Worker used in a Finder
+      #   class SomeFinder
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Worker used in a Presenter
+      #   class SomePresenter
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Worker used in a Serializer
+      #   class SomeSerializer
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Worker used in a model class method
+      #   class SomeModel < ApplicationRecord
+      #     def self.process_data
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
+      #   # good - Worker used in a Service class
+      #   class SomeService
+      #     def some_method
+      #       SomeWorker.perform_async(@data)
+      #     end
+      #   end
+      #
       class Worker < RuboCop::Cop::Base
         include CodeReuseHelpers
 
@@ -21,6 +74,7 @@ module RuboCop
         SUFFIX = 'Worker'
 
         def on_class(node)
+          # Models require special handling - only class methods are restricted
           if in_model?(node)
             check_model_class_methods(node)
           else

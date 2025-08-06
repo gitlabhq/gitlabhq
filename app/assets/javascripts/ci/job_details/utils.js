@@ -27,3 +27,7 @@ export const filterAnnotations = (annotations, type) => {
     .flatMap((annotationList) => annotationList.data)
     .flatMap((annotation) => annotation[type] ?? []);
 };
+
+export const getLineText = (line) => {
+  return line.content.map((content) => content.text).join('');
+};

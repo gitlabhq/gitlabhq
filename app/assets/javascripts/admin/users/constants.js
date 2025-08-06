@@ -1,4 +1,5 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
+
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { s__, __, sprintf } from '~/locale';
 
@@ -22,7 +23,7 @@ export const I18N_USER_ACTIONS = {
   untrust: s__('AdminUsers|Untrust user'),
 };
 
-const createTokenConfig = (options) => ({
+export const createTokenConfig = (options) => ({
   token: GlFilteredSearchToken,
   operators: OPERATORS_IS,
   unique: true,

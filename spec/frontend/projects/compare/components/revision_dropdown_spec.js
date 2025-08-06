@@ -141,7 +141,11 @@ describe('RevisionDropdown component', () => {
       );
     });
 
-    it('should handle enter key', async () => {
+    it.each`
+      keyType            | keyCode
+      ${'regular enter'} | ${'Enter'}
+      ${'numpad enter'}  | ${'NumpadEnter'}
+    `('should handle $keyType key', async ({ keyCode }) => {
       const mockCommitHash = '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9';
       wrapper = mountExtended(RevisionDropdown, {
         propsData: {
@@ -156,11 +160,33 @@ describe('RevisionDropdown component', () => {
 
       findGlListbox().vm.$emit('shown');
       findGlListboxSearchInput().element.value = mockCommitHash;
-      await findGlListboxSearchInput().trigger('keydown', { code: 'Enter' });
+      await findGlListboxSearchInput().trigger('keydown', { code: keyCode });
       await nextTick();
 
       expect(mockClose).toHaveBeenCalled();
       expect(findGlListbox().props('toggleText')).toBe(mockCommitHash);
+    });
+
+    it('should not handle other keys', async () => {
+      const mockCommitHash = '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9';
+      wrapper = mountExtended(RevisionDropdown, {
+        propsData: {
+          ...defaultProps,
+        },
+      });
+
+      const mockClose = jest.spyOn(
+        wrapper.vm.$refs.collapsibleDropdown.$refs.baseDropdown,
+        'close',
+      );
+
+      findGlListbox().vm.$emit('shown');
+      findGlListboxSearchInput().element.value = mockCommitHash;
+      await findGlListboxSearchInput().trigger('keydown', { code: 'Escape' });
+      await nextTick();
+
+      expect(mockClose).not.toHaveBeenCalled();
+      expect(findGlListbox().props('toggleText')).toBe(defaultProps.paramsBranch);
     });
   });
 

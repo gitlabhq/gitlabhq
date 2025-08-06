@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
+import { GlBadge, GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
 import { mapState } from 'pinia';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
@@ -14,6 +14,7 @@ import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
   components: {
+    GlBadge,
     GlIcon,
     GlSprintf,
     GlButton,
@@ -98,15 +99,23 @@ export default {
 </script>
 
 <template>
-  <span>
-    <gl-button
-      variant="link"
-      class="review-preview-item-header !gl-justify-start"
-      data-testid="preview-item-header"
-      @click="$emit('click', draft)"
+  <div class="pending-review-item gl-relative gl-mb-4 gl-flex gl-gap-3">
+    <div
+      class="review-comment-icon gl-inline-flex gl-items-center gl-justify-center gl-self-baseline gl-rounded-full gl-bg-strong"
     >
-      <gl-icon class="flex-shrink-0" :name="iconName" /><span class="text-nowrap gl-items-center">
-        <span class="review-preview-item-header-text gl-truncate">{{ titleText }}</span>
+      <gl-icon class="flex-shrink-0" :name="iconName" :size="14" />
+    </div>
+
+    <div class="gl-mt-2 gl-flex gl-flex-col gl-gap-2">
+      <gl-button
+        variant="link"
+        class="!gl-justify-start"
+        data-testid="preview-item-header"
+        @click="$emit('click', draft)"
+      >
+        <span class="gl-truncate gl-font-semibold" data-testid="review-preview-item-header-text">{{
+          titleText
+        }}</span>
         <template v-if="showLinePosition">
           <template v-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
@@ -124,16 +133,25 @@ export default {
             </template>
           </gl-sprintf>
         </template>
-      </span>
-    </gl-button>
-    <span class="review-preview-item-content">
-      <p>{{ content }}</p>
-    </span>
-    <span
-      v-if="draft.discussion_id && resolvedStatusMessage"
-      class="review-preview-item-footer draft-note-resolution p-0"
-    >
-      <gl-icon class="gl-mr-3" name="status_success" /> {{ resolvedStatusMessage }}
-    </span>
-  </span>
+      </gl-button>
+      <div class="gl-flex gl-flex-col gl-gap-2">
+        <p
+          class="gl-mb-0 gl-line-clamp-3 gl-leading-20 gl-text-subtle gl-wrap-anywhere"
+          data-testid="review-preview-item-content"
+        >
+          {{ content }}
+        </p>
+        <gl-badge
+          v-if="draft.discussion_id && resolvedStatusMessage"
+          class="gl-self-start"
+          data-testid="draft-note-resolution"
+          variant="info"
+          icon="status_success"
+          icon-optically-aligned
+        >
+          {{ resolvedStatusMessage }}
+        </gl-badge>
+      </div>
+    </div>
+  </div>
 </template>

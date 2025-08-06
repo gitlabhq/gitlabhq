@@ -153,14 +153,14 @@ type DuoWorkflow struct {
 type Response struct {
 	// GL_ID is an environment variable used by gitlab-shell hooks during 'git
 	// push' and 'git pull'
-	GL_ID string // nolint:stylecheck,revive // used as env variable
+	GL_ID string // nolint:revive // used as env variable
 
 	// GL_USERNAME holds gitlab username of the user who is taking the action causing hooks to be invoked
-	GL_USERNAME string // nolint:stylecheck,revive // used as env variable
+	GL_USERNAME string // nolint:revive // used as env variable
 
 	// GL_REPOSITORY is an environment variable used by gitlab-shell hooks during
 	// 'git push' and 'git pull'
-	GL_REPOSITORY string // nolint:stylecheck,revive // used as env variable
+	GL_REPOSITORY string // nolint:revive // used as env variable
 
 	// Id of the pipeline build
 	GLBuildID string

@@ -119,7 +119,9 @@ The HTTP response headers can provide extra information when troubleshooting.
 To include HTTP response headers in the response, use the `--include` option:
 
 ```shell
-curl --include "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --include \
+  --url "https://gitlab.example.com/api/v4/projects"
 HTTP/2 200
 ...
 ```
@@ -131,7 +133,9 @@ The HTTP exit code in the API response can provide extra information when troubl
 To include the HTTP exit code, include the `--fail` option:
 
 ```shell
-curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
+curl --request GET \
+  --fail \
+  --url "https://gitlab.example.com/api/v4/does-not-exist"
 curl: (22) The requested URL returned error: 404
 ```
 
@@ -162,10 +166,12 @@ REST API requests can be detected as spam. If a request is detected as spam and:
     ```shell
     export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
     export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
-    curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --header "X-GitLab-Captcha-
-    Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID"
-    "https://gitlab.example.com/api/v4/snippets?
-    title=Title&file_name=FileName&content=Content&visibility=public"
+
+    curl --request POST \
+      --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
+      --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" \
+      --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" \
+      --url "https://gitlab.example.com/api/v4/snippets?title=Title&file_name=FileName&content=Content&visibility=public"
     ```
 
 ## Error: `404 Not Found` when using a reverse proxy

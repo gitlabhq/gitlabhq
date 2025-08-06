@@ -46,7 +46,10 @@ For a click-through demo, see [Duo Agent Platform - MCP integration](https://git
 Before using a GitLab Duo feature with MCP, you must:
 
 - Install [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). MCP requires version 6.28.2 and later.
+- Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). 
+  - MCP support requires version 6.28.2 and later.
+  - Workspace and user configuration features require version 6.35.6 and later.
+
 - Meet the feature prerequisites as required:
 
   - [Agentic Chat prerequisites](../../../user/gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
@@ -67,6 +70,13 @@ To turn MCP on or off for your group:
 
 To integrate MCP with the Language Server, set up workspace configuration, user configuration, or both.
 The GitLab Language Server loads and merges the configuration files.
+
+### Version compatibility
+
+| GitLab Workflow extension version | MCP features available |
+|-----------------------------------|------------------------|
+| 6.28.2 - 6.35.5  | Basic MCP support, with no workspace or user configuration |
+| 6.35.6 and later | Full MCP support, including workspace and user configuration |
 
 ### Create workspace configuration
 

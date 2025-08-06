@@ -94,15 +94,17 @@ module Ci
     def cancel_jobs(jobs)
       retries = 3
       retry_lock(jobs, retries, name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
-        preloaded_relations = [:project, :pipeline, :deployment, :taggings]
-
         jobs_to_cancel.find_in_batches do |batch|
           relation = CommitStatus.id_in(batch)
-          Preloaders::CommitStatusPreloader.new(relation).execute(preloaded_relations)
+          Preloaders::CommitStatusPreloader.new(relation).execute(build_preloads)
 
           relation.each { |job| cancel_job(job) }
         end
       end
+    end
+
+    def build_preloads
+      [:project, :pipeline, :deployment, :taggings]
     end
 
     def cancel_job(job)
@@ -151,3 +153,5 @@ module Ci
     end
   end
 end
+
+Ci::CancelPipelineService.prepend_mod

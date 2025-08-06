@@ -24,7 +24,7 @@ BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
 OS := $(shell uname | tr A-Z a-z)
 ARCH ?= $(shell uname -m | sed -e 's/x86_64/amd64/' | sed -e 's/aarch64/arm64/')
 
-GOLANGCI_LINT_VERSION := 1.60.3
+GOLANGCI_LINT_VERSION := 2.3.1
 GOLANGCI_LINT_ARCH ?= ${ARCH}
 GOLANGCI_LINT_FILE := _support/bin/golangci-lint-${GOLANGCI_LINT_VERSION}
 
@@ -154,7 +154,7 @@ lint:
 .PHONY: golangci
 golangci: ${GOLANGCI_LINT_FILE}
 	@${GOLANGCI_LINT_FILE} cache clean
-	@${GOLANGCI_LINT_FILE} run --issues-exit-code 0 --print-issued-lines=false ${GOLANGCI_LINT_ARGS}
+	@${GOLANGCI_LINT_FILE} run --issues-exit-code 0 --output.text.print-issued-lines=false ${GOLANGCI_LINT_ARGS}
 
 ${GOLANGCI_LINT_FILE}:
 	@mkdir -p $(shell dirname ${GOLANGCI_LINT_FILE})
@@ -186,7 +186,7 @@ check-formatting: install-goimports
 .PHONY: staticcheck
 staticcheck:
 	$(call message,Verify: $@)
-	go install honnef.co/go/tools/cmd/staticcheck@v0.5.1
+	go install honnef.co/go/tools/cmd/staticcheck@v0.6.1
 	@ $(GOBIN)/staticcheck ./...
 
 # In addition to fixing imports, goimports also formats your code in the same style as gofmt

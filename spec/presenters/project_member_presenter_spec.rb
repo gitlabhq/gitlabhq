@@ -219,7 +219,7 @@ RSpec.describe ProjectMemberPresenter do
 
     context 'when user cannot manage owners' do
       it_behaves_like '#valid_level_roles', :project do
-        let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Reporter' => 20 } }
+        let(:expected_roles) { { 'Developer' => 30, 'Reporter' => 20 } }
         let(:can_manage_owners) { false }
 
         before do

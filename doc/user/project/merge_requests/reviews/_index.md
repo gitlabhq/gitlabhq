@@ -207,11 +207,9 @@ When you submit a review, GitLab does the following:
 - Performs any quick actions you added to your review comments.
 - Shows the outcome of your review.
 
-To submit your completed review:
-
 1. On the top right, select **Your review** to show details about your review:
 
-   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_2.png)
+   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
 
 1. Review your pending comments. Edit them as needed.
 1. Select the outcome of your review.
@@ -226,6 +224,17 @@ To submit your completed review:
    quick actions you want performed.
 
 You can also use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+
+### Discard your pending review
+
+When you discard a review, your unpublished comments are deleted and you cannot restore them.
+To do this:
+
+1. On the top right, select **Your review** to show details about your review:
+
+   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
+
+1. Select **Discard review**.
 
 ### Prevent merge when you request changes
 

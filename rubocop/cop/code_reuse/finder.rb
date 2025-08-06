@@ -5,7 +5,32 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that enforces various code reuse rules for Finders.
+      # Cop that prevents Finders from being used in other Finders
+      # and in model class methods to maintain proper separation of concerns
+      # and avoid circular dependencies.
+      #
+      # @example
+      #   # bad - Finder used in another Finder
+      #   class SomeFinder
+      #     def some_method
+      #       FooFinder.new.execute
+      #     end
+      #   end
+      #
+      #   # bad - Finder used in Model class method
+      #   class SomeModel < ApplicationRecord
+      #     def self.some_method
+      #       SomeFinder.new.execute
+      #     end
+      #   end
+      #
+      #   # good - Finder used outside of another Finder or Model
+      #   class SomeController
+      #     def some_method
+      #       SomeFinder.new.execute
+      #     end
+      #   end
+      #
       class Finder < RuboCop::Cop::Base
         include CodeReuseHelpers
 

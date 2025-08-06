@@ -619,11 +619,12 @@
       fi
     - |
       if [[ "${ARCH}" =~ arm64 ]]; then
-        echo -e "\033[1;33mInstalling latest qemu emulators\033[0m"
+        echo -e "section_start:`date +%s`:emulator_install[collapsed=true]\r\e[0KInstalling latest qemu emulators"
         export QEMU_IMAGE=${QEMU_IMAGE:-tonistiigi/binfmt:qemu-v9.2.2}
         docker pull -q ${QEMU_IMAGE};
         docker run --rm --privileged ${QEMU_IMAGE} --uninstall qemu-*;
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
+        echo -e "section_end:`date +%s`:emulator_install\r\e[0K"
       fi
     - docker buildx create --use  # creates and set's to active buildkit builder
 

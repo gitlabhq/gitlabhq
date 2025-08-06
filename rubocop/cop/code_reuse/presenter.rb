@@ -5,7 +5,61 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that enforces various code reuse rules for Presenter classes.
+      # Cop that prevents Presenters from being used in Service class,
+      # Finder, Presenter, Serializer, model and worker
+      # to maintain clean and proper separation of concerns  and avoid circular dependencies.
+      #
+      # @example
+      #
+      #   # bad - Presenter used in a Service class
+      #   class SomeService
+      #     def some_method
+      #       SomePresenter.new(@data).name
+      #     end
+      #   end
+      #
+      #   # bad - Presenter used in a Finder
+      #   class SomeFinder
+      #     def some_method
+      #       SomePresenter.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Presenter used in another Presenter
+      #   class SomePresenter
+      #     def some_method
+      #       FooPresenter.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Presenter used in a model
+      #   class SomeModel < ApplicationRecord
+      #     def some_method
+      #       SomePresenter.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Presenter used in a Serializer
+      #   class SomeSerializer
+      #     def some_method
+      #       SomePresenter.new(@data)
+      #     end
+      #   end
+      #
+      #   # bad - Presenter used in a worker
+      #   class SomeWorker
+      #     def some_method
+      #       SomePresenter.new(@data)
+      #     end
+      #   end
+      #
+      #   # good - Presenter used in a controller
+      #   class SomeController
+      #     def some_method
+      #       SomePresenter.new(@data)
+      #     end
+      #   end
+      #
       class Presenter < RuboCop::Cop::Base
         include CodeReuseHelpers
 

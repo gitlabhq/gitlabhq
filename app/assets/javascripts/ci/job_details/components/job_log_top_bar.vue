@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick, GlSprintf } f
 import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__, n__, sprintf } from '~/locale';
-import { compactJobLog } from '~/ci/job_details/utils';
+import { compactJobLog, getLineText } from '~/ci/job_details/utils';
 
 export default {
   i18n: {
@@ -152,7 +152,7 @@ export default {
       const compactedLog = compactJobLog(this.jobLog);
 
       compactedLog.forEach((line) => {
-        const lineText = line.content[0].text;
+        const lineText = getLineText(line);
 
         if (lineText.toLocaleLowerCase().includes(this.searchTerm.toLocaleLowerCase())) {
           this.searchResults.push(line);
