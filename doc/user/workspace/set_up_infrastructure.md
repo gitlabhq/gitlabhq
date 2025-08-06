@@ -321,7 +321,7 @@ Finally, let's make sure everything is working correctly by creating a test work
 To verify your workspace setup:
 
 1. Create a new workspace by following the steps in [Create a workspace](configuration.md#create-a-workspace).
-1. From your project, select **Edit**.
+1. From your project, select **Code**.
 1. Select your workspace name.
 1. Interact with the workspace by opening the Web IDE, accessing the terminal, or making changes to project files.
 

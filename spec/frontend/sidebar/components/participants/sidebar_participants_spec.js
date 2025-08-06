@@ -36,13 +36,17 @@ describe('SidebarParticipants component', () => {
     });
 
     it('shows participant count when given', () => {
-      wrapper = mountComponent({ participants });
+      wrapper = mountComponent({ participants, participantCount: participants.length });
 
       expect(findCollapsedIcon().text()).toBe(participants.length.toString());
     });
 
     it('shows full participant count when there are hidden participants', () => {
-      wrapper = mountComponent({ participants, numberOfLessParticipants: 1 });
+      wrapper = mountComponent({
+        participants,
+        participantCount: participants.length,
+        numberOfLessParticipants: 1,
+      });
 
       expect(findCollapsedIcon().text()).toBe(participants.length.toString());
     });
@@ -69,4 +73,22 @@ describe('SidebarParticipants component', () => {
       expect(wrapper.find('.title').exists()).toBe(false);
     });
   });
+
+  describe.each`
+    participantList | participantCount | expectedParticipantCount
+    ${[]}           | ${undefined}     | ${'0'}
+    ${[]}           | ${0}             | ${'0'}
+    ${participants} | ${1}             | ${'3'}
+    ${participants} | ${3}             | ${'3'}
+    ${participants} | ${10}            | ${'10'}
+  `(
+    'when participants (length: $participants.length) and $participantCount are given',
+    ({ participantList, participantCount, expectedParticipantCount }) => {
+      it('shows correct participant count', () => {
+        wrapper = mountComponent({ participants: participantList, participantCount });
+
+        expect(findCollapsedIcon().text()).toBe(expectedParticipantCount);
+      });
+    },
+  );
 });

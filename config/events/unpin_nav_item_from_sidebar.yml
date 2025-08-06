@@ -1,0 +1,21 @@
+---
+description: Tracks when a navigation item is unpinned
+internal_events: true
+status: active
+action: unpin_nav_item_from_sidebar
+identifiers:
+- user
+product_group: activation
+product_categories:
+- navigation
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199829
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: The namespace level that the pin is being updated on
+  property:
+    description: The nav item being pinned

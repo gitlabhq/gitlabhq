@@ -103,6 +103,7 @@ export async function mountIssuesListApp() {
     wiIssuesListPath,
     wiLabelsManagePath,
     wiReportAbusePath,
+    wiNewTrialPath,
     hasLinkedItemsEpicsFeature,
     timeTrackingLimitToHours,
     hasSubepicsFeature,
@@ -169,6 +170,7 @@ export async function mountIssuesListApp() {
       projectNamespaceFullPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
       signInPath,
+      newTrialPath: wiNewTrialPath,
       // For CsvImportExportButtons component
       canEdit: parseBoolean(canEdit),
       email,

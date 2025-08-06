@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Importing issues from CSV
+description: "Import issues to a project by uploading a CSV file."
 ---
 
 {{< details >}}
@@ -18,7 +19,7 @@ title: Importing issues from CSV
 
 {{< /history >}}
 
-You can import issues to a project by uploading a CSV file with the following columns:
+You can import issues to a project by uploading a CSV (comma-separated values) file with the following columns:
 
 | Name          | Required?              | Description                                      |
 |:--------------|:-----------------------|:-------------------------------------------------|

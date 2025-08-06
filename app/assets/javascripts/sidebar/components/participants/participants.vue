@@ -25,6 +25,11 @@ export default {
       required: false,
       default: () => [],
     },
+    participantCount: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
     numberOfLessParticipants: {
       type: Number,
       required: false,
@@ -54,28 +59,25 @@ export default {
       return this.isShowingMoreParticipants ? this.participants : this.lessParticipants;
     },
     hasMoreParticipants() {
-      return this.participants.length > this.numberOfLessParticipants;
+      return this.participantCountCalculated > this.numberOfLessParticipants;
     },
-    toggleLabel() {
-      let label = '';
-      if (this.isShowingMoreParticipants) {
-        label = __('- show less');
-      } else {
-        label = sprintf(__('+ %{moreCount} more'), {
-          moreCount: this.participants.length - this.numberOfLessParticipants,
-        });
-      }
+    moreParticipantCount() {
+      return this.participantCountCalculated - this.numberOfLessParticipants;
+    },
+    moreParticipantsLabel() {
+      return this.isShowingMoreParticipants
+        ? __('- show less')
+        : sprintf(__('+ %{moreCount} more'), { moreCount: this.moreParticipantCount });
+    },
 
-      return label;
-    },
     participantLabel() {
       return sprintf(
-        n__('%{count} Participant', '%{count} Participants', this.participants.length),
-        { count: this.loading ? '' : this.participantCount },
+        n__('%{count} Participant', '%{count} Participants', this.participantCountCalculated),
+        { count: this.loading ? '' : this.participantCountCalculated },
       );
     },
-    participantCount() {
-      return this.participants.length;
+    participantCountCalculated() {
+      return Math.max(this.participants.length, this.participantCount || 0);
     },
   },
   methods: {
@@ -124,7 +126,7 @@ export default {
       size="small"
       @click="toggleMoreParticipants"
     >
-      {{ toggleLabel }}
+      {{ moreParticipantsLabel }}
     </gl-button>
   </div>
 </template>

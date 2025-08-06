@@ -42,8 +42,6 @@ module QA
           4.times { merge_request.add_suggestion_to_batch }
           merge_request.apply_suggestion_with_message("Custom commit message")
 
-          merge_request.expand_collapsed_discussions
-
           expect(merge_request).to have_suggestions_applied(4)
         end
       end

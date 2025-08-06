@@ -123,9 +123,7 @@ export default {
 
     <organization-switcher v-if="shouldShowOrganizationSwitcher" />
 
-    <user-counts v-if="sidebarData.is_logged_in" :sidebar-data="sidebarData" />
-
-    <div class="gl-mx-1 gl-grow gl-pb-3">
+    <div class="gl-mx-1 gl-grow">
       <gl-button
         id="super-sidebar-search"
         v-gl-modal="$options.SEARCH_MODAL_ID"
@@ -141,6 +139,9 @@ export default {
       </gl-button>
       <search-modal />
     </div>
-    <hr aria-hidden="true" class="-gl-my-2" />
+
+    <user-counts v-if="sidebarData.is_logged_in" :sidebar-data="sidebarData" />
+
+    <hr aria-hidden="true" class="-gl-mb-2 gl-mt-2" />
   </div>
 </template>

@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project relations export API
+description: "Export project relations with the REST API."
 ---
 
 {{< details >}}

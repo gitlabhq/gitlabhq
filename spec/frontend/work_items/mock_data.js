@@ -233,6 +233,7 @@ export const workItemQueryResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -389,6 +390,7 @@ export const workItemWithEpicParentQueryResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -474,6 +476,7 @@ export const updateWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: 'description',
         confidential: false,
@@ -633,6 +636,7 @@ export const convertWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: 'description',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -750,6 +754,7 @@ export const mockParticipantWidget = {
   __typename: 'WorkItemWidgetParticipants',
   type: 'PARTICIPANTS',
   participants: {
+    count: 1,
     nodes: [
       {
         __typename: 'UserCore',
@@ -1767,6 +1772,7 @@ export const workItemResponseFactory = ({
   statusWidgetPresent = false,
   statusWidgetValues = null,
   customFieldValues = null,
+  showPlanUpgradePromotion = false,
   movedToWorkItemUrl = null,
   duplicatedToWorkItemUrl = null,
   promotedToEpicUrl = null,
@@ -1795,6 +1801,7 @@ export const workItemResponseFactory = ({
       movedToWorkItemUrl,
       duplicatedToWorkItemUrl,
       promotedToEpicUrl,
+      showPlanUpgradePromotion,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -1937,6 +1944,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetParticipants',
               type: 'PARTICIPANTS',
               participants: {
+                count: 1,
                 nodes: [
                   {
                     __typename: 'UserCore',
@@ -2200,6 +2208,7 @@ export const createWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -2296,6 +2305,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
@@ -3522,6 +3532,7 @@ export const changeWorkItemParentMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         title: '_Foo_',
         titleHtml: '<em>Foo</em>',
         confidential: false,
@@ -6339,6 +6350,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: '',
         confidential: false,

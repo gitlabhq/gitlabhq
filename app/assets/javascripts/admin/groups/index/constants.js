@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { s__, __ } from '~/locale';
 import {
@@ -15,10 +16,12 @@ const baseTab = {
   formatter: (groups) =>
     formatGraphQLGroups(groups, (group) => {
       const adminPath = `/admin/groups/${group.fullPath}`;
+      const canAdminAllResources = get(group.userPermissions, 'adminAllResources', true);
 
       return {
         avatarLabelLink: adminPath,
         editPath: `${adminPath}/edit`,
+        availableActions: canAdminAllResources ? group.availableActions : [],
       };
     }),
   listComponent: GroupsList,

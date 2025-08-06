@@ -25,6 +25,7 @@ export default function initWorkItemLinks() {
     wiIssuesListPath,
     wiLabelsManagePath,
     wiReportAbusePath,
+    wiNewTrialPath,
     hasLinkedItemsEpicsFeature,
   } = workItemLinksRoot.dataset;
 
@@ -45,6 +46,7 @@ export default function initWorkItemLinks() {
       issuesListPath: wiIssuesListPath,
       labelsManagePath: wiLabelsManagePath,
       reportAbusePath: wiReportAbusePath,
+      planTrialPath: wiNewTrialPath,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
     },
     render: (createElement) =>

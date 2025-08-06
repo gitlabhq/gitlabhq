@@ -19,6 +19,7 @@ fragment Group on Group {
     canLeave
     removeGroup
     viewEditPage
+    adminAllResources @gl_introduced(version: "18.3.0")
   }
   maxAccessLevel {
     integerValue

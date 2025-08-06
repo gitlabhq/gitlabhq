@@ -62,7 +62,7 @@ A running workspace remains accessible to the user even if user permissions are 
 To manage workspaces from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Edit**.
+1. In the upper right, select **Code**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.

@@ -1,15 +1,14 @@
 <script>
 import {
   GlDisclosureDropdown,
-  GlTooltipDirective,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlLink,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { visitUrl } from '~/lib/utils/url_utility';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
-import { __, s__, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
@@ -17,7 +16,6 @@ import {
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATE_NEW_WORK_ITEM_MODAL,
-  NAME_TO_TEXT_MAP,
   WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET } from '../constants';
@@ -50,7 +48,8 @@ export default {
   data() {
     return {
       dropdownOpen: false,
-      showCreateWorkItemModal: false,
+      isCreateWorkItemModalVisible: false,
+      loadCreateWorkItemModal: false,
     };
   },
   computed: {
@@ -96,28 +95,8 @@ export default {
       // don't follow the link for normal clicks - open in modal
       event?.preventDefault?.();
 
-      this.showCreateWorkItemModal = true;
-    },
-    handleWorkItemCreated(workItem) {
-      // Triggering the toast at this component, because we want to lazy load the modal
-      // with `v-if` and by doing that the modal is destroyed before the toast
-      // from the modal component can be triggered
-
-      // Hide the modal first to prevent the component from being destroyed
-      // before we can capture the event data
-      this.showCreateWorkItemModal = false;
-
-      const message = sprintf(s__('WorkItem|%{workItemType} created'), {
-        workItemType: NAME_TO_TEXT_MAP[workItem?.workItemType?.name],
-      });
-
-      this.$toast.show(message, {
-        autoHideDelay: 10000,
-        action: {
-          text: __('View details'),
-          onClick: () => visitUrl(workItem?.webUrl),
-        },
-      });
+      this.loadCreateWorkItemModal = true;
+      this.isCreateWorkItemModalVisible = true;
     },
   },
   toggleId: 'create-menu-toggle',
@@ -176,17 +155,16 @@ export default {
       </template>
     </gl-disclosure-dropdown-group>
     <create-work-item-modal
-      v-if="showCreateWorkItemModal"
+      v-if="loadCreateWorkItemModal"
       :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
       :full-path="fullPath"
       hide-button
       :is-group="isGroup"
       :preselected-work-item-type="preselectedWorkItemType"
-      visible
+      :visible="isCreateWorkItemModalVisible"
       data-testid="new-work-item-modal"
-      @hideModal="showCreateWorkItemModal = false"
-      @workItemCreated="handleWorkItemCreated"
+      @hideModal="isCreateWorkItemModalVisible = false"
     />
   </gl-disclosure-dropdown>
 </template>

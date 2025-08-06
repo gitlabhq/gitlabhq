@@ -109,4 +109,6 @@ export const FILE_EXTENSION_MAPPING_HLJS = {
   '.gjs': 'glimmer-javascript',
   '.gts': 'glimmer-javascript',
   '.veryl': 'veryl',
+  '.tf': 'hcl',
+  '.tfvars': 'hcl',
 };

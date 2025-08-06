@@ -57,6 +57,24 @@ a secrets management solution and want to store sensitive data in a CI/CD variab
 - [Hide the variables](../variables/_index.md#hide-a-cicd-variable).
 - [Protect the variables](../variables/_index.md#protect-a-cicd-variable) when possible.
 
+## Pass parameters to CI/CD pipelines
+
+For passing parameters to CI/CD pipelines, use [CI/CD inputs](../inputs/_index.md)
+instead of pipeline variables.
+
+Inputs provide:
+
+- Type-safe validation at pipeline creation.
+- Explicit parameter contracts.
+- Scoped availability that enhances security.
+
+Consider [disabling pipeline variables](../variables/_index.md#restrict-pipeline-variables)
+when implementing inputs to prevent security vulnerabilities, because pipeline variables:
+
+- Lack type validation.
+- Can override predefined variables causing unexpected behavior.
+- Share the same permission scope as sensitive secrets.
+
 ## Pipeline Integrity
 
 The key security principles of ensuring pipeline integrity include:

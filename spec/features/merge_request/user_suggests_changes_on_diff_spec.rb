@@ -105,11 +105,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         click_button('Apply suggestion')
         click_button('Apply')
         wait_for_requests
-      end
 
-      expand_collapsed_discussions
-
-      page.within('.diff-discussions') do
         expect(page).to have_content('Applied')
       end
     end
@@ -214,8 +210,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         wait_for_requests
       end
 
-      expand_all_collapsed_discussions
-
       expect(page).to have_content('Applied').twice
     end
   end
@@ -278,11 +272,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         all('button', text: 'Apply suggestion').first.click
         click_button('Apply')
         wait_for_requests
-      end
 
-      expand_collapsed_discussions
-
-      page.within(container) do
         expect(page).to have_content('Applied').once
         expect(page).to have_button('Apply suggestion').once
 
@@ -402,11 +392,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         click_button('Apply suggestion')
         click_button('Apply')
         wait_for_requests
-      end
 
-      expand_collapsed_discussions
-
-      page.within("[id='#{hash}']") do
         expect(page).to have_content('Applied')
       end
     end
@@ -418,11 +404,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         click_button('Apply suggestion')
         click_button('Apply')
         wait_for_requests
-      end
 
-      expand_collapsed_discussions
-
-      page.within("[id='#{hash}']") do
         expect(page).to have_content('Reopen thread')
       end
     end

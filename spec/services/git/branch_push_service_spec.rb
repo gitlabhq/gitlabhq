@@ -73,12 +73,13 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
     end
   end
 
-  describe "Pipelines" do
+  describe "Pipelines", :sidekiq_inline do
     before do
       stub_ci_pipeline_to_return_yaml_file
     end
 
     it 'creates a pipeline with the right parameters' do
+      allow(Ci::CreatePipelineService).to receive(:new).and_call_original
       expect(Ci::CreatePipelineService).to receive(:new).with(
         project,
         user,
@@ -88,7 +89,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
           ref: ref,
           checkout_sha: SeedRepo::Commit::ID,
           variables_attributes: [],
-          push_options: an_instance_of(::Ci::PipelineCreation::PushOptions),
+          push_options: nil,
           gitaly_context: nil
         }
       ).and_call_original
@@ -110,23 +111,14 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
         stub_ci_pipeline_yaml_file(config)
       end
 
-      it 'reports an error' do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
-        expect(Sidekiq.logger).to receive(:warn)
-
+      it 'does not create a pipeline' do
         expect { subject }.not_to change { Ci::Pipeline.count }
       end
 
       context 'with push options' do
         let(:push_options) { { 'mr' => { 'create' => true } } }
 
-        it 'sanitizes push options' do
-          allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
-          expect(Sidekiq.logger).to receive(:warn) do |args|
-            pipeline_params = args[:pipeline_params]
-            expect(pipeline_params.keys).to match_array(%i[before after ref variables_attributes checkout_sha gitaly_context])
-          end
-
+        it 'does not create a pipeline' do
           expect { subject }.not_to change { Ci::Pipeline.count }
         end
       end

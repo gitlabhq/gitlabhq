@@ -59,11 +59,19 @@ module Git
       return unless params.fetch(:create_pipelines, true)
       return if removing_ref?
 
-      response = Ci::CreatePipelineService
-          .new(project, current_user, pipeline_params)
-          .execute(:push, **pipeline_options)
+      if Feature.enabled?(:async_pipeline_creation_on_push, project)
+        sidekiq_safe_pipeline_params = pipeline_params.merge(push_options: push_options&.deep_stringify_keys)
 
-      log_pipeline_errors(response.message) unless response.payload.persisted?
+        Ci::CreatePipelineService
+          .new(project, current_user, sidekiq_safe_pipeline_params)
+          .execute_async(:push, pipeline_options)
+      else
+        response = Ci::CreatePipelineService
+                     .new(project, current_user, pipeline_params)
+                     .execute(:push, **pipeline_options)
+
+        log_pipeline_errors(response.message) unless response.payload.persisted?
+      end
     end
 
     def execute_project_hooks

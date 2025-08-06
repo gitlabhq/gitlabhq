@@ -411,7 +411,6 @@ export function resolveDiscussion({ discussionId }) {
 }
 
 export function toggleResolveNote({ endpoint, isResolved, discussion }) {
-  const discussionIdMatch = (endpoint || '').match(/discussions\/([^/]+)\/resolve$/);
   const method = isResolved
     ? constants.UNRESOLVE_NOTE_METHOD_NAME
     : constants.RESOLVE_NOTE_METHOD_NAME;
@@ -423,24 +422,6 @@ export function toggleResolveNote({ endpoint, isResolved, discussion }) {
     this.updateResolvableDiscussionsCounts();
 
     this.updateMergeRequestWidget();
-
-    if (!isResolved && discussion && discussionIdMatch) {
-      const discussions = this.discussions || [];
-      const discussionId = discussionIdMatch[1];
-      const actualDiscussion = discussions.find((d) => d.id === discussionId);
-      const currentLineCode = actualDiscussion.line_code;
-      const lineDiscussions = discussions.filter((d) => d.line_code === currentLineCode);
-      const allLineDiscussionsResolved = lineDiscussions.every((d) => d.resolved);
-
-      if (allLineDiscussionsResolved && currentLineCode && lineDiscussions.length > 0) {
-        // tryStore only used for migration, refactor the store to avoid using this helper
-        this.tryStore('legacyDiffs').toggleLineDiscussions({
-          lineCode: actualDiscussion.line_code,
-          fileHash: actualDiscussion.diff_file?.file_hash,
-          expanded: false,
-        });
-      }
-    }
   });
 }
 

@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import emptyStateProjectsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { __, s__ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
@@ -29,10 +30,15 @@ const baseTab = {
   },
   queryPath: 'projects',
   formatter: (projects) =>
-    formatGraphQLProjects(projects, (project) => ({
-      editPath: `/admin/projects/${project.fullPath}/edit`,
-      avatarLabelLink: `/admin/projects/${project.fullPath}`,
-    })),
+    formatGraphQLProjects(projects, (project) => {
+      const canAdminAllResources = get(project.userPermissions, 'adminAllResources', true);
+
+      return {
+        editPath: `/admin/projects/${project.fullPath}/edit`,
+        avatarLabelLink: `/admin/projects/${project.fullPath}`,
+        availableActions: canAdminAllResources ? project.availableActions : [],
+      };
+    }),
 };
 
 export const ACTIVE_TAB = {

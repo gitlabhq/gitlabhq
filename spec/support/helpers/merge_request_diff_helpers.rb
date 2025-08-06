@@ -93,12 +93,4 @@ module MergeRequestDiffHelpers
     end
     element
   end
-
-  def expand_collapsed_discussions
-    first('.js-diff-comment-avatar').click
-  end
-
-  def expand_all_collapsed_discussions
-    all('.js-diff-comment-avatar').each(&:click)
-  end
 end

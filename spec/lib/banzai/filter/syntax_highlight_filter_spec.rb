@@ -76,6 +76,19 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :markdow
     include_examples "XSS prevention", "ruby"
   end
 
+  context "when Terraform (HCL) language is specified" do
+    it "highlights Terraform code correctly" do
+      terraform_code = 'resource "aws_instance" "example" {\n  ami = "ami-12345"\n}'
+      result = filter(%(<pre data-canonical-lang="hcl"><code>#{terraform_code}</code></pre>))
+
+      expect(result.to_html).to include('language-hcl')
+      expect(result.to_html).to include('resource')
+      expect(result.to_html).to include('aws_instance')
+    end
+
+    include_examples "XSS prevention", "hcl"
+  end
+
   context "when an invalid language is specified" do
     it "highlights as plaintext" do
       result = filter('<pre data-canonical-lang="gnuplot"><code>This is a test</code></pre>')

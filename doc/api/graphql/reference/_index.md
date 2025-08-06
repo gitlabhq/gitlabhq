@@ -37405,8 +37405,11 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="principalgroup"></a>`group` | [`Group`](#group) | Group who is provided access to. |
 | <a id="principalid"></a>`id` | [`ID!`](#id) | ID of the principal (User, MemberRole, Role, Group). |
 | <a id="principaltype"></a>`type` | [`String!`](#string) | Name of the principal (User, MemberRole, Role, Group). |
+| <a id="principaluser"></a>`user` | [`UserCore`](#usercore) | User who is provided access to. |
+| <a id="principaluserroleid"></a>`userRoleId` | [`String`](#string) | RoleID of the user. |
 
 ### `ProductAnalyticsProjectSettings`
 
@@ -41367,7 +41370,7 @@ Representation of a secrets permission.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="secretpermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
-| <a id="secretpermissiongrantedby"></a>`grantedBy` | [`String`](#string) | User who created the Secret Permission (optional). |
+| <a id="secretpermissiongrantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
 | <a id="secretpermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
 | <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 | <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |

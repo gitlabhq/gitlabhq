@@ -1,0 +1,9 @@
+---
+name: push_rule_ordered_by_id
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493391
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200182
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/559013
+milestone: '18.3'
+group: group::source code
+type: beta
+default_enabled: false

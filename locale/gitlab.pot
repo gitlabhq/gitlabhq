@@ -2461,6 +2461,9 @@ msgstr ""
 msgid "AICatalog|Delete agent"
 msgstr ""
 
+msgid "AICatalog|Description"
+msgstr ""
+
 msgid "AICatalog|Description is required."
 msgstr ""
 
@@ -2554,6 +2557,9 @@ msgstr ""
 msgid "AICatalog|System Prompt is required."
 msgstr ""
 
+msgid "AICatalog|System prompt"
+msgstr ""
+
 msgid "AICatalog|Test Run"
 msgstr ""
 
@@ -2582,6 +2588,9 @@ msgid "AICatalog|User Prompt"
 msgstr ""
 
 msgid "AICatalog|User Prompt is required."
+msgstr ""
+
+msgid "AICatalog|User prompt"
 msgstr ""
 
 msgid "AICatalog|Visibility level is required."
@@ -4255,6 +4264,9 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|AI agents, such as Agentic Chat and agent flows, that work in parallel to accomplish tasks simultaneously. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr ""
 
@@ -4298,6 +4310,9 @@ msgid "AdminAIPoweredFeatures|Features"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Default %{defaultModel}"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Chat"
@@ -38749,16 +38764,19 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
-msgid "MemberRole|%{adminCount} Admin"
+msgid "MemberRole|%{count} Admin"
+msgstr ""
+
+msgid "MemberRole|%{count} Custom"
+msgstr ""
+
+msgid "MemberRole|%{count} Default"
 msgstr ""
 
 msgid "MemberRole|%{count} of %{total} permissions added"
 msgstr ""
 
 msgid "MemberRole|%{count} of %{total} permissions selected"
-msgstr ""
-
-msgid "MemberRole|%{defaultCount} Default %{customCount} Custom"
 msgstr ""
 
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
@@ -50728,6 +50746,9 @@ msgstr ""
 msgid "Promotions|Keep track of events in your project"
 msgstr ""
 
+msgid "Promotions|Learn more"
+msgstr ""
+
 msgid "Promotions|Merge request approvals"
 msgstr ""
 
@@ -50765,6 +50786,12 @@ msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Try it for free"
+msgstr ""
+
+msgid "Promotions|Unlock epics, advanced boards, status, weight, iterations, and more to seamlessly tie your strategy to your DevSecOps workflows with GitLab."
+msgstr ""
+
+msgid "Promotions|Upgrade for advanced agile planning"
 msgstr ""
 
 msgid "Promotions|Upgrade plan"

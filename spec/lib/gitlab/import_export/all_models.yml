@@ -583,6 +583,7 @@ container_repositories:
 - project
 - name
 project:
+- ai_flow_triggers
 - instance_runner_monthly_usages
 - hosted_runner_monthly_usages
 - catalog_resource

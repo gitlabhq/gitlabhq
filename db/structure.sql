@@ -8509,6 +8509,28 @@ CREATE SEQUENCE ai_feature_settings_id_seq
 
 ALTER SEQUENCE ai_feature_settings_id_seq OWNED BY ai_feature_settings.id;
 
+CREATE TABLE ai_flow_triggers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint,
+    config_path text,
+    description text NOT NULL,
+    event_types smallint[] DEFAULT '{}'::smallint[] NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
+);
+
+CREATE SEQUENCE ai_flow_triggers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_flow_triggers_id_seq OWNED BY ai_flow_triggers.id;
+
 CREATE TABLE ai_namespace_feature_settings (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27790,6 +27812,8 @@ ALTER TABLE ONLY ai_duo_chat_events ALTER COLUMN id SET DEFAULT nextval('ai_duo_
 
 ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_feature_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_flow_triggers ALTER COLUMN id SET DEFAULT nextval('ai_flow_triggers_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_namespace_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_namespace_feature_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
@@ -29853,6 +29877,9 @@ ALTER TABLE ONLY ai_duo_chat_events
 
 ALTER TABLE ONLY ai_feature_settings
     ADD CONSTRAINT ai_feature_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_flow_triggers
+    ADD CONSTRAINT ai_flow_triggers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_namespace_feature_settings
     ADD CONSTRAINT ai_namespace_feature_settings_pkey PRIMARY KEY (id);
@@ -34982,6 +35009,10 @@ CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USIN
 CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_settings USING btree (ai_self_hosted_model_id);
 
 CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
+
+CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
+
+CREATE INDEX index_ai_flow_triggers_on_user_id ON ai_flow_triggers USING btree (user_id);
 
 CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
 

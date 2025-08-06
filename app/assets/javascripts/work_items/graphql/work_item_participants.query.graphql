@@ -9,6 +9,7 @@ query workItemParticipants($fullPath: ID!, $iid: String!) {
         ... on WorkItemWidgetParticipants {
           type
           participants {
+            count
             nodes {
               ...User
             }

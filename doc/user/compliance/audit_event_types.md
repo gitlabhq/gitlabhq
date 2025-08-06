@@ -117,7 +117,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`variable_viewed_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197385) | A CI/CD variable is accessed with the API | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555960) | Project, Group |
+| [`variable_viewed_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197385) | A CI/CD variable is accessed with the API | {{< icon name="dotted-circle" >}} No | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555960) | Project, Group |
 
 ### Code review
 

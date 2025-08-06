@@ -38,8 +38,6 @@ module QA
           merge_request.click_diffs_tab
           merge_request.apply_suggestion_with_message(commit_message)
 
-          merge_request.expand_collapsed_discussions
-
           expect(merge_request).to have_suggestions_applied
 
           merge_request.click_commits_tab

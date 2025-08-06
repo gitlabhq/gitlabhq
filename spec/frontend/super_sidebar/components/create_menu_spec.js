@@ -123,35 +123,28 @@ describe('CreateMenu component', () => {
         findCreateWorkItemModalTrigger().vm.$emit('action');
         await nextTick();
 
+        expect(findCreateWorkItemModal().props('visible')).toBe(true);
+
+        findCreateWorkItemModal().vm.$emit('hideModal');
+        await nextTick();
+
+        expect(findCreateWorkItemModal().props('visible')).toBe(false);
+      });
+
+      it('lazy loads CreateWorkItemModal but does not unmount it when hidden', async () => {
+        createWrapper({ props: { groups: createNewMenuProjects } });
+
+        expect(findCreateWorkItemModal().exists()).toBe(false);
+
+        findCreateWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
         expect(findCreateWorkItemModal().exists()).toBe(true);
 
         findCreateWorkItemModal().vm.$emit('hideModal');
         await nextTick();
 
-        expect(findCreateWorkItemModal().exists()).toBe(false);
-      });
-
-      it('shows a toast when work item is created', async () => {
-        const workItem = {
-          workItemType: { name: 'Epic' },
-          webUrl: 'https://gitlab.com/group/project/-/epics/123',
-        };
-        createWrapper({ props: { groups: createNewMenuProjects } });
-
-        findCreateWorkItemModalTrigger().vm.$emit('action');
-        await nextTick();
-
-        findCreateWorkItemModal().vm.$emit('workItemCreated', workItem);
-        await nextTick();
-
-        expect(findCreateWorkItemModal().exists()).toBe(false);
-        expect(mockToast).toHaveBeenCalledWith('Epic created', {
-          autoHideDelay: 10000,
-          action: {
-            text: 'View details',
-            onClick: expect.any(Function),
-          },
-        });
+        expect(findCreateWorkItemModal().exists()).toBe(true);
       });
 
       it('does not include href on dropdown item, to prevent it being rendered as an `<a>`', () => {
