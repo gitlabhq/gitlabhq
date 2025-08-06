@@ -387,6 +387,7 @@ FactoryBot.define do
     trait :report_results do
       after(:build) do |build|
         build.report_results << build(:ci_build_report_result)
+        build.job_artifacts << build(:ci_job_artifact, :junit, job: build)
       end
     end
 

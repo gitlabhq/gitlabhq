@@ -11,8 +11,8 @@ title: GitLab Duo model selection
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
 - Offering: GitLab.com
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 - Status: Private beta
+- Available on GitLab Duo with self-hosted models: Not supported
 
 {{< /details >}}
 

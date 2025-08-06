@@ -75,7 +75,7 @@ To track user interactions in the browser, Do-Not-Track (DNT) needs to be disabl
 Tableau is a data visualization platform and allows building dashboards and GUI based discovery of events and metrics.
 This method of discovery is most suited for users who are familiar with business intelligence tooling, basic verifications
 and for creating persisted, shareable dashboards and visualizations.
-Access to Tableau requires an [access request](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access).
+Access to Tableau requires an [access request](https://handbook.gitlab.com/handbook/security/corporate/end-user-services/access-requests).
 
 #### Checking events
 

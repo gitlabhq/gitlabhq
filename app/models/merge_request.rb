@@ -2001,7 +2001,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.has_test_reports?
+    else
+      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
+    end
   end
 
   # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.

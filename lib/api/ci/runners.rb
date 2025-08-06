@@ -63,8 +63,6 @@ module API
         end
 
         def authenticate_show_runner!(runner)
-          return if runner.instance_type? || current_user.can_read_all_resources?
-
           forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
         end
 

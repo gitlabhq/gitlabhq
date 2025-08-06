@@ -11,6 +11,8 @@ module Types
 
       alias_method :runner_manager, :object
 
+      # NOTE: instance runners are exposed by default to any authenticated user,
+      # remember to protect any sensitive fields
       field :architecture_name, GraphQL::Types::String, null: true,
         description: 'Architecture provided by the runner manager.',
         method: :architecture

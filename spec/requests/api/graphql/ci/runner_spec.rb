@@ -19,14 +19,16 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       locked: true,
       maximum_timeout: 600,
       access_level: 0,
-      maintenance_note: '**Test maintenance note**')
+      maintenance_note: '**Test maintenance note**',
+      token_expires_at: 1.week.from_now)
   end
 
   let_it_be(:paused_instance_runner) do
     create(:ci_runner, :instance, :offline, :paused, :tagged_only,
       description: 'Runner 2',
       creator: another_admin,
-      access_level: 1)
+      access_level: 1,
+      token_expires_at: 1.week.from_now)
   end
 
   let_it_be(:active_group_runner) do
@@ -34,11 +36,14 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       groups: [group],
       description: 'Group runner 1',
       maximum_timeout: 600,
-      access_level: 0)
+      access_level: 0,
+      token_expires_at: 1.week.from_now)
   end
 
   let_it_be(:project1) { create(:project) }
-  let_it_be(:active_project_runner) { create(:ci_runner, :project, :with_runner_manager, projects: [project1]) }
+  let_it_be(:active_project_runner) do
+    create(:ci_runner, :project, :with_runner_manager, projects: [project1], token_expires_at: 1.week.from_now)
+  end
 
   shared_examples 'runner details fetch' do
     let(:query) do
@@ -77,6 +82,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         creation_method: runner.authenticated_user_registration_type? ? 'AUTHENTICATED_USER' : 'REGISTRATION_TOKEN',
         ephemeral_authentication_token: nil,
+        token_expires_at: runner.token_expires_at&.iso8601,
         maintenance_note: runner.maintenance_note,
         maintenance_note_html:
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
@@ -527,7 +533,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for creation method' do
     context 'when created with registration token' do
-      let(:runner) do
+      let_it_be(:runner) do
         create(:ci_runner, registration_type: :registration_token)
       end
 
@@ -535,7 +541,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     context 'when created by authenticated user' do
-      let(:runner) do
+      let_it_be(:runner) do
         create(:ci_runner, registration_type: :authenticated_user)
       end
 
@@ -799,12 +805,30 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'by regular user' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'on instance runner' do
       let(:runner) { active_instance_runner }
 
-      it_behaves_like 'retrieval by unauthorized user'
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
+      end
+
+      let(:query_path) do
+        [
+          [:runner, { id: runner.to_global_id.to_s }]
+        ]
+      end
+
+      it 'retrieves expected fields' do
+        post_graphql(query, current_user: user)
+
+        runner_data = graphql_data_at(:runner)
+        expect(runner_data).not_to be_nil
+
+        expect(runner_data).to match a_graphql_entity_for(runner, admin_url: nil, edit_admin_url: nil, token_expires_at: nil)
+        expect(runner_data['tagList']).to match_array runner.tag_list
+      end
     end
 
     context 'on group runner' do
@@ -821,7 +845,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'by non-admin user' do
-    let(:user) { create(:user, owner_of: group) }
+    let_it_be(:user) { create(:user, owner_of: group) }
 
     it_behaves_like 'retrieval with no admin url' do
       let(:runner) { active_group_runner }
@@ -935,7 +959,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     context 'when request is made by non-creator of the runner' do
-      let(:user) { create(:admin) }
+      let_it_be(:user) { create(:admin) }
 
       context 'with runner created in UI' do
         let(:registration_type) { :authenticated_user }
@@ -956,8 +980,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let_it_be(:merge_request1) { create(:merge_request, source_project: project1) }
     let_it_be(:merge_request2) { create(:merge_request, source_project: project3) }
 
-    let(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
-    let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
+    let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
     let_it_be(:pipeline1) do
       create(
         :ci_pipeline,
@@ -968,6 +991,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         target_sha: 'xxx'
       )
     end
+
+    let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
 
     let(:query) do
       <<~QUERY

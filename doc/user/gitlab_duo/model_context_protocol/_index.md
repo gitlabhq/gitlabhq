@@ -10,9 +10,8 @@ title: Use Model Context Protocol with AI-native features
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): No
-- Model hosting options: GitLab-hosted
 - Status: Experiment
+- Available on GitLab Duo with self-hosted models: Not supported
 
 {{< /details >}}
 

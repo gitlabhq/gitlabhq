@@ -16,6 +16,8 @@ module Types
 
       alias_method :runner, :object
 
+      # NOTE: instance runners are exposed by default to any authenticated user,
+      # remember to protect any sensitive fields
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
         description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
@@ -106,7 +108,8 @@ module Types
       field :tag_list, [GraphQL::Types::String], null: true,
         description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,
-        description: 'Runner token expiration time.'
+        description: 'Runner token expiration time.',
+        authorize: :read_runner_sensitive_data
 
       markdown_field :maintenance_note_html, null: true
 

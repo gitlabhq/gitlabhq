@@ -77,27 +77,33 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
 
-    it 'allows me to merge, see cherry-pick modal and load branches list', :sidekiq_might_not_need_inline do
+    it 'allows me to merge', :sidekiq_inline do
       wait_for_requests
       click_button 'Merge'
 
-      wait_for_requests
+      expect(page).to have_content("Merged by #{user.name}")
+    end
 
-      page.refresh
+    context 'when the merge request is already merged' do
+      let(:merge_request) { create(:merge_request, :merged, merge_commit_sha: '7975be0116940bf2ad4321f79d02a55c5f7779aa', source_project: project) }
 
-      click_button 'Cherry-pick'
+      it 'allows cherry-picking modal and loads branches list', :sidekiq_inline do
+        wait_for_requests
 
-      within_testid('modal-commit') do
-        click_button 'master'
-      end
+        click_button 'Cherry-pick'
 
-      within_testid('modal-commit') do
-        within_testid('base-dropdown-menu') do
-          fill_in 'Search branches', with: ''
+        within_testid('modal-commit') do
+          click_button 'master'
+        end
 
-          wait_for_requests
+        within_testid('modal-commit') do
+          within_testid('base-dropdown-menu') do
+            fill_in 'Search branches', with: ''
 
-          expect(page).to have_selector('[data-testid="listbox-item-master"]', visible: true)
+            wait_for_requests
+
+            expect(page).to have_selector('[data-testid="listbox-item-master"]', visible: true)
+          end
         end
       end
     end

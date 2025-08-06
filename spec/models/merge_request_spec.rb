@@ -3128,6 +3128,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it { is_expected.to be_falsey }
     end
+
+    it_behaves_like 'reports in child pipelines', :test_reports
   end
 
   describe '#has_accessibility_reports?' do

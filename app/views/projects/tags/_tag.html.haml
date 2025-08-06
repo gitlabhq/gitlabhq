@@ -7,6 +7,7 @@
     %h2.gl-inline.gl-m-0.gl-font-bold.gl-text-size-h2
       = sprite_icon('tag', css_class: "gl-fill-icon-subtle")
       = link_to tag.name, project_tag_path(@project, tag.name)
+      = clipboard_button(text: tag.name, title: _("Copy tag name"))
 
     - if protected_tag?(@project, tag)
       = gl_badge_tag s_('TagsPage|protected'), variant: :neutral, class: 'gl-ml-2'

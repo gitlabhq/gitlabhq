@@ -4599,11 +4599,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is parent of another pipeline' do
-      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, pipeline: child_pipeline) }
 
       it 'returns the list of builds' do
         expect(builds).to contain_exactly(build, child_build)
+      end
+
+      context 'when the trigger job for the child pipeline is retried' do
+        let_it_be(:new_child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:new_child_build) { create(:ci_build, pipeline: new_child_pipeline) }
+
+        before do
+          child_pipeline.source_bridge.update!(retried: true)
+        end
+
+        it 'does not return builds from previous child pipelines' do
+          expect(builds).to contain_exactly(build, new_child_build)
+        end
+
+        context 'when feature flag show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'returns all child pipeline builds' do
+            expect(builds).to contain_exactly(build, child_build, new_child_build)
+          end
+        end
       end
     end
 
@@ -5139,11 +5162,55 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'returns test report summary with collected data' do
         expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
       end
+
+      context 'and the child pipeline has test reports' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+        before do
+          create(:ci_build, :success, :report_results, name: 'rspec2', pipeline: child_pipeline)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total).to include(time: 1.26, count: 6, success: 0, failed: 0, skipped: 0, error: 6)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
+          end
+        end
+      end
     end
 
     context 'when pipeline does not have any builds with report results' do
       it 'returns empty test report summary' do
         expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
+      end
+
+      context 'and the child pipeline has test reports' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+        before do
+          create(:ci_build, :success, :report_results, name: 'rspec2', pipeline: child_pipeline)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total).to include(time: 0.42, count: 2, success: 0, failed: 0, skipped: 0, error: 2)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
+          end
+        end
       end
     end
   end
@@ -5182,6 +5249,33 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.failed_count).to be(0)
         end
       end
+
+      context 'and the child pipeline has test reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:build_java2) { create(:ci_build, :success, name: 'java', pipeline: child_pipeline) }
+
+        before do
+          create(:ci_job_artifact, :junit_with_three_failures, job: build_java2)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total_count).to be(10)
+          expect(subject.success_count).to be(5)
+          expect(subject.failed_count).to be(5)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total_count).to be(7)
+            expect(subject.success_count).to be(5)
+            expect(subject.failed_count).to be(2)
+          end
+        end
+      end
     end
 
     context 'when the pipeline has parallel builds with test reports' do
@@ -5215,6 +5309,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when pipeline does not have any builds with test reports' do
       it 'returns empty test reports' do
         expect(subject.total_count).to be(0)
+      end
+
+      context 'and the child pipeline has test reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:build_java2) { create(:ci_build, :success, name: 'java', pipeline: child_pipeline) }
+
+        before do
+          create(:ci_job_artifact, :junit_with_three_failures, job: build_java2)
+        end
+
+        it 'fetches reports from child pipelines' do
+          expect(subject.total_count).to be(3)
+          expect(subject.success_count).to be(0)
+          expect(subject.failed_count).to be(3)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total_count).to be(0)
+          end
+        end
       end
     end
   end

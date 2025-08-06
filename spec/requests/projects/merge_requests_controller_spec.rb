@@ -191,7 +191,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     it 'avoids N+1 queries', :use_sql_query_cache do
-      create_pipeline
+      pipeline_1 = create_pipeline
+      add_manual_stage(pipeline_1)
 
       # warm up
       get pipelines_project_merge_request_path(project, merge_request, format: :json)
@@ -203,7 +204,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       expect(response).to have_gitlab_http_status(:ok)
       expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(1)
 
-      create_pipeline
+      pipeline_2 = create_pipeline
+      add_manual_stage(pipeline_2)
 
       expect do
         get pipelines_project_merge_request_path(project, merge_request, format: :json)
@@ -285,6 +287,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         ref: merge_request.source_branch,
         sha: merge_request.diff_head_sha
       )
+    end
+
+    def add_manual_stage(pipeline)
+      stage = create(:ci_stage, name: 'manual-stage', status: 'skipped', pipeline: pipeline)
+      create(:ci_build, :manual, stage: stage)
+      create(:ci_build, :manual, stage: stage)
     end
   end
 

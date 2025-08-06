@@ -260,31 +260,68 @@ It is also possible to limit which roles can
 
 ## Administering groups
 
+{{< history >}}
+
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 To administer all groups in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview** > **Groups**. The page shows the group's:
+1. Select **Overview** > **Groups**. The page shows each group's:
 
-   - Name.
-   - Description.
-   - Size.
-   - Number of projects in the group.
-   - Member count.
-   - Privacy level: whether the group is private, internal, or public.
+   - Name
+   - Description
+   - Visibility level
+   - Role
+   - Status
+   - Storage size
+   - Number of subgroups
+   - Number of projects
+   - Member count
 
-1. To manage a group, find the group's row and select **Edit** or **Delete**.
+1. Optional. Select a tab:
+
+   - **Active** shows all active groups.
+   - **Inactive** shows groups that are pending deletion.
+
 1. Optional. To change the sort order, select the sort dropdown list and choose the desired order.
    The available sort options are:
 
-   - Created date (default).
-   - Updated date.
-   - Storage size. This option sorts groups by the total storage used, including Git repositories
-     and Large File Storage (LFS) for all projects in the group. For more information, see
-     [usage quotas](../user/storage_usage_quotas.md).
+   - Name
+   - Created date
+   - Updated date
+   - [Storage size](../user/storage_usage_quotas.md)
 
-1. Optional. To search for groups by name, enter your criteria in the search field. The group search is
-   case-insensitive, and applies partial matching.
+1. Optional. To filter groups by name, in the search bar, enter at least three characters.
 1. Optional. To [create a new group](../user/group/_index.md#create-a-group) select **New group**.
+
+### Edit a group
+
+To edit a group's name or description from the **Admin** area's Groups page:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview** > **Groups**.
+1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
+1. Edit the **Group name** or **Group description**.
+1. Select **Save Changes**.
+
+### Delete a group
+
+To delete a group:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview** > **Groups**.
+1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Confirm**.
 
 ## Administering topics
 

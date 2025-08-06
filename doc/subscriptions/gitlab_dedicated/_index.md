@@ -147,6 +147,7 @@ ClickHouse serves as a secondary data store for your GitLab Dedicated instance, 
 Your GitLab Dedicated instance includes a ClickHouse Cloud database deployed in your tenant's primary region.
 The database is not publicly accessible and connects through AWS PrivateLink.
 Your data is encrypted in transit and at rest using cloud provider-managed AES 256 keys and transparent data encryption.
+The ClickHouse endpoint address is automatically added to the allowlist when you have configured your GitLab Dedicated instance to [filter outbound requests](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 ClickHouse on GitLab Dedicated has the following limitations:
 

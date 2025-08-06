@@ -11,10 +11,10 @@ title: Code Suggestions
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 - LLMs for code completion: Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501).
 - LLM for code generation: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4).
 - LLM For Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 

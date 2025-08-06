@@ -171,7 +171,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           disable_manual_and_scheduled_actions: true,
           preload: true,
           preload_statuses: false,
-          preload_downstream_statuses: false
+          preload_downstream_statuses: false,
+          disable_stage_actions: true
         ),
       count: {
         all: @pipelines_count

@@ -1049,7 +1049,13 @@ module Ci
     end
 
     def builds_in_self_and_project_descendants
-      Ci::Build.in_partition(self).latest.where(pipeline: self_and_project_descendants)
+      latest_pipelines = self_and_project_descendants.preload(:source_bridge)
+
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
+      end
+
+      Ci::Build.in_partition(self).latest.where(pipeline: latest_pipelines)
     end
 
     def bridges_in_self_and_project_descendants
@@ -1169,6 +1175,10 @@ module Ci
       builds.latest.with_artifacts(reports_scope)
     end
 
+    def latest_test_report_builds_in_self_and_project_descendants
+      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, job_artifacts: :artifact_report)
+    end
+
     def latest_test_report_builds
       latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, job_artifacts: :artifact_report)
     end
@@ -1238,14 +1248,26 @@ module Ci
 
     def test_report_summary
       strong_memoize(:test_report_summary) do
-        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+        if Feature.enabled?(:show_child_reports_in_mr_page, project)
+          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
+        else
+          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+        end
       end
     end
 
     def test_reports
-      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-        latest_test_report_builds.find_each do |build|
-          build.collect_test_reports!(test_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+          latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
+            build.collect_test_reports!(test_reports)
+          end
+        end
+      else
+        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+          latest_test_report_builds.find_each do |build|
+            build.collect_test_reports!(test_reports)
+          end
         end
       end
     end
@@ -1493,7 +1515,11 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        has_reports?(::Ci::JobArtifact.of_report_type(:test))
+        if Feature.enabled?(:show_child_reports_in_mr_page, project)
+          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
+        else
+          has_reports?(::Ci::JobArtifact.of_report_type(:test))
+        end
       end
     end
 
@@ -1584,6 +1610,10 @@ module Ci
       ::Gitlab::Ci::Pipeline::Metrics
         .pipeline_age_histogram
         .observe({}, age_in_minutes)
+    end
+
+    def latest_builds_report_results_in_self_and_descendants
+      Ci::BuildReportResult.where(build_id: latest_test_report_builds_in_self_and_project_descendants.ids)
     end
 
     def age_metric_enabled?

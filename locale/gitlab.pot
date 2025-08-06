@@ -18899,6 +18899,9 @@ msgstr ""
 msgid "Copy source branch name"
 msgstr ""
 
+msgid "Copy tag name"
+msgstr ""
+
 msgid "Copy to clipboard"
 msgstr ""
 
@@ -69556,6 +69559,9 @@ msgstr ""
 msgid "VirtualRegistry|Failed to search cache entries."
 msgstr ""
 
+msgid "VirtualRegistry|Failed to update position of the upstream. Please try again."
+msgstr ""
+
 msgid "VirtualRegistry|Get started with virtual registries"
 msgstr ""
 
@@ -69605,6 +69611,9 @@ msgid "VirtualRegistry|Password (optional)"
 msgstr ""
 
 msgid "VirtualRegistry|Please provide a valid URL."
+msgstr ""
+
+msgid "VirtualRegistry|Position of the upstream has been updated successfully"
 msgstr ""
 
 msgid "VirtualRegistry|Registry types"

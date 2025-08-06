@@ -114,11 +114,8 @@ module Ci
       enable :delete_runner
     end
 
-    rule { is_instance_runner & any_maintainer_owned_groups_inheriting_shared_runners }.policy do
-      enable :read_runner
-    end
-
-    rule { is_instance_runner & any_maintainer_projects_inheriting_shared_runners }.policy do
+    rule { is_instance_runner }.policy do
+      # Any authenticated user can read instance runner information
       enable :read_runner
     end
 
@@ -138,11 +135,17 @@ module Ci
       enable :update_runner
     end
 
+    rule { can?(:read_runner) }.policy do
+      enable :read_runner_sensitive_data
+    end
+
+    rule { creator }.enable :read_ephemeral_token
+
     rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner
 
     rule { ~admin & locked }.prevent :assign_runner
 
-    rule { creator }.enable :read_ephemeral_token
+    rule { is_instance_runner & ~can_admin_runner }.prevent :read_runner_sensitive_data
   end
 end
 

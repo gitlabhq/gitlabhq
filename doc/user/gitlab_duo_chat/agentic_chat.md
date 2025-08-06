@@ -10,9 +10,9 @@ title: GitLab Duo Agentic Chat
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 - Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- Available on GitLab Duo with self-hosted models: Not supported
 
 {{< /details >}}
 
@@ -24,6 +24,7 @@ title: GitLab Duo Agentic Chat
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
 - GitLab Duo Agentic Chat changed to beta in GitLab 18.2.
+- Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -58,7 +59,12 @@ For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c
 
 ## Use Agentic Chat
 
-You can use Agentic Chat in the GitLab UI, VS Code, or a JetBrains IDE.
+You can use Agentic Chat in:
+
+- The GitLab UI.
+- VS Code.
+- A JetBrains IDE.
+- Visual Studio for Windows.
 
 Prerequisites:
 
@@ -122,6 +128,26 @@ To use Agentic Chat:
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
+
+### Use Agentic Chat in Visual Studio
+
+Prerequisites:
+
+- You have [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+
+To use Agentic Chat in a project, it must be:
+
+- Hosted on a GitLab instance.
+- Part of a group that meets the prerequisites.
+
+To use Agentic Chat:
+<!-- markdownlint-disable MD044 -->
+1. In Visual Studio, go to **Tools > Options > GitLab**.
+1. Under **GitLab**, select **General**.
+1. For **Enable Agentic Duo Chat (experimental)**, select **True**, and then **OK**.
+1. Select **Extensions > GitLab > Open Agentic Chat**.
+1. In the message box, enter your question and press **Enter**.
+<!-- markdownlint-enable MD044 -->
 
 ### Have multiple conversations
 

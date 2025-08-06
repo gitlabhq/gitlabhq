@@ -16,11 +16,22 @@
       "items": {
         "type": "object",
         "required": [
-          "agent_id"
+          "agent_id",
+          "current_version_id",
+          "pinned_version_prefix"
         ],
         "properties": {
           "agent_id": {
             "type": "integer"
+          },
+          "current_version_id": {
+            "type": "integer"
+          },
+          "pinned_version_prefix": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
