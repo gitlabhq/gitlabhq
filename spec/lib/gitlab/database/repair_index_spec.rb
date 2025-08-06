@@ -74,8 +74,8 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
       connection.execute(<<~SQL)
           CREATE TABLE #{test_table} (
             id serial PRIMARY KEY,
-            name varchar(255) NOT NULL,
-            email varchar(255) NOT NULL
+            name varchar(255) NULL,
+            email varchar(255) NULL
           );
       SQL
 
@@ -184,7 +184,9 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
             INSERT INTO #{test_table} (name, email) VALUES
             ('test_user', 'test@example.com'),   -- ID 1
             ('test_user', 'test@example.com'),   -- ID 2 (duplicate)
-            ('other_user', 'other@example.com'); -- ID 3
+            ('test_user', NULL),                 -- ID 3, email NULL, should be preserved
+            (NULL, 'other@example.com'),         -- ID 4, name NULL, should be preserved
+            ('other_user', 'other@example.com'); -- ID 5
         SQL
 
         # Create standard references (no entity column)
@@ -217,7 +219,7 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
       it 'handles all reference types correctly' do
         # before: 3 users, various references
         user_count_before = connection.select_value("SELECT COUNT(*) FROM #{test_table}")
-        expect(user_count_before).to eq(3)
+        expect(user_count_before).to eq(5)
 
         # unique index doesn't exist yet
         index_exists_before = connection.select_value(<<~SQL).present?
@@ -230,9 +232,16 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
 
         repairer.run
 
-        # after: 2 users (duplicate removed)
+        # after: 4 users (only true duplicate ID 2 removed)
+        # ID 3 with NULL value preserved
         user_count_after = connection.select_value("SELECT COUNT(*) FROM #{test_table}")
-        expect(user_count_after).to eq(2)
+        expect(user_count_after).to eq(4)
+
+        # Verify NULL values are preserved
+        null_records = connection.select_value(
+          "SELECT COUNT(*) FROM #{test_table} WHERE email IS NULL or name is NULL"
+        )
+        expect(null_records).to eq(2)
 
         # standard reference updated to good ID
         standard_ref = connection.select_value(
