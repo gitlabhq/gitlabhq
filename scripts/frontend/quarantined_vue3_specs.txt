@@ -21,7 +21,6 @@ ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
-spec/frontend/cascading_settings/components/cascading_lock_icon_spec.js
 spec/frontend/ci/artifacts/components/artifacts_bulk_delete_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
 spec/frontend/ci/pipeline_editor/components/header/validation_segment_spec.js

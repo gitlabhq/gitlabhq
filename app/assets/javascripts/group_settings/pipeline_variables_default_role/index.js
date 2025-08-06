@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import PipelineVariablesDefaultRole from './pipeline_variables_default_role.vue';
+import PipelineVariablesMigration from './pipeline_variables_migration.vue';
 
 Vue.use(VueApollo);
 
@@ -20,13 +21,20 @@ export default (containerId = 'js-pipeline-variables-default-role') => {
 
   return new Vue({
     el: containerEl,
-    name: 'PipelineVariablesDefaultRoleRoot',
+    name: 'PipelineVariablesRootGroupSettings',
     apolloProvider,
+    components: {
+      PipelineVariablesDefaultRole,
+      PipelineVariablesMigration,
+    },
     provide: {
       fullPath,
     },
     render(createElement) {
-      return createElement(PipelineVariablesDefaultRole);
+      return createElement('div', [
+        createElement(PipelineVariablesDefaultRole),
+        createElement(PipelineVariablesMigration),
+      ]);
     },
   });
 };

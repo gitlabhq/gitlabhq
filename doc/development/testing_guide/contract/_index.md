@@ -7,12 +7,12 @@ title: Contract testing
 
 Contract tests consist of two parts: consumer tests and provider tests. A simple example of a consumer and provider relationship is between the frontend and backend. The frontend would be the consumer and the backend is the provider. The frontend consumes the API that is provided by the backend. The test helps ensure that these two sides follow an agreed upon contract and any divergence from the contract triggers a meaningful conversation to prevent breaking changes from slipping through.
 
-Consumer tests are similar to unit tests with each spec defining a requests and an expected mock responses and creating a contract based on those definitions. On the other hand, provider tests are similar to integration tests as each spec takes the request defined in the contract and runs that request against the actual service which is then matched against the contract to validate the contract.
+Consumer tests are similar to unit tests, with each spec defining a request and expected mock responses, then creating a contract based on those definitions. Provider tests are similar to integration tests - each spec takes the request defined in the contract, runs it against the actual service, and matches the response against the contract to validate it.
 
 You can check out the existing contract tests at:
 
 - [`spec/contracts/consumer/specs`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/specs) for the consumer tests.
-- [`spec/contracts/provider/specs`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/specs) for the provider tests.
+- [`spec/contracts/provider/pact_helpers`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/pact_helpers) for the provider tests.
 
 The contracts themselves are stored in [`/spec/contracts/contracts`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/contracts) at the moment. The plan is to use [PactBroker](https://docs.pact.io/pact_broker/docker_images) hosted in AWS or another similar service.
 
@@ -88,4 +88,4 @@ There are some cases where the provider being tested may not be documented so, i
 | Tests | Folder structure | Naming convention |
 | ----- | ---------------- | ----------------- |
 | Consumer Test | Follows the Rails reference standards. For example, `Project::Pipelines#index` would be `consumer/specs/project/pipelines/index.spec.js` | Follows the Rails naming standard. For example, `Project::Pipelines#index` would be `Pipelines#index` within the `project` folder. |
-| Provider Test | Grouped like the Rails controllers. For example, [`GET list project pipelines` API endpoint](../../../api/pipelines.md#list-project-pipelines) would be `provider/pact_helpers/project/pipelines/provider/pact_helpers/project/pipelines/get_list_project_pipelines_helper.rb` | Follows the API documentation naming scheme in sentence case. For example, [`GET /projects/:id/pipelines`](../../../api/pipelines.md#list-project-pipelines) would be called `GET list project pipelines`. |
+| Provider Test | Grouped like the Rails controllers. For example, [`GET list project pipelines` API endpoint](../../../api/pipelines.md#list-project-pipelines) would be `provider/pact_helpers/project/pipelines/get_list_project_pipelines_helper.rb` | Follows the API documentation naming scheme in sentence case. For example, [`GET /projects/:id/pipelines`](../../../api/pipelines.md#list-project-pipelines) would be called `GET list project pipelines`. |

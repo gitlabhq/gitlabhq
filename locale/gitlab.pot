@@ -13214,6 +13214,9 @@ msgstr ""
 msgid "CiVariables|Delete variable"
 msgstr ""
 
+msgid "CiVariables|Disable pipeline variables in projects that don't use them"
+msgstr ""
+
 msgid "CiVariables|Do you want to delete the variable %{key}?"
 msgstr ""
 
@@ -13239,6 +13242,9 @@ msgid "CiVariables|Group"
 msgstr ""
 
 msgid "CiVariables|Hidden"
+msgstr ""
+
+msgid "CiVariables|In all projects that do not use pipeline variables, change the %{strongStart}Minimum role to use pipeline variables%{strongEnd} setting to %{strongStart}No one allowed%{strongEnd}. Project owners can later choose a different setting if needed."
 msgstr ""
 
 msgid "CiVariables|Input variable key"
@@ -13272,6 +13278,9 @@ msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
 msgstr ""
 
 msgid "CiVariables|Maximum number of variables reached."
+msgstr ""
+
+msgid "CiVariables|Migration started. You'll receive an email notification after all projects have been migrated."
 msgstr ""
 
 msgid "CiVariables|Minimum role to use pipeline variables"
@@ -13325,6 +13334,9 @@ msgstr ""
 msgid "CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default."
 msgstr ""
 
+msgid "CiVariables|Start migration"
+msgstr ""
+
 msgid "CiVariables|State"
 msgstr ""
 
@@ -13347,6 +13359,9 @@ msgid "CiVariables|The value must have %{charsAmount} characters."
 msgstr ""
 
 msgid "CiVariables|There was a problem fetching the pipeline variables default role."
+msgstr ""
+
+msgid "CiVariables|There was a problem starting the pipeline variables migration."
 msgstr ""
 
 msgid "CiVariables|There was a problem updating the pipeline variables default role setting."

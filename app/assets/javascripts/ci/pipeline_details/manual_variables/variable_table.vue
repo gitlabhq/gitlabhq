@@ -24,7 +24,6 @@ export default {
     return {
       revealed: false,
       currentPage: 1,
-      hasPermission: true,
     };
   },
   computed: {

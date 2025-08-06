@@ -1,0 +1,6 @@
+mutation safeDisablePipelineVariables($fullPath: ID!) {
+  safeDisablePipelineVariables(input: { fullPath: $fullPath }) {
+    success
+    errors
+  }
+}

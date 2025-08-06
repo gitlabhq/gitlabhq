@@ -19,11 +19,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      failureType: null,
-    };
-  },
   computed: {
     fileGlobalId() {
       return `${this.ciConfigPath}-${uniqueId()}`;

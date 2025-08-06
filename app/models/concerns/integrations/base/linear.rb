@@ -6,8 +6,7 @@ module Integrations
       extend ActiveSupport::Concern
 
       include Base::IssueTracker
-      # TODO: Depends on https://gitlab.com/gitlab-org/gitlab-svgs/-/merge_requests/1219
-      # include HasAvatar
+      include HasAvatar
 
       # Workspace keys in the URL must be between 3 and 32 characters long and
       # contain only lowercase letters, numbers, and hyphens.

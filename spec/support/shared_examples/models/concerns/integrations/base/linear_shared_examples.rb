@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Integrations::Base::Linear do
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     context 'when integration is active' do
       before do

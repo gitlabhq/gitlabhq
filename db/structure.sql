@@ -12606,10 +12606,10 @@ CREATE TABLE ci_triggers (
     project_id bigint,
     owner_id bigint NOT NULL,
     description character varying,
-    expires_at timestamp with time zone,
-    token_encrypted text,
     encrypted_token bytea,
     encrypted_token_iv bytea,
+    expires_at timestamp with time zone,
+    token_encrypted text,
     CONSTRAINT check_4905e4c2cb CHECK ((char_length(token_encrypted) <= 255))
 );
 

@@ -75,6 +75,7 @@ describe('CascadingLockIcon', () => {
 
   it('validates ancestorNamespace prop', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
     // Valid prop
     createComponent({ ancestorNamespace: { path: '/test', fullName: 'Test' } });
@@ -82,7 +83,16 @@ describe('CascadingLockIcon', () => {
 
     // Invalid prop
     createComponent({ ancestorNamespace: { path: '/test' } });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    const includesValidatorError = (spy) =>
+      spy.mock.calls[0]?.[0].includes(
+        '[Vue warn]: Invalid prop: custom validator check failed for prop "ancestorNamespace".',
+      );
+
+    const failsInVue2 = includesValidatorError(consoleErrorSpy);
+    const failsInVue3 = includesValidatorError(consoleWarnSpy);
+
+    expect(failsInVue2 || failsInVue3).toBe(true);
 
     consoleErrorSpy.mockRestore();
   });

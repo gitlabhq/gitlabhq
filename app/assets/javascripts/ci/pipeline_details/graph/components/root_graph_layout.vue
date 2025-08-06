@@ -5,18 +5,6 @@ export default {
   components: {
     GlCard,
   },
-  props: {
-    stageClasses: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    jobClasses: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
 };
 </script>
 <template>
