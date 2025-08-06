@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
+RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_category: :team_planning do
   include FilteredSearchHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, organization: current_organization) }
   let_it_be(:user) { current_user } # Shared examples depend on this being available
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:project) { create(:project) }

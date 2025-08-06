@@ -5,8 +5,18 @@ scope(
   constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },
   as: :organization
 ) do
+  root 'root#index'
+
   resources :projects, only: [:new, :create]
   resources :groups, only: [:new, :create]
+
+  scope path: :dashboard, module: :dashboard, as: :dashboard do
+    resources :projects, only: [:index] do
+      collection do
+        get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
+      end
+    end
+  end
 end
 
 scope path: '-' do

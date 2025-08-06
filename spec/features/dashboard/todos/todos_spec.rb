@@ -4,11 +4,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
+RSpec.describe 'Dashboard Todos', :js, :with_organization_url_helpers, feature_category: :notifications do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user, name: 'Michael Scott') }
+  let_it_be(:current_organization) { user.organization }
+  let_it_be(:user2) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
@@ -359,7 +360,8 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
     end
 
     it 'allows to mark a pending todo as done and find it in the Done tab' do
-      expect(page).to have_content 'Michael Scott assigned you.'
+      assigned_you_str = "#{todo_assigned.author.name} assigned you."
+      expect(page).to have_content assigned_you_str
       expect(page).to have_content 'You added a to-do item.'
       expect(page).to have_content 'To Do 2'
 
@@ -368,9 +370,9 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
       end
       wait_for_requests
       click_on 'Done'
-      expect(page).to have_content 'Michael Scott assigned you.'
+      expect(page).to have_content assigned_you_str
       click_on 'To Do 1'
-      expect(page).not_to have_content 'Michael Scott assigned you.'
+      expect(page).not_to have_content assigned_you_str
     end
   end
 

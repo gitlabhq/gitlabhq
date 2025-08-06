@@ -315,6 +315,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     it { expect(organization.scoped_paths?).to eq(true) }
   end
 
+  describe '#full_path' do
+    it { expect(organization.full_path).to eq("/o/#{organization.path}") }
+  end
+
   describe '.search' do
     let_it_be(:other_organization) { create(:organization, name: 'Other') }
 
@@ -464,6 +468,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
     describe '#scoped_paths?' do
       it { expect(default_organization.scoped_paths?).to eq(false) }
+    end
+
+    describe '#full_path' do
+      it { expect(default_organization.full_path).to eq('') }
     end
   end
 

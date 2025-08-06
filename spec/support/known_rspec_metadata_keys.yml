@@ -162,6 +162,7 @@
 - :with_cloud_connector
 - :with_current_organization
 - :with_license
+- :with_organization_url_helpers
 - :with_sidekiq_context
 - :without_license
 - :yaml_processor_feature_flag_corectness

@@ -21,11 +21,23 @@ module Routing
       def self.install
         return if already_installed
 
+        url_helpers = Gitlab::Application.routes.url_helpers
+
+        # Preserve the original root_url for use in specific circumstances.
+        url_helpers.alias_method :unscoped_root_url, :root_url if url_helpers.respond_to?(:root_url)
+
+        # Override URL helpers to be Organization context aware.
         route_pairs = find_route_pairs
         override_module = build_override_module(route_pairs)
-        Gitlab::Application.routes.url_helpers.prepend(override_module)
+        url_helpers.prepend(override_module)
 
         self.already_installed = true
+      end
+
+      def self.current_organization
+        # rubocop:disable Gitlab/AvoidCurrentOrganization -- Current organization not available earlier.
+        Current.organization_assigned && Current.organization
+        # rubocop:enable Gitlab/AvoidCurrentOrganization
       end
 
       def self.find_route_pairs
@@ -70,19 +82,19 @@ module Routing
               org_method_name = "#{org_route}#{suffix}"
 
               define_method(method_name) do |*args, **kwargs|
-                # rubocop:disable Gitlab/AvoidCurrentOrganization -- Current organization not available earlier.
-                org_scoped_path = Current.organization_assigned &&
-                  !Current.organization.nil? &&
-                  Current.organization.scoped_paths?
+                current_organization = Routing::OrganizationsHelper::MappedHelpers.current_organization
 
-                if org_scoped_path
+                if current_organization && current_organization.scoped_paths?
+                  kwargs[:organization_path] ||= current_organization.path
+                end
+
+                if kwargs[:organization_path]
                   # Call the Organization helper method
-                  method(org_method_name).call(*args, organization_path: Current.organization.path, **kwargs)
+                  method(org_method_name).call(*args, **kwargs)
                 else
                   # Call the original helper method
                   super(*args, **kwargs)
                 end
-                # rubocop:enable Gitlab/AvoidCurrentOrganization
               end
             end
           end

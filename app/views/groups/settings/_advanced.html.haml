@@ -19,7 +19,7 @@
           .input-group.gl-field-error-anchor
             .group-root-path.input-group-prepend.has-tooltip{ title: group_path(@group), :'data-placement' => 'bottom' }
               .input-group-text
-                %span>= root_url
+                %span>= unscoped_root_url
                 - if @group.parent
                   %strong= @group.parent.full_path + '/'
             = f.hidden_field :parent_id

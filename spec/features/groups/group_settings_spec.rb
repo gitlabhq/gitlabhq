@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
+RSpec.describe 'Edit group settings', :with_current_organization, feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
   include Features::WebIdeSpecHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be_with_reload(:group) { create(:group, path: 'foo', owners: [user]) }
 
   before do
@@ -128,15 +128,35 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     it 'has a root URL label for top-level group' do
       visit edit_group_path(group)
 
-      expect(find(:css, '.group-root-path').text).to eq(root_url)
+      expect(find(:css, '.group-root-path').text).to eq(unscoped_root_url)
     end
 
-    it 'has a parent group URL label for a subgroup group' do
-      subgroup = create(:group, parent: group)
+    context 'with scoped paths' do
+      before do
+        allow(current_organization).to receive(:scoped_paths?).and_return(true)
+      end
 
-      visit edit_group_path(subgroup)
+      it 'has a parent group URL label for a subgroup group' do
+        subgroup = create(:group, parent: group)
 
-      expect(find(:css, '.group-root-path').text).to eq(group_url(subgroup.parent) + '/')
+        visit edit_group_path(subgroup)
+
+        expect(find(:css, '.group-root-path').text).to eq(group_url(subgroup.parent) + '/')
+      end
+    end
+
+    context 'without scoped paths' do
+      before do
+        allow(current_organization).to receive(:scoped_paths?).and_return(false)
+      end
+
+      it 'has a parent group URL label for a subgroup group' do
+        subgroup = create(:group, parent: group)
+
+        visit edit_group_path(subgroup)
+
+        expect(find(:css, '.group-root-path').text).to eq(group_url(subgroup.parent) + '/')
+      end
     end
   end
 

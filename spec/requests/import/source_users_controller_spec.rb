@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::SourceUsersController, feature_category: :importers do
+RSpec.describe Import::SourceUsersController, :with_organization_url_helpers, feature_category: :importers do
   shared_examples 'it requires the user to be signed in' do
     context 'when the user is not signed in' do
       it 'redirects to the login screen' do
@@ -34,6 +34,8 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       expect(flash[:raw]).to match(/Reassignment not available/)
     end
   end
+
+  let(:current_organization) { source_user.reassign_to_user.organization }
 
   let_it_be_with_reload(:source_user) do
     create(:import_source_user, :with_reassigned_by_user, :awaiting_approval)

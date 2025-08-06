@@ -271,8 +271,8 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
   end
 
-  describe 'removal', :js do
-    let_it_be(:user) { create(:user) }
+  describe 'removal', :with_current_organization, :js do
+    let_it_be(:user) { create(:user, organization: current_organization) }
     let_it_be(:group) { create(:group, :public, owners: user) }
     let_it_be_with_reload(:project_to_delete) { create(:project, group: group) }
 

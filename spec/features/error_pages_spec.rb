@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Error Pages', :js, feature_category: :observability do
-  let(:user) { create(:user) }
+RSpec.describe 'Error Pages', :js, :with_current_organization, feature_category: :observability do
+  let(:user) { create(:user, organization: current_organization) }
   let(:project) { create(:project, :public) }
 
   before do

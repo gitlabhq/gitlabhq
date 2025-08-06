@@ -126,4 +126,53 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     it_behaves_like 'organization aware route helper'
   end
+
+  describe '#root_path' do
+    let(:helper) { :root }
+    let(:organization_helper) { :organization_root }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#dashboard_projects_path' do
+    let(:helper) { :dashboard_projects }
+    let(:organization_helper) { :organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#contributed_dashboard_projects_path' do
+    let(:helper) { :contributed_dashboard_projects }
+    let(:organization_helper) { :contributed_organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#starred_dashboard_projects_path' do
+    let(:helper) { :starred_dashboard_projects }
+    let(:organization_helper) { :starred_organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#personal_dashboard_projects_path' do
+    let(:helper) { :personal_dashboard_projects }
+    let(:organization_helper) { :personal_organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#member_dashboard_projects_path' do
+    let(:helper) { :member_dashboard_projects }
+    let(:organization_helper) { :member_organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#inactive_dashboard_projects_path' do
+    let(:helper) { :inactive_dashboard_projects }
+    let(:organization_helper) { :inactive_organization_dashboard_projects }
+
+    it_behaves_like 'organization aware route helper'
+  end
 end

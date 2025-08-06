@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Member leaves project', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Members > Member leaves project', :with_current_organization, feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, organization: current_organization) }
   let(:project) { create(:project, :repository, :with_namespace_settings) }
   let(:more_actions_dropdown) do
     find_by_testid('groups-projects-more-actions-dropdown')

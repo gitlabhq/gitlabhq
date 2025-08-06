@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User interacts with project stars', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Show > User interacts with project stars', :js, :with_current_organization, feature_category: :groups_and_projects do
   let(:project) { create(:project, :public, :repository) }
 
   context 'when user is signed in', :js do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, organization: current_organization) }
 
     before do
       sign_in(user)

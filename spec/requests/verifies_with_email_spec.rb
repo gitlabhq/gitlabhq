@@ -232,18 +232,20 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
       context 'when not completing identity verification and logging in with another account' do
         let(:another_user) { create(:user) }
+        let(:current_organization) { another_user.organization }
 
         before do
           post user_session_path, params: { user: { login: another_user.username, password: another_user.password } }
         end
 
-        it 'redirects to the root path' do
+        it 'redirects to the root path', :with_organization_url_helpers do
           expect(response).to redirect_to(root_path)
         end
       end
     end
 
-    context 'when signing in with a valid password' do
+    context 'when signing in with a valid password', :with_organization_url_helpers do
+      let(:current_organization) { user.organization }
       let(:headers) { {} }
       let(:sign_in) do
         post user_session_path, params: { user: { login: user.username, password: user.password } }, headers: headers

@@ -12184,7 +12184,8 @@ CREATE TABLE ci_pipeline_schedules (
     owner_id bigint,
     active boolean DEFAULT true,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    CONSTRAINT check_4a0f7b994d CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_pipeline_schedules_id_seq

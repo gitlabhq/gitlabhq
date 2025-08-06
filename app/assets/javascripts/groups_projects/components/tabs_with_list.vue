@@ -455,6 +455,10 @@ export default {
       }
     },
     skipVariableName(tab) {
+      if (!tab || tab.value === undefined) {
+        return null;
+      }
+
       // Since GraphQL doesn't support string comparison in @skip(if:)
       // we use the naming convention of skip${tabValue} in camelCase (e.g. skipContributed).
       return convertToCamelCase(`skip_${tab.value}`);

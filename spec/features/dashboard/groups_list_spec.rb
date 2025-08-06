@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, feature_category: :groups_and_projects do
   include ListboxHelpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:current_organization) { user.organization }
 
   let_it_be(:group) { create(:group, owners: [user]) }
   let_it_be(:nested_group) { create(:group, :nested, owners: [user]) }

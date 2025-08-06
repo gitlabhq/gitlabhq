@@ -663,87 +663,111 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    describe 'context switcher persistent links' do
-      let_it_be(:public_link) do
-        { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
-      end
-
-      let_it_be(:public_links_for_user) do
-        [
-          { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
-          public_link,
-          { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
-          { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
-        ]
-      end
-
-      let_it_be(:admin_area_link) do
-        { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
-      end
-
-      subject do
-        helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
-      end
-
-      context 'when user is not logged in' do
-        let(:user) { nil }
-
-        it 'returns only the public links for an anonymous user' do
-          expect(subject[:context_switcher_links]).to eq([public_link])
-        end
-      end
-
-      context 'when user is not an admin' do
-        it 'returns only the public links for a user' do
-          expect(subject[:context_switcher_links]).to eq(public_links_for_user)
-        end
-      end
-
-      context 'when user is an admin' do
-        before do
-          allow(user).to receive(:admin?).and_return(true)
+    describe 'Context switcher persistent links' do
+      shared_examples 'context switcher with persistent links' do
+        let_it_be(:public_link) do
+          { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
         end
 
-        context 'when application setting :admin_mode is enabled' do
+        let(:public_links_for_user) do
+          your_work_link = if current_organization&.scoped_paths?
+                             "/o/#{current_organization.path}"
+                           else
+                             '/'
+                           end
+
+          [
+            { title: s_('Navigation|Your work'), link: your_work_link, icon: 'work' },
+            public_link,
+            { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
+            { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
+          ]
+        end
+
+        let_it_be(:admin_area_link) do
+          { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
+        end
+
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
+        end
+
+        context 'when user is not logged in' do
+          let(:user) { nil }
+
+          it 'returns only the public links for an anonymous user' do
+            expect(subject[:context_switcher_links]).to eq([public_link])
+          end
+        end
+
+        context 'when user is not an admin' do
+          it 'returns only the public links for a user' do
+            expect(subject[:context_switcher_links]).to eq(public_links_for_user)
+          end
+        end
+
+        context 'when user is an admin' do
           before do
-            stub_application_setting(admin_mode: true)
+            allow(user).to receive(:admin?).and_return(true)
           end
 
-          context 'when admin mode is on' do
+          context 'when application setting :admin_mode is enabled' do
             before do
-              current_user_mode.request_admin_mode!
-              current_user_mode.enable_admin_mode!(password: user.password)
+              stub_application_setting(admin_mode: true)
             end
 
-            it 'returns public links, admin area and leave admin mode links' do
+            context 'when admin mode is on' do
+              before do
+                current_user_mode.request_admin_mode!
+                current_user_mode.enable_admin_mode!(password: user.password)
+              end
+
+              it 'returns public links, admin area and leave admin mode links' do
+                expect(subject[:context_switcher_links]).to eq([
+                  *public_links_for_user,
+                  admin_area_link
+                ])
+              end
+            end
+
+            context 'when admin mode is off' do
+              it 'returns public links and enter admin mode link' do
+                expect(subject[:context_switcher_links]).to eq([
+                  *public_links_for_user
+                ])
+              end
+            end
+          end
+
+          context 'when application setting :admin_mode is disabled' do
+            before do
+              stub_application_setting(admin_mode: false)
+            end
+
+            it 'returns public links and admin area link' do
               expect(subject[:context_switcher_links]).to eq([
                 *public_links_for_user,
                 admin_area_link
               ])
             end
           end
+        end
+      end
 
-          context 'when admin mode is off' do
-            it 'returns public links and enter admin mode link' do
-              expect(subject[:context_switcher_links]).to eq([
-                *public_links_for_user
-              ])
-            end
-          end
+      context 'when Organization has scoped paths' do
+        before do
+          allow(current_organization).to receive(:scoped_paths?).and_return(true)
         end
 
-        context 'when application setting :admin_mode is disabled' do
-          before do
-            stub_application_setting(admin_mode: false)
-          end
+        include_examples 'context switcher with persistent links'
+      end
 
-          it 'returns public links and admin area link' do
-            expect(subject[:context_switcher_links]).to eq([
-              *public_links_for_user,
-              admin_area_link
-            ])
-          end
+      context 'when Organization does not have scoped paths' do
+        before do
+          allow(current_organization).to receive(:scoped_paths?).and_return(false)
         end
+
+        include_examples 'context switcher with persistent links'
       end
     end
 

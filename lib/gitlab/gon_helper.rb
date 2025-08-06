@@ -62,7 +62,7 @@ module Gitlab
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
-        gon.current_organization = current_organization.slice(:id, :name, :web_url, :avatar_url)
+        gon.current_organization = current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
       end
 
       add_gon_user_specific

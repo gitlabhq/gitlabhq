@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Global search', :js, feature_category: :global_search do
-  let_it_be(:user) { create(:user) }
+RSpec.describe 'Global search', :js, :with_current_organization, feature_category: :global_search do
+  let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be(:project) { create(:project, :public, namespace: user.namespace) }
   let_it_be(:search_selector) { 'input[type="search"]:focus' }
 

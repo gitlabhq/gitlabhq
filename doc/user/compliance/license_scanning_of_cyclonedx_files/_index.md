@@ -245,6 +245,20 @@ Compatible CycloneDX SBOM generators that provide the licenses field can be foun
 
 Only licenses providing an SPDX identifier are currently supported. Extending this feature beyond SDPX licenses is tracked in [issue 505677](https://gitlab.com/gitlab-org/gitlab/-/issues/505677).
 
+### Configure license information source
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501662) in GitLab 18.3.
+
+You can configure the preferred source for license information in your project's security configuration:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. In the **License information source** section, select either:
+   - **SBOM** (default) - Uses license information from CycloneDX reports
+   - **PMDB** - Uses license information from the external license database
+
+This setting determines which source GitLab prioritizes when both CycloneDX license data and external license database information are available.
+
 ## Troubleshooting
 
 ### A CycloneDX file is not being scanned and appears to provide no results

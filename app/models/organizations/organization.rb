@@ -117,6 +117,12 @@ module Organizations
       "#<#{self.class.name} id:#{id} path:#{path}>"
     end
 
+    def full_path
+      return '' unless scoped_paths?
+
+      "/o/#{path}"
+    end
+
     private
 
     # The visibility must be broader than the visibility of any contained root groups.

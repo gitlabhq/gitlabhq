@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > User filters projects', :js, feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+RSpec.describe 'Dashboard > User filters projects', :js, :with_current_organization, feature_category: :groups_and_projects do
+  let(:user) { create(:user, organization: current_organization) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace, created_at: 2.seconds.ago, updated_at: 2.seconds.ago) }
-  let(:user2) { create(:user) }
+  let(:user2) { create(:user, organization: current_organization) }
   let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace, created_at: 1.second.ago, updated_at: 1.second.ago) }
 
   before do

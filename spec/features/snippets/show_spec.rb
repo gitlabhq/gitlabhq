@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
+RSpec.describe 'Snippet', :js, :with_organization_url_helpers, feature_category: :source_code_management do
   let_it_be(:owner) { create(:user) }
+  let_it_be(:current_organization) { owner.organization }
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: owner) }
   let(:anchor) { nil }
   let(:file_path) { 'files/ruby/popen.rb' }
