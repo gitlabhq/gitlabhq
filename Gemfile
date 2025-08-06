@@ -69,7 +69,7 @@ gem 'sprockets-rails', '~>  3.5.1', feature_category: :shared
 gem 'view_component', '~> 3.23.2', feature_category: :shared
 
 # Supported DBs
-gem 'pg', '~> 1.5.6', feature_category: :database
+gem 'pg', '~> 1.6.1', feature_category: :database
 
 gem 'rugged', '~> 1.6', feature_category: :gitaly
 

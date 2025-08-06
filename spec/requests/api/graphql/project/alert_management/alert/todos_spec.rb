@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :team_planning do
+RSpec.describe 'getting Alert Management Alert Todos', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
@@ -43,7 +43,7 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :te
       stub_feature_flags(hide_incident_management_features: false)
     end
 
-    it 'includes the correct metrics dashboard url' do
+    it 'includes the correct todos' do
       post_graphql(graphql_query, current_user: current_user)
 
       expect(gql_alert_todo['id']).to eq(todo.to_global_id.to_s)

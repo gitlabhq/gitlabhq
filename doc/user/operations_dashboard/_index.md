@@ -25,7 +25,7 @@ To access the dashboard:
 
 To add a project to the dashboard:
 
-1. Ensure your alerts populate the `gitlab_environment_name` label on the alerts you set up in Prometheus.
+1. Ensure your alerts populate the `gitlab_environment_name` label on the [alerts you set up in Prometheus](../../operations/incident_management/integrations.md#expected-prometheus-request-attributes).
    The value of this should match the name of your environment in GitLab.
    You can display alerts for the `production` environment only.
 1. Select **Add projects** in the home screen of the dashboard.

@@ -12,16 +12,6 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
     )
   end
 
-  def build_position(args = {})
-    default_args = { old_path: "files/ruby/popen.rb",
-                     new_path: "files/ruby/popen.rb",
-                     old_line: nil,
-                     new_line: 14,
-                     diff_refs: merge_request.diff_refs }
-
-    Gitlab::Diff::Position.new(default_args.merge(args))
-  end
-
   let(:position) { build_position }
 
   let(:markdown) do
@@ -52,6 +42,16 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
           # multi-line suggestion 1
         ```
     MARKDOWN
+  end
+
+  def build_position(args = {})
+    default_args = { old_path: "files/ruby/popen.rb",
+                     new_path: "files/ruby/popen.rb",
+                     old_line: nil,
+                     new_line: 14,
+                     diff_refs: merge_request.diff_refs }
+
+    Gitlab::Diff::Position.new(default_args.merge(args))
   end
 
   subject { described_class.new(note) }

@@ -9,6 +9,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
   let_it_be(:user) { create(:user) }
 
   let(:designs) { create_designs }
+  let(:response) { run_service }
 
   subject(:service) { described_class.new(project, user, issue: issue, designs: designs) }
 
@@ -19,8 +20,6 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
     service = described_class.new(project, user, issue: issue, designs: delenda || designs)
     service.execute
   end
-
-  let(:response) { run_service }
 
   shared_examples 'a service error' do
     it 'returns an error', :aggregate_failures do

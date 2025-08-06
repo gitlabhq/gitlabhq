@@ -148,6 +148,18 @@ module Types
       description: 'Indicates the archived status of the project.',
       method: :self_or_ancestors_archived?
 
+    field :is_self_deletion_in_progress, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if project deletion is in progress.',
+      method: :self_deletion_in_progress?,
+      experiment: { milestone: '18.3' }
+
+    field :is_self_deletion_scheduled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if project deletion is scheduled.',
+      method: :self_deletion_scheduled?,
+      experiment: { milestone: '18.3' }
+
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if the project or any ancestor is scheduled for deletion.',

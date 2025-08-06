@@ -22,13 +22,16 @@ export default {
     getFormattedDate(dateTime) {
       return localeDateFormat.asDate.format(new Date(dateTime));
     },
+    handleFilter() {
+      // TODO: - integrate with graphql in https://gitlab.com/gitlab-org/gitlab/-/issues/550474
+    },
   },
 };
 </script>
 
 <template>
   <div class="gl-mt-5">
-    <commit-list-header />
+    <commit-list-header @filter="handleFilter" />
     <ol class="gl-my-6 gl-list-none gl-p-0">
       <li v-for="commit in commits" :key="commit.id" data-testid="daily-commits">
         <div class="gl-mb-5 gl-flex gl-items-center gl-gap-3 sm:gl-gap-5">

@@ -343,6 +343,14 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             echo: { script: 'echo' })
         end
 
+        let(:stub_config) { false }
+
+        let(:trigger) do
+          {
+            trigger: { include: 'child-pipeline.yml' }
+          }
+        end
+
         shared_examples 'creates a child pipeline' do
           it 'creates only one new pipeline' do
             expect { subject }
@@ -381,14 +389,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             user, 'child-pipeline.yml', file_content, message: 'message', branch_name: 'master')
 
           upstream_pipeline.update!(sha: upstream_project.commit.id)
-        end
-
-        let(:stub_config) { false }
-
-        let(:trigger) do
-          {
-            trigger: { include: 'child-pipeline.yml' }
-          }
         end
 
         it_behaves_like 'creates a child pipeline'

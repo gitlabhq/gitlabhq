@@ -13,8 +13,6 @@ RSpec.describe SystemNotes::DesignManagementService, feature_category: :design_m
     let(:instance_project) { version.issue.project }
     let(:instance_author) { version.author }
 
-    subject { instance.design_version_added(version) }
-
     # default (valid) parameters:
     let(:n_designs) { 3 }
     let(:designs) { create_list(:design, n_designs, issue: issue) }
@@ -22,6 +20,8 @@ RSpec.describe SystemNotes::DesignManagementService, feature_category: :design_m
     let(:version) do
       create(:design_version, issue: issue, designs: designs)
     end
+
+    subject { instance.design_version_added(version) }
 
     before do
       # Avoid needing to call into gitaly
@@ -127,8 +127,6 @@ RSpec.describe SystemNotes::DesignManagementService, feature_category: :design_m
     let(:instance_project) { design.issue.project }
     let(:instance_author) { discussion_note.author }
 
-    subject { instance.design_discussion_added(discussion_note) }
-
     let(:design) { create(:design, :with_file, issue: issue) }
     let(:author) { create(:user) }
     let(:discussion_note) do
@@ -136,6 +134,8 @@ RSpec.describe SystemNotes::DesignManagementService, feature_category: :design_m
     end
 
     let(:action) { 'designs_discussion_added' }
+
+    subject { instance.design_discussion_added(discussion_note) }
 
     it_behaves_like 'a system note' do
       let(:noteable) { discussion_note.noteable.issue }

@@ -679,8 +679,8 @@ the breadcrumbs.
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the OKR's comments, for example:
 
-> - {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago
-> - {{< icon name="eye" >}} Jo Garcia made the issue visible to everyone just now
+- {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago
+- {{< icon name="eye" >}} Jo Garcia made the issue visible to everyone just now
 
 ## Lock discussion
 

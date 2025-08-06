@@ -85,6 +85,8 @@ module Types
         description: 'Indicates that the job has been retried.'
       field :retryable, GraphQL::Types::Boolean, null: true,
         description: 'Indicates the job can be retried.'
+      field :retry_path, GraphQL::Types::String, null: true,
+        description: 'Retry path of the job.'
       field :runner, Types::Ci::RunnerType, null: true, description: 'Runner assigned to execute the job.'
       field :scheduled, GraphQL::Types::Boolean, null: true, method: :scheduled?,
         description: 'Indicates the job is scheduled.'

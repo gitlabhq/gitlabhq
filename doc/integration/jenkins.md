@@ -12,7 +12,11 @@ title: Jenkins
 
 {{< /details >}}
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
+
+{{< /history >}}
 
 [Jenkins](https://www.jenkins.io/) is an open source automation server that supports
 building, deploying and automating projects.

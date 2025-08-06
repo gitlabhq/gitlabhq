@@ -547,17 +547,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      namespace :prometheus do
-        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
-          get :active_common, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
-          post :validate_query, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
-        end
-      end
-
       scope :prometheus, as: :prometheus do
         resources :alerts, constraints: { id: /\d+/ }, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection, to: 'alerting/notifications#create', defaults: { endpoint_identifier: 'legacy-prometheus' } # rubocop: disable Cop/PutProjectRoutesUnderScope
-          get :metrics_dashboard, on: :member # rubocop:todo Cop/PutProjectRoutesUnderScope
         end
       end
 

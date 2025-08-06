@@ -4,10 +4,9 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::Mergeability::Logger, :request_store, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request) }
+  let(:caller_id) { 'a' }
 
   subject(:logger) { described_class.new(merge_request: merge_request) }
-
-  let(:caller_id) { 'a' }
 
   before do
     allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return(caller_id)

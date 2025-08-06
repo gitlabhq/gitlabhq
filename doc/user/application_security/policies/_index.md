@@ -268,7 +268,9 @@ is used when a security policy is created or amended. For example, `update-polic
 `1659094451` is the timestamp. If push rules block the creation of the branch the following error
 occurs:
 
-> Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
+```plaintext
+Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
+```
 
 In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
 projects are excluded from push rules that enforce branch name validation.

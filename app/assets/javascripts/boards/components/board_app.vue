@@ -86,7 +86,6 @@ export default {
       update: (data) => data.boardsAppError,
     },
   },
-
   computed: {
     issuesDrawerEnabled() {
       if (this.glFeatures.workItemViewForIssues) {
@@ -128,6 +127,9 @@ export default {
     isShowingEpicSwimlanesLocalStorageKey() {
       return `board.${this.fullPath}.${this.boardId}.isShowingEpicSwimlanes`;
     },
+    isBoardWidthDynamic() {
+      return this.isAnySidebarOpen && this.issuesDrawerEnabled && this.isWorkItemDrawerOpened;
+    },
   },
   created() {
     this.initIsShowingEpicSwimlanes();
@@ -138,7 +140,7 @@ export default {
     },
     setActiveId(id) {
       this.activeListId = id;
-      if (!id) this.isWorkItemDrawerOpened = false;
+      if (!id && !this.isAnySidebarOpen) this.isWorkItemDrawerOpened = false;
     },
     switchBoard(id) {
       this.boardId = id;
@@ -201,6 +203,9 @@ export default {
     removeGroupByParam() {
       historyPushState(removeParams(['group_by']), window.location.href, true);
     },
+    handleWorkItemDrawerClose() {
+      if (!this.isAnySidebarOpen || !this.issuesDrawerEnabled) this.isWorkItemDrawerOpened = false;
+    },
   },
 };
 </script>
@@ -224,7 +229,7 @@ export default {
     <board-content
       :class="{
         'lg:gl-w-[calc(100%-480px)] xl:gl-w-[calc(100%-768px)] min-[1440px]:gl-w-[calc(100%-912px)]':
-          isAnySidebarOpen && issuesDrawerEnabled && isWorkItemDrawerOpened,
+          isBoardWidthDynamic,
       }"
       :board-id="boardId"
       :add-column-form-visible="addColumnFormVisible"
@@ -237,7 +242,7 @@ export default {
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @setFilters="setFilters"
-      @drawer-closed="isWorkItemDrawerOpened = false"
+      @drawer-closed="handleWorkItemDrawerClose"
       @drawer-opened="isWorkItemDrawerOpened = true"
     />
     <board-settings-sidebar

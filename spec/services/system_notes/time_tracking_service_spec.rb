@@ -10,11 +10,11 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     let_it_be(:issue)     { create(:issue, project: project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
 
-    subject(:note) { described_class.new(noteable: noteable, container: project, author: author).change_start_date_or_due_date(changed_dates) }
-
     let(:start_date) { Date.today }
     let(:due_date) { 1.week.from_now.to_date }
     let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [nil, start_date] } }
+
+    subject(:note) { described_class.new(noteable: noteable, container: project, author: author).change_start_date_or_due_date(changed_dates) }
 
     shared_examples 'issuable getting date change notes' do
       it_behaves_like 'a note with overridable created_at'

@@ -30,8 +30,9 @@ To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
 receive an email back from GitLab Support Bot, confirming receipt:
 
-> Thank you for your support request! We are tracking your request as ticket `#%{issue_iid}`,
-> and will respond as soon as we can.
+```plaintext
+Thank you for your support request! We are tracking your request as ticket `#%{issue_iid}`, and will respond as soon as we can.
+```
 
 This email also gives the end user an option to unsubscribe.
 

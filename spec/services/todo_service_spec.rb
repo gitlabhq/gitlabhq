@@ -1146,6 +1146,10 @@ RSpec.describe TodoService, feature_category: :notifications do
 
     describe '#new_note' do
       let_it_be(:project) { create(:project, :repository) }
+      let(:mention) { john_doe.to_reference }
+      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
+      let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "#{mention}, hey!") }
+      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
 
       before_all do
         project.add_guest(guest)
@@ -1155,11 +1159,6 @@ RSpec.describe TodoService, feature_category: :notifications do
         project.add_developer(john_doe)
         project.add_developer(skipped)
       end
-
-      let(:mention) { john_doe.to_reference }
-      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
-      let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "#{mention}, hey!") }
-      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
 
       it 'creates a todo for mentioned user on new diff note' do
         service.new_note(diff_note_on_merge_request, author)
@@ -1233,13 +1232,6 @@ RSpec.describe TodoService, feature_category: :notifications do
     let(:issue) { create(:issue, project: project) }
     let(:design) { create(:design, issue: issue) }
 
-    before do
-      enable_design_management
-
-      project.add_guest(author)
-      project.add_developer(john_doe)
-    end
-
     let(:note) do
       build(
         :diff_note_on_design,
@@ -1247,6 +1239,13 @@ RSpec.describe TodoService, feature_category: :notifications do
         author: author,
         note: "Hey #{john_doe.to_reference}"
       )
+    end
+
+    before do
+      enable_design_management
+
+      project.add_guest(author)
+      project.add_developer(john_doe)
     end
 
     it 'creates a todo for mentioned user on new diff note' do

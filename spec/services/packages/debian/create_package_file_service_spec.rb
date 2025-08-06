@@ -104,14 +104,14 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
     end
 
     context 'with remote file' do
-      let!(:fog_connection) do
-        stub_package_file_object_storage(direct_upload: true)
-      end
-
       before do
         allow_next_instance_of(UploadedFile) do |uploaded_file|
           allow(uploaded_file).to receive(:sha256).and_return('543212345')
         end
+      end
+
+      let!(:fog_connection) do
+        stub_package_file_object_storage(direct_upload: true)
       end
 
       let(:tmp_object) do

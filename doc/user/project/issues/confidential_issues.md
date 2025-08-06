@@ -101,8 +101,8 @@ There is also an indicator on the sidebar denoting confidentiality.
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments, for example:
 
-> - {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago
-> - {{< icon name="eye" >}} Jo Garcia made the issue visible to everyone just now
+- {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago
+- {{< icon name="eye" >}} Jo Garcia made the issue visible to everyone just now
 
 ## Merge requests for confidential issues
 

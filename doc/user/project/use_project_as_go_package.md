@@ -118,20 +118,14 @@ Follow [`golang/go#26232`](https://github.com/golang/go/issues/26232) for detail
 ### Workaround: use `.git` in the module name
 
 There is a way to skip `go get` request and force Go to use a Git authentication
-directly, but it requires a modification of the module name.
+directly, but it requires a modification of the module name. [From Go documentation](https://go.dev/ref/mod#vcs-find):
 
-<!-- markdownlint-disable proper-names -->
-
-> If the module path has a VCS qualifier (one of .bzr, .fossil, .git, .hg, .svn)
+> If the module path has a VCS qualifier (one of `.bzr`, `.fossil`, `.git`, `.hg`, `.svn`)
 > at the end of a path component, the go command will use everything up to that
 > path qualifier as the repository URL. For example, for the module
-> example.com/foo.git/bar, the go command downloads the repository
-> at example.com/foo.git using git, expecting to find the module
+> `example.com/foo.git/bar`, the go command downloads the repository
+> at `example.com/foo.git` using Git, expecting to find the module
 > in the bar subdirectory.
-
-<!-- markdownlint-enable proper-names -->
-
-[From Go documentation](https://go.dev/ref/mod#vcs-find)
 
 1. Go to `go.mod` of the Go module in a private subgroup.
 1. Add `.git` to the module name.

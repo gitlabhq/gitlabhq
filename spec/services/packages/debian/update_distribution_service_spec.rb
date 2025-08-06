@@ -81,10 +81,9 @@ RSpec.describe Packages::Debian::UpdateDistributionService, feature_category: :p
 
       let(:params) { {} }
       let(:simple_params) { params.except(:components, :architectures) }
+      let(:response) { subject.execute }
 
       subject { described_class.new(distribution, params) }
-
-      let(:response) { subject.execute }
 
       context 'with valid simple params' do
         let(:params) do

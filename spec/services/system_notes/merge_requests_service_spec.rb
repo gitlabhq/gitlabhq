@@ -123,12 +123,11 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
     let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
     let(:merge_request) { discussion.noteable }
     let(:change_position) { discussion.position }
+    let(:service) { described_class.new(container: project, author: author) }
 
     def reloaded_merge_request
       MergeRequest.find(merge_request.id)
     end
-
-    let(:service) { described_class.new(container: project, author: author) }
 
     subject { service.diff_discussion_outdated(discussion, change_position) }
 

@@ -232,7 +232,7 @@ and you have not memoized the result of a check in a single place.
 
 During one of the first GitLab Contributes events we had a discussion about the importance
 of keeping CI/CD pipeline, stage, and job statuses accurate. We considered a hypothetical
-scenario relating to a software being built by one of our [early customers](https://about.gitlab.com/blog/2016/11/23/gitlab-adoption-growing-at-cern/)
+scenario relating to a software being built by one of our [early customers](https://about.gitlab.com/blog/2016/11/23/gitlab-adoption-growing-at-cern/):
 
 > What happens if software deployed to the [Large Hadron Collider (LHC)](https://en.wikipedia.org/wiki/Large_Hadron_Collider),
 > breaks because of a bug in GitLab CI/CD that showed that a pipeline

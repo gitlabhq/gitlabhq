@@ -1520,6 +1520,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_at, developers: user)
     end
 
+    let_it_be(:project_being_deleted) do
+      create(:project, pending_delete: true, developers: user)
+    end
+
     let_it_be(:pending_delete_project) { create(:project, marked_for_deletion_at: marked_for_deletion_at) }
     let_it_be(:parent_pending_delete_project) { create(:project, group: pending_delete_group) }
 
@@ -1532,6 +1536,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
             markedForDeletion
             markedForDeletionOn
             permanentDeletionDate
+            isSelfDeletionInProgress
+            isSelfDeletionScheduled
           }
         }
       )
@@ -1548,7 +1554,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       {
         marked_for_deletion: result.dig('data', 'project', 'markedForDeletion'),
         marked_for_deletion_on: result.dig('data', 'project', 'markedForDeletionOn'),
-        permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate')
+        permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate'),
+        is_self_deletion_in_progress: result.dig('data', 'project', 'isSelfDeletionInProgress'),
+        is_self_deletion_scheduled: result.dig('data', 'project', 'isSelfDeletionScheduled')
       }
     end
 
@@ -1562,12 +1570,20 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       expect(marked_for_deletion_on_time).to eq(pending_delete_project.marked_for_deletion_at.iso8601)
     end
 
+    it 'returns false for is_self_deletion_in_progress' do
+      expect(project_data[:is_self_deletion_in_progress]).to be false
+    end
+
     context 'when project is scheduled for deletion' do
       it 'returns date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])
           .to eq(
             ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_at).strftime('%F')
           )
+      end
+
+      it 'returns true for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be true
       end
     end
 
@@ -1576,6 +1592,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       it 'marked_for_deletion returns true' do
         expect(project_data[:marked_for_deletion]).to be true
+      end
+
+      it 'returns false for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be false
       end
     end
 
@@ -1586,9 +1606,21 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         expect(project_data[:marked_for_deletion]).to be false
       end
 
+      it 'returns false for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be false
+      end
+
       it 'returns theoretical date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])
           .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(Date.current).strftime('%F'))
+      end
+    end
+
+    context 'when project is being deleted' do
+      let(:project_full_path) { project_being_deleted.full_path }
+
+      it 'returns true for is_self_deletion_in_progress' do
+        expect(project_data[:is_self_deletion_in_progress]).to be true
       end
     end
   end

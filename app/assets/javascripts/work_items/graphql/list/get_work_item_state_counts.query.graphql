@@ -29,6 +29,8 @@ query getWorkItemStateCounts(
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
@@ -93,6 +95,8 @@ query getWorkItemStateCounts(
       updatedBefore: $updatedBefore
       crmOrganizationId: $crmOrganizationId
       crmContactId: $crmContactId
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       in: $in
       not: $not
       or: $or

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GroupsController, feature_category: :groups_and_projects do
+  using RSpec::Parameterized::TableSyntax
+
   context 'token authentication' do
     context 'when public group' do
       let_it_be(:public_group) { create(:group, :public) }
@@ -68,6 +70,41 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['body']).to include('Test markdown preview')
+        end
+      end
+    end
+  end
+
+  describe 'GET #show' do
+    context 'when group path contains format extensions' do
+      where(:extension) { %w[.html .json] }
+
+      with_them do
+        let(:path) { 'my-group' }
+        let(:group) { create(:group, path: "#{path}#{extension}") }
+        let(:url) { group_path(group) }
+
+        it 'resolves the group correctly' do
+          get url
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:group)).to eq(group)
+          expect(response).to render_template('groups/show')
+        end
+
+        it 'does not treat extension as format parameter' do
+          get url
+
+          expect(controller.params[:id]).to eq(group.to_param)
+        end
+
+        it 'does not resolve to the group without the extension' do
+          create(:group, path: path) # group without the extension
+
+          get url
+
+          expect(assigns(:group)).to eq(group)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

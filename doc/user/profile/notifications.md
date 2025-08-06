@@ -44,13 +44,13 @@ You might receive notifications for one of the following reasons:
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/_index.md).
 
-> GitLab does not send a notification when:
->
-> - The account is a project bot.
-> - The account is a service account with default email address.
-> - The account is blocked (banned) or deactivated.
-> - [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
-> - An administrator has blocked notifications.
+GitLab does not send a notification when:
+
+- The account is a project bot.
+- The account is a service account with default email address.
+- The account is blocked (banned) or deactivated.
+- [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
+- An administrator has blocked notifications.
 
 ## Global notification settings
 
@@ -503,7 +503,9 @@ The value is one of the following, in order of priority:
 The reason for the notification is also included in the footer of the notification email.
 For example, an email with the reason `assigned` has this sentence in the footer:
 
-> You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
+```plaintext
+You are receiving this email because you have been assigned an item on <configured GitLab hostname>.
+```
 
 #### On-call alerts notifications
 

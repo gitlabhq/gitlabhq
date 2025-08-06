@@ -14,8 +14,13 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
 
-  let_it_be(:milestone1) { create(:milestone, group: group, start_date: 5.days.ago, due_date: 13.days.from_now) }
-  let_it_be(:milestone2) { create(:milestone, group: group, start_date: 2.days.from_now, due_date: 9.days.from_now) }
+  let_it_be(:milestone1) { create(:milestone, project: project, start_date: 5.days.ago, due_date: 13.days.from_now) }
+  let_it_be(:milestone2) do
+    create(:milestone, project: project, start_date: 2.days.from_now, due_date: 9.days.from_now)
+  end
+
+  let_it_be(:release1) { create(:release, project: project, tag: 'v1.0.0', milestones: [milestone1]) }
+  let_it_be(:release2) { create(:release, project: project, tag: 'v2.0.0', milestones: [milestone2]) }
 
   let_it_be(:incident) do
     create(:incident, project: project,
@@ -268,9 +273,46 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
       end
     end
 
-    describe 'customer relations organization' do
-      let_it_be(:user_crm) { create(:user) }
+    describe 'release' do
+      before do
+        visit project_work_items_path(project)
+      end
 
+      it 'filters', :aggregate_failures do
+        select_tokens 'Release', '=', 'v2.0.0', submit: true
+
+        wait_for_requests
+        expect(page).to have_css('.issue', count: 1)
+        expect(page).to have_link(task.title)
+
+        click_button 'Clear'
+
+        select_tokens 'Release', '=', 'None', submit: true
+
+        wait_for_requests
+        expect(page).to have_css('.issue', count: 1)
+        expect(page).to have_link(incident.title)
+
+        click_button 'Clear'
+
+        select_tokens 'Release', '=', 'Any', submit: true
+
+        wait_for_requests
+        expect(page).to have_css('.issue', count: 2)
+        expect(page).to have_link(issue.title)
+        expect(page).to have_link(task.title)
+
+        click_button 'Clear'
+
+        select_tokens 'Release', '!=', 'v1.0.0', submit: true
+
+        wait_for_requests
+        expect(page).to have_css('.issue', count: 1)
+        expect(page).to have_link(task.title)
+      end
+    end
+
+    describe 'customer relations organization' do
       let_it_be(:crm_organization1) { create(:crm_organization, group: group, name: 'GitLab Inc') }
       let_it_be(:crm_organization2) { create(:crm_organization, group: group, name: 'Acme Corp') }
 
@@ -325,13 +367,13 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
       end
 
       before_all do
-        group.add_developer(user_crm)
+        group.add_developer(user1)
       end
 
       before do
-        allow(user_crm).to receive_messages(read_crm_contact: true, read_crm_organization: true)
+        allow(user1).to receive_messages(read_crm_contact: true, read_crm_organization: true)
 
-        sign_in(user_crm)
+        sign_in(user1)
       end
 
       context 'when user is on group work items page' do

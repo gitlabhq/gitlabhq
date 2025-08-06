@@ -49,9 +49,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
-> **Deprecation**:
->
-> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
+**Deprecation**: The `pipelines` attribute in the response is deprecated in favor of the
+[list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)
+in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response.
+Otherwise, the `pipelines` attribute returns an empty array.
 
 Example response:
 
@@ -113,16 +114,17 @@ GET /groups/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated``. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
 ```
 
-> **Deprecation**:
->
-> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
+**Deprecation**: The `pipelines` attribute in the response is deprecated in favor of the
+[list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)
+in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response.
+Otherwise, the `pipelines` attribute returns an empty array.
 
 Example response:
 
@@ -211,9 +213,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
-> **Deprecation**:
->
-> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
+**Deprecation**: The `pipelines` attribute in the response is deprecated in favor of the
+[list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)
+in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response.
+Otherwise, the `pipelines` attribute returns an empty array.
 
 Example response:
 

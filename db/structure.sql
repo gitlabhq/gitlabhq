@@ -36921,6 +36921,8 @@ CREATE UNIQUE INDEX index_merge_request_diff_commit_users_on_name_and_email ON m
 
 CREATE UNIQUE INDEX index_merge_request_diff_commit_users_on_org_id_name_email ON merge_request_diff_commit_users USING btree (organization_id, name, email);
 
+CREATE INDEX index_merge_request_diff_commits_on_project_id ON merge_request_diff_commits USING btree (project_id);
+
 CREATE INDEX index_merge_request_diff_commits_on_sha ON merge_request_diff_commits USING btree (sha);
 
 CREATE INDEX index_merge_request_diff_details_failed_verification ON merge_request_diff_details USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);

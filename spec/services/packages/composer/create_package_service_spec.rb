@@ -19,10 +19,9 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
   describe '#execute' do
     let(:tag) { nil }
     let(:branch) { nil }
+    let(:created_package) { ::Packages::Composer::Package.last }
 
     subject { described_class.new(project, user, params).execute }
-
-    let(:created_package) { ::Packages::Composer::Package.last }
 
     context 'without an existing package' do
       context 'with a branch' do

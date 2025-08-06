@@ -275,8 +275,6 @@
 - "POST /api/:version/ai/duo_workflows/workflows"
 - "POST /api/:version/ai/duo_workflows/workflows/:id/checkpoints"
 - "POST /api/:version/applications/:id/renew-secret"
-- "POST /api/:version/clusters/:id/metrics_dashboard/annotations"
-- "POST /api/:version/environments/:id/metrics_dashboard/annotations"
 - "POST /api/:version/geo/node_proxy/:id/graphql"
 - "POST /api/:version/geo/proxy_git_ssh/info_refs_receive_pack"
 - "POST /api/:version/geo/proxy_git_ssh/info_refs_upload_pack"

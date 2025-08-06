@@ -67,6 +67,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     workItemPlanningViewEnabled,
     canReadCrmOrganization,
     canReadCrmContact,
+    releasesPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -144,6 +145,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       canReadCrmContact: parseBoolean(canReadCrmContact),
+      releasesPath,
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -117,10 +117,6 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         stub_package_file_object_storage(direct_upload: true)
       end
 
-      before do
-        allow_any_instance_of(Packages::PackageFileUploader).to receive(:size).and_return(128)
-      end
-
       let(:tmp_object) do
         fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang
           key: "tmp/uploads/#{file_name}",
@@ -129,6 +125,10 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
       end
 
       let(:file) { fog_to_uploaded_file(tmp_object) }
+
+      before do
+        allow_any_instance_of(Packages::PackageFileUploader).to receive(:size).and_return(128)
+      end
 
       context 'with recipe file' do
         include_context 'with recipe file parameters'

@@ -4,7 +4,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(
     path: 'groups/*id',
     controller: :groups,
-    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }
+    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(atom|ics)/ }
   ) do
     scope(path: '-') do
       # rubocop:disable Cop/PutGroupRoutesUnderScope -- These routes are legit and the cop rule will be improved in https://gitlab.com/gitlab-org/gitlab/-/issues/230703
@@ -198,7 +198,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(
     path: '*id',
     as: :group,
-    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ },
+    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(atom)/ },
     controller: :groups
   ) do
     get '/', action: :show

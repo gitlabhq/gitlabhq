@@ -103,8 +103,8 @@ A view is defined in Markdown as a code block, similar to other code blocks like
 
 For example:
 
-> Display a table of first 5 open issues assigned to the authenticated user in `gitlab-org/gitlab`.
-> Display columns `title`, `state`, `health`, `description`, `epic`, `milestone`, `weight`, and `updated`.
+- Display a table of first 5 open issues assigned to the authenticated user in `gitlab-org/gitlab`.
+- Display columns `title`, `state`, `health`, `description`, `epic`, `milestone`, `weight`, and `updated`.
 
 ````yaml
 ```glql

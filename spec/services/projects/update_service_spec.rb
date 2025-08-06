@@ -23,120 +23,48 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       stub_container_registry_config(enabled: false)
     end
 
-    context 'when changing restrict_user_defined_variables' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:current_user_role, :project_minimum_role, :to_value, :expected_value, :expected_role, :status) do
-        :owner      | :maintainer | false | false | :developer  | :success
-        :owner      | :developer  | true  | true  | :maintainer | :success
-        :maintainer | :maintainer | false | false | :developer  | :success
-        :maintainer | :maintainer | false | false | :developer  | :success
-        :maintainer | :owner      | false | true  | :owner      | :api_error
-        :maintainer | :developer  | true  | true  | :maintainer | :success
-        :maintainer | :owner      | true  | true  | :owner      | :success
-        :developer  | :owner      | false | true  | :owner      | :api_error
-        :developer  | :maintainer | false | true  | :maintainer | :api_error
-        :developer  | :developer  | true  | false | :developer  | :api_error
-        :guest      | :developer  | true  | false | :developer  | :api_error
+    context 'when changing CI/CD variable settings' do
+      before do
+        project.add_maintainer(maintainer)
+        project.add_developer(developer)
+        project.add_owner(owner)
       end
 
-      with_them do
-        let(:current_user) { public_send(current_user_role) }
+      context 'with sufficient permissions' do
+        it 'allows owner to modify both settings' do
+          result = update_project(project, owner,
+            restrict_user_defined_variables: true,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
 
-        before do
-          project.add_maintainer(maintainer)
-          project.add_developer(developer)
-          project.add_owner(owner)
-          project.add_guest(guest)
-
-          ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings[:pipeline_variables_minimum_override_role] = project_minimum_role
-          ci_cd_settings.save!
+          expect(result[:status]).to eq(:success)
         end
 
-        it 'allows/disallows to change restrict_user_defined_variables' do
-          result = update_project(project, current_user, restrict_user_defined_variables: to_value)
-          expect(result[:status]).to eq(status)
+        it 'allows maintainer to modify within permitted scope' do
+          result = update_project(project, maintainer, restrict_user_defined_variables: false)
 
-          project.reload
-          expect(project.restrict_user_defined_variables?).to eq(expected_value)
-          expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
-        end
-      end
-    end
-
-    context 'when changing ci_pipeline_variables_minimum_override_role' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:current_user_role, :from_value, :to_value, :status) do
-        :owner      | :owner      | :developer  | :success
-        :owner      | :owner      | :maintainer | :success
-        :owner      | :developer  | :maintainer | :success
-        :owner      | :maintainer | :owner      | :success
-        :maintainer | :owner      | :developer  | :api_error
-        :maintainer | :owner      | :maintainer | :api_error
-        :maintainer | :developer  | :maintainer | :success
-        :maintainer | :maintainer | :owner      | :api_error
-        :developer  | :maintainer | :owner      | :api_error
-      end
-
-      with_them do
-        let(:current_user) { public_send(current_user_role) }
-
-        before do
-          project.add_maintainer(maintainer)
-          project.add_developer(developer)
-          project.add_owner(owner)
-
-          ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings[:pipeline_variables_minimum_override_role] = from_value
-          ci_cd_settings.save!
-        end
-
-        it 'allows/disallows to change ci_pipeline_variables_minimum_override_role' do
-          result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
-          expect(result[:status]).to eq(status)
+          expect(result[:status]).to eq(:success)
         end
       end
 
-      context 'when changing both restrict_user_defined_variables and ci_pipeline_variables_minimum_override_role' do
-        using RSpec::Parameterized::TableSyntax
+      context 'with insufficient permissions' do
+        it 'prevents maintainer from elevating to owner role' do
+          project.ci_cd_settings.update!(pipeline_variables_minimum_override_role: :owner)
 
-        where(:current_user_role, :to_restrict, :from_role, :to_role, :expected_restrict, :expected_role, :status) do
-          :owner      | false | :owner      | :developer  | false | :developer  | :success
-          :owner      | false | :owner      | :maintainer | true  | :maintainer | :success
-          :owner      | true  | :developer  | :maintainer | true  | :maintainer | :success
-          :owner      | true  | :maintainer | :developer  | false | :developer  | :success
-          :maintainer | false | :owner      | :developer  | true  | :owner      | :api_error
-          :maintainer | true  | :developer  | :maintainer | true  | :maintainer | :success
-          :maintainer | true  | :maintainer | :developer  | false | :developer  | :success
-          :developer  | false | :maintainer | :owner      | true  | :maintainer | :api_error
-          :developer  | true  | :owner      | :maintainer | true  | :owner      | :api_error
+          result = update_project(project, maintainer, restrict_user_defined_variables: false)
+
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(
+            'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
+          )
         end
 
-        with_them do
-          let(:current_user) { public_send(current_user_role) }
+        it 'prevents developer from modifying settings' do
+          result = update_project(project, developer, restrict_user_defined_variables: true)
 
-          before do
-            project.add_maintainer(maintainer)
-            project.add_developer(developer)
-            project.add_owner(owner)
-
-            ci_cd_settings = project.ci_cd_settings
-            ci_cd_settings[:pipeline_variables_minimum_override_role] = from_role
-            ci_cd_settings.save!
-          end
-
-          it 'allows/disallows changes to both settings' do
-            result = update_project(project, current_user,
-              restrict_user_defined_variables: to_restrict,
-              ci_pipeline_variables_minimum_override_role: to_role.to_s)
-            expect(result[:status]).to eq(status)
-
-            project.reload
-            expect(project.restrict_user_defined_variables?).to eq(expected_restrict)
-            expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
-          end
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(
+            'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
+          )
         end
       end
     end

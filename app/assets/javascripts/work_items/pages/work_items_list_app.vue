@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -15,6 +16,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
 } from 'ee_else_ce/issues/list/utils';
+import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -83,6 +85,8 @@ import {
   TOKEN_TYPE_UPDATED,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TITLE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -119,6 +123,8 @@ const LabelToken = () =>
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const ReleaseToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
 const LocalBoard = () => import('./local_board/local_board.vue');
 const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
@@ -170,6 +176,7 @@ export default {
     'canReadCrmOrganization',
     'hasStatusFeature',
     'canReadCrmContact',
+    'releasesPath',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -504,6 +511,17 @@ export default {
         });
       }
 
+      if (!this.isGroup) {
+        tokens.push({
+          type: TOKEN_TYPE_RELEASE,
+          title: TOKEN_TITLE_RELEASE,
+          icon: 'rocket-launch',
+          token: ReleaseToken,
+          fetchReleases: this.fetchReleases,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-work-items-recent-tokens-release`,
+        });
+      }
+
       if (!this.workItemType) {
         tokens.push({
           type: TOKEN_TYPE_TYPE,
@@ -754,6 +772,8 @@ export default {
     this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
+    this.releasesCache = [];
+    this.areReleasesFetched = false;
   },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
@@ -1027,6 +1047,26 @@ export default {
     handleWorkItemCreated() {
       this.isInitialLoadComplete = false;
       this.refetchItems({ refetchCounts: true });
+    },
+    fetchReleases(search) {
+      if (this.areReleasesFetched) {
+        const data = search
+          ? fuzzaldrinPlus.filter(this.releasesCache, search, { key: 'tag' })
+          : this.releasesCache.slice(0, 10);
+        return Promise.resolve(data);
+      }
+
+      return axios
+        .get(this.releasesPath)
+        .then(({ data }) => {
+          this.releasesCache = data;
+          this.areReleasesFetched = true;
+          return data.slice(0, 10);
+        })
+        .catch(() => {
+          this.error = s__('WorkItem|Something went wrong while fetching items. Please try again.');
+          return [];
+        });
     },
   },
   constants: {

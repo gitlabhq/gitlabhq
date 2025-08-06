@@ -29,8 +29,6 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
     end
   end
 
-  subject { test_service.new(project, user, params) }
-
   let(:params) do
     {
       change: {
@@ -40,6 +38,8 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       }
     }
   end
+
+  subject { test_service.new(project, user, params) }
 
   describe 'push event' do
     it 'creates push event' do

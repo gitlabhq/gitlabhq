@@ -14,6 +14,17 @@ RSpec.describe Discussions::CaptureDiffNotePositionsService, feature_category: :
     let(:second_new_line) { 521 }
     let(:third_removed_line) { 1240 }
 
+    let!(:first_discussion_note) { note_for(new_line: first_new_line) }
+    let!(:second_discussion_note) { note_for(new_line: second_new_line) }
+    let!(:third_discussion_note) { note_for(old_line: third_removed_line) }
+    let!(:second_discussion_another_note) do
+      create(:diff_note_on_merge_request,
+        project: project,
+        position: second_discussion_note.position,
+        discussion_id: second_discussion_note.discussion_id,
+        noteable: merge_request)
+    end
+
     let(:service) { described_class.new(merge_request) }
 
     def build_position(diff_refs, new_line: nil, old_line: nil)
@@ -40,17 +51,6 @@ RSpec.describe Discussions::CaptureDiffNotePositionsService, feature_category: :
 
       expect(diff_position.line_code).to eq("#{id}_#{removed_line.to_i - offset}_#{added_line}")
       expect(diff_position.position).to eq(build_position(diff_refs, new_line: new_line, old_line: old_line))
-    end
-
-    let!(:first_discussion_note) { note_for(new_line: first_new_line) }
-    let!(:second_discussion_note) { note_for(new_line: second_new_line) }
-    let!(:third_discussion_note) { note_for(old_line: third_removed_line) }
-    let!(:second_discussion_another_note) do
-      create(:diff_note_on_merge_request,
-        project: project,
-        position: second_discussion_note.position,
-        discussion_id: second_discussion_note.discussion_id,
-        noteable: merge_request)
     end
 
     context 'and position of the discussion changed on target branch head' do

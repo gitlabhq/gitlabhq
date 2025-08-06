@@ -10,7 +10,7 @@
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 - if Feature.enabled?(:project_commits_refactor, @project)
-  #js-commit-list{ data: { "project-path" => @project.path } }
+  #js-commit-list{ data: { "project-full-path" => @project.full_path } }
 
 - else
   .js-project-commits-show{ 'data-commits-limit' => @limit }

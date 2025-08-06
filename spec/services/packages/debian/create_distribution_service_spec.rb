@@ -109,9 +109,9 @@ RSpec.describe Packages::Debian::CreateDistributionService, feature_category: :p
 
   let_it_be(:user) { create(:user) }
 
-  subject { described_class.new(container, user, params) }
-
   let(:response) { subject.execute }
+
+  subject { described_class.new(container, user, params) }
 
   context 'within a projet' do
     let_it_be(:container_type) { :project }

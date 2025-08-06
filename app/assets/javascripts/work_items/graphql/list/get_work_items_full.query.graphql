@@ -35,6 +35,8 @@ query getWorkItemsFull(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -65,6 +67,8 @@ query getWorkItemsFull(
       updatedBefore: $updatedBefore
       crmOrganizationId: $crmOrganizationId
       crmContactId: $crmContactId
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       in: $in
       not: $not
       or: $or

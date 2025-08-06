@@ -57,7 +57,9 @@ If the provided email address isn't associated with an existing account, no emai
 
 In both situations, you are redirected to the sign-in page and see the following message:
 
-> "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+```plaintext
+If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.
+```
 
 {{< alert type="note" >}}
 

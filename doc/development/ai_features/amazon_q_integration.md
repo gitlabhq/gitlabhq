@@ -5,10 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Amazon Q integration for testing and evaluation
 ---
 
-> This guide combines and build on top of the following guides and sources. It describes Amazon Q setup for testing and evaluation purposes:
->
-> - [Set up GitLab Duo with Amazon Q](../../user/duo_amazon_q/setup.md)
-> - [code-suggestions development guide](code_suggestions.md)
+This guide combines and builds on the following guides and sources. It describes Amazon Q set-up for testing and evaluation purposes:
+
+- [Set up GitLab Duo with Amazon Q](../../user/duo_amazon_q/setup.md)
+- [code-suggestions development guide](code_suggestions.md)
 
 This guide describes how to set up Amazon Q in a GitLab Linux package running in a VM, using the staging AI Gateway. The reason we need a GitLab Linux package instance instead of GDK is that the GitLab instance needs an HTTPS URL that can be accessed by Amazon Q.
 

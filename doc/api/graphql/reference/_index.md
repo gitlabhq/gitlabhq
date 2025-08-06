@@ -24531,6 +24531,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
+| <a id="cijobretrypath"></a>`retryPath` | [`String`](#string) | Retry path of the job. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner assigned to execute the job. |
 | <a id="cijobrunnermanager"></a>`runnerManager` | [`CiRunnerManager`](#cirunnermanager) | Runner manager assigned to the job. |
@@ -24598,6 +24599,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobminimalaccessrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
 | <a id="cijobminimalaccessrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobminimalaccessretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
+| <a id="cijobminimalaccessretrypath"></a>`retryPath` | [`String`](#string) | Retry path of the job. |
 | <a id="cijobminimalaccessretryable"></a>`retryable` | [`Boolean`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobminimalaccessrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner assigned to execute the job. |
 | <a id="cijobminimalaccessscheduled"></a>`scheduled` | [`Boolean`](#boolean) | Indicates the job is scheduled. |
@@ -37486,6 +37488,8 @@ Project-level settings for product analytics provider.
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
 | <a id="projectiscatalogresource"></a>`isCatalogResource` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
 | <a id="projectisforked"></a>`isForked` | [`Boolean!`](#boolean) | Project is forked. |
+| <a id="projectisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is in progress. |
+| <a id="projectisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is scheduled. |
 | <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
@@ -51098,6 +51102,7 @@ Implementations:
 | <a id="cijobinterfacerefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
 | <a id="cijobinterfacerefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobinterfaceretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
+| <a id="cijobinterfaceretrypath"></a>`retryPath` | [`String`](#string) | Retry path of the job. |
 | <a id="cijobinterfaceretryable"></a>`retryable` | [`Boolean`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobinterfacerunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner assigned to execute the job. |
 | <a id="cijobinterfacescheduled"></a>`scheduled` | [`Boolean`](#boolean) | Indicates the job is scheduled. |
