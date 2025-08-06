@@ -42,12 +42,6 @@ db:migrate:reset single-db-ci-connection:
     - .single-db-ci-connection
     - .rails:rules:single-db-ci-connection
 
-db:check-schema-single-db-ci-connection:
-  extends:
-    - db:check-schema
-    - .single-db-ci-connection
-    - .rails:rules:single-db-ci-connection
-
 db:post_deployment_migrations_validator-single-db-ci-connection:
   extends:
     - db:post_deployment_migrations_validator
@@ -69,12 +63,6 @@ db:rollback single-db-sec-connection:
 db:migrate:reset single-db-sec-connection:
   extends:
     - db:migrate:reset
-    - .single-db-sec-connection
-    - .rails:rules:single-db-sec-connection
-
-db:check-schema-single-db-sec-connection:
-  extends:
-    - db:check-schema
     - .single-db-sec-connection
     - .rails:rules:single-db-sec-connection
 
@@ -150,6 +138,7 @@ db:migrate:reset single-db:
 db:check-schema:
   extends:
     - .db-job-base
+    - .single-db
     - .rails:rules:db:check-schema
   script:
     - |
@@ -160,12 +149,6 @@ db:check-schema:
       }
 
       run_with_custom_exit_code db_check_schema
-
-db:check-schema-single-db:
-  extends:
-    - db:check-schema
-    - .single-db
-    - .rails:rules:single-db
 
 db:check-migrations:
   extends:
