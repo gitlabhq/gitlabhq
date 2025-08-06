@@ -19,21 +19,21 @@ module Gitlab
         GROUP BY %{column_list}
         HAVING COUNT(*) > 1
       SQL
-      ENTITIES_WITH_DUPLICATE_REFS_SQL = <<~SQL
-        SELECT DISTINCT %{entity_column}
+      RECORDS_WITH_DUPLICATE_REFS_SQL = <<~SQL
+        SELECT DISTINCT %{deduplication_column}
         FROM %{ref_table}
         WHERE %{ref_column} = %{good_id}
         AND EXISTS (
           SELECT 1
           FROM %{ref_table} sub
-          WHERE sub.%{entity_column} = %{ref_table}.%{entity_column}
+          WHERE sub.%{deduplication_column} = %{ref_table}.%{deduplication_column}
           AND sub.%{ref_column} = %{bad_id}
         )
       SQL
       DELETE_DUPLICATE_REFS_SQL = <<~SQL
         DELETE FROM %{ref_table}
         WHERE %{ref_column} = %{bad_id}
-        AND %{entity_column} IN (%{entity_ids})
+        AND %{deduplication_column} IN (%{duplicate_ids})
       SQL
       FIND_ARRAY_REFS_SQL = <<~SQL
         SELECT id, %{array_column}
@@ -52,9 +52,20 @@ module Gitlab
       SQL
 
       # Configuration for known problematic indexes which can be injected via SchemaChecker or CollationChecker
+      # Implementation based on scripts to fix index on https://gitlab.com/gitlab-org/gitlab/-/issues/372150#note_1083479615
+      # and https://gitlab.com/gitlab-org/gitlab/-/issues/523146#note_2418277173.
       INDEXES_TO_REPAIR = {
-        # Implementation based on scripts to fix index on https://gitlab.com/gitlab-org/gitlab/-/issues/372150#note_1083479615
-        # and https://gitlab.com/gitlab-org/gitlab/-/issues/523146#note_2418277173.
+        # 'deduplication_column' identifies which column should be used to detect potential duplicates
+        # when updating references.
+        # When a record with the same deduplication_column value exists for both the "good" and "bad" IDs,
+        # the record referencing the "bad" ID will be deleted rather than updated to prevent duplicates.
+        #
+        # Examples:
+        # - For ci_runner_taggings: 'deduplication_column' => 'runner_id'
+        #   Prevents a runner from having the same tag twice after deduplication
+        #
+        # - For sbom_component_versions: 'deduplication_column' => 'version'
+        #   Prevents duplicate version strings for the same component after deduplication
         'merge_request_diff_commit_users' => {
           'index_merge_request_diff_commit_users_on_name_and_email' => {
             'columns' => %w[name email],
@@ -81,6 +92,62 @@ module Gitlab
               {
                 'table' => 'merge_request_diff_commits',
                 'column' => 'commit_author_id'
+              }
+            ]
+          }
+        },
+        'ci_tags' => {
+          'index_tags_on_name' => {
+            'columns' => %w[name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'ci_build_tags',
+                'column' => 'tag_id',
+                'deduplication_column' => 'build_id'
+              },
+              {
+                'table' => 'ci_runner_taggings',
+                'column' => 'tag_id',
+                'deduplication_column' => 'runner_id'
+              },
+              {
+                'table' => 'ci_pending_builds',
+                'column' => 'tag_ids',
+                'type' => 'array'
+              },
+              {
+                'table' => 'dast_profile_tags',
+                'column' => 'tag_id'
+              }
+            ]
+          }
+        },
+        'ci_refs' => {
+          'index_ci_refs_on_project_id_and_ref_path' => {
+            'columns' => %w[project_id ref_path],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'p_ci_pipelines',
+                'column' => 'ci_ref_id'
+              }
+            ]
+          }
+        },
+        'sbom_components' => {
+          'idx_sbom_components_on_name_purl_type_component_type_and_org_id' => {
+            'columns' => %w[name purl_type component_type organization_id],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'sbom_occurrences',
+                'column' => 'component_id'
+              },
+              {
+                'table' => 'sbom_component_versions',
+                'column' => 'component_id',
+                'deduplication_column' => 'version'
               }
             ]
           }
@@ -204,12 +271,17 @@ module Gitlab
           ref_table = ref['table']
           ref_column = ref['column']
           column_type = ref['type']
-          entity_column = ref['entity_column']
+          deduplication_column = ref['deduplication_column']
+
+          unless table_exists?(ref_table)
+            logger.info("Reference table '#{ref_table}' does not exist in database #{database_name}. Skipping.")
+            next
+          end
 
           if column_type == 'array'
             handle_array_references(ref_table, ref_column, id_mapping)
-          elsif entity_column.present?
-            handle_duplicate_references(ref_table, ref_column, entity_column, id_mapping)
+          elsif deduplication_column.present?
+            handle_duplicate_references(ref_table, ref_column, deduplication_column, id_mapping)
           else
             update_references(ref_table, ref_column, id_mapping)
           end
@@ -260,35 +332,35 @@ module Gitlab
         end
       end
 
-      def handle_duplicate_references(ref_table, ref_column, entity_column, id_mapping)
+      def handle_duplicate_references(ref_table, ref_column, deduplication_column, id_mapping)
         logger.info("Processing references in '#{ref_table}' with duplicate detection...")
 
         id_mapping.each do |bad_id, good_id|
-          # Find all entities that have both good and bad references
+          # Find all records that have both good and bad references
           sql = format(
-            ENTITIES_WITH_DUPLICATE_REFS_SQL,
-            entity_column: connection.quote_column_name(entity_column),
+            RECORDS_WITH_DUPLICATE_REFS_SQL,
+            deduplication_column: connection.quote_column_name(deduplication_column),
             ref_table: connection.quote_table_name(ref_table),
             ref_column: connection.quote_column_name(ref_column),
             good_id: connection.quote(good_id),
             bad_id: connection.quote(bad_id)
           )
 
-          entities_with_both = execute_local(sql, read_only: true) do
+          records_with_both = execute_local(sql, read_only: true) do
             connection.select_values(sql)
           end
 
-          next unless entities_with_both&.any?
+          next unless records_with_both&.any?
 
-          entities_with_both.each_slice(BATCH_SIZE) do |entity_ids_batch|
-            # Delete the references with bad_id for these entities
+          records_with_both.each_slice(BATCH_SIZE) do |records_with_both_batch|
+            # Delete the references with bad_id for these records
             sql = format(
               DELETE_DUPLICATE_REFS_SQL,
               ref_table: connection.quote_table_name(ref_table),
               ref_column: connection.quote_column_name(ref_column),
               bad_id: connection.quote(bad_id),
-              entity_column: connection.quote_column_name(entity_column),
-              entity_ids: entity_ids_batch.map { |e| connection.quote(e) }.join(',')
+              deduplication_column: connection.quote_column_name(deduplication_column),
+              duplicate_ids: records_with_both_batch.map { |e| connection.quote(e) }.join(',')
             )
 
             execute_local(sql) do

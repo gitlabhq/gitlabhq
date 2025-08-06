@@ -36,6 +36,9 @@ module QA
 
         view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
           element 'stop-impersonation-btn'
+        end
+
+        view 'app/assets/javascripts/super_sidebar/components/user_counts.vue' do
           element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
           element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
           element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?

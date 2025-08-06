@@ -1,4 +1,4 @@
-import { extractGroupOrProject, toSentenceCase } from '~/glql/utils/common';
+import { extractGroupOrProject, toSentenceCase, relativeNamespace } from '~/glql/utils/common';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 describe('extractGroupOrProject', () => {
@@ -39,5 +39,22 @@ describe('toSentenceCase', () => {
     ${'iid'}                | ${'IID'}
   `('returns $expected for $str', ({ str, expected }) => {
     expect(toSentenceCase(str)).toBe(expected);
+  });
+});
+
+describe('relativeNamespace', () => {
+  it.each`
+    source                       | target                       | expected
+    ${'gitlab-org/gitlab-shell'} | ${'gitlab-org/gitlab-test'}  | ${'gitlab-test'}
+    ${'gitlab-org/gitlab-shell'} | ${'gitlab-org/gitlab-shell'} | ${''}
+    ${'gitlab-org/gitlab-shell'} | ${'gitlab-org'}              | ${'gitlab-org'}
+    ${'group/subgroup/project'}  | ${'group/subgroup/project'}  | ${''}
+    ${'group/subgroup/project'}  | ${'group/subgroup/project2'} | ${'project2'}
+    ${'group/subgroup/project'}  | ${'group/subgroup2/project'} | ${'subgroup2/project'}
+    ${'group/subgroup/project'}  | ${'group/subgroup'}          | ${'group/subgroup'}
+    ${'group/subgroup/project'}  | ${'group'}                   | ${'group'}
+    ${''}                        | ${'group/subgroup/project'}  | ${'group/subgroup/project'}
+  `('returns $expected for $source and $target', ({ source, target, expected }) => {
+    expect(relativeNamespace(source, target)).toBe(expected);
   });
 });

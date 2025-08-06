@@ -9,10 +9,18 @@ import TablePresenter from '~/glql/components/presenters/table.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import Presenter from '~/glql/core/presenter';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
 
 describe('TablePresenter', () => {
   let wrapper;
+
+  useMockLocationHelper();
+
+  beforeEach(() => {
+    window.location.href = 'https://gitlab.com/gitlab-org/gitlab-shell/-/issues/1';
+    window.location.origin = 'https://gitlab.com';
+  });
 
   const createWrapper = async ({ data, config, ...moreProps }, mountFn = shallowMountExtended) => {
     wrapper = mountFn(TablePresenter, {
@@ -71,13 +79,13 @@ describe('TablePresenter', () => {
     expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
     expect(getCells(tableRow1)).toEqual([
-      'Issue 1 (#1)',
+      'Issue 1 (gitlab-test#1)',
       '@foobar',
       'Open',
       'This is a description',
     ]);
     expect(getCells(tableRow2)).toEqual([
-      'Issue 2 (#2 - closed)',
+      'Issue 2 (gitlab-test#2 - closed)',
       '@janedoe',
       'Closed',
       'This is another description',
@@ -85,13 +93,13 @@ describe('TablePresenter', () => {
   });
 
   const order0 = [
-    ['Issue 1 (#1)', '@foobar', 'Open', 'This is a description'],
-    ['Issue 2 (#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
+    ['Issue 1 (gitlab-test#1)', '@foobar', 'Open', 'This is a description'],
+    ['Issue 2 (gitlab-test#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
   ];
 
   const order1 = [
-    ['Issue 2 (#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
-    ['Issue 1 (#1)', '@foobar', 'Open', 'This is a description'],
+    ['Issue 2 (gitlab-test#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
+    ['Issue 1 (gitlab-test#1)', '@foobar', 'Open', 'This is a description'],
   ];
 
   describe.each`
