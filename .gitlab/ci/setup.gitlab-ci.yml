@@ -129,7 +129,7 @@ generate-frontend-fixtures-mapping:
 detect-tests:
   extends:
     - .rails:rules:detect-tests
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+    - .with-ruby-slim-image
   needs: []
   stage: prepare
   variables:

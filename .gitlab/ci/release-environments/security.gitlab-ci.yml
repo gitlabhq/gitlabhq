@@ -2,6 +2,7 @@
 # This downstream pipeline should only be run in the security mirror repository.
 ---
 include:
+  - local: .gitlab/ci/ci-images.gitlab-ci.yml
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
     inputs:
       cng_path: 'charts/components/images'
@@ -21,9 +22,6 @@ stages:
     variables:
       - GIT_DEPTH
       - GIT_STRATEGY
-
-.ruby-image:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
 
 workflow:
   auto_cancel:
@@ -45,7 +43,7 @@ release-environments-build-cng:
 release-environments-build-omnibus-env:
   stage: prepare
   extends:
-    - .ruby-image
+    - .with-ruby-slim-image
   variables:
     BUILD_ENV: build.env
   before_script:

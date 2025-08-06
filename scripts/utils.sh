@@ -106,19 +106,14 @@ function bundle_install_script() {
 
   # pg 1.6+ comes with precompiled extensions which should allow us to remove this after it is upgraded
   if [[ "$GLCI_BUNDLE_SKIP_PG_REINSTALL" != "true" && $(bundle info pg) ]]; then
-    # If a job overrides default postgres version, reinstall pg gem to compile native extensions correctly
-    if [[ "$PG_VERSION" != "$DEFAULT_PG_VERSION" ]]; then
-      echo "Reinstalling pg gem to ensure native extensions match postgres version"
-      # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
-      # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
-      find vendor -type d -exec chmod 700 {} +
-      # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
-      # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
-      # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
-      bundle pristine pg
-    else
-      echo "Default version of postgres in use, skipping reinstallation of pg gem"
-    fi
+    echo "Reinstalling pg gem to ensure native extensions match postgres version"
+    # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
+    # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
+    find vendor -type d -exec chmod 700 {} +
+    # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
+    # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
+    # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
+    bundle pristine pg
   fi
 
   section_end "bundle-install"

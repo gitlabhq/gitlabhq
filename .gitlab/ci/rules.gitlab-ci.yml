@@ -1054,7 +1054,8 @@
     - <<: *if-default-refs
       changes: *gitaly-patterns
 
-.shared:rules:update-ruby-cache:
+# This rule is used by new cache implementation which updates cache automatically when cache is invalidated by changes
+.shared:rules:update-cache-v2:
   rules:
     - <<: *if-merge-train
       when: never

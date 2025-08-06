@@ -7,6 +7,7 @@ workflow:
 include:
   - local: .gitlab/ci/version.yml
   - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/ci-images.gitlab-ci.yml
   - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@11.4.0"
     inputs:
       job_name: "e2e-test-report"
@@ -40,14 +41,9 @@ stages:
 .parallel:
   parallel: 5
 
-.ruby-image:
-  # Because this pipeline template can be included directly in other projects,
-  # image path and registry needs to be defined explicitly
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
-
 .qa-install:
   extends:
-    - .ruby-image
+    - .with-ruby-slim-image
     - .qa-cache
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
