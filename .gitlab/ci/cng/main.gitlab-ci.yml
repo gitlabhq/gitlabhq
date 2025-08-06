@@ -13,10 +13,12 @@ stages:
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/ci-images.gitlab-ci.yml
   - local: .gitlab/ci/version.yml
 
 .build-cng-env:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
+  extends:
+    - .with-ruby-slim-image
   stage: prepare
   variables:
     BUILD_ENV: build.env

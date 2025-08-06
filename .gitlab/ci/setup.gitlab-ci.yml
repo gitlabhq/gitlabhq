@@ -129,7 +129,7 @@ generate-frontend-fixtures-mapping:
 detect-tests:
   extends:
     - .rails:rules:detect-tests
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
+    - .with-ruby-slim-image
   needs: []
   stage: prepare
   variables:
