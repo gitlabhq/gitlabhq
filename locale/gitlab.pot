@@ -71755,6 +71755,9 @@ msgstr ""
 msgid "WorkItem|Create field"
 msgstr ""
 
+msgid "WorkItem|Create lifecycle"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr ""
 
@@ -71928,6 +71931,12 @@ msgstr ""
 msgid "WorkItem|Lavender"
 msgstr ""
 
+msgid "WorkItem|Lifecycles"
+msgstr ""
+
+msgid "WorkItem|Lifecycles contain statuses that are used together as an item is worked on. Each item type uses a single lifecycle."
+msgstr ""
+
 msgid "WorkItem|Light blue"
 msgstr ""
 
@@ -72027,6 +72036,9 @@ msgid "WorkItem|New task"
 msgstr ""
 
 msgid "WorkItem|No assignees"
+msgstr ""
+
+msgid "WorkItem|No available status for all selected items."
 msgstr ""
 
 msgid "WorkItem|No child items are currently assigned. Use child items to break down this issue into smaller parts."
@@ -72300,6 +72312,9 @@ msgid "WorkItem|Something went wrong while fetching more related vulnerabilities
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching related vulnerabilities."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching statuses. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching the %{workItemType}. Please try again."

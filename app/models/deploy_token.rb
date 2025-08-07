@@ -12,6 +12,12 @@ class DeployToken < ApplicationRecord
   GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'
   DEPLOY_TOKEN_PREFIX = 'gldt-'
 
+  NOTIFICATION_INTERVALS = {
+    seven_days: 0..7,
+    thirty_days: 8..30,
+    sixty_days: 31..60
+  }.freeze
+
   add_authentication_token_field :token, encrypted: :required, format_with_prefix: :prefix_for_deploy_token
 
   attribute :expires_at, default: -> { Forever.date }
@@ -50,6 +56,10 @@ class DeployToken < ApplicationRecord
   accepts_nested_attributes_for :project_deploy_tokens
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
+  scope :project_token, -> { where(deploy_token_type: :project_type) }
+  scope :group_token, -> { where(deploy_token_type: :group_type) }
+  scope :order_expires_at_asc, -> { order(expires_at: :asc) }
+  scope :with_project_owners_and_maintainers, -> { includes(projects: :owners_and_maintainers) }
 
   def self.gitlab_deploy_token
     active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
@@ -59,6 +69,30 @@ class DeployToken < ApplicationRecord
     return DEPLOY_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
 
     ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX)
+  end
+
+  def self.notification_interval(interval)
+    NOTIFICATION_INTERVALS.fetch(interval).max
+  end
+
+  def self.scope_for_notification_interval(interval, min_expires_at: nil, max_expires_at: nil)
+    interval_range = NOTIFICATION_INTERVALS.fetch(interval).minmax
+    min_expiry_date, max_expiry_date = interval_range.map { |range| Date.current + range }
+    min_expiry_date = min_expires_at if min_expires_at
+    max_expiry_date = max_expires_at if max_expires_at
+    interval_attr = "#{interval}_notification_sent_at"
+
+    where(revoked: false)
+      .where(interval_attr => nil)
+      .where(expires_at: min_expiry_date..max_expiry_date)
+  end
+
+  def self.ordered_for_keyset_pagination
+    order(:expires_at, :id)
+  end
+
+  def self.update_notification_timestamps(token_ids, interval, timestamp = Time.current)
+    where(id: token_ids).update_all("#{interval}_notification_sent_at" => timestamp)
   end
 
   def valid_for_dependency_proxy?

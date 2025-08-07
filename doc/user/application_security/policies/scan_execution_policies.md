@@ -167,7 +167,7 @@ For more information, see the history.
 | `enabled`      | `boolean`                                    | true     | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
 | `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
-| `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
 
 ### `skip_ci` type
@@ -512,12 +512,12 @@ In GitLab 16.9 and earlier:
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](_index.md#scope).
+[Scope](_index.md#configure-the-policy-scope).
 
 ## Example security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---

@@ -46,6 +46,7 @@ sast:
   rules:
     - when: never
 
+# list of extensions that are supported by gitlab-advanced-sast. Some of these are also supported by semgrep-sast
 .gitlab-advanced-sast-exist-rules:
   exists:
     - '**/*.py'
@@ -210,6 +211,7 @@ pmd-apex-sast:
     - if: $CI_COMMIT_BRANCH
       exists: !reference [.pmd-apex-exist-rules, exists]
 
+# list of extensions that are supported by semgrep-sast. Some of these are also supported by gitlab-advanced-sast
 .semgrep-exist-rules:
   exists:
     - '**/*.py'
@@ -243,6 +245,7 @@ pmd-apex-sast:
     - '**/application*.yaml'
     - '**/bootstrap*.yaml'
 
+# list of extensions that are only supported by semgrep, and not gitlab-advanced-sast
 .semgrep-with-advanced-sast-exist-rules:
   exists:
     - '**/*.c'
@@ -255,6 +258,7 @@ pmd-apex-sast:
     - '**/*.hpp'
     - '**/*.scala'
     - '**/*.sc'
+    # TODO: remove this `php` pattern. See https://gitlab.com/gitlab-org/gitlab/-/issues/559997 for more details
     - '**/*.php'
     - '**/*.swift'
     - '**/*.m'

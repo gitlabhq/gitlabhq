@@ -646,6 +646,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:deploy_tokens_expiring
+  :worker_name: DeployTokens::ExpiringWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:environments_auto_delete_cron
   :worker_name: Environments::AutoDeleteCronWorker
   :feature_category: :continuous_delivery

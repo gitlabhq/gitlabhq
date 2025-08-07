@@ -330,7 +330,7 @@ To achieve this goal, you could define 3 policies for the Finance group:
 Only a single set of policies needs to be maintained but still provides the flexibility to suit
 the needs of different projects.
 
-For more details, see [Enforcement](../policies/_index.md#enforcement).
+For more details, see [Enforcement](../policies/enforcement/_index.md#enforcement).
 
 ### Configure scan execution policies
 
@@ -362,4 +362,4 @@ Implement your security policies in phases:
 1. Gradually expand the policies' scope to include more projects.
 1. Continue until all target projects are covered.
 
-For more details, see [Policy design guidelines](../policies/_index.md#policy-design-guidelines).
+For more details, see the [policy design guidelines](../policies/enforcement/_index.md#policy-design-guidelines).

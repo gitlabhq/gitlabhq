@@ -1187,6 +1187,28 @@ In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.
 
 </div>
 
+<div class="deprecation " data-milestone="18.6">
+
+### Prometheus 2.x bundled with the Omnibus Linux package
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- Removal in GitLab <span class="milestone">18.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9196).
+
+</div>
+
+Prometheus 2.x that is bundled with the Linux package is deprecated and will be updated to
+the latest Prometheus 3.x release in GitLab 18.6.
+
+Prometheus 3 contains some potentially breaking changes such as a new log format and stricter
+header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/3.0/migration).
+
+This change does not impact GitLab Helm chart installations.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.6">
 
 ### Replace compliance standards adherence dashboard with compliance status dashboard

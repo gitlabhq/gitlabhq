@@ -254,6 +254,11 @@ domains:
     description:
     feature_categories:
       - pages
+  
+  DeployTokens:
+    description: Managing deploy tokens
+    feature_categories:
+      - continuous_delivery
 
   Projects:
     description: Managing projects as workspaces and their lifecycle. Feature specific behavior must not go here.

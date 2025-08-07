@@ -14,6 +14,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_STATUS,
 } from '../../constants';
 import workItemBulkUpdateMutation from '../../graphql/list/work_item_bulk_update.mutation.graphql';
 import getAvailableBulkEditWidgets from '../../graphql/list/get_available_bulk_edit_widgets.query.graphql';
@@ -26,6 +27,8 @@ import WorkItemBulkMove from './work_item_bulk_move.vue';
 
 const WorkItemBulkEditIteration = () =>
   import('ee_component/work_items/components/list/work_item_bulk_edit_iteration.vue');
+const WorkItemBulkEditStatus = () =>
+  import('ee_component/work_items/components/work_item_bulk_edit/work_item_bulk_edit_status.vue');
 
 export default {
   name: 'WorkItemBulkEditSidebar',
@@ -52,12 +55,13 @@ export default {
     WorkItemBulkEditDropdown,
     WorkItemBulkEditLabels,
     WorkItemBulkEditIteration,
+    WorkItemBulkEditStatus,
     WorkItemBulkEditMilestone,
     WorkItemBulkEditParent,
     WorkItemBulkMove,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature'],
+  inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature', 'hasStatusFeature'],
   props: {
     checkedItems: {
       type: Array,
@@ -87,6 +91,7 @@ export default {
       healthStatus: undefined,
       removeLabelIds: [],
       state: undefined,
+      statusId: undefined,
       subscription: undefined,
       iterationId: undefined,
       milestoneId: undefined,
@@ -119,6 +124,7 @@ export default {
         this.confidentiality !== undefined,
         this.healthStatus !== undefined,
         this.state !== undefined,
+        this.statusId !== undefined,
         this.subscription !== undefined,
         this.iterationId !== undefined,
         this.milestoneId !== undefined,
@@ -135,6 +141,14 @@ export default {
     },
     isEditableUnlessEpicList() {
       return !this.shouldUseGraphQLBulkEdit || (this.shouldUseGraphQLBulkEdit && !this.isEpicsList);
+    },
+    showStatusDropdown() {
+      return (
+        this.hasStatusFeature &&
+        !this.isEpicsList &&
+        this.glFeatures.workItemStatusFeatureFlag &&
+        this.glFeatures.workItemsBulkEdit
+      );
     },
     workItemTypeIds() {
       return [...new Set(this.checkedItems.map((item) => item.workItemType.id))];
@@ -153,6 +167,9 @@ export default {
     },
     canEditIteration() {
       return this.availableWidgets.includes(WIDGET_TYPE_ITERATION);
+    },
+    canEditStatus() {
+      return this.availableWidgets.includes(WIDGET_TYPE_STATUS);
     },
     canEditMilestone() {
       return this.availableWidgets.includes(WIDGET_TYPE_MILESTONE);
@@ -217,6 +234,7 @@ export default {
             }),
             iterationWidget: this.formatValue({ name: 'iterationId', value: this.iterationId }),
             milestoneWidget: this.formatValue({ name: 'milestoneId', value: this.milestoneId }),
+            statusWidget: this.formatValue({ name: 'status', value: this.statusId }),
             stateEvent: this.state && this.state.toUpperCase(),
             subscriptionEvent: this.subscription && this.subscription.toUpperCase(),
             hierarchyWidget: this.formatValue({ name: 'parentId', value: this.parentId }),
@@ -274,6 +292,13 @@ export default {
       :label="__('State')"
       :disabled="!hasItemsSelected"
       data-testid="bulk-edit-state"
+    />
+    <work-item-bulk-edit-status
+      v-if="showStatusDropdown"
+      v-model="statusId"
+      :full-path="fullPath"
+      :checked-items="checkedItems"
+      :disabled="!hasItemsSelected || !canEditStatus"
     />
     <work-item-bulk-edit-assignee
       v-model="assigneeId"

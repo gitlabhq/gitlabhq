@@ -163,4 +163,4 @@ The following is an example password in clear text:
 
 ### Policy not applying
 
-Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/security_policy_projects.md#link-to-a-security-policy-project) for more.
+Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/enforcement/security_policy_projects.md#link-to-a-security-policy-project) for more.

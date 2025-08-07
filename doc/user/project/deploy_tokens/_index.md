@@ -102,6 +102,28 @@ name and token of the group deploy token.
 When `gitlab-deploy-token` is defined in a group, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD`
 CI/CD variables are available only to immediate child projects of the group.
 
+## Deploy token expiration
+
+{{< history >}}
+
+- Email notifications for deploy token expiration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `project_deploy_token_expiring_notifications`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Deploy tokens expire on the date you define at 00:00 AM UTC.
+
+GitLab checks every day at 01:00 AM UTC for deploy tokens that are about to expire.
+Project owners and maintainers are notified by email 60, 30, and 7 days before these tokens expire.
+
+These email notifications are sent only once per interval for active (non-revoked) deploy tokens.
+
 ### GitLab deploy token security
 
 GitLab deploy tokens are long-lived, making them attractive for attackers.

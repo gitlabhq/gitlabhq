@@ -1,0 +1,19 @@
+- title: "Prometheus 2.x bundled with the Omnibus Linux package"
+  removal_milestone: "18.6"
+  announcement_milestone: "18.3"
+  breaking_change: false
+  reporter: clemensbeck
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9196
+  impact: small
+  scope: instance
+  resolution_role: Admin
+  manual_task: false
+  body: |
+    Prometheus 2.x that is bundled with the Linux package is deprecated and will be updated to
+    the latest Prometheus 3.x release in GitLab 18.6.
+
+    Prometheus 3 contains some potentially breaking changes such as a new log format and stricter
+    header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/3.0/migration).
+
+    This change does not impact GitLab Helm chart installations.

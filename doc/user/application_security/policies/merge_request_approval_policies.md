@@ -217,7 +217,7 @@ the following sections and tables provide an alternative.
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
-| `policy_scope`      | `object` of [`policy_scope`](_index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 | `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
 
@@ -452,7 +452,7 @@ The availability of support for pipeline execution policies is controlled by a f
 #### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 scan_execution_policy:
@@ -506,7 +506,7 @@ For more information, see [Recreate pipeline execution policies created before G
 {{< /alert >}}
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---
@@ -556,7 +556,7 @@ To recreate a pipeline execution policy:
 
 To customize policy enforcement, you can define a policy's scope to either include or exclude
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](_index.md#scope).
+[Scope](_index.md#configure-the-policy-scope).
 
 ## `bypass_settings`
 
@@ -613,7 +613,7 @@ bypass_settings:
 ## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---
