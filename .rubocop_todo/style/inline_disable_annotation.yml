@@ -1793,7 +1793,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/database/schema_cache_with_renamed_table_legacy.rb'
     - 'lib/gitlab/database/with_lock_retries.rb'
     - 'lib/gitlab/database_importers/work_items/base_type_importer.rb'
-    - 'lib/gitlab/database_importers/work_items/related_links_restrictions_importer.rb'
     - 'lib/gitlab/dependency_linker/go_mod_linker.rb'
     - 'lib/gitlab/dependency_linker/go_sum_linker.rb'
     - 'lib/gitlab/diff/file_collection/merge_request_diff_batch.rb'

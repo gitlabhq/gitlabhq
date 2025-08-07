@@ -23,7 +23,7 @@ module Issuable
 
     def after_destroy(issuable)
       delete_associated_records(issuable)
-      issuable.update_project_counter_caches
+      issuable.invalidate_project_counter_caches
       issuable.assignees.each(&:invalidate_cache_counts)
     end
 

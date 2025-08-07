@@ -382,6 +382,23 @@ PRIMARY KEY version
 ORDER BY version
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_approvals
+(
+    `id` Int64,
+    `merge_request_id` Int64,
+    `user_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `patch_id_sha` String DEFAULT '',
+    `project_id` Int64,
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (merge_request_id, id)
+ORDER BY (merge_request_id, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE siphon_bulk_import_entities
 (
     `id` Int64,
@@ -516,6 +533,56 @@ CREATE TABLE siphon_label_links
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_merge_request_assignees
+(
+    `id` Int64,
+    `user_id` Int64,
+    `merge_request_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `project_id` Int64,
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (merge_request_id, id)
+ORDER BY (merge_request_id, id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_merge_request_metrics
+(
+    `merge_request_id` Int64,
+    `latest_build_started_at` Nullable(DateTime64(6, 'UTC')),
+    `latest_build_finished_at` Nullable(DateTime64(6, 'UTC')),
+    `first_deployed_to_production_at` Nullable(DateTime64(6, 'UTC')),
+    `merged_at` Nullable(DateTime64(6, 'UTC')),
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `merged_by_id` Nullable(Int64),
+    `latest_closed_by_id` Nullable(Int64),
+    `latest_closed_at` Nullable(DateTime64(6, 'UTC')),
+    `first_comment_at` Nullable(DateTime64(6, 'UTC')),
+    `first_commit_at` Nullable(DateTime64(6, 'UTC')),
+    `last_commit_at` Nullable(DateTime64(6, 'UTC')),
+    `diff_size` Nullable(Int64),
+    `modified_paths_size` Nullable(Int64),
+    `commits_count` Nullable(Int64),
+    `first_approved_at` Nullable(DateTime64(6, 'UTC')),
+    `first_reassigned_at` Nullable(DateTime64(6, 'UTC')),
+    `added_lines` Nullable(Int64),
+    `removed_lines` Nullable(Int64),
+    `target_project_id` Nullable(Int64),
+    `id` Int64,
+    `first_contribution` Bool DEFAULT false,
+    `pipeline_id` Nullable(Int64),
+    `reviewer_first_assigned_at` Nullable(DateTime64(6, 'UTC')),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (merge_request_id, id)
+ORDER BY (merge_request_id, id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE siphon_merge_requests

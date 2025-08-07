@@ -50,12 +50,6 @@ export default {
         name: this.name,
       });
     },
-
-    message(messageTemplate, dashboardLimit) {
-      return sprintf(messageTemplate, {
-        dashboardLimit,
-      });
-    },
   },
   freeUserLimitHelpPath: helpPagePath('user/free_user_limit'),
 };

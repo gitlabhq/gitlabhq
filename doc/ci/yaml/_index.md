@@ -2905,8 +2905,9 @@ test-job:
 
 {{< /history >}}
 
-Use `image:docker` to pass options to the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) and the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
-runner. This keyword does not work with other executor types.
+Use `image:docker` to pass options to runners using the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
+This keyword does not work with other executor types.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

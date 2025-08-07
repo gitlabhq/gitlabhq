@@ -1976,4 +1976,28 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:field) { :description }
     end
   end
+
+  describe ".invalidate_project_counter_caches" do
+    let(:count_service) { instance_double(Projects::OpenIssuesCountService) }
+
+    context "when the project exists" do
+      it "calls Projects::OpenIssuesCountService" do
+        allow(Projects::OpenIssuesCountService).to receive(:new).with(reusable_project).and_return(count_service)
+        expect(count_service).to receive(:delete_cache)
+
+        subject.invalidate_project_counter_caches
+      end
+    end
+
+    context "when the project does not exist" do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+
+      it "does not call Projects::OpenIssuesCountService" do
+        expect(Projects::OpenIssuesCountService).not_to receive(:new).with(reusable_project)
+
+        group_work_item.invalidate_project_counter_caches
+      end
+    end
+  end
 end

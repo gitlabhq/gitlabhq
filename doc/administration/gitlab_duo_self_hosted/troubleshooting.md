@@ -500,7 +500,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    Then restart GitLab and check if the feature becomes accessible.
 
-   > **Important**: After troubleshooting, restart GitLab **without** this flag set.
+   **Important**: After troubleshooting, restart GitLab **without** this flag set.
 
    {{< alert type="warning" >}}
 

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlFormInput, GlIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -6,15 +6,19 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import TreeList from '~/repository/file_tree_browser/components/tree_list.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
+import { Mousetrap } from '~/lib/mousetrap';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
 jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
 jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 const getQueryHandlerSuccess = jest.fn().mockResolvedValue(mockResponse);
 
@@ -173,6 +177,84 @@ describe('Tree List', () => {
       findFilterInput().vm.$emit('input', '*.nonexistent');
       await waitForPromises();
       expect(findNoFilesMessage().exists()).toBe(true);
+    });
+  });
+
+  describe('handles filter bar focus correctly when shortcuts are enabled', () => {
+    beforeEach(() => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      createComponent();
+    });
+
+    it('focuses filter input when triggerFocusFilterBar is called', async () => {
+      const filterInput = wrapper.findByTestId('ftb-filter-input');
+      const mockFocus = jest.fn();
+      filterInput.vm.focus = mockFocus;
+
+      const mousetrapInstance = wrapper.vm.mousetrap;
+      mousetrapInstance.trigger('f');
+
+      await nextTick();
+
+      expect(mockFocus).toHaveBeenCalled();
+    });
+
+    it('displays shortcut in placeholder when shortcuts are enabled', () => {
+      const filterInput = wrapper.findByTestId('ftb-filter-input');
+      const placeholder = filterInput.props('placeholder');
+      expect(placeholder).toContain(`(f)`);
+    });
+
+    it('binds and unbinds Mousetrap shortcut', () => {
+      const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
+      const unbindSpy = jest.spyOn(Mousetrap.prototype, 'unbind');
+
+      createComponent();
+      expect(bindSpy).toHaveBeenCalledWith(
+        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
+        wrapper.vm.triggerFocusFilterBar,
+      );
+
+      wrapper.destroy();
+      expect(unbindSpy).toHaveBeenCalledWith(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
+    });
+  });
+
+  describe('handles filter bar focus correctly when shortcuts are disabled', () => {
+    beforeEach(() => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent();
+    });
+
+    it('does not focus when shortcuts are disabled', async () => {
+      const filterInput = wrapper.findByTestId('ftb-filter-input');
+      const mockFocus = jest.fn();
+      filterInput.vm.focus = mockFocus;
+
+      const mousetrapInstance = wrapper.vm.mousetrap;
+      mousetrapInstance.trigger('f');
+
+      await nextTick();
+
+      expect(mockFocus).not.toHaveBeenCalled();
+    });
+
+    it('does not display shortcut in placeholder when shortcuts are disabled', () => {
+      const filterInput = wrapper.findByTestId('ftb-filter-input');
+      const placeholder = filterInput.props('placeholder');
+      const shortcutKey = keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0];
+
+      expect(placeholder).not.toContain(`(${shortcutKey})`);
+      expect(placeholder).toBe('Filter (e.g. *.vue)');
+    });
+
+    it('does not bind mousetrap shortcut when shortcuts are disabled', () => {
+      const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
+
+      expect(bindSpy).not.toHaveBeenCalledWith(
+        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
+        wrapper.vm.triggerFocusFilterBar,
+      );
     });
   });
 });

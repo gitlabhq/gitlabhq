@@ -2,7 +2,7 @@ import EntitySelect from './entity_select.vue';
 
 export default {
   component: EntitySelect,
-  title: 'vue_shared/components/entity_select/entity_select',
+  title: 'vue_shared/entity_select/entity_select',
 };
 
 const Template = (args, { argTypes }) => ({

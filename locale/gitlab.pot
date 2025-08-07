@@ -1814,6 +1814,9 @@ msgstr ""
 msgid "(no user)"
 msgstr ""
 
+msgid "(open and assigned)"
+msgstr ""
+
 msgid "(open and unassigned)"
 msgstr ""
 
@@ -3714,7 +3717,7 @@ msgstr ""
 msgid "Activity|An error occurred while retrieving activity. Reload the page to try again."
 msgstr ""
 
-msgid "Actual Version"
+msgid "Actual version"
 msgstr ""
 
 msgid "Add"
@@ -5962,7 +5965,7 @@ msgstr ""
 msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr ""
 
-msgid "Affected Columns"
+msgid "Affected columns"
 msgstr ""
 
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
@@ -15130,10 +15133,10 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-msgid "Collation Mismatches"
+msgid "Collation mismatches"
 msgstr ""
 
-msgid "Collation Name"
+msgid "Collation name"
 msgstr ""
 
 msgid "Collector hostname"
@@ -18971,7 +18974,7 @@ msgstr ""
 msgid "Correlation ID"
 msgstr ""
 
-msgid "Corrupted Indexes"
+msgid "Corrupted indexes"
 msgstr ""
 
 msgid "Cost Factor Settings"
@@ -21321,13 +21324,10 @@ msgstr ""
 msgid "Database update failed"
 msgstr ""
 
-msgid "DatabaseDiagnostics|Checking for recent diagnostic results..."
+msgid "DatabaseDiagnostics|Collation health check"
 msgstr ""
 
-msgid "DatabaseDiagnostics|Collation Health Check"
-msgstr ""
-
-msgid "DatabaseDiagnostics|Collation mismatches are shown for informational purposes and may not indicate a problem."
+msgid "DatabaseDiagnostics|Collation mismatches are informational and might not indicate a problem."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Contact Support"
@@ -21336,7 +21336,7 @@ msgstr ""
 msgid "DatabaseDiagnostics|Database: %{name}"
 msgstr ""
 
-msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that may occur after OS upgrades"
+msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Issues detected"
@@ -21351,16 +21351,13 @@ msgstr ""
 msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
 msgstr ""
 
-msgid "DatabaseDiagnostics|Run Collation Check"
-msgstr ""
-
-msgid "DatabaseDiagnostics|Running diagnostics..."
+msgid "DatabaseDiagnostics|Run collation check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
 msgstr ""
 
-msgid "DatabaseDiagnostics|These issues require manual remediation. Read our documentation on PostgreSQL OS upgrades for step-by-step instructions."
+msgid "DatabaseDiagnostics|These issues require manual remediation."
 msgstr ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
@@ -23051,6 +23048,9 @@ msgid "Details block"
 msgstr ""
 
 msgid "Details of violation-%{violationId}"
+msgstr ""
+
+msgid "Detect and resolve database issues."
 msgstr ""
 
 msgid "Detect host keys"
@@ -27790,6 +27790,9 @@ msgid "Flow triggers"
 msgstr ""
 
 msgid "Focus file browser"
+msgstr ""
+
+msgid "Focus file tree browser filter bar"
 msgstr ""
 
 msgid "Focus filter bar"
@@ -33681,10 +33684,10 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-msgid "Index Name"
+msgid "Index deletion is canceled"
 msgstr ""
 
-msgid "Index deletion is canceled"
+msgid "Index name"
 msgstr ""
 
 msgid "Index root namespaces automatically"
@@ -41540,6 +41543,9 @@ msgstr ""
 msgid "Needs attention"
 msgstr ""
 
+msgid "Needs deduplication"
+msgstr ""
+
 msgid "Neither gitlab_instance_uid or sub found on Cloud Connector token"
 msgstr ""
 
@@ -43391,6 +43397,9 @@ msgstr ""
 msgid "Observability|Filter data by month:"
 msgstr ""
 
+msgid "Observability|Group is required"
+msgstr ""
+
 msgid "Observability|Includes Logs, Traces and Metrics. %{learnMoreLink}"
 msgstr ""
 
@@ -43448,6 +43457,9 @@ msgstr ""
 msgid "Observability|Permanently delete the observability service configuration."
 msgstr ""
 
+msgid "Observability|Project not found"
+msgstr ""
+
 msgid "Observability|Related issues"
 msgstr ""
 
@@ -43478,7 +43490,13 @@ msgstr ""
 msgid "Observability|User Email"
 msgstr ""
 
+msgid "Observability|User is required"
+msgstr ""
+
 msgid "Observability|View our %{documentation} for further instructions on how to use these features."
+msgstr ""
+
+msgid "Observability|You are not authorized to request observability access"
 msgstr ""
 
 msgid "Observability|allowedMessageType must be a non-empty string"
@@ -52877,7 +52895,7 @@ msgstr ""
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
-msgid "Repository|Filter (e.g. *.vue) (f)"
+msgid "Repository|Filter (e.g. *.vue)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -56082,7 +56100,13 @@ msgstr ""
 msgid "Secrets|Add secret"
 msgstr ""
 
+msgid "Secrets|An error occurred while enabling the Secrets Manager."
+msgstr ""
+
 msgid "Secrets|An error occurred while fetching secrets. Please try again."
+msgstr ""
+
+msgid "Secrets|An error occurred while fetching the Secret manager status."
 msgstr ""
 
 msgid "Secrets|An error occurred while fetching the Secret manager status. Please try again."
@@ -61722,7 +61746,7 @@ msgstr ""
 msgid "StorageSize|Unknown"
 msgstr ""
 
-msgid "Stored Version"
+msgid "Stored version"
 msgstr ""
 
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
@@ -66168,9 +66192,6 @@ msgid "Tool Coverage"
 msgstr ""
 
 msgid "ToolCoverage|Project coverage"
-msgstr ""
-
-msgid "Tools for detecting and resolving database issues in self-managed GitLab instances."
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."

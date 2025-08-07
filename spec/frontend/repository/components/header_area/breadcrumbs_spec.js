@@ -161,7 +161,6 @@ describe('Repository breadcrumbs component', () => {
             path: '/',
             text: '',
             to: '/-/tree',
-            href: '/test-project/path/-/tree',
           },
         ],
       });
@@ -182,7 +181,6 @@ describe('Repository breadcrumbs component', () => {
             path: '/',
             text: '',
             to: '/-/tree',
-            href: '/repo/test-project/path/-/tree',
           },
         ],
       });
@@ -277,6 +275,10 @@ describe('Repository breadcrumbs component', () => {
             name: routeName,
           },
         });
+
+        expect(findRouterLinks().at(0).attributes('to')).toEqual('/-/tree');
+        expect(findRouterLinks().at(1).attributes('to')).toEqual('/-/tree/app');
+        expect(findRouterLinks().at(2).attributes('to')).toEqual('/-/tree/app/assets');
         expect(findRouterLinks().at(3).attributes('to')).toEqual(linkTo);
       },
     );

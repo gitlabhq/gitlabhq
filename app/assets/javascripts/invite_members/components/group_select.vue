@@ -58,9 +58,6 @@ export default {
     toggleText() {
       return this.selectedGroup.name || this.$options.i18n.dropdownText;
     },
-    isFetchResultEmpty() {
-      return this.groups.length === 0;
-    },
     infiniteScroll() {
       return Boolean(this.pagination.nextPage);
     },

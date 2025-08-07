@@ -7407,4 +7407,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to eq(expected) }
     end
   end
+
+  describe ".invalidate_project_counter_caches" do
+    let(:count_service) { instance_double(Projects::OpenMergeRequestsCountService) }
+
+    it "calls Projects::OpenIssuesCountService" do
+      allow(Projects::OpenMergeRequestsCountService).to receive(:new).with(project).and_return(count_service)
+      expect(count_service).to receive(:delete_cache)
+
+      subject.invalidate_project_counter_caches
+    end
+  end
 end

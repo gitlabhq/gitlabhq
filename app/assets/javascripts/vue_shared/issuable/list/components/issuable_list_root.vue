@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -8,7 +8,7 @@ import { __ } from '~/locale';
 import { DRAG_DELAY } from '~/sortable/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-
+import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import issuableEventHub from '~/issues/list/eventhub';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
@@ -31,7 +31,6 @@ export default {
     GlAlert,
     GlBadge,
     GlKeysetPagination,
-    GlSkeletonLoader,
     IssuableTabs,
     FilteredSearchBar,
     IssuableItem,
@@ -40,6 +39,7 @@ export default {
     GlPagination,
     VueDraggable,
     PageSizeSelector,
+    ResourceListsLoadingStateList,
     LocalStorageSync,
     EmptyResult,
   },
@@ -383,11 +383,11 @@ export default {
       </template>
     </issuable-bulk-edit-sidebar>
     <slot name="list-body"></slot>
-    <ul v-if="issuablesLoading" class="content-list">
-      <li v-for="n in skeletonItemCount" :key="n" class="issue !gl-px-5 !gl-py-5">
-        <gl-skeleton-loader />
-      </li>
-    </ul>
+    <resource-lists-loading-state-list
+      v-if="issuablesLoading"
+      :left-lines-count="3"
+      :list-length="skeletonItemCount"
+    />
     <template v-else>
       <component
         :is="issuablesWrapper"

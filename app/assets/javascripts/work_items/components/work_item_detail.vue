@@ -577,7 +577,7 @@ export default {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
     isDuoWorkflowEnabled() {
-      return this.glFeatures.aiDuoAgentIssueToMr;
+      return this.glFeatures.duoWorkflowInCi;
     },
     projectIdAsNumber() {
       return getIdFromGraphQLId(this.workItemProjectId);

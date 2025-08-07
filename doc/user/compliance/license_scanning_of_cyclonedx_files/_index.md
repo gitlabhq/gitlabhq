@@ -247,7 +247,11 @@ Only licenses providing an SPDX identifier are currently supported. Extending th
 
 ### Configure license information source
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501662) in GitLab 18.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501662) in GitLab 18.3.
+
+{{< /history >}}
 
 You can configure the preferred source for license information in your project's security configuration:
 

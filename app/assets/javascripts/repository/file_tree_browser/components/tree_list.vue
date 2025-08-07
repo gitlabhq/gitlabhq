@@ -9,6 +9,9 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import { getRefType } from '~/repository/utils/ref_type';
+import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { Mousetrap } from '~/lib/mousetrap';
 import { normalizePath, dedupeByFlatPathAndId } from '../utils';
 
 export default {
@@ -51,6 +54,19 @@ export default {
     isRootLoading() {
       return this.isDirectoryLoading('/');
     },
+    filterSearchShortcutKey() {
+      if (this.shortcutsDisabled) {
+        return null;
+      }
+      return keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0];
+    },
+    shortcutsDisabled() {
+      return shouldDisableShortcuts();
+    },
+    placeholderText() {
+      const base = s__('Repository|Filter (e.g. *.vue)');
+      return this.shortcutsDisabled ? base : `${base} (${this.filterSearchShortcutKey})`;
+    },
     filteredFlatFilesList() {
       const filter = this.filter.trim();
       if (!filter) return this.flatFilesList;
@@ -73,6 +89,14 @@ export default {
   },
   mounted() {
     this.navigateTo(this.$route.params.path || '/');
+    this.mousetrap = new Mousetrap();
+
+    if (!this.shortcutsDisabled) {
+      this.mousetrap.bind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR), this.triggerFocusFilterBar);
+    }
+  },
+  beforeDestroy() {
+    this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
     isCurrentPath(path) {
@@ -244,8 +268,13 @@ export default {
     getDirectoryContents(path) {
       return this.directoriesCache[normalizePath(path)] || { trees: [], blobs: [], submodules: [] };
     },
+    triggerFocusFilterBar() {
+      const filterBar = this.$refs.filterInput;
+      if (filterBar && filterBar.$el) {
+        filterBar.focus();
+      }
+    },
   },
-  filterPlaceholder: s__('Repository|Filter (e.g. *.vue) (f)'),
 };
 </script>
 
@@ -257,10 +286,13 @@ export default {
     <div class="gl-relative gl-flex">
       <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
       <gl-form-input
+        ref="filterInput"
         v-model="filter"
+        data-testid="ftb-filter-input"
+        :aria-keyshortcuts="filterSearchShortcutKey"
         type="search"
         class="!gl-pl-7"
-        :placeholder="$options.filterPlaceholder"
+        :placeholder="placeholderText"
       />
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />

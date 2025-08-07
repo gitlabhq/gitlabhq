@@ -27,7 +27,7 @@ module MergeRequests
       close_issues(merge_request)
       notification_service.merge_mr(merge_request, current_user)
       invalidate_all_users_cache_count(merge_request)
-      merge_request.update_project_counter_caches
+      merge_request.invalidate_project_counter_caches
       delete_non_latest_diffs(merge_request)
       cancel_review_app_jobs!(merge_request)
       cleanup_environments(merge_request)

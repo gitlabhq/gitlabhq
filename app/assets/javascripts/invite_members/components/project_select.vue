@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { getProjects } from '~/rest_api';
-import { SEARCH_DELAY, GROUP_FILTERS, PROJECT_SELECT_LABEL_ID } from '../constants';
+import { SEARCH_DELAY, PROJECT_SELECT_LABEL_ID } from '../constants';
 
 // We can have GlCollapsibleListbox dropdown panel with full
 // width once we implement
@@ -19,19 +19,6 @@ export default {
   model: {
     prop: 'selectedProjectId',
   },
-  props: {
-    groupsFilter: {
-      type: String,
-      required: false,
-      default: GROUP_FILTERS.ALL,
-      validator: (value) => Object.values(GROUP_FILTERS).includes(value),
-    },
-    parentGroupId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-  },
   data() {
     return {
       isFetching: false,
@@ -44,9 +31,6 @@ export default {
   computed: {
     selectedProjectName() {
       return this.selectedProject.nameWithNamespace || this.$options.i18n.dropdownText;
-    },
-    isFetchResultEmpty() {
-      return this.projects.length === 0 && !this.isFetching;
     },
     selectedProject() {
       return this.projects.find((prj) => prj.id === this.selectedProjectId) || {};

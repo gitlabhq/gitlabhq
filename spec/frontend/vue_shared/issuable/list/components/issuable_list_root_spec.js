@@ -1,4 +1,4 @@
-import { GlAlert, GlKeysetPagination, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueDraggable from 'vuedraggable';
@@ -12,6 +12,7 @@ import IssuableGrid from '~/vue_shared/issuable/list/components/issuable_grid.vu
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
+import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import { mockIssuableListProps } from '../mock_data';
 
 describe('IssuableListRoot component', () => {
@@ -28,6 +29,8 @@ describe('IssuableListRoot component', () => {
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
   const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
+  const findResourceListsLoadingStateList = () =>
+    wrapper.findComponent(ResourceListsLoadingStateList);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(IssuableListRoot, {
@@ -149,10 +152,11 @@ describe('IssuableListRoot component', () => {
     expect(wrapper.findComponent(IssuableBulkEditSidebar).exists()).toBe(true);
   });
 
-  it('renders skeleton loader when in loading state', () => {
+  it('renders loading state component when in loading state', () => {
     createComponent({ issuablesLoading: true });
 
-    expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(
+    expect(findResourceListsLoadingStateList().exists()).toBe(true);
+    expect(findResourceListsLoadingStateList().props('listLength')).toBe(
       mockIssuableListProps.issuables.length,
     );
   });

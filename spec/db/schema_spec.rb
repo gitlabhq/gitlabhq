@@ -261,7 +261,9 @@ RSpec.describe 'Database schema',
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
-      p_knowledge_graph_replicas: %w[namespace_id]
+      p_knowledge_graph_replicas: %w[namespace_id],
+      # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
+      work_item_related_link_restrictions: %w[source_type_id target_type_id]
     }.with_indifferent_access.freeze
   end
 

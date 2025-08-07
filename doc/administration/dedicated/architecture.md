@@ -54,7 +54,11 @@ Geo does not use an active-active failover configuration. For more information, 
 
 ### AWS PrivateLink connection
 
->Required for Geo migrations to Dedicated. Otherwise, optional
+{{< alert type="note" >}}
+
+Required for Geo migrations to Dedicated. Otherwise, optional
+
+{{< /alert >}}
 
 Optionally, private connectivity is available for your GitLab Dedicated instance, using [AWS PrivateLink](https://aws.amazon.com/privatelink/) as a connection gateway.
 

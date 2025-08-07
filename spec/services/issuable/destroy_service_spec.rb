@@ -18,7 +18,7 @@ RSpec.describe Issuable::DestroyService, feature_category: :team_planning do
       end
 
       it 'updates open issues count cache' do
-        expect_any_instance_of(Projects::OpenIssuesCountService).to receive(:refresh_cache)
+        expect_any_instance_of(Projects::OpenIssuesCountService).to receive(:delete_cache)
 
         service.execute(issue)
       end
@@ -45,7 +45,7 @@ RSpec.describe Issuable::DestroyService, feature_category: :team_planning do
       end
 
       it 'updates open merge requests count cache' do
-        expect_any_instance_of(Projects::OpenMergeRequestsCountService).to receive(:refresh_cache)
+        expect_any_instance_of(Projects::OpenMergeRequestsCountService).to receive(:delete_cache)
 
         service.execute(merge_request)
       end

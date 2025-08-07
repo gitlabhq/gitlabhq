@@ -39459,6 +39459,8 @@ CREATE INDEX index_zoekt_repos_with_missing_project_id ON zoekt_repositories USI
 
 CREATE INDEX index_zoekt_repositories_on_project_id ON zoekt_repositories USING btree (project_id);
 
+CREATE INDEX index_zoekt_repositories_on_schema_version ON zoekt_repositories USING btree (schema_version);
+
 CREATE INDEX index_zoekt_repositories_on_state ON zoekt_repositories USING btree (state);
 
 CREATE INDEX index_zoekt_tasks_on_state ON ONLY zoekt_tasks USING btree (state);
@@ -47518,12 +47520,6 @@ ALTER TABLE ONLY work_item_hierarchy_restrictions
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT fk_work_item_hierarchy_restrictions_parent_type_id FOREIGN KEY (parent_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_related_link_restrictions
-    ADD CONSTRAINT fk_work_item_related_link_restrictions_source_type_id FOREIGN KEY (source_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_related_link_restrictions
-    ADD CONSTRAINT fk_work_item_related_link_restrictions_target_type_id FOREIGN KEY (target_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_type_custom_fields
     ADD CONSTRAINT fk_work_item_type_custom_fields_on_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;

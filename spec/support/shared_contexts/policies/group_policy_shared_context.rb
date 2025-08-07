@@ -70,6 +70,7 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       create_custom_emoji
       create_package
+      create_observability_access_request
       read_cluster
       read_observability_portal
     ]

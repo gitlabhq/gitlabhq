@@ -2,7 +2,7 @@ import CodeDropdown from './code_dropdown.vue';
 
 export default {
   component: CodeDropdown,
-  title: 'vue_shared/components/code_dropdown/code_dropdown',
+  title: 'vue_shared/code_dropdown/code_dropdown',
 };
 
 const Template = (args, { argTypes }) => ({

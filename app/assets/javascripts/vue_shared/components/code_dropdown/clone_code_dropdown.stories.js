@@ -2,7 +2,7 @@ import CloneCodeDropdown from './clone_code_dropdown.vue';
 
 export default {
   component: CloneCodeDropdown,
-  title: 'vue_shared/components/clone_code_dropdown',
+  title: 'vue_shared/code_dropdown/clone_code_dropdown',
 };
 
 const Template = (args, { argTypes }) => ({

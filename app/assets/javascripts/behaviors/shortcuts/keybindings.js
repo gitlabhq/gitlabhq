@@ -411,6 +411,13 @@ export const PROJECT_FILES_GO_TO_COMPARE = {
   defaultKeys: ['shift+c'],
 };
 
+export const FOCUS_FILE_TREE_BROWSER_FILTER_BAR = {
+  id: 'projectFiles.focusFTBFilterBar',
+  description: __('Focus file tree browser filter bar'),
+  defaultKeys: ['f'],
+  overrideGlobalHotkey: true,
+};
+
 export const ISSUABLE_COMMENT_OR_REPLY = {
   id: 'issuables.commentReply',
   description: __('Comment/Reply (quoting selected text)'),

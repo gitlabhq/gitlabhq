@@ -14,7 +14,6 @@ describe('InviteGroupNotification', () => {
     wrapper = shallowMountExtended(InviteGroupNotification, {
       provide: { freeUsersLimit: 5 },
       propsData: {
-        name: 'name',
         notificationLink: '_notification_link_',
         notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
       },

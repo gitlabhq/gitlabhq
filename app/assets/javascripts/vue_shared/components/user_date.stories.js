@@ -2,7 +2,7 @@ import UserDate from './user_date.vue';
 
 export default {
   component: UserDate,
-  title: 'vue_shared/components/user_date',
+  title: 'vue_shared/user_date',
 };
 
 const Template = (args, { argTypes }) => ({

@@ -2,7 +2,7 @@ import ProjectSelect from './project_select.vue';
 
 export default {
   component: ProjectSelect,
-  title: 'vue_shared/components/entity_select/project_select',
+  title: 'vue_shared/entity_select/project_select',
 };
 
 const Template = (args, { argTypes }) => ({

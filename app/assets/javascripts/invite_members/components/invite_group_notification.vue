@@ -6,10 +6,6 @@ export default {
   components: { GlAlert, GlSprintf, GlLink },
   inject: ['freeUsersLimit'],
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
     notificationText: {
       type: String,
       required: true,

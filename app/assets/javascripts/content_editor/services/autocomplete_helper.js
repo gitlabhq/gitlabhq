@@ -165,7 +165,7 @@ export default class AutocompleteHelper {
       label: ['title'],
       epic: ['iid', 'title'],
       iteration: ['id', 'title'],
-      status: ['title'],
+      status: ['name'],
       vulnerability: ['id', 'title'],
       merge_request: ['iid', 'title'],
       milestone: ['title', 'iid'],

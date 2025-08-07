@@ -33,5 +33,5 @@ export const InvalidState = makeStory({
 
 export default {
   component: ColorPicker,
-  title: 'vue_shared/components/color_picker',
+  title: 'vue_shared/color_picker',
 };

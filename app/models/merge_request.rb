@@ -2382,8 +2382,8 @@ class MergeRequest < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def update_project_counter_caches
-    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  def invalidate_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).delete_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
 

@@ -363,13 +363,17 @@ describe('AutocompleteHelper', () => {
     });
 
     it.each`
-      command
-      ${'/status'}
-    `('filters statuses using apollo cache for command "$command"', async ({ command }) => {
-      const dataSource = autocompleteHelper.getDataSource('status', { command });
-      const results = await dataSource.search();
-      expect(results.map(({ name }) => name)).toMatchSnapshot();
-    });
+      command      | query
+      ${'/status'} | ${''}
+      ${'/status'} | ${'pro'}
+    `(
+      'filters statuses using apollo cache for command "$command "$query"',
+      async ({ command, query }) => {
+        const dataSource = autocompleteHelper.getDataSource('status', { command });
+        const results = await dataSource.search(query);
+        expect(results.map(({ name }) => name)).toMatchSnapshot();
+      },
+    );
   });
 
   it('filters items correctly for the second time, when the first command was different', async () => {

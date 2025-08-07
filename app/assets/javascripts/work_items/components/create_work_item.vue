@@ -352,6 +352,9 @@ export default {
         this.initialLoadingWorkItemTypes || (this.initialLoadingWorkItem && !this.skipWorkItemQuery)
       );
     },
+    isWorkItemTypesLoading() {
+      return this.$apollo.queries.namespace.loading;
+    },
     skipWorkItemQuery() {
       return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
     },
@@ -1041,16 +1044,23 @@ export default {
             </gl-form-group>
           </template>
 
-          <gl-loading-icon v-if="$apollo.queries.namespace.loading" size="lg" />
           <gl-form-group
-            v-else-if="showItemTypeSelect"
+            v-if="showItemTypeSelect"
             class="gl-max-w-26 gl-flex-grow"
-            :label="__('Type')"
-            label-for="work-item-type"
+            label-class="!gl-pb-0"
           >
+            <slot name="label">
+              <div class="gl-mb-3 gl-flex gl-items-center gl-gap-2">
+                <label class="gl-m-0 gl-block gl-leading-normal" for="work-item-type">
+                  {{ __('Type') }}
+                </label>
+                <gl-loading-icon v-if="isWorkItemTypesLoading" />
+              </div>
+            </slot>
             <gl-form-select
               id="work-item-type"
               v-model="selectedWorkItemTypeId"
+              :disabled="isWorkItemTypesLoading"
               data-testid="work-item-types-select"
               :options="formOptions"
               @change="handleChangeType"

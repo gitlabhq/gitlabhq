@@ -237,7 +237,7 @@ class IssuableBaseService < ::BaseContainerService
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees) unless issuable.allows_reviewers?
 
-      issuable.update_project_counter_caches
+      issuable.invalidate_project_counter_caches
     end
 
     issuable
@@ -350,7 +350,7 @@ class IssuableBaseService < ::BaseContainerService
         )
 
         execute_triggers
-        issuable.update_project_counter_caches if update_project_counters
+        issuable.invalidate_project_counter_caches if update_project_counters
       end
     end
 

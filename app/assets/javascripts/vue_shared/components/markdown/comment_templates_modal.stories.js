@@ -8,7 +8,7 @@ Vue.use(VueApollo);
 
 export default {
   component: CommentTemplatesModal,
-  title: 'vue_shared/components/markdown/comment_templates_modal',
+  title: 'vue_shared/markdown/comment_templates_modal',
   decorators: [withGitLabAPIAccess],
 };
 

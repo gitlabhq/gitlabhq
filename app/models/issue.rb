@@ -675,12 +675,10 @@ class Issue < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def update_project_counter_caches
-    # TODO: Fix counter cache for issues in group
-    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125
+  def invalidate_project_counter_caches
     return unless project
 
-    Projects::OpenIssuesCountService.new(project).refresh_cache
+    Projects::OpenIssuesCountService.new(project).delete_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
 

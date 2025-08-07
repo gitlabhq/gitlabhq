@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormSelect, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
@@ -98,6 +98,7 @@ describe('Create work item component', () => {
   const findParentWidget = () => wrapper.findComponent(WorkItemParent);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
   const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
@@ -349,6 +350,17 @@ describe('Create work item component', () => {
   });
 
   describe('Work item types dropdown', () => {
+    it('renders with loading icon when namespaceWorkItemTypes query is loading', async () => {
+      createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
+      await waitForPromises();
+
+      findProjectsSelector().vm.$emit('selectProject', 'fullPath');
+      await nextTick();
+
+      expect(findSelect().attributes('disabled')).not.toBeUndefined();
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
     it('displays a list of work item types including "Select type" option when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
