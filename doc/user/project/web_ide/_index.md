@@ -141,7 +141,28 @@ To create a branch from the current branch in the Web IDE:
 1. From the dropdown list, select **Create new branch**.
 1. Enter the new branch name.
 
+The Web IDE creates a branch using the checked out branch as base. Alternatively, you can follow
+these steps to create a branch from a different base:
+
+1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
+   press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+   Source Control panel.
+1. From the dropdown list, select **Branch** -> **Create branch from...**. 
+1. From the dropdown list, select the branch that you want to use as base.
+
 If you do not have write access to the repository, **Create new branch** is not visible.
+
+### Delete a branch
+
+1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
+   press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+   Source Control panel.
+1. From the dropdown list, select **Branch** -> **Delete branch**. 
+1. From the dropdown list, select the branch that you want to delete.
+
+You can't delete protected branches from the Web IDE.
 
 ### Commit changes
 
@@ -429,7 +450,7 @@ on Rails for this effort.
 
 ### CORS issues
 
-The Web IDE requires specific Cross-Origin Resource Sharing (CORS) configuration to function properly on self-managed instances.
+The Web IDE requires specific Cross-Origin Resource Sharing (CORS) configuration to function properly on GitLab Self-Managed instances.
 GitLab API endpoints (`/api/*`) must include the following HTTP response headers to support the Web IDE: 
 
 | Header | Value | Description |
@@ -452,9 +473,9 @@ instance is behind an HTTP reverse proxy server or it uses a custom CORS policy 
 
 {{< alert type="note" >}}
 
-If these headers are not provided, the Web IDE will still work on GitLab self-managed although 
+If these headers are not provided, the Web IDE will still work on GitLab Self-Managed although 
 features such as Extension Marketplace will be disabled for security reasons. The Web IDE uses
-the `https://*.cdn.web-ide.gitlab-static.net` origin to run 3rd-party extensions in a sandboxed
+the `https://*.cdn.web-ide.gitlab-static.net` origin to run third-party extensions in a sandboxed
 environment.
 
 {{< /alert >}}
@@ -463,7 +484,7 @@ environment.
 
 The Web IDE disables the Extension Marketplace and Web Views in air-gapped or offline environments where a
 user's web browser can't connect to the `https://*.cdn.web-ide.gitlab-static.net` external assets host. 
-The Web IDE uses the external assets host to run 3rd-party code coming from VSCode Extensions and Web Views
+The Web IDE uses the external assets host to run third-party code coming from VSCode Extensions and Web Views
 in a sandboxed environment to secure user data.
 
 The Web IDE engineering team will provide better support for air-gapped environments in the future. 

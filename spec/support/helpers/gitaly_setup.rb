@@ -199,7 +199,7 @@ module GitalySetup
 
   def try_connect!(service, toml)
     LOGGER.debug "Trying to connect to #{service}: "
-    timeout = 40
+    timeout = 60
     delay = 0.1
     connect = connect_proc(toml)
 

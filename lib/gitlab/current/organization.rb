@@ -3,20 +3,18 @@
 module Gitlab
   module Current
     class Organization
-      attr_reader :params, :user, :headers, :session
+      attr_reader :params, :user, :headers
 
-      SESSION_KEY = :organization_id
       HTTP_HEADER = 'X-GitLab-Organization-ID'
 
-      def initialize(params: {}, headers: nil, session: nil, user: nil)
+      def initialize(params: {}, headers: nil, user: nil)
         @params = params
         @user = user
         @headers = headers
-        @session = session
       end
 
       def organization
-        from_params || from_headers || from_session || from_user || fallback_organization
+        from_params || from_headers || from_user || fallback_organization
       end
 
       private
@@ -32,16 +30,6 @@ module Gitlab
         return unless header_organization_id.to_i > 0
 
         ::Organizations::Organization.find_by_id(header_organization_id)
-      end
-
-      def from_session
-        # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Cannot guarantee an actor is available here
-        return unless Feature.enabled?(:set_current_organization_from_session)
-        # rubocop:enable Gitlab/FeatureFlagWithoutActor
-        #
-        return unless session.respond_to?(:[]) && session[SESSION_KEY]
-
-        ::Organizations::Organization.find_by_id(session[SESSION_KEY])
       end
 
       def from_user

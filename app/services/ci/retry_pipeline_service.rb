@@ -44,7 +44,7 @@ module Ci
     private
 
     def builds_relation(pipeline)
-      pipeline.retryable_builds.preload_needs
+      pipeline.retryable_builds.preload_needs.preload_job_definition_instances
     end
 
     def can_be_retried?(job)

@@ -69,6 +69,7 @@ describe('RevokeTokenButton', () => {
   const createWrapper = async ({
     mutationResponse = mockRevokeResponse,
     provideData = {},
+    stubs = {},
   } = {}) => {
     apolloProvider = createMockApolloProvider({ mutationResponse });
 
@@ -88,6 +89,7 @@ describe('RevokeTokenButton', () => {
           },
         }),
         GlTooltip,
+        ...stubs,
       },
       mocks: { $toast: { show: toast } },
     });
@@ -148,7 +150,9 @@ describe('RevokeTokenButton', () => {
         ${'the input with token name is incorrect'} | ${'wrong-name'} | ${true}    | ${false}
         ${'the input with token name is correct'}   | ${token.name}   | ${false}   | ${true}
       `('when $condition', ({ tokenName, isDisabled, mutationCalled }) => {
-        beforeEach(() => {
+        beforeEach(async () => {
+          await createWrapper({ stubs: { GlFormInput } });
+
           findRevokeBtn().vm.$emit('click');
           findInput().vm.$emit('input', tokenName);
         });
@@ -175,7 +179,7 @@ describe('RevokeTokenButton', () => {
 
         describe('when user presses the enter button', () => {
           beforeEach(async () => {
-            await findInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+            await findInput().find('input').trigger('keydown', { key: ENTER_KEY });
           });
 
           if (mutationCalled) {

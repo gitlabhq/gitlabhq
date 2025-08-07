@@ -2576,6 +2576,85 @@ Input type: `AiFeatureSettingUpdateInput`
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.aiFlowTriggerCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiFlowTriggerCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggercreateconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
+| <a id="mutationaiflowtriggercreatedescription"></a>`description` | [`String!`](#string) | Description of the AI flow trigger. |
+| <a id="mutationaiflowtriggercreateeventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
+| <a id="mutationaiflowtriggercreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the AI flow trigger is associated with. |
+| <a id="mutationaiflowtriggercreateuserid"></a>`userId` | [`UserID!`](#userid) | Owner of the AI flow trigger. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggercreateaiflowtrigger"></a>`aiFlowTrigger` | [`AiFlowTriggerType`](#aiflowtriggertype) | Created AI flow trigger. |
+| <a id="mutationaiflowtriggercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiFlowTriggerDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiFlowTriggerDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggerdeleteid"></a>`id` | [`AiFlowTriggerID!`](#aiflowtriggerid) | ID of the flow trigger to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiFlowTriggerUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiFlowTriggerUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggerupdateconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
+| <a id="mutationaiflowtriggerupdatedescription"></a>`description` | [`String`](#string) | Description of the AI flow trigger. |
+| <a id="mutationaiflowtriggerupdateeventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
+| <a id="mutationaiflowtriggerupdateid"></a>`id` | [`AiFlowTriggerID!`](#aiflowtriggerid) | ID of the flow trigger to update. |
+| <a id="mutationaiflowtriggerupdateuserid"></a>`userId` | [`UserID`](#userid) | Owner of the AI flow trigger. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggerupdateaiflowtrigger"></a>`aiFlowTrigger` | [`AiFlowTriggerType`](#aiflowtriggertype) | Updated AI flow trigger. |
+| <a id="mutationaiflowtriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiflowtriggerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.aiModelSelectionNamespaceUpdate`
 
 {{< details >}}
@@ -14482,6 +14561,30 @@ The edge type for [`AiFeatureSetting`](#aifeaturesetting).
 | <a id="aifeaturesettingedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aifeaturesettingedgenode"></a>`node` | [`AiFeatureSetting`](#aifeaturesetting) | The item at the end of the edge. |
 
+#### `AiFlowTriggerTypeConnection`
+
+The connection type for [`AiFlowTriggerType`](#aiflowtriggertype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggertypeconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="aiflowtriggertypeconnectionedges"></a>`edges` | [`[AiFlowTriggerTypeEdge]`](#aiflowtriggertypeedge) | A list of edges. |
+| <a id="aiflowtriggertypeconnectionnodes"></a>`nodes` | [`[AiFlowTriggerType]`](#aiflowtriggertype) | A list of nodes. |
+| <a id="aiflowtriggertypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiFlowTriggerTypeEdge`
+
+The edge type for [`AiFlowTriggerType`](#aiflowtriggertype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggertypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aiflowtriggertypeedgenode"></a>`node` | [`AiFlowTriggerType`](#aiflowtriggertype) | The item at the end of the edge. |
+
 #### `AiMessageConnection`
 
 The connection type for [`AiMessage`](#aimessage).
@@ -22566,6 +22669,24 @@ Duo Chat feature setting.
 | <a id="aifeaturesettingtitle"></a>`title` | [`String`](#string) | Displayed AI feature name. |
 | <a id="aifeaturesettingvalidmodels"></a>`validModels` | [`AiSelfHostedModelConnection!`](#aiselfhostedmodelconnection) | Compatible self-hosted models for the feature. (see [Connections](#connections)) |
 
+### `AiFlowTriggerType`
+
+Represents an AI flow trigger.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggertypeconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the trigger. |
+| <a id="aiflowtriggertypeconfigurl"></a>`configUrl` | [`String`](#string) | Web URL to the configuration file for the trigger. |
+| <a id="aiflowtriggertypecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the flow trigger was created. |
+| <a id="aiflowtriggertypedescription"></a>`description` | [`String!`](#string) | Description of the flow trigger. |
+| <a id="aiflowtriggertypeeventtypes"></a>`eventTypes` | [`[Int!]!`](#int) | List of events that triggers the flow. |
+| <a id="aiflowtriggertypeid"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
+| <a id="aiflowtriggertypeproject"></a>`project` | [`Project!`](#project) | Project of the flow trigger. |
+| <a id="aiflowtriggertypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow trigger was last updated. |
+| <a id="aiflowtriggertypeuser"></a>`user` | [`UserCore`](#usercore) | User who created the flow trigger. |
+
 ### `AiMessage`
 
 AI features communication message.
@@ -22686,8 +22807,26 @@ Usage data for events stored in the default PostgreSQL database. Data retained f
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiusagedataall"></a>`all` | [`AiUsageEventConnection`](#aiusageeventconnection) | All Duo usage events. (see [Connections](#connections)) |
 | <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `AiUsageData.all`
+
+All Duo usage events.
+
+Returns [`AiUsageEventConnection`](#aiusageeventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current day. |
+| <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 7 days ago. |
 
 ### `AiUsageEvent`
 
@@ -37624,6 +37763,27 @@ Returns [`AiAgent`](#aiagent).
 | ---- | ---- | ----------- |
 | <a id="projectaiagentid"></a>`id` | [`AiAgentID!`](#aiagentid) | ID of the Agent. |
 
+##### `Project.aiFlowTriggers`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+AI flow triggers of the project. This field can only be resolved for one project per request.
+
+Returns [`AiFlowTriggerTypeConnection`](#aiflowtriggertypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaiflowtriggersids"></a>`ids` | [`[AiFlowTriggerID!]`](#aiflowtriggerid) | Filter AI flow triggers by IDs. |
+
 ##### `Project.aiMetrics`
 
 {{< details >}}
@@ -49453,6 +49613,12 @@ An example `AiConversationThreadID` is: `"gid://gitlab/Ai::Conversation::Thread/
 A `AiDuoWorkflowsWorkflowID` is a global ID. It is encoded as a string.
 
 An example `AiDuoWorkflowsWorkflowID` is: `"gid://gitlab/Ai::DuoWorkflows::Workflow/1"`.
+
+### `AiFlowTriggerID`
+
+A `AiFlowTriggerID` is a global ID. It is encoded as a string.
+
+An example `AiFlowTriggerID` is: `"gid://gitlab/Ai::FlowTrigger/1"`.
 
 ### `AiModelID`
 

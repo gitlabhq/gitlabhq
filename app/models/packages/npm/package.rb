@@ -51,20 +51,16 @@ module Packages
       def package_exists_in_hierarchy?
         return false unless project
 
-        if Feature.enabled?(:packages_npm_existance_check_refactor, project)
-          self.class.with_name(name)
-            .with_version(version)
-            .not_pending_destruction
-            .for_projects(
-              project
-                .root_ancestor
-                .all_projects
-                .id_not_in(project.id)
-                .select(:id)
-            ).exists?
-        else
-          project.package_already_taken?(name, version, package_type: :npm)
-        end
+        self.class.with_name(name)
+          .with_version(version)
+          .not_pending_destruction
+          .for_projects(
+            project
+              .root_ancestor
+              .all_projects
+              .id_not_in(project.id)
+              .select(:id)
+          ).exists?
       end
     end
   end

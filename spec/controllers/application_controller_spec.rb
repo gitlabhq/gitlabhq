@@ -68,27 +68,10 @@ RSpec.describe ApplicationController, feature_category: :shared do
       def index; end
     end
 
-    it 'sets current organization and session' do
+    it 'sets current organization' do
       get :index, format: :html
 
       expect(Current.organization).to eq(current_organization)
-      expect(session[Gitlab::Current::Organization::SESSION_KEY]).to eq(current_organization.id)
-    end
-
-    it 'does not set the session when the request format is not HTML' do
-      get :index, format: :json
-
-      expect(Current.organization).to eq(current_organization)
-      expect(session[Gitlab::Current::Organization::SESSION_KEY]).to be_nil
-    end
-
-    it 'does not set organization in session when set_current_organization_in_session feature flag is disabled' do
-      stub_feature_flags(set_current_organization_from_session: false)
-
-      get :index, format: :html
-
-      expect(Current.organization).to eq(current_organization)
-      expect(session[Gitlab::Current::Organization::SESSION_KEY]).to be_nil
     end
 
     context 'when X-GitLab-Organization-ID header is provided' do

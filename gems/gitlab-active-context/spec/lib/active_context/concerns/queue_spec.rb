@@ -24,7 +24,7 @@ RSpec.describe ActiveContext::Concerns::Queue do
 
   describe '.register!' do
     it 'registers the queue with ActiveContext::Queues' do
-      mock_queue_class
+      mock_queue_class.register!
 
       expect(ActiveContext::Queues.queues).to include(mock_queue_class.redis_key)
       expect(ActiveContext::Queues.raw_queues.size).to eq(2)

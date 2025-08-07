@@ -50,6 +50,11 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(build('rspec 3')).to be_pending
         expect(pipeline.reload).to be_running
       end
+
+      it 'preloads the job definition instances' do
+        expect { service.execute(pipeline) }
+          .to match_query_count(1).for_model(Ci::JobDefinitionInstance)
+      end
     end
 
     context 'when there are failed or canceled builds in the first stage' do

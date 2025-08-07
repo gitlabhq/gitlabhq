@@ -55,6 +55,102 @@ RSpec.describe Namespaces::Preloaders::NamespaceRootAncestorPreloader, feature_c
     it_behaves_like 'executes N matching DB queries', 2
   end
 
+  context 'when namespaces have no root ancestor in query results' do
+    it 'safely handles namespaces without root ancestors' do
+      # Create a preloader with an empty namespaces array to simulate
+      # the scenario where the root query returns no matching records
+      expect { described_class.new([], additional_preloads).execute }.not_to raise_error
+    end
+
+    it 'handles case where root_ancestors_by_id lookup returns nil' do
+      namespace = build(:namespace, id: non_existing_record_id)
+      allow(namespace).to receive(:id).and_return(non_existing_record_id)
+
+      preloader = described_class.new([namespace], additional_preloads)
+
+      # Mock the Namespace query to return empty results, simulating the
+      # scenario where no root ancestor is found for the namespace
+      empty_relation = Namespace.none
+      allow(Namespace).to receive(:joins).and_return(empty_relation)
+      allow(empty_relation).to receive_messages(
+        select: empty_relation,
+        preload: empty_relation,
+        group_by: {}
+      )
+
+      expect { preloader.execute }.not_to raise_error
+
+      # Verify that the namespace's root_ancestor instance variable was not set
+      expect(namespace.instance_variable_get(:@root_ancestor)).to be_nil
+    end
+
+    it 'logs orphaned namespace with structured payload when root ancestor is not found' do
+      orphaned_namespace = build(:namespace,
+        id: non_existing_record_id,
+        path: 'orphaned-namespace',
+        type: 'Group',
+        traversal_ids: [123, 456]
+      )
+
+      preloader = described_class.new([orphaned_namespace], additional_preloads)
+
+      # Mock the Namespace query to return empty results
+      empty_relation = Namespace.none
+      allow(Namespace).to receive(:joins).and_return(empty_relation)
+      allow(empty_relation).to receive_messages(
+        select: empty_relation,
+        preload: empty_relation,
+        group_by: {}
+      )
+
+      expected_payload = {
+        'class' => 'Namespaces::Preloaders::NamespaceRootAncestorPreloader',
+        'message' => 'Orphaned namespace detected. Unable to find root ancestor',
+        'namespace_id' => non_existing_record_id,
+        'namespace_type' => 'Group',
+        'namespace_path' => 'orphaned-namespace',
+        'traversal_ids' => [123, 456]
+      }
+
+      expect(Gitlab::AppLogger).to receive(:warn).with(expected_payload)
+
+      preloader.execute
+    end
+
+    context 'when multiple orphaned namespaces exist' do
+      it 'logs each orphaned namespace separately' do
+        orphaned_namespace1 = build(:namespace,
+          id: 9999,
+          path: 'orphaned-1',
+          type: 'Group',
+          traversal_ids: [111]
+        )
+
+        orphaned_namespace2 = build(:namespace,
+          id: 8888,
+          path: 'orphaned-2',
+          type: 'Project',
+          traversal_ids: [222]
+        )
+
+        preloader = described_class.new([orphaned_namespace1, orphaned_namespace2], additional_preloads)
+
+        # Mock the Namespace query to return empty results
+        empty_relation = Namespace.none
+        allow(Namespace).to receive(:joins).and_return(empty_relation)
+        allow(empty_relation).to receive_messages(
+          select: empty_relation,
+          preload: empty_relation,
+          group_by: {}
+        )
+
+        expect(Gitlab::AppLogger).to receive(:warn).twice
+
+        preloader.execute
+      end
+    end
+  end
+
   def preload_ancestors
     described_class.new(pristine_namespaces, additional_preloads).execute
   end

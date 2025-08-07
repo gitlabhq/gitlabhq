@@ -49,19 +49,7 @@ sast:
 # list of extensions that are supported by gitlab-advanced-sast. Some of these are also supported by semgrep-sast
 .gitlab-advanced-sast-exist-rules:
   exists:
-    - '**/*.py'
-    - '**/*.go'
-    - '**/*.java'
-    - '**/*.jsp'
-    - '**/*.js'
-    - '**/*.jsx'
-    - '**/*.ts'
-    - '**/*.tsx'
-    - '**/*.cjs'
-    - '**/*.mjs'
-    - '**/*.cs'
-    - '**/*.rb'
-    - '**/*.php'
+    - '**/{*.py,*.go,*.java,*.jsp,*.js,*.jsx,*.ts,*.tsx,*.cjs,*.mjs,*.cs,*.rb,*.php}'
 
 gitlab-advanced-sast:
   extends: .sast-analyzer
@@ -214,60 +202,13 @@ pmd-apex-sast:
 # list of extensions that are supported by semgrep-sast. Some of these are also supported by gitlab-advanced-sast
 .semgrep-exist-rules:
   exists:
-    - '**/*.py'
-    - '**/*.js'
-    - '**/*.jsx'
-    - '**/*.ts'
-    - '**/*.tsx'
-    - '**/*.cjs'
-    - '**/*.mjs'
-    - '**/*.c'
-    - '**/*.cc'
-    - '**/*.cpp'
-    - '**/*.c++'
-    - '**/*.cp'
-    - '**/*.cxx'
-    - '**/*.h'
-    - '**/*.hpp'
-    - '**/*.go'
-    - '**/*.java'
-    - '**/*.cs'
-    - '**/*.scala'
-    - '**/*.sc'
-    - '**/*.php'
-    - '**/*.swift'
-    - '**/*.m'
-    - '**/*.rb'
-    - '**/*.kt'
-    - '**/*.properties'
-    - '**/application*.yml'
-    - '**/bootstrap*.yml'
-    - '**/application*.yaml'
-    - '**/bootstrap*.yaml'
+    - '**/{*.py,*.js,*.jsx,*.ts,*.tsx,*.cjs,*.mjs,*.c,*.cc,*.cpp,*.c++,*.cp,*.cxx,*.h,*.hpp,*.go,*.java,*.cs,*.scala,*.sc,*.php,*.swift,*.m,*.rb,*.kt,*.properties,application*.yml,bootstrap*.yml,application*.yaml,bootstrap*.yaml}'
 
 # list of extensions that are only supported by semgrep, and not gitlab-advanced-sast
 .semgrep-with-advanced-sast-exist-rules:
   exists:
-    - '**/*.c'
-    - '**/*.cc'
-    - '**/*.cpp'
-    - '**/*.c++'
-    - '**/*.cp'
-    - '**/*.cxx'
-    - '**/*.h'
-    - '**/*.hpp'
-    - '**/*.scala'
-    - '**/*.sc'
     # TODO: remove this `php` pattern. See https://gitlab.com/gitlab-org/gitlab/-/issues/559997 for more details
-    - '**/*.php'
-    - '**/*.swift'
-    - '**/*.m'
-    - '**/*.kt'
-    - '**/*.properties'
-    - '**/application*.yml'
-    - '**/bootstrap*.yml'
-    - '**/application*.yaml'
-    - '**/bootstrap*.yaml'
+    - '**/{*.c,*.cc,*.cpp,*.c++,*.cp,*.cxx,*.h,*.hpp,*.scala,*.sc,*.php,*.swift,*.m,*.kt,*.properties,application*.yml,bootstrap*.yml,application*.yaml,bootstrap*.yaml}'
 
 security-code-scan-sast:
   extends: .sast-analyzer

@@ -965,7 +965,7 @@ GEM
       logger (~> 1.6)
       ostruct (~> 0.6)
       sass-embedded (~> 1.58)
-    grpc (1.74.0)
+    grpc (1.74.1)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     grpc-google-iam-v1 (1.5.0)

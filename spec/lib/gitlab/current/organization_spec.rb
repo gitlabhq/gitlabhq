@@ -26,10 +26,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
   let_it_be(:params_with_invalid_groups_id) { { controller: 'groups', id: 'not_found' } }
   let_it_be(:params_with_invalid_group_id) { { group_id: 'not_found' } }
   let_it_be(:empty_params) { {} }
-  let_it_be(:session_with_org) { { organization_id: session_organization.id } }
-  let_it_be(:session_with_invalid_org) { { organization_id: non_existing_record_id } }
-  let_it_be(:empty_session) { {} }
-  let_it_be(:nil_session) { nil }
   let_it_be(:headers_with_valid_org) { { 'X-GitLab-Organization-ID' => header_organization.id.to_s } }
   let_it_be(:headers_with_invalid_org) { { 'X-GitLab-Organization-ID' => non_existing_record_id.to_s } }
   let_it_be(:headers_with_zero) { { 'X-GitLab-Organization-ID' => '0' } }
@@ -40,50 +36,42 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
 
   describe '#organization' do
     subject(:current_organization) do
-      described_class.new(params: params, user: user_param, session: session_param, headers: headers_param)
+      described_class.new(params: params, user: user_param, headers: headers_param)
     end
 
     # rubocop:disable Layout/LineLength -- Parameterized table format requires long lines
-    where(:params, :headers_param, :session_param, :user_param, :expected, :enables_fallback) do
+    where(:params, :headers_param, :user_param, :expected, :enables_fallback) do
       # Valid params take precedence over everything
-      ref(:params_with_namespace_id)      | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:organization)         | false
-      ref(:params_with_group_id)          | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:organization)         | false
-      ref(:params_with_groups_id)         | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:organization)         | false
-      ref(:params_with_org_path)          | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:other_organization)   | false
+      ref(:params_with_namespace_id)      | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_group_id)          | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_groups_id)         | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_org_path)          | ref(:headers_with_valid_org)   | ref(:user) | ref(:other_organization)   | false
 
       # Invalid params fall back to headers, then session, then user, then default
-      ref(:params_with_invalid_namespace) | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:header_organization)  | false
-      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | ref(:session_with_org)         | ref(:user) | ref(:session_organization) | false
-      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | ref(:session_with_org)         | ref(:user) | ref(:session_organization) | false
-      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | ref(:session_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | ref(:empty_session)            | nil        | ref(:default_organization) | true
-      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | ref(:session_with_invalid_org) | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_namespace) | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | nil        | ref(:default_organization) | true
 
       # Empty params follow same fallback chain
-      ref(:empty_params)                  | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:header_organization)  | false
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:session_with_org)         | ref(:user) | ref(:session_organization) | false
-      ref(:empty_params)                  | ref(:headers_with_valid_org)   | ref(:nil_session)              | ref(:user) | ref(:header_organization)  | false
-      ref(:empty_params)                  | ref(:headers_with_invalid_org) | ref(:session_with_org)         | ref(:user) | ref(:session_organization) | false
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:nil_session)              | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_invalid_org) | ref(:session_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:session_with_invalid_org) | nil        | ref(:default_organization) | true
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:empty_session)            | nil        | ref(:default_organization) | true
-      ref(:empty_params)                  | ref(:nil_headers)              | ref(:nil_session)              | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:empty_params)                  | ref(:empty_headers)            | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:empty_headers)            | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:nil_headers)              | nil        | ref(:default_organization) | true
 
       # Test header regex validation - invalid formats should fall back to user/default
-      ref(:empty_params)                  | ref(:headers_with_zero)        | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_negative)    | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_non_numeric) | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_zero)        | ref(:empty_session)            | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:headers_with_zero)        | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:headers_with_negative)    | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:headers_with_non_numeric) | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:headers_with_zero)        | nil        | ref(:default_organization) | true
 
       # Test other invalid parameter types to ensure consistent fallback behavior
-      ref(:params_with_empty_namespace)   | ref(:empty_headers)            | ref(:empty_session)            | nil        | ref(:default_organization) | true
-      ref(:params_with_invalid_groups_id) | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:header_organization)  | false
-      ref(:params_with_invalid_org_path)  | ref(:headers_with_valid_org)   | ref(:session_with_org)         | ref(:user) | ref(:header_organization)  | false
-      ref(:params_with_invalid_org_path)  | ref(:headers_with_invalid_org) | ref(:empty_session)            | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_group_id)  | ref(:headers_with_invalid_org) | ref(:session_with_invalid_org) | nil        | ref(:default_organization) | true
+      ref(:params_with_empty_namespace)   | ref(:empty_headers)            | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_groups_id) | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:params_with_invalid_org_path)  | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_group_id)  | ref(:headers_with_invalid_org) | nil        | ref(:default_organization) | true
     end
     # rubocop:enable Layout/LineLength
 

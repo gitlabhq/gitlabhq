@@ -1,13 +1,11 @@
 <script>
 import {
-  GlDropdownForm,
   GlFormInput,
-  GlDropdownDivider,
+  GlCollapsibleListbox,
   GlButton,
+  GlFormGroup,
+  GlForm,
   GlButtonGroup,
-  GlDropdown,
-  GlDropdownItem,
-  GlSearchBoxByType,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { getParentByTagName } from '~/lib/utils/dom_utils';
@@ -23,14 +21,12 @@ const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatte
 export default {
   components: {
     BubbleMenu,
-    GlDropdownForm,
+    GlCollapsibleListbox,
     GlFormInput,
+    GlFormGroup,
+    GlForm,
     GlButton,
     GlButtonGroup,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
-    GlSearchBoxByType,
     EditorStateObserver,
   },
   directives: {
@@ -50,6 +46,28 @@ export default {
       isDiagram: false,
       showPreview: false,
     };
+  },
+  computed: {
+    languageItems() {
+      const selectedSyntax = this.selectedLanguage?.syntax;
+      const initialItem = selectedSyntax
+        ? [
+            {
+              text: this.selectedLanguage.label,
+              value: this.selectedLanguage.syntax,
+            },
+          ]
+        : [];
+      return this.filteredLanguages.reduce((acc, lang) => {
+        if (lang.syntax !== selectedSyntax) {
+          acc.push({
+            text: lang.label,
+            value: lang.syntax,
+          });
+        }
+        return acc;
+      }, initialItem);
+    },
   },
   watch: {
     filterTerm: {
@@ -96,12 +114,18 @@ export default {
       this.tiptapEditor.commands.updateAttributes(Diagram.name, { showPreview: this.showPreview });
     },
 
-    async applyLanguage(language) {
-      this.selectedLanguage = language;
+    handleCreateCustomTypeClick() {
+      this.showCustomLanguageInput = true;
+    },
 
-      await codeBlockLanguageLoader.loadLanguage(language.syntax);
+    async applyCustomLanguage() {
+      if (!this.customLanguageType.trim()) return;
 
-      this.tiptapEditor.commands.setCodeBlock({ language: this.selectedLanguage.syntax });
+      const language = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(
+        this.customLanguageType.trim(),
+      );
+      await this.applyLanguage(language);
+      this.clearCustomLanguageForm();
     },
 
     clearCustomLanguageForm() {
@@ -109,13 +133,18 @@ export default {
       this.customLanguageType = '';
     },
 
-    applyCustomLanguage() {
-      this.showCustomLanguageInput = false;
+    async applyLanguage(language) {
+      if (!language || !language.syntax) return;
 
-      const language = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(
-        this.customLanguageType,
-      );
+      this.selectedLanguage = language;
 
+      await codeBlockLanguageLoader.loadLanguage(language.syntax);
+
+      this.tiptapEditor.commands.setCodeBlock({ language: language.syntax });
+    },
+
+    handleLanguageSelect(syntax) {
+      const language = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(syntax);
       this.applyLanguage(language);
     },
 
@@ -133,9 +162,14 @@ export default {
     tippyOptions() {
       return { getReferenceClientRect: this.getReferenceClientRect.bind(this) };
     },
+    onBubbleMenuHidden() {
+      this.clearCustomLanguageForm();
+      this.filterTerm = '';
+    },
   },
 };
 </script>
+
 <template>
   <bubble-menu
     data-testid="code-block-bubble-menu"
@@ -143,100 +177,60 @@ export default {
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
     :tippy-options="tippyOptions()"
+    @hidden="onBubbleMenuHidden"
   >
+    <gl-form
+      v-if="showCustomLanguageInput"
+      class="bubble-menu-form gl-border gl-bottom-8 gl-left-0 gl-w-full gl-border-gray-100 gl-p-4"
+      @submit.prevent="applyCustomLanguage"
+    >
+      <gl-form-group :label="__('Create custom type')" label-for="custom-language-type-input">
+        <gl-form-input
+          id="custom-language-type-input"
+          v-model="customLanguageType"
+          class="gl-my-4"
+          :placeholder="__('Language type')"
+          autofocus
+        />
+      </gl-form-group>
+      <div class="gl-flex gl-justify-end">
+        <gl-button class="gl-mr-2" variant="default" @click="clearCustomLanguageForm">
+          {{ __('Cancel') }}
+        </gl-button>
+        <gl-button variant="confirm" type="submit" :disabled="!customLanguageType.trim()">
+          {{ __('Apply') }}
+        </gl-button>
+      </div>
+    </gl-form>
     <editor-state-observer @transaction="updateCodeBlockInfoToState">
       <gl-button-group>
-        <gl-dropdown
-          category="tertiary"
-          :contenteditable="false"
-          boundary="viewport"
-          :text="selectedLanguage.label"
-          @hide="clearCustomLanguageForm"
+        <gl-collapsible-listbox
+          category="primary"
+          :items="languageItems"
+          :header-text="__('Select language')"
+          :selected="selectedLanguage.syntax"
+          :toggle-text="selectedLanguage.label || __('Select language')"
+          searchable
+          block
+          @search="filterTerm = $event"
+          @select="handleLanguageSelect"
         >
-          <template v-if="showCustomLanguageInput" #header>
-            <div class="gl-relative">
+          <template #footer>
+            <div class="gl-border-t gl-p-2">
               <gl-button
-                v-gl-tooltip
-                class="gl-absolute -gl-mt-3 gl-ml-2"
-                variant="default"
+                block
                 category="tertiary"
-                size="medium"
-                :aria-label="__('Go back')"
-                :title="__('Go back')"
-                icon="arrow-left"
-                @click.prevent.stop="showCustomLanguageInput = false"
-              />
-              <p class="gl-dropdown-header-top !gl-mb-0 !gl-border-none !gl-pb-1 gl-text-center">
+                data-testid="create-custom-type"
+                @click="handleCreateCustomTypeClick"
+              >
                 {{ __('Create custom type') }}
-              </p>
+              </gl-button>
             </div>
           </template>
-          <template v-else #header>
-            <gl-search-box-by-type
-              v-model="filterTerm"
-              :clear-button-title="__('Clear')"
-              :placeholder="__('Search')"
-            />
-          </template>
+        </gl-collapsible-listbox>
 
-          <template v-if="!showCustomLanguageInput" #highlighted-items>
-            <gl-dropdown-item :key="selectedLanguage.syntax" is-check-item is-checked>
-              {{ selectedLanguage.label }}
-            </gl-dropdown-item>
-          </template>
-
-          <template v-if="!showCustomLanguageInput" #default>
-            <gl-dropdown-item
-              v-for="language in filteredLanguages"
-              v-show="selectedLanguage.syntax !== language.syntax"
-              :key="language.syntax"
-              @click="applyLanguage(language)"
-            >
-              {{ language.label }}
-            </gl-dropdown-item>
-          </template>
-          <template v-else #default>
-            <gl-dropdown-form @submit.prevent="applyCustomLanguage">
-              <div class="gl-mx-4 gl-mb-3 gl-mt-2">
-                <gl-form-input v-model="customLanguageType" :placeholder="__('Language type')" />
-              </div>
-              <gl-dropdown-divider />
-              <div class="gl-mx-4 gl-mt-3 gl-flex gl-justify-end">
-                <gl-button
-                  variant="default"
-                  size="medium"
-                  category="primary"
-                  class="gl-mr-2 !gl-w-auto"
-                  @click.prevent.stop="showCustomLanguageInput = false"
-                >
-                  {{ __('Cancel') }}
-                </gl-button>
-                <gl-button
-                  variant="confirm"
-                  size="medium"
-                  category="primary"
-                  type="submit"
-                  class="!gl-w-auto"
-                >
-                  {{ __('Apply') }}
-                </gl-button>
-              </div>
-            </gl-dropdown-form>
-          </template>
-
-          <template v-if="!showCustomLanguageInput" #footer>
-            <gl-dropdown-item
-              data-testid="create-custom-type"
-              @click.capture.native.stop="showCustomLanguageInput = true"
-            >
-              {{ __('Create custom type') }}
-            </gl-dropdown-item>
-          </template>
-        </gl-dropdown>
         <gl-button
           v-gl-tooltip
-          variant="default"
-          category="tertiary"
           size="medium"
           data-testid="copy-code-block"
           :aria-label="__('Copy code')"
@@ -247,8 +241,6 @@ export default {
         <gl-button
           v-if="isDiagram"
           v-gl-tooltip
-          variant="default"
-          category="tertiary"
           size="medium"
           :class="{ '!gl-bg-gray-100': showPreview }"
           data-testid="preview-diagram"
@@ -259,8 +251,6 @@ export default {
         />
         <gl-button
           v-gl-tooltip
-          variant="default"
-          category="tertiary"
           size="medium"
           data-testid="delete-code-block"
           :aria-label="__('Delete code block')"

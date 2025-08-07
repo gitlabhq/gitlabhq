@@ -153,6 +153,27 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           expect(new_processable.needs).not_to match(processable.needs)
         end
 
+        context 'when processable has a job definition' do
+          let_it_be(:job_definition) { create(:ci_job_definition, project: pipeline.project) }
+
+          let_it_be(:job_definition_instance) do
+            create(:ci_job_definition_instance,
+              job: processable,
+              job_definition: job_definition,
+              project: pipeline.project)
+          end
+
+          it 'creates a new job definition instance for the new processable' do
+            expect(new_processable.job_definition)
+              .to be_present
+              .and eq(processable.job_definition)
+
+            expect(new_processable.job_definition_instance).to be_present
+            expect(new_processable.job_definition_instance)
+              .not_to eq(processable.job_definition_instance)
+          end
+        end
+
         context 'when the processable has protected: nil' do
           before do
             processable.update_attribute(:protected, nil)

@@ -1035,9 +1035,20 @@ class Project < ApplicationRecord
       where(
         'EXISTS (?) OR projects.visibility_level IN (?)',
         user.authorizations_for_projects(min_access_level: min_access_level),
-        Gitlab::VisibilityLevel.levels_for_user(user)
+        self.visibility_levels_for_user(user)
       )
     end
+  end
+
+  # Auditors can :read_all_resources while admins can :read_all_resources and
+  # read_admin_projects. In EE, a regular user can read_admin_projects through
+  # custom admin roles.
+  def self.visibility_levels_for_user(user)
+    can_read_all_projects = user&.can_read_all_resources? || user&.can?(:read_admin_projects)
+
+    return ::Gitlab::VisibilityLevel::LEVELS_FOR_ADMINS if can_read_all_projects
+
+    Gitlab::VisibilityLevel.levels_for_user(user)
   end
 
   # Define two instance methods:
@@ -3269,20 +3280,6 @@ class Project < ApplicationRecord
     ids += group.self_and_ancestors_ids if group
 
     ids
-  end
-
-  # TODO: remove this with the rollout of
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/558119
-  def package_already_taken?(package_name, package_version, package_type:)
-    Packages::Package.with_name(package_name)
-      .with_version(package_version)
-      .with_package_type(package_type)
-      .not_pending_destruction
-      .for_projects(
-        root_ancestor.all_projects
-          .id_not_in(id)
-          .select(:id)
-      ).exists?
   end
 
   def default_branch_or_main

@@ -21,7 +21,8 @@ module Ci
       class_name: 'Ci::JobDefinitionInstance',
       foreign_key: :job_id,
       partition_foreign_key: :partition_id,
-      inverse_of: :job
+      inverse_of: :job,
+      autosave: true
 
     has_one :job_definition, ->(job) { in_partition(job) },
       class_name: 'Ci::JobDefinition',
@@ -33,8 +34,10 @@ module Ci
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs
+    accepts_nested_attributes_for :job_definition_instance
 
     scope :preload_needs, -> { preload(:needs) }
+    scope :preload_job_definition_instances, -> { preload(:job_definition_instance) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
 
     scope :with_needs, ->(names = nil) do
@@ -164,6 +167,16 @@ module Ci
       if persisted_environment.present?
         new_attributes[:metadata_attributes] ||= {}
         new_attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
+      end
+
+      # We don't check for job_definition because loading the jsonb field from the database is expensive
+      if job_definition_instance
+        new_attributes[:job_definition_instance_attributes] ||= {}
+        new_attributes[:job_definition_instance_attributes].merge!(
+          project_id: project_id,
+          job_definition_id: job_definition_instance.job_definition_id,
+          partition_id: job_definition_instance.partition_id
+        )
       end
 
       new_attributes[:user] = current_user
