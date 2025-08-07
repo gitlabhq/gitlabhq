@@ -2,7 +2,6 @@
   stage: preflight
   extends:
     - .default-retry
-  needs: []
 
 .rails-production-server-boot:
   extends:
@@ -13,6 +12,9 @@
     - .use-pg16
     - .failure_category_after_script
     - .preflight:rules:rails-production-server-boot
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   artifacts:
     expire_in: 7d
     when: always

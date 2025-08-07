@@ -1,13 +1,14 @@
-# Insurance in case a gem needed by one of our releases gets yanked from
-# rubygems.org in the future.
-cache gems:
+# Insurance in case a gem needed by one of our releases gets yanked from rubygems.org in the future.
+backup gems:
   extends:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .setup:rules:cache-gems
+    - .setup:rules:backup-gems
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   variables:
     BUNDLE_WITHOUT: ""
     BUNDLE_WITH: "production:development:test"

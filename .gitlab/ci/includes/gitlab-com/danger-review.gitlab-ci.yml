@@ -14,11 +14,14 @@ danger-review:
     - .default-retry
     - .ruby-node-cache
     - .failure_category_after_script
-  # extending from .review:rules:danger doesn't work
-  rules: !reference [.review:rules:danger, rules]
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   variables:
     BUNDLE_WITH: "danger"
   before_script:
     - source scripts/utils.sh
     - bundle_install_script
     - yarn_install_script
+# extending from .review:rules:danger doesn't work
+  rules: !reference [.review:rules:danger, rules]

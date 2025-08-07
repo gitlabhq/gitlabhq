@@ -169,7 +169,9 @@ docs-lint deprecations-and-removals:
     - .default-before_script
     - .docs:rules:deprecations-and-removals
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - |
       function docs_lint_deprecations_and_removals() {

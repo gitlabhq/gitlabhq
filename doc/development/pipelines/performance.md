@@ -78,7 +78,6 @@ set `CI_FETCH_REPO_GIT_STRATEGY` to `none`.
    - `.ruby-cache`
    - `.static-analysis-cache`
    - `.rubocop-cache`
-   - `.ruby-gems-coverage-cache`
    - `.ruby-node-cache`
    - `.qa-cache`
    - `.yarn-cache`

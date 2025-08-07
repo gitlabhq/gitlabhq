@@ -15,7 +15,9 @@ setup-test-env:
     - .setup-test-env-cache
     - .rails:rules:setup-test-env
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   variables:
     SETUP_DB: "false"
   script:
@@ -93,24 +95,13 @@ update-gitaly-binaries-cache-fips:
     - .gitaly-binaries-cache-push
     - .shared:rules:update-gitaly-binaries-cache
 
-update-ruby-gems-coverage-cache-push:
-  extends:
-    - .ruby-gems-coverage-cache-push
-    - .shared:rules:update-cache
-  variables:
-    BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml
-    BUNDLE_ONLY: "coverage"
-  script:
-    - source scripts/utils.sh
-    - bundle_install_script
-
 # Used in:
 #   - rspec:coverage
 #   - rspec:undercoverage
 .coverage-base:
   extends:
     - .default-retry
-    - .ruby-gems-coverage-cache
+    - .ruby-cache
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
   variables:
     BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml

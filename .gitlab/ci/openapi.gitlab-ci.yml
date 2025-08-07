@@ -7,6 +7,8 @@ openapi-doc-check:
     - .default-before_script
     - .openapi:rules:openapi-check_docs
   stage: lint
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - bundle exec rake gitlab:openapi:check_docs OPENAPI_CHECK_DEBUG=true

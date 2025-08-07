@@ -3,7 +3,9 @@ include:
 
 db:setup pg16:
   stage: prepare
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   extends:
     - .use-pg16
     - .default-before_script

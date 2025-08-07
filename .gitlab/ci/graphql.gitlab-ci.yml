@@ -8,7 +8,9 @@ graphql-verify:
     - .failure_category_after_script
     - .graphql:rules:graphql-verify
   stage: test
-  needs: []
+  needs:
+    - job: cache:ruby-gems
+      optional: true
   script:
     - |
       function graphql_verify() {

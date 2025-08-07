@@ -62,6 +62,9 @@ default:
 .if-merge-request-labels-run-with-rails-next: &if-merge-request-labels-run-with-rails-next
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-with-rails-next/'
 
+.if-rails-next-schedule: &if-rails-next-schedule
+  if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
@@ -124,7 +127,7 @@ workflow:
     # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
     # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
     # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
-    - if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
+    - <<: *if-rails-next-schedule
       variables:
         <<: *next-ruby-variables
         BUNDLE_GEMFILE: Gemfile.next
@@ -316,3 +319,7 @@ include:
       - if: '$CI_MERGE_REQUEST_LABELS =~ /quarantine/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
         when: never
       - when: always
+  - local: .gitlab/ci/_gem-cache.rails-next.yml
+    rules:
+      - *if-merge-request-labels-run-with-rails-next
+      - *if-rails-next-schedule
