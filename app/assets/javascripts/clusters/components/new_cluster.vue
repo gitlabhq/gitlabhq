@@ -21,7 +21,7 @@ export default {
 <template>
   <div class="gl-pt-4">
     <h4>{{ $options.i18n.title }}</h4>
-    <p>
+    <p data-testid="description">
       <gl-sprintf :message="$options.i18n.information">
         <template #link="{ content }">
           <gl-link :href="$options.clusterConnectHelpPath">{{ content }}</gl-link>

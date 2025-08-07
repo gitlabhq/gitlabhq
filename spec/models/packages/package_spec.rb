@@ -418,6 +418,27 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     end
   end
 
+  describe '.preload_pipelines_with_user_project_namespace_route' do
+    let_it_be(:project) { create(:project) }
+
+    let_it_be(:package) do
+      create(:generic_package, pipelines: [create(:ci_pipeline, project: project)], project: project)
+    end
+
+    subject(:execute) { described_class.preload_pipelines_with_user_project_namespace_route.id_in(package.id) }
+
+    it 'preloads pipelines with user, project, namespace and route' do
+      record = execute.first
+      pipeline = record.pipelines.first
+
+      expect(record.association(:pipelines)).to be_loaded
+      expect(pipeline.association(:user)).to be_loaded
+      expect(pipeline.association(:project)).to be_loaded
+      expect(pipeline.project.association(:namespace)).to be_loaded
+      expect(pipeline.project.namespace.association(:route)).to be_loaded
+    end
+  end
+
   describe '.installable_statuses' do
     it_behaves_like 'installable statuses'
   end

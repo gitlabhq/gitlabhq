@@ -20,7 +20,6 @@ ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
-spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/ci/artifacts/components/artifacts_bulk_delete_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
 spec/frontend/ci/pipeline_editor/components/header/validation_segment_spec.js
@@ -31,9 +30,7 @@ spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/clusters/agents/components/revoke_token_button_spec.js
-spec/frontend/clusters/components/new_cluster_spec.js
 spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
-spec/frontend/clusters_list/components/delete_agent_button_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
 spec/frontend/design_management/pages/design/index_spec.js

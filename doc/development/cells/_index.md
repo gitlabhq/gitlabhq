@@ -130,12 +130,11 @@ Solution: Use globally unique references, not a database sequence.
 If possible, hard-code static data in application code, instead of using the
 database.
 
-In this case, the `plans` table can be dropped, and replaced with a fixed model:
+In this case, the `plans` table can be dropped, and replaced with a fixed model
+(details can be found in the [configurable status design doc](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items_custom_status/#fixed-items-models-and-associations)):
 
 ```ruby
 class Plan
-  include ActiveModel::Model
-  include ActiveModel::Attributes
   include ActiveRecord::FixedItemsModel::Model
 
   ITEMS = [
@@ -151,19 +150,36 @@ class Plan
     {:id=>10, :name=>"opensource", :title=>"Opensource"}
   ]
 
-  attribute :id, :integer
   attribute :name, :string
   attribute :title, :string
 end
 ```
 
+You can use model validations and use ActiveRecord-like methods like `all`, `where`, `find_by` and `find`:
+
+```ruby
+Plan.find(4)
+Plan.find_by(name: 'premium')
+Plan.where(name: 'gold').first
+```
+
 The `hosted_plan_id` column will also be updated to refer to the fixed model's
 `id` value.
+
+You can also store associations with other models. For example:
+
+```ruby
+class CurrentStatus < ApplicationRecord
+  belongs_to_fixed_items :system_defined_status, fixed_items_class: WorkItems::Statuses::SystemDefined::Status
+end
+```
 
 Examples of hard-coding static data include:
 
 - [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)
 - [Static defaults for work item statuses](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178180)
+- [`Ai::Catalog::BuiltInTool`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197300)
+- [`WorkItems::SystemDefined::RelatedLinkRestriction`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199664)
 
 ## Cells Routing
 

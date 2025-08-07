@@ -496,18 +496,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         expect(page).to have_button('Toggle focus mode')
       end
     end
-
-    context 'keyboard shortcuts' do
-      before do
-        visit_project_board(project, board)
-        wait_for_requests
-      end
-
-      it 'allows user to use keyboard shortcuts' do
-        find('body').native.send_keys('i')
-        expect(page).to have_content('New Issue')
-      end
-    end
   end
 
   context 'signed out user' do

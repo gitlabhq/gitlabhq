@@ -3084,7 +3084,6 @@
 - './spec/features/projects/files/user_uploads_files_spec.rb'
 - './spec/features/projects/forks/fork_list_spec.rb'
 - './spec/features/projects/fork_spec.rb'
-- './spec/features/projects/gfm_autocomplete_load_spec.rb'
 - './spec/features/projects/graph_spec.rb'
 - './spec/features/projects/hook_logs/user_reads_log_spec.rb'
 - './spec/features/projects/import_export/export_file_spec.rb'

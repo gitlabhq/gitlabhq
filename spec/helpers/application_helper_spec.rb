@@ -786,6 +786,14 @@ RSpec.describe ApplicationHelper do
           end
 
           it { is_expected.not_to include('with-header') }
+
+          context 'when `global_topbar` feature is enabled' do
+            before do
+              stub_feature_flags(global_topbar: true)
+            end
+
+            it { is_expected.to include('with-header') }
+          end
         end
 
         context 'when no current_user' do

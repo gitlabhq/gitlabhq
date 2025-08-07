@@ -59,6 +59,11 @@ module Packages
 
     scope :preload_package, -> { preload(:package) }
     scope :preload_pipelines, -> { preload(pipelines: :user) }
+
+    scope :preload_pipelines_with_user_project_namespace_route, -> do
+      preload(pipelines: [:user, { project: { namespace: :route } }])
+    end
+
     scope :preload_conan_file_metadata, -> { preload(:conan_file_metadatum) }
     scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
     scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }

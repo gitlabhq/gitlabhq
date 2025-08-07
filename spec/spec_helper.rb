@@ -355,6 +355,8 @@ RSpec.configure do |config|
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
 
+      # New global topbar is still a WIP and not functional.
+      stub_feature_flags(global_topbar: false)
     else
       unstub_all_feature_flags
     end

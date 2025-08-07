@@ -1,0 +1,15 @@
+---
+table_name: security_finding_token_statuses
+classes:
+- Security::FindingTokenStatus
+feature_categories:
+- secret_detection
+description: Stores the token validation status for security findings detected in MR pipelines.
+  This is a companion to secret_detection_token_statuses but for Security::Finding records
+  which have a shorter retention period (30 days).
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198188
+milestone: '18.3'
+gitlab_schema: gitlab_sec
+table_size: small
+sharding_key:
+  project_id: projects

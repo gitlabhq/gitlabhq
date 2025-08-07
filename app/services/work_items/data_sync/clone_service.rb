@@ -82,7 +82,7 @@ module WorkItems
           overwritten_params: {
             author: current_user, created_at: nil, updated_by: current_user, updated_at: nil,
             last_edited_at: nil, last_edited_by: nil, closed_at: nil, closed_by: nil,
-            duplicated_to_id: nil, moved_to_id: nil, promoted_to_epic_id: nil, external_key: nil,
+            duplicated_to_id: nil, moved_to_id: nil, promoted_to_epic_id: nil,
             upvotes_count: 0, blocking_issues_count: 0,
             state_id: WorkItem.available_states[:opened]
           }

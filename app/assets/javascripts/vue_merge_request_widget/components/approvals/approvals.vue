@@ -50,11 +50,6 @@ export default {
       required: false,
       default: false,
     },
-    isCollapsible: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     collapsed: {
       type: Boolean,
       required: false,
@@ -263,10 +258,9 @@ export default {
 <template>
   <div v-if="approvals" class="js-mr-approvals mr-section-container">
     <state-container
-      data-testid="state-container"
       :is-loading="isLoading"
       status="approval"
-      :is-collapsible="isCollapsible"
+      is-collapsible
       collapse-on-desktop
       :collapsed="collapsed"
       :expand-details-tooltip="__('Expand eligible approvers')"

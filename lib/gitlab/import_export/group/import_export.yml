@@ -67,6 +67,7 @@ excluded_attributes:
   epics:
     - :state_id
     - :assignee_id
+    - :external_key
   iterations_cadence: &iterations_cadence_definition
     - :id
     - :next_run_date

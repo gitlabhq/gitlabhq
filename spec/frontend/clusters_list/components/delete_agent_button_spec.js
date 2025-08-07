@@ -61,6 +61,7 @@ describe('DeleteAgentButton', () => {
   const createWrapper = async ({
     mutationResponse = mockDeleteResponse,
     provideData = {},
+    stubs = {},
   } = {}) => {
     apolloProvider = createMockApolloProvider({ mutationResponse });
     const defaultProvide = {
@@ -91,6 +92,7 @@ describe('DeleteAgentButton', () => {
             hide: jest.fn(),
           },
         }),
+        ...stubs,
       },
     });
 
@@ -156,7 +158,8 @@ describe('DeleteAgentButton', () => {
       ${'the input with agent name is incorrect'} | ${'wrong-name'} | ${true}    | ${false}
       ${'the input with agent name is correct'}   | ${agent.name}   | ${false}   | ${true}
     `('when $condition', ({ agentName, isDisabled, mutationCalled }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        await createWrapper({ stubs: { GlFormInput } });
         findDeleteBtn().vm.$emit('click');
         findInput().vm.$emit('input', agentName);
       });
@@ -183,7 +186,7 @@ describe('DeleteAgentButton', () => {
 
       describe('when user presses the enter button', () => {
         beforeEach(async () => {
-          await findInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+          await findInput().find('input').trigger('keydown', { key: ENTER_KEY });
         });
 
         if (mutationCalled) {

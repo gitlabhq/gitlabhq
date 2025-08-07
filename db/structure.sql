@@ -23526,6 +23526,14 @@ CREATE SEQUENCE security_categories_id_seq
 
 ALTER SEQUENCE security_categories_id_seq OWNED BY security_categories.id;
 
+CREATE TABLE security_finding_token_statuses (
+    security_finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
+);
+
 CREATE SEQUENCE security_findings_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -32050,6 +32058,9 @@ ALTER TABLE ONLY security_attributes
 ALTER TABLE ONLY security_categories
     ADD CONSTRAINT security_categories_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY security_finding_token_statuses
+    ADD CONSTRAINT security_finding_token_statuses_pkey PRIMARY KEY (security_finding_id);
+
 ALTER TABLE ONLY security_findings
     ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id, partition_number);
 
@@ -34690,6 +34701,10 @@ CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_
 CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
 
 CREATE INDEX idx_secret_detect_token_on_project_id ON secret_detection_token_statuses USING btree (project_id);
+
+CREATE INDEX idx_security_finding_token_on_created_at ON security_finding_token_statuses USING btree (created_at);
+
+CREATE INDEX idx_security_finding_token_on_project_id ON security_finding_token_statuses USING btree (project_id);
 
 CREATE INDEX idx_security_pipeline_execution_project_schedules_next_run_at ON security_pipeline_execution_project_schedules USING btree (next_run_at, id);
 

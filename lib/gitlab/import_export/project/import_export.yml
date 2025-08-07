@@ -660,7 +660,6 @@ included_attributes:
     - :last_edited_by_id
     - :discussion_locked
     - :health_status
-    - :external_key
     - :issue_type
   group_members:
     - :access_level
@@ -907,6 +906,7 @@ excluded_attributes:
     - :work_item_type_id
     - :email_message_id
     - :incident_management_issuable_escalation_status
+    - :external_key
   merge_request: &merge_request_excluded_definition
     - :milestone_id
     - :sprint_id
@@ -1060,6 +1060,7 @@ excluded_attributes:
     - :due_date_sourcing_epic_id
     - :issue_id
     - :work_item_parent_link_id
+    - :external_key
   epic_issue:
     - :epic_id
     - :issue_id

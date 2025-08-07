@@ -8,10 +8,13 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
   include Gitlab::EncryptedAttribute
   include SafelyChangeColumnDefault
+  include IgnorableColumns
 
   columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
+  ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

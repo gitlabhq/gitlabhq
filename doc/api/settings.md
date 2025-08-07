@@ -170,7 +170,9 @@ Example response:
   "silent_admin_exports_enabled": false,
   "top_level_group_creation_enabled": true,
   "disable_invite_members": false,
-  "enforce_pipl_compliance": true
+  "enforce_pipl_compliance": true,
+  "model_prompt_cache_enabled": true,
+  "lock_model_prompt_cache_enabled": false
 }
 ```
 

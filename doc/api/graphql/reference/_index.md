@@ -32885,6 +32885,7 @@ Represents a Maven virtual registry.
 | <a id="mavenvirtualregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
 | <a id="mavenvirtualregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="mavenvirtualregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="mavenvirtualregistryupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
 | <a id="mavenvirtualregistryupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstream!]`](#mavenupstream) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
 ### `MemberApproval`

@@ -753,3 +753,15 @@ $scroll-scrim-height: 2.25rem;
 .custom-gradient-progress .gl-progress {
   background: linear-gradient(90deg, #ffb177 0%, #936fff 100%);
 }
+
+.super-topbar {
+  position: fixed;
+  top: $calc-system-headers-height;
+  left: 0;
+  width: 100vw;
+  height: var(--header-height);
+  padding: 0 1rem;
+
+  background-color: var(--gl-background-color-default);
+  z-index: calc($super-sidebar-z-index + 1);
+}

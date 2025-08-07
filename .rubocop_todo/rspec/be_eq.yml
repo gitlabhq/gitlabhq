@@ -542,7 +542,6 @@ RSpec/BeEq:
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_scrolls_to_note_on_load_spec.rb'
     - 'spec/features/profiles/user_edit_profile_spec.rb'
-    - 'spec/features/projects/gfm_autocomplete_load_spec.rb'
     - 'spec/features/projects/pages/user_edits_lets_encrypt_settings_spec.rb'
     - 'spec/features/projects/pipelines/pipeline_spec.rb'
     - 'spec/features/projects/pipelines/pipelines_spec.rb'

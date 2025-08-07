@@ -99,8 +99,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'gitlab_subscription_histories.namespace_id',
       # allowed as it points to itself
       'organizations.id',
-      # allowed as it points to itself
-      'users.id',
       # contains an object storage reference. Group_id is the sharding key but we can't use the usual cascade delete FK.
       'virtual_registries_packages_maven_cache_entries.group_id',
       # The table contains references in the object storage and thus can't have cascading delete

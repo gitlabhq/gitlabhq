@@ -8,6 +8,7 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user, username: 'current_user', name: 'Shi-mi') }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(current_user)
     sign_in(current_user)
   end
@@ -36,7 +37,9 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
       visit issue_path(issue_without_assignee)
       assign_to(assignee)
 
-      expect(find('#notes-list')).to have_text("Shi-mi assigned to @assignee just now")
+      within('.work-item-notes') do
+        expect(page).to have_text("Shi-mi assigned to @assignee just now")
+      end
     end
 
     it 'sends confirmation e-mail for reassigning' do
@@ -53,7 +56,9 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
       visit issue_path(issue_with_assignee)
       assign_to(author)
 
-      expect(find('#notes-list')).to have_text("Shi-mi assigned to @author and unassigned @assignee just now")
+      within('.work-item-notes') do
+        expect(page).to have_text("Shi-mi assigned to @author and unassigned @assignee just now")
+      end
     end
 
     it 'sends confirmation e-mail for unassigning' do
@@ -70,7 +75,9 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
       visit issue_path(issue_with_assignee)
       quick_action('/unassign')
 
-      expect(find('#notes-list')).to have_text("Shi-mi unassigned @assignee just now")
+      within('.work-item-notes') do
+        expect(page).to have_text("Shi-mi unassigned @assignee just now")
+      end
     end
   end
 
@@ -87,7 +94,9 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
       visit issue_path(issue)
       quick_action("/close")
 
-      expect(find('#notes-list')).to have_text("Shi-mi closed just now")
+      within('.work-item-notes') do
+        expect(page).to have_text("Shi-mi closed just now")
+      end
     end
   end
 
@@ -98,7 +107,7 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
   end
 
   def quick_action(command)
-    fill_in 'note[note]', with: command
+    fill_in 'Add a reply', with: command
     click_button 'Comment'
   end
 

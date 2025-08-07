@@ -31,7 +31,6 @@ Issue:
 - last_edited_by_id
 - discussion_locked
 - health_status
-- external_key
 - issue_type
 - email_message_id
 - imported
@@ -986,7 +985,6 @@ Epic:
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
   - health_status
-  - external_key
   - confidential
   - color
   - total_opened_issue_weight

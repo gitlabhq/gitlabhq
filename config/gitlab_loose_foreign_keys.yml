@@ -695,6 +695,10 @@ security_categories:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+security_finding_token_statuses:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 security_inventory_filters:
   - table: projects
     column: project_id

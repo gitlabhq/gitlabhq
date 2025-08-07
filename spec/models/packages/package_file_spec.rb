@@ -751,4 +751,24 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
       it { is_expected.to contain_exactly(package_file1, package_file2) }
     end
   end
+
+  describe '.preload_pipelines_with_user_project_namespace_route' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package) { create(:generic_package, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: package.project) }
+    let_it_be(:package_file) { create(:package_file, pipelines: [pipeline], package: package) }
+
+    subject(:execute) { described_class.preload_pipelines_with_user_project_namespace_route.id_in(package_file.id) }
+
+    it 'preloads pipelines with user, project, namespace and route' do
+      record = execute.first
+      pipeline = record.pipelines.first
+
+      expect(record.association(:pipelines)).to be_loaded
+      expect(pipeline.association(:user)).to be_loaded
+      expect(pipeline.association(:project)).to be_loaded
+      expect(pipeline.project.association(:namespace)).to be_loaded
+      expect(pipeline.project.namespace.association(:route)).to be_loaded
+    end
+  end
 end

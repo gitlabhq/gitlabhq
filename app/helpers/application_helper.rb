@@ -307,7 +307,7 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names << 'with-header' if @with_header || !current_user
+    class_names << 'with-header' if @with_header || !current_user || Feature.enabled?(:global_topbar, current_user)
     class_names << system_message_class
 
     class_names

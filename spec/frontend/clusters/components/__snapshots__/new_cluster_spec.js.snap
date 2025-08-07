@@ -7,7 +7,9 @@ exports[`NewCluster renders the cluster component correctly 1`] = `
   <h4>
     Enter your Kubernetes cluster certificate details
   </h4>
-  <p>
+  <p
+    data-testid="description"
+  >
     Enter details about your cluster.
     <a
       class="gl-link"

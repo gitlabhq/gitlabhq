@@ -154,7 +154,6 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           duplicated_to_id: original_work_item.duplicated_to_id,
           moved_to_id: original_work_item.moved_to_id,
           promoted_to_epic_id: original_work_item.promoted_to_epic_id,
-          external_key: original_work_item.external_key,
           upvotes_count: original_work_item.upvotes_count,
           blocking_issues_count: original_work_item.blocking_issues_count,
           service_desk_reply_to: service_desk_alias_address

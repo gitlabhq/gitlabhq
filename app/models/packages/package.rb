@@ -83,6 +83,11 @@ module Packages
     scope :has_version, -> { where.not(version: nil) }
     scope :preload_files, -> { preload(:installable_package_files) }
     scope :preload_pipelines, -> { preload(pipelines: :user) }
+
+    scope :preload_pipelines_with_user_project_namespace_route, -> do
+      preload(pipelines: [:user, { project: { namespace: :route } }])
+    end
+
     scope :preload_tags, -> { preload(:tags) }
     scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
     scope :select_distinct_name, -> { select(:name).distinct }

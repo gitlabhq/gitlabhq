@@ -23,10 +23,16 @@ module PackagesHelper
     expose_url(package_registry_project_path)
   end
 
+  # TODO: rename to `terraform_module_from_presenter`
+  # with the rollout of https://gitlab.com/gitlab-org/gitlab/-/issues/552336
   def package_from_presenter(package)
-    presenter = ::Packages::Detail::PackagePresenter.new(package)
-
-    presenter.detail_view.to_json
+    if Feature.enabled?(:packages_terraform_module_presenter, package.project)
+      presenter = ::Packages::TerraformModule::PackagePresenter.new(package)
+      presenter.to_json
+    else
+      presenter = ::Packages::Detail::PackagePresenter.new(package)
+      presenter.detail_view.to_json
+    end
   end
 
   def pypi_registry_url(project)

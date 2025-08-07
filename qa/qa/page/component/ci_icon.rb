@@ -40,11 +40,14 @@ module QA
 
         def status_badge
           # There are more than 1 on job details page
-          all_elements('ci-icon-text', minimum: 1).first.text
+          all_statuses = all_elements('ci-icon-text', minimum: 1).map(&:text)
+          QA::Runtime::Logger.debug("CI Icon all statuses: #{all_statuses}")
+          all_statuses.first
         end
 
         def completed?(timeout: 60)
           wait_until(reload: false, sleep_interval: 3.0, max_duration: timeout) do
+            QA::Runtime::Logger.debug("CI Icon status is #{status_badge}")
             COMPLETED_STATUSES.include?(status_badge)
           end
         end
