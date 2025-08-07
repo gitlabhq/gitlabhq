@@ -46,7 +46,10 @@ export const getWebIDEWorkbenchConfig = async () => {
 
     const workbenchBaseUrl = await buildWorkbenchUrl();
 
-    await pingWorkbench({ el: document.body, config: { workbenchBaseUrl } });
+    await pingWorkbench({
+      el: document.body,
+      config: { workbenchBaseUrl, gitlabUrl: getGitLabUrl() },
+    });
 
     return {
       workbenchBaseUrl,

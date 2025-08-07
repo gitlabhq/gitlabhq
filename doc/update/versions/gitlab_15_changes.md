@@ -406,7 +406,7 @@ if you can't upgrade to 15.11.12 and later.
   To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
   There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
   the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
-- GitLab 15.4.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+- GitLab 15.4.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
   migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0.
@@ -740,7 +740,7 @@ potentially cause downtime.
 
 ## 15.4.0
 
-- GitLab 15.4.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
+- GitLab 15.4.0 includes a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 - By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`,
   [configure the `NTP_HOST` variable](../../administration/gitaly/praefect/configure.md#customize-time-server-setting) otherwise, there can be `ntp: read udp ... i/o timeout` errors
@@ -758,7 +758,7 @@ potentially cause downtime.
   In a highly available or GitLab Geo environment, secrets need to be the same on all nodes.
   If you're manually syncing the secrets file across nodes, or manually specifying secrets in
   `/etc/gitlab/gitlab.rb`, make sure `/etc/gitlab/gitlab-secrets.json` is the same on all nodes.
-- GitLab 15.4.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+- GitLab 15.4.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
   migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0 or later.

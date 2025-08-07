@@ -784,6 +784,109 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
       end
     end
 
+    context 'for an event with sum operator metrics' do
+      let(:expected_rspec_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RSPEC
+
+        it "triggers an internal event" do
+          expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+            project: project,
+            user: user,
+            additional_properties: {
+              label: 'string',
+              value: 72,
+              custom_key: 'custom_value'
+            }
+          ).and increment_usage_metrics(
+            'sums.sum_value_from_internal_events_cli_used_monthly',
+            'sums.sum_value_from_internal_events_cli_used_weekly',
+            'sums.sum_value_from_internal_events_cli_used'
+          ).by(72)
+        end
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      before do
+        File.write(
+          'config/metrics/counts_all/sum_value_from_internal_events_cli_used.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/sum_single_event.yml')
+        )
+      end
+
+      it 'shows examples with additional properties included' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "Exit", # Filters to this item
+          "\n" # select: Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_rspec_example)
+        end
+      end
+
+      context 'for an event with sum operator metrics and non-sum operator metrics' do
+        let(:expected_rspec_example) do
+          <<~TEXT.chomp
+          --------------------------------------------------
+          # RSPEC
+
+          it "triggers an internal event" do
+            expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+              project: project,
+              user: user,
+              additional_properties: {
+                label: 'string',
+                value: 72,
+                custom_key: 'custom_value'
+              }
+            ).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
+            ).and increment_usage_metrics(
+              'sums.sum_value_from_internal_events_cli_used_monthly',
+              'sums.sum_value_from_internal_events_cli_used_weekly',
+              'sums.sum_value_from_internal_events_cli_used'
+            ).by(72)
+          end
+
+          --------------------------------------------------
+          TEXT
+        end
+
+        before do
+          File.write(
+            'config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml',
+            File.read('spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml')
+          )
+        end
+
+        it 'shows examples with additional properties included' do
+          queue_cli_inputs([
+            "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+            'internal_events_cli_used', # Filters to this event
+            "\n", # Select: config/events/internal_events_cli_used.yml
+            "\e[B", # Arrow down to: rspec
+            "\n", # Select: rspec
+            "Exit", # Filters to this item
+            "\n" # select: Exit
+          ])
+
+          with_cli_thread do
+            expect { plain_last_lines }.to eventually_include_cli_text(expected_rspec_example)
+          end
+        end
+      end
+    end
+
     context 'for an event without identifiers' do
       let(:event_filepath) { 'config/events/internal_events_cli_used.yml' }
       let(:event_content) { internal_event_fixture('events/event_with_additional_properties_without_identifiers.yml') }

@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Migrations for upgrades
+title: Check migrations before upgrade
 ---
 
 {{< details >}}
@@ -12,12 +12,9 @@ title: Migrations for upgrades
 
 {{< /details >}}
 
-When upgrading GitLab, there are two types of migrations to check:
+Before you upgrade GitLab, you must check that all existing background migrations are complete.
 
-- Database migrations.
-- Advanced search migrations.
-
-## Database background migrations
+## Check for pending database background migrations
 
 {{< history >}}
 
@@ -25,12 +22,6 @@ When upgrading GitLab, there are two types of migrations to check:
 - For GitLab Self-Managed, administrators can opt to disable it.
 
 {{< /history >}}
-
-To decrease the time required to complete these migrations, increase the number of
-[Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
-that can process jobs in the `background_migration` queue.
-
-### Batched background migrations
 
 To update database tables in batches, GitLab can use batched background migrations. These migrations
 are created by GitLab developers and run automatically on upgrade. However, such migrations are
@@ -45,7 +36,11 @@ batched background migrations are run. You should
 [Actively monitor the Sidekiq status](../administration/admin_area.md#background-jobs)
 until all migrations are completed.
 
-#### Check the status of batched background migrations
+To decrease the time required to complete these migrations, increase the number of
+[Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
+that can process jobs in the `background_migration` queue.
+
+### Check the status of batched background migrations
 
 You can check the status of batched background migrations in the GitLab UI, or
 by querying the database directly. Before you upgrade GitLab, all migrations must
@@ -63,7 +58,7 @@ If you get this error,
 [review the options](background_migrations_troubleshooting.md#database-migrations-failing-because-of-batched-background-migration-not-finished) for
 how to complete the batched background migrations needed for the GitLab upgrade.
 
-##### From the GitLab UI
+#### From the GitLab UI
 
 Prerequisites:
 
@@ -76,7 +71,7 @@ To check the status of batched background migrations:
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
 
-##### From the database
+#### From the database
 
 Prerequisites:
 
@@ -108,13 +103,13 @@ gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FR
 
 If the query returns zero rows, all batched background migrations are complete.
 
-#### Enable or disable advanced features
+### Enable or disable advanced features
 
 Batched background migrations provide feature flags that enable you to customize
 migrations or pause them entirely. These feature flags should only be disabled by
 advanced users who understand the risks of doing so.
 
-##### Pause batched background migrations
+#### Pause batched background migrations
 
 {{< alert type="warning" >}}
 
@@ -172,7 +167,7 @@ Use the following database queries to see the state of the current batched backg
    command mentioned previously) to proceed with the batch when ready. On larger instances,
    background migrations can take as long as 48 hours to complete each batch.
 
-##### Automatic batch size optimization
+#### Automatic batch size optimization
 
 {{< history >}}
 
@@ -196,7 +191,7 @@ On GitLab.com, this feature is available. On GitLab Dedicated, this feature is n
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
-##### Parallel execution
+#### Parallel execution
 
 {{< history >}}
 
@@ -222,7 +217,7 @@ the number of batched background migrations executed in parallel:
 ApplicationSetting.update_all(database_max_running_batched_background_migrations: 4)
 ```
 
-#### Resolve failed batched background migrations
+### Resolve failed batched background migrations
 
 If a batched background migration fails, [fix and retry](#fix-and-retry-the-migration) it.
 If the migration continues to fail with an error, either:
@@ -230,7 +225,7 @@ If the migration continues to fail with an error, either:
 - [Finish the failed migration manually](#finish-a-failed-migration-manually)
 - [Mark the failed migration finished](#mark-a-failed-migration-finished)
 
-##### Fix and retry the migration
+#### Fix and retry the migration
 
 All failed batched background migrations must be resolved to upgrade to a newer
 version of GitLab. If you [check the status](#check-the-status-of-batched-background-migrations)
@@ -271,7 +266,7 @@ To monitor the retried batched background migrations, you can
 [check the status of batched background migrations](#check-the-status-of-batched-background-migrations)
 on a regular interval.
 
-##### Finish a failed migration manually
+#### Finish a failed migration manually
 
 To manually finish a batched background migration that failed with an error,
 use the information in the failure error logs or the database:
@@ -344,7 +339,7 @@ use the information in the failure error logs or the database:
 
 {{< /tabs >}}
 
-##### Mark a failed migration finished
+#### Mark a failed migration finished
 
 {{< alert type="warning" >}}
 
@@ -386,7 +381,7 @@ Gitlab::Database::SharedModel.using_connection(connection) do
 end
 ```
 
-#### Run all background migrations synchronously
+### Run all background migrations synchronously
 
 There may be cases where you want to force background migrations to run in the foreground during a maintenance window.
 
@@ -414,9 +409,7 @@ Gitlab::Database.database_base_models.each do |database_name, model|
 end
 ```
 
-## Advanced search migrations
-
-### Check for pending migrations
+## Check for pending advanced search migrations
 
 {{< details >}}
 

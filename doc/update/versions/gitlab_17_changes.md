@@ -660,7 +660,7 @@ A data change might take many hours to complete on larger GitLab instances, at a
 processed per hour. If your instance is affected:
 
 1. Upgrade to 17.1.
-1. [Make sure all batched migrations have completed successfully](../background_migrations.md#batched-background-migrations).
+1. [Make sure all batched migrations have completed successfully](../background_migrations.md#check-for-pending-database-background-migrations).
 1. Upgrade to 17.2 or 17.3.
 
 To check if you are affected:
@@ -677,7 +677,7 @@ To check if you are affected:
    instance meets the threshold for this required stop. Instances reporting `0 rows` can skip
    the 17.1 upgrade stop.
 
-GitLab 17.1 introduced a [batched background migration](../background_migrations.md#batched-background-migrations)
+GitLab 17.1 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations)
 that ensures every record in the `ci_pipeline_messages` table has the [correct partitioning key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153391).
 Partitioning CI tables is expected to provide performance improvements for instances with large amounts of CI data.
 

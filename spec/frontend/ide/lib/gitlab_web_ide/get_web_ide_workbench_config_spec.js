@@ -19,7 +19,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
   stubCrypto();
 
   beforeEach(() => {
-    getGitLabUrl.mockReturnValueOnce(GITLAB_URL);
+    getGitLabUrl.mockReturnValue(GITLAB_URL);
 
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
     window.gon.relative_url_root = '';
@@ -61,6 +61,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
           el: document.body,
           config: {
             workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            gitlabUrl: 'https://gitlab.example.com',
           },
         });
         expect(config).toEqual({
@@ -83,6 +84,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
           el: document.body,
           config: {
             workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            gitlabUrl: 'https://gitlab.example.com',
           },
         });
         expect(getGitLabUrl).toHaveBeenCalledWith(TEST_GITLAB_WEB_IDE_PUBLIC_PATH);

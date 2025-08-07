@@ -21,10 +21,10 @@ section details how to reduce this architecture's size while maintaining HA.
 For a full list of reference architectures, see
 [Available reference architectures](_index.md#available-reference-architectures).
 
-> - **Target Load**: API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
-> - **High Availability**: Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
-> - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
+- **Target Load**: API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
+- **High Availability**: Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
+- **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
 | Service                                   | Nodes | Configuration         | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |-------------------------------------------|-------|-----------------------|-----------------|--------------|----------|

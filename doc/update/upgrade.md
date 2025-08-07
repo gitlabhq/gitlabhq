@@ -134,7 +134,7 @@ to ensure the major components of GitLab are working:
    sudo gitlab-rake gitlab:check
    ```
 
-1. [Check the status of all background database migrations](background_migrations.md#check-for-pending-migrations).
+1. [Check the status of all background database migrations](background_migrations.md).
 
 1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
 
@@ -227,7 +227,7 @@ If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agen
 ### Elasticsearch
 
 Before updating GitLab, confirm advanced search migrations are complete by
-[checking for pending migrations](background_migrations.md#check-for-pending-migrations).
+[checking for pending migrations](background_migrations.md#check-for-pending-advanced-search-migrations).
 
 After updating GitLab, you may have to upgrade
 [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).

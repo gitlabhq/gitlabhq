@@ -21,47 +21,10 @@ module InternalEventsCli
         options = get_all_metric_options(selection.actions)
 
         options.each do |metric|
-          identifier = metric.identifier.value
-
-          # Hide the filtered version of an option if unsupported; it just adds noise without value. Still,
-          # showing unsupported options is valuable, because it advertises possibilities and explains why
-          # those options aren't available.
-          next if metric.filtered? && !selection.can_be_unique?(identifier)
-          next if metric.filtered? && !selection.can_filter_when_unique?(identifier)
-          next if selection.exclude_filter_identifier?(identifier)
-
-          option = Option.new(
-            metric: metric,
-            events_name: selection.events_name,
-            filter_name: (selection.filter_name(identifier) if metric.filtered?),
-            defined: false,
-            supported: true
-          )
-
-          conflicting_timeframes = get_conflicting_timeframes(metric)
-          available_timeframes = metric.time_frame.value - conflicting_timeframes
-
-          if conflicting_timeframes.any?
-            disabled_metric = metric.dup
-            disabled_metric[:time_frame] = conflicting_timeframes
-
-            disabled_option = option.dup
-            disabled_option.defined = true
-            disabled_option.metric = disabled_metric
-
-            disabled_options << disabled_option.formatted
-          end
-
-          next if available_timeframes.none?
-
-          metric[:time_frame] = available_timeframes.sort
-
-          if selection.can_be_unique?(identifier)
-            available_options << option.formatted
-          else
-            option.supported = false
-            disabled_options << option.formatted
-          end
+          # Filters & breaks up menu items based on existing metrics
+          # and supported functionality, appending formatted options
+          # to available_options and disabled_options arrays
+          collect_options!(metric, selection, available_options, disabled_options)
         end
 
         # Push disabled options to the end for better skimability;
@@ -78,21 +41,69 @@ module InternalEventsCli
       # @return [Array<NewMetric>]
       def get_all_metric_options(actions)
         [
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'user'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'project'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'namespace'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'user', filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'project', filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'namespace', filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d all]),
-          Metric.new(actions: actions, time_frame: %w[7d 28d all], filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'label'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'property'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'value'),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'label', filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'property', filters: []),
-          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'value', filters: [])
-        ]
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'user' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'project' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'namespace' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'user', filters: [] },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'project', filters: [] },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'namespace', filters: [] },
+          { time_frame: %w[7d 28d all], operator: 'count' },
+          { time_frame: %w[7d 28d all], operator: 'count', filters: [] },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'label' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'property' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'value' },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'label', filters: [] },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'property', filters: [] },
+          { time_frame: %w[7d 28d], operator: 'unique_count', identifier: 'value', filters: [] },
+          { time_frame: %w[7d 28d all], operator: 'sum', identifier: 'value' },
+          { time_frame: %w[7d 28d all], operator: 'sum', identifier: 'value', filters: [] }
+        ].map do |attributes|
+          Metric.new(**attributes.merge(actions: actions))
+        end
+      end
+
+      def collect_options!(metric, selection, available_options, disabled_options)
+        identifier = metric.identifier.value
+
+        # Hide the filtered version of an option if unsupported; it just adds noise without value. Still,
+        # showing unsupported options is valuable, because it advertises possibilities and explains why
+        # those options aren't available.
+        return if metric.filtered? && !selection.supports_operations?(identifier)
+        return if metric.filtered? && !selection.can_filter_when_operated_on?(identifier)
+        return if selection.exclude_filter_identifier?(identifier)
+
+        option = Option.new(
+          metric: metric,
+          events_name: selection.events_name,
+          filter_name: (selection.filter_name(identifier) if metric.filtered?),
+          defined: false,
+          supported: true
+        )
+
+        conflicting_timeframes = get_conflicting_timeframes(metric)
+        available_timeframes = metric.time_frame.value - conflicting_timeframes
+
+        if conflicting_timeframes.any?
+          disabled_metric = metric.dup
+          disabled_metric[:time_frame] = conflicting_timeframes
+
+          disabled_option = option.dup
+          disabled_option.defined = true
+          disabled_option.metric = disabled_metric
+
+          disabled_options << disabled_option.formatted
+        end
+
+        return if available_timeframes.none?
+
+        metric[:time_frame] = available_timeframes.sort
+
+        if selection.supports_operations?(identifier)
+          available_options << option.formatted
+        else
+          option.supported = false
+          disabled_options << option.formatted
+        end
       end
 
       def get_conflicting_timeframes(metric)
@@ -136,20 +147,20 @@ module InternalEventsCli
 
         # We require the same uniqueness constraint for all events,
         # so we want only the options they have in common
-        def uniqueness_options
+        def operable_identifiers
           [*shared_identifiers, *shared_filters, nil]
         end
 
         # Whether there are any filtering options other than the
         # selected uniqueness constraint
-        def can_filter_when_unique?(identifier)
-          can_be_unique?(identifier) && filter_options.difference([identifier]).any?
+        def can_filter_when_operated_on?(identifier)
+          supports_operations?(identifier) && filter_options.difference([identifier]).any?
         end
 
         # Whether the given identifier is available for all events
         # and can be used as a uniqueness constraint
-        def can_be_unique?(identifier)
-          uniqueness_options.include?(identifier)
+        def supports_operations?(identifier)
+          operable_identifiers.include?(identifier)
         end
 
         # Common values for identifiers shared across all the events
@@ -189,7 +200,7 @@ module InternalEventsCli
         # ex) Monthly/Weekly count of unique users who triggered cli_template_included where label/property is...
         # ex) Monthly/Weekly count of unique users who triggered cli_template_included (user unavailable)
         def formatted
-          name = [time_frame_phrase, identifier_phrase, filter_phrase].compact.join(' ')
+          name = [time_frame_phrase, operator_phrase, filter_phrase].compact.join(' ')
           name = format_help(name) if disabled
 
           { name: name, disabled: disabled, value: metric }.compact
@@ -207,16 +218,16 @@ module InternalEventsCli
         end
 
         # ex) "count of unique users who triggered cli_template_included"
-        def identifier_phrase
-          phrase = identifier.description % events_name
-          phrase.gsub!(unique_phrase, format_info(unique_phrase)) unless disabled
+        def operator_phrase
+          phrase = "#{metric.operator.description} #{identifier.description % events_name}"
+          phrase.gsub!(highlighted_phrase, format_info(highlighted_phrase)) unless disabled
 
           phrase
         end
 
         # ex) "unique users"
-        def unique_phrase
-          "unique #{identifier.plural}"
+        def highlighted_phrase
+          "#{metric.operator.qualifier} #{identifier.plural}"
         end
 
         # ex) "where label/property is..."

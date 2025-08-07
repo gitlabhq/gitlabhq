@@ -50,12 +50,6 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
         it_behaves_like 'without a failure'
       end
-
-      context 'with only docs changes' do
-        let(:changes_by_category_response) { { docs: ['foo.md'] } }
-
-        it_behaves_like 'without a failure'
-      end
     end
 
     context 'when not applicable' do
@@ -82,6 +76,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       let(:source_branch) { 'my_bug_branch' }
       let(:feature_label_present) { false }
       let(:bug_label_present) { true }
+      let(:maintenance_label_present) { true }
       let(:tier_3_label_present) { false }
       let(:pipeline_expedite_label_present) { false }
       let(:flaky_test_label_present) { false }
@@ -149,6 +144,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         allow(fake_helper).to receive(:mr_target_project_id).and_return(1)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::feature').and_return(feature_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::bug').and_return(bug_label_present)
+        allow(fake_helper).to receive(:mr_has_labels?).with('type::maintenance').and_return(maintenance_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('pipeline::expedited')
           .and_return(pipeline_expedite_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('pipeline:expedite')
@@ -176,10 +172,11 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'with a failure', described_class::FEATURE_ERROR_MESSAGE
       end
 
-      context 'without a bug label' do
+      context 'without a bug or maintenance label' do
         let(:bug_label_present) { false }
+        let(:maintenance_label_present) { false }
 
-        it_behaves_like 'with a failure', described_class::BUG_ERROR_MESSAGE
+        it_behaves_like 'with a failure', described_class::BUG_MAINTENANCE_ERROR_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
@@ -359,7 +356,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
   describe '#encourage_package_and_qa_execution?' do
     subject { stable_branch.encourage_package_and_qa_execution? }
 
-    where(:stable_branch?, :security_mr?, :documentation?, :flaky?, :result) do
+    where(:stable_branch?, :security_mr?, :allowed_changes?, :flaky?, :result) do
       # security merge requests
       true  | true  | true  | true  | false
       true  | true  | true  | false | false
@@ -384,11 +381,11 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
           .and_return(security_mr?)
 
         allow(fake_helper)
-          .to receive(:has_only_documentation_changes?)
-          .and_return(documentation?)
+          .to receive(:allowed_backport_changes?)
+          .and_return(allowed_changes?)
 
         changes_by_category =
-          if documentation?
+          if allowed_changes?
             { docs: ['foo.md'] }
           else
             { graphql: ['bar.rb'] }

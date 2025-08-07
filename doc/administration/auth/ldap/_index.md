@@ -20,7 +20,7 @@ This integration works with most LDAP-compliant directory servers, including:
 
 - Microsoft Active Directory.
 - Apple Open Directory.
-- Open LDAP.
+- OpenLDAP.
 - 389 Server.
 
 {{< alert type="note" >}}

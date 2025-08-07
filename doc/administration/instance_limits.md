@@ -110,7 +110,7 @@ requests per user. For more information, read
 
 ### Files API
 
-This setting limits the request rate on the Packages API per user or IP address. For more information, read
+This setting limits the request rate on the Files API per user or IP address. For more information, read
 [Files API rate limits](settings/files_api_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.

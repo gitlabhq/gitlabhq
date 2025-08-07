@@ -880,7 +880,7 @@ Specific information applies to installations using Geo:
 
 - A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
   the `EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished` post-deploy migration.
-  GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `bigint` `pipeline_id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.3.
@@ -1113,14 +1113,14 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 
 - A `BackfillPreparedAtMergeRequests` background migration is finalized with
   the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
-  GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
-- GitLab 16.1.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) `MarkDuplicateNpmPackagesForDestruction` to mark duplicate NPM packages for destruction. Make sure the migration has completed successfully before upgrading to 16.3.0 or later.
+- GitLab 16.1.0 includes a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) `MarkDuplicateNpmPackagesForDestruction` to mark duplicate NPM packages for destruction. Make sure the migration has completed successfully before upgrading to 16.3.0 or later.
 - A `BackfillCiPipelineVariablesForBigintConversion` background migration is finalized with
   the `EnsureBackfillBigintIdIsCompleted` post-deploy migration.
-  GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `bigint` `id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.1.
@@ -1713,7 +1713,7 @@ The threshold is **30,000 users**, which includes:
 - Developers and other users in any state, including active, blocked, and pending approval.
 - Bot accounts for project and group access tokens.
 
-GitLab 16.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+GitLab 16.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
 [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
 migration might take multiple days to complete on larger GitLab instances. Make sure the migration
 has completed successfully before upgrading to 16.1.0 or later.

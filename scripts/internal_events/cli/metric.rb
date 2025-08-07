@@ -64,17 +64,21 @@ module InternalEventsCli
     # Enables comparison with new metrics
     def unique_ids
       prefix = [
+        operator,
         (actions || []).sort.join('+'),
-        identifier,
         'filter-',
         filtered?
       ].join('_')
 
       Array(time_frame).map { |t| prefix + t }
     end
+
+    def operator
+      events&.dig(0, 'operator') || "count(#{identifier})"
+    end
   end
 
-  NewMetric = Struct.new(*NEW_METRIC_FIELDS, :identifier, :actions, :key, :filters, keyword_init: true) do
+  NewMetric = Struct.new(*NEW_METRIC_FIELDS, :identifier, :actions, :key, :filters, :operator, keyword_init: true) do
     def formatted_output
       METRIC_DEFAULTS
         .merge(to_h.compact)
@@ -120,18 +124,22 @@ module InternalEventsCli
     end
 
     def key
-      Metric::Key.new(self[:key] || actions, time_frame, identifier)
+      Metric::Key.new(self[:key] || actions, time_frame, identifier, operator)
     end
 
     def filters
       Metric::Filters.new(self[:filters])
     end
 
+    def operator
+      Metric::Operator.new(self[:operator])
+    end
+
     # Enables comparison with existing metrics
     def unique_ids
       prefix = [
+        operator.reference(identifier),
         actions.sort.join('+'),
-        identifier.value,
         'filter-',
         filtered?
       ].join('_')
@@ -153,8 +161,9 @@ module InternalEventsCli
 
     def event_params(action, filter = nil)
       params = { 'name' => action }
-      params['unique'] = identifier.reference if identifier.value
+      params['unique'] = identifier.reference if operator.value == 'unique_count'
       params['filter'] = filter if filter&.any?
+      params['operator'] = operator.reference(identifier) if operator.value == 'sum'
 
       params
     end
@@ -187,7 +196,7 @@ module InternalEventsCli
     def description_prefix
       [
         (time_frame.description if time_frame.single?),
-        identifier.prefix,
+        operator.description,
         *(identifier.plural if identifier.default?)
       ].compact.join(' ').capitalize
     end
@@ -199,6 +208,7 @@ module InternalEventsCli
       event_name ||= 'the selected events'
       [
         (time_frame.description if time_frame.single?),
+        operator.description,
         (identifier.description % event_name).to_s
       ].compact.join(' ').capitalize
     end
@@ -240,16 +250,16 @@ module InternalEventsCli
 
     Identifier = Struct.new(:value) do
       # returns a description of the identifier with appropriate
-      # grammer to interpolate a description of events
+      # grammar to interpolate a description of events
       def description
         if value.nil?
-          "#{prefix} %s occurrences"
+          "%s occurrences"
         elsif value == 'user'
-          "#{prefix} users who triggered %s"
+          "users who triggered %s"
         elsif %w[project namespace].include?(value)
-          "#{prefix} #{plural} where %s occurred"
+          "#{plural} where %s occurred"
         else
-          "#{prefix} #{plural} from %s occurrences"
+          "#{plural} from %s occurrences"
         end
       end
 
@@ -258,18 +268,17 @@ module InternalEventsCli
         default? ? "#{value}s" : "values for '#{value}'"
       end
 
-      def prefix
-        if value
-          "count of unique"
-        else
-          "count of"
-        end
-      end
-
       # returns a slug which can be used in the
       # metric's key_path and filepath
-      def key_path
-        value ? "distinct_#{reference.tr('.', '_')}_from" : 'total'
+      def key_path(operator)
+        case operator.value
+        when 'unique_count'
+          "distinct_#{reference.tr('.', '_')}_from"
+        when 'count'
+          'total'
+        when 'sum'
+          "#{reference.tr('.', '_')}_from"
+        end
       end
 
       # Returns the identifier string that will be included in the yml
@@ -284,21 +293,23 @@ module InternalEventsCli
       end
     end
 
-    Key = Struct.new(:events, :time_frame, :identifier) do
+    Key = Struct.new(:events, :time_frame, :identifier, :operator) do
       # @param name_to_display [String] return the key with the
       #          provided name instead of a list of event names
       def value(name_to_display = nil)
         [
-          'count',
-          identifier&.key_path,
+          operator.verb,
+          identifier&.key_path(operator),
           name_to_display || name_for_events,
           time_frame&.key_path
         ].compact.join('_')
       end
 
       def full_path
-        "#{prefix}.#{value}"
+        "#{operator.key_path}.#{value}"
       end
+
+      private
 
       # Refers to the middle portion of a metric's `key_path`
       # pertaining to the relevent events; This does not include
@@ -308,14 +319,6 @@ module InternalEventsCli
         return events unless events.respond_to?(:join)
 
         events.join('_and_')
-      end
-
-      def prefix
-        if identifier.value
-          'redis_hll_counters'
-        else
-          'counts'
-        end
       end
     end
 
@@ -338,6 +341,44 @@ module InternalEventsCli
 
       def describe_filter(filter)
         filter.map { |k, v| "#{k}=#{v}" }.join(',')
+      end
+    end
+
+    Operator = Struct.new(:value) do
+      def description
+        if qualifier
+          "#{verb} of #{qualifier}"
+        else
+          "#{verb} of"
+        end
+      end
+
+      def verb
+        value == 'unique_count' ? 'count' : value
+      end
+
+      def reference(identifier)
+        "#{verb}(#{identifier.value})"
+      end
+
+      def key_path
+        case value
+        when 'unique_count'
+          'redis_hll_counters'
+        when 'count'
+          'counts'
+        when 'sum'
+          'sums'
+        end
+      end
+
+      def qualifier
+        case value
+        when 'unique_count'
+          'unique'
+        when 'sum'
+          'all'
+        end
       end
     end
 

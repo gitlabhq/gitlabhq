@@ -65,7 +65,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(9) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
   end
@@ -142,7 +142,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
 
@@ -166,7 +166,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
         end
       end
     end
@@ -190,7 +190,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
         end
       end
     end
@@ -245,7 +245,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
   end
@@ -271,7 +271,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
   end
@@ -342,10 +342,12 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         Monthly/Weekly count of unique values for 'label' from internal_events_cli_used occurrences where property/value is...
         Monthly/Weekly count of unique values for 'property' from internal_events_cli_used occurrences where label/value is...
         Monthly/Weekly count of unique values for 'value' from internal_events_cli_used occurrences where label/property is...
+        Total/Monthly/Weekly sum of all values for 'value' from internal_events_cli_used occurrences
+        Total/Monthly/Weekly sum of all values for 'value' from internal_events_cli_used occurrences where label/property is...
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(14) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
       end
     end
 
@@ -382,11 +384,13 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences
           Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences where value/property is...
           Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences where label/property is...
+          Total/Monthly/Weekly sum of all values for 'value' from any of 2 events occurrences
+          Total/Monthly/Weekly sum of all values for 'value' from any of 2 events occurrences where label/property is...
         ✘ Monthly/Weekly count of unique values for 'property' from any of 2 events occurrences (property unavailable)
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(13) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(expected_output.lines.count) }.to eventually_equal_cli_text(expected_output)
         end
       end
 
@@ -398,7 +402,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           " ", # Select: config/events/internal_events_cli_used.yml
           "\e[B ", # Arrow down & Select: config/events/internal_events_cli_opened.yml
           "\n", # Submit Multi-select
-          "\e[A\n", # Arrow up & select Monthly/Weekly unique 'value' from any of 2 events where label/property is...
+          "\e[A\e[A\e[A\n", # Arrow up to: Monthly/Weekly unique 'value' from any of 2 events where label/property is...
           "a label value\n", # Enter a value for 'label' for internal_events_cli_opened
           "\n", # Accept the same 'label' value for internal_events_cli_used
           "a property value\n", # Enter a value for 'property' for internal_events_cli_used

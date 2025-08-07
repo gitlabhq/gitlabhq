@@ -328,15 +328,27 @@ module InternalEventsCli
           TEXT
         end
 
-        metrics_list = related_metrics.map do |metric|
-          "    '#{metric.key_path}'"
-        end.join(",\n")
+        non_sum_metrics_list = []
+        sum_metrics_list = []
+        related_metrics.map do |metric|
+          target_array = metric.operator == 'sum(value)' ? sum_metrics_list : non_sum_metrics_list
+          target_array << "    '#{metric.key_path}'"
+        end
 
-        unless metrics_list.empty?
-          metrics_list = <<~TEXT.chomp
+        metrics_list = ""
+        unless non_sum_metrics_list.empty?
+          metrics_list += <<~TEXT.chomp
             .and increment_usage_metrics(
-            #{metrics_list}
+            #{non_sum_metrics_list.join(",\n")}
               )
+          TEXT
+        end
+
+        unless sum_metrics_list.empty?
+          metrics_list += <<~TEXT.chomp
+            .and increment_usage_metrics(
+            #{sum_metrics_list.join(",\n")}
+              ).by(#{PROPERTY_EXAMPLES.fetch('value')})
           TEXT
         end
 

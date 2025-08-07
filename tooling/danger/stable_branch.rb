@@ -31,8 +31,8 @@ module Tooling
       This MR includes the `type::feature` label. Features do not qualify for patch releases. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
-      BUG_ERROR_MESSAGE = <<~MSG
-      This branch is meant for backporting bug fixes and flaky spec failures. If this MR qualifies please add the `type::bug` or `failure::flaky-test` label. #{MAINTENANCE_POLICY_MESSAGE}
+      BUG_MAINTENANCE_ERROR_MESSAGE = <<~MSG
+      This branch is meant for backporting bug fixes, maintenance changes, and flaky spec failures. If this MR qualifies please add the `type::bug`, `type::maintenance` or `failure::flaky-test` label. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
       VERSION_WARNING_MESSAGE = <<~MSG
@@ -70,11 +70,11 @@ module Tooling
         fail NEEDS_STABLE_BRANCH_TEMPLATE_MESSAGE unless uses_stable_branch_template?
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
-        fail BUG_ERROR_MESSAGE unless bug_fixes_only?
+        fail BUG_MAINTENANCE_ERROR_MESSAGE unless stable_branch_fixes_only?
 
         warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
 
-        return if has_flaky_failure_label? || has_only_documentation_changes?
+        return if has_flaky_failure_label? || allowed_backport_changes?
 
         fail PIPELINE_EXPEDITED_ERROR_MESSAGE if has_pipeline_expedited_label?
 
@@ -91,7 +91,7 @@ module Tooling
 
       def encourage_package_and_qa_execution?
         valid_stable_branch? &&
-          !has_only_documentation_changes? &&
+          !allowed_backport_changes? &&
           !has_flaky_failure_label?
       end
 
@@ -135,6 +135,10 @@ module Tooling
         helper.mr_has_labels?('type::bug')
       end
 
+      def has_maintenance_label?
+        helper.mr_has_labels?('type::maintenance')
+      end
+
       def has_pipeline_expedited_label?
         helper.mr_has_labels?('pipeline::expedited') ||
           # TODO: Remove once the label is renamed to be scoped
@@ -145,20 +149,19 @@ module Tooling
         helper.mr_has_labels?('failure::flaky-test')
       end
 
-      def bug_fixes_only?
-        has_bug_label? || has_only_documentation_changes? || has_flaky_failure_label?
+      def stable_branch_fixes_only?
+        has_bug_label? || has_maintenance_label? || has_flaky_failure_label?
       end
 
       def has_tier_3_label?
         helper.mr_has_labels?('pipeline::tier-3')
       end
 
-      def has_only_documentation_changes?
+      def allowed_backport_changes?
+        allowed_categories = %i[docs ci_template]
         categories_changed = helper.changes_by_category.keys
-        return false unless categories_changed.size == 1
-        return true if categories_changed.first == :docs
 
-        false
+        categories_changed.all? { |category| allowed_categories.include?(category) }
       end
 
       def targeting_patchable_version?

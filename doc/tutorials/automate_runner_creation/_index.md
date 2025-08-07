@@ -247,7 +247,7 @@ runners to Google Compute Engine:
 
 ## View runners with the same configuration
 
-Now that you've automated your runner creation and automation, you can view
+Now that you've automated your runner creation and registration, you can view
 the runners that use the same configuration in the GitLab UI.
 
 1. On the left sidebar, at the bottom, select **Admin**.
