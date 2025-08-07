@@ -122,11 +122,11 @@
 
   // Fixed headings are default for markdown
   h1 {
-    @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;
+    @apply gl-heading-1-fixed gl-mt-7;
   }
 
   h2:not(:where(.crud-header) h2) {
-    @apply gl-heading-2-fixed gl-mt-6 gl-pb-2 gl-border-b;
+    @apply gl-heading-2-fixed gl-mt-6;
   }
 
   h3 {

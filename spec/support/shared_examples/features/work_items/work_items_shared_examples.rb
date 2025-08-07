@@ -237,6 +237,27 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
 end
 
 RSpec.shared_examples 'work items description' do
+  it 'shows heading anchor links when headings are hovered' do
+    click_button 'Edit', match: :first
+    fill_in _('Description'), with: '## Heading'
+    click_button 'Save'
+
+    within_testid('work-item-description') do
+      find('h2').hover
+
+      skiplink = find('h2 a[href="#heading"]')
+
+      expect(skiplink).to be_visible
+
+      # The visibility of pseudoelements cannot be checked with have_css, so we need to use evaluate_script
+      after_visibility = skiplink.evaluate_script(
+        "window.getComputedStyle(this, '::after').getPropertyValue('visibility')"
+      )
+
+      expect(after_visibility).to eq('visible')
+    end
+  end
+
   it 'shows GLFM autocomplete' do
     click_button 'Edit', match: :first
     fill_in _('Description'), with: "@#{user.username}"

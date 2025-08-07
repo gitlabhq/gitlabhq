@@ -55591,6 +55591,9 @@ msgstr ""
 msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
+msgid "ScanResultPolicy|Specify the packages where this license does not require approval before use"
+msgstr ""
+
 msgid "ScanResultPolicy|Specify the packages where this license requires approval before use"
 msgstr ""
 

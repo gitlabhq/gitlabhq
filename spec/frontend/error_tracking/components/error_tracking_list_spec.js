@@ -39,7 +39,6 @@ describe('ErrorTrackingList', () => {
 
   function mountComponent({
     errorTrackingEnabled = true,
-    userCanEnableErrorTracking = true,
     showIntegratedTrackingDisabledAlert = false,
     integratedErrorTrackingEnabled = false,
     listPath = '/error_tracking',
@@ -54,7 +53,6 @@ describe('ErrorTrackingList', () => {
           listPath,
           projectPath: 'project/test',
           enableErrorTrackingLink: '/link',
-          userCanEnableErrorTracking,
           errorTrackingEnabled,
           integratedErrorTrackingEnabled,
           showIntegratedTrackingDisabledAlert,
@@ -72,9 +70,6 @@ describe('ErrorTrackingList', () => {
     actions = {
       startPolling: jest.fn(),
       restartPolling: jest.fn().mockName('restartPolling'),
-      addRecentSearch: jest.fn(),
-      loadRecentSearches: jest.fn(),
-      setIndexPath: jest.fn(),
       clearRecentSearches: jest.fn(),
       setEndpoint: jest.fn(),
       searchByQuery: jest.fn(),
@@ -401,7 +396,6 @@ describe('ErrorTrackingList', () => {
     beforeEach(() => {
       mountComponent({
         errorTrackingEnabled: false,
-        userCanEnableErrorTracking: false,
         stubs: {
           GlLink: false,
           GlEmptyState: false,

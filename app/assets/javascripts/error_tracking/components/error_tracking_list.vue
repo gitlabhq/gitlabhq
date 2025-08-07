@@ -135,10 +135,6 @@ export default {
       type: String,
       required: true,
     },
-    userCanEnableErrorTracking: {
-      type: Boolean,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -164,12 +160,10 @@ export default {
     ...mapState('list', [
       'errors',
       'loading',
-      'searchQuery',
       'sortField',
       'recentSearches',
       'pagination',
       'statusFilter',
-      'cursor',
     ]),
     paginationRequired() {
       return !isEmpty(this.pagination);
@@ -212,10 +206,7 @@ export default {
       'setEndpoint',
       'searchByQuery',
       'sortByField',
-      'addRecentSearch',
       'clearRecentSearches',
-      'loadRecentSearches',
-      'setIndexPath',
       'fetchPaginatedResults',
       'updateStatus',
       'removeIgnoredResolvedErrors',
