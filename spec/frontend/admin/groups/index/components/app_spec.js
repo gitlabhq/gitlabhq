@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
+import adminGroupsGraphQlResponse from 'test_fixtures/graphql/admin/groups.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import AdminGroupsApp from '~/admin/groups/index/components/app.vue';
 import { createRouter } from '~/admin/groups/index/index';
@@ -41,19 +42,17 @@ const defaultRoute = {
 
 describe('AdminGroupsApp', () => {
   let wrapper;
-  let mockApollo;
 
   const createComponent = async ({
     mountFn = shallowMountExtended,
-    adminGroupsQueryHandler = jest.fn(),
+    handlers = [],
     route = defaultRoute,
-    stubs = {},
   } = {}) => {
-    mockApollo = createMockApollo([[adminGroupsQuery, adminGroupsQueryHandler]]);
+    const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(AdminGroupsApp, { stubs, apolloProvider: mockApollo, router });
+    wrapper = mountFn(AdminGroupsApp, { apolloProvider, router });
   };
 
   const findTabByName = (name) =>
@@ -61,7 +60,7 @@ describe('AdminGroupsApp', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   afterEach(() => {
-    mockApollo = null;
+    window.gon = {};
   });
 
   it('renders TabsWithList component and passes correct props', async () => {
@@ -88,13 +87,38 @@ describe('AdminGroupsApp', () => {
     });
   });
 
+  it('renders relative URL that supports relative_url_root', async () => {
+    window.gon = { relative_url_root: '/gitlab' };
+
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [[adminGroupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
+    });
+    await waitForPromises();
+
+    const {
+      data: {
+        groups: {
+          nodes: [expectedGroup],
+        },
+      },
+    } = adminGroupsGraphQlResponse;
+
+    expect(wrapper.findByRole('link', { name: expectedGroup.fullName }).attributes('href')).toBe(
+      `/gitlab/admin/groups/${expectedGroup.fullPath}`,
+    );
+  });
+
   describe('when there are no groups', () => {
     beforeEach(async () => {
       await createComponent({
         mountFn: mountExtended,
-        adminGroupsQueryHandler: jest
-          .fn()
-          .mockResolvedValue({ data: { groups: { nodes: [], pageInfo: {} } } }),
+        handlers: [
+          [
+            adminGroupsQuery,
+            jest.fn().mockResolvedValue({ data: { groups: { nodes: [], pageInfo: {} } } }),
+          ],
+        ],
       });
 
       await waitForPromises();

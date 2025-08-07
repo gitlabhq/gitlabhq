@@ -70,6 +70,7 @@ describe('YourWorkGroupsApp', () => {
 
   afterEach(() => {
     mockAxios.restore();
+    window.gon = {};
   });
 
   it('renders TabsWithList component and passes correct props', async () => {
@@ -98,6 +99,19 @@ describe('YourWorkGroupsApp', () => {
       paginationType: PAGINATION_TYPE_OFFSET,
       userPreferencesSortKey: null,
     });
+  });
+
+  it('renders relative URL that supports relative_url_root', async () => {
+    window.gon = { relative_url_root: '/gitlab' };
+
+    await createComponent({ mountFn: mountExtended });
+    await waitForPromises();
+
+    const [expectedGroup] = dashboardGroupsResponse;
+
+    expect(wrapper.findByRole('link', { name: expectedGroup.full_name }).attributes('href')).toBe(
+      `/gitlab/${expectedGroup.full_path}`,
+    );
   });
 
   it('correctly renders `Edit` action', async () => {

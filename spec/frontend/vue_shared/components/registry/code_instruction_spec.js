@@ -23,6 +23,7 @@ describe('Package code instruction', () => {
   }
 
   const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findLabel = () => wrapper.find('label');
   const findInputElement = () => wrapper.findByTestId('instruction-input');
   const findMultilineInstruction = () => wrapper.findByTestId('multiline-instruction');
 
@@ -33,8 +34,23 @@ describe('Package code instruction', () => {
       }),
     );
 
-    it('to match the default snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
+    it('to render label with value', () => {
+      expect(findLabel().text()).toBe('foo_label');
+      expect(findLabel().attributes('for')).toBe('instruction-input_1');
+    });
+
+    it('to render input with value', () => {
+      expect(findInputElement().element.value).toBe('npm i @my-package');
+
+      expect(findInputElement().attributes('id')).toBe('instruction-input_1');
+      expect(findInputElement().attributes('readonly')).toBeDefined();
+    });
+
+    it('to render modal copy button', () => {
+      expect(findCopyButton().props()).toMatchObject({
+        text: 'npm i @my-package',
+        title: 'Copy npm install command',
+      });
     });
   });
 

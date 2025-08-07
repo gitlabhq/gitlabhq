@@ -246,6 +246,9 @@ by using a [personal access token](../../user/profile/personal_access_tokens.md)
 instead of a pipeline trigger token. [Create a new trigger token](#create-a-pipeline-trigger-token)
 and use it instead of the personal access token.
 
+A response of `{"message":"404 Not Found"}` when triggering a pipeline might also be caused
+by using a `GET` request. Pipelines can only be triggered using a `POST` request.
+
 ### `The requested URL returned error: 400` when triggering a pipeline
 
 If you attempt to trigger a pipeline by using a `ref` that is a branch name that

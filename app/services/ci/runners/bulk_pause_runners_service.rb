@@ -42,10 +42,11 @@ module Ci
       end
 
       def compute_authorized_runners
-        current_user.ci_available_runners.load # preload the available runners to avoid an N+1
+        limited_runners = runners.limit(RUNNER_LIMIT)
+        ::Preloaders::RunnerPolicyPreloader.new(limited_runners, current_user).execute
 
         authorized_runners, unauthorized_runners =
-          runners.limit(RUNNER_LIMIT)
+          limited_runners
             .partition { |runner| Ability.allowed?(current_user, :update_runner, runner) }
         [authorized_runners.map(&:id), unauthorized_runners.map(&:id)]
       end

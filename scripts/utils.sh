@@ -127,14 +127,6 @@ function yarn_install_script_storybook() {
   section_end "yarn-install-storybook"
 }
 
-function assets_compile_script() {
-  section_start "assets-compile" "Compiling frontend assets"
-
-  bin/rake gitlab:assets:compile
-
-  section_end "assets-compile"
-}
-
 function setup_database_yml() {
   if [ "$DECOMPOSED_DB" == "true" ]; then
     if [ "$SEC_DECOMPOSED_DB" == "true" ]; then
@@ -364,12 +356,10 @@ function fail_pipeline_early() {
 }
 
 function assets_image_tag() {
-  local cache_assets_hash_file="cached-assets-hash.txt"
-
   if [[ -n "${CI_COMMIT_TAG}" ]]; then
     echo -n "${CI_COMMIT_REF_NAME}"
-  elif [[ -f "${cache_assets_hash_file}" ]]; then
-    echo -n "assets-hash-$(cat ${cache_assets_hash_file} | cut -c1-10)"
+  elif [[ -f "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
+    echo -n "assets-hash-$(cat ${GLCI_GITLAB_ASSETS_HASH_FILE} | cut -c1-10)"
   else
     echo -n "${CI_COMMIT_SHA}"
   fi

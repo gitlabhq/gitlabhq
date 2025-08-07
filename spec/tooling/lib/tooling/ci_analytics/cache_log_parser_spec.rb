@@ -5,77 +5,6 @@ require_relative '../../../../../tooling/lib/tooling/ci_analytics/cache_log_pars
 
 RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling do
   describe '.extract_cache_events' do
-    context 'with package registry operations' do
-      context 'when package is found (hit)' do
-        let(:log_content) do
-          <<~LOG
-            2025-07-25T13:35:12.734729Z Installing Yarn packages
-            2025-07-25T13:35:13.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
-            2025-07-25T13:35:14.734729Z Downloading archive at https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz...
-            2025-07-25T13:35:16.734729Z Successfully fetched assets, skipping assets compilation.
-            2025-07-25T13:35:17.234729Z Compiling frontend assets
-            2025-07-25T13:35:45.234729Z gitlab:assets:fix_urls finished
-          LOG
-        end
-
-        it 'extracts package registry hit events' do
-          events = described_class.extract_cache_events(log_content)
-
-          expect(events.size).to eq(1)
-          event = events.first
-          expect(event[:cache_key]).to eq('assets-package-75866ebef35d')
-          expect(event[:cache_type]).to eq('assets-package')
-          expect(event[:cache_operation]).to eq('pull')
-          expect(event[:cache_result]).to eq('hit')
-          expect(event[:duration]).to be_within(0.1).of(3.0)
-          expect(event[:operation_command]).to eq('assets compilation')
-          expect(event[:operation_success]).to be(true)
-        end
-      end
-
-      context 'when package is not found (miss)' do
-        let(:log_content) do
-          <<~LOG
-            2025-07-25T13:35:12.734729Z ** Fetching cached assets with assets hash 16ac23511b7abbf45496caa79ec34f27107a7ba209e6e46750ffd85ca12f4e8e **
-            2025-07-25T13:35:15.234729Z The archive was not found. The server returned status 404.
-            2025-07-25T13:35:16.234729Z Compiling frontend assets
-            2025-07-25T13:35:45.234729Z gitlab:assets:fix_urls finished
-          LOG
-        end
-
-        it 'extracts package registry miss events without crashing' do
-          expect { described_class.extract_cache_events(log_content) }.not_to raise_error
-
-          events = described_class.extract_cache_events(log_content)
-
-          expect(events.size).to eq(1)
-          event = events.first
-          expect(event[:cache_key]).to eq('assets-package-16ac23511b7a')
-          expect(event[:cache_type]).to eq('assets-package')
-          expect(event[:cache_operation]).to eq('pull')
-          expect(event[:cache_result]).to eq('miss')
-        end
-      end
-
-      context 'when package is downloaded without intermediate steps' do
-        let(:log_content) do
-          <<~LOG
-            2025-07-25T13:35:12.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
-            2025-07-25T13:35:16.734729Z Successfully fetched assets, skipping assets compilation.
-          LOG
-        end
-
-        it 'treats as hit when successfully downloaded' do
-          events = described_class.extract_cache_events(log_content)
-
-          expect(events.size).to eq(1)
-          event = events.first
-          expect(event[:cache_result]).to eq('hit')
-          expect(event[:duration]).to be_within(0.1).of(4.0)
-        end
-      end
-    end
-
     context 'with standard cache operations' do
       let(:log_content) do
         <<~LOG
@@ -104,7 +33,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
       let(:log_content) do
         <<~LOG
           2025-07-24T14:11:26.953582Z Checking cache for node-modules-debian-bookworm-test-22...
-          2025-07-24T14:11:35.382214Z WARNING: node-modules-debian-bookworm-test-22: not found
+          2025-07-24T14:11:35.382214Z WARNING: file does not exist
           2025-07-24T14:11:46.639408Z Installing Yarn packages
           2025-07-24T14:11:50.334110Z Done in 5.2s.
         LOG
@@ -192,39 +121,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     let(:events) { [] }
     let(:timestamp) { Time.parse('2025-07-25T13:35:12.734729Z') }
 
-    it 'handles fetching assets pattern' do
-      assets_hash = "16ac23511b7abbf45496caa79ec34f27107a7ba209e6e46750ffd85ca12f4e8e"
-      line = "** Fetching cached assets with assets hash #{assets_hash} **"
-
-      expect { described_class.parse_package_registry_operations(line, timestamp, current_cache, events) }
-        .not_to raise_error
-    end
-
-    it 'handles package downloaded pattern' do
-      line = "Successfully fetched assets, skipping assets compilation."
-      # Simulate the state after fetching_assets pattern was matched
-      current_cache[:cache_key] = 'assets-package-test'
-      current_cache[:cache_type] = 'assets-package'
-      current_cache[:cache_operation] = 'pull'
-      current_cache[:started_at] = timestamp - 10
-
-      described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
-
-      expect(events.size).to eq(1)
-      expect(events.first[:cache_key]).to eq('assets-package-test')
-      expect(events.first[:cache_result]).to eq('hit')
-      expect(events.first[:duration]).to eq(10.0)
-    end
-
-    it 'handles pushing assets pattern' do
-      line = "Pushing assets cache to GitLab"
-
-      described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
-
-      expect(events.size).to eq(1)
-      expect(events.first[:cache_operation]).to eq('push')
-    end
-
     it 'handles package not found pattern' do
       line = "The archive was not found. The server returned status 404."
       current_cache[:cache_key] = 'test-package'
@@ -233,21 +129,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
 
       expect(events.size).to eq(1)
       expect(events.first[:cache_result]).to eq('miss')
-    end
-
-    it 'handles package uploaded pattern' do
-      events << {
-        cache_operation: 'push',
-        cache_type: 'assets-package',
-        cache_result: 'creating',
-        started_at: timestamp - 30
-      }
-      line = '{"message":"201 Created"}'
-
-      described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
-
-      expect(events.first[:cache_result]).to eq('created')
-      expect(events.first[:duration]).to eq(30.0)
     end
   end
 
@@ -279,63 +160,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     end
   end
 
-  describe '.handle_pushing_assets' do
-    let(:timestamp) { Time.now }
-    let(:events) { [] }
-
-    it 'creates package upload event' do
-      described_class.handle_pushing_assets(timestamp, events)
-
-      expect(events.size).to eq(1)
-      event = events.first
-      expect(event[:cache_key]).to eq('assets-package-upload')
-      expect(event[:cache_type]).to eq('assets-package')
-      expect(event[:cache_operation]).to eq('push')
-      expect(event[:cache_result]).to eq('creating')
-      expect(event[:started_at]).to eq(timestamp)
-    end
-  end
-
-  describe '.handle_package_uploaded' do
-    let(:timestamp) { Time.now }
-    let(:start_time) { timestamp - 60 }
-
-    it 'completes package upload event' do
-      events = [{
-        cache_operation: 'push',
-        cache_type: 'assets-package',
-        cache_result: 'creating',
-        started_at: start_time
-      }]
-
-      described_class.handle_package_uploaded(timestamp, events)
-
-      upload_event = events.first
-      expect(upload_event[:cache_result]).to eq('created')
-      expect(upload_event[:duration]).to eq(60.0)
-      expect(upload_event[:cache_size_bytes]).to be_nil
-    end
-
-    it 'returns early when no upload event found' do
-      events = []
-
-      result = described_class.handle_package_uploaded(timestamp, events)
-
-      expect(result).to be_nil
-    end
-
-    it 'returns early when no matching upload event' do
-      events = [{
-        cache_operation: 'pull', # Different operation
-        cache_type: 'assets-package'
-      }]
-
-      result = described_class.handle_package_uploaded(timestamp, events)
-
-      expect(result).to be_nil
-    end
-  end
-
   describe '.infer_cache_type' do
     it 'identifies ruby-gems cache' do
       result = described_class.infer_cache_type('ruby-gems-debian-bookworm-ruby-3.3.8')
@@ -347,6 +171,11 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
       expect(result).to eq('node-modules')
     end
 
+    it 'identifies assets cache' do
+      result = described_class.infer_cache_type('assets-gitlab-org-gitlab-production')
+      expect(result).to eq('assets')
+    end
+
     it 'identifies go cache from go-pkg' do
       result = described_class.infer_cache_type('go-pkg-debian-bookworm-22')
       expect(result).to eq('go')
@@ -355,16 +184,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     it 'identifies go cache from gitaly' do
       result = described_class.infer_cache_type('gitaly-binaries-debian-bookworm-22')
       expect(result).to eq('go')
-    end
-
-    it 'identifies assets-package cache' do
-      result = described_class.infer_cache_type('assets-package-425ea29327e8')
-      expect(result).to eq('assets-package')
-    end
-
-    it 'identifies regular assets cache' do
-      result = described_class.infer_cache_type('assets-tmp-debian-bookworm-ruby-3.3.8')
-      expect(result).to eq('assets')
     end
 
     it 'identifies rubocop cache' do
@@ -405,7 +224,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     end
 
     it 'infers assets compilation for assets' do
-      result = described_class.infer_operation_command('assets-test', 'assets')
+      result = described_class.infer_operation_command('assets')
       expect(result).to eq('assets compilation')
     end
 
@@ -570,7 +389,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     context 'with cache creation scenario' do
       let(:cache_creation_log) do
         <<~LOG
-          2025-07-24T14:11:26.953582Z WARNING: go-pkg-debian-bookworm-22: not found
+          2025-07-24T14:11:26.953582Z WARNING: file does not exist
           2025-07-24T14:11:27.953582Z Installing Go dependencies...
           2025-07-24T14:13:30.953582Z Creating cache go-pkg-debian-bookworm-22...
           2025-07-24T14:15:45.953582Z Created cache
@@ -587,65 +406,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
         expect(event[:cache_operation]).to eq('push')
         expect(event[:cache_result]).to eq('created')
         expect(event[:duration]).to be_within(1).of(135)
-      end
-    end
-
-    context 'with complete package registry hit scenario' do
-      let(:package_hit_log) do
-        <<~LOG
-          2025-07-25T13:35:12.734729Z Installing Yarn packages
-          2025-07-25T13:35:13.734729Z GITLAB_ASSETS_HASH: 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416
-          2025-07-25T13:35:14.734729Z CACHE_ASSETS_AS_PACKAGE: true
-          2025-07-25T13:35:15.734729Z ** Fetching cached assets with assets hash 75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416 **
-          2025-07-25T13:35:16.734729Z Downloading archive at https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz...
-          2025-07-25T13:35:18.734729Z Downloading from https://gitlab.com/api/v4/projects/278964/packages/generic/assets/production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416/assets-production-ee-75866ebef35dd4b49676650e20734fa7e00312aec7e0b82ff008d521c490a416-v2.tar.gz ...
-          2025-07-25T13:35:19.734729Z Extracting archive to .
-          2025-07-25T13:35:20.734729Z Successfully fetched assets, skipping assets compilation.
-          2025-07-25T13:35:21.734729Z Compiling frontend assets
-          2025-07-25T13:35:45.734729Z gitlab:assets:fix_urls finished
-        LOG
-      end
-
-      it 'processes complete package hit scenario with proper timing and correlation' do
-        events = described_class.extract_cache_events(package_hit_log)
-
-        expect(events.size).to eq(1)
-        event = events.first
-        expect(event[:cache_key]).to eq('assets-package-75866ebef35d')
-        expect(event[:cache_type]).to eq('assets-package')
-        expect(event[:cache_operation]).to eq('pull')
-        expect(event[:cache_result]).to eq('hit')
-        expect(event[:duration]).to be_within(0.5).of(5.0) # From 15s to 20s
-        expect(event[:operation_command]).to eq('assets compilation')
-        expect(event[:operation_success]).to be(true)
-        expect(event[:operation_duration]).to be_within(1).of(24.0) # From 21s to 45s
-      end
-    end
-
-    context 'with complete package push scenario' do
-      let(:package_push_log) do
-        <<~LOG
-          2025-07-25T13:35:12.734729Z CACHE_ASSETS_AS_PACKAGE: true
-          2025-07-25T13:35:13.734729Z ** Fetching cached assets with assets hash 898f673a19041aa68e5a0964d4e8c5cd89b6227a95143ee47a488ea74286d737 **
-          2025-07-25T13:35:15.734729Z Compiling frontend assets
-          2025-07-25T13:35:45.734729Z Pushing assets cache to GitLab
-          2025-07-25T13:36:30.734729Z {"message":"201 Created"}
-          2025-07-25T13:36:31.734729Z gitlab:assets:fix_urls finished
-        LOG
-      end
-
-      it 'processes complete package push scenario' do
-        events = described_class.extract_cache_events(package_push_log)
-
-        expect(events.size).to eq(1)
-        event = events.first
-        expect(event[:cache_key]).to eq('assets-package-upload')
-        expect(event[:cache_type]).to eq('assets-package')
-        expect(event[:cache_operation]).to eq('push')
-        expect(event[:cache_result]).to eq('created')
-        expect(event[:duration]).to be_within(1).of(45.0) # From pushing to created
-        expect(event[:operation_command]).to eq('assets compilation')
-        expect(event[:operation_success]).to be(true)
       end
     end
   end

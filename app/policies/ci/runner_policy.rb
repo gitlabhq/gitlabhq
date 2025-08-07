@@ -18,7 +18,9 @@ module Ci
 
       # TODO: use User#ci_available_project_runners once the optimize_ci_owned_project_runners_query FF is removed
       # (https://gitlab.com/gitlab-org/gitlab/-/issues/551320)
-      @user.ci_available_runners.include?(runner)
+      # force load this so it doesn't load with runner.id for every
+      # runner to check if a user can access them, causing N+1
+      @user.ci_available_runners.load.include?(runner)
     end
 
     condition(:creator) do
@@ -66,7 +68,11 @@ module Ci
       next true if maintainer_in_owner_scope?
 
       # Check if runner is associated to any projects where user is a maintainer+
-      @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
+      DeclarativePolicy.user_scope do
+        @subject.projects.any? do |project|
+          can?(:maintainer_access, project)
+        end
+      end
     end
 
     condition(:maintainer_in_owner_scope) do

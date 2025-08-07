@@ -28,22 +28,17 @@ module Tasks
         app/assets/javascripts/locale/**/app.js
       ].freeze
       PUBLIC_ASSETS_DIR = 'public/assets'
-      HEAD_ASSETS_SHA256_HASH_ENV = 'GITLAB_ASSETS_HASH'
-      CACHED_ASSETS_SHA256_HASH_FILE = 'cached-assets-hash.txt'
 
-      def self.master_assets_sha256
-        @master_assets_sha256 ||=
-          if File.exist?(Tasks::Gitlab::Assets::CACHED_ASSETS_SHA256_HASH_FILE)
-            File.read(Tasks::Gitlab::Assets::CACHED_ASSETS_SHA256_HASH_FILE)
-          else
-            'missing!'
-          end
+      def self.cached_assets_sha256
+        @cached_assets_sha256 ||= ENV.fetch('GLCI_GITLAB_ASSETS_HASH_FILE', 'cached-assets-hash.txt').then do |file|
+          next 'missing!' unless File.exist?(file)
+
+          File.read(file).strip
+        end
       end
 
       def self.head_assets_sha256
-        @head_assets_sha256 ||= ENV.fetch(Tasks::Gitlab::Assets::HEAD_ASSETS_SHA256_HASH_ENV) do
-          Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
-        end
+        @head_assets_sha256 ||= Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
       end
 
       def self.sha256_of_assets_impacting_compilation(verbose: true)
@@ -53,7 +48,9 @@ module Tasks
 
         assets_sha256 = asset_files.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
 
-        Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
+        Digest::SHA256.hexdigest(assets_sha256).tap do |sha256|
+          puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose
+        end
       end
 
       # Files listed here should match the list in:
@@ -91,9 +88,7 @@ namespace :gitlab do
       cmd = 'yarn tailwindcss:build'
       cmd += '> /dev/null 2>&1' if args[:silent].present?
 
-      unless system(cmd)
-        abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red
-      end
+      abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red unless system(cmd)
     end
 
     desc 'GitLab | Assets | Compile all frontend assets'
@@ -102,10 +97,10 @@ namespace :gitlab do
 
       require_dependency 'gitlab/task_helpers'
 
-      puts "Assets SHA256 for `master`: #{Tasks::Gitlab::Assets.master_assets_sha256.inspect}"
-      puts "Assets SHA256 for `HEAD`: #{Tasks::Gitlab::Assets.head_assets_sha256.inspect}"
+      puts "Cached Assets SHA256: #{Tasks::Gitlab::Assets.cached_assets_sha256}"
+      puts "Current Assets SHA256: #{Tasks::Gitlab::Assets.head_assets_sha256}"
 
-      if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
+      if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.cached_assets_sha256
         FileUtils.rm_rf([Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR] + Dir.glob('app/assets/javascripts/locale/**/app.js'))
 
         # gettext:compile needs to run before rake:assets:precompile because
@@ -121,14 +116,22 @@ namespace :gitlab do
         cmd += " > #{log_path} 2>&1" if log_path
 
         log_path_message = ""
+
         if log_path
           puts "Compiling frontend assets with webpack, running: #{cmd}"
+
           log_path_message += "\nWritten webpack log written to #{log_path}"
-          log_path_message += "\nYou can inspect the webpack full log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if ENV['CI_JOB_URL']
+
+          if ENV['CI_JOB_URL']
+            log_path_message += "\nYou can inspect the webpack full log here:"
+            log_path_message += "#{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}"
+          end
         end
 
         ENV['NODE_OPTIONS'] = '--max-old-space-size=8192' if ENV.has_key?('CI')
-        ENV['NODE_OPTIONS'] = '--max-old-space-size=16384' if ENV['GITLAB_LARGE_RUNNER_OPTIONAL'] == "saas-linux-large-amd64"
+        if ENV['GITLAB_LARGE_RUNNER_OPTIONAL'] == "saas-linux-large-amd64"
+          ENV['NODE_OPTIONS'] = '--max-old-space-size=16384'
+        end
 
         unless system(cmd)
           puts Rainbow('Error: Unable to compile webpack production bundle.').red
@@ -188,9 +191,7 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Compile vendor assets'
     task :vendor do
-      unless system('yarn webpack-vendor')
-        abort Rainbow('Error: Unable to compile webpack DLL.').red
-      end
+      abort Rainbow('Error: Unable to compile webpack DLL.').red unless system('yarn webpack-vendor')
     end
 
     desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'

@@ -149,8 +149,8 @@ module Projects
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
       unless project.destroyed?
-        # Restrict project visibility if the parent group visibility was made more restrictive while the project was scheduled for deletion.
-        visibility_level = project.visibility_level_allowed_by_group? ? project.visibility_level : project.group.visibility_level
+        # Restrict project visibility if the parent namespace visibility was made more restrictive while the project was scheduled for deletion.
+        visibility_level = project.visibility_level_allowed_by_namespace? ? project.visibility_level : project.namespace.visibility_level
         project.update(delete_error: message, pending_delete: false, visibility_level: visibility_level)
       end
 

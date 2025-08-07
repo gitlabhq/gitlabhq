@@ -24,7 +24,6 @@ module UsageDataHelpers
     clusters_platforms_eks
     clusters_platforms_gke
     clusters_platforms_user
-    clusters_integrations_prometheus
     clusters_management_project
     in_review_folder
     groups

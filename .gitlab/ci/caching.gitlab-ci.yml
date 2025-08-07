@@ -1,31 +1,3 @@
-cache-workhorse:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .ruby-cache
-    - .setup-test-env-cache
-    - .caching:rules:cache-workhorse
-  stage: prepare
-  variables:
-    SETUP_DB: "false"
-  script:
-    - |
-      function cache_workhorse() {
-        source scripts/gitlab_component_helpers.sh
-        gitlab_workhorse_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
-        scripts/setup-test-env
-        select_gitlab_workhorse_essentials
-        create_gitlab_workhorse_package
-        upload_gitlab_workhorse_package
-      }
-
-      run_with_custom_exit_code cache_workhorse
-
-  artifacts:
-    expire_in: 7d
-    paths:
-      - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
-
 .cache-pull-push-base:
   stage: sync
   extends:
@@ -36,38 +8,9 @@ cache-workhorse:
     GIT_STRATEGY: fetch
   allow_failure: true
 
-.cache-assets-base:
-  extends:
-    - .compile-assets-base
-    - .assets-compile-cache
-    - .caching:rules:cache-assets
-  stage: prepare
-  variables:
-    WEBPACK_REPORT: "false"
-    GLCI_PUSH_CACHED_ASSETS: "true"
-
-cache-assets:test:
-  extends: .cache-assets-base
-
-cache-assets:production:
-  extends:
-    - .cache-assets-base
-    - .production
-  tags:
-    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
-
-packages-cleanup:
-  extends:
-    - .default-retry
-    - .caching:rules:packages-cleanup
-    - .with-ruby-slim-image
-  stage: prepare
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/packages/automated_cleanup.rb
-
+#=================================
+# Dependencies
+#=================================
 cache:ruby-gems:
   extends:
     - .with-ruby-postgres-slim-image
@@ -99,3 +42,73 @@ cache:node-modules-production:
   extends: cache:node-modules
   variables:
     NODE_ENV: production
+
+#=================================
+# Workhorse
+#=================================
+cache-workhorse:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .ruby-cache
+    - .setup-test-env-cache
+    - .caching:rules:cache-workhorse
+  stage: prepare
+  variables:
+    SETUP_DB: "false"
+  script:
+    - |
+      function cache_workhorse() {
+        source scripts/gitlab_component_helpers.sh
+        gitlab_workhorse_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
+        scripts/setup-test-env
+        select_gitlab_workhorse_essentials
+        create_gitlab_workhorse_package
+        upload_gitlab_workhorse_package
+      }
+      run_with_custom_exit_code cache_workhorse
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+
+#=================================
+# Frontend assets
+#=================================
+# calculate asset hash so it can be used in cache key name
+cache:assets-hash:
+  extends:
+    - .cache-pull-push-base
+    - .with-ci-node-image
+    - .ruby-node-cache
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+    - job: cache:node-modules
+      optional: true
+  before_script:
+    - source scripts/utils.sh
+    - bundle_install_script
+    - yarn_install_script
+  script:
+    - echo "GLCI_GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum)" > build.env
+    - echo "Calculated assets checksum - $(cat build.env)"
+  artifacts:
+    reports:
+      dotenv: build.env
+
+#=================================
+# Cleanup
+#=================================
+# cleanup job which is responsible for custom caching implementation that is still used by workhorse and fixtures
+packages-cleanup:
+  extends:
+    - .default-retry
+    - .caching:rules:packages-cleanup
+    - .with-ruby-slim-image
+  stage: prepare
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/packages/automated_cleanup.rb

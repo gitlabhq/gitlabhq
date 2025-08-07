@@ -1,5 +1,6 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { availableGraphQLProjectActions } from '~/vue_shared/components/projects_list/utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 export const formatGraphQLProjects = (projects, callback = () => {}) =>
   projects.map(
@@ -27,7 +28,7 @@ export const formatGraphQLProjects = (projects, callback = () => {}) =>
         availableActions: availableGraphQLProjectActions(project),
         isPersonal: group === null,
         fullPath,
-        relativeWebUrl: `/${fullPath}`,
+        relativeWebUrl: joinPaths('/', gon.relative_url_root, fullPath),
       };
 
       return {

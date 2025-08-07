@@ -54,7 +54,7 @@
             script:
               - "curl -X POST --fail -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
         %h5.gl-mt-3
-          = _('Use webhook')
+          = _('Use webhook (POST requests only)')
 
         %pre
           :plain
@@ -77,7 +77,7 @@
                  -F "variables[RUN_NIGHTLY_BUILD]=true" \
                  #{builds_trigger_url(@project.id)}
         %p.gl-text-subtle
-          = _('Webhook:')
+          = _('Webhook (POST requests only):')
 
         %pre.gl-mb-0
           :plain

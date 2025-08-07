@@ -15,6 +15,7 @@
     - .with-ci-node-image
   variables:
     SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false" # skip bundle install from default prepare_build script
     WEBPACK_VENDOR_DLL: "true"
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
@@ -22,10 +23,7 @@
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   needs:
-    - job: cache:ruby-gems
-      optional: true
-    - job: cache:node-modules
-      optional: true
+    - cache:assets-hash
   script:
     - run_with_custom_exit_code scripts/compile_assets
     - run_with_custom_exit_code scripts/build_assets_image
@@ -56,9 +54,9 @@ compile-production-assets:
     paths:
       # These assets are used in:
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
-      - cached-assets-hash.txt
       - public/assets/
-      - "${WEBPACK_COMPILE_LOG_PATH}"
+      - ${WEBPACK_COMPILE_LOG_PATH}
+      - ${GLCI_GITLAB_ASSETS_HASH_FILE}
     when: always
     reports:
       dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
@@ -105,21 +103,8 @@ build-vite-prod:
 gdk:compile-test-assets:
   extends:
     - compile-test-assets
+    - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
-
-update-assets-compile-production-cache:
-  extends:
-    - compile-production-assets
-    - .assets-compile-cache-push
-    - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
-
-update-assets-compile-test-cache:
-  extends:
-    - compile-test-assets
-    - .assets-compile-cache-push
-    - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
 
 update-storybook-yarn-cache:
   extends:

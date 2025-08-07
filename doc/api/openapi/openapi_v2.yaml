@@ -44837,7 +44837,7 @@ definitions:
         properties:
           duo_workflow_mcp_enabled:
             type: boolean
-            description: Enable MCP support for Duo Workflow
+            description: Enable MCP support for Duo Agent Platform
     required:
     - name
     - path
@@ -45034,7 +45034,7 @@ definitions:
         properties:
           duo_workflow_mcp_enabled:
             type: boolean
-            description: Enable MCP support for Duo Workflow
+            description: Enable MCP support for Duo Agent Platform
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups

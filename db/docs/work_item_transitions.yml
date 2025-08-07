@@ -1,0 +1,12 @@
+---
+table_name: work_item_transitions
+classes:
+- WorkItems::Transition
+feature_categories:
+- team_planning
+description: Stores where work items get moved, promoted, or duplicated to.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200035
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

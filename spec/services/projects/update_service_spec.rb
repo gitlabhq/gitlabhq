@@ -170,7 +170,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'does not update project visibility level even if admin', :enable_admin_mode do
           result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-          expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal group.' })
+          expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal namespace.' })
           expect(project.reload).to be_internal
         end
       end

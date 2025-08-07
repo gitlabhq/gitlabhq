@@ -1168,9 +1168,6 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        BABEL_ENV: "istanbul"
-        CACHE_ASSETS_AS_PACKAGE: "false"
     - <<: *if-default-branch-refs
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-cs-evaluation
@@ -1228,37 +1225,8 @@
       when: manual
       allow_failure: true
 
-.caching:rules:cache-assets:
-  rules:
-    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
-    - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
-      when: never
-    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *assets-compilation-patterns
-    # push assets for stable branches (canonical & security)
-    - <<: *if-sync-changes-on-stable-branches
-      changes: *assets-compilation-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/gitlab_component_helpers.sh"
-        - "lib/tasks/gitlab/assets.rake"
-      when: manual
-      allow_failure: true
-    - if: '$ENABLE_CACHE_ASSETS == "true"'
-      when: manual
-      allow_failure: true
-
 .caching:rules:packages-cleanup:
   rules:
-    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
-    - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
-      when: never
     - <<: *if-not-ee
       when: never
     # The security mirror doesn't use the package registry

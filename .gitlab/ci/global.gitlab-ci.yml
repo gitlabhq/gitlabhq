@@ -104,18 +104,18 @@
     - node_modules/
   policy: pull
 
-.assets-tmp-cache: &assets-tmp-cache
-  key: "assets-tmp-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-node-${NODE_ENV}-v2"
+.assets-cache: &assets-cache
+  key: "assets-${CI_PROJECT_PATH_SLUG}-${NODE_ENV}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
   paths:
-    - tmp/cache/assets/sprockets/
-    - tmp/cache/babel-loader/
-    - tmp/cache/vue-loader/
-    - tmp/cache/webpack-dlls/
-  policy: pull
+    - app/assets/javascripts/locale/**/app.js
+    - public/assets/
+    - ${GLCI_GITLAB_ASSETS_HASH_FILE}
+  policy: pull-push
 
-.assets-tmp-cache-push: &assets-tmp-cache-push
-  <<: *assets-tmp-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure we don't pile up outdated cache files.
+# used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
+.assets-cache-pull: &assets-cache-pull
+  <<: *assets-cache
+  policy: pull
 
 .storybook-node-modules-cache: &storybook-node-modules-cache
   key: "storybook-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
@@ -280,14 +280,14 @@
   cache:
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
-    - *assets-tmp-cache
+    - *assets-cache
 
-.assets-compile-cache-push:
+.assets-compile-cache-pull:
   extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
-    - *assets-tmp-cache-push
+    - *assets-cache-pull
 
 .storybook-yarn-cache:
   cache:

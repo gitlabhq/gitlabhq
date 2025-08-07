@@ -39,7 +39,6 @@ class GenerateAsIfFossEnv
     'qa:internal' => 'ENABLE_QA_INTERNAL',
     'qa:selectors' => 'ENABLE_QA_SELECTORS',
     'static-analysis' => 'ENABLE_STATIC_ANALYSIS',
-    /^cache-assets\b/ => 'ENABLE_CACHE_ASSETS',
     # Jest
     /^jest#{PARALLEL}/ => 'ENABLE_JEST',
     /^jest-integration/ => 'ENABLE_JEST_INTEGRATION',

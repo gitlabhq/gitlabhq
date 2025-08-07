@@ -7,16 +7,14 @@ module Tooling
         checking: /Checking cache for (.+)\.\.\./,
         downloading: /Downloading cache from/,
         hit: /Successfully extracted cache/,
-        miss: /WARNING: (.+): not found/,
+        miss: /WARNING: file does not exist/,
         creating: /Creating cache (.+)\.\.\./,
         created: /Created cache/
       }.freeze
 
       PACKAGE_REGISTRY_PATTERNS = {
-        fetching_assets: /\*\* Fetching cached assets with assets hash ([a-f0-9]{64}) \*\*/,
         package_not_found: /The archive was not found\. The server returned status 404\./,
-        package_downloaded: /Successfully fetched assets, skipping assets compilation/,
-        pushing_assets: /Pushing assets cache to GitLab/,
+        package_downloaded: /The archive was found. The server returned status 200\./,
         package_uploaded: /\{"message":"201 Created"\}/
       }.freeze
 
@@ -102,31 +100,13 @@ module Tooling
 
       def self.parse_package_registry_operations(line, timestamp, current_package_cache, events)
         case line
-        when PACKAGE_REGISTRY_PATTERNS[:fetching_assets]
-          assets_hash = ::Regexp.last_match(1)
-          handle_fetching_assets(timestamp, current_package_cache, assets_hash)
         when PACKAGE_REGISTRY_PATTERNS[:package_downloaded]
           handle_package_downloaded(timestamp, current_package_cache, events)
         when PACKAGE_REGISTRY_PATTERNS[:package_not_found]
           handle_package_not_found(timestamp, current_package_cache, events)
-        when PACKAGE_REGISTRY_PATTERNS[:pushing_assets]
-          handle_pushing_assets(timestamp, events)
         when PACKAGE_REGISTRY_PATTERNS[:package_uploaded]
           handle_package_uploaded(timestamp, events)
         end
-      end
-
-      def self.handle_fetching_assets(timestamp, current_package_cache, assets_hash)
-        return unless assets_hash
-
-        current_package_cache.clear
-        current_package_cache.merge!({
-          cache_key: "assets-package-#{assets_hash[0..11]}",
-          cache_type: 'assets-package',
-          cache_operation: 'pull',
-          started_at: timestamp,
-          assets_hash: assets_hash
-        })
       end
 
       def self.handle_package_downloaded(timestamp, current_package_cache, events)
@@ -149,18 +129,8 @@ module Tooling
         current_package_cache.clear
       end
 
-      def self.handle_pushing_assets(timestamp, events)
-        events << {
-          cache_key: "assets-package-upload",
-          cache_type: 'assets-package',
-          cache_operation: 'push',
-          cache_result: 'creating',
-          started_at: timestamp
-        }
-      end
-
       def self.handle_package_uploaded(timestamp, events)
-        last_upload = events.reverse.find { |e| e[:cache_operation] == 'push' && e[:cache_type] == 'assets-package' }
+        last_upload = events.reverse.find { |e| e[:cache_operation] == 'push' }
         return unless last_upload
 
         last_upload[:cache_result] = 'created'
@@ -202,7 +172,7 @@ module Tooling
           operation_key = case event[:cache_type]
                           when 'ruby-gems', 'qa-ruby-gems' then :bundle
                           when 'node-modules' then :yarn
-                          when 'assets', 'assets-package' then :assets
+                          when 'assets' then :assets
                           end
 
           next unless operation_key && operation_timings[operation_key]
@@ -219,7 +189,6 @@ module Tooling
         when /ruby-gems/ then 'ruby-gems'
         when /node-modules/ then 'node-modules'
         when /go-pkg/, /gitaly/ then 'go'
-        when /assets-package/ then 'assets-package'
         when /assets/ then 'assets'
         when /rubocop/ then 'rubocop'
         when /qa-ruby/ then 'qa-ruby-gems'
@@ -234,7 +203,7 @@ module Tooling
         case type
         when 'ruby-gems', 'qa-ruby-gems' then 'bundle install'
         when 'node-modules' then 'yarn install'
-        when 'assets', 'assets-package' then 'assets compilation'
+        when 'assets' then 'assets compilation'
         when 'rubocop' then 'rubocop analysis'
         end
       end

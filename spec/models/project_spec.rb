@@ -1005,7 +1005,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'validates the visibility' do
       expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).twice.and_call_original
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).twice.and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_namespace).twice.and_call_original
 
       create(:project)
     end
@@ -3455,6 +3455,55 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#visibility_level_allowed_by_namespace?' do
+    context 'when checking projects from groups' do
+      let_it_be(:private_group)    { build(:group, visibility_level: 0)  }
+      let_it_be(:internal_group)   { build(:group, visibility_level: 10) }
+
+      let_it_be(:private_project)  { build(:project, :private, group: private_group) }
+      let_it_be(:internal_project) { build(:project, :internal, group: internal_group) }
+
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+    end
+
+    context 'when checking projects from personal namespaces' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:private_namespace) { create(:namespace, owner: user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:internal_namespace) { create(:namespace, owner: user, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+      let_it_be(:private_project)  { build(:project, :private, namespace: private_namespace) }
+      let_it_be(:internal_project) { build(:project, :internal, namespace: internal_namespace) }
+
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(user_namespace_allowed_visibility: false)
+        end
+
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+      end
+    end
+  end
+
   describe '#pages_show_onboarding?' do
     let(:project) { create(:project) }
 
@@ -3728,22 +3777,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'returns projects with a matching name regardless of the casing' do
       expect(described_class.search_by_title('KITTENS')).to eq([project])
-    end
-  end
-
-  context 'when checking projects from groups' do
-    let(:private_group)    { build(:group, visibility_level: 0)  }
-    let(:internal_group)   { build(:group, visibility_level: 10) }
-
-    let(:private_project)  { build(:project, :private, group: private_group) }
-    let(:internal_project) { build(:project, :internal, group: internal_group) }
-
-    context 'when group is private project can not be internal' do
-      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
-    end
-
-    context 'when group is internal project can not be public' do
-      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
   end
 
@@ -5648,7 +5681,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'validates the visibility' do
       expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_namespace).and_call_original
 
       project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
     end
@@ -5682,7 +5715,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'does not validate the visibility' do
       expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_namespace).and_call_original
 
       project.update!(updated_at: Time.current)
     end

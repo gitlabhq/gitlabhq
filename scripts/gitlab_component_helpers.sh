@@ -52,10 +52,6 @@ export GRAPHQL_SCHEMA_PACKAGE="graphql-schema.tar.gz"
 export GRAPHQL_SCHEMA_PATH="tmp/tests/graphql/"
 export GRAPHQL_SCHEMA_PACKAGE_URL="${API_PACKAGES_BASE_URL}/graphql-schema/master/${GRAPHQL_SCHEMA_PACKAGE}"
 
-# Assets constants
-export GITLAB_ASSETS_PATHS_LIST="cached-assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/"
-export GITLAB_ASSETS_PACKAGE_VERSION="v2" # bump this version each time GITLAB_ASSETS_PATHS_LIST is changed
-
 export GITLAB_EDITION="ee"
 if [[ "${FOSS_ONLY:-no}" = "1" ]] || [[ "${CI_PROJECT_NAME}" = "gitlab-foss" ]]; then
   export GITLAB_EDITION="foss"
@@ -64,10 +60,6 @@ fi
 if [[ "${CI_SERVER_HOST}" = "jihulab.com" ]]; then
   export GITLAB_EDITION="jh"
 fi
-
-export GITLAB_ASSETS_HASH="${GITLAB_ASSETS_HASH:-"NO_HASH"}"
-export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}-${GITLAB_ASSETS_PACKAGE_VERSION}.tar.gz"
-export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}/${GITLAB_ASSETS_PACKAGE}"
 
 # Fixtures constants
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
@@ -106,23 +98,6 @@ function strip_executable_binaries() {
   local path="$1"
 
   find "$path" -executable -type f ! -size 0 -print0 | xargs -0 grep -IL . | xargs strip || true
-}
-
-# Assets functions
-function gitlab_assets_archive_doesnt_exist() {
-  archive_doesnt_exist "${GITLAB_ASSETS_PACKAGE_URL}"
-}
-
-function download_and_extract_gitlab_assets() {
-  read_curl_package "${GITLAB_ASSETS_PACKAGE_URL}" | extract_package
-}
-
-function create_gitlab_assets_package() {
-  create_package "${GITLAB_ASSETS_PACKAGE}" "${GITLAB_ASSETS_PATHS_LIST}"
-}
-
-function upload_gitlab_assets_package() {
-  upload_package "${GITLAB_ASSETS_PACKAGE}" "${GITLAB_ASSETS_PACKAGE_URL}"
 }
 
 # Fixtures functions

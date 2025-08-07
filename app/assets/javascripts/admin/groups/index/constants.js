@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { s__, __ } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
@@ -15,7 +16,7 @@ import adminGroupsQuery from './graphql/queries/groups.query.graphql';
 const baseTab = {
   formatter: (groups) =>
     formatGraphQLGroups(groups, (group) => {
-      const adminPath = `/admin/groups/${group.fullPath}`;
+      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/groups/', group.fullPath);
       const canAdminAllResources = get(group.userPermissions, 'adminAllResources', true);
 
       return {

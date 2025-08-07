@@ -2,8 +2,8 @@ package upstream
 
 import (
 	"bytes"
+	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -142,10 +142,10 @@ func TestAllowedProxyRoute(t *testing.T) {
 }
 
 func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
-	const consecutiveFailures = 1
+	const consecutiveFailures = 0
 	var requestCount int
 	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if requestCount <= consecutiveFailures+1 {
+		if requestCount <= 2 {
 			w.Header().Set("Enable-Workhorse-Circuit-Breaker", "true")
 			w.WriteHeader(http.StatusTooManyRequests)
 		} else {
@@ -166,31 +166,18 @@ func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 	ws := httptest.NewServer(upstreamHandler)
 	defer ws.Close()
 
-	resp1, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
-		bytes.NewBufferString(`{"key_id":"test_key"}`))
+	// The first request receives a 429 from the server, and tracks the user in the circuit breaker.
+	// The second request receives a 429 from the server, and trips the circuit breaker.
+	// The third request shouldn't make it to the server and pre-emptively responds with a 429.
+	for range 3 {
+		resp, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
+			bytes.NewBufferString(`{"key_id":"test_key"}`))
 
-	require.NoError(t, err)
-	defer resp1.Body.Close()
+		require.NoError(t, err)
+		defer resp.Body.Close()
 
-	assert.Equal(t, http.StatusBadGateway, resp1.StatusCode)
-
-	resp2, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
-		bytes.NewBufferString(`{"key_id":"test_key"}`))
-	require.NoError(t, err)
-	defer resp2.Body.Close()
-
-	assert.Equal(t, http.StatusBadGateway, resp2.StatusCode)
-
-	resp3, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
-		bytes.NewBufferString(`{"key_id":"test_key"}`))
-	require.NoError(t, err)
-	defer resp3.Body.Close()
-
-	body3, err := io.ReadAll(resp3.Body)
-	require.NoError(t, err)
-
-	assert.Equal(t, http.StatusTooManyRequests, resp3.StatusCode)
-	assert.Equal(t, "This endpoint has been requested too many times. Try again later.", string(body3))
+		assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
+	}
 }
 
 func initRdb(t *testing.T) *redis.Client {
@@ -201,6 +188,7 @@ func initRdb(t *testing.T) *redis.Client {
 	rdb, err := configRedis.Configure(cfg)
 	require.NoError(t, err)
 	t.Cleanup(func() {
+		rdb.FlushAll(context.Background())
 		assert.NoError(t, rdb.Close())
 	})
 	return rdb

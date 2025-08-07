@@ -1123,7 +1123,7 @@ msgstr ""
 msgid "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA) that issues digital certificates to enable HTTPS (SSL/TLS) for sites."
 msgstr ""
 
-msgid "%{level_name} is not allowed in a %{group_level_name} group."
+msgid "%{level_name} is not allowed in a %{namespace_level_name} namespace."
 msgstr ""
 
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
@@ -19634,9 +19634,6 @@ msgstr ""
 msgid "Created on %{created_at}"
 msgstr ""
 
-msgid "Created on %{date}"
-msgstr ""
-
 msgid "Created on:"
 msgstr ""
 
@@ -23919,10 +23916,10 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
-msgid "Duo Workflow|Duo Workflow Settings have been saved"
+msgid "Duo Agent Platform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
-msgid "Duo Workflow|Something went wrong saving Duo Workflow settings"
+msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
@@ -36013,9 +36010,6 @@ msgid "JobSource|Container Registry Push"
 msgstr ""
 
 msgid "JobSource|Duo Agent Platform"
-msgstr ""
-
-msgid "JobSource|Duo Workflow"
 msgstr ""
 
 msgid "JobSource|External"
@@ -68082,7 +68076,7 @@ msgstr ""
 msgid "Use this token to validate received payloads."
 msgstr ""
 
-msgid "Use webhook"
+msgid "Use webhook (POST requests only)"
 msgstr ""
 
 msgid "Use your global notification setting"
@@ -70576,6 +70570,9 @@ msgstr ""
 msgid "Webhook"
 msgstr ""
 
+msgid "Webhook (POST requests only):"
+msgstr ""
+
 msgid "Webhook created"
 msgstr ""
 
@@ -70595,9 +70592,6 @@ msgid "Webhook settings"
 msgstr ""
 
 msgid "Webhook updated"
-msgstr ""
-
-msgid "Webhook:"
 msgstr ""
 
 msgid "Webhooks"

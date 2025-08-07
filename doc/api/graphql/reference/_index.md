@@ -701,7 +701,7 @@ Returns [`DuoSettings`](#duosettings).
 **Status**: Experiment.
 {{< /details >}}
 
-List the events for a Duo Workflow.
+List the events for a Duo Agent Platform.
 
 Returns [`DuoWorkflowEventConnection!`](#duoworkfloweventconnection).
 

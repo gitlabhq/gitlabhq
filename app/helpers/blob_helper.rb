@@ -302,6 +302,8 @@ module BlobHelper
   end
 
   def vue_blob_header_app_data(project, blob, ref)
+    archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
+
     {
       blob_path: blob.path,
       is_binary: blob.binary?,
@@ -314,7 +316,11 @@ module BlobHelper
       project_short_path: project.path,
       ref_type: @ref_type.to_s,
       ref: ref,
-      root_ref: project.repository.root_ref
+      root_ref: project.repository.root_ref,
+      ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
+      http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
+      xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
+      download_links: archive_download_links(project, ref, archive_prefix).to_json
     }
   end
 
@@ -346,6 +352,19 @@ module BlobHelper
       branch_allows_collaboration: project.branch_allows_collaboration?(current_user, ref).to_s,
       last_commit_sha: @last_commit_sha
     }
+  end
+
+  private
+
+  def archive_download_links(project, ref, archive_prefix)
+    Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
+      {
+        text: fmt,
+        path: external_storage_url_or_path(
+          project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
+        )
+      }
+    end
   end
 end
 

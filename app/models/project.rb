@@ -647,7 +647,7 @@ class Project < ApplicationRecord
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
+  validate :visibility_level_allowed_by_namespace, if: :should_validate_visibility_level?
   validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validate :changing_shared_runners_enabled_is_allowed
@@ -1827,12 +1827,14 @@ class Project < ApplicationRecord
     new_record? || changes.has_key?(:visibility_level)
   end
 
-  def visibility_level_allowed_by_group
-    return if visibility_level_allowed_by_group?
+  def visibility_level_allowed_by_namespace
+    return if visibility_level_allowed_by_namespace?
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
-    group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
-    self.errors.add(:visibility_level, _("%{level_name} is not allowed in a %{group_level_name} group.") % { level_name: level_name, group_level_name: group_level_name })
+    # Use group visibility level directly when available to avoid stale association issues
+    namespace_visibility = group ? group.visibility_level : namespace.visibility_level
+    namespace_level_name = Gitlab::VisibilityLevel.level_name(namespace_visibility).downcase
+    self.errors.add(:visibility_level, _("%{level_name} is not allowed in a %{namespace_level_name} namespace.") % { level_name: level_name, namespace_level_name: namespace_level_name })
   end
 
   def visibility_level_allowed_as_fork
@@ -2507,14 +2509,17 @@ class Project < ApplicationRecord
     level <= original_project.visibility_level
   end
 
-  def visibility_level_allowed_by_group?(level = self.visibility_level)
-    return true unless group
+  def visibility_level_allowed_by_namespace?(level = self.visibility_level)
+    return true unless group || namespace
+    return level <= group.visibility_level if group
 
-    level <= group.visibility_level
+    return true unless Feature.enabled?(:user_namespace_allowed_visibility, namespace)
+
+    level <= namespace.visibility_level
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
-    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_group?(level)
+    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_namespace?(level)
   end
 
   def runners_token

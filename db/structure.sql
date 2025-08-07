@@ -26803,6 +26803,14 @@ CREATE SEQUENCE work_item_text_field_values_id_seq
 
 ALTER SEQUENCE work_item_text_field_values_id_seq OWNED BY work_item_text_field_values.id;
 
+CREATE TABLE work_item_transitions (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    moved_to_id bigint,
+    duplicated_to_id bigint,
+    promoted_to_epic_id bigint
+);
+
 CREATE TABLE work_item_type_custom_fields (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -32527,6 +32535,9 @@ ALTER TABLE ONLY work_item_select_field_values
 
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT work_item_text_field_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT work_item_transitions_pkey PRIMARY KEY (work_item_id);
 
 ALTER TABLE ONLY work_item_type_custom_fields
     ADD CONSTRAINT work_item_type_custom_fields_pkey PRIMARY KEY (id);
@@ -39314,6 +39325,14 @@ CREATE INDEX index_work_item_text_field_values_on_custom_field_id ON work_item_t
 
 CREATE INDEX index_work_item_text_field_values_on_namespace_id ON work_item_text_field_values USING btree (namespace_id);
 
+CREATE INDEX index_work_item_transitions_on_duplicated_to_id ON work_item_transitions USING btree (duplicated_to_id) WHERE (duplicated_to_id IS NOT NULL);
+
+CREATE INDEX index_work_item_transitions_on_moved_to_id ON work_item_transitions USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
+
+CREATE INDEX index_work_item_transitions_on_namespace_id ON work_item_transitions USING btree (namespace_id);
+
+CREATE INDEX index_work_item_transitions_on_promoted_to_epic_id ON work_item_transitions USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
+
 CREATE INDEX index_work_item_type_custom_fields_on_custom_field_id ON work_item_type_custom_fields USING btree (custom_field_id);
 
 CREATE INDEX index_work_item_type_custom_fields_on_work_item_type_id ON work_item_type_custom_fields USING btree (work_item_type_id);
@@ -43033,6 +43052,9 @@ ALTER TABLE ONLY environments
 ALTER TABLE ONLY ai_catalog_items
     ADD CONSTRAINT fk_01a07cc378 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT fk_01ba2355cd FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -43398,6 +43420,9 @@ ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
 
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_2417fd4262 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT fk_247358ddff FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_24b824da43 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -44437,6 +44462,9 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_9b274efd3a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT fk_9ba5313b4f FOREIGN KEY (duplicated_to_id) REFERENCES issues(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY project_compliance_violations
     ADD CONSTRAINT fk_9bbcb08120 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -44607,6 +44635,9 @@ ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
 
 ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
     ADD CONSTRAINT fk_ac20a85a68 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT fk_ac61084d25 FOREIGN KEY (moved_to_id) REFERENCES issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_progresses
     ADD CONSTRAINT fk_acdc04a1e3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -45303,6 +45334,9 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT fk_f7aacd483c FOREIGN KEY (recipe_revision_id) REFERENCES packages_conan_recipe_revisions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_transitions
+    ADD CONSTRAINT fk_f7c401aeb4 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT fk_f7d43dee13 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

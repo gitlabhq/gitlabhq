@@ -294,9 +294,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user, dashboard: 'operations')
-        cluster = create(:cluster, user: user)
         project = create(:project, creator: user)
-        create(:clusters_integrations_prometheus, cluster: cluster)
+        create(:cluster, user: user)
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
@@ -306,7 +305,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
         clusters: 2,
-        clusters_integrations_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
@@ -317,7 +315,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       data_28_days = described_class.usage_activity_by_stage_monitor(described_class.monthly_time_range_db_params)
       expect(data_28_days).to include(
         clusters: 1,
-        clusters_integrations_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
         projects_with_error_tracking_enabled: 1,
         projects_with_incidents: 2,
@@ -482,7 +479,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
-      expect(count_data[:clusters_integrations_prometheus]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)

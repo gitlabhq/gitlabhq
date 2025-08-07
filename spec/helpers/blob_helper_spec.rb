@@ -597,6 +597,8 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       assign(:ref, ref)
       assign(:ref_type, ref_type)
       allow(helper).to receive(:breadcrumb_data_attributes).and_return(breadcrumb_data)
+      allow(helper).to receive(:show_xcode_link?).and_return(true)
+      allow(helper).to receive(:xcode_uri_to_repo).with(project).and_return('xcode://example.com/project.git')
     end
 
     it 'returns data related to blob header' do
@@ -612,8 +614,22 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         project_short_path: project.path,
         ref_type: ref_type.to_s,
         ref: ref,
-        root_ref: project.repository.root_ref
+        root_ref: project.repository.root_ref,
+        ssh_url: ssh_clone_url_to_repo(project),
+        http_url: http_clone_url_to_repo(project),
+        xcode_url: 'xcode://example.com/project.git',
+        download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}").to_json
       })
+    end
+
+    it 'returns download links for all supported archive formats' do
+      allow(helper).to receive(:external_storage_url_or_path) { |path| "download/#{path}" }
+
+      links = helper.send(:archive_download_links, project, 'master', 'prefix')
+
+      expect(links.pluck(:text)).to eq(Gitlab::Workhorse::ARCHIVE_FORMATS)
+      expect(links.pluck(:path)).to all(start_with('download/'))
+      expect(links).to all(include(:text, :path))
     end
   end
 end

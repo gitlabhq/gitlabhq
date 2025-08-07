@@ -260,6 +260,7 @@ variables:
   RUBYOPT: "--yjit"
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
   TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
+  GLCI_GITLAB_ASSETS_HASH_FILE: cached-assets-hash.txt
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
@@ -295,7 +296,6 @@ variables:
   # CI jobs behavior can be changed by changing the value of these variables in the project's CI/CD variables
   AVERAGE_KNAPSACK_REPORT: "true"
   ENABLE_DEPSCORE: "true"
-  CACHE_ASSETS_AS_PACKAGE: "true"
   REUSE_FRONTEND_FIXTURES_ENABLED: "true"
   SIMPLECOV: "true"
 

@@ -70,7 +70,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 			require.NoError(t, err)
 
 			// Make enough requests to trip the circuit breaker
-			for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 1 {
+			for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 2 {
 				resp, _ := rt.RoundTrip(req)
 
 				body, err := io.ReadAll(resp.Body)
@@ -225,6 +225,7 @@ func delegateErrorResponse() *http.Response {
 	return &http.Response{
 		StatusCode: http.StatusTooManyRequests,
 		Body:       io.NopCloser(bytes.NewBufferString(delegateBody)),
+		Header:     http.Header{enableCircuitBreakerHeader: []string{"true"}},
 	}
 }
 
@@ -235,7 +236,9 @@ func (e *errorReader) Read(_ []byte) (n int, err error) {
 }
 
 func testCircuitBreakerResponse(t *testing.T, rt http.RoundTripper, req *http.Request, expectedBody string) {
-	for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 2 {
+	// We make 3 additional requests. 1 to track the user in the circuit breaker, the second to open the circuit breaker, and the third
+	// to test against the opened circuit breaker
+	for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 3 {
 		resp, _ := rt.RoundTrip(req)
 
 		body, err := io.ReadAll(resp.Body)
@@ -248,7 +251,7 @@ func testCircuitBreakerResponse(t *testing.T, rt http.RoundTripper, req *http.Re
 	}
 }
 
-func TestGetRedisKey(t *testing.T) {
+func TestGetUserKey(t *testing.T) {
 	tests := []struct {
 		name     string
 		body     string
@@ -257,7 +260,7 @@ func TestGetRedisKey(t *testing.T) {
 		{
 			name:     "with key_id",
 			body:     `{"key_id":"123456"}`,
-			expected: "gobreaker:key_id:123456",
+			expected: "123456",
 		},
 		{
 			name:     "without key_id",
@@ -276,7 +279,7 @@ func TestGetRedisKey(t *testing.T) {
 			req, err := http.NewRequest("POST", "http://example.com", strings.NewReader(tc.body))
 			require.NoError(t, err)
 
-			key, _ := getRedisKey(req)
+			key, _ := getUserKey(req)
 			assert.Equal(t, tc.expected, key)
 
 			// Verify body can still be read
@@ -295,11 +298,7 @@ func InitRdb(t *testing.T) *redis.Client {
 	rdb, err := configRedis.Configure(cfg)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		ctx := context.Background()
-		keys, err := rdb.Keys(ctx, "gobreaker:*").Result()
-		if err == nil && len(keys) > 0 {
-			rdb.Del(ctx, keys...)
-		}
+		rdb.FlushAll(context.Background())
 		assert.NoError(t, rdb.Close())
 	})
 	return rdb

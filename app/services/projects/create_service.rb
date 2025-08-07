@@ -49,7 +49,7 @@ module Projects
 
       validate_import_source_enabled!
 
-      @project.visibility_level = @project.group.visibility_level unless @project.visibility_level_allowed_by_group?
+      @project.visibility_level = @project.namespace.visibility_level unless @project.visibility_level_allowed_by_namespace?
 
       # If a project is newly created it should have shared runners settings
       # based on its group having it enabled. This is like the "default value"

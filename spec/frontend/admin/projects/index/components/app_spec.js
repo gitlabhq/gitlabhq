@@ -1,7 +1,12 @@
-import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
+import adminProjectsGraphQlResponse from 'test_fixtures/graphql/admin/projects.query.graphql.json';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
 import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
+import { createRouter } from '~/admin/projects/index/index';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -23,7 +28,14 @@ import {
   FIRST_TAB_ROUTE_NAMES,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  ADMIN_PROJECTS_ROUTE_NAME,
 } from '~/admin/projects/index/constants';
+import adminProjectsQuery from '~/admin/projects/index/graphql/queries/projects.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 describe('AdminProjectsApp', () => {
   let wrapper;
@@ -32,17 +44,35 @@ describe('AdminProjectsApp', () => {
     programmingLanguages,
   };
 
-  const findTabsWithList = () => wrapper.findComponent(TabsWithList);
-
-  const createComponent = () => {
-    wrapper = shallowMount(AdminProjectsApp, { propsData: defaultPropsData });
+  const defaultRoute = {
+    name: ADMIN_PROJECTS_ROUTE_NAME,
   };
 
-  beforeEach(() => {
-    createComponent();
+  const findTabsWithList = () => wrapper.findComponent(TabsWithList);
+
+  const createComponent = async ({
+    mountFn = shallowMountExtended,
+    handlers = [],
+    route = defaultRoute,
+  } = {}) => {
+    const apolloProvider = createMockApollo(handlers);
+    const router = createRouter();
+    await router.push(route);
+
+    wrapper = mountFn(AdminProjectsApp, {
+      propsData: defaultPropsData,
+      apolloProvider,
+      router,
+    });
+  };
+
+  afterEach(() => {
+    window.gon = {};
   });
 
-  it('renders TabsWithList component and passes correct props', () => {
+  it('renders TabsWithList component and passes correct props', async () => {
+    await createComponent();
+
     expect(findTabsWithList().props()).toMatchObject({
       tabs: ADMIN_PROJECTS_TABS,
       filteredSearchSupportedTokens: [
@@ -67,5 +97,27 @@ describe('AdminProjectsApp', () => {
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
       paginationType: PAGINATION_TYPE_KEYSET,
     });
+  });
+
+  it('renders relative URL that supports relative_url_root', async () => {
+    window.gon = { relative_url_root: '/gitlab' };
+
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [[adminProjectsQuery, jest.fn().mockResolvedValue(adminProjectsGraphQlResponse)]],
+    });
+    await waitForPromises();
+
+    const {
+      data: {
+        projects: {
+          nodes: [expectedProject],
+        },
+      },
+    } = adminProjectsGraphQlResponse;
+
+    expect(
+      wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
+    ).toBe(`/gitlab/admin/projects/${expectedProject.fullPath}`);
   });
 });
