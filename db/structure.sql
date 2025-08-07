@@ -17731,7 +17731,7 @@ CREATE TABLE merge_request_diff_files (
     too_large boolean NOT NULL,
     a_mode character varying NOT NULL,
     b_mode character varying NOT NULL,
-    new_path text NOT NULL,
+    new_path text,
     old_path text NOT NULL,
     diff text,
     "binary" boolean,
@@ -30260,6 +30260,9 @@ ALTER TABLE security_scans
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
+
+ALTER TABLE push_event_payloads
+    ADD CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

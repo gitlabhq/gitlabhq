@@ -49211,6 +49211,15 @@ Values for work item award emoji update enum.
 | <a id="workitemawardemojiupdateactionremove"></a>`REMOVE` | Removes the emoji. |
 | <a id="workitemawardemojiupdateactiontoggle"></a>`TOGGLE` | Toggles the status of the emoji. |
 
+### `WorkItemParentWildcardId`
+
+Parent ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemparentwildcardidany"></a>`ANY` | Any parent is assigned. |
+| <a id="workitemparentwildcardidnone"></a>`NONE` | No parent is assigned. |
+
 ### `WorkItemRelatedLinkType`
 
 Values for work item link types.
@@ -52863,7 +52872,8 @@ Labels for the Node Pool of a GKE cluster.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="hierarchyfilterinputincludedescendantworkitems"></a>`includeDescendantWorkItems` | [`Boolean`](#boolean) | Whether to include work items of descendant parents when filtering by parent_ids. |
-| <a id="hierarchyfilterinputparentids"></a>`parentIds` | [`[WorkItemID!]!`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
+| <a id="hierarchyfilterinputparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
+| <a id="hierarchyfilterinputparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 
 ### `ItemConsumerTargetInput`
 
@@ -53029,6 +53039,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedworkitemfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |
 | <a id="negatedworkitemfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji not applied by the current user. |
+| <a id="negatedworkitemfilterinputparentids"></a>`parentIds` {{< icon name="warning-solid" >}} | [`[WorkItemID!]`](#workitemid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="negatedworkitemfilterinputreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag not associated with the work items's milestone. Ignored when parent is a group. |
 | <a id="negatedworkitemfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter out work items by the given types. |
 | <a id="negatedworkitemfilterinputweight"></a>`weight` | [`String`](#string) | Weight not applied to the work items. |

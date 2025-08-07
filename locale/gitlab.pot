@@ -7088,6 +7088,9 @@ msgstr ""
 msgid "AmazonQ|Delete the IAM role."
 msgstr ""
 
+msgid "AmazonQ|Disconnect"
+msgstr ""
+
 msgid "AmazonQ|Enter the IAM role's ARN."
 msgstr ""
 
@@ -7161,9 +7164,6 @@ msgid "AmazonQ|Provider URL"
 msgstr ""
 
 msgid "AmazonQ|Provider type"
-msgstr ""
-
-msgid "AmazonQ|Remove"
 msgstr ""
 
 msgid "AmazonQ|Remove IAM role's ARN"
@@ -7791,9 +7791,6 @@ msgstr[1] ""
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
 msgstr ""
 
-msgid "Analytics|Events received since %{date}"
-msgstr ""
-
 msgid "Analytics|Exclude anonymous users"
 msgstr ""
 
@@ -7827,9 +7824,6 @@ msgstr ""
 msgid "Analytics|No results match your query or filter."
 msgstr ""
 
-msgid "Analytics|Overview"
-msgstr ""
-
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
@@ -7858,9 +7852,6 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
-msgstr ""
-
-msgid "Analytics|Usage breakdown"
 msgstr ""
 
 msgid "Analytics|Usage data is a cumulative count and is updated monthly."
@@ -10108,7 +10099,7 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
-msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for 60 days, no credit card required."
+msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{duration} days, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
@@ -14529,12 +14520,6 @@ msgid "ClusterIntegration|Installing agent in progress."
 msgstr ""
 
 msgid "ClusterIntegration|Instance cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Integration disabled"
-msgstr ""
-
-msgid "ClusterIntegration|Integration enabled"
 msgstr ""
 
 msgid "ClusterIntegration|Invalid configuration project"
@@ -28962,7 +28947,7 @@ msgstr ""
 msgid "Get a support subscription"
 msgstr ""
 
-msgid "Get access to all Ultimate and GitLab Duo AI-native features, free for 60 days. No credit card required."
+msgid "Get access to all Ultimate and GitLab Duo AI-native features, free for %{duration} days. No credit card required."
 msgstr ""
 
 msgid "Get free trial"
@@ -32345,6 +32330,9 @@ msgid "I'm sorry, but answering this question requires a different Duo subscript
 msgstr ""
 
 msgid "I'm sorry, you don't have the GitLab Duo subscription required to use Duo Chat. Please contact your administrator."
+msgstr ""
+
+msgid "I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences."
 msgstr ""
 
 msgid "I'm sorry, you've entered too many prompts. Please run /clear or /reset before asking the next question."
@@ -48107,9 +48095,6 @@ msgstr ""
 msgid "ProductAnalytics|An error occurred while fetching project settings. Refresh the page to try again."
 msgstr ""
 
-msgid "ProductAnalytics|Analytics events by month"
-msgstr ""
-
 msgid "ProductAnalytics|Analyze your product with Product Analytics"
 msgstr ""
 
@@ -48146,16 +48131,10 @@ msgstr ""
 msgid "ProductAnalytics|Cube API key"
 msgstr ""
 
-msgid "ProductAnalytics|Current month to date"
-msgstr ""
-
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr ""
 
 msgid "ProductAnalytics|Edit project provider settings"
-msgstr ""
-
-msgid "ProductAnalytics|Events"
 msgstr ""
 
 msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
@@ -48170,9 +48149,6 @@ msgstr ""
 msgid "ProductAnalytics|For this option:"
 msgstr ""
 
-msgid "ProductAnalytics|Get started with product analytics"
-msgstr ""
-
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr ""
 
@@ -48185,40 +48161,16 @@ msgstr ""
 msgid "ProductAnalytics|Instrument your application"
 msgstr ""
 
-msgid "ProductAnalytics|Learn how to enable product analytics"
-msgstr ""
-
-msgid "ProductAnalytics|Learn how to onboard projects"
-msgstr ""
-
 msgid "ProductAnalytics|Loading instance"
 msgstr ""
 
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
 msgstr ""
 
-msgid "ProductAnalytics|Month"
-msgstr ""
-
-msgid "ProductAnalytics|No projects found"
-msgstr ""
-
 msgid "ProductAnalytics|Override the instance analytics configuration for this project."
 msgstr ""
 
-msgid "ProductAnalytics|Previous month"
-msgstr ""
-
 msgid "ProductAnalytics|Product analytics onboarding"
-msgstr ""
-
-msgid "ProductAnalytics|Product analytics usage is calculated based on the total number of events received from projects within the group. Contact your account manager if you need additional event quota. %{usageQuotaLinkStart}Learn more%{usageQuotaLinkEnd}. If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{dataRetentionLinkStart}Learn more about data retention policy%{dataRetentionLinkEnd}."
-msgstr ""
-
-msgid "ProductAnalytics|Projects"
-msgstr ""
-
-msgid "ProductAnalytics|Projects (%{maxProjects} of %{totalProjects} shown)"
 msgstr ""
 
 msgid "ProductAnalytics|Reset existing project provider settings"
@@ -48242,9 +48194,6 @@ msgstr ""
 msgid "ProductAnalytics|Snowplow configurator connection string"
 msgstr ""
 
-msgid "ProductAnalytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
-msgstr ""
-
 msgid "ProductAnalytics|Tell us what you think!"
 msgstr ""
 
@@ -48266,9 +48215,6 @@ msgstr ""
 msgid "ProductAnalytics|The system is creating your analytics provider. In the meantime, you can instrument your application."
 msgstr ""
 
-msgid "ProductAnalytics|This group has no projects with product analytics onboarded in the current period."
-msgstr ""
-
 msgid "ProductAnalytics|This might take a while, feel free to navigate away from this page and come back later."
 msgstr ""
 
@@ -48276,9 +48222,6 @@ msgid "ProductAnalytics|This project has analytics provider settings configured.
 msgstr ""
 
 msgid "ProductAnalytics|This project has analytics provider settings configured. If you continue, the settings for projects will be reset so that provider settings for the instance can be used."
-msgstr ""
-
-msgid "ProductAnalytics|This table excludes projects that do not have product analytics onboarded."
 msgstr ""
 
 msgid "ProductAnalytics|To continue, you must agree to event storage and processing in this region."
@@ -48290,16 +48233,7 @@ msgstr ""
 msgid "ProductAnalytics|Track the performance of your product, and optimize your product and development processes."
 msgstr ""
 
-msgid "ProductAnalytics|Track your product's performance, and optimize your product and development processes."
-msgstr ""
-
 msgid "ProductAnalytics|Uncheck if you would like to configure a different provider for this project."
-msgstr ""
-
-msgid "ProductAnalytics|Usage by month"
-msgstr ""
-
-msgid "ProductAnalytics|Usage by project"
 msgstr ""
 
 msgid "ProductAnalytics|Use GitLab-managed provider"
@@ -65149,7 +65083,7 @@ msgstr ""
 msgid "TierBadgePopover|This project uses the %{tier} GitLab tier. %{copyEnd}"
 msgstr ""
 
-msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for 60 days. No credit card required."
+msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for %{duration} days. No credit card required."
 msgstr ""
 
 msgid "TierBadge|Free"
@@ -66691,7 +66625,7 @@ msgstr ""
 msgid "Trial|Welcome to GitLab"
 msgstr ""
 
-msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for 60 days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
+msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for %{duration} days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
 msgstr ""
 
 msgid "Trigger"
@@ -67747,9 +67681,6 @@ msgid "UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD."
 msgstr ""
 
 msgid "UsageQuota|Precise calculation of container registry storage size is delayed because it is too large for synchronous estimation. Precise evaluation will be scheduled within 24 hours."
-msgstr ""
-
-msgid "UsageQuota|Product analytics"
 msgstr ""
 
 msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage limit applied to repository and LFS objects."

@@ -23,6 +23,11 @@ module Types
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
         description: 'Filter by reaction emoji not applied by the current user.'
+      argument :parent_ids, [::Types::GlobalIDType[::WorkItem]],
+        description: "Filter work items by global IDs who don't belong to parent items (maximum is 100 items).",
+        required: false,
+        experiment: { milestone: '18.3' },
+        prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
       argument :release_tag, [GraphQL::Types::String],
         required: false,
         description: "Release tag not associated with the work items's milestone. Ignored when parent is a group."

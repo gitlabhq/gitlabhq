@@ -175,7 +175,6 @@ Performance/StringIdentifierArgument:
     - 'spec/requests/api/rpm_project_packages_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
     - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
-    - 'spec/services/clusters/integrations/create_service_spec.rb'
     - 'spec/services/concerns/ci/job_token_scope/edit_scope_validations_spec.rb'
     - 'spec/services/container_expiration_policies/update_service_spec.rb'
     - 'spec/services/dependency_proxy/group_settings/update_service_spec.rb'

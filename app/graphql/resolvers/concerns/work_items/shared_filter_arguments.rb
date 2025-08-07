@@ -139,7 +139,7 @@ module WorkItems
     def resolve(**args)
       validate_field_limits(args, :parent_ids, :release_tag)
       validate_field_limits(args[:hierarchy_filters], :parent_ids) if args[:hierarchy_filters].present?
-      validate_field_limits(args[:not], :release_tag) if args[:not].present?
+      validate_field_limits(args[:not], :parent_ids, :release_tag) if args[:not].present?
 
       super
     end
@@ -162,6 +162,8 @@ module WorkItems
       unpack_parent_filtering_args!(params)
 
       rewrite_param_name(params, :parent_ids, :work_item_parent_ids)
+      rewrite_param_name(params[:not], :parent_ids, :work_item_parent_ids)
+
       rewrite_param_name(params, :release_tag_wildcard_id, :release_tag)
 
       params
@@ -187,7 +189,9 @@ module WorkItems
 
       wi_hierarchy_filtering = params.delete(:hierarchy_filters).to_h
 
-      params.merge!(wi_hierarchy_filtering.slice(:parent_ids, :include_descendant_work_items).compact)
+      params.merge!(
+        wi_hierarchy_filtering.slice(:parent_ids, :include_descendant_work_items, :parent_wildcard_id).compact
+      )
     end
   end
 end

@@ -61,6 +61,27 @@ class WorkItem < Issue
       .where(work_item_parent_links: { work_item_parent_id: parent_ids })
   }
 
+  scope :no_parent, -> {
+    where_not_exists(WorkItems::ParentLink.where(
+      WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+    ))
+  }
+
+  scope :any_parent, -> {
+    where_exists(::WorkItems::ParentLink.where(
+      ::WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+    ))
+  }
+
+  scope :not_in_parent_ids, ->(parent_ids) {
+    where_not_exists(
+      WorkItems::ParentLink.where(
+        WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+                             .and(WorkItems::ParentLink.arel_table[:work_item_parent_id].in(parent_ids))
+      )
+    )
+  }
+
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)

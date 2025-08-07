@@ -31,7 +31,7 @@ You can get a trial of GitLab Duo Pro if you have the Premium tier on GitLab.com
 
 Prerequisites:
 
-- You must have the Owner role for a top-level group that has an active paid Premium subscription.
+- You must have the Owner role for a top-level group that has an active paid Premium subscription. Indirect ownership through group membership is not sufficient.
 
 To start a GitLab Duo Pro trial on GitLab.com:
 

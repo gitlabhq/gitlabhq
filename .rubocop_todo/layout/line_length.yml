@@ -218,7 +218,6 @@ Layout/LineLength:
     - 'app/services/clusters/agents/authorizations/ci_access/refresh_service.rb'
     - 'app/services/clusters/agents/delete_service.rb'
     - 'app/services/clusters/build_kubernetes_namespace_service.rb'
-    - 'app/services/clusters/integrations/create_service.rb'
     - 'app/services/clusters/kubernetes/create_or_update_service_account_service.rb'
     - 'app/services/clusters/management/validate_management_project_permissions_service.rb'
     - 'app/services/compare_service.rb'

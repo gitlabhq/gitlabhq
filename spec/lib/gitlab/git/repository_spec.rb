@@ -1729,16 +1729,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
   describe '#diff_blobs_with_raw_info' do
     let(:gitaly_diff_client) { double('Gitlab::GitalyClient::DiffService') }
-
-    # SHAs used are from https://gitlab.com/gitlab-org/gitlab-test.
-    let(:left_blob) { '1e292f8fedd741b75372e19097c76d327140c312' }
-    let(:right_blob) { 'ddd0f15ae83993f5cb66a927a28673882e99100b' }
-
-    let(:blob_pairs) do
+    let(:changed_paths) do
       [
-        Gitaly::DiffBlobsRequest::BlobPair.new(
-          left_blob: left_blob,
-          right_blob: right_blob
+        Gitaly::ChangedPaths.new(
+          path: '/README',
+          status: :ADDED,
+          old_mode: 0,
+          new_mode: 33188,
+          old_blob_id: "0000000000000000000000000000000000000000",
+          new_blob_id: "ec4cf24cd106b6483345b92f2195491b6d852890"
         )
       ]
     end
@@ -1747,13 +1746,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       allow(repository).to receive(:gitaly_diff_client).and_return(gitaly_diff_client)
       allow(gitaly_diff_client).to receive(:diff_blobs_with_raw_info)
 
-      repository.diff_blobs_with_raw_info(blob_pairs)
+      repository.diff_blobs_with_raw_info(changed_paths)
     end
 
     it 'passes the values to the diff client' do
       expect(gitaly_diff_client)
         .to have_received(:diff_blobs_with_raw_info)
-        .with(blob_pairs)
+        .with(changed_paths)
     end
   end
 

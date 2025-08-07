@@ -201,6 +201,46 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
         end
       end
 
+      context 'with not parent_ids filter' do
+        let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project) }
+        let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project) }
+        let(:context) { { arg_style: :internal_prepared } }
+
+        before do
+          create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+        end
+
+        it 'filters by not parent ids' do
+          items = resolve_items({ not: { parent_ids: [work_item_without_parent.to_global_id.to_s] } }, context)
+
+          expect(items).not_to include(work_item_with_parent)
+          expect(items).to include(work_item_without_parent)
+        end
+      end
+
+      context 'with parent_wildcard_id filter' do
+        let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project) }
+        let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project) }
+
+        before do
+          create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+        end
+
+        it 'returns work items with any parent' do
+          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'ANY' })
+
+          expect(items).to include(work_item_with_parent)
+          expect(items).not_to include(work_item_without_parent)
+        end
+
+        it 'returns work items with no parent' do
+          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'NONE' })
+
+          expect(items).to include(work_item_without_parent)
+          expect(items).not_to include(work_item_with_parent)
+        end
+      end
+
       describe 'filter by release' do
         let_it_be(:milestone1) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 1') }
         let_it_be(:milestone2) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 2') }

@@ -1,4 +1,4 @@
-import { GlFormRadio, GlIcon, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import { GlFormRadio, GlIcon, GlFormRadioGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
 import {
@@ -14,7 +14,6 @@ import {
 
 describe('Snippet Visibility Edit component', () => {
   let wrapper;
-  const defaultHelpLink = '/foo/bar';
   const defaultVisibilityLevel = 'private';
 
   function createComponent({
@@ -27,7 +26,6 @@ describe('Snippet Visibility Edit component', () => {
 
     wrapper = method.call(this, SnippetVisibilityEdit, {
       propsData: {
-        helpLink: defaultHelpLink,
         isProjectSnippet: false,
         value: defaultVisibilityLevel,
         ...propsData,
@@ -39,7 +37,6 @@ describe('Snippet Visibility Edit component', () => {
     });
   }
 
-  const findLink = () => wrapper.find('label').findComponent(GlLink);
   const findRadios = () => wrapper.findComponent(GlFormRadioGroup).findAllComponents(GlFormRadio);
   const findRadiosData = () =>
     findRadios().wrappers.map((x) => {
@@ -55,18 +52,6 @@ describe('Snippet Visibility Edit component', () => {
     it('matches the snapshot', () => {
       createComponent();
       expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('renders label help link', () => {
-      createComponent();
-
-      expect(findLink().attributes('href')).toBe(defaultHelpLink);
-    });
-
-    it('when helpLink is not defined, does not render label help link', () => {
-      createComponent({ propsData: { helpLink: null } });
-
-      expect(findLink().exists()).toBe(false);
     });
 
     describe('Visibility options', () => {

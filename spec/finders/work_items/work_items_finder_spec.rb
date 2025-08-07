@@ -164,4 +164,61 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
       end
     end
   end
+
+  context 'when filtering by NOT parent_ids' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project1) }
+
+    let_it_be(:unrelated_work_item) { create(:work_item, :issue, project: project1) }
+    let_it_be(:unrelated_work_item_with_parent) { create(:work_item, :task, project: project1) }
+
+    let(:scope) { 'all' }
+    let(:params) { { not: { work_item_parent_ids: [work_item_without_parent.id] } } }
+
+    before do
+      create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+      create(:parent_link, work_item_parent: unrelated_work_item, work_item: unrelated_work_item_with_parent)
+    end
+
+    it 'does not include items with the specified parent' do
+      expect(items).not_to include(work_item_with_parent)
+      expect(items).to include(work_item_without_parent, unrelated_work_item, unrelated_work_item_with_parent)
+    end
+  end
+
+  context 'when using parent_wildcard_id filter' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project1) }
+    let(:scope) { 'all' }
+
+    before do
+      create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+    end
+
+    context 'with ANY wildcard' do
+      let(:params) { { parent_wildcard_id: 'ANY' } }
+
+      it 'returns work items with any parent' do
+        filtered_items = items
+
+        expect(filtered_items).to include(work_item_with_parent)
+        expect(filtered_items).not_to include(work_item_without_parent)
+      end
+    end
+
+    context 'with NONE wildcard' do
+      let(:params) { { parent_wildcard_id: 'NONE' } }
+
+      it 'returns work items with no parent' do
+        filtered_items = items
+
+        expect(filtered_items).to include(work_item_without_parent)
+        expect(filtered_items).not_to include(work_item_with_parent)
+      end
+    end
+  end
 end

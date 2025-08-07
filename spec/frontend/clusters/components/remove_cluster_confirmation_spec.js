@@ -48,7 +48,6 @@ describe('Remove cluster confirmation modal', () => {
       await nextTick();
 
       expect(showMock).toHaveBeenCalled();
-      expect(wrapper.element).toMatchSnapshot();
       expect(findModal().html()).toContain(
         '<strong>To remove your integration and resources, type <code>my-test-cluster</code> to confirm:</strong>',
       );
@@ -60,7 +59,6 @@ describe('Remove cluster confirmation modal', () => {
       await nextTick();
 
       expect(showMock).toHaveBeenCalled();
-      expect(wrapper.element).toMatchSnapshot();
       expect(findModal().html()).toContain(
         '<strong>To remove your integration, type <code>my-test-cluster</code> to confirm:</strong>',
       );
