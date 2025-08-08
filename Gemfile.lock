@@ -1177,7 +1177,7 @@ GEM
       actionpack (>= 5.2)
       activerecord (>= 5.2)
     matrix (0.4.2)
-    memory_profiler (1.0.1)
+    memory_profiler (1.1.0)
     method_source (1.0.0)
     metrics (0.12.1)
     mime-types (3.5.1)

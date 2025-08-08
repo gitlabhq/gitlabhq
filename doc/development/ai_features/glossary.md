@@ -15,6 +15,10 @@ to AI that you think could benefit from being in this list, add it!
 
 A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
 
+### AI catalog
+
+The [Workflow Catalog Group](https://handbook.gitlab.com/handbook/engineering/ai/workflow-catalog/) is focused on developing Workflow Catalog, a catalog of Agents, tools, and flows that can be created, curated, and shared across organizations, groups, and projects.
+
 ### AI gateway
 
 Standalone service used to give access to AI features to non-SaaS GitLab users. This logic will be moved to Cloud Connector when that service is ready. Eventually, the AI gateway will be used to host endpoints that proxy requests to AI providers, removing the need for the GitLab Rails monolith to integrate and communicate directly with third-party Large Language Models (LLMs). [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).

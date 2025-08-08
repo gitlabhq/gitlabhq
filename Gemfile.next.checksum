@@ -389,7 +389,7 @@
 {"name":"marcel","version":"1.0.2","platform":"ruby","checksum":"a013b677ef46cbcb49fd5c59b3d35803d2ee04dd75d8bfdc43533fc5a31f7e4e"},
 {"name":"marginalia","version":"1.11.1","platform":"ruby","checksum":"cb63212ab63e42746e27595e912cb20408a1a28bcd0edde55d15b7c45fa289cf"},
 {"name":"matrix","version":"0.4.2","platform":"ruby","checksum":"71083ccbd67a14a43bfa78d3e4dc0f4b503b9cc18e5b4b1d686dc0f9ef7c4cc0"},
-{"name":"memory_profiler","version":"1.0.1","platform":"ruby","checksum":"38cdb42f22d9100df2eba0365c199724b58b05c38e765cd764a07392916901b1"},
+{"name":"memory_profiler","version":"1.1.0","platform":"ruby","checksum":"79a17df7980a140c83c469785905409d3027ca614c42c086089d128b805aa8f8"},
 {"name":"method_source","version":"1.0.0","platform":"ruby","checksum":"d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede"},
 {"name":"metrics","version":"0.12.1","platform":"ruby","checksum":"42ec8eeadb92a57549a72bdd1baf86d4270089bc598917b93cf9cb6f95fcc29c"},
 {"name":"mime-types","version":"3.5.1","platform":"ruby","checksum":"85d772fb6cf21f999ac8085998192fb9dd5d16e86ec4c69c5e79ac3003420d61"},

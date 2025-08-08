@@ -1,3 +1,5 @@
+- @main_wrapper_class =  "gl-@container/main" if @allow_main_container_query
+
 .layout-page{ class: page_with_sidebar_class }
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
@@ -49,7 +51,7 @@
       = render "layouts/nav/top_bar"
 
     %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-      %main.content{ id: "content-body", **page_itemtype }
+      %main.content{ id: "content-body", **page_itemtype, class: @main_wrapper_class }
         = render "layouts/flash" unless @hide_flash
         = yield :after_flash_content
         = yield :before_content

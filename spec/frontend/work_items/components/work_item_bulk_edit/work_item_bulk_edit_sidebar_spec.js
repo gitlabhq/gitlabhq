@@ -1,13 +1,10 @@
 import { GlForm } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_milestone.vue';
@@ -45,7 +42,6 @@ const availableWidgetsWithout = (widgetToExclude) => {
 };
 
 describe('WorkItemBulkEditSidebar component', () => {
-  let axiosMock;
   let wrapper;
 
   const checkedItems = [
@@ -108,14 +104,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   const findParentComponent = () => wrapper.findComponent(WorkItemBulkEditParent);
   const findBulkMoveComponent = () => wrapper.findComponent(WorkItemBulkMove);
 
-  beforeEach(() => {
-    axiosMock = new MockAdapter(axios);
-  });
-
-  afterEach(() => {
-    axiosMock.restore();
-  });
-
   describe('form', () => {
     it('renders', () => {
       createComponent();
@@ -123,225 +111,129 @@ describe('WorkItemBulkEditSidebar component', () => {
       expect(findForm().attributes('id')).toBe('work-item-list-bulk-edit');
     });
 
-    describe('when on project work items list page', () => {
-      describe('when work_items_bulk_edit is enabled', () => {
-        it('calls mutation to bulk edit with project fullPath', async () => {
-          const addLabelIds = ['gid://gitlab/Label/1'];
-          const removeLabelIds = ['gid://gitlab/Label/2'];
-          createComponent({
-            provide: {
-              hasIssuableHealthStatusFeature: true,
-              glFeatures: { workItemsBulkEdit: true },
-            },
-            props: { isEpicsList: false, fullPath: 'group/project' },
-          });
-          await waitForPromises();
+    it('calls mutation to bulk edit with project fullPath', async () => {
+      const addLabelIds = ['gid://gitlab/Label/1'];
+      const removeLabelIds = ['gid://gitlab/Label/2'];
+      createComponent({
+        provide: {
+          hasIssuableHealthStatusFeature: true,
+        },
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
 
-          findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
-          findAddLabelsComponent().vm.$emit('select', addLabelIds);
-          findRemoveLabelsComponent().vm.$emit('select', removeLabelIds);
-          findHealthStatusComponent().vm.$emit('input', 'on_track');
-          findConfidentialityComponent().vm.$emit('input', 'true');
-          findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
-          findSubscriptionComponent().vm.$emit('input', 'unsubscribe');
-          findStateComponent().vm.$emit('input', 'reopen');
-          findParentComponent().vm.$emit('input', 'gid://gitlab/WorkItem/101');
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
+      findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
+      findAddLabelsComponent().vm.$emit('select', addLabelIds);
+      findRemoveLabelsComponent().vm.$emit('select', removeLabelIds);
+      findHealthStatusComponent().vm.$emit('input', 'on_track');
+      findConfidentialityComponent().vm.$emit('input', 'true');
+      findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
+      findSubscriptionComponent().vm.$emit('input', 'unsubscribe');
+      findStateComponent().vm.$emit('input', 'reopen');
+      findParentComponent().vm.$emit('input', 'gid://gitlab/WorkItem/101');
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
 
-          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
-            input: {
-              fullPath: 'group/project',
-              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
-              labelsWidget: {
-                addLabelIds,
-                removeLabelIds,
-              },
-              assigneesWidget: {
-                assigneeIds: ['gid://gitlab/User/5'],
-              },
-              confidential: true,
-              healthStatusWidget: {
-                healthStatus: 'onTrack',
-              },
-              milestoneWidget: {
-                milestoneId: 'gid://gitlab/Milestone/30',
-              },
-              subscriptionEvent: 'UNSUBSCRIBE',
-              stateEvent: 'REOPEN',
-              hierarchyWidget: {
-                parentId: 'gid://gitlab/WorkItem/101',
-              },
-            },
-          });
-          expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
-          expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
-        });
+      expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+        input: {
+          fullPath: 'group/project',
+          ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+          labelsWidget: {
+            addLabelIds,
+            removeLabelIds,
+          },
+          assigneesWidget: {
+            assigneeIds: ['gid://gitlab/User/5'],
+          },
+          confidential: true,
+          healthStatusWidget: {
+            healthStatus: 'onTrack',
+          },
+          milestoneWidget: {
+            milestoneId: 'gid://gitlab/Milestone/30',
+          },
+          subscriptionEvent: 'UNSUBSCRIBE',
+          stateEvent: 'REOPEN',
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/101',
+          },
+        },
+      });
+      expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
+      expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
+    });
 
-        it('calls mutation with null values to bulk edit when "No value" is chosen', async () => {
-          createComponent({
-            provide: {
-              hasIssuableHealthStatusFeature: true,
-              glFeatures: { workItemsBulkEdit: true },
-            },
-            props: { isEpicsList: false, fullPath: 'group/project' },
-          });
-          await waitForPromises();
+    it('calls mutation with null values to bulk edit when "No value" is chosen', async () => {
+      createComponent({
+        provide: {
+          hasIssuableHealthStatusFeature: true,
+        },
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
 
-          findAssigneeComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
-          findHealthStatusComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
-          findMilestoneComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
-          findParentComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
+      findAssigneeComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+      findHealthStatusComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+      findMilestoneComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+      findParentComponent().vm.$emit('input', BULK_EDIT_NO_VALUE);
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
 
-          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
-            input: {
-              fullPath: 'group/project',
-              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
-              assigneesWidget: {
-                assigneeIds: [null],
-              },
-              healthStatusWidget: {
-                healthStatus: null,
-              },
-              milestoneWidget: {
-                milestoneId: null,
-              },
-              hierarchyWidget: {
-                parentId: null,
-              },
-            },
-          });
-        });
+      expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+        input: {
+          fullPath: 'group/project',
+          ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+          assigneesWidget: {
+            assigneeIds: [null],
+          },
+          healthStatusWidget: {
+            healthStatus: null,
+          },
+          milestoneWidget: {
+            milestoneId: null,
+          },
+          hierarchyWidget: {
+            parentId: null,
+          },
+        },
+      });
+    });
 
-        it('calls mutation with namespace fullPath', async () => {
-          createComponent({
-            provide: {
-              glFeatures: { workItemsBulkEdit: true },
-            },
-            props: { isEpicsList: false, fullPath: 'group/subgroup/project' },
-          });
-          await waitForPromises();
+    it('calls mutation with namespace fullPath', async () => {
+      createComponent({
+        props: { isEpicsList: false, fullPath: 'group/subgroup/project' },
+      });
+      await waitForPromises();
 
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
 
-          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
-            input: {
-              fullPath: 'group/subgroup/project',
-              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
-            },
-          });
-        });
+      expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+        input: {
+          fullPath: 'group/subgroup/project',
+          ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+        },
+      });
+    });
 
-        it('renders error when there is a mutation error', async () => {
-          createComponent({
-            props: { isEpicsList: true },
-            mutationHandler: jest.fn().mockRejectedValue(new Error('oh no')),
-          });
-
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
-          await waitForPromises();
-
-          expect(createAlert).toHaveBeenCalledWith({
-            captureError: true,
-            error: new Error('oh no'),
-            message: 'Something went wrong while bulk editing.',
-          });
-        });
+    it('renders error when there is a mutation error', async () => {
+      createComponent({
+        props: { isEpicsList: true },
+        mutationHandler: jest.fn().mockRejectedValue(new Error('oh no')),
       });
 
-      describe('when work_items_bulk_edit is disabled', () => {
-        it('makes POST request to bulk edit', async () => {
-          const issuable_ids = '11,22'; // eslint-disable-line camelcase
-          const add_label_ids = [1, 2, 3]; // eslint-disable-line camelcase
-          const assignee_ids = [5]; // eslint-disable-line camelcase
-          const confidential = 'true';
-          const health_status = 'on_track'; // eslint-disable-line camelcase
-          const remove_label_ids = [4, 5, 6]; // eslint-disable-line camelcase
-          const state_event = 'reopen'; // eslint-disable-line camelcase
-          const subscription_event = 'subscribe'; // eslint-disable-line camelcase
-          axiosMock.onPost().replyOnce(HTTP_STATUS_OK);
-          createComponent({
-            provide: {
-              hasIssuableHealthStatusFeature: true,
-              glFeatures: { workItemsBulkEdit: false },
-            },
-            props: { isEpicsList: false },
-          });
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+      await waitForPromises();
 
-          findStateComponent().vm.$emit('input', state_event);
-          findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
-          findAddLabelsComponent().vm.$emit('select', [
-            'gid://gitlab/Label/1',
-            'gid://gitlab/Label/2',
-            'gid://gitlab/Label/3',
-          ]);
-          findRemoveLabelsComponent().vm.$emit('select', [
-            'gid://gitlab/Label/4',
-            'gid://gitlab/Label/5',
-            'gid://gitlab/Label/6',
-          ]);
-          findHealthStatusComponent().vm.$emit('input', health_status);
-          findSubscriptionComponent().vm.$emit('input', subscription_event);
-          findConfidentialityComponent().vm.$emit('input', confidential);
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
-          await waitForPromises();
-
-          expect(axiosMock.history.post[0].url).toBe('/group/project/-/issues/bulk_update');
-          expect(axiosMock.history.post[0].data).toBe(
-            JSON.stringify({
-              update: {
-                add_label_ids,
-                assignee_ids,
-                confidential,
-                health_status,
-                issuable_ids,
-                remove_label_ids,
-                state_event,
-                subscription_event,
-              },
-            }),
-          );
-        });
-
-        it('renders error when there is a response error', async () => {
-          axiosMock.onPost().replyOnce(HTTP_STATUS_BAD_REQUEST);
-          createComponent({ props: { isEpicsList: false } });
-
-          findForm().vm.$emit('submit', { preventDefault: () => {} });
-          await waitForPromises();
-
-          expect(createAlert).toHaveBeenCalledWith({
-            captureError: true,
-            error: new Error('Request failed with status code 400'),
-            message: 'Something went wrong while bulk editing.',
-          });
-        });
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: new Error('oh no'),
+        message: 'Something went wrong while bulk editing.',
       });
     });
   });
 
   describe('widget visibility', () => {
-    it('shows the correct widgets when GraphQL is disabled', () => {
-      createComponent({ provide: { hasIssuableHealthStatusFeature: true } });
-
-      // visible
-      expect(findStateComponent().exists()).toBe(true);
-      expect(findAssigneeComponent().exists()).toBe(true);
-      expect(findAddLabelsComponent().exists()).toBe(true);
-      expect(findRemoveLabelsComponent().exists()).toBe(true);
-      expect(findHealthStatusComponent().exists()).toBe(true);
-      expect(findSubscriptionComponent().exists()).toBe(true);
-      expect(findConfidentialityComponent().exists()).toBe(true);
-
-      // hidden
-      expect(findMilestoneComponent().exists()).toBe(false);
-      expect(findParentComponent().exists()).toBe(false);
-      expect(findBulkMoveComponent().exists()).toBe(false);
-    });
-
-    it('shows the correct widgets when GraphQL is enabled', () => {
+    it('shows the correct widgets', () => {
       createComponent({
-        provide: { hasIssuableHealthStatusFeature: true, glFeatures: { workItemsBulkEdit: true } },
+        provide: { hasIssuableHealthStatusFeature: true },
       });
 
       // visible
@@ -357,10 +249,10 @@ describe('WorkItemBulkEditSidebar component', () => {
       expect(findBulkMoveComponent().exists()).toBe(true);
     });
 
-    it('shows the correct widgets when GraphQL is enabled and on epics list', () => {
+    it('shows the correct widgets on epics list', () => {
       createComponent({
         props: { isEpicsList: true },
-        provide: { hasIssuableHealthStatusFeature: true, glFeatures: { workItemsBulkEdit: true } },
+        provide: { hasIssuableHealthStatusFeature: true },
       });
 
       // visible
@@ -381,7 +273,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   describe('getAvailableBulkEditWidgets query', () => {
     beforeEach(() => {
-      createComponent({ provide: { glFeatures: { workItemsBulkEdit: true } } });
+      createComponent();
     });
 
     it('is called when mounted', () => {
@@ -437,11 +329,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('enables "Assignee" component when "Assignees" widget is available', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -453,11 +340,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Assignee" component when "Assignees" widget is unavailable', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
@@ -491,11 +373,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('enables "Add labels" component when "Labels" widget is available', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -507,11 +384,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Add labels" component when "Labels" widget is unavailable', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
@@ -545,11 +417,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('enables "Remove labels" component when "Labels" widget is available', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -561,11 +428,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Remove labels" component when "Labels" widget is unavailable', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
@@ -585,9 +447,6 @@ describe('WorkItemBulkEditSidebar component', () => {
       (hasIssuableHealthStatusFeature) => {
         createComponent({
           provide: {
-            glFeatures: {
-              workItemsBulkEdit: true,
-            },
             hasIssuableHealthStatusFeature,
           },
         });
@@ -608,9 +467,6 @@ describe('WorkItemBulkEditSidebar component', () => {
     it('enables "Health status" component when "Health status" widget is available', async () => {
       createComponent({
         provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
           hasIssuableHealthStatusFeature: true,
         },
         props: { isEpicsList: false },
@@ -625,9 +481,6 @@ describe('WorkItemBulkEditSidebar component', () => {
     it('disables "Health status" component when "Health status" widget is unavailable', async () => {
       createComponent({
         provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
           hasIssuableHealthStatusFeature: true,
         },
         props: { isEpicsList: false },
@@ -668,11 +521,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   describe('"Milestone" component', () => {
     it('updates milestone when "Milestone" component emits "input" event', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -684,11 +532,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('enables "Milestone" component when "Milestone" widget is available', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -700,11 +543,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Milestone" component when "Milestone" widget is unavailable', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
@@ -721,11 +559,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   describe('"Parent" component', () => {
     it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList },
       });
 
@@ -734,11 +567,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('updates parent when "Parent" component emits "input" event', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -750,11 +578,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('enables "Parent" component when "Hierarchy" widget is available', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
 
@@ -766,11 +589,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Parent" component when "Hierarchy" widget is unavailable', async () => {
       createComponent({
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
@@ -788,11 +606,6 @@ describe('WorkItemBulkEditSidebar component', () => {
     const mountForBulkMove = (items = checkedItems) => {
       createComponent({
         items,
-        provide: {
-          glFeatures: {
-            workItemsBulkEdit: true,
-          },
-        },
         props: { isEpicsList: false },
       });
     };

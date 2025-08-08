@@ -4894,7 +4894,7 @@ msgstr ""
 msgid "AdminSettings|Enable unique domains by default"
 msgstr ""
 
-msgid "AdminSettings|Enable unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace."
+msgid "AdminSettings|Enable unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Enabled"

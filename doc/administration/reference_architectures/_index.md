@@ -770,6 +770,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2025**:
 
+- [2025-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199549): Updated Gitaly configurations to use [Gitaly roles](https://docs.gitlab.com/omnibus/roles/#gitaly-roles).
 - [2025-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181145): Added further clarity around supported machine types and that the listed examples are not intended as prescriptive defaults.
 
 **2024**:

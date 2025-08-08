@@ -1607,17 +1607,8 @@ On each node:
    -->
 
    ```ruby
-   # Avoid running unnecessary services on the Gitaly server
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   # https://docs.gitlab.com/omnibus/roles/#gitaly-roles
+   roles(["gitaly_role"])
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1626,9 +1617,6 @@ On each node:
    # fail. This can be your 'front door' GitLab URL or an internal load
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
-
-   # Gitaly
-   gitaly['enable'] = true
 
    # Configure the Consul agent
    consul['enable'] = true

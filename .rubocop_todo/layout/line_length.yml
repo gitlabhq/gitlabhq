@@ -1726,7 +1726,6 @@ Layout/LineLength:
     - 'ee/spec/support/shared_examples/features/dashboard_saml_reauth_banner_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/epics_filtered_search_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/sidebar_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/finders/geo/registry_finder_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/set_multiple_assignees_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/git_access_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/blob_replicator_strategy_shared_examples.rb'

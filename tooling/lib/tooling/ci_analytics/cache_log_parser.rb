@@ -6,7 +6,7 @@ module Tooling
       CACHE_PATTERNS = {
         checking: /Checking cache for (.+)\.\.\./,
         downloading: /Downloading cache from/,
-        hit: /Successfully extracted cache/,
+        hit: /Successfully extracted cache|cache\.zip is up to date/,
         miss: /WARNING: file does not exist/,
         creating: /Creating cache (.+)\.\.\./,
         created: /Created cache/

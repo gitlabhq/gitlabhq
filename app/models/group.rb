@@ -1123,10 +1123,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click, type: :ops)
   end
 
-  def work_items_bulk_edit_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_bulk_edit, type: :wip)
-  end
-
   # overriden in EE
   def supports_group_work_items?
     false

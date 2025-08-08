@@ -739,6 +739,8 @@ gitaly['configuration'] = {
 }
 ```
 
+A comprehensive list of `fsck` errors can be found in the [Git documentation](https://git-scm.com/docs/git-fsck#_fsck_messages).
+
 GitLab 16.1 and later [include an enhancement](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879) that might resolve some of these issues.
 
 [Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625) proposes to ensure that Geo replicates repositories even if the source repository contains

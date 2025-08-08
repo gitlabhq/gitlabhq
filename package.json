@@ -84,6 +84,7 @@
     "@snowplow/browser-plugin-timezone": "^3.24.2",
     "@snowplow/browser-tracker": "^3.24.2",
     "@sourcegraph/code-host-integration": "0.0.95",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tiptap/core": "^2.26.1",
     "@tiptap/extension-blockquote": "^2.26.1",
     "@tiptap/extension-bold": "^2.26.1",

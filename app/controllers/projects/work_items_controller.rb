@@ -15,7 +15,6 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_status_feature_flag, project&.root_ancestor)
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
-    push_force_frontend_feature_flag(:work_items_bulk_edit, project&.work_items_bulk_edit_feature_flag_enabled?)
   end
 
   feature_category :team_planning

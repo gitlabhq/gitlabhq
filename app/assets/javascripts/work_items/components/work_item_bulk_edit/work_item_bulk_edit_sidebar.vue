@@ -2,8 +2,6 @@
 import { camelCase } from 'lodash';
 import { GlForm } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -131,23 +129,9 @@ export default {
         this.parentId !== undefined,
       ].includes(true);
     },
-    legacyBulkEditEndpoint() {
-      const domain = gon.relative_url_root || '';
-      const basePath = this.isGroup ? `groups/${this.fullPath}` : this.fullPath;
-      return `${domain}/${basePath}/-/issues/bulk_update`;
-    },
-    shouldUseGraphQLBulkEdit() {
-      return this.isEpicsList || this.glFeatures.workItemsBulkEdit;
-    },
-    isEditableUnlessEpicList() {
-      return !this.shouldUseGraphQLBulkEdit || (this.shouldUseGraphQLBulkEdit && !this.isEpicsList);
-    },
     showStatusDropdown() {
       return (
-        this.hasStatusFeature &&
-        !this.isEpicsList &&
-        this.glFeatures.workItemStatusFeatureFlag &&
-        this.glFeatures.workItemsBulkEdit
+        this.hasStatusFeature && !this.isEpicsList && this.glFeatures.workItemStatusFeatureFlag
       );
     },
     workItemTypeIds() {
@@ -185,12 +169,8 @@ export default {
     async handleFormSubmitted() {
       this.$emit('start');
 
-      const executeBulkEdit = this.shouldUseGraphQLBulkEdit
-        ? this.performBulkEdit
-        : this.performLegacyBulkEdit;
-
       try {
-        await executeBulkEdit();
+        await this.performBulkEdit();
         this.$emit('success', { refetchCounts: Boolean(this.state) });
       } catch (error) {
         createAlert({
@@ -254,27 +234,6 @@ export default {
       }
       return { [name]: value };
     },
-    performLegacyBulkEdit() {
-      let assigneeIds;
-      if (this.assigneeId === BULK_EDIT_NO_VALUE) {
-        assigneeIds = [0];
-      } else if (this.assigneeId) {
-        assigneeIds = [getIdFromGraphQLId(this.assigneeId)];
-      }
-
-      const update = {
-        add_label_ids: this.addLabelIds.map(getIdFromGraphQLId),
-        assignee_ids: assigneeIds,
-        confidential: this.confidentiality,
-        health_status: this.healthStatus,
-        issuable_ids: this.checkedItems.map((item) => getIdFromGraphQLId(item.id)).join(','),
-        remove_label_ids: this.removeLabelIds.map(getIdFromGraphQLId),
-        state_event: this.state,
-        subscription_event: this.subscription,
-      };
-
-      return axios.post(this.legacyBulkEditEndpoint, { update });
-    },
     handleMoveSuccess({ toastMessage }) {
       this.$emit('success', { refetchCounts: true, toastMessage });
     },
@@ -285,7 +244,7 @@ export default {
 <template>
   <gl-form id="work-item-list-bulk-edit" class="gl-p-5" @submit.prevent="handleFormSubmitted">
     <work-item-bulk-edit-dropdown
-      v-if="isEditableUnlessEpicList"
+      v-if="!isEpicsList"
       v-model="state"
       :header-text="__('Select state')"
       :items="$options.stateItems"
@@ -352,27 +311,26 @@ export default {
       data-testid="bulk-edit-confidentiality"
     />
     <work-item-bulk-edit-iteration
-      v-if="shouldUseGraphQLBulkEdit && !isEpicsList && hasIterationsFeature"
+      v-if="!isEpicsList && hasIterationsFeature"
       v-model="iterationId"
       :full-path="fullPath"
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditIteration"
     />
     <work-item-bulk-edit-milestone
-      v-if="shouldUseGraphQLBulkEdit"
       v-model="milestoneId"
       :full-path="fullPath"
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditMilestone"
     />
     <work-item-bulk-edit-parent
-      v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
+      v-if="!isEpicsList"
       v-model="parentId"
       :full-path="fullPath"
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditParent"
     />
-    <template v-if="shouldUseGraphQLBulkEdit && !isEpicsList">
+    <template v-if="!isEpicsList">
       <hr />
       <work-item-bulk-move
         :checked-items="checkedItems"

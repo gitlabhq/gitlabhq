@@ -44,6 +44,12 @@ For additional information for Helm chart installations, see
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.3.0
+
+### Geo installations 18.3.0
+
+- The [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/545533) that caused `rake gitlab:geo:check` to incorrectly report a failure when installing a Geo secondary site has been fixed in 18.3.0.
+
 ## 18.1.0
 
 ### Geo installations 18.1.0

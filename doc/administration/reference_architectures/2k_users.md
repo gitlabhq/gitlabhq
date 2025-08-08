@@ -499,17 +499,8 @@ but do **not** provide the `EXTERNAL_URL` value.
    -->
 
    ```ruby
-   # Avoid running unnecessary services on the Gitaly server
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   # https://docs.gitlab.com/omnibus/roles/#gitaly-roles
+   roles(["gitaly_role"])
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -518,9 +509,6 @@ but do **not** provide the `EXTERNAL_URL` value.
    # fail. This can be your 'front door' GitLab URL or an internal load
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
-
-   # Gitaly
-   gitaly['enable'] = true
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
