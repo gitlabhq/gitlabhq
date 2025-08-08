@@ -8,11 +8,12 @@ export const setupIdeContainer = (baseEl) => {
   const element = document.createElement('div');
   element.id = baseEl.getAttribute('id');
   element.classList.add(
-    'gl-hidden',
+    'gl-flex',
     'gl-justify-center',
     'gl-items-center',
     'gl-relative',
     'gl-h-full',
+    'gl-invisible',
   );
 
   baseEl.insertAdjacentElement('afterend', element);
@@ -20,8 +21,7 @@ export const setupIdeContainer = (baseEl) => {
   return {
     element,
     show() {
-      element.classList.add('gl-flex');
-      element.classList.remove('gl-hidden');
+      element.classList.remove('gl-invisible');
       baseEl.remove();
     },
   };
