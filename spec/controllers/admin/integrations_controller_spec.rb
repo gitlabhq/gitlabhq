@@ -45,7 +45,7 @@ RSpec.describe Admin::IntegrationsController, :with_current_organization, featur
   describe '#update' do
     include JiraIntegrationHelpers
 
-    let(:integration) { create(:jira_integration, :instance) }
+    let(:integration) { create(:jira_integration, :instance, organization: create(:organization)) }
     let(:integration_name) { integration.class.to_param }
 
     before do

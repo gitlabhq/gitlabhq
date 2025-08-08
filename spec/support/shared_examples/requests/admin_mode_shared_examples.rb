@@ -4,7 +4,7 @@ RSpec.shared_examples 'DELETE request permissions for admin mode' do
   subject { delete api(path, current_user, admin_mode: admin_mode) }
 
   let_it_be(:user_organizations) do
-    Array(defined?(current_organization) ? current_organization : create(:organization))
+    Array(defined?(current_organization) ? current_organization : create(:common_organization))
   end
 
   let_it_be(:success_status_code) { :no_content }
@@ -18,7 +18,7 @@ RSpec.shared_examples 'GET request permissions for admin mode' do
   subject { get api(path, current_user, admin_mode: admin_mode) }
 
   let_it_be(:user_organizations) do
-    Array(defined?(current_organization) ? current_organization : create(:organization))
+    Array(defined?(current_organization) ? current_organization : create(:common_organization))
   end
 
   let_it_be(:success_status_code) { :ok }
@@ -32,7 +32,7 @@ RSpec.shared_examples 'PUT request permissions for admin mode' do
   subject { put api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:user_organizations) do
-    Array(defined?(current_organization) ? current_organization : create(:organization))
+    Array(defined?(current_organization) ? current_organization : create(:common_organization))
   end
 
   let_it_be(:success_status_code) { :ok }
@@ -46,7 +46,7 @@ RSpec.shared_examples 'POST request permissions for admin mode' do
   subject { post api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:user_organizations) do
-    Array(defined?(current_organization) ? current_organization : create(:organization))
+    Array(defined?(current_organization) ? current_organization : create(:common_organization))
   end
 
   let_it_be(:success_status_code) { :created }

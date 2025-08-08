@@ -32,14 +32,15 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be_with_reload(:current_user) { create(:user) }
-    let_it_be(:user) { create(:user) }
     let_it_be(:organizations) { create_list(:organization, 3) }
     let_it_be(:organization) { organizations.first }
+    let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: []) }
+    let_it_be(:user) { create(:user, organization: organization, organizations: []) }
     let_it_be(:groups) { create_list(:group, 3, organization: organization) }
 
     let_it_be(:group) { groups.first }
-    let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: create(:user)) }
+    let_it_be(:group_user) { create(:user, organization: organization) }
+    let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: group_user) }
     let_it_be(:deletion_schedule) do
       create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.yesterday)
     end
@@ -289,6 +290,10 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
       base_input_path = 'organizations/users/graphql/mutations/'
       base_output_path = 'graphql/organizations/'
       mutation_name = 'organization_user_update.mutation.graphql'
+
+      before do
+        stub_current_organization(organization_user_4.organization)
+      end
 
       it "#{base_output_path}#{mutation_name}.json" do
         mutation = get_graphql_query_as_string("#{base_input_path}#{mutation_name}")

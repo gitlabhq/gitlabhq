@@ -167,6 +167,13 @@ operations, like `git clone`. When these limits are exceeded, a
 `fatal: remote error: GitLab is currently unable to handle this request due to load` message is
 returned to the client.
 
+A fetch or clone operation is concurrent when the operation starts before a previous operation finishes.
+
+| Operation               | GitLab.com limit         |
+|:------------------------|:-------------------------|
+| HTTP fetches and clones | 60 concurrent operations |
+| SSH fetches and clones  | 30 concurrent operations |
+
 For administrator documentation, see
 [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 

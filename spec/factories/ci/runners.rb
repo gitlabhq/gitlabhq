@@ -130,7 +130,7 @@ FactoryBot.define do
         # with a sharding key id
         runner.sharding_key_id = (2**63) - 1
 
-        runner.organization_id = ::Organizations::Organization::DEFAULT_ORGANIZATION_ID
+        runner.organization_id = create(:common_organization).id
       end
 
       after(:create) do |runner, evaluator|

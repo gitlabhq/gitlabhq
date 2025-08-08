@@ -5,6 +5,6 @@ FactoryBot.define do
     recorded_at { Time.current }
     payload { { test: 'test' } }
     metadata { { name: 'test', time_elapsed: 100, error: nil } }
-    association :organization, factory: :organization
+    organization { association :common_organization }
   end
 end

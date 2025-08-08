@@ -6,7 +6,7 @@ FactoryBot.define do
     deletion_attempts { 0 }
     last_deletion_attempt_at { nil }
     namespace factory: :group
-    organization factory: :organization
+    organization { namespace&.organization || association(:common_organization) }
 
     trait :eligible_for_deletion do
       namespace { nil }

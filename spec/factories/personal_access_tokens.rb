@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :personal_access_token do
     user
-    organization
+    organization { user&.organization || association(:common_organization) }
     sequence(:name) { |n| "PAT #{n}" }
     description { "Token description" }
     revoked { false }

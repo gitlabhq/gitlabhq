@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :raw_usage_data do
     recorded_at { Time.current }
     payload { { test: 'test' } }
-    association :organization, factory: :organization
+    organization { association :common_organization }
   end
 end

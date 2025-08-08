@@ -7,13 +7,13 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:noteable) { create(:issue, project: project) }
-    let_it_be(:organization) { project.organization }
+    let_it_be(:other_organization) { create(:organization) }
     let_it_be(:org_user_detail) do
-      create(:organization_user_detail, organization: organization, username: 'spec_bot')
+      create(:organization_user_detail, username: 'spec_bot')
     end
 
     let_it_be(:other_org_user_detail) do
-      create(:organization_user_detail, username: 'spec_bot')
+      create(:organization_user_detail, organization: other_organization, username: 'spec_bot')
     end
 
     let(:params) { {} }
@@ -81,7 +81,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
         create(
           :organization_user_detail,
           user: developer,
-          organization: project.organization,
           username: 'test_alias',
           display_name: 'Test McAlias'
         )
@@ -95,7 +94,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
         create(
           :organization_user_detail,
           user: developer2,
-          organization: project.organization,
           username: 'test_alias2',
           display_name: 'Test McAlias2'
         )
@@ -257,8 +255,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       end
 
       context 'when groups are in other organizations' do
-        let!(:other_organization) { create(:organization) }
-        let(:group_1) { create(:group, organization: organization) }
+        let(:group_1) { create(:group) }
         let(:group_2) { create(:group, organization: other_organization) }
 
         before do

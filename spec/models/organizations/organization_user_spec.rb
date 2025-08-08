@@ -22,7 +22,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'when changing access level of owner' do
-      let_it_be(:owner) { create(:organization_owner) }
+      let_it_be_with_reload(:owner) { create(:organization_owner, organization: create(:organization)) }
 
       context 'when user is the last owner' do
         context 'when assigning lower access level' do
@@ -64,7 +64,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       end
 
       context 'when user is in multiple organizations' do
-        let!(:other_organization_user) { create(:organization_user, user: user) }
+        let!(:other_organization_user) { create(:organization_user, organization: create(:organization), user: user) }
 
         it 'does not prevent user from leaving organization' do
           organization_user.destroy!

@@ -52,7 +52,7 @@ FactoryBot.define do
   # Using an inheritance from project_snippet to share traits
   factory :personal_snippet, parent: :project_snippet, class: :PersonalSnippet do
     author { association(:author, :with_namespace) }
-    organization { author&.namespace&.organization || association(:organization) }
+    organization { author&.organization || association(:common_organization) }
     project { nil }
 
     trait :secret do

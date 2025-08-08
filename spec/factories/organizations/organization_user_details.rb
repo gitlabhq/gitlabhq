@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :organization_user_detail, class: 'Organizations::OrganizationUserDetail' do
     user
-    organization
+    organization { user&.organization || association(:common_organization) }
 
     sequence(:username) { |n| "user_alias_#{n}" }
     display_name { username.humanize.titleize }
