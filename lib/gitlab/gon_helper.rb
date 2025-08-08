@@ -100,6 +100,7 @@ module Gitlab
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
       push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
+      push_frontend_feature_flag(:global_topbar, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

@@ -197,6 +197,53 @@ ci_pipelines:
     on_delete: :async_nullify
 ```
 
+### Assign specific tables to custom workers
+
+By default, all loose foreign key cleanup is handled by the `LooseForeignKeys::CleanupWorker`. However, 
+you can specify a custom worker class to handle cleanup for specific tables. This allows for better 
+load distribution and specialized handling of different table types.
+
+To assign a table to a custom worker, add the `worker_class` attribute to the configuration:
+
+```yaml
+ci_pipelines:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+    worker_class: 'CustomLooseForeignKeysWorker'
+```
+
+If the `worker_class` attribute is not specified, the table will default to using 
+`::LooseForeignKeys::CleanupWorker`.
+
+**Important considerations:**
+
+- The `worker_class` must be a valid Ruby class name as a string
+- The custom worker should follow the same pattern as `LooseForeignKeys::CleanupWorker`
+- Each worker processes only the tables specifically assigned to it through the `worker_class` attribute
+- Tables without a `worker_class` specified are processed by the default `CleanupWorker`
+- When adding a new custom worker, you must also add it to the `ALLOWED_WORKER_CLASSES` constant in `lib/gitlab/database/loose_foreign_keys.rb`
+- When adding a new custom worker, you must also add its cron job configuration to `config/initializers/1_settings.rb`
+
+Example with mixed worker assignments:
+
+```yaml
+ci_pipelines:
+  - table: projects
+    column: project_id  
+    on_delete: async_delete
+    worker_class: 'CustomCiCleanupWorker'  # Processed by CustomCiCleanupWorker
+  - table: users
+    column: user_id
+    on_delete: async_nullify
+    # No worker_class = processed by default CleanupWorker
+
+ci_builds:
+  - table: projects
+    column: project_id
+    on_delete: async_delete  # No worker_class = processed by default CleanupWorker
+```
+
 ### Track record changes
 
 #### On normal non-partitioned tables
@@ -546,8 +593,7 @@ occurrence if pipeline is not found.
 The loose foreign keys feature is implemented within the `LooseForeignKeys` Ruby namespace. The
 code is isolated from the core application code and theoretically, it could be a standalone library.
 
-The feature is invoked solely in the [`LooseForeignKeys::CleanupWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/loose_foreign_keys/cleanup_worker.rb) worker class. The worker is scheduled via a
-cron job where the schedule depends on the configuration of the GitLab instance.
+The feature is invoked by worker classes, primarily the [`LooseForeignKeys::CleanupWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/loose_foreign_keys/cleanup_worker.rb). Custom workers can be assigned to specific tables through the `worker_class` configuration option. Workers are scheduled via cron jobs where the schedule depends on the configuration of the GitLab instance.
 
 - Non-decomposed GitLab (1 database): invoked every minute.
 - Decomposed GitLab (2 databases, CI and Main): invoked every minute, cleaning up one database
@@ -564,6 +610,8 @@ parallel. This behavior is ensured with a Redis lock.
    - This is achieved by reading the `config/gitlab_loose_foreign_keys.yml` file.
    - A table is considered "tracked" when a loose foreign key definition exists for the table and
      the `DELETE` trigger is installed.
+   - When using custom workers via the `worker_class` attribute, each worker only processes tables
+     specifically assigned to it, filtering out tables assigned to other workers.
 1. Cycle through the tables with an infinite loop.
 1. For each table, load a batch of deleted parent records to clean up.
 1. Depending on the YAML configuration, build `DELETE` or `UPDATE` (nullify) queries for the

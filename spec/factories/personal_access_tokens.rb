@@ -11,6 +11,10 @@ FactoryBot.define do
     scopes { ['api'] }
     impersonation { false }
 
+    after(:build) do |token|
+      token.user_type = token.user.user_type
+    end
+
     trait :impersonation do
       impersonation { true }
     end

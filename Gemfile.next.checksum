@@ -423,7 +423,7 @@
 {"name":"net-ldap","version":"0.17.1","platform":"ruby","checksum":"52571b55f9157120833ac1667f2969ce0139251811d0a9b64657c1c135069cf9"},
 {"name":"net-ntp","version":"2.1.3","platform":"ruby","checksum":"5bc73f4102bde0d1872bd3b293608ae99d9f5007d744f21919c6a565eda9267d"},
 {"name":"net-pop","version":"0.1.2","platform":"ruby","checksum":"848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3"},
-{"name":"net-protocol","version":"0.1.3","platform":"ruby","checksum":"ad43e2be965ede676683c047b2c3d76762aa49a764779d98312a10da04622c14"},
+{"name":"net-protocol","version":"0.2.2","platform":"ruby","checksum":"aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8"},
 {"name":"net-scp","version":"4.0.0","platform":"ruby","checksum":"b32ded0d48c88ce70844a063e4e14efb44a95e51a9e0c0bfb0c54b4313b622ea"},
 {"name":"net-smtp","version":"0.3.3","platform":"ruby","checksum":"3d51dcaa981b74aff2d89cbe89de4503bc2d682365ea5176366e950a0d68d5b0"},
 {"name":"net-ssh","version":"7.3.0","platform":"ruby","checksum":"172076c4b30ce56fb25a03961b0c4da14e1246426401b0f89cba1a3b54bf3ef0"},

@@ -95,4 +95,28 @@ module WorkItemsHelpers
   def find_work_item_element(work_item_id)
     find("#issuable_#{work_item_id}")
   end
+
+  # drawer helpers
+  def close_drawer
+    find('[data-testid="work-item-drawer"] .gl-drawer-close-button').click
+    wait_for_all_requests
+  end
+
+  # time tracking
+  def add_estimate(estimate)
+    click_button 'estimate'
+    within_testid 'set-time-estimate-modal' do
+      fill_in 'Estimate', with: estimate
+      click_button 'Save'
+    end
+  end
+
+  def add_time_entry(time, summary = '')
+    click_button 'Add time entry'
+    within_testid 'create-timelog-modal' do
+      fill_in 'Time spent', with: time
+      fill_in 'Summary', with: summary
+      click_button 'Save'
+    end
+  end
 end

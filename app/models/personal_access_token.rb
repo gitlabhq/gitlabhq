@@ -36,7 +36,10 @@ class PersonalAccessToken < ApplicationRecord
 
   serialize :scopes, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
+  enum :user_type, HasUserType::USER_TYPES
+
   belongs_to :user
+  belongs_to :group
   belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 

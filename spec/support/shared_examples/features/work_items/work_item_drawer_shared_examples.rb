@@ -1,27 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'work item drawer' do
-  include MobileHelpers
-
-  before do
-    first_card.click
-    wait_for_requests
-  end
-
+RSpec.shared_examples 'when accessing the work item drawer' do
   it 'shows drawer when clicking issue' do
     expect(page).to have_selector('[data-testid="work-item-drawer"]')
   end
 
   it 'focus on first element of the drawer when clicking issue' do
     expect(page).to have_selector('[data-testid="work-item-drawer-ref-link"]', focused: true)
-  end
-
-  it 'closes drawer when clicking issue' do
-    expect(page).to have_selector('[data-testid="work-item-drawer"]')
-
-    first_card.click
-
-    expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
   end
 
   it 'shows issue details when drawer is open', :aggregate_failures do
@@ -32,7 +17,7 @@ RSpec.shared_examples 'work item drawer' do
 
   context 'when clicking close button' do
     before do
-      find('[data-testid="work-item-drawer"] .gl-drawer-close-button').click
+      close_drawer
     end
 
     it 'unhighlights the active issue card' do
@@ -43,6 +28,26 @@ RSpec.shared_examples 'work item drawer' do
     it 'closes drawer when clicking close button' do
       expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
     end
+  end
+end
+
+RSpec.shared_examples 'work item drawer on the boards' do
+  include MobileHelpers
+  include WorkItemsHelpers
+
+  before do
+    first_card.click
+    wait_for_requests
+  end
+
+  include_examples 'when accessing the work item drawer'
+
+  it 'closes drawer when clicking issue' do
+    expect(page).to have_selector('[data-testid="work-item-drawer"]')
+
+    first_card.click
+
+    expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
   end
 
   context 'when editing issue title' do
@@ -169,5 +174,88 @@ RSpec.shared_examples 'work item drawer' do
         end
       end
     end
+  end
+end
+
+RSpec.shared_examples 'work item drawer on the list page' do
+  include_examples 'when accessing the work item drawer'
+
+  it 'closes drawer when clicking issue' do
+    expect(page).to have_selector('[data-testid="work-item-drawer"]')
+
+    page.execute_script("arguments[0].click();", first_card.native)
+
+    expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
+  end
+
+  it 'updates title of a work item on the list', :aggregate_failures do
+    within_testid('work-item-drawer') do
+      find_by_testid('work-item-edit-form-button').click
+      wait_for_requests
+      find_by_testid('work-item-title-input').set('Test title')
+      click_button 'Save changes'
+      wait_for_requests
+
+      close_drawer
+    end
+
+    expect(first_card).to have_content('Test title')
+  end
+
+  it 'updates the assigned user of a work item on the list', :aggregate_failures do
+    within_testid('work-item-drawer') do
+      within_testid('work-item-assignees') do
+        click_button 'Edit'
+        select_listbox_item(user.username)
+        send_keys :escape
+      end
+    end
+
+    expect(page).to have_link(user.name, href: user_path(user))
+  end
+
+  it 'make work item confidential on the list', :aggregate_failures do
+    within_testid('work-item-drawer') do
+      find_by_testid('work-item-actions-dropdown').click
+      expect(page).not_to have_content('Confidential')
+      find_by_testid('confidentiality-toggle-action').click
+      wait_for_requests
+
+      close_drawer
+    end
+
+    expect(first_card).to have_selector("button[data-testid='confidential-icon-container']")
+  end
+
+  it 'updates a label of a work item on the list', :aggregate_failures do
+    within_testid('work-item-drawer') do
+      within_testid 'work-item-labels' do
+        expect(page).not_to have_css '.gl-label', text: label.title
+
+        click_button 'Edit'
+        select_listbox_item(label.title)
+        click_button 'Apply'
+      end
+
+      close_drawer
+    end
+
+    expect(first_card).to have_link(label.name)
+  end
+
+  it 'updates milestone of a work item on the list', :aggregate_failures do
+    within_testid('work-item-drawer') do
+      within_testid 'work-item-milestone' do
+        expect(page).not_to have_link(milestone.title)
+
+        click_button 'Edit'
+        send_keys "\"#{milestone.title}\""
+        select_listbox_item(milestone.title)
+      end
+
+      close_drawer
+    end
+
+    expect(first_card).to have_link(milestone.title)
   end
 end

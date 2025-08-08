@@ -15392,6 +15392,8 @@ CREATE TABLE gpg_signatures (
     verification_status smallint DEFAULT 0 NOT NULL,
     gpg_key_subkey_id bigint,
     author_email text,
+    committer_email text,
+    CONSTRAINT check_0ce2b9f622 CHECK ((char_length(committer_email) <= 255)),
     CONSTRAINT check_d113461ed1 CHECK ((char_length(author_email) <= 255))
 );
 
@@ -20555,6 +20557,8 @@ CREATE TABLE personal_access_tokens (
     thirty_days_notification_sent_at timestamp with time zone,
     sixty_days_notification_sent_at timestamp with time zone,
     description text,
+    group_id bigint,
+    user_type smallint,
     CONSTRAINT check_6d2ddc9355 CHECK ((char_length(description) <= 255))
 );
 
@@ -37789,6 +37793,8 @@ CREATE INDEX index_pep_policy_config_links_security_policy_id ON security_pipeli
 
 CREATE INDEX index_personal_access_token_last_used_ips_on_organization_id ON personal_access_token_last_used_ips USING btree (organization_id);
 
+CREATE INDEX index_personal_access_tokens_on_group_id ON personal_access_tokens USING btree (group_id);
+
 CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_access_tokens USING btree (id, created_at);
 
 CREATE INDEX index_personal_access_tokens_on_organization_id ON personal_access_tokens USING btree (organization_id);
@@ -44144,6 +44150,9 @@ ALTER TABLE ONLY organization_cluster_agent_mappings
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY personal_access_tokens
+    ADD CONSTRAINT fk_7cea2c7262 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

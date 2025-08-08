@@ -140,6 +140,59 @@ To resolve this issue:
 
 If the issue persists, create a new workspace with a working container image that includes Git.
 
+## Debug `postStart` events
+
+When your custom `postStart` events fail or don't behave as expected, you can use the workspace
+logs directory to debug the issues.
+
+Common `postStart` debugging scenarios and their resolutions:
+
+- `Command not found`: Check `poststart-stderr.log` for errors indicating
+  missing dependencies in your container image.
+- `Permission denied`: Check for permission errors in `poststart-stderr.log` that might
+  require adjusting file permissions or user configuration.
+- `Network issues`: Check for connection timeouts or DNS resolution failures when your
+  `postStart` events download dependencies or access external resources.
+- `Long-running commands`: If `postStart` events hang, check `poststart-stdout.log`
+  to see if commands are still running or if they completed successfully.
+
+To check the `postStart` command execution logs:
+
+1. Open a terminal in your workspace.
+1. Go to the workspace logs directory:
+
+   ```shell
+   cd /tmp/workspace-logs/
+   ```
+
+1. View the log files:
+
+   ```shell
+   # Monitor postStart execution output in real-time
+   tail -f poststart-stdout.log
+
+   # Check postStart errors
+   cat poststart-stderr.log
+
+   # Check VS Code server startup
+   cat start-vscode.log
+   ```
+
+1. Check for errors:
+
+   ```shell
+   # Search for error messages across all logs
+   grep -i error *.log
+
+   # Search for specific command output
+   grep "your-command-name" poststart-stdout.log
+   ```
+
+1. Resolve the identified issues and restart your workspace.
+
+For more information, see [Workspace logs directory](_index.md#workspace-logs-directory) and
+[Available log files](_index.md#available-log-files).
+
 <!--- Other suggested topics:
 
 ## DNS configuration

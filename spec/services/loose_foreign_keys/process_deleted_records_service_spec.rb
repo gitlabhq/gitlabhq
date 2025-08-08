@@ -36,7 +36,8 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
           {
             column: 'parent_id',
             on_delete: :async_delete,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: ::LooseForeignKeys::CleanupWorker
           }
         ),
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
@@ -45,7 +46,8 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
           {
             column: 'parent_id_with_different_column',
             on_delete: :async_nullify,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: ::LooseForeignKeys::CleanupWorker
           }
         )
       ],
@@ -56,7 +58,8 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
           {
             column: 'parent_id',
             on_delete: :async_delete,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: ::LooseForeignKeys::CleanupWorker
           }
         )
       ]
@@ -102,6 +105,87 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
 
     loose_fk_parent_table_1.delete_all
     loose_fk_parent_table_2.delete_all
+  end
+
+  describe 'worker_class filtering' do
+    let(:fake_custom_worker) { stub_const('TestModule::FakeCustomWorker', Class.new) }
+
+    let(:default_worker_definitions) do
+      {
+        '_test_table_default_worker' => [
+          ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+            '_test_child_table_default',
+            '_test_table_default_worker',
+            {
+              column: 'parent_id',
+              on_delete: :async_delete,
+              gitlab_schema: :gitlab_main,
+              worker_class: ::LooseForeignKeys::CleanupWorker
+            }
+          )
+        ]
+      }
+    end
+
+    let(:custom_worker_definitions) do
+      {
+        '_test_table_custom_worker' => [
+          ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+            '_test_child_table_custom',
+            '_test_table_custom_worker',
+            {
+              column: 'parent_id',
+              on_delete: :async_delete,
+              gitlab_schema: :gitlab_main,
+              worker_class: fake_custom_worker
+            }
+          )
+        ]
+      }
+    end
+
+    let(:mixed_definitions) { default_worker_definitions.merge(custom_worker_definitions) }
+
+    context 'when initialized with default CleanupWorker' do
+      let(:service) { described_class.new(connection: connection, worker_class: ::LooseForeignKeys::CleanupWorker) }
+
+      it 'only processes tables assigned to CleanupWorker' do
+        allow(Gitlab::Database::LooseForeignKeys).to receive(:definitions_by_table)
+          .and_return(mixed_definitions)
+
+        tracked_tables = service.send(:tracked_tables)
+
+        expect(tracked_tables).to include('_test_table_default_worker')
+        expect(tracked_tables).not_to include('_test_table_custom_worker')
+      end
+    end
+
+    context 'when initialized with FakeCustomWorker' do
+      let(:service) { described_class.new(connection: connection, worker_class: fake_custom_worker) }
+
+      it 'only processes tables assigned to FakeCustomWorker' do
+        allow(Gitlab::Database::LooseForeignKeys).to receive(:definitions_by_table)
+          .and_return(mixed_definitions)
+
+        tracked_tables = service.send(:tracked_tables)
+
+        expect(tracked_tables).to include('_test_table_custom_worker')
+        expect(tracked_tables).not_to include('_test_table_default_worker')
+      end
+    end
+
+    context 'when no tables match the worker class' do
+      let(:service) { described_class.new(connection: connection, worker_class: fake_custom_worker) }
+
+      it 'returns empty array when no tables are assigned to the worker' do
+        allow(Gitlab::Database::LooseForeignKeys).to receive(:definitions_by_table)
+          .and_return(default_worker_definitions)
+
+        tracked_tables = service.send(:tracked_tables)
+
+        expect(tracked_tables).to be_empty
+      end
+    end
   end
 
   describe '#execute' do

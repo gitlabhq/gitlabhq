@@ -4,10 +4,16 @@ module LooseForeignKeys
   class ProcessDeletedRecordsService
     BATCH_SIZE = 1000
 
-    def initialize(connection:, logger: Sidekiq.logger, modification_tracker: LooseForeignKeys::ModificationTracker.new)
+    def initialize(
+      connection:,
+      logger: Sidekiq.logger,
+      modification_tracker: LooseForeignKeys::ModificationTracker.new,
+      worker_class: LooseForeignKeys::CleanupWorker
+    )
       @connection = connection
       @modification_tracker = modification_tracker
       @logger = logger
+      @worker_class = worker_class
     end
 
     def execute
@@ -75,7 +81,10 @@ module LooseForeignKeys
     end
 
     def tracked_tables
-      @tracked_tables ||= Gitlab::Database::LooseForeignKeys.definitions_by_table.keys.shuffle
+      @tracked_tables ||= Gitlab::Database::LooseForeignKeys.definitions_by_table.keys.shuffle.select do |tracked_table|
+        definitions = Gitlab::Database::LooseForeignKeys.definitions_by_table[tracked_table]
+        definitions.any? { |definition| definition.options[:worker_class] == @worker_class }
+      end
     end
   end
 end

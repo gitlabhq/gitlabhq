@@ -23,7 +23,8 @@ module LooseForeignKeys
         stats = ProcessDeletedRecordsService.new(
           connection: base_model.connection,
           modification_tracker: modification_tracker,
-          logger: Sidekiq.logger
+          logger: Sidekiq.logger,
+          worker_class: self.class
         ).execute
         stats[:connection] = connection_name
         stats[:turbo_mode] = turbo_mode

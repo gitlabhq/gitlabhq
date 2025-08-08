@@ -37,7 +37,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :database do
           {
             column: 'parent_id',
             on_delete: :async_delete,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: described_class
           }
         ),
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
@@ -46,7 +47,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :database do
           {
             column: 'parent_id_with_different_column',
             on_delete: :async_nullify,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: described_class
           }
         )
       ],
@@ -57,7 +59,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :database do
           {
             column: 'parent_id',
             on_delete: :async_delete,
-            gitlab_schema: :gitlab_main
+            gitlab_schema: :gitlab_main,
+            worker_class: described_class
           }
         )
       ]

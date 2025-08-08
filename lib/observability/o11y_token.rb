@@ -86,7 +86,7 @@ module Observability
     end
 
     def login_url
-      "#{o11y_settings.o11y_service_url}/api/v1/login"
+      URI.join(o11y_settings.o11y_service_url, '/api/v1/login').to_s
     end
 
     def parse_response(response)

@@ -285,6 +285,26 @@ Use this type of event to:
 For an example that shows how to configure `postStart` events,
 see the [example configurations](#example-configurations).
 
+#### Monitor `postStart` event progress
+
+When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs.
+All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
+
+To check the progress of your `postStart` scripts:
+
+1. Open a terminal in your workspace.
+1. Go to the workspace logs directory:
+
+   ```shell
+   cd /tmp/workspace-logs/
+   ```
+
+1. View the output logs to see command results:
+
+   ```shell
+   tail -f poststart-stdout.log
+   ```
+
 ### Example configurations
 
 The following is an example devfile configuration:
@@ -468,6 +488,36 @@ see [Create a custom workspace image that supports arbitrary user IDs](create_im
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Workspace logs directory
+
+When a workspace starts, GitLab creates a logs directory to capture output
+from various initialization and startup processes.
+
+The workspace logs are stored in `/tmp/workspace-logs/`.
+
+This directory helps you monitor workspace startup progress and troubleshoot
+issues with `postStart` events, development tools, and other workspace components.
+For more information, see [Debug `postStart` events](workspaces_troubleshooting.md#debug-poststart-events).
+
+### Available log files
+
+The logs directory contains the following log files:
+
+| Log file               | Purpose                    | Content |
+|------------------------|----------------------------|---------|
+| `poststart-stdout.log` | `postStart` command output | Standard output from all `postStart` commands, including user-defined commands and internal GitLab startup tasks. |
+| `poststart-stderr.log` | `postStart` command errors | Error output and `stderr` from `postStart` commands. You can use these logs to troubleshoot failed startup scripts. |
+| `start-vscode.log`     | VS Code server startup     | Logs from the GitLab VS Code fork server initialization. |
+| `start-sshd.log`       | SSH daemon startup         | Output from SSH daemon initialization, including server startup and configuration details. |
+| `clone-unshallow.log`  | Git repository conversion  | Logs from the background process that converts the shallow clone to a full clone and retrieves the complete Git history for the project. |
+
+{{< alert type="note" >}}
+
+Log files are recreated each time you restart a workspace. Previous log files are not preserved
+when you stop and restart a workspace.
+
+{{< /alert >}}
 
 ## Shallow cloning
 

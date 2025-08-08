@@ -110,6 +110,11 @@ The workspace might take a few minutes to start.
 To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
 
+### Monitor workspace startup progress
+
+When you start a workspace, you can monitor the progress of initialization tasks and `postStart`
+events by checking the workspace logs. For more information, see [Workspace logs directory](_index.md#workspace-logs-directory).
+
 ## Platform compatibility
 
 The platform requirements for workspaces depend on your development needs.

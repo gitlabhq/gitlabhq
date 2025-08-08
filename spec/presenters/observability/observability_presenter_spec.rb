@@ -10,8 +10,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
   let!(:observability_setting) do
     build_stubbed(:observability_group_o11y_setting,
       group: group,
-      o11y_service_url: 'https://observability.example.com',
-      o11y_service_post_message_encryption_key: 'test-key')
+      o11y_service_url: 'https://observability.example.com')
   end
 
   before do
@@ -91,8 +90,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
         o11y_url: 'https://observability.example.com',
         path: 'services',
         auth_tokens: { 'test_token' => 'value' },
-        title: 'Services',
-        encryption_key: 'test-key'
+        title: 'Services'
       )
     end
 
@@ -111,8 +109,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
           o11y_url: nil,
           path: 'services',
           auth_tokens: {},
-          title: 'Services',
-          encryption_key: nil
+          title: 'Services'
         )
       end
     end

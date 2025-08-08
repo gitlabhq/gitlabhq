@@ -65,20 +65,24 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       let(:o11y_settings) { nil }
 
       it 'returns empty hash and logs error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception)
-          .with(instance_of(Observability::O11yToken::ConfigurationError))
+        aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
+            .with(instance_of(Observability::O11yToken::ConfigurationError))
 
-        expect(generate_tokens).to eq({})
+          expect(generate_tokens).to eq({})
+        end
       end
     end
 
     context 'when o11y_settings values are blank' do
       shared_examples 'returns empty hash and logs error' do |field_name|
         it "returns empty hash and logs error when #{field_name} is blank" do
-          expect(Gitlab::ErrorTracking).to receive(:log_exception)
-            .with(instance_of(Observability::O11yToken::ConfigurationError))
+          aggregate_failures do
+            expect(Gitlab::ErrorTracking).to receive(:log_exception)
+              .with(instance_of(Observability::O11yToken::ConfigurationError))
 
-          expect(generate_tokens).to eq({})
+            expect(generate_tokens).to eq({})
+          end
         end
       end
 
@@ -159,10 +163,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       end
 
       it 'returns empty hash and logs warning' do
-        expect(Gitlab::AppLogger).to receive(:warn)
-          .with("O11y authentication failed with status 401")
+        aggregate_failures do
+          expect(Gitlab::AppLogger).to receive(:warn)
+            .with("O11y authentication failed with status 401")
 
-        expect(generate_tokens).to eq({})
+          expect(generate_tokens).to eq({})
+        end
       end
     end
 
@@ -176,10 +182,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       end
 
       it 'returns empty hash and logs error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception)
-          .with(instance_of(Observability::O11yToken::AuthenticationError))
+        aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
+            .with(instance_of(Observability::O11yToken::AuthenticationError))
 
-        expect(generate_tokens).to eq({})
+          expect(generate_tokens).to eq({})
+        end
       end
     end
 
@@ -193,10 +201,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       end
 
       it 'returns empty hash and logs error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception)
-          .with(instance_of(Observability::O11yToken::AuthenticationError))
+        aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
+            .with(instance_of(Observability::O11yToken::AuthenticationError))
 
-        expect(generate_tokens).to eq({})
+          expect(generate_tokens).to eq({})
+        end
       end
     end
 
@@ -217,10 +227,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           end
 
           it 'returns empty hash and logs error' do
-            expect(Gitlab::ErrorTracking).to receive(:log_exception)
-              .with(instance_of(Observability::O11yToken::AuthenticationError))
+            aggregate_failures do
+              expect(Gitlab::ErrorTracking).to receive(:log_exception)
+                .with(instance_of(Observability::O11yToken::AuthenticationError))
 
-            expect(generate_tokens).to eq({})
+              expect(generate_tokens).to eq({})
+            end
           end
         end
       end
@@ -233,6 +245,57 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     it 'creates instance with o11y_settings' do
       allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
       expect { o11y_token.generate_tokens }.not_to raise_error
+    end
+  end
+
+  describe '#login_url' do
+    subject(:o11y_token) { described_class.new(o11y_settings) }
+
+    it 'returns a valid URL that points to the login endpoint' do
+      login_url = o11y_token.send(:login_url)
+
+      aggregate_failures do
+        expect(login_url).to be_a(String)
+        expect(login_url).to include('/api/v1/login')
+        expect { URI.parse(login_url) }.not_to raise_error
+      end
+    end
+
+    it 'preserves the base URL structure while appending the login path' do
+      login_url = o11y_token.send(:login_url)
+      parsed_url = URI.parse(login_url)
+
+      aggregate_failures do
+        expect(parsed_url.host).to eq('o11y.example.com')
+        expect(parsed_url.scheme).to eq('https')
+        expect(parsed_url.path).to eq('/api/v1/login')
+      end
+    end
+
+    it 'handles various base URL formats correctly' do
+      [
+        'https://o11y.example.com',
+        'https://o11y.example.com/',
+        'https://o11y.example.com/api',
+        'https://o11y.example.com/api/',
+        'http://localhost:3000',
+        'https://o11y.example.com:8080'
+      ].each do |base_url|
+        o11y_settings = instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: base_url,
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123'
+        )
+        o11y_token = described_class.new(o11y_settings)
+
+        login_url = o11y_token.send(:login_url)
+
+        aggregate_failures do
+          expect { URI.parse(login_url) }.not_to raise_error
+          expect(login_url).to include('/api/v1/login')
+        end
+      end
     end
   end
 
@@ -269,9 +332,11 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       it 'creates TokenResponse from JSON data' do
         result = described_class.from_json(json_data)
 
-        expect(result.user_id).to eq('456')
-        expect(result.access_jwt).to eq('new_access_token')
-        expect(result.refresh_jwt).to eq('new_refresh_token')
+        aggregate_failures do
+          expect(result.user_id).to eq('456')
+          expect(result.access_jwt).to eq('new_access_token')
+          expect(result.refresh_jwt).to eq('new_refresh_token')
+        end
       end
 
       context 'when data is missing' do
@@ -285,9 +350,11 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             it 'creates TokenResponse with nil values' do
               result = described_class.from_json(json_data)
 
-              expect(result.user_id).to be_nil
-              expect(result.access_jwt).to be_nil
-              expect(result.refresh_jwt).to be_nil
+              aggregate_failures do
+                expect(result.user_id).to be_nil
+                expect(result.access_jwt).to be_nil
+                expect(result.refresh_jwt).to be_nil
+              end
             end
           end
         end

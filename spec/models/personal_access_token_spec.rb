@@ -13,6 +13,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     it { expect(personal_access_token.description).to be_nil }
   end
 
+  describe 'enums' do
+    it { is_expected.to define_enum_for(:user_type).with_values(HasUserType::USER_TYPES) }
+  end
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }
@@ -34,6 +38,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
+    it { is_expected.to belong_to(:group).optional }
     it { is_expected.to have_many(:last_used_ips) }
   end
 

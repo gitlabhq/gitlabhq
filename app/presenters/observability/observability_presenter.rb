@@ -35,8 +35,7 @@ module Observability
         o11y_url: observability_setting&.o11y_service_url,
         path: @path,
         auth_tokens: formatted_auth_tokens,
-        title: title,
-        encryption_key: observability_setting&.o11y_service_post_message_encryption_key
+        title: title
       }
     end
 
@@ -51,16 +50,12 @@ module Observability
     def formatted_auth_tokens
       return {} unless observability_setting
 
-      begin
-        tokens = Observability::O11yToken.generate_tokens(observability_setting)
-      rescue StandardError => e
-        Gitlab::ErrorTracking.log_exception(e)
-        return {}
-      end
-
-      return {} if tokens.blank?
-
+      tokens = Observability::O11yToken.generate_tokens(observability_setting)
       tokens.transform_keys { |key| key.to_s.underscore }
+    rescue StandardError => e
+      Gitlab::ErrorTracking.log_exception(e)
+
+      {}
     end
   end
 end

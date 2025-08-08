@@ -2554,16 +2554,13 @@ msgstr ""
 msgid "AICatalog|Select a project for your AI flow to be associated with."
 msgstr ""
 
-msgid "AICatalog|System Prompt"
-msgstr ""
-
-msgid "AICatalog|System Prompt is required."
-msgstr ""
-
 msgid "AICatalog|System prompt"
 msgstr ""
 
-msgid "AICatalog|Test Run"
+msgid "AICatalog|System prompt is required."
+msgstr ""
+
+msgid "AICatalog|Test run"
 msgstr ""
 
 msgid "AICatalog|Test run agents to see how they respond."
@@ -2594,6 +2591,9 @@ msgid "AICatalog|User Prompt is required."
 msgstr ""
 
 msgid "AICatalog|User prompt"
+msgstr ""
+
+msgid "AICatalog|User prompt is required."
 msgstr ""
 
 msgid "AICatalog|Visibility level is required."

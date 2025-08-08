@@ -683,22 +683,7 @@ RSpec.shared_examples 'work items iteration' do
 end
 
 RSpec.shared_examples 'work items time tracking' do
-  def add_estimate(estimate)
-    click_button 'estimate'
-    within_testid 'set-time-estimate-modal' do
-      fill_in 'Estimate', with: estimate
-      click_button 'Save'
-    end
-  end
-
-  def add_time_entry(time, summary = '')
-    click_button 'Add time entry'
-    within_testid 'create-timelog-modal' do
-      fill_in 'Time spent', with: time
-      fill_in 'Summary', with: summary
-      click_button 'Save'
-    end
-  end
+  include WorkItemsHelpers
 
   it 'passes axe automated accessibility testing for estimate and time spent modals', :aggregate_failures do
     click_button 'estimate'
