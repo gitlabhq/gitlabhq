@@ -3,6 +3,7 @@ stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Reply by email
+description: Configure comments on issues and merge requests with replies by email.
 ---
 
 {{< details >}}

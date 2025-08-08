@@ -11,6 +11,7 @@ class ProcessCommitWorker
   include ApplicationWorker
 
   MAX_TIME_TRACKING_REFERENCES = 5
+  DEFER_ON_HEALTH_DELAY = 5.seconds
 
   data_consistency :sticky, feature_flag: :process_commit_worker_sticky
 
@@ -24,6 +25,14 @@ class ProcessCommitWorker
   deduplicate :until_executed
 
   concurrency_limit -> { 1000 }
+
+  defer_on_database_health_signal :gitlab_main, [:notes], DEFER_ON_HEALTH_DELAY
+
+  def self.defer_on_database_health_signal?(job_args: [])
+    return false if job_args.empty?
+
+    Feature.enabled?(:process_commit_worker_deferred, Project.actor_from_id(job_args[0]))
+  end
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.

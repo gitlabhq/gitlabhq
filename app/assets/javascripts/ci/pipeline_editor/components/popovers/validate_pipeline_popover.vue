@@ -25,11 +25,6 @@ export default {
       showPopover: false,
     };
   },
-  methods: {
-    dismiss() {
-      this.showPopover = false;
-    },
-  },
   i18n,
   VALIDATE_TAB_FEEDBACK_URL,
 };

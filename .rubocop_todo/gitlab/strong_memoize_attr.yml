@@ -540,7 +540,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/wiki_pages/front_matter_parser.rb'
     - 'lib/gitlab/x509/signature.rb'
     - 'lib/gitlab/x509/tag.rb'
-    - 'lib/grafana/time_window.rb'
     - 'lib/object_storage/direct_upload.rb'
     - 'lib/safe_zip/extract_params.rb'
     - 'lib/sidebars/projects/menus/analytics_menu.rb'

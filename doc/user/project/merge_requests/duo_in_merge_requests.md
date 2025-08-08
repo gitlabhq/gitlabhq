@@ -57,9 +57,10 @@ Data usage: The diff of changes between the source branch's head and the target 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- LLM For Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
@@ -256,7 +257,7 @@ When you've completed your review of a merge request and are ready to [submit yo
 1. When you are ready to submit your review, select **Finish review**.
 1. Select **Add Summary**.
 
-The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
+The summary is displayed in the comment box. You can edit and refine the summary before you submit your review.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
 

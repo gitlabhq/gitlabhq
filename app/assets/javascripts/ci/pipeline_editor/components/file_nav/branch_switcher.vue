@@ -46,11 +46,8 @@ export default {
     return {
       availableBranches: [],
       branchSelected: null,
-      pageLimit: this.paginationLimit,
       pageCounter: 0,
       searchTerm: '',
-      lastCommitBranch: '',
-      infiniteScrollLoading: false,
     };
   },
   apollo: {
@@ -80,11 +77,10 @@ export default {
         return data.workBranches.current.name;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     lastCommitBranch: {
       query: getLastCommitBranch,
-      update(data) {
-        return data.workBranches.lastCommit.name;
-      },
+      manual: true,
       result({ data }) {
         if (data) {
           const { name: lastCommitBranch } = data.workBranches.lastCommit;

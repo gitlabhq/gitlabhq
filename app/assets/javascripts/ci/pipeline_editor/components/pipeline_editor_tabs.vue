@@ -9,7 +9,6 @@ import {
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_LOADING,
-  EDITOR_APP_STATUS_VALID,
   EDITOR_APP_STATUS_LINT_UNAVAILABLE,
   MERGED_TAB,
   TAB_QUERY_PARAM,
@@ -131,9 +130,6 @@ export default {
     },
     isMergedYamlAvailable() {
       return this.ciConfigData?.mergedYaml;
-    },
-    isValid() {
-      return this.appStatus === EDITOR_APP_STATUS_VALID;
     },
     validateTabBadgeTitle() {
       if (this.showValidateNewBadge) {

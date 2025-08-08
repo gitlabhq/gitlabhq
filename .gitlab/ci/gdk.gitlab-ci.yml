@@ -6,16 +6,12 @@
 # don't break the development flow of contributors.
 gdk-update:
   image: registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-gdk-installed:main
-  needs:
-    # Skip gdk-update job in case there are Ruby failures that
-    # prevent Rails from booting, avoiding red herrings.
-    - job: rails-production-server-boot-puma-example
-      optional: true
   tags:
     - $GITLAB_LARGE_RUNNER_OPTIONAL
   extends:
     - .default-retry
     - .gdk:rules:gdk-update
+  dependencies: []
   variables:
     GIT_STRATEGY: none
     GEM_HOME: /home/gdk/.gitlab-ci-cache/ruby/gem

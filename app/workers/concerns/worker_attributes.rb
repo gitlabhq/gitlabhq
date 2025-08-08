@@ -274,7 +274,7 @@ module WorkerAttributes
       )
     end
 
-    def defer_on_database_health_signal?
+    def defer_on_database_health_signal?(job_args: [])
       database_health_check_attrs.present?
     end
 

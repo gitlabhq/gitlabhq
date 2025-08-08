@@ -66,9 +66,6 @@ export default {
     hasError() {
       return this.failureType;
     },
-    hasHighlightedJob() {
-      return Boolean(this.highlightedJob);
-    },
     pipelineStages() {
       return this.pipelineData?.stages || [];
     },

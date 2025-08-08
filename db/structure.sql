@@ -14122,8 +14122,7 @@ CREATE TABLE deploy_tokens (
     write_virtual_registry boolean DEFAULT false NOT NULL,
     seven_days_notification_sent_at timestamp with time zone,
     thirty_days_notification_sent_at timestamp with time zone,
-    sixty_days_notification_sent_at timestamp with time zone,
-    CONSTRAINT check_e2ab92a2f6 CHECK ((num_nonnulls(group_id, project_id) = 1))
+    sixty_days_notification_sent_at timestamp with time zone
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq

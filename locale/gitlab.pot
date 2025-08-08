@@ -12177,6 +12177,9 @@ msgstr ""
 msgid "CPU"
 msgstr ""
 
+msgid "CSP group"
+msgstr ""
+
 msgid "CSV is being generated and will be emailed to you upon completion."
 msgstr ""
 
@@ -24235,6 +24238,9 @@ msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hoste
 msgstr ""
 
 msgid "DuoEnterpriseTrial|We just need some additional information to activate your trial."
+msgstr ""
+
+msgid "DuoEnterpriseTrial|We need a few more details from you to activate your trial."
 msgstr ""
 
 msgid "DuoEnterpriseTrial|You have successfully started a Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."

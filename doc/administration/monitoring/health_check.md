@@ -4,6 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
 title: Health check
+description: Perform health, liveness, and readiness checks.
 ---
 
 {{< details >}}
