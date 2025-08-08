@@ -428,6 +428,16 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it_behaves_like 'a note with overridable created_at'
 
+      it 'does not touch the updated_at column of the noteable' do
+        existing_updated_at = noteable.updated_at
+
+        travel_to(2.days.from_now) do
+          subject
+
+          expect(noteable.reload.updated_at).to be_like_time(existing_updated_at)
+        end
+      end
+
       describe 'note_body' do
         context 'cross-project' do
           let(:project2) { create(:project, :repository) }

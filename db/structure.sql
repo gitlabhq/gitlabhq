@@ -463,79 +463,11 @@ BEGIN
 END
 $$;
 
-CREATE FUNCTION function_for_trigger_1baf8c8e1f66() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pre_receive_secret_detection_enabled" := NEW."secret_push_protection_available";
-  RETURN NEW;
-END
-$$;
-
 CREATE FUNCTION function_for_trigger_7d6a4f5b82c2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."all_active_project_ids" := NEW."all_unarchived_project_ids";
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_7f41427eda69() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."secret_push_protection_available" := NEW."pre_receive_secret_detection_enabled";
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_7fbecfcdf89a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pre_receive_secret_detection_enabled" := NEW."secret_push_protection_enabled";
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_897f35481f9a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."secret_push_protection_enabled" := NEW."pre_receive_secret_detection_enabled";
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_b9839c6d713f() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF NEW."pre_receive_secret_detection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."secret_push_protection_available" IS DISTINCT FROM 'false' THEN
-    NEW."pre_receive_secret_detection_enabled" = NEW."secret_push_protection_available";
-  END IF;
-
-  IF NEW."secret_push_protection_available" IS NOT DISTINCT FROM 'false' AND NEW."pre_receive_secret_detection_enabled" IS DISTINCT FROM 'false' THEN
-    NEW."secret_push_protection_available" = NEW."pre_receive_secret_detection_enabled";
-  END IF;
-
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_cbecfadbc3e8() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF NEW."pre_receive_secret_detection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."secret_push_protection_enabled" IS DISTINCT FROM 'false' THEN
-    NEW."pre_receive_secret_detection_enabled" = NEW."secret_push_protection_enabled";
-  END IF;
-
-  IF NEW."secret_push_protection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."pre_receive_secret_detection_enabled" IS DISTINCT FROM 'false' THEN
-    NEW."secret_push_protection_enabled" = NEW."pre_receive_secret_detection_enabled";
-  END IF;
-
   RETURN NEW;
 END
 $$;
@@ -9636,7 +9568,6 @@ CREATE TABLE application_settings (
     enable_artifact_external_redirect_warning_page boolean DEFAULT true NOT NULL,
     allow_project_creation_for_guest_and_below boolean DEFAULT true NOT NULL,
     update_namespace_name_rate_limit smallint DEFAULT 120 NOT NULL,
-    pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
     can_create_organization boolean DEFAULT true NOT NULL,
     bulk_import_concurrent_pipeline_batch_limit smallint DEFAULT 25 NOT NULL,
     web_ide_oauth_application_id bigint,
@@ -22077,7 +22008,6 @@ CREATE TABLE project_security_settings (
     auto_fix_sast boolean DEFAULT true NOT NULL,
     continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL,
     container_scanning_for_registry_enabled boolean DEFAULT false NOT NULL,
-    pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
     secret_push_protection_enabled boolean DEFAULT false,
     validity_checks_enabled boolean DEFAULT false NOT NULL,
     license_configuration_source smallint DEFAULT 0 NOT NULL,
@@ -23688,7 +23618,8 @@ CREATE TABLE security_policies (
     content jsonb DEFAULT '{}'::jsonb NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3fa0f29e4b CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_966e08b242 CHECK ((char_length(checksum) <= 255))
+    CONSTRAINT check_966e08b242 CHECK ((char_length(checksum) <= 255)),
+    CONSTRAINT check_99c8e08928 CHECK ((char_length(description) <= 1000000))
 );
 
 CREATE SEQUENCE security_policies_id_seq
@@ -42600,8 +42531,6 @@ CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_
 
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
 
-CREATE TRIGGER trigger_1baf8c8e1f66 BEFORE UPDATE OF secret_push_protection_available ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_1baf8c8e1f66();
-
 CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR EACH ROW EXECUTE FUNCTION trigger_1c0f1ca199a3();
 
 CREATE TRIGGER trigger_1ed40f4d5f4e BEFORE INSERT OR UPDATE ON packages_maven_metadata FOR EACH ROW EXECUTE FUNCTION trigger_1ed40f4d5f4e();
@@ -42774,11 +42703,7 @@ CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validat
 
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
 
-CREATE TRIGGER trigger_7f41427eda69 BEFORE UPDATE OF pre_receive_secret_detection_enabled ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7f41427eda69();
-
 CREATE TRIGGER trigger_7f84f9c7b945 BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_7f84f9c7b945();
-
-CREATE TRIGGER trigger_7fbecfcdf89a BEFORE UPDATE OF secret_push_protection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7fbecfcdf89a();
 
 CREATE TRIGGER trigger_80578cfbdaf9 BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_80578cfbdaf9();
 
@@ -42791,8 +42716,6 @@ CREATE TRIGGER trigger_8204480b3a2e BEFORE INSERT OR UPDATE ON incident_manageme
 CREATE TRIGGER trigger_84d67ad63e93 BEFORE INSERT OR UPDATE ON wiki_page_slugs FOR EACH ROW EXECUTE FUNCTION trigger_84d67ad63e93();
 
 CREATE TRIGGER trigger_85d89f0f11db BEFORE INSERT OR UPDATE ON issue_metrics FOR EACH ROW EXECUTE FUNCTION trigger_85d89f0f11db();
-
-CREATE TRIGGER trigger_897f35481f9a BEFORE UPDATE OF pre_receive_secret_detection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_897f35481f9a();
 
 CREATE TRIGGER trigger_8a11b103857c BEFORE INSERT OR UPDATE ON packages_debian_group_component_files FOR EACH ROW EXECUTE FUNCTION trigger_8a11b103857c();
 
@@ -42880,8 +42803,6 @@ CREATE TRIGGER trigger_b83b7e51e2f5 BEFORE INSERT OR UPDATE ON scan_result_polic
 
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
 
-CREATE TRIGGER trigger_b9839c6d713f BEFORE INSERT ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_b9839c6d713f();
-
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 
 CREATE TRIGGER trigger_c52d215d50a1 BEFORE INSERT OR UPDATE ON incident_management_pending_issue_escalations FOR EACH ROW EXECUTE FUNCTION trigger_c52d215d50a1();
@@ -42899,8 +42820,6 @@ CREATE TRIGGER trigger_c9090feed334 BEFORE INSERT OR UPDATE ON boards_epic_lists
 CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EACH ROW EXECUTE FUNCTION trigger_cac7c0698291();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
-
-CREATE TRIGGER trigger_cbecfadbc3e8 BEFORE INSERT ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_cbecfadbc3e8();
 
 CREATE TRIGGER trigger_cd50823537a3 BEFORE INSERT OR UPDATE ON issuable_slas FOR EACH ROW EXECUTE FUNCTION trigger_cd50823537a3();
 

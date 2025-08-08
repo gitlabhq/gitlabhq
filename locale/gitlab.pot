@@ -60364,6 +60364,9 @@ msgstr ""
 msgid "Size limit per repository (MiB)"
 msgstr ""
 
+msgid "Skip to input"
+msgstr ""
+
 msgid "Skip to main content"
 msgstr ""
 

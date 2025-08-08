@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import { __, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
@@ -12,6 +13,7 @@ import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
 
 export default {
   components: {
+    GlButton,
     ToolbarButton,
     ToolbarTextStyleDropdown,
     ToolbarTableButton,
@@ -95,6 +97,9 @@ export default {
         })
         .run();
     },
+    skipToInput() {
+      this.tiptapEditor.chain().focus().run();
+    },
   },
 };
 </script>
@@ -105,6 +110,16 @@ export default {
     role="toolbar"
     :aria-label="i18n.editorToolbar"
   >
+    <gl-button
+      data-testid="skip-to-input"
+      size="small"
+      category="primary"
+      variant="confirm"
+      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only"
+      @click="skipToInput"
+      >{{ __('Skip to input') }}</gl-button
+    >
+
     <div class="gl-flex">
       <toolbar-text-style-dropdown
         data-testid="text-styles"

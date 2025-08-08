@@ -502,6 +502,9 @@ export default {
         this.findAndReplace.highlightedMatchIndex = 1;
       }
     },
+    skipToInput() {
+      this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
+    },
   },
   shortcuts: {
     bold: keysFor(BOLD_TEXT),
@@ -530,6 +533,16 @@ export default {
     class="md-header gl-border-b gl-z-2 gl-rounded-lg gl-rounded-b-none gl-border-default gl-px-3"
     :class="{ 'md-header-preview': previewMarkdown }"
   >
+    <gl-button
+      v-if="!previewMarkdown"
+      data-testid="skip-to-input"
+      size="small"
+      category="primary"
+      variant="confirm"
+      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only"
+      @click="skipToInput"
+      >{{ __('Skip to input') }}</gl-button
+    >
     <div class="gl-flex gl-flex-wrap gl-items-center">
       <div
         data-testid="md-header-toolbar"

@@ -97,6 +97,7 @@ describe('Markdown field component', () => {
   }
 
   const getPreviewToggle = () => subject.findByTestId('preview-toggle');
+  const getSkipButton = () => subject.findByTestId('skip-to-input');
   const getMarkdownButton = () => subject.find('.js-md');
   const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
   const getVideo = () => subject.find('video');
@@ -135,6 +136,38 @@ describe('Markdown field component', () => {
 
     it('renders textarea inside backdrop', () => {
       expect(subject.find('.zen-backdrop textarea').element).not.toBeNull();
+    });
+
+    describe('skip to input button', () => {
+      it('renders skip button when not in preview mode', () => {
+        expect(getSkipButton().exists()).toBe(true);
+      });
+
+      it('does not render skip button when in preview mode', async () => {
+        const markdownField = subject.findComponent(MarkdownField);
+        markdownField.vm.showPreview();
+        await nextTick();
+
+        expect(getSkipButton().exists()).toBe(false);
+      });
+
+      it('focuses textarea when skip button is clicked', async () => {
+        const textarea = subject.find('textarea').element;
+        const focusSpy = jest.spyOn(textarea, 'focus');
+
+        getSkipButton().trigger('click');
+        await nextTick();
+
+        expect(focusSpy).toHaveBeenCalled();
+      });
+
+      it('has correct accessibility attributes', () => {
+        const skipButton = getSkipButton();
+
+        expect(skipButton.text()).toBe('Skip to input');
+        expect(skipButton.attributes('data-testid')).toBe('skip-to-input');
+        expect(skipButton.classes()).toContain('gl-sr-only');
+      });
     });
 
     it('renders referenced commands on markdown preview', async () => {
@@ -179,9 +212,10 @@ describe('Markdown field component', () => {
 
           expect(previewToggle.text()).toBe('Preview');
 
-          previewToggle.vm.$emit('click', true);
+          previewToggle.vm.$emit('click');
 
           await nextTick();
+          previewToggle = getPreviewToggle();
           expect(previewToggle.text()).toBe('Continue editing');
         });
 
@@ -222,11 +256,13 @@ describe('Markdown field component', () => {
         it('switches between preview/write on toggle', async () => {
           previewToggle = getPreviewToggle();
 
-          previewToggle.vm.$emit('click', true);
+          previewToggle.trigger('click');
           await nextTick();
           expect(subject.find('.md-preview-holder').element.style.display).toBe(''); // visible
 
-          previewToggle.vm.$emit('click', false);
+          previewToggle = getPreviewToggle();
+
+          previewToggle.trigger('click');
           await nextTick();
           expect(subject.find('.md-preview-holder').element.style.display).toBe('none');
         });
