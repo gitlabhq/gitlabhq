@@ -30,6 +30,11 @@ static-analysis:
     - .static-analysis-cache
     - .failure_category_after_script
     - .static-analysis:rules:static-analysis
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+    - job: cache:node-modules
+      optional: true
   parallel: 2
   script:
     - |

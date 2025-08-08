@@ -69,7 +69,7 @@
     files:
       - Gemfile.lock
       - Gemfile.checksum
-    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+    prefix: "ruby-gems-${CI_PROJECT_PATH_SLUG}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
   paths:
     - vendor/ruby/
   policy: pull
@@ -106,15 +106,14 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .node-modules-cache: &node-modules-cache
-  key: "node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
+  key:
+    files:
+      - yarn.lock
+      - scripts/frontend/postinstall.js
+    prefix: node-modules-${CI_PROJECT_PATH_SLUG}-${OS_VERSION}-${NODE_ENV}
   paths:
     - node_modules/
-    - tmp/cache/webpack-dlls/
   policy: pull
-
-.node-modules-cache-push: &node-modules-cache-push
-  <<: *node-modules-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-tmp-cache: &assets-tmp-cache
   key: "assets-tmp-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-node-${NODE_ENV}-v1"
@@ -122,6 +121,7 @@
     - tmp/cache/assets/sprockets/
     - tmp/cache/babel-loader/
     - tmp/cache/vue-loader/
+    - tmp/cache/webpack-dlls/
   policy: pull
 
 .assets-tmp-cache-push: &assets-tmp-cache-push
@@ -270,6 +270,11 @@
   cache:
     - *node-modules-cache
 
+.yarn-cache-pull-push:
+  cache:
+    <<: *node-modules-cache
+    policy: pull-push
+
 .assets-compile-cache:
   cache:
     - !reference [.ruby-gems-cache]
@@ -278,8 +283,8 @@
 
 .assets-compile-cache-push:
   cache:
-    - !reference [.ruby-gems-cache]  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
-    - *node-modules-cache-push
+    - !reference [.ruby-gems-cache]
+    - *node-modules-cache
     - *assets-tmp-cache-push
 
 .storybook-yarn-cache:
@@ -289,7 +294,7 @@
 
 .storybook-yarn-cache-push:
   cache:
-    - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
+    - *node-modules-cache
     - *storybook-node-modules-cache-push
 
 .redis-services:
