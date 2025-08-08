@@ -21,6 +21,7 @@ module API
             model
           end
 
+          expose :runner_inputs, as: :inputs
           expose :runner_variables, as: :variables
           expose :steps, using: Entities::Ci::JobRequest::Step, unless: ->(job) do
             job.execution_config&.run_steps.present?

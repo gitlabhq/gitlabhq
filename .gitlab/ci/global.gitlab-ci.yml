@@ -58,7 +58,7 @@
     files:
       - Gemfile.lock
       - Gemfile.checksum
-    prefix: "ruby-gems-${CI_PROJECT_PATH_SLUG}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+    prefix: "ruby-gems-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
   paths:
     - vendor/ruby/
   policy: pull
@@ -99,13 +99,13 @@
     files:
       - yarn.lock
       - scripts/frontend/postinstall.js
-    prefix: node-modules-${CI_PROJECT_PATH_SLUG}-${OS_VERSION}-${NODE_ENV}
+    prefix: node-modules-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
   paths:
     - node_modules/
   policy: pull
 
 .assets-cache: &assets-cache
-  key: "assets-${CI_PROJECT_PATH_SLUG}-${NODE_ENV}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
+  key: "assets-${NODE_ENV}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
   paths:
     - app/assets/javascripts/locale/**/app.js
     - public/assets/

@@ -10,10 +10,8 @@ RSpec.shared_examples 'DORA metrics analytics renders as an analytics dashboard'
     expect(page).to have_text _("View current DORA metric performance and historical trends " \
       "to analyze DevOps efficiency over time.")
 
-    within_testid('dashboard-filters') do
-      expect(find_by_testid('dashboard-filters-date-range')).to have_text format(_('Last %{days} days'),
-        days: days_back)
-    end
+    expect(find_by_testid('dashboard-filters-date-range')).to have_text format(_('Last %{days} days'),
+      days: days_back)
   end
 end
 

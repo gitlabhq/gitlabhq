@@ -150,7 +150,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
         end
 
         let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-        let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+        let_it_be(:build) { create(:ci_build, :success, pipeline: pipeline, environment: environment.name) }
 
         let_it_be(:deployment) do
           create(:deployment, :success, environment: environment, deployable: build)

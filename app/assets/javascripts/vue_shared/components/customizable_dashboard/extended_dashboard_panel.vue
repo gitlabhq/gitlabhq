@@ -3,7 +3,6 @@ import { GlPopover, GlDashboardPanel } from '@gitlab/ui';
 import { alertVariantIconMap } from '@gitlab/ui/dist/utils/constants';
 import { isObject } from 'lodash';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
-import { PANEL_POPOVER_DELAY } from './constants';
 
 /**
  * This component provides a standardized layout and functionality for dashboard panels.
@@ -99,7 +98,9 @@ export default {
       return this.editing ? this.actions : [];
     },
   },
-  PANEL_POPOVER_DELAY,
+  PANEL_POPOVER_DELAY: {
+    hide: 500,
+  },
   alertVariantIconMap,
   alertBorderColorMap: {
     [VARIANT_DANGER]: 'gl-border-t-red-500',

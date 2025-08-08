@@ -95,6 +95,16 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
           expect(subject.first['merge_request_diff']['merge_request_diff_commits']).not_to be_empty
         end
 
+        it 'has merge request commits metadata' do
+          subject.first['merge_request_diff']['merge_request_diff_commits'].each do |diff_commit|
+            commits_metadata = diff_commit['merge_request_commits_metadata']
+
+            expect(commits_metadata).not_to be_empty
+            expect(commits_metadata['commit_author']).not_to be_empty
+            expect(commits_metadata['committer']).not_to be_empty
+          end
+        end
+
         it 'has merge requests comments' do
           expect(subject.first['notes']).not_to be_empty
 

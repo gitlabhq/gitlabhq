@@ -789,4 +789,36 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       created_object
     end
   end
+
+  describe 'MergeRequest::CommitsMetadata' do
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+
+    let(:relation_sym) { :merge_request_commits_metadata }
+    let(:relation_hash) do
+      {
+        'sha' => '123abc',
+        'message' => 'Test commit',
+        'trailers' => { 'foo' => 'bar' },
+        'authored_date' => '2023-01-01',
+        'committed_date' => '2023-01-01',
+        'commit_author' => commit_author,
+        'committer' => committer
+      }
+    end
+
+    it 'creates a MergeRequest::CommitsMetadata object' do
+      expect(created_object).to be_a(MergeRequest::CommitsMetadata)
+      expect(created_object.sha).to eq('123abc')
+    end
+
+    it 'passes project to ObjectBuilder' do
+      expect(Gitlab::ImportExport::Project::ObjectBuilder).to receive(:build).with(
+        MergeRequest::CommitsMetadata,
+        hash_including('project' => project)
+      ).and_call_original
+
+      created_object
+    end
+  end
 end

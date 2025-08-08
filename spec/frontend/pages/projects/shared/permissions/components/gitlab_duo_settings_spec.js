@@ -13,7 +13,7 @@ const defaultProps = {
   duoFeaturesLocked: false,
   licensedAiFeaturesAvailable: true,
   duoContextExclusionSettings: {
-    exclusion_rules: ['*.log', 'node_modules/'],
+    exclusionRules: ['*.log', 'node_modules/'],
   },
 };
 
@@ -304,7 +304,7 @@ describe('GitlabDuoSettings', () => {
       wrapper = mountComponent(
         {
           licensedAiFeaturesAvailable: true,
-          duoContextExclusionSettings: { exclusion_rules: [] },
+          duoContextExclusionSettings: { exclusionRules: [] },
         },
         { useDuoContextExclusion: true },
       );

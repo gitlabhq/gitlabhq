@@ -4738,6 +4738,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. %{linkStart}Add a self-hosted model%{linkEnd} to get started."
 msgstr ""
 
+msgid "AdminSelfHostedModels|You have not configured your local AI gateway URL. Configure the URL in the GitLab Duo configuration settings."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."
 msgstr ""
 
@@ -25424,10 +25427,10 @@ msgstr ""
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
-msgid "Environments|An error occurred while re-deploying the environment, please try again"
+msgid "Environments|An error occurred while re-deploying the environment, please try again."
 msgstr ""
 
-msgid "Environments|An error occurred while rolling back the environment, please try again"
+msgid "Environments|An error occurred while rolling back the environment, please try again."
 msgstr ""
 
 msgid "Environments|An error occurred while stopping the environment, please try again"

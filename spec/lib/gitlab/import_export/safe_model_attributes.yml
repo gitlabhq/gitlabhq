@@ -259,6 +259,12 @@ MergeRequest::DiffCommitUser:
 - id
 - name
 - email
+MergeRequest::CommitsMetadata:
+- sha
+- message
+- trailers
+- authored_date
+- committed_date
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order

@@ -29,6 +29,7 @@ export default {
       signInPath: computed(() => this.metadata.signIn),
       issuesSettings: computed(() => this.metadata?.issuesSettings),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
+      metadataLoading: computed(() => this.$apollo.queries.metadata.loading),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
   },

@@ -172,6 +172,8 @@ However, when you enforce a
 Users with access to the project policy page and aren't project owners instead view a
 button linking to the associated security policy project.
 
+You can link a security policy project to more than one group or project. Anyone with permission to view the security policies in one linked group or project can determine which security policies are enforced in other linked groups and project.
+
 ## Changing policy limits
 
 {{< details >}}

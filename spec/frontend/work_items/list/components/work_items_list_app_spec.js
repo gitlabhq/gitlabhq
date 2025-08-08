@@ -181,6 +181,7 @@ describeSkipVue3(skipReason, () => {
         workItemType: null,
         hasStatusFeature: true,
         releasesPath: RELEASES_ENDPOINT,
+        metadataLoading: false,
         ...provide,
       },
       propsData: {
@@ -1534,6 +1535,14 @@ describeSkipVue3(skipReason, () => {
       await waitForPromises();
 
       expect(findWorkItemListHeading().exists()).toBe(true);
+    });
+
+    it('skips the work item queries when metadata is loading', async () => {
+      mountComponent({ provide: { metadataLoading: true } });
+      await waitForPromises();
+
+      expect(defaultQueryHandler).not.toHaveBeenCalled();
+      expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
     });
   });
 });

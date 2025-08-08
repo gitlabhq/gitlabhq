@@ -1,11 +1,15 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
+import { createAlert } from '~/alert';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(VueApollo);
+jest.mock('~/alert');
 
 describe('Confirm Rollback Modal Component', () => {
   let environment;
@@ -29,9 +33,15 @@ describe('Confirm Rollback Modal Component', () => {
   };
 
   const retryPath = 'test/-/jobs/123/retry';
+  const rollbackResolver = jest.fn();
 
   const createComponent = (props = {}, options = {}) => {
+    const mockApollo = createMockApollo([], {
+      Mutation: { rollbackEnvironment: rollbackResolver },
+    });
+
     component = shallowMount(ConfirmRollbackModal, {
+      apolloProvider: mockApollo,
       propsData: {
         ...props,
       },
@@ -43,6 +53,12 @@ describe('Confirm Rollback Modal Component', () => {
   };
 
   const findModal = () => component.findComponent(GlModal);
+
+  const confirmModal = () => {
+    findModal().vm.$emit('primary');
+
+    return waitForPromises();
+  };
 
   describe.each`
     hasMultipleCommits | environmentData             | retryUrl     | primaryPropsAttrs
@@ -64,6 +80,7 @@ describe('Confirm Rollback Modal Component', () => {
           hasMultipleCommits,
           retryUrl,
         });
+
         const modal = findModal();
 
         expect(modal.attributes('title')).toContain('Rollback');
@@ -91,137 +108,96 @@ describe('Confirm Rollback Modal Component', () => {
         expect(trimText(modal.text())).toContain('commit abc0123');
         expect(modal.text()).toContain('Are you sure you want to continue?');
       });
+
+      it('should commit the "rollback" mutation when primary action is clicked', async () => {
+        const env = { ...environmentData, isLastDeployment: true };
+
+        createComponent({
+          environment: env,
+          hasMultipleCommits,
+        });
+
+        await confirmModal();
+
+        expect(rollbackResolver).toHaveBeenCalledWith(
+          expect.anything(),
+          { environment: env },
+          expect.anything(),
+          expect.anything(),
+        );
+      });
+
+      it('should emit the "rollback" event when primary action is clicked', async () => {
+        const env = { ...environmentData, isLastDeployment: true };
+
+        createComponent({
+          environment: env,
+          hasMultipleCommits,
+        });
+
+        await confirmModal();
+
+        expect(component.emitted('rollback')).toEqual([[]]);
+      });
     },
   );
 
-  describe('graphql', () => {
-    describe.each`
-      hasMultipleCommits | environmentData             | retryUrl     | primaryPropsAttrs
-      ${true}            | ${envWithLastDeployment}    | ${null}      | ${[{ variant: 'danger' }]}
-      ${false}           | ${envWithoutLastDeployment} | ${retryPath} | ${[{ variant: 'danger' }, { 'data-method': 'post' }, { href: retryPath }]}
-    `(
-      'when hasMultipleCommits=$hasMultipleCommits',
-      ({ hasMultipleCommits, environmentData, retryUrl, primaryPropsAttrs }) => {
-        Vue.use(VueApollo);
+  describe('on error', () => {
+    const error = 'This is error';
+    beforeEach(async () => {
+      rollbackResolver.mockResolvedValue({
+        errors: [error],
+      });
 
-        let apolloProvider;
-        let rollbackResolver;
+      const env = { ...envWithLastDeployment, isLastDeployment: true };
 
-        beforeEach(() => {
-          rollbackResolver = jest.fn();
-          apolloProvider = createMockApollo([], {
-            Mutation: { rollbackEnvironment: rollbackResolver },
-          });
-          environment = environmentData;
-        });
+      createComponent({
+        environment: env,
+        hasMultipleCommits: true,
+      });
 
-        it('should set contain the commit hash and ask for confirmation', () => {
-          createComponent(
-            {
-              environment: {
-                ...environment,
-                lastDeployment: {
-                  ...environment.lastDeployment,
-                  isLast: false,
-                },
-              },
-              hasMultipleCommits,
-              retryUrl,
-            },
-            { apolloProvider },
-          );
-          const modal = findModal();
+      await confirmModal();
+    });
 
-          expect(trimText(modal.text())).toContain('commit abc0123');
-          expect(modal.text()).toContain('Are you sure you want to continue?');
-        });
+    it('should render alert when the rollback action failed', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: error,
+        error: new Error(error),
+        captureError: true,
+      });
+    });
 
-        it('should show "Rollback" when isLastDeployment is false', () => {
-          createComponent(
-            {
-              environment: {
-                ...environment,
-                lastDeployment: {
-                  ...environment.lastDeployment,
-                  isLast: false,
-                },
-              },
-              hasMultipleCommits,
-              retryUrl,
-            },
-            { apolloProvider },
-          );
-          const modal = findModal();
+    it('should not emit the rollback event', () => {
+      expect(component.emitted('rollback')).toBeUndefined();
+    });
+  });
 
-          expect(modal.attributes('title')).toContain('Rollback');
-          expect(modal.attributes('title')).toContain('test');
-          expect(modal.props('actionPrimary').text).toBe('Rollback environment');
-          expect(modal.props('actionPrimary').attributes).toEqual(primaryPropsAttrs);
-        });
+  describe('on network error', () => {
+    const error = new Error('Network error!');
 
-        it('should show "Re-deploy" when isLastDeployment is true', () => {
-          createComponent(
-            {
-              environment: {
-                ...environment,
-                lastDeployment: {
-                  ...environment.lastDeployment,
-                  isLast: true,
-                },
-              },
-              hasMultipleCommits,
-            },
-            { apolloProvider },
-          );
+    beforeEach(async () => {
+      rollbackResolver.mockRejectedValue(error);
 
-          const modal = findModal();
+      const env = { ...envWithLastDeployment, isLastDeployment: true };
 
-          expect(modal.attributes('title')).toContain('Re-deploy');
-          expect(modal.attributes('title')).toContain('test');
-          expect(modal.props('actionPrimary').text).toBe('Re-deploy environment');
-        });
+      createComponent({
+        environment: env,
+        hasMultipleCommits: true,
+      });
 
-        it('should commit the "rollback" mutation when "ok" is clicked', async () => {
-          const env = { ...environmentData, isLastDeployment: true };
+      await confirmModal();
+    });
 
-          createComponent(
-            {
-              environment: env,
-              hasMultipleCommits,
-            },
-            { apolloProvider },
-          );
+    it('should render alert when the rollback action failed', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong. Please try again.',
+        error,
+        captureError: true,
+      });
+    });
 
-          const modal = findModal();
-          modal.vm.$emit('ok');
-
-          await nextTick();
-          expect(rollbackResolver).toHaveBeenCalledWith(
-            expect.anything(),
-            { environment: env },
-            expect.anything(),
-            expect.anything(),
-          );
-        });
-
-        it('should emit the "rollback" event when "ok" is clicked', async () => {
-          const env = { ...environmentData, isLastDeployment: true };
-
-          createComponent(
-            {
-              environment: env,
-              hasMultipleCommits,
-            },
-            { apolloProvider },
-          );
-
-          const modal = findModal();
-          modal.vm.$emit('ok');
-
-          await waitForPromises();
-          expect(component.emitted('rollback')).toEqual([[]]);
-        });
-      },
-    );
+    it('should not emit the rollback event', () => {
+      expect(component.emitted('rollback')).toBeUndefined();
+    });
   });
 });

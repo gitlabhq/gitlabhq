@@ -177,6 +177,7 @@ export default {
     'hasStatusFeature',
     'canReadCrmContact',
     'releasesPath',
+    'metadataLoading',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -261,7 +262,7 @@ export default {
         return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return isEmpty(this.pageParams) || this.metadataLoading;
       },
       result({ data }) {
         this.namespaceId = data?.namespace?.id;
@@ -285,7 +286,7 @@ export default {
         return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return isEmpty(this.pageParams) || this.metadataLoading;
       },
       result({ data }) {
         this.handleListDataResults(data);

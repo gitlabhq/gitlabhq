@@ -69,7 +69,10 @@ export const getRollbackActionFromDeploymentNode = (deploymentNode, environment)
     return null;
   }
   const isLastDeployment = id === environment.lastDeployment?.id;
-  const { webPath } = job;
+  const { retryPath, webPath } = job;
+  // Note: the retryFromWebPath is a fallback for backwards compatibility. It should be removed after %18.4
+  const retryFromWebPath = webPath ? `${webPath}/retry` : '';
+  const retryUrl = retryPath || retryFromWebPath;
   return {
     id,
     name: environment.name,
@@ -77,7 +80,7 @@ export const getRollbackActionFromDeploymentNode = (deploymentNode, environment)
       commit: deploymentNode.commit,
       isLast: isLastDeployment,
     },
-    retryUrl: `${webPath}/retry`,
+    retryUrl,
   };
 };
 

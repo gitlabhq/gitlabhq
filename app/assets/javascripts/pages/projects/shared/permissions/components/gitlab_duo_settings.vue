@@ -61,7 +61,7 @@ export default {
     return {
       autoReviewEnabled: this.amazonQAutoReviewEnabled,
       duoEnabled: this.duoFeaturesEnabled,
-      exclusionRules: this.duoContextExclusionSettings?.exclusion_rules || [],
+      exclusionRules: this.duoContextExclusionSettings?.exclusionRules || [],
     };
   },
   computed: {

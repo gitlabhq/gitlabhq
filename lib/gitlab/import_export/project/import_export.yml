@@ -74,6 +74,9 @@ tree:
         - merge_request_diff_commits:
           - :commit_author
           - :committer
+          - merge_request_commits_metadata:
+            - :commit_author
+            - :committer
         - :merge_request_diff_files
       - events:
         - :push_event_payload
@@ -423,6 +426,12 @@ included_attributes:
     - :files_count
     - :sorted
     - :diff_type
+  merge_request_commits_metadata:
+    - :sha
+    - :message
+    - :trailers
+    - :authored_date
+    - :committed_date
   merge_request_diff_commits:
     - :author_name
     - :author_email
@@ -878,8 +887,14 @@ excluded_attributes:
     - :merge_request_diff_id
     - :commit_author_id
     - :committer_id
+    - :merge_request_commits_metadata_id
   merge_request_diff_commit_user:
     - :id
+  merge_request_commits_metadata:
+    - :id
+    - :commit_author_id
+    - :committer_id
+    - :project_id
   merge_request_diff_detail:
     - :merge_request_diff_id
     - :verification_retry_at

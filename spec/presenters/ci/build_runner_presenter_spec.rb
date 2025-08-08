@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildRunnerPresenter do
+RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integration do
   let(:presenter) { described_class.new(build) }
   let(:archive) { { paths: ['sample.txt'] } }
 
@@ -352,6 +352,52 @@ RSpec.describe Ci::BuildRunnerPresenter do
           "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
           "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
         )
+      end
+    end
+  end
+
+  describe '#runner_inputs' do
+    let(:build) { create(:ci_build, options: { inputs: inputs_spec }) }
+
+    let(:inputs_spec) do
+      {
+        string_input: {
+          input_type: 'string',
+          default: 'default value one'
+        },
+        array_input: {
+          input_type: 'array',
+          default: ['default array']
+        },
+        boolean_input: {
+          input_type: 'boolean',
+          default: false
+        },
+        number_input: {
+          input_type: 'number',
+          default: 666
+        }
+      }
+    end
+
+    before do
+      create(:ci_job_input, job: build, project: build.project, name: 'string_input', value: 'not default')
+    end
+
+    it 'returns the inputs data structured for Runner' do
+      expect(presenter.runner_inputs).to contain_exactly(
+        { key: :string_input, value: { content: 'not default', type: 'string' } },
+        { key: :array_input, value: { content: ['default array'], type: 'array' } },
+        { key: :boolean_input, value: { content: false, type: 'boolean' } },
+        { key: :number_input, value: { content: 666, type: 'number' } }
+      )
+    end
+
+    context 'when the job has no inputs defined' do
+      let(:build) { create(:ci_build, options: nil) }
+
+      it 'returns an empty array' do
+        expect(presenter.runner_inputs).to eq([])
       end
     end
   end

@@ -74,7 +74,7 @@ module DnsHelpers
     # calls Addrinfo.getaddrinfo internally.
 
     DnsHelpers.redis_hosts.each do |host|
-      allow(Addrinfo).to receive(:getaddrinfo).with(host, anything, nil, :STREAM, anything, anything, any_args).and_call_original
+      allow(Addrinfo).to receive(:getaddrinfo).with(host, anything, anything, :STREAM, anything, anything, any_args).and_call_original
     end
   end
 

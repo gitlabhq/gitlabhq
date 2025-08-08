@@ -19,12 +19,12 @@ title: Troubleshooting the software development flow
 If you encounter issues, ensure that you have:
 
 1. The latest version of the GitLab Workflow extension for VS Code.
-1. A project that meets the [prerequisites](software_development_flow.md#prerequisites).
+1. A project that meets the [prerequisites](flows/software_development.md#prerequisites).
 1. The repository open in VS Code.
 1. The branch checked out.
 
-For details on these steps, see [the prerequisites](software_development_flow.md#prerequisites) and
-[how to connect to your repository](software_development_flow.md#connect-to-your-repository).
+For details on these steps, see [the prerequisites](flows/software_development.md#prerequisites) and
+[how to connect to your repository](flows/software_development.md#connect-to-your-repository).
 
 ## View debugging logs
 

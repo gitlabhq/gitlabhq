@@ -121,17 +121,17 @@ export const baseMutations = {
       .then(() => {
         cache.evict({ fieldName: 'folder' });
       })
-      .catch(() => {
+      .catch(() =>
         buildErrors([
           isLastDeployment
             ? s__(
-                'Environments|An error occurred while re-deploying the environment, please try again',
+                'Environments|An error occurred while re-deploying the environment, please try again.',
               )
             : s__(
-                'Environments|An error occurred while rolling back the environment, please try again',
+                'Environments|An error occurred while rolling back the environment, please try again.',
               ),
-        ]);
-      });
+        ]),
+      );
   },
   setEnvironmentToStop(_, { environment }, { client }) {
     client.writeQuery({

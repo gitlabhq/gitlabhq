@@ -37911,8 +37911,6 @@ CREATE INDEX index_project_features_on_project_id_on_public_package_registry ON 
 
 CREATE INDEX index_project_features_on_project_id_ral_20 ON project_features USING btree (project_id) WHERE (repository_access_level = 20);
 
-CREATE INDEX index_project_group_links_on_group_id_and_project_id ON project_group_links USING btree (group_id, project_id);
-
 CREATE INDEX index_project_group_links_on_member_role_id ON project_group_links USING btree (member_role_id);
 
 CREATE INDEX index_project_group_links_on_project_id ON project_group_links USING btree (project_id);
@@ -39986,6 +39984,8 @@ CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USI
 CREATE UNIQUE INDEX unique_index_ml_model_version_metadata_name ON ml_model_version_metadata USING btree (model_version_id, name);
 
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
+
+CREATE UNIQUE INDEX unique_index_project_group_links_on_group_id_and_project_id ON project_group_links USING btree (group_id, project_id);
 
 CREATE UNIQUE INDEX unique_index_sysaccess_ms_access_tokens_on_sysaccess_ms_app_id ON system_access_microsoft_graph_access_tokens USING btree (system_access_microsoft_application_id);
 

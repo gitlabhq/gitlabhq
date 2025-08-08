@@ -29,7 +29,7 @@ The following features can act as MCP clients, and connect to and run
 external tools from MCP servers:
 
 - [GitLab Duo Agentic Chat](../../../user/gitlab_duo_chat/agentic_chat.md)
-- The [software development flow](../../../user/duo_agent_platform/software_development_flow.md)
+- The [software development flow](../../../user/duo_agent_platform/flows/software_development.md)
 
 This connectivity means these features can now use context and information external to GitLab to
 generate more powerful answers for customers.
@@ -53,7 +53,7 @@ Before using a GitLab Duo feature with MCP, you must:
 - Meet the feature prerequisites as required:
 
   - [Agentic Chat prerequisites](../../../user/gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
-  - [Software development flow prerequisites](../../../user/duo_agent_platform/software_development_flow.md#prerequisites).
+  - [Software development flow prerequisites](../../../user/duo_agent_platform/flows/software_development.md#prerequisites).
 
 ## Turn on MCP for your group
 

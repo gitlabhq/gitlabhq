@@ -66,21 +66,53 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 ### Specify variables when running manual jobs
 
-When running manual jobs you can supply additional job specific variables.
-
-You can do this from the job page of the manual job you want to run with
-additional variables. To access this page, select the **name** of the manual job in
-the pipeline view, not **Run** ({{< icon name="play" >}}).
-
-Define CI/CD variables here when you want to alter the execution of a job that uses
+When running manual jobs you can supply additional job specific CI/CD variables.
+Specify variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/_index.md).
+
+To run a manual job and specify additional variables:
+
+- Select the **name** of the manual job in the pipeline view, not **Run** ({{< icon name="play" >}}).
+- In the form, add variable key and value pairs.
+- Select **Run job**.
+
+{{< alert type="warning" >}}
+
+Any project member with permissions to run a manual job can retry the job and view the variables
+that were provided when the job was initially run. This includes:
+
+- In public projects: Users with the Developer role or higher.
+- In private or internal projects: Users with the Guest role or higher.
+
+Consider this visibility when entering sensitive information as manual job variables.
+
+{{< /alert >}}
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
 the [variable is overridden](../variables/_index.md#use-pipeline-variables) with the new value.
 Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
 and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
-![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
+#### Retry a manual job with updated variables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96199) in GitLab 15.7.
+
+{{< /history >}}
+
+When you retry a manual job that was previously run with manually-specified variables,
+you can update the variables or use the same variables.
+
+To retry a manual job with previously-specified variables:
+
+- With the same variables:
+  - From the job details page, select **Retry** ({{< icon name="retry" >}}).
+- With updated variables:
+  - From the job details page, select **Update CI/CD variables** ({{< icon name="pencil-square" >}}).
+  - The variables that were specified in the previous run are prefilled in the form.
+    You can add, modify, or delete CI/CD variables from this form.
+  - Select **Run job again**.
 
 ### Require confirmation for manual jobs
 

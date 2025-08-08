@@ -9,10 +9,8 @@ RSpec.shared_examples 'MR analytics renders as an analytics dashboard' do
     expect(page).to have_text _('Merge request analytics')
     expect(page).to have_text _('MR stats and trends')
 
-    within_testid('dashboard-filters') do
-      expect(find_by_testid('dashboard-filters-date-range')).to be_visible
-      expect(find_by_testid('dashboard-filters-filtered-search')).to be_visible
-    end
+    expect(find_by_testid('dashboard-filters-date-range')).to be_visible
+    expect(find_by_testid('dashboard-filters-filtered-search')).to be_visible
   end
 end
 

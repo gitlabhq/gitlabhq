@@ -249,6 +249,72 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     end
   end
 
+  context 'merge request commits metadata' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+
+    let(:commits_metadata_attrs) do
+      {
+        'project' => project,
+        'sha' => 'abc123',
+        'commit_author' => commit_author,
+        'committer' => committer,
+        'trailers' => { 'foo' => 'bar' },
+        'message' => 'This is a message',
+        'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+        'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
+      }
+    end
+
+    it 'finds the existing commits metadata' do
+      # Non-matching record
+      create(
+        :merge_request_commits_metadata,
+        project: project,
+        sha: 'def456'
+      )
+
+      matching_commits_metadata = create(
+        :merge_request_commits_metadata,
+        project: project,
+        sha: 'abc123'
+      )
+
+      found = described_class.build(
+        MergeRequest::CommitsMetadata,
+        commits_metadata_attrs
+      )
+
+      expect(found).to eq(matching_commits_metadata)
+    end
+
+    it 'creates a new commits metadata' do
+      new_commits_metadata = described_class.build(
+        MergeRequest::CommitsMetadata,
+        commits_metadata_attrs
+      )
+
+      expect(new_commits_metadata.sha).to eq('abc123')
+      expect(new_commits_metadata.project).to eq(project)
+    end
+
+    context 'when merge_request_diff_commits_dedup is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'does not create a new commits metadata' do
+        new_commits_metadata = described_class.build(
+          MergeRequest::CommitsMetadata,
+          commits_metadata_attrs
+        )
+
+        expect(new_commits_metadata).to be_nil
+      end
+    end
+  end
+
   context 'merge request diff commits' do
     context 'when the "committer" object is present' do
       it 'uses this object as the committer' do
@@ -329,6 +395,46 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
         expect(commit.commit_author.name).to eq('Alice')
         expect(commit.commit_author.email).to eq('alice@example.com')
+      end
+    end
+
+    context 'when the "merge_request_commits_metadata" object is present' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+      let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+      let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project) }
+
+      let(:commit_attrs) do
+        {
+          'project' => project,
+          'commit_author' => commit_author,
+          'committer' => committer,
+          'merge_request_commits_metadata' => commits_metadata
+        }
+      end
+
+      it 'uses this object as commits metadata' do
+        commit = described_class.build(
+          MergeRequestDiffCommit,
+          commit_attrs
+        )
+
+        expect(commit.merge_request_commits_metadata).to eq(commits_metadata)
+      end
+
+      context 'when merge_request_diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not use this object as commits metadata' do
+          commit = described_class.build(
+            MergeRequestDiffCommit,
+            commit_attrs
+          )
+
+          expect(commit.merge_request_commits_metadata).to be_nil
+        end
       end
     end
 

@@ -3182,7 +3182,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/elastic/process_initial_bookkeeping_service.rb'
     - 'ee/app/services/epic_issues/destroy_service.rb'
     - 'ee/app/services/epic_issues/update_service.rb'
-    - 'ee/app/services/epics/base_service.rb'
     - 'ee/app/services/epics/descendant_count_service.rb'
     - 'ee/app/services/epics/epic_links/destroy_service.rb'
     - 'ee/app/services/epics/epic_links/update_service.rb'

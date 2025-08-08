@@ -372,7 +372,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'qa/qa/ee/flow/product_analytics.rb'
     - 'qa/qa/ee/page/project/analyze/analytics_dashboards/dashboard.rb'
     - 'qa/qa/ee/page/project/analyze/analytics_dashboards/setup.rb'
-    - 'qa/qa/ee/page/project/analyze/dashboard_setup.rb'
     - 'qa/qa/ee/scenario/test/geo.rb'
     - 'qa/qa/page/admin/overview/users/index.rb'
     - 'qa/qa/page/base.rb'
