@@ -39,7 +39,8 @@ Gitlab::Database::Partitioning.register_models(
     Users::GroupVisit,
     Users::ProjectVisit,
     MergeRequest::CommitsMetadata,
-    WebHookLog
+    WebHookLog,
+    MergeRequests::GeneratedRefCommit
   ])
 
 if Gitlab.ee?

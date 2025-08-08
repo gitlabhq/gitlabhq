@@ -31,6 +31,7 @@ Add an initializer with the following options:
 1. `indexing_enabled`: `true|false`. Defaults to `false`
 1. `re_enqueue_indexing_workers`: `true|false`. Defaults to `false`
 1. `logger`: Logger. Defaults to `Logger.new($stdout)`
+1. `queue_classes`: Array of queue classes that include the `ActiveContext::Concerns::Queue` concern. Defaults to []
 
 For example:
 
@@ -39,6 +40,7 @@ ActiveContext.configure do |config|
   config.enabled = true
   config.indexing_enabled = true
   config.logger = ::Gitlab::Elasticsearch::Logger.build
+  config.queue_classes = [::Ai::ActiveContext::Queues::Code]
 end
 ```
 

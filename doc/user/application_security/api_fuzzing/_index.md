@@ -13,10 +13,9 @@ description: Testing, security, vulnerabilities, automation, and errors.
 
 {{< /details >}}
 
-Web API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
-parameters to unexpected values in an effort to cause unexpected behavior and errors in the API
-backend. This helps you discover bugs and potential security issues that other QA processes may
-miss.
+Web API fuzz testing passes unexpected values to API operation parameters to cause unexpected behavior
+and errors in the backend. Use fuzz testing to discover bugs and potential vulnerabilities that other
+QA processes might miss.
 
 You should use fuzz testing in addition to the other security scanners in [GitLab Secure](../_index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),

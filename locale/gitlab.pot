@@ -10386,7 +10386,7 @@ msgstr ""
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
-msgid "Billing|Start a free 60-day trial or upgrade to a paid tier to get an unlimited number of seats."
+msgid "Billing|Start a free %{duration}-day trial or upgrade to a paid tier to get an unlimited number of seats."
 msgstr ""
 
 msgid "Billing|There are not enough seats to assign the GitLab Duo add-on to all selected members."
@@ -23913,6 +23913,15 @@ msgstr ""
 msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|Error occurred when starting the flow."
+msgstr ""
+
+msgid "DuoAgentPlatform|Flow started successfully."
+msgstr ""
+
+msgid "DuoAgentPlatform|Flow started successfully. To view progress, see %{linkStart}Session %{id}%{linkEnd}."
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
@@ -25938,9 +25947,6 @@ msgid "Error occurred when fetching sidebar data"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
-msgstr ""
-
-msgid "Error occurred when starting the workflow"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
@@ -28118,7 +28124,7 @@ msgstr ""
 msgid "FreeUserCap|Start a trial:"
 msgstr ""
 
-msgid "FreeUserCap|To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_user_limit} users or less. You can also %{upgrade_start}upgrade%{upgrade_end} to a paid tier, which do not have user limits. If you need additional time, you can %{trial_start}start a free 60-day trial%{trial_end} which includes unlimited users."
+msgid "FreeUserCap|To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_user_limit} users or less. You can also %{upgrade_start}upgrade%{upgrade_end} to a paid tier, which do not have user limits. If you need additional time, you can %{trial_start}start a free %{duration}-day trial%{trial_end} which includes unlimited users."
 msgstr ""
 
 msgid "FreeUserCap|Upgrade:"
@@ -43376,6 +43382,9 @@ msgstr ""
 msgid "Observability|Creates alerts automatically for Observability-related errors."
 msgstr ""
 
+msgid "Observability|Crypto API not available"
+msgstr ""
+
 msgid "Observability|Danger Zone"
 msgstr ""
 
@@ -43440,6 +43449,9 @@ msgid "Observability|Last 5 minutes"
 msgstr ""
 
 msgid "Observability|Last 7 days"
+msgstr ""
+
+msgid "Observability|Length must be a positive integer"
 msgstr ""
 
 msgid "Observability|Message validation failed"
@@ -65627,8 +65639,8 @@ msgstr ""
 msgid "To get started, use the link below to confirm your account."
 msgstr ""
 
-msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
-msgid_plural "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
+msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
+msgid_plural "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -65680,7 +65692,7 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, ask your top-level group owner(s) to reduce the number of users in your top-level group to %{free_limit} users or less, or to upgrade to a paid tier which do not have user limits."
 msgstr ""
 
-msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
 msgstr ""
 
 msgid "To remove the read-only state, reduce git repository and git LFS storage."
@@ -70204,7 +70216,7 @@ msgstr ""
 msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
-msgid "Vulnerability|GitLab checks the validity of the secret with the third party vendor on each pipeline run. If the secret is still active it could be exploited and needs to be revoked and rotated."
+msgid "Vulnerability|GitLab checks if detected secrets are active. You should revoke and replace active secrets immediately, because they can be used to impersonate legitimate activity."
 msgstr ""
 
 msgid "Vulnerability|Identifier"
@@ -72549,9 +72561,6 @@ msgid "WorkItem|ticket"
 msgstr ""
 
 msgid "Workflow"
-msgstr ""
-
-msgid "Workflow started successfully"
 msgstr ""
 
 msgid "Workspaces"
@@ -76422,7 +76431,7 @@ msgstr ""
 msgid "reportType|Dependency Scanning"
 msgstr ""
 
-msgid "reportType|Generic"
+msgid "reportType|Manually added"
 msgstr ""
 
 msgid "reportType|SAST"

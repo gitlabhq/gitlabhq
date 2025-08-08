@@ -5096,6 +5096,16 @@ CREATE TABLE p_duo_workflows_checkpoints (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_generated_ref_commits (
+    id bigint NOT NULL,
+    merge_request_iid bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    commit_sha bytea NOT NULL
+)
+PARTITION BY RANGE (project_id);
+
 CREATE TABLE p_knowledge_graph_enabled_namespaces (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -19478,6 +19488,15 @@ CREATE SEQUENCE p_duo_workflows_checkpoints_id_seq
 
 ALTER SEQUENCE p_duo_workflows_checkpoints_id_seq OWNED BY p_duo_workflows_checkpoints.id;
 
+CREATE SEQUENCE p_generated_ref_commits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_generated_ref_commits_id_seq OWNED BY p_generated_ref_commits.id;
+
 CREATE SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -28600,6 +28619,8 @@ ALTER TABLE ONLY p_ci_job_inputs ALTER COLUMN id SET DEFAULT nextval('p_ci_job_i
 
 ALTER TABLE ONLY p_ci_workloads ALTER COLUMN id SET DEFAULT nextval('p_ci_workloads_id_seq'::regclass);
 
+ALTER TABLE ONLY p_generated_ref_commits ALTER COLUMN id SET DEFAULT nextval('p_generated_ref_commits_id_seq'::regclass);
+
 ALTER TABLE ONLY p_knowledge_graph_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('p_knowledge_graph_enabled_namespaces_id_seq'::regclass);
 
 ALTER TABLE ONLY p_knowledge_graph_replicas ALTER COLUMN id SET DEFAULT nextval('p_knowledge_graph_replicas_id_seq'::regclass);
@@ -31463,6 +31484,9 @@ ALTER TABLE ONLY p_ci_workloads
 
 ALTER TABLE ONLY p_duo_workflows_checkpoints
     ADD CONSTRAINT p_duo_workflows_checkpoints_pkey PRIMARY KEY (id, created_at);
+
+ALTER TABLE ONLY p_generated_ref_commits
+    ADD CONSTRAINT p_generated_ref_commits_pkey PRIMARY KEY (id, project_id);
 
 ALTER TABLE ONLY p_knowledge_graph_enabled_namespaces
     ADD CONSTRAINT p_knowledge_graph_enabled_namespaces_pkey PRIMARY KEY (id, namespace_id);
@@ -39675,6 +39699,10 @@ CREATE INDEX p_ci_stages_project_id_idx ON ONLY p_ci_stages USING btree (project
 
 CREATE UNIQUE INDEX p_ci_workloads_pipeline_id_idx ON ONLY p_ci_workloads USING btree (pipeline_id, partition_id);
 
+CREATE INDEX p_index_generated_ref_commits_on_merge_request_id ON ONLY p_generated_ref_commits USING btree (project_id, merge_request_iid);
+
+CREATE INDEX p_index_generated_ref_commits_on_project_id_and_commit_sha ON ONLY p_generated_ref_commits USING btree (project_id, commit_sha);
+
 CREATE UNIQUE INDEX p_knowledge_graph_replicas_namespace_id_and_zoekt_node_id ON ONLY p_knowledge_graph_replicas USING btree (knowledge_graph_enabled_namespace_id, zoekt_node_id, namespace_id);
 
 CREATE INDEX package_name_index ON packages_packages USING btree (name);
@@ -45353,6 +45381,12 @@ ALTER TABLE ONLY packages_conan_package_revisions
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_ffed080f01 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE p_generated_ref_commits
+    ADD CONSTRAINT fk_generated_ref_commits_merge_request_id FOREIGN KEY (project_id, merge_request_iid) REFERENCES merge_requests(target_project_id, iid) ON DELETE CASCADE;
+
+ALTER TABLE p_generated_ref_commits
+    ADD CONSTRAINT fk_generated_ref_commits_project_id FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES geo_events(id) ON DELETE CASCADE;

@@ -43,10 +43,10 @@ describe('Pipeline manual actions', () => {
 
     wrapper = shallowMountExtended(PipelinesManualActions, {
       provide: {
-        fullPath: 'root/ci-project',
         manualActionsLimit: limit,
       },
       propsData: {
+        fullPath: 'root/ci-project',
         iid: 100,
       },
       stubs: {

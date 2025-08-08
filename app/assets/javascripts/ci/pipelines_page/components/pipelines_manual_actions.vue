@@ -29,8 +29,12 @@ export default {
     GlLoadingIcon,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath', 'manualActionsLimit'],
+  inject: ['manualActionsLimit'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     iid: {
       type: Number,
       required: true,

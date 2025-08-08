@@ -1123,6 +1123,110 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'when using keyset pagination' do
+      it 'returns first page with cursor to next page' do
+        params = { pagination: 'keyset', per_page: 2, order_by: 'updated_at', sort: 'asc' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(2)
+        expect(json_response.pluck('id')).to match_array([confidential_issue.id, closed_issue.id])
+        expect(response.headers["Link"]).to include("cursor")
+        next_cursor = response.headers["Link"].match("(?<cursor_data>cursor=.*?)&")["cursor_data"]
+
+        get api("/projects/#{project.id}/issues", user), params: params.merge(Rack::Utils.parse_query(next_cursor))
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.pluck('id')).to match_array([issue.id])
+        expect(response.headers).not_to include("Link")
+      end
+
+      it 'respects state filters' do
+        params = { pagination: 'keyset', per_page: 2, state: 'opened' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(2)
+        expect(json_response.pluck('id')).to match_array([issue.id, confidential_issue.id])
+        expect(response.headers).not_to include("Link")
+      end
+
+      it 'orders by created_at' do
+        issue.update!(created_at: 1.second.ago)
+        params = { pagination: 'keyset', per_page: 2, order_by: 'created_at' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+
+      it 'orders by title' do
+        issue.update!(title: 'aaaaa')
+
+        params = { pagination: 'keyset', per_page: 2, order_by: 'title', sort: 'asc' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+
+      it 'orders by due date' do
+        issue.update!(due_date: 1.day.from_now)
+        confidential_issue.update!(due_date: 2.days.ago)
+
+        params = { pagination: 'keyset', per_page: 2, order_by: 'due_date' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+
+      it 'orders by relative_position' do
+        issue.update!(relative_position: 10)
+        confidential_issue.update!(relative_position: 9)
+
+        params = { pagination: 'keyset', per_page: 2, order_by: 'relative_position' }
+        get api("/projects/#{project.id}/issues", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+
+      context 'when ordering by not-keyset-supported param is called' do
+        it 'orders by label priority' do
+          params = { pagination: 'keyset', per_page: 1, order_by: 'label_priority' }
+          get api("/projects/#{project.id}/issues", user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers["Link"]).not_to include("cursor")
+        end
+
+        it 'orders by popularity' do
+          params = { pagination: 'keyset', per_page: 1, order_by: 'popularity' }
+          get api("/projects/#{project.id}/issues", user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers["Link"]).not_to include("cursor")
+        end
+
+        it 'orders by milestone due' do
+          params = { pagination: 'keyset', per_page: 1, order_by: 'milestone_due' }
+          get api("/projects/#{project.id}/issues", user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers["Link"]).not_to include("cursor")
+        end
+
+        it 'orders by priority' do
+          params = { pagination: 'keyset', per_page: 1, order_by: 'priority' }
+          get api("/projects/#{project.id}/issues", user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers["Link"]).not_to include("cursor")
+        end
+      end
+    end
   end
 
   describe 'GET /projects/:id/issues/:issue_iid' do

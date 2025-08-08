@@ -65,8 +65,6 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
         expect(page).not_to have_content(subgroup.name)
         expect(page).not_to have_content(inactive_subgroup.name)
 
-        # Needs to be triggered twice due to a bug: https://gitlab.com/gitlab-org/gitlab/-/issues/558510
-        click_group_caret(group)
         click_group_caret(group)
 
         expect(page).to have_content(group.name)
@@ -102,8 +100,6 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
       it 'shows subgroups' do
         expect(page).not_to have_content(subgroup.name)
 
-        # Needs to be triggered twice due to a bug: https://gitlab.com/gitlab-org/gitlab/-/issues/558510
-        click_group_caret(inactive_group)
         click_group_caret(inactive_group)
 
         expect(page).to have_content(subgroup.name)

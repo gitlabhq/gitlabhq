@@ -3001,6 +3001,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def can_create_new_ref_commits?
+    merge_method != :merge
+  end
+
   def merge_method=(method)
     case method.to_s
     when "ff"

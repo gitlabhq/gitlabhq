@@ -2,7 +2,7 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Maven Virtual Registry API
+title: Maven virtual registry API
 ---
 
 {{< details >}}
@@ -21,7 +21,12 @@ Review the documentation carefully before you use them.
 
 {{< /alert >}}
 
-Use this API to create and manage Maven virtual registries, configure upstream registries, manage cache entries, and handle package downloads and uploads.
+Use this API to:
+
+- Create and manage Maven virtual registries.
+- Configure upstream registries.
+- Manage cache entries.
+- Handle package downloads and uploads.
 
 ## Manage virtual registries
 

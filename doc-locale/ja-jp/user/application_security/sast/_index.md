@@ -320,7 +320,11 @@ UIを使用してSASTを有効化および設定できます。設定はデフ�
 
 {{< /details >}}
 
-> GitLab 16.2で、UIから個々のSASTアナライザーの設定オプションを[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/410013)しました。
+{{< history >}}
+
+- GitLab 16.2で、UIから個々のSASTアナライザーの設定オプションを[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/410013)しました。
+
+{{< /history >}}
 
 {{< alert type="note" >}}
 

@@ -16,7 +16,8 @@ class ProjectPolicy < BasePolicy
     :erase_build
   ].freeze
 
-  desc "Project has public builds enabled"
+  # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
+  desc "Project-based pipeline visibility enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
   # For guest access we use #team_member? so we can use
@@ -911,7 +912,6 @@ class ProjectPolicy < BasePolicy
     prevent :download_code
     prevent :build_download_code
     prevent :fork_project
-    prevent :read_commit_status
     prevent :read_pipeline
     prevent :read_pipeline_schedule
 
@@ -979,7 +979,9 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { public_or_internal & job_token_builds }.policy do
-    enable :read_commit_status # this is additionally needed to download artifacts
+    # this is additionally needed to download artifacts
+    enable :read_commit_status
+    enable :read_build
   end
 
   rule { public_or_internal & job_token_releases }.policy do
@@ -1006,6 +1008,7 @@ class ProjectPolicy < BasePolicy
     enable :read_environment
     enable :read_deployment
     enable :read_commit_status
+    enable :read_build
     enable :read_container_image
     enable :read_code
     enable :download_code
@@ -1021,18 +1024,19 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
   end
 
-  rule { can?(:public_access) & public_builds }.policy do
+  rule { public_builds & can?(:public_access) }.policy do
     enable :read_ci_cd_analytics
     enable :read_pipeline_schedule
   end
 
-  rule { public_builds }.policy do
-    enable :read_build
-  end
-
   rule { public_builds & can?(:guest_access) }.policy do
+    enable :read_build
     enable :read_pipeline
     enable :read_pipeline_schedule
+  end
+
+  rule { ~public_builds & ~can?(:reporter_access) }.policy do
+    prevent :read_build
   end
 
   # These rules are included to allow maintainers of projects to push to certain

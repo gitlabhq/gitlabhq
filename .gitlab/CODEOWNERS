@@ -1922,7 +1922,7 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/ @luciezhao @nhxnguyen @axil @phillipwells
+/doc/**/geo/ @luciezhao @nhxnguyen @axil @phillipwells @aqualls
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 geo_* @gitlab-org/geo-team/geo-backend

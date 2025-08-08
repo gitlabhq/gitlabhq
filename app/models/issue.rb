@@ -541,6 +541,17 @@ class Issue < ApplicationRecord
     branch_name
   end
 
+  def self.supported_keyset_orderings
+    {
+      id: [:asc, :desc],
+      title: [:asc, :desc],
+      created_at: [:asc, :desc],
+      updated_at: [:asc, :desc],
+      due_date: [:asc, :desc],
+      relative_position: [:asc, :desc]
+    }
+  end
+
   # Temporary disable moving null elements because of performance problems
   # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
   def check_repositioning_allowed!

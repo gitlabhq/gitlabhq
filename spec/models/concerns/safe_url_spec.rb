@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SafeUrl do
+RSpec.describe SafeUrl, feature_category: :source_code_management do
   describe '#safe_url' do
     let(:safe_url_test_class) do
       Class.new do
@@ -41,6 +41,12 @@ RSpec.describe SafeUrl do
       end
     end
 
+    context 'when URL has an invalid port number' do
+      let(:url) { 'http://example.com:wrong' }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when URL is empty' do
       let(:url) { nil }
 
@@ -51,6 +57,22 @@ RSpec.describe SafeUrl do
       let(:url) { 123 }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when URL contains unicode characters' do
+      let(:url) { 'https://git.example.com/üser/prøject.git' }
+
+      it 'handles URLs with unicode characters correctly' do
+        is_expected.to eq(url)
+      end
+    end
+
+    context 'when URL is malformed' do
+      let(:url) { 'http://[invalid' }
+
+      it 'returns nil for malformed URLs' do
+        is_expected.to be_nil
+      end
     end
   end
 end

@@ -3059,7 +3059,6 @@ RSpec/FeatureCategory:
     - 'spec/models/concerns/redactable_spec.rb'
     - 'spec/models/concerns/redis_cacheable_spec.rb'
     - 'spec/models/concerns/runners_token_prefixable_spec.rb'
-    - 'spec/models/concerns/safe_url_spec.rb'
     - 'spec/models/concerns/sanitizable_spec.rb'
     - 'spec/models/concerns/schedulable_spec.rb'
     - 'spec/models/concerns/sha_attribute_spec.rb'

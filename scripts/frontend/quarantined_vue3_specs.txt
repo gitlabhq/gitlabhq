@@ -36,7 +36,6 @@ spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
 spec/frontend/error_tracking/components/error_tracking_list_spec.js
-spec/frontend/feature_flags/components/strategies/percent_rollout_spec.js
 spec/frontend/feature_flags/components/strategy_spec.js
 spec/frontend/gitlab_version_check/index_spec.js
 spec/frontend/glql/components/common/facade_spec.js

@@ -91,7 +91,6 @@ module API
         optional :due_date, type: String, values: %w[0 any today tomorrow overdue week month next_month_and_previous_two_weeks] << '',
           desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
         optional :issue_type, type: String, values: WorkItems::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItems::Type.allowed_types_for_issues.join(', ')}"
-
         use :issues_stats_params
         use :pagination
       end
@@ -214,10 +213,17 @@ module API
       end
       params do
         use :issues_params
+        optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
       end
       get ":id/issues" do
         validate_search_rate_limit! if declared_params[:search].present?
-        issues = paginate(find_issues(project_id: user_project.id))
+
+        if declared_params[:order_by] && Issue.supported_keyset_orderings.keys
+                                              .exclude?(declared_params[:order_by].to_sym)
+          params.delete("pagination")
+        end
+
+        issues = find_issues(project_id: user_project.id)
 
         options = {
           with: Entities::Issue,
@@ -227,7 +233,7 @@ module API
           include_subscribed: false
         }
 
-        present issues, options
+        present paginate_with_strategies(issues), options
       end
 
       desc 'Get statistics for the list of project issues'

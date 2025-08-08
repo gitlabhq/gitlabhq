@@ -467,7 +467,6 @@ Address common manager pod performance problems with these solutions.
   [runners.kubernetes]
     poll_interval = "5s"  # Increase from default 3s
     poll_timeout = "180s"
-    use_informer = true  # GitLab Runner 17.9+
 ```
 
 ## Performance optimization

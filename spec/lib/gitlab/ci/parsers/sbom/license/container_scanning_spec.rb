@@ -20,6 +20,39 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::License::ContainerScanning, feature_ca
 
         expect(license.spdx_identifier).to eq("Example, Inc. Commercial License")
       end
+
+      context "when the license also defines the id" do
+        let(:data) do
+          {
+            "license" => {
+              "id" => "Example ID, Inc. Commercial License",
+              "name" => "Example NAME, Inc. Commercial License"
+            }
+          }
+        end
+
+        it "sets the expected values" do
+          is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::License)
+
+          expect(license.spdx_identifier).to eq("Example ID, Inc. Commercial License")
+        end
+      end
+    end
+
+    context "when the license is defined by id" do
+      let(:data) do
+        {
+          "license" => {
+            "id" => "Example, Inc. Commercial License"
+          }
+        }
+      end
+
+      it "sets the expected values" do
+        is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::License)
+
+        expect(license.spdx_identifier).to eq("Example, Inc. Commercial License")
+      end
     end
   end
 

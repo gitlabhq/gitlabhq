@@ -1,0 +1,13 @@
+---
+table_name: p_generated_ref_commits
+classes:
+- MergeRequests::GeneratedRefCommit
+feature_categories:
+- source_code_management
+description: Tracks the relationship between commit SHAs and merge requests for gitlab generated references such as train references.
+introduced_by_url:
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

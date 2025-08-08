@@ -72,7 +72,12 @@ class MergeRequest < ApplicationRecord
     -> { regular }, inverse_of: :merge_request
   has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
-
+  has_many :generated_ref_commits,
+    primary_key: [:iid, :target_project_id],
+    class_name: 'MergeRequests::GeneratedRefCommit',
+    foreign_key: :merge_request_iid,
+    inverse_of: :merge_request,
+    query_constraints: [:merge_request_iid, :project_id]
   has_one :merge_request_diff,
     -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
   has_one :merge_head_diff,
@@ -329,6 +334,7 @@ class MergeRequest < ApplicationRecord
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
   end
+
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project) }

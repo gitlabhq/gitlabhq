@@ -112,7 +112,7 @@ export default {
   },
   methods: {
     onNestedItemsToggleClick() {
-      this.isExpanded = !this.isExpanded;
+      this.isExpanded = !this.showChildren;
 
       if (!this.item.children?.length) {
         this.$emit('load-children', this.item.id);

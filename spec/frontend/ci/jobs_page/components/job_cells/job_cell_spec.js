@@ -50,14 +50,14 @@ describe('Job Cell', () => {
       expect(findJobIdNoLink().exists()).toBe(false);
     });
 
-    it('display the job id and job name with no link', () => {
+    it('displays the job id, job name and links to the job as guest', () => {
       createComponent(jobAsGuest);
 
       const expectedJobId = `#${getIdFromGraphQLId(jobAsGuest.id)}: ${jobAsGuest.name}`;
 
-      expect(findJobIdNoLink().text()).toBe(expectedJobId);
-      expect(findJobIdNoLink().exists()).toBe(true);
-      expect(findJobIdLink().exists()).toBe(false);
+      expect(findJobIdLink().text()).toBe(expectedJobId);
+      expect(findJobIdLink().attributes('href')).toBe(jobAsGuest.detailedStatus.detailsPath);
+      expect(findJobIdNoLink().exists()).toBe(false);
     });
   });
 

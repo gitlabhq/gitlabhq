@@ -28,9 +28,14 @@
             "type": "integer"
           },
           "pinned_version_prefix": {
-            "type": [
-              "string",
-              "null"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d+(?:\\.\\d+){0,2}$"
+              }
             ]
           }
         },

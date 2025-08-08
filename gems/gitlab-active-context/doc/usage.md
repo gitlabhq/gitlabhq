@@ -18,27 +18,41 @@ Ai::ActiveContext::MigrationWorker.new.perform
 
 Queues keep track of items needing to be processed in bulk asynchronously. A queue definition has a unique key which registers queues based on the number of shards defined. Each shard creates a queue.
 
-To create a new queue: add a file, extend `ActiveContext::Concerns::Queue` and define `number_of_shards`:
+To create a new queue:
 
-```ruby
-# frozen_string_literal: true
+1. Add a file, extend `ActiveContext::Concerns::Queue` and define `number_of_shards`. You can also override the `shard_limit` method.
 
-module Ai
-  module Context
-    module Queues
-      class MergeRequest
-        class << self
-          def number_of_shards
-            2
+    ```ruby
+    # frozen_string_literal: true
+
+    module Ai
+      module Context
+        module Queues
+          class MergeRequest
+            class << self
+              include ActiveContext::Concerns::Queue
+
+              def number_of_shards
+                2
+              end
+
+              def shard_limit
+                500
+              end
+            end
           end
         end
-
-        include ActiveContext::Concerns::Queue
       end
     end
-  end
-end
-```
+    ```
+
+2. Make sure the queue is registered by adding it to the `queue_classes` configuration.
+
+    ```ruby
+    ActiveContext.configure do |config|
+      config.queue_classes = [::Ai::Context::Queues::MergeRequest]
+    end
+    ```
 
 To access the unique queues:
 

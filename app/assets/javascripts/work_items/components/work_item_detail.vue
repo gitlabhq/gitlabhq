@@ -1165,6 +1165,7 @@ export default {
                       <duo-workflow-action
                         v-if="isDuoWorkflowEnabled"
                         :project-id="projectIdAsNumber"
+                        :project-path="workItemFullPath"
                         :title="__('Generate MR with Duo')"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"

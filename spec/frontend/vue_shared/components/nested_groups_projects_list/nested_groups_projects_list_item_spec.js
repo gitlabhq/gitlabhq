@@ -109,18 +109,22 @@ describe('NestedGroupsProjectsListItem', () => {
   });
 
   describe('when toggle is expanded', () => {
-    describe('when children have not yet been loaded', () => {
-      beforeEach(() => {
-        createComponent();
-        findToggleButton().vm.$emit('click');
-      });
+    const setup = (expandedOverride = false) => {
+      createComponent({ propsData: { expandedOverride } });
+      findToggleButton().vm.$emit('click');
+    };
 
+    describe('when children have not yet been loaded', () => {
       it('emits load-children event', () => {
+        setup();
+
         expect(wrapper.emitted('load-children')).toEqual([[topLevelGroupA.id]]);
       });
 
       describe('when children are loading', () => {
         beforeEach(async () => {
+          setup();
+
           await wrapper.setProps({
             item: {
               ...topLevelGroupA,
@@ -135,24 +139,58 @@ describe('NestedGroupsProjectsListItem', () => {
       });
 
       describe('when children are loaded', () => {
-        beforeEach(async () => {
-          await wrapper.setProps({
-            item: {
-              ...topLevelGroupA,
-              children: topLevelGroupA.childrenToLoad,
-            },
+        describe('when expandedOverride is true', () => {
+          beforeEach(async () => {
+            setup(true);
+
+            await wrapper.setProps({
+              item: {
+                ...topLevelGroupA,
+                children: topLevelGroupA.childrenToLoad,
+              },
+            });
+          });
+
+          it('removes gl-hidden class', () => {
+            expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
+          });
+
+          it('updates button icon to chevron-down', () => {
+            expect(findToggleButton().props('icon')).toBe('chevron-down');
+          });
+
+          it('passes children to NestedGroupsProjectsList component', () => {
+            expect(findNestedGroupsProjectsList().props()).toMatchObject({
+              items: topLevelGroupA.childrenToLoad,
+            });
           });
         });
 
-        it('passes children to NestedGroupsProjectsList component and removes gl-hidden class', () => {
-          expect(findNestedGroupsProjectsList().props()).toMatchObject({
-            items: topLevelGroupA.childrenToLoad,
-          });
-          expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
-        });
+        describe('when expandedOverride is false', () => {
+          beforeEach(async () => {
+            setup();
 
-        it('updates button icon to chevron-down', () => {
-          expect(findToggleButton().props('icon')).toBe('chevron-down');
+            await wrapper.setProps({
+              item: {
+                ...topLevelGroupA,
+                children: topLevelGroupA.childrenToLoad,
+              },
+            });
+          });
+
+          it('removes gl-hidden class', () => {
+            expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
+          });
+
+          it('updates button icon to chevron-down', () => {
+            expect(findToggleButton().props('icon')).toBe('chevron-down');
+          });
+
+          it('passes children to NestedGroupsProjectsList component', () => {
+            expect(findNestedGroupsProjectsList().props()).toMatchObject({
+              items: topLevelGroupA.childrenToLoad,
+            });
+          });
         });
       });
     });

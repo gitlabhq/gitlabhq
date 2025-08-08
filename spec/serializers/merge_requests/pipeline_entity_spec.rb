@@ -2,12 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::PipelineEntity do
+RSpec.describe MergeRequests::PipelineEntity, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
 
   let(:request) { double('request') }
+
+  before_all do
+    project.add_guest(user)
+  end
 
   before do
     stub_not_protect_default_branch

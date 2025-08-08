@@ -5,11 +5,11 @@ module Ci
     delegate { @subject.job.project }
 
     condition(:public_access, scope: :subject) do
-      @subject.public_access?
+      @subject.public_access? # public:true | access:all
     end
 
     condition(:none_access, scope: :subject) do
-      @subject.none_access?
+      @subject.none_access? # access:none
     end
 
     condition(:can_read_project_build) do

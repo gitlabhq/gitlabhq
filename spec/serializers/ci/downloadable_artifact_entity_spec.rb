@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DownloadableArtifactEntity do
+RSpec.describe Ci::DownloadableArtifactEntity, feature_category: :job_artifacts do
   let(:pipeline) { create(:ci_pipeline, :with_codequality_reports) }
   let(:user) { create(:user) }
   let(:request) { EntityRequest.new({ current_user: user }) }
   let(:entity) { described_class.new(pipeline, request: request) }
+
+  before do
+    pipeline.project.add_guest(user)
+  end
 
   describe '#as_json' do
     subject { entity.as_json }
