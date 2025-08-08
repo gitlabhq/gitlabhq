@@ -237,6 +237,7 @@ module QA
             run_type: run_type,
             stage: devops_stage(file_path),
             product_group: example.metadata[:product_group],
+            feature_category: example.metadata[:feature_category],
             testcase: example.metadata[:testcase],
             exception_class: example.execution_result.exception&.class&.to_s,
             branch: branch,

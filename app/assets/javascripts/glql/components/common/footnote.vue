@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlExperimentBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { glqlWorkItemsFeatureFlagEnabled } from '../../utils/feature_flags';
+import { glqlAggregationEnabled, glqlWorkItemsFeatureFlagEnabled } from '../../utils/feature_flags';
 
 export default {
   name: 'GlqlFootnote',
@@ -13,7 +13,7 @@ export default {
   },
   computed: {
     featureFlagEnabled() {
-      return glqlWorkItemsFeatureFlagEnabled();
+      return glqlWorkItemsFeatureFlagEnabled() || glqlAggregationEnabled();
     },
   },
   docsPath: `${helpPagePath('user/glql/_index')}#embedded-views`,

@@ -44397,6 +44397,7 @@ Represents a vulnerable package. Used in vulnerability dependency data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerablepackagename"></a>`name` | [`String`](#string) | Name of the vulnerable package. |
+| <a id="vulnerablepackagepath"></a>`path` | [`String`](#string) | Path of the vulnerable package. |
 
 ### `VulnerableProjectsByGrade`
 

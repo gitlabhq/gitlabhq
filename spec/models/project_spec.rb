@@ -5446,14 +5446,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'inside_path' do
+  context 'with inside_path' do
     let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
     let!(:project2) { create(:project) }
     let!(:project3) { create(:project, namespace: create(:namespace, path: 'namespace')) }
     let!(:path) { project1.namespace.full_path }
 
-    it 'returns correct project' do
-      expect(described_class.inside_path(path)).to eq([project1])
+    describe 'inside_path' do
+      it 'returns correct project' do
+        expect(described_class.inside_path(path)).to eq([project1])
+      end
+    end
+
+    describe '.inside_path_preloaded' do
+      it 'preloads the specified associations' do
+        projects = described_class.inside_path_preloaded(path)
+
+        project = projects.first
+
+        expect(project.association(:topics)).to be_loaded
+        expect(project.association(:project_topics)).to be_loaded
+        expect(project.association(:route)).to be_loaded
+      end
     end
   end
 

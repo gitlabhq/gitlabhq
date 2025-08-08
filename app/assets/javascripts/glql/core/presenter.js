@@ -4,6 +4,7 @@ import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import BoolPresenter from '../components/presenters/bool.vue';
 import CodePresenter from '../components/presenters/code.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
+import DimensionPresenter from '../components/presenters/dimension.vue';
 import IssuablePresenter from '../components/presenters/issuable.vue';
 import LabelPresenter from '../components/presenters/label.vue';
 import LinkPresenter from '../components/presenters/link.vue';
@@ -32,6 +33,8 @@ const presentersByObjectType = {
   Iteration: IterationPresenter,
   WorkItemStatus: StatusPresenter,
   WorkItemType: TypePresenter,
+
+  GlqlDimension: DimensionPresenter,
 };
 
 const presentersByFieldName = {

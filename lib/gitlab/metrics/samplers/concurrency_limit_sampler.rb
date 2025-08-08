@@ -62,8 +62,11 @@ module Gitlab
             concurrent_worker_count = concurrent_limit_service.concurrent_worker_count(w.name)
             report_concurrent_workers(w, concurrent_worker_count)
 
-            limit = worker_maps.limit_for(worker: w)
-            report_limit(w, limit)
+            max_limit = worker_maps.limit_for(worker: w)
+            report_max_limit(w, max_limit)
+
+            current_limit = concurrent_limit_service.current_limit(w.name)
+            report_current_limit(w, current_limit)
           end
         end
 
@@ -71,7 +74,8 @@ module Gitlab
           worker_maps.workers.each do |w|
             report_queue_size(w, 0)
             report_concurrent_workers(w, 0)
-            report_limit(w, 0)
+            report_max_limit(w, 0)
+            report_current_limit(w, 0)
           end
         end
 
@@ -96,10 +100,16 @@ module Gitlab
             concurrent_worker_count)
         end
 
-        def report_limit(worker, limit)
+        def report_max_limit(worker, limit)
           @limit_metric ||= Gitlab::Metrics.gauge(:sidekiq_concurrency_limit_max_concurrent_jobs,
             'Max number of concurrent running jobs.')
           @limit_metric.set({ worker: worker.name, feature_category: worker.get_feature_category }, limit)
+        end
+
+        def report_current_limit(worker, limit)
+          @current_limit_metric ||= Gitlab::Metrics.gauge(:sidekiq_concurrency_limit_current_limit,
+            'Number of concurrent jobs currently allowed to run subject to throttling.')
+          @current_limit_metric.set({ worker: worker.name, feature_category: worker.get_feature_category }, limit)
         end
       end
     end

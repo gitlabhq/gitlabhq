@@ -868,6 +868,10 @@ class Project < ApplicationRecord
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
       .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
   end
+  scope :inside_path_preloaded, ->(path) do
+    preload(:topics, :project_topics, :route)
+      .inside_path(path)
+  end
 
   scope :with_jira_installation, ->(installation_id) do
     joins(namespace: :jira_connect_subscriptions)

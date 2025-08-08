@@ -20,10 +20,10 @@ module Groups
 
             if Feature.enabled?(:project_authorizations_update_in_background_for_group_shares, group.root_ancestor)
               AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(group.id,
-                { 'priority' => priority_for_refresh(group).to_s, 'direct_members_only' => true })
+                { 'priority' => priority_for_refresh, 'direct_members_only' => true })
             else
               group.refresh_members_authorized_projects(
-                priority: priority_for_refresh(group),
+                priority: priority_for_refresh,
                 direct_members_only: true
               )
             end

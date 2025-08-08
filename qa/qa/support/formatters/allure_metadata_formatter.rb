@@ -99,10 +99,13 @@ module QA
         def set_behavior_categories(example)
           file_path = example.file_path.gsub('./qa/specs/features', '')
           devops_stage = file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
+
+          feature_category = example.metadata[:feature_category]
           product_group = example.metadata[:product_group]
 
           example.epic(devops_stage) if devops_stage
-          example.feature(product_group) if product_group
+          example.feature(feature_category) if feature_category
+          example.feature(product_group) if product_group && feature_category.nil?
         end
 
         # Print log message

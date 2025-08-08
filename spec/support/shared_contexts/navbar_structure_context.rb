@@ -191,7 +191,7 @@ RSpec.shared_context 'group navbar structure' do
   let(:observability_nav_item) do
     {
       nav_item: _("Observability"),
-      nav_sub_items: [_("O11y Service Settings")]
+      nav_sub_items: [_("O11y Service Settings"), _('Request Access')]
     }
   end
 

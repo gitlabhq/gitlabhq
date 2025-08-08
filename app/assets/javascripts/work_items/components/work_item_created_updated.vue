@@ -89,7 +89,7 @@ export default {
         return !this.workItemIid;
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
     },
   },

@@ -98,6 +98,7 @@ module Gitlab
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
+      push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
       push_frontend_feature_flag(:global_topbar, current_user)

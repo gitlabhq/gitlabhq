@@ -44,6 +44,7 @@ module QA
           quarantine: example.metadata[:quarantine],
           screenshot: example.metadata[:screenshot],
           product_group: example.metadata[:product_group],
+          feature_category: example.metadata[:feature_category],
           ci_job_url: QA::Runtime::Env.ci_job_url,
           level: 'E2E',
           ignore_runtime_data: Runtime::Env.ignore_runtime_data?

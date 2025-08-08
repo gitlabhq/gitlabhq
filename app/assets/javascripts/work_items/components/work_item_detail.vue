@@ -239,7 +239,7 @@ export default {
         if (this.workItemId) {
           return data.workItem ?? {};
         }
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
       error() {
         if (this.workItem?.id === this.workItemId || this.workItem?.iid === this.workItemIid) {

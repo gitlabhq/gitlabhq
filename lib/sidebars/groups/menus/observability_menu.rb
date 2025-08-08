@@ -22,6 +22,8 @@ module Sidebars
             add_item(exceptions_menu_item)
             add_item(service_map_menu_item)
             add_item(settings_menu_item)
+          else
+            add_item(request_access_menu_item)
           end
 
           add_item(o11y_settings_menu_item) if o11y_settings_access_enabled?
@@ -228,6 +230,18 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :o11y_settings,
             container_html_options: { class: 'shortcuts-o11y-settings' }
+          )
+        end
+
+        def request_access_menu_item
+          link = new_group_observability_access_requests_path(context.group)
+          ::Sidebars::MenuItem.new(
+            title: _('Request Access'),
+            link: link,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
+            item_id: :request_access,
+            container_html_options: { class: 'shortcuts-request-access' },
+            active_routes: { page: link }
           )
         end
       end

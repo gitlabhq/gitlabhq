@@ -43364,13 +43364,55 @@ msgstr ""
 msgid "ObservabilityMetrics|is not like"
 msgstr ""
 
+msgid "Observability| and best practices."
+msgstr ""
+
 msgid "Observability|%{events} events"
 msgstr ""
 
 msgid "Observability|32+ character encryption key for secure communication."
 msgstr ""
 
+msgid "Observability|APM & Performance"
+msgstr ""
+
+msgid "Observability|APM Dashboards"
+msgstr ""
+
+msgid "Observability|Access Request Submitted"
+msgstr ""
+
+msgid "Observability|Advanced Analytics"
+msgstr ""
+
+msgid "Observability|Anomaly-based alerting and notifications"
+msgstr ""
+
+msgid "Observability|Application Performance Monitoring with p99 latency tracking and real-time metrics visualization"
+msgstr ""
+
+msgid "Observability|Application performance monitoring with real-time metrics"
+msgstr ""
+
 msgid "Observability|Are you sure you want to delete the observability service settings? This action cannot be undone."
+msgstr ""
+
+msgid "Observability|Beta Release"
+msgstr ""
+
+msgid "Observability|Built on ClickHouse for superior performance, GitLab Observability makes enterprise-grade observability accessible within GitLab."
+msgstr ""
+
+msgid "Observability|Built on industry-standard OpenTelemetry for seamless integration"
+msgstr ""
+
+msgid "Observability|Centralized Logs"
+msgstr ""
+
+msgid "Observability|Centralized log management with powerful querying capabilities and advanced search"
+msgstr ""
+
+msgid "Observability|ClickHouse Performance"
 msgstr ""
 
 msgid "Observability|Configure your observability service connection settings."
@@ -43385,22 +43427,58 @@ msgstr ""
 msgid "Observability|Crypto API not available"
 msgstr ""
 
+msgid "Observability|Custom dashboards with anomaly-based alerting and intelligent notification systems"
+msgstr ""
+
 msgid "Observability|Danger Zone"
 msgstr ""
 
 msgid "Observability|Delete settings"
 msgstr ""
 
+msgid "Observability|Distributed Tracing"
+msgstr ""
+
+msgid "Observability|Dive deep into your data with comprehensive analytics, custom visualizations, and intelligent insights for better decision-making."
+msgstr ""
+
+msgid "Observability|Email Notification"
+msgstr ""
+
 msgid "Observability|Email address for authentication with the observability service."
 msgstr ""
 
+msgid "Observability|Enable Observability"
+msgstr ""
+
 msgid "Observability|Enable Observability alerts"
+msgstr ""
+
+msgid "Observability|Enable observability features for this group"
 msgstr ""
 
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
 msgid "Observability|Encryption Key"
+msgstr ""
+
+msgid "Observability|Enterprise Ready"
+msgstr ""
+
+msgid "Observability|Enterprise-Grade Observability for GitLab"
+msgstr ""
+
+msgid "Observability|Exception Tracking"
+msgstr ""
+
+msgid "Observability|Exception tracking and error monitoring with detailed stack traces and context"
+msgstr ""
+
+msgid "Observability|Experience the power of GitLab Observability with real-time dashboards and comprehensive monitoring capabilities."
+msgstr ""
+
+msgid "Observability|Experimental functionality"
 msgstr ""
 
 msgid "Observability|Failed to delete observability service settings."
@@ -43415,10 +43493,28 @@ msgstr ""
 msgid "Observability|Filter data by month:"
 msgstr ""
 
+msgid "Observability|Free during beta period"
+msgstr ""
+
+msgid "Observability|GitLab Observability Dashboard - Advanced Analytics"
+msgstr ""
+
+msgid "Observability|GitLab Observability Dashboard - Performance Metrics"
+msgstr ""
+
+msgid "Observability|GitLab Observability is an open source, OpenTelemetry-native observability platform that unifies logs, metrics, and traces in a single application. Monitor application performance with APM dashboards, visualize distributed traces across microservices, manage centralized logs with powerful querying, and set up intelligent alerts."
+msgstr ""
+
 msgid "Observability|Group is required"
 msgstr ""
 
+msgid "Observability|Important Information"
+msgstr ""
+
 msgid "Observability|Includes Logs, Traces and Metrics. %{learnMoreLink}"
+msgstr ""
+
+msgid "Observability|Kubernetes Monitoring"
 msgstr ""
 
 msgid "Observability|Last 1 hour"
@@ -43457,7 +43553,19 @@ msgstr ""
 msgid "Observability|Message validation failed"
 msgstr ""
 
+msgid "Observability|Monitor application performance with detailed metrics, response times, and system health indicators in real-time dashboards."
+msgstr ""
+
+msgid "Observability|Native Kubernetes monitoring with pod-level metrics and cluster health insights"
+msgstr ""
+
+msgid "Observability|No Cost"
+msgstr ""
+
 msgid "Observability|O11y Service Settings"
+msgstr ""
+
+msgid "Observability|Observability Access Requested"
 msgstr ""
 
 msgid "Observability|Observability Dashboard"
@@ -43466,31 +43574,76 @@ msgstr ""
 msgid "Observability|Observability Service Configuration"
 msgstr ""
 
+msgid "Observability|Observability documentation"
+msgstr ""
+
 msgid "Observability|Observability service settings deleted successfully."
 msgstr ""
 
 msgid "Observability|Observability service settings updated successfully."
 msgstr ""
 
+msgid "Observability|OpenTelemetry Native"
+msgstr ""
+
 msgid "Observability|Password for authentication with the observability service."
+msgstr ""
+
+msgid "Observability|Performance Overview"
 msgstr ""
 
 msgid "Observability|Permanently delete the observability service configuration."
 msgstr ""
 
+msgid "Observability|Powerful log management and querying"
+msgstr ""
+
+msgid "Observability|Prepare for observability by reviewing our "
+msgstr ""
+
 msgid "Observability|Project not found"
+msgstr ""
+
+msgid "Observability|Provisioning Time"
+msgstr ""
+
+msgid "Observability|Ready to Use"
 msgstr ""
 
 msgid "Observability|Related issues"
 msgstr ""
 
+msgid "Observability|Request Observability Access"
+msgstr ""
+
+msgid "Observability|Scalable architecture designed for enterprise workloads"
+msgstr ""
+
+msgid "Observability|See It In Action"
+msgstr ""
+
 msgid "Observability|Service URL"
+msgstr ""
+
+msgid "Observability|Single pane of glass for logs, metrics, and traces within GitLab"
+msgstr ""
+
+msgid "Observability|Smart Alerts"
 msgstr ""
 
 msgid "Observability|Sorry, there is no usage data for the selected period"
 msgstr ""
 
 msgid "Observability|Sorry, your filter produced no results"
+msgstr ""
+
+msgid "Observability|Start monitoring your applications"
+msgstr ""
+
+msgid "Observability|Superior query performance and data compression with ClickHouse backend"
+msgstr ""
+
+msgid "Observability|Thank You for Your Request!"
 msgstr ""
 
 msgid "Observability|The URL of your observability service instance."
@@ -43505,6 +43658,12 @@ msgstr ""
 msgid "Observability|Try selecting a different period."
 msgstr ""
 
+msgid "Observability|Unified Platform"
+msgstr ""
+
+msgid "Observability|Up to one business day"
+msgstr ""
+
 msgid "Observability|Usage by day"
 msgstr ""
 
@@ -43517,13 +43676,55 @@ msgstr ""
 msgid "Observability|View our %{documentation} for further instructions on how to use these features."
 msgstr ""
 
+msgid "Observability|View the"
+msgstr ""
+
+msgid "Observability|Visualize distributed traces with flamegraphs across microservices and understand request flows"
+msgstr ""
+
+msgid "Observability|Visualize request flows across microservices"
+msgstr ""
+
+msgid "Observability|What Happens Next"
+msgstr ""
+
+msgid "Observability|What You Get"
+msgstr ""
+
+msgid "Observability|What You'll Get Access To"
+msgstr ""
+
+msgid "Observability|While You Wait"
+msgstr ""
+
 msgid "Observability|You are not authorized to request observability access"
+msgstr ""
+
+msgid "Observability|You will receive an email notification once your observability environment is ready."
+msgstr ""
+
+msgid "Observability|You'll receive confirmation when ready"
+msgstr ""
+
+msgid "Observability|Your observability access request has been submitted successfully"
+msgstr ""
+
+msgid "Observability|Your request to enable GitLab Observability for this group has been successfully submitted. Our team will review and provision your observability environment."
 msgstr ""
 
 msgid "Observability|allowedMessageType must be a non-empty string"
 msgstr ""
 
 msgid "Observability|allowedOrigin must be a non-empty string"
+msgstr ""
+
+msgid "Observability|documentation"
+msgstr ""
+
+msgid "Observability|for %{group_name}"
+msgstr ""
+
+msgid "Observability|for detailed setup instructions and best practices"
 msgstr ""
 
 msgid "Oct"

@@ -16,6 +16,7 @@
 - Security::VulnerabilityElasticCountOverTimeFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - AuditEvents::CombinedAuditEventFinder # Reason: The finder combines result from 4 different tables and also returns cursor to next page
 - Security::AnalyzerGroupStatusFinder # Reason: To give accurate counts, return all analyzer types, even when there is no DB record
+- WorkItems::Glql::WorkItemsFinder # Reason: The finder deals with Elasticsearch records and not DB records
 
 # Temporary excludes (aka TODOs)
 # For example:

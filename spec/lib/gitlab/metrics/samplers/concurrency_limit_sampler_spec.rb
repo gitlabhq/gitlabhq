@@ -39,6 +39,8 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
             .to receive(:concurrent_worker_count).exactly(workers_with_limits.size).times.and_return(1)
         expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
           .to receive(:limit_for).exactly(workers_with_limits.size).times.and_return(1)
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:current_limit).exactly(workers_with_limits.size).times.and_return(1)
 
         queue_size_gauge_double = instance_double(Prometheus::Client::Gauge)
         expect(Gitlab::Metrics).to receive(:gauge)
@@ -73,6 +75,18 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
                                               .with({ worker: anything, feature_category: anything }, 1)
                                               .exactly(workers_with_limits.size).times
         expect(limit_gauge_double).to receive(:set)
+                                              .with({ worker: anything, feature_category: anything }, 0)
+                                              .exactly(workers_with_limits.size).times
+
+        current_limit_gauge_double = instance_double(Prometheus::Client::Gauge)
+        expect(Gitlab::Metrics).to receive(:gauge)
+                                     .once
+                                     .with(:sidekiq_concurrency_limit_current_limit, anything)
+                                     .and_return(current_limit_gauge_double)
+        expect(current_limit_gauge_double).to receive(:set)
+                                              .with({ worker: anything, feature_category: anything }, 1)
+                                              .exactly(workers_with_limits.size).times
+        expect(current_limit_gauge_double).to receive(:set)
                                               .with({ worker: anything, feature_category: anything }, 0)
                                               .exactly(workers_with_limits.size).times
 

@@ -1571,10 +1571,11 @@ module API
         end
         params do
           use :create_personal_access_token_params
-          # NOTE: for security reasons only the k8s_proxy scope is allowed at the moment.
+          # NOTE: for security reasons only the k8s_proxy and self_rotate scope is allowed at the moment.
           # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
-          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
+          # and in https://gitlab.com/gitlab-org/gitlab/-/issues/555546
+          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
         end
         post feature_category: :system_access do

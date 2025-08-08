@@ -74,8 +74,8 @@ export default {
       },
       update(data) {
         return [
-          ...this.filterItems(data.workspace.workItemsByIid?.nodes),
-          ...this.filterItems(data.workspace.workItems?.nodes),
+          ...this.filterItems(data.workspace?.workItemsByIid?.nodes || []),
+          ...this.filterItems(data.workspace?.workItems?.nodes || []),
         ];
       },
       error() {

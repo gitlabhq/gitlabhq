@@ -214,9 +214,9 @@ Use **AI**. Do not spell out **artificial intelligence**.
 
 ## AI agent
 
-When writing about AI, the **AI agent** is an entity that performs actions for the user.
+When writing about AI, the **agent** is an entity that performs actions for the user.
 
-After first use, you can use **agent** without **AI**.
+You can use **AI agent** if **agent** on its own is not clear.
 
 When you're interacting with an AI agent, a [**session**](#session) is running.
 The user can stop a session.
@@ -1080,8 +1080,9 @@ Filtering is different from [searching](#search).
 
 ## flows
 
-GitLab provides multiple **flows** that are run by [AI agents](#ai-agent).
-Both **flow** and **agent flow** are acceptable.
+GitLab provides multiple **flows** that are run by [agents](#ai-agent).
+
+Do not use **agent flow**.
 
 You choose a flow. You start a [**session**](#session).
 
@@ -2379,8 +2380,10 @@ Use title case for **Service Desk**.
 
 ## session
 
-When an [AI agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
+When an [agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
 The session can start and stop.
+
+Do not use **AI session** or **agent session**.
 
 ## setup, set up
 

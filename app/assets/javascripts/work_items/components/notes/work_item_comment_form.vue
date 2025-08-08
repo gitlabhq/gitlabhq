@@ -264,7 +264,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;

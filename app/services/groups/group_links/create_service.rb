@@ -40,11 +40,11 @@ module Groups
         )
           AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(
             shared_with_group.id,
-            { 'priority' => priority_for_refresh(shared_with_group).to_s, 'direct_members_only' => true }
+            { 'priority' => priority_for_refresh, 'direct_members_only' => true }
           )
         else
           shared_with_group.refresh_members_authorized_projects(
-            priority: priority_for_refresh(shared_with_group),
+            priority: priority_for_refresh,
             direct_members_only: true
           )
         end

@@ -64,7 +64,7 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace.workItems.nodes || [];
+        return data.workspace?.workItems?.nodes || [];
       },
       error(error) {
         createAlert({

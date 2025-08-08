@@ -155,3 +155,8 @@ export const MOCK_FIELDS = [
   { key: 'state', label: 'State', name: 'state' },
   { key: 'description', label: 'Description', name: 'description' },
 ];
+
+export const MOCK_DIMENSION = {
+  title: 'From 2025-01-01 to 2025-01-31',
+  __typename: 'GlqlDimension',
+};

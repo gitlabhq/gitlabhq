@@ -54,7 +54,9 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
         end
 
         it 'does not add observability menu items' do
-          expect(observability_menu.renderable_items).to be_empty
+          expected_menu_items = [:request_access]
+
+          expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
         end
       end
     end
@@ -65,7 +67,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       end
 
       it 'adds the o11y settings menu item' do
-        expected_menu_items = [:o11y_settings]
+        expected_menu_items = [:o11y_settings, :request_access]
 
         expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
       end
