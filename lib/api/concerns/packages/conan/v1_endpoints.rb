@@ -19,8 +19,6 @@ module API
           included do
             helpers do
               def x_conan_server_capabilities_header
-                return [] unless Feature.enabled?(:conan_package_revisions_support, Feature.current_request)
-
                 ['revisions']
               end
             end
