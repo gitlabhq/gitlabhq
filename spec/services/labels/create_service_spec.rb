@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Labels::CreateService, feature_category: :team_planning do
   describe '#execute' do
-    let(:project) { create(:project) }
-    let(:group)   { create(:group) }
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
 
     let(:hex_color) { '#FF0000' }
     let(:named_color) { 'red' }
@@ -15,6 +16,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
     let(:no_color) { '' }
 
     let(:expected_saved_color) { ::Gitlab::Color.of(hex_color) }
+    let(:template_params) { { template: true, organization_id: organization.id } }
 
     context 'in a project' do
       context 'with color in hex-code' do
@@ -126,7 +128,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
     context 'in admin area' do
       context 'with color in hex-code' do
         it 'creates a label' do
-          label = described_class.new(params_with(hex_color)).execute(template: true)
+          label = described_class.new(params_with(hex_color)).execute(template_params)
 
           expect(label).to be_persisted
           expect(label.color).to eq expected_saved_color
@@ -135,7 +137,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
 
       context 'with color in allowed name' do
         it 'creates a label' do
-          label = described_class.new(params_with(named_color)).execute(template: true)
+          label = described_class.new(params_with(named_color)).execute(template_params)
 
           expect(label).to be_persisted
           expect(label.color).to eq expected_saved_color
@@ -144,7 +146,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
 
       context 'with color in up-case allowed name' do
         it 'creates a label' do
-          label = described_class.new(params_with(upcase_color)).execute(template: true)
+          label = described_class.new(params_with(upcase_color)).execute(template_params)
 
           expect(label).to be_persisted
           expect(label.color).to eq expected_saved_color
@@ -153,7 +155,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
 
       context 'with color surrounded by spaces' do
         it 'creates a label' do
-          label = described_class.new(params_with(spaced_color)).execute(template: true)
+          label = described_class.new(params_with(spaced_color)).execute(template_params)
 
           expect(label).to be_persisted
           expect(label.color).to eq expected_saved_color
@@ -162,7 +164,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
 
       context 'with unknown color' do
         it 'doesn\'t create a label' do
-          label = described_class.new(params_with(unknown_color)).execute(template: true)
+          label = described_class.new(params_with(unknown_color)).execute(template_params)
 
           expect(label).not_to be_persisted
         end
@@ -170,7 +172,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
 
       context 'with no color' do
         it 'doesn\'t create a label' do
-          label = described_class.new(params_with(no_color)).execute(template: true)
+          label = described_class.new(params_with(no_color)).execute(template_params)
 
           expect(label).not_to be_persisted
         end
@@ -188,7 +190,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
         it 'does not allow setting lock_on_merge' do
           label = described_class.new(params).execute(project: project)
           label2 = described_class.new(params).execute(group: group)
-          label3 = described_class.new(params).execute(template: true)
+          label3 = described_class.new(params).execute(template_params)
 
           expect(label.lock_on_merge).to be_falsey
           expect(label2.lock_on_merge).to be_falsey
@@ -206,7 +208,7 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
         end
 
         it 'does not alow setting lock_on_merge for templates' do
-          label = described_class.new(params).execute(template: true)
+          label = described_class.new(params).execute(template_params)
 
           expect(label).not_to be_persisted
         end

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Label, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
 
   describe 'modules' do
@@ -22,6 +23,8 @@ RSpec.describe Label, feature_category: :team_planning do
   it_behaves_like 'BaseLabel'
 
   describe 'validation' do
+    subject { described_class.new(project: project) }
+
     it { is_expected.to validate_uniqueness_of(:title).scoped_to([:group_id, :project_id]) }
 
     describe 'description length' do
@@ -139,52 +142,118 @@ RSpec.describe Label, feature_category: :team_planning do
         end
       end
     end
-  end
 
-  describe 'ensure_lock_on_merge_allowed' do
-    let(:validation_error) { 'can not be set for template labels' }
+    describe 'exactly_one_parent', :with_current_organization do
+      context 'when none of the parent_id fields are set' do
+        it 'adds an error message' do
+          label = described_class.new
+          label.valid?
 
-    # rubocop:disable Rails/SaveBang
-    context 'when creating a label' do
-      let(:label) { described_class.create(title: 'test', template: template, lock_on_merge: lock_on_merge) }
-
-      where(:template, :lock_on_merge, :valid, :errors) do
-        false         | false        | true    | []
-        false         | true         | true    | []
-        true          | false        | true    | []
-        true          | true         | false   | [validation_error]
-        false         | true         | true    | []
+          expect(label.errors[:parent]).to include('exactly one of group, project, organization is required')
+        end
       end
 
-      with_them do
-        it 'validates lock_on_merge on label creation' do
-          expect(label.valid?).to be(valid)
-          expect(label.errors[:lock_on_merge]).to eq(errors)
+      context 'when a parent is set' do
+        let(:group_id) { group.id }
+        let(:project_id) { project.id }
+        let(:organization_id) { current_organization.id }
+
+        where(:current_group_id, :current_project_id, :current_organization_id, :valid) do
+          ref(:group_id)        | nil              | nil                   | true
+          nil                   | ref(:project_id) | nil                   | true
+          nil                   | nil              | ref(:organization_id) | true
+          ref(:group_id)        | ref(:project_id) | ref(:organization_id) | false
+          ref(:group_id)        | ref(:project_id) | nil                   | false
+          ref(:group_id)        | nil              | ref(:organization_id) | false
+          nil                   | ref(:project_id) | ref(:organization_id) | false
+        end
+
+        with_them do
+          it 'validates presence of a single parent' do
+            label = described_class.new(
+              group_id: current_group_id,
+              project_id: current_project_id,
+              organization_id: current_organization_id
+            )
+            label.valid?
+
+            expect(label.errors[:parent].empty?).to eq(valid)
+          end
         end
       end
     end
-    # rubocop:enable Rails/SaveBang
 
-    context 'when updating a label' do
-      let_it_be(:template_label) { create(:label, template: true) }
+    describe 'ensure_lock_on_merge_allowed' do
+      let(:validation_error) { 'can not be set for template labels' }
 
-      where(:lock_on_merge, :valid, :errors) do
-        true         | false   | [validation_error]
-        false        | true    | []
+      # rubocop:disable Rails/SaveBang
+      context 'when creating a label' do
+        let(:label) { described_class.create(title: 'test', template: template, lock_on_merge: lock_on_merge) }
+
+        where(:template, :lock_on_merge, :valid, :errors) do
+          false         | false        | true    | []
+          false         | true         | true    | []
+          true          | false        | true    | []
+          true          | true         | false   | [validation_error]
+          false         | true         | true    | []
+        end
+
+        with_them do
+          it 'validates lock_on_merge on label creation' do
+            label.valid?
+
+            expect(label.errors[:lock_on_merge].empty?).to eq(valid)
+            expect(label.errors[:lock_on_merge]).to eq(errors)
+          end
+        end
       end
+      # rubocop:enable Rails/SaveBang
 
-      with_them do
-        it 'validates lock_on_merge value if label is a template' do
-          template_label.update_column(:lock_on_merge, lock_on_merge)
+      context 'when updating a label' do
+        let_it_be(:template_label) { create(:label, template: true) }
 
-          expect(template_label.valid?).to be(valid)
-          expect(template_label.errors[:lock_on_merge]).to eq(errors)
+        where(:lock_on_merge, :valid, :errors) do
+          true         | false   | [validation_error]
+          false        | true    | []
+        end
+
+        with_them do
+          it 'validates lock_on_merge value if label is a template' do
+            template_label.update_column(:lock_on_merge, lock_on_merge)
+
+            expect(template_label.valid?).to be(valid)
+            expect(template_label.errors[:lock_on_merge]).to eq(errors)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    describe 'ensure_single_parent_existing_records' do
+      context 'when its a group label' do
+        let(:label) { create(:group_label, group: group) }
+
+        it 'removes project_id if present' do
+          label.project_id = project.id
+          expect(label).to be_valid
         end
       end
     end
   end
 
   describe 'scopes' do
+    describe '.for_organization' do
+      let(:organization1) { create(:organization) }
+      let(:organization2) { create(:organization) }
+      let!(:label1) { create(:admin_label, organization: organization1) }
+      let!(:label2) { create(:admin_label, organization: organization2) }
+
+      subject { described_class.for_organization(organization2) }
+
+      it { is_expected.to contain_exactly(label2) }
+    end
+
     describe '.on_board' do
       let(:board) { create(:board, project: project) }
       let!(:list1) { create(:list, board: board, label: development) }
@@ -392,13 +461,15 @@ RSpec.describe Label, feature_category: :team_planning do
     end
   end
 
-  describe '#templates' do
+  describe '#templates', :with_current_organization do
     context 'with invalid template labels' do
       it 'returns only valid template labels' do
         create(:label)
         # Project labels should not have template set to true
         create(:label, template: true)
-        valid_template_label = described_class.create!(title: 'test', template: true, type: nil)
+        valid_template_label = described_class.create!(
+          title: 'test', template: true, type: nil, organization_id: current_organization.id
+        )
 
         expect(described_class.templates).to eq([valid_template_label])
       end

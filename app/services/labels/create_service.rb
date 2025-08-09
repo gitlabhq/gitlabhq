@@ -18,6 +18,7 @@ module Labels
         project_or_group.labels.create(params)
       elsif target_params[:template]
         label = Label.new(params)
+        label.organization_id = target_params[:organization_id]
         label.template = true
         label.save
         label

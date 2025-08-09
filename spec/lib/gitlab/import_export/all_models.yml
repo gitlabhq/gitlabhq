@@ -155,6 +155,8 @@ label:
 - priorities
 - epic_board_labels
 - epic_lists
+- group
+- organization
 milestone:
 - group
 - project

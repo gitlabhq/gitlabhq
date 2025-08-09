@@ -24,6 +24,11 @@ export default {
       type: Object,
       required: true,
     },
+    counterClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   i18n: {
     issues: __('Assigned issues'),
@@ -67,11 +72,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-justify-between gl-gap-2">
+  <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
     <counter
       v-gl-tooltip.bottom="$options.i18n.issues"
-      class="dashboard-shortcuts-issues gl-basis-1/3 gl-rounded-lg"
+      class="dashboard-shortcuts-issues gl-basis-1/3"
       icon="issues"
+      :class="counterClass"
       :count="userCounts.assigned_issues"
       :href="sidebarData.issues_dashboard_path"
       :label="$options.i18n.issues"
@@ -89,9 +95,10 @@ export default {
     >
       <counter
         v-gl-tooltip.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
-        class="gl-w-full gl-rounded-lg"
+        class="gl-w-full"
         :class="{
           'js-merge-request-dashboard-shortcut': !sidebarData.merge_request_menu,
+          [counterClass]: true,
         }"
         icon="merge-request"
         :href="sidebarData.merge_request_dashboard_path"
@@ -105,8 +112,9 @@ export default {
     </component>
     <counter
       v-gl-tooltip.bottom="$options.i18n.todoList"
-      class="shortcuts-todos js-todos-count gl-basis-1/3 gl-rounded-lg"
+      class="shortcuts-todos js-todos-count gl-basis-1/3"
       icon="todo-done"
+      :class="counterClass"
       :count="userCounts.todos"
       :href="sidebarData.todos_dashboard_path"
       :label="$options.i18n.todoList"

@@ -131,7 +131,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
       end
 
       context 'with implemented github_identifiers method' do
-        it 'returns an array containing the validation errors and logs them' do
+        it 'returns an array containing the validation errors and logs them', :aggregate_failures do
           expect(importer)
             .to receive(:github_identifiers)
             .with(object)
@@ -148,7 +148,9 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
             .with(
               project_id: project.id,
               importer: 'MyImporter',
-              message: ['Title is invalid'],
+              message: containing_exactly(
+                'Title is invalid', 'Parent exactly one of group, project, organization is required'
+              ),
               external_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
             )
 
@@ -168,7 +170,9 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           expect(rows).to be_empty
           expect(errors).not_to be_empty
 
-          expect(errors[0][:validation_errors].full_messages).to match_array(['Title is invalid'])
+          expect(errors[0][:validation_errors].full_messages).to contain_exactly(
+            'Title is invalid', 'Parent exactly one of group, project, organization is required'
+          )
           expect(errors[0][:external_identifiers]).to eq({ id: 12345, title: 'bug,bug', object_type: :object_type })
         end
       end

@@ -15112,6 +15112,9 @@ msgstr ""
 msgid "Collapse eligible approvers"
 msgstr ""
 
+msgid "Collapse errors"
+msgstr ""
+
 msgid "Collapse issues"
 msgstr ""
 
@@ -26512,6 +26515,9 @@ msgstr ""
 msgid "Expand eligible approvers"
 msgstr ""
 
+msgid "Expand errors"
+msgstr ""
+
 msgid "Expand file"
 msgstr ""
 
@@ -28479,7 +28485,7 @@ msgstr ""
 msgid "Geo|Filter Geo sites"
 msgstr ""
 
-msgid "Geo|Geo Replication - %{node_name}"
+msgid "Geo|Geo Replication - %{siteName}"
 msgstr ""
 
 msgid "Geo|Geo Settings"
@@ -28546,9 +28552,6 @@ msgid "Geo|Last event ID processed"
 msgstr ""
 
 msgid "Geo|Last synced: %{timeAgo}"
-msgstr ""
-
-msgid "Geo|Last time verified"
 msgstr ""
 
 msgid "Geo|Last verified: %{timeAgo}"
@@ -28812,6 +28815,15 @@ msgstr ""
 msgid "Geo|Succeeded"
 msgstr ""
 
+msgid "Geo|Sync failed"
+msgstr ""
+
+msgid "Geo|Sync pending"
+msgstr ""
+
+msgid "Geo|Sync unknown"
+msgstr ""
+
 msgid "Geo|Synced"
 msgstr ""
 
@@ -28822,6 +28834,9 @@ msgid "Geo|Synchronization settings"
 msgstr ""
 
 msgid "Geo|Synchronization status"
+msgstr ""
+
+msgid "Geo|Syncing"
 msgstr ""
 
 msgid "Geo|Terraform State Version"
@@ -28920,10 +28935,19 @@ msgstr ""
 msgid "Geo|Verification concurrency limit"
 msgstr ""
 
+msgid "Geo|Verification disabled"
+msgstr ""
+
+msgid "Geo|Verification failed"
+msgstr ""
+
 msgid "Geo|Verification failure"
 msgstr ""
 
 msgid "Geo|Verification information"
+msgstr ""
+
+msgid "Geo|Verification pending"
 msgstr ""
 
 msgid "Geo|Verification started: %{timeAgo}"
@@ -28932,10 +28956,16 @@ msgstr ""
 msgid "Geo|Verification status"
 msgstr ""
 
+msgid "Geo|Verification unknown"
+msgstr ""
+
 msgid "Geo|Verification: %{status}"
 msgstr ""
 
 msgid "Geo|Verified"
+msgstr ""
+
+msgid "Geo|Verifying"
 msgstr ""
 
 msgid "Geo|Whether this site's database is connected to the primary database directly or through data replication"
@@ -32105,9 +32135,6 @@ msgid "Hide comments on this file"
 msgstr ""
 
 msgid "Hide details"
-msgstr ""
-
-msgid "Hide errors"
 msgstr ""
 
 msgid "Hide file browser"
@@ -60294,9 +60321,6 @@ msgstr ""
 msgid "Show epics in global search results"
 msgstr ""
 
-msgid "Show errors"
-msgstr ""
-
 msgid "Show file browser"
 msgstr ""
 
@@ -75351,6 +75375,9 @@ msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
 msgstr ""
 
 msgid "event"
+msgstr ""
+
+msgid "exactly one of %{parent_types} is required"
 msgstr ""
 
 msgid "example-branch-name"

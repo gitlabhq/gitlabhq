@@ -17154,7 +17154,8 @@ CREATE TABLE labels (
     group_id bigint,
     cached_markdown_version integer,
     lock_on_merge boolean DEFAULT false NOT NULL,
-    archived boolean DEFAULT false NOT NULL
+    archived boolean DEFAULT false NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE labels_id_seq
@@ -30213,6 +30214,9 @@ ALTER TABLE workspaces
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE labels
+    ADD CONSTRAINT check_2d9a8c1bca CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
@@ -34791,7 +34795,7 @@ CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt
 
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_size_bytes ON zoekt_repositories USING btree (zoekt_index_id, size_bytes);
 
-CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state ON zoekt_repositories USING btree (zoekt_index_id, state);
+CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state_with_schema ON zoekt_repositories USING btree (zoekt_index_id, state) INCLUDE (schema_version);
 
 CREATE INDEX import_export_upload_uploads_checksum_idx ON import_export_upload_uploads USING btree (checksum);
 
@@ -36776,6 +36780,8 @@ CREATE UNIQUE INDEX index_label_priorities_on_project_id_and_label_id ON label_p
 CREATE INDEX index_labels_on_group_id ON labels USING btree (group_id);
 
 CREATE UNIQUE INDEX index_labels_on_group_id_and_title_varchar_unique ON labels USING btree (group_id, title varchar_pattern_ops) WHERE (project_id IS NULL);
+
+CREATE INDEX index_labels_on_organization_id ON labels USING btree (organization_id);
 
 CREATE INDEX index_labels_on_project_id ON labels USING btree (project_id);
 
@@ -44367,6 +44373,9 @@ ALTER TABLE ONLY catalog_resource_component_last_usages
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY labels
+    ADD CONSTRAINT fk_9227dc44c3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_92714bcab1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

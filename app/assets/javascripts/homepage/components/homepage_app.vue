@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import GreetingHeader from './greeting_header.vue';
 import MergeRequestsWidget from './merge_requests_widget.vue';
 import WorkItemsWidget from './work_items_widget.vue';
@@ -8,6 +9,7 @@ import TodosWidget from './todos_widget.vue';
 
 export default {
   components: {
+    GlLink,
     GreetingHeader,
     MergeRequestsWidget,
     WorkItemsWidget,
@@ -61,6 +63,11 @@ export default {
       <div>
         <recently-viewed-widget />
       </div>
+    </div>
+    <div class="gl-mt-5 gl-text-center">
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/553938" target="_blank">{{
+        __('Leave feedback')
+      }}</gl-link>
     </div>
   </div>
 </template>

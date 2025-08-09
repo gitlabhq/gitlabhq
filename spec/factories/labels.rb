@@ -40,5 +40,8 @@ FactoryBot.define do
     group
   end
 
-  factory :admin_label, traits: [:base_label], class: 'Label'
+  factory :admin_label, traits: [:base_label], class: 'Label' do
+    template { true }
+    organization
+  end
 end

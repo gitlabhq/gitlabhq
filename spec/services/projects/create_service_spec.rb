@@ -18,7 +18,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     subject(:project) { create_project(user, opts) }
 
     before_all do
-      Label.create!(title: 'bug', template: true)
+      create(:admin_label, title: 'bug', template: true)
     end
 
     it 'creates labels on project creation' do

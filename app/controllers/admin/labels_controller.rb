@@ -7,7 +7,11 @@ class Admin::LabelsController < Admin::ApplicationController
   urgency :low
 
   def index
-    @labels = Label.templates.page(pagination_params[:page])
+    @labels = if Feature.enabled?(:template_labels_scoped_by_org, :instance)
+                Label.for_organization(Current.organization)
+              else
+                Label
+              end.templates.page(pagination_params[:page])
   end
 
   def show; end
@@ -19,7 +23,7 @@ class Admin::LabelsController < Admin::ApplicationController
   def edit; end
 
   def create
-    @label = Labels::CreateService.new(label_params).execute(template: true)
+    @label = Labels::CreateService.new(label_params).execute(template: true, organization_id: Current.organization.id)
 
     if @label.persisted?
       redirect_to admin_labels_url, notice: _("Label was created")
@@ -29,7 +33,15 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def update
-    @label = Labels::UpdateService.new(label_params).execute(@label)
+    # TODO: This can be removed in the next release after the backfill is complete and final steps
+    # on https://gitlab.com/gitlab-org/gitlab/-/issues/545051 are implemented
+    update_params = if @label.organization_id.blank?
+                      label_params.merge(organization_id: Current.organization.id)
+                    else
+                      label_params
+                    end
+
+    @label = Labels::UpdateService.new(update_params).execute(@label)
 
     if @label.valid?
       redirect_to admin_labels_path, notice: _('Label was successfully updated.')
@@ -59,7 +71,11 @@ class Admin::LabelsController < Admin::ApplicationController
   private
 
   def set_label
-    @label = Label.find(params.permit(:id)[:id])
+    @label = if Feature.enabled?(:template_labels_scoped_by_org, :instance)
+               Label.for_organization(Current.organization)
+             else
+               Label
+             end.templates.find(params.permit(:id)[:id])
   end
 
   def label_params

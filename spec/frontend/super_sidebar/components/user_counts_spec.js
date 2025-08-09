@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import Counter from '~/super_sidebar/components/counter.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
@@ -16,13 +17,27 @@ describe('UserCounts component', () => {
   const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
 
-  const createWrapper = ({ sidebarData = mockSidebarData } = {}) => {
+  const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(UserCounts, {
       propsData: {
-        sidebarData,
+        sidebarData: { ...mockSidebarData },
+        ...props,
       },
     });
   };
+
+  it('applies counterClass to counter components', () => {
+    const customClass = 'custom-counter-class';
+    createWrapper({
+      sidebarData: mockSidebarData,
+      counterClass: customClass,
+    });
+
+    const counters = wrapper.findAllComponents(Counter);
+    counters.wrappers.forEach((counter) => {
+      expect(counter.classes()).toContain(customClass);
+    });
+  });
 
   describe('default', () => {
     beforeEach(() => {

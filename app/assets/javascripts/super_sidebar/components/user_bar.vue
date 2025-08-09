@@ -138,7 +138,11 @@ export default {
     </gl-button>
     <search-modal />
 
-    <user-counts v-if="sidebarData.is_logged_in" :sidebar-data="sidebarData" />
+    <user-counts
+      v-if="sidebarData.is_logged_in"
+      counter-class="user-bar-button gl-grow gl-gap-2 gl-rounded-lg gl-py-3 gl-text-sm hover:gl-no-underline gl-leading-1"
+      :sidebar-data="sidebarData"
+    />
 
     <hr aria-hidden="true" class="-gl-mb-2 gl-mt-2" />
   </div>
