@@ -1,4 +1,5 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'spec/test_constants';
 import initReadMore from '~/read_more';
 
 describe('Read more click-to-expand functionality', () => {
@@ -121,5 +122,65 @@ describe('data-read-more-height defines when to show the read-more button', () =
     initReadMore();
 
     expect(findTrigger()).toHaveLength(0);
+  });
+});
+
+describe('anchor link contains special characters', () => {
+  global.CSS = {
+    escape: (val) => val.replace(/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g, '\\$&'),
+  };
+
+  const findTarget = () => document.querySelector('.read-more-content');
+  const findTrigger = () => document.querySelector('.js-read-more-trigger');
+  const findHashTarget = (id) => document.querySelector(`#user-content-${CSS.escape(id)}`);
+
+  const setSpecialCharacterFixture = (hashValue) => {
+    setHTMLFixture(`
+      <div class="read-more-container" data-read-more-height="50">
+        <div class="read-more-content">
+          <h2 id="user-content-${hashValue}">${hashValue}</h2>
+          <p>Some content here</p>
+        </div>
+        <button type="button" class="js-read-more-trigger">
+          Read more
+        </button>
+      </div>
+    `);
+  };
+
+  describe.each`
+    hashValue
+    ${'日本語'}
+    ${'العربية'}
+    ${'русский'}
+    ${'test:with.special[chars]'}
+    ${'test(with)parens'}
+    ${'🚀📝✨'}
+  `(`when hash contains $hashValue`, ({ hashValue }) => {
+    const originalLocation = window.location;
+
+    beforeEach(() => {
+      delete window.location;
+      window.location = { href: `${TEST_HOST}/foo#${hashValue}`, hash: hashValue };
+
+      setSpecialCharacterFixture(hashValue);
+    });
+
+    afterEach(() => {
+      window.location = originalLocation;
+      resetHTMLFixture();
+    });
+
+    it('expands content and removes trigger when hash matches anchor value', () => {
+      findHashTarget(hashValue);
+
+      expect(findHashTarget(hashValue)).not.toBe(null);
+      expect(findTarget().classList.contains('is-expanded')).toBe(false);
+
+      initReadMore();
+
+      expect(findTarget().classList.contains('is-expanded')).toBe(true);
+      expect(findTrigger()).toBe(null);
+    });
   });
 });

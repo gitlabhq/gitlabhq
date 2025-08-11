@@ -45,11 +45,11 @@ For detailed information about GitLab Duo Workflow, review [the document here](.
 
 When properly configured, the prompt will transform your code to match enterprise standards, similar to the transformation shown in this diff:
 
-![Duo Workflow Output](img/duoworkflow-style_output_v17_10.png)
+![Duo Workflow view displaying instructions, task analysis, and resolution steps](img/duoworkflow-style_output_v17_10.png)
 
-![Style Guide Applied](img/duoworkflow_style_code_transform_v17_10.png)
+![Updated code snippet with consistent formatting after style guide transformation by Duo Workflow](img/duoworkflow_style_code_transform_v17_10.png)
 
-## Configure the Solutio Prompt and Context Library
+## Configure the Solution Prompt and Context Library
 
 ### Basic Setup
 

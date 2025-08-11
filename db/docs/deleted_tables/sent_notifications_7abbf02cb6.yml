@@ -12,3 +12,5 @@ gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200871
+removed_in_milestone: '18.3'

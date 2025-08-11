@@ -6024,6 +6024,59 @@ RSpec.describe User, feature_category: :user_profile do
         )
       end
     end
+
+    context 'when user has access to many projects' do
+      let_it_be(:projects_with_runners) { [project1, project2, project3] }
+      let_it_be(:runners) { Ci::Runner.belonging_to_project(projects_with_runners.pluck(:id)) } # runners created in parent block
+
+      before_all do
+        projects_with_runners.each { |project| project.add_maintainer(user) }
+      end
+
+      context "when project count within threshold" do
+        before do
+          stub_const("#{described_class.name}::CI_RUNNERS_PROJECT_COUNT_LIMIT", 3)
+        end
+
+        it 'uses the non-batched approach' do
+          expect(Ci::RunnerProject).not_to receive(:existing_project_ids)
+          ci_available_project_runners
+        end
+
+        it 'returns the correct runners' do
+          expect(ci_available_project_runners).to include(runner1, runner2)
+        end
+      end
+
+      context "when project count exceeds threshold" do
+        before do
+          stub_const("#{described_class.name}::CI_RUNNERS_PROJECT_COUNT_LIMIT", 2)
+          stub_const("#{described_class.name}::CI_PROJECT_RUNNERS_BATCH_SIZE", 2)
+        end
+
+        it 'returns only runners for projects that have runners', :aggregate_failures do
+          expect(ci_available_project_runners).to include(*runners)
+          expect(ci_available_project_runners.count).to eq(runners.count)
+        end
+
+        context 'processes the projects in batches' do
+          let(:batch_sizes) { [] }
+
+          before do
+            expect(Ci::RunnerProject).to receive(:existing_project_ids).and_wrap_original do |m, *args|
+              batch_sizes << args.first.size
+              m.call(*args)
+            end.exactly(2)
+          end
+
+          it 'with the correct batch sizes' do
+            ci_available_project_runners
+
+            expect(batch_sizes).to match_array([2, 1])
+          end
+        end
+      end
+    end
   end
 
   describe '#all_expanded_groups' do

@@ -22,7 +22,12 @@ export default {
     VisibilityChangeDetector,
   },
   mixins: [timeagoMixin, InternalEvents.mixin()],
-  inject: ['duoCodeReviewBotUsername'],
+  inject: [
+    'duoCodeReviewBotUsername',
+    'mergeRequestsReviewRequestedTitle',
+    'mergeRequestsYourMergeRequestsTitle',
+  ],
+
   props: {
     reviewRequestedPath: {
       type: String,
@@ -117,7 +122,7 @@ export default {
           :href="reviewRequestedPath"
           @click="handleReviewRequestedClick"
         >
-          {{ __('Review requested') }}
+          {{ mergeRequestsReviewRequestedTitle }}
           <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
           <span
             v-if="reviewRequestedLastUpdatedAt"
@@ -134,7 +139,7 @@ export default {
           :href="assignedToYouPath"
           @click="handleAssignedClick"
         >
-          {{ __('Assigned to you') }}
+          {{ mergeRequestsYourMergeRequestsTitle }}
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
           <span
             v-if="assignedLastUpdatedAt"

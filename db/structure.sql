@@ -1103,56 +1103,6 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_40ecbfb353() IS 'Partitioning migration: table sync for uploads table';
 
-CREATE FUNCTION table_sync_function_d452a5847a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF (TG_OP = 'DELETE') THEN
-  DELETE FROM sent_notifications_7abbf02cb6 where "id" = OLD."id";
-ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE sent_notifications_7abbf02cb6
-  SET "project_id" = NEW."project_id",
-    "noteable_id" = NEW."noteable_id",
-    "noteable_type" = NEW."noteable_type",
-    "recipient_id" = NEW."recipient_id",
-    "commit_id" = NEW."commit_id",
-    "reply_key" = NEW."reply_key",
-    "in_reply_to_discussion_id" = NEW."in_reply_to_discussion_id",
-    "issue_email_participant_id" = NEW."issue_email_participant_id",
-    "namespace_id" = NEW."namespace_id",
-    "created_at" = NEW."created_at"
-  WHERE sent_notifications_7abbf02cb6."id" = NEW."id";
-ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO sent_notifications_7abbf02cb6 ("project_id",
-    "noteable_id",
-    "noteable_type",
-    "recipient_id",
-    "commit_id",
-    "reply_key",
-    "in_reply_to_discussion_id",
-    "id",
-    "issue_email_participant_id",
-    "namespace_id",
-    "created_at")
-  VALUES (NEW."project_id",
-    NEW."noteable_id",
-    NEW."noteable_type",
-    NEW."recipient_id",
-    NEW."commit_id",
-    NEW."reply_key",
-    NEW."in_reply_to_discussion_id",
-    NEW."id",
-    NEW."issue_email_participant_id",
-    NEW."namespace_id",
-    NEW."created_at");
-END IF;
-RETURN NULL;
-
-END
-$$;
-
-COMMENT ON FUNCTION table_sync_function_d452a5847a() IS 'Partitioning migration: table sync for sent_notifications table';
-
 CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
     LANGUAGE plpgsql IMMUTABLE
     AS $$
@@ -5202,21 +5152,6 @@ CREATE TABLE security_findings (
     CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL))
 )
 PARTITION BY LIST (partition_number);
-
-CREATE TABLE sent_notifications_7abbf02cb6 (
-    project_id bigint,
-    noteable_id bigint,
-    noteable_type character varying,
-    recipient_id bigint,
-    commit_id character varying,
-    reply_key character varying NOT NULL,
-    in_reply_to_discussion_id character varying,
-    id bigint NOT NULL,
-    issue_email_participant_id bigint,
-    namespace_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL
-)
-PARTITION BY RANGE (created_at);
 
 CREATE TABLE user_audit_events (
     id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
@@ -32095,9 +32030,6 @@ ALTER TABLE ONLY security_training_providers
 ALTER TABLE ONLY security_trainings
     ADD CONSTRAINT security_trainings_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY sent_notifications_7abbf02cb6
-    ADD CONSTRAINT sent_notifications_7abbf02cb6_pkey PRIMARY KEY (id, created_at);
-
 ALTER TABLE ONLY sent_notifications
     ADD CONSTRAINT sent_notifications_pkey PRIMARY KEY (id);
 
@@ -34558,12 +34490,6 @@ CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON is
 CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON ONLY p_ai_active_context_code_repositories USING btree (enabled_namespace_id);
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
-
-CREATE INDEX idx_p_sent_notifications_on_issue_email_participant_id ON ONLY sent_notifications_7abbf02cb6 USING btree (issue_email_participant_id);
-
-CREATE INDEX idx_p_sent_notifications_on_namespace_id ON ONLY sent_notifications_7abbf02cb6 USING btree (namespace_id);
-
-CREATE INDEX idx_p_sent_notifications_on_noteable_type_noteable_id_and_id ON ONLY sent_notifications_7abbf02cb6 USING btree (noteable_id, id) WHERE ((noteable_type)::text = 'Issue'::text);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 
@@ -42553,8 +42479,6 @@ CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE O
 
 CREATE TRIGGER table_sync_trigger_4ea4473e79 AFTER INSERT OR DELETE OR UPDATE ON uploads FOR EACH ROW EXECUTE FUNCTION table_sync_function_40ecbfb353();
 
-CREATE TRIGGER table_sync_trigger_a747bc4a6e AFTER INSERT OR DELETE OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION table_sync_function_d452a5847a();
-
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -45517,9 +45441,6 @@ ALTER TABLE ONLY security_policies
 
 ALTER TABLE ONLY subscription_user_add_on_assignment_versions
     ADD CONSTRAINT fk_rails_091e013a61 FOREIGN KEY (organization_id) REFERENCES organizations(id);
-
-ALTER TABLE sent_notifications_7abbf02cb6
-    ADD CONSTRAINT fk_rails_091ff9020c FOREIGN KEY (issue_email_participant_id) REFERENCES issue_email_participants(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY trending_projects
     ADD CONSTRAINT fk_rails_09feecd872 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

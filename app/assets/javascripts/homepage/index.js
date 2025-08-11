@@ -19,12 +19,16 @@ export default () => {
     assignedWorkItemsPath,
     authoredWorkItemsPath,
     duoCodeReviewBotUsername,
+    mergeRequestsReviewRequestedTitle,
+    mergeRequestsYourMergeRequestsTitle,
   } = el.dataset;
 
   return new Vue({
     el,
     provide: {
       duoCodeReviewBotUsername,
+      mergeRequestsReviewRequestedTitle,
+      mergeRequestsYourMergeRequestsTitle,
     },
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),

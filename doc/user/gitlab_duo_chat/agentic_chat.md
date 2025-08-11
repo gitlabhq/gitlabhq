@@ -203,13 +203,14 @@ Because of LLM context window limits, conversations are truncated to 200,000 tok
 
 {{< /history >}}
 
-In VS Code or a JetBrains IDE, if you have specific instructions that you want
+In your IDE, if you have specific instructions that you want
 Agentic Chat to follow in every conversation, you can create custom rules.
 
 Prerequisites:
 
 - For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
 - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
+- For Visual Studio, [install and configure the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
 
 {{< alert type="note" >}}
 

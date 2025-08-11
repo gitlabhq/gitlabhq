@@ -372,6 +372,16 @@ On subsequent visits, you should be able to [sign in to GitLab.com with SAML](#s
 or by visiting links directly. If the **enforce SSO** option is turned on, you
 are then redirected to sign in through the identity provider.
 
+#### Automatic identity linking for enterprise users
+
+If an enterprise user is removed from the group and then returns, they can sign in 
+with their enterprise SSO account.
+As long as the user's email address in the identity provider remains the same as the 
+email address on the existing GitLab account, the SSO identity is automatically linked 
+to the account and the user can sign in without any issues.
+This functionality also applies to existing users that have been claimed as an 
+enterprise user but who may not have yet signed into the group.
+
 ### Sign in to GitLab.com with SAML
 
 1. Sign in to your identity provider.
@@ -546,13 +556,6 @@ To disable password authentication for enterprise users:
 1. Select **Settings > SAML SSO**.
 1. Under **Configuration**, select **Disable password authentication for enterprise users**.
 1. Select **Save changes**.
-
-#### Automatic Identity Linking for enterprise users
-
-If an enterprise user is removed from the group and then returns, they can sign in with their enterprise SSO account.
-As long as the user's email address in the identity provider remains the same as the email address on the existing GitLab account, the SSO identity is automatically linked to the account and the user can sign in without any issues.
-
-This functionality also applies to existing users that have been claimed as an enterprise user but who may not have yet signed into the group.
 
 ### Block user access
 

@@ -70,6 +70,9 @@ class User < ApplicationRecord
   SERVICE_ACCOUNT_PREFIX = 'service_account'
   NOREPLY_EMAIL_DOMAIN = "noreply.#{Gitlab.config.gitlab.host}".freeze
 
+  CI_PROJECT_RUNNERS_BATCH_SIZE = 15_000
+  CI_RUNNERS_PROJECT_COUNT_LIMIT = 10_000
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
@@ -2931,9 +2934,15 @@ class User < ApplicationRecord
     # track the size of project_ids to optimise this query further in future
     track_ci_available_project_runners_query(project_ids.size)
 
-    # Load all project IDs upfront to handle indirect project access through group invitations
-    # and avoid CTE query when filtering runners for better performance
-    Ci::Runner.belonging_to_project(project_ids)
+    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
+
+    projects_with_runners = Set.new
+
+    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
+      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
+    end
+
+    Ci::Runner.belonging_to_project(projects_with_runners)
   end
 
   def track_ci_available_project_runners_query(size_of_project_ids)

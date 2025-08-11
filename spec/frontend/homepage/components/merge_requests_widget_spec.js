@@ -24,6 +24,8 @@ describe('MergeRequestsWidget', () => {
   Vue.use(VueApollo);
 
   const MOCK_DUO_CODE_REVIEW_BOT_USERNAME = 'GitLabDuo';
+  const MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_TITLE = 'Review requested';
+  const MOCK_MERGE_REQUESTS_YOUR_MERGE_REQUESTS_TITLE = 'Your merge requests';
   const MOCK_REVIEW_REQUESTED_PATH = '/review/requested/path';
   const MOCK_ASSIGNED_TO_YOU_PATH = '/assigned/to/you/path';
   const MOCK_CURRENT_TIME = new Date('2025-06-12T18:13:25Z');
@@ -57,7 +59,11 @@ describe('MergeRequestsWidget', () => {
     ]);
     wrapper = shallowMountExtended(MergeRequestsWidget, {
       apolloProvider: mockApollo,
-      provide: { duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME },
+      provide: {
+        duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
+        mergeRequestsReviewRequestedTitle: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_TITLE,
+        mergeRequestsYourMergeRequestsTitle: MOCK_MERGE_REQUESTS_YOUR_MERGE_REQUESTS_TITLE,
+      },
       propsData: {
         reviewRequestedPath: MOCK_REVIEW_REQUESTED_PATH,
         assignedToYouPath: MOCK_ASSIGNED_TO_YOU_PATH,

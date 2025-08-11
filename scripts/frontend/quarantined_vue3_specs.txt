@@ -34,7 +34,6 @@ spec/frontend/design_management/components/design_notes/design_reply_form_spec.j
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
-spec/frontend/feature_flags/components/strategy_spec.js
 spec/frontend/gitlab_version_check/index_spec.js
 spec/frontend/glql/components/common/facade_spec.js
 spec/frontend/glql/components/presenters/list_spec.js

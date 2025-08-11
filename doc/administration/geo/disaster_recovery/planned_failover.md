@@ -294,7 +294,7 @@ ensure these processes are close to 100% as possible during active use.
 On the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the site more

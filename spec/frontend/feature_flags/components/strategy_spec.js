@@ -161,7 +161,7 @@ describe('Feature flags strategy', () => {
         strategy = {
           name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
           parameters: { percentage: '50', groupId: 'default' },
-          scopes: [{ environmentScope: 'production', id: 1 }],
+          scopes: [{ environmentScope: 'production', id: 1, shouldBeDestroyed: false }],
         };
         const propsData = { strategy, index: 0 };
         factory({ propsData, provide });
@@ -176,7 +176,10 @@ describe('Feature flags strategy', () => {
             {
               name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
               parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
-              scopes: [{ environmentScope: 'production', id: 1, shouldBeDestroyed: true }],
+              scopes: [
+                { environmentScope: 'production', id: 1, shouldBeDestroyed: true },
+                { environmentScope: '*' },
+              ],
             },
           ],
         ]);

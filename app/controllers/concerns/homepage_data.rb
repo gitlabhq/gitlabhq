@@ -3,6 +3,7 @@
 module HomepageData
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
+  include MergeRequestsHelper
 
   private
 
@@ -13,7 +14,9 @@ module HomepageData
       assigned_merge_requests_path: assigned_merge_requests_path(user),
       assigned_work_items_path: issues_dashboard_path(assignee_username: user.username),
       authored_work_items_path: issues_dashboard_path(author_username: user.username),
-      duo_code_review_bot_username: duo_code_review_bot.username
+      duo_code_review_bot_username: duo_code_review_bot.username,
+      merge_requests_review_requested_title: dashboard_list_title('reviews_requested'),
+      merge_requests_your_merge_requests_title: dashboard_list_title('assigned_to_you')
     }
   end
 

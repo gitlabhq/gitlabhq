@@ -1287,12 +1287,12 @@ AS WITH
 SELECT
     cte.id AS id,
     multiIf(cte.project_id != 0, project_lookups.traversal_path, cte.group_id != 0, group_lookups.traversal_path, '0/') AS path,
-    cte.author_id,
+    cte.author_id AS author_id,
     cte.action AS action,
     cte.target_type AS target_type,
     cte.target_id AS target_id,
-    cte.created_at,
-    cte.updated_at,
+    cte.created_at AS created_at,
+    cte.updated_at AS updated_at,
     cte._siphon_replicated_at AS version,
     cte._siphon_deleted AS deleted
 FROM cte
@@ -1430,53 +1430,48 @@ AS WITH
         )
         WHERE _siphon_deleted = false
         GROUP BY work_item_id
-    ),
-    finalized AS
-    (
-        SELECT
-            multiIf(cte.namespace_id != 0, namespace_paths.traversal_path, '0/') AS traversal_path,
-            cte.id AS id,
-            cte.title,
-            cte.author_id,
-            cte.created_at,
-            cte.updated_at,
-            cte.milestone_id,
-            cte.iid,
-            cte.updated_by_id,
-            cte.weight,
-            cte.confidential,
-            cte.due_date,
-            cte.moved_to_id,
-            cte.time_estimate,
-            cte.relative_position,
-            cte.last_edited_at,
-            cte.last_edited_by_id,
-            cte.closed_at,
-            cte.closed_by_id,
-            cte.state_id,
-            cte.duplicated_to_id,
-            cte.promoted_to_epic_id,
-            cte.health_status,
-            cte.sprint_id,
-            cte.blocking_issues_count,
-            cte.upvotes_count,
-            cte.work_item_type_id,
-            cte.namespace_id,
-            cte.start_date,
-            collected_label_ids.label_ids AS label_ids,
-            collected_assignee_ids.user_ids AS assignee_ids,
-            collected_custom_status_records.custom_status_id AS custom_status_id,
-            collected_custom_status_records.system_defined_status_id AS system_defined_status_id,
-            cte._siphon_replicated_at AS version,
-            cte._siphon_deleted AS deleted
-        FROM cte
-        LEFT JOIN namespace_paths ON namespace_paths.id = cte.namespace_id
-        LEFT JOIN collected_assignee_ids ON collected_assignee_ids.issue_id = cte.id
-        LEFT JOIN collected_label_ids ON collected_label_ids.work_item_id = cte.id
-        LEFT JOIN collected_custom_status_records ON collected_custom_status_records.work_item_id = cte.id
     )
-SELECT *
-FROM finalized;
+SELECT
+    multiIf(cte.namespace_id != 0, namespace_paths.traversal_path, '0/') AS traversal_path,
+    cte.id AS id,
+    cte.title AS title,
+    cte.author_id AS author_id,
+    cte.created_at AS created_at,
+    cte.updated_at AS updated_at,
+    cte.milestone_id AS milestone_id,
+    cte.iid AS iid,
+    cte.updated_by_id AS updated_by_id,
+    cte.weight AS weight,
+    cte.confidential AS confidential,
+    cte.due_date AS due_date,
+    cte.moved_to_id AS moved_to_id,
+    cte.time_estimate AS time_estimate,
+    cte.relative_position AS relative_position,
+    cte.last_edited_at AS last_edited_at,
+    cte.last_edited_by_id AS last_edited_by_id,
+    cte.closed_at AS closed_at,
+    cte.closed_by_id AS closed_by_id,
+    cte.state_id AS state_id,
+    cte.duplicated_to_id AS duplicated_to_id,
+    cte.promoted_to_epic_id AS promoted_to_epic_id,
+    cte.health_status AS health_status,
+    cte.sprint_id AS sprint_id,
+    cte.blocking_issues_count AS blocking_issues_count,
+    cte.upvotes_count AS upvotes_count,
+    cte.work_item_type_id AS work_item_type_id,
+    cte.namespace_id AS namespace_id,
+    cte.start_date AS start_date,
+    collected_label_ids.label_ids AS label_ids,
+    collected_assignee_ids.user_ids AS assignee_ids,
+    collected_custom_status_records.custom_status_id AS custom_status_id,
+    collected_custom_status_records.system_defined_status_id AS system_defined_status_id,
+    cte._siphon_replicated_at AS version,
+    cte._siphon_deleted AS deleted
+FROM cte
+LEFT JOIN namespace_paths ON namespace_paths.id = cte.namespace_id
+LEFT JOIN collected_assignee_ids ON collected_assignee_ids.issue_id = cte.id
+LEFT JOIN collected_label_ids ON collected_label_ids.work_item_id = cte.id
+LEFT JOIN collected_custom_status_records ON collected_custom_status_records.work_item_id = cte.id;
 
 CREATE MATERIALIZED VIEW namespace_traversal_paths_mv TO namespace_traversal_paths
 (

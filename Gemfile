@@ -554,7 +554,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 4.9.0', require: false, feature_category: :tooling
+  gem 'gitlab-dangerfiles', '~> 4.10.0', require: false, feature_category: :tooling
 end
 
 group :development, :test, :coverage do
@@ -607,7 +607,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared
 
-  gem 'gitlab_quality-test_tooling', '~> 2.10.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 2.18.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers

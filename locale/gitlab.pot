@@ -8995,9 +8995,6 @@ msgstr ""
 msgid "Assigned to %{assignee_name}"
 msgstr ""
 
-msgid "Assigned to you"
-msgstr ""
-
 msgid "Assignee"
 msgid_plural "%d Assignees"
 msgstr[0] ""
@@ -23940,6 +23937,9 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Actions"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
@@ -23947,6 +23947,9 @@ msgid "DuoAgentsPlatform|Agent sessions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automate"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Config Path"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Convert Jenkins to CI"
@@ -23958,7 +23961,31 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create a new automated AI workflow trigger."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Create flow trigger"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Create flow triggers to automatically run pipelines when specified events occur in your project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Default"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Delete trigger"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Description"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Edit trigger"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Event Type"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Failed to fetch flow triggers"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
@@ -23976,7 +24003,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|ID"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Manage automated AI workflows within your project."
+msgid "DuoAgentsPlatform|Manage automated flows within your project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Name"
@@ -23997,10 +24024,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|No flow triggers yet"
+msgstr ""
+
 msgid "DuoAgentsPlatform|No logs available yet."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Output"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Owner"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Path must be a Jenkinsfile with the exact matching case."

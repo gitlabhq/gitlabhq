@@ -12,6 +12,8 @@ RSpec.describe Search::Worker, feature_category: :global_search do
       include ApplicationWorker
       include ::Search::Worker
 
+      pause_control :advanced_search
+
       def perform
         logger.info 'Worker start'
       end
@@ -37,5 +39,74 @@ RSpec.describe Search::Worker, feature_category: :global_search do
     expect(logger).to receive(:info).with('Worker start')
 
     worker.perform
+  end
+
+  shared_examples 'validate search workers' do
+    it 'all workers use pause_control', :eager_load, :aggregate_failures do
+      workers = ObjectSpace.each_object(::Class).select do |klass|
+        klass.included_modules.include?(::Search::Worker) && exceptions.exclude?(klass)
+      end
+
+      expect(workers).not_to be_empty
+
+      workers.each do |worker|
+        expect(worker.get_pause_control).not_to be_nil, "#{worker.name} should have pause_control set"
+      end
+    end
+  end
+
+  context 'when CE edition', unless: Gitlab.ee? do
+    # before adding new exceptions, make sure one of the following is true for the worker
+    #  - check elasticsearch_pause_indexing
+    #  - no direct calls to index or update data,
+    #  - no sync indexing requests
+    #  - only queues indexing through calls to track! (for advanced search) or schedules other workers
+    let(:exceptions) do
+      [
+        # pause control framework
+        PauseControl::ResumeWorker
+      ]
+    end
+
+    it_behaves_like 'validate search workers'
+  end
+
+  context 'when EE edition', if: Gitlab.ee? do
+    # before adding new exceptions, make sure one of the following is true for the worker
+    #  - check elasticsearch_pause_indexing
+    #  - no direct calls to index or update data,
+    #  - no sync indexing requests
+    #  - only queues indexing through calls to track! (for advanced search) or schedules other workers
+    let(:exceptions) do
+      [
+        # checks elasticsearch_pause_indexing
+        ElasticIndexInitialBulkCronWorker,
+        ElasticIndexBulkCronWorker,
+        Search::ElasticIndexEmbeddingBulkCronWorker,
+        # pause control framework
+        PauseControl::ResumeWorker,
+        # advanced search framework operations
+        Elastic::MigrationWorker,
+        ElasticClusterReindexingCronWorker,
+        Search::Elastic::TriggerIndexingWorker,
+        Search::Elastic::MetricsUpdateCronWorker,
+        Elastic::ProjectTransferWorker,
+        Elastic::NamespaceUpdateWorker,
+        Search::ElasticDefaultBranchChangedWorker,
+        Search::ProjectIndexIntegrityWorker,
+        Search::NamespaceIndexIntegrityWorker,
+        # zoekt framework operations
+        Search::Zoekt::IndexingTaskWorker,
+        Search::Zoekt::MetricsUpdateCronWorker,
+        Search::Zoekt::RolloutWorker,
+        Search::Zoekt::SchedulingWorker,
+        Search::Zoekt::DefaultBranchChangedWorker,
+        # deprecated
+        ElasticNamespaceRolloutWorker,
+        Search::IndexCurationWorker
+      ]
+    end
+
+    it_behaves_like 'validate search workers'
   end
 end

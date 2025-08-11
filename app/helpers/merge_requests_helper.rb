@@ -683,6 +683,14 @@ module MergeRequestsHelper
     }
   end
 
+  def dashboard_list_title(list_id)
+    merge_request_dashboard_data[:tabs]
+      .flat_map { |tab| tab[:lists] }
+      .flatten
+      .find { |list| list[:id] == list_id }
+      &.dig(:title) || ''
+  end
+
   def duo_code_review_bot
     ::Users::Internal.duo_code_review_bot
   end

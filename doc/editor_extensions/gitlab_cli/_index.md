@@ -221,3 +221,18 @@ before performing completions:
 
 For more information, see [issue 122](https://github.com/1Password/shell-plugins/issues/122)
 for the 1Password shell plugin.
+
+### Commands use the wrong Git remote
+
+If a Git repository has multiple remotes and you select the wrong one, commands might return empty
+results if they query the wrong remote. To fix this problem, change the remote `glab` uses for a repository:
+
+1. From your terminal, run `git config edit`.
+1. Find the lines that include `glab-resolved = base`, and if incorrect, remove them.
+1. Save your changes to your Git configuration file.
+1. To set the default you'd like to use, run this command. Edit the example and replace `origin`
+   with the name of your preferred remote:
+
+   ```shell
+   git config --append remote.origin.glab-resolved base
+   ```

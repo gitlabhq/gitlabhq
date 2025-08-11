@@ -17,6 +17,18 @@ module Gitlab
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
+      DEFAULT_LOG_OPTIONS = {
+        limit: 10,
+        offset: 0,
+        path: nil,
+        author: nil,
+        follow: false,
+        skip_merges: false,
+        after: nil,
+        before: nil,
+        all: false,
+        message_regex: nil
+      }.freeze
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
       CommitNotFound = Class.new(::Gitlab::Git::BaseError)
@@ -364,22 +376,9 @@ module Gitlab
       #     message_regex: 'project'
       #   )
       def log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          author: nil,
-          follow: false,
-          skip_merges: false,
-          after: nil,
-          before: nil,
-          all: false,
-          message_regex: nil
-        }
         raise ArgumentError, 'Invalid message_regex pattern' unless valid_message_regex?(options[:message_regex])
 
-        options = default_options.merge(options)
-        options[:offset] ||= 0
+        options = DEFAULT_LOG_OPTIONS.merge(options)
 
         limit = options[:limit]
         if limit == 0 || !limit.is_a?(Integer)

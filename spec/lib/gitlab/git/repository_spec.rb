@@ -1115,6 +1115,19 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    context 'offset' do
+      where(:offset) do
+        [-1, nil, 0]
+      end
+
+      with_them do
+        it 'returns commits with the given offset' do
+          commits = repository.log(offset: offset)
+          expect(commits).to be_an(Array)
+        end
+      end
+    end
+
     context 'limit validation' do
       where(:limit) do
         [0, nil, '', 'foo']

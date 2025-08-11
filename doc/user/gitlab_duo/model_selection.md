@@ -60,9 +60,16 @@ To select a different LLM for a feature:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
 
@@ -103,3 +110,20 @@ This might cause increased latency with code completion requests.
 ### Agentic Chat incompatibility
 
 When a specific LLM is selected for GitLab Duo Chat or its sub-features, [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) is not available in that namespace.
+
+### No default GitLab Duo namespace
+
+When using a GitLab Duo feature with a selected LLM, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
+
+- GitLab Duo Code Suggestions, you might get `Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`
+- GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences.`
+
+This issue occurs when:
+
+- The `ai_user_default_duo_namespace` feature flag is enabled.
+- You belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
+
+To resolve this, you can do either of the following:
+
+- [Assign a default GitLab Duo namespace](#assign-a-default-gitlab-duo-namespace).
+- To opt out of this requirement whilst the model selection feature is in beta, ask [GitLab Support](https://about.gitlab.com/support/) to disable the `ai_user_default_duo_namespace` feature flag.

@@ -237,7 +237,10 @@ You might get an error that states
 
 This error occurs when you belong to multiple GitLab Duo namespaces, and have not selected a default namespace.
 
-To resolve this, [select a default GitLab Duo namespace](../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace), and try your request again.
+To resolve this, you can do either of the following:
+
+- [Assign a default GitLab Duo namespace](../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- To opt out of this requirement whilst the model selection feature is in beta, ask [GitLab Support](https://about.gitlab.com/support/) to disable the `ai_user_default_duo_namespace` feature flag.
 
 ## Header mismatch issue
 
