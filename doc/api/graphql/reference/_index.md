@@ -1336,7 +1336,7 @@ Returns [`ProjectSecretsManager`](#projectsecretsmanager).
 
 Find projects visible to the current user.
 
-Returns [`ProjectConnection`](#projectconnection).
+Returns [`ProjectInterfaceConnection`](#projectinterfaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -19867,6 +19867,30 @@ The edge type for [`Project`](#project).
 | ---- | ---- | ----------- |
 | <a id="projectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectedgenode"></a>`node` | [`Project`](#project) | The item at the end of the edge. |
+
+#### `ProjectInterfaceConnection`
+
+The connection type for [`ProjectInterface`](#projectinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="projectinterfaceconnectionedges"></a>`edges` | [`[ProjectInterfaceEdge]`](#projectinterfaceedge) | A list of edges. |
+| <a id="projectinterfaceconnectionnodes"></a>`nodes` | [`[ProjectInterface]`](#projectinterface) | A list of nodes. |
+| <a id="projectinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectInterfaceEdge`
+
+The edge type for [`ProjectInterface`](#projectinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectinterfaceedgenode"></a>`node` | [`ProjectInterface`](#projectinterface) | The item at the end of the edge. |
 
 #### `ProjectMemberConnection`
 
@@ -40284,13 +40308,124 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectminimalaccessactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
+| <a id="projectminimalaccessaixrayreports"></a>`aiXrayReports` {{< icon name="warning-solid" >}} | [`AiXrayReportConnection`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
+| <a id="projectminimalaccessallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
+| <a id="projectminimalaccessallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean`](#boolean) | Project allows assigning multiple users to a merge request. |
+| <a id="projectminimalaccessallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
+| <a id="projectminimalaccessarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
+| <a id="projectminimalaccessautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
+| <a id="projectminimalaccessciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String`](#string) | Path of the CI configuration file. |
+| <a id="projectminimalaccesscodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
+| <a id="projectminimalaccesscomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
+| <a id="projectminimalaccesscontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container registry is enabled for the current user. |
+| <a id="projectminimalaccesscontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int`](#int) | Number of container repositories in the project. |
+| <a id="projectminimalaccesscontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Indicates whether Container Scanning for Registry is enabled or not for the project. Returns `null` if unauthorized. |
+| <a id="projectminimalaccesscreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectminimalaccessdescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectminimalaccessdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="projectminimalaccessduoagenticchatavailable"></a>`duoAgenticChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. User access to Duo agentic Chat feature. |
+| <a id="projectminimalaccessduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="projectminimalaccessexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
+| <a id="projectminimalaccessforkscount"></a>`forksCount` | [`Int`](#int) | Number of times the project has been forked. |
 | <a id="projectminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectminimalaccessid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectminimalaccessgroup"></a>`group` | [`Group`](#group) | Group of the project. |
+| <a id="projectminimalaccesshasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
+| <a id="projectminimalaccesshttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | URL to connect to the project via HTTPS. |
+| <a id="projectminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the project. |
+| <a id="projectminimalaccessimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
+| <a id="projectminimalaccessiscatalogresource"></a>`isCatalogResource` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
+| <a id="projectminimalaccessisforked"></a>`isForked` | [`Boolean`](#boolean) | Project is forked. |
+| <a id="projectminimalaccessisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is in progress. |
+| <a id="projectminimalaccessisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is scheduled. |
+| <a id="projectminimalaccessissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
+| <a id="projectminimalaccessjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
+| <a id="projectminimalaccessjobs"></a>`jobs` | [`CiJobConnection`](#cijobconnection) | Jobs of a project. This field can only be resolved for one project in any single request. (see [Connections](#connections)) |
+| <a id="projectminimalaccessjobsenabled"></a>`jobsEnabled` | [`Boolean`](#boolean) | Indicates if CI/CD pipeline jobs are enabled for the current user. |
+| <a id="projectminimalaccesslastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
+| <a id="projectminimalaccesslfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
+| <a id="projectminimalaccessmarkedfordeletion"></a>`markedForDeletion` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates if the project or any ancestor is scheduled for deletion. |
+| <a id="projectminimalaccessmarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.10. **Status**: Experiment. Date when project was scheduled to be deleted. |
+| <a id="projectminimalaccessmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectminimalaccessmergerequesttitleregex"></a>`mergeRequestTitleRegex` | [`String`](#string) | Regex used to validate the title of merge requests. |
+| <a id="projectminimalaccessmergerequesttitleregexdescription"></a>`mergeRequestTitleRegexDescription` | [`String`](#string) | Description of the regex used to validate the title of merge requests. |
+| <a id="projectminimalaccessmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean`](#boolean) | Indicates that committers of the given merge request cannot approve. |
+| <a id="projectminimalaccessmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
+| <a id="projectminimalaccessmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | <a id="projectminimalaccessname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
 | <a id="projectminimalaccessnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
+| <a id="projectminimalaccessonlyallowmergeifalldiscussionsareresolved"></a>`onlyAllowMergeIfAllDiscussionsAreResolved` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged when all the discussions are resolved. |
+| <a id="projectminimalaccessonlyallowmergeifallstatuscheckspassed"></a>`onlyAllowMergeIfAllStatusChecksPassed` | [`Boolean`](#boolean) | Indicates that merges of merge requests should be blocked unless all status checks have passed. |
+| <a id="projectminimalaccessonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
+| <a id="projectminimalaccessopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
+| <a id="projectminimalaccessopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
+| <a id="projectminimalaccessorganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
+| <a id="projectminimalaccesspagesforcehttps"></a>`pagesForceHttps` | [`Boolean`](#boolean) | Project's Pages site redirects unsecured connections to HTTPS. |
+| <a id="projectminimalaccesspagesuseuniquedomain"></a>`pagesUseUniqueDomain` | [`Boolean`](#boolean) | Project's Pages site uses a unique subdomain. |
+| <a id="projectminimalaccesspath"></a>`path` | [`String!`](#string) | Path of the project. |
+| <a id="projectminimalaccesspermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For projects pending deletion, returns the project's scheduled deletion date. For projects not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
+| <a id="projectminimalaccessprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
+| <a id="projectminimalaccesspreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean`](#boolean) | Indicates if an associated issue from Jira is required. |
+| <a id="projectminimalaccessprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
+| <a id="projectminimalaccessproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Product Analytics instrumentation key assigned to the project. |
+| <a id="projectminimalaccessprotectablebranches"></a>`protectableBranches` | [`[String!]`](#string) | List of unprotected branches, ignoring any wildcard branch rules. |
+| <a id="projectminimalaccesspublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
+| <a id="projectminimalaccessremovesourcebranchaftermerge"></a>`removeSourceBranchAfterMerge` | [`Boolean`](#boolean) | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project. |
+| <a id="projectminimalaccessrepository"></a>`repository` | [`Repository`](#repository) | Git repository of the project. |
+| <a id="projectminimalaccessrepositorysizeexcess"></a>`repositorySizeExcess` | [`Float`](#float) | Size of repository that exceeds the limit in bytes. |
+| <a id="projectminimalaccessrequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
+| <a id="projectminimalaccesssecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
+| <a id="projectminimalaccesssecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
+| <a id="projectminimalaccessservicedeskaddress"></a>`serviceDeskAddress` | [`String`](#string) | E-mail address of the Service Desk. |
+| <a id="projectminimalaccessservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has Service Desk enabled. |
+| <a id="projectminimalaccesssharedrunnersenabled"></a>`sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
+| <a id="projectminimalaccesssnippetsenabled"></a>`snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
+| <a id="projectminimalaccesssquashcommittemplate"></a>`squashCommitTemplate` | [`String`](#string) | Template used to create squash commit message in merge requests. |
+| <a id="projectminimalaccesssquashreadonly"></a>`squashReadOnly` | [`Boolean`](#boolean) | Indicates if `squashReadOnly` is enabled. |
+| <a id="projectminimalaccesssshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
+| <a id="projectminimalaccessstarcount"></a>`starCount` | [`Int`](#int) | Number of times the project has been starred. |
+| <a id="projectminimalaccesssuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
+| <a id="projectminimalaccesstaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.12. Use `topics`. |
+| <a id="projectminimalaccesstopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
+| <a id="projectminimalaccesstrackingkey"></a>`trackingKey` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Tracking key assigned to the project. |
+| <a id="projectminimalaccessupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the project was last updated. |
+| <a id="projectminimalaccessuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
+| <a id="projectminimalaccessvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
+| <a id="projectminimalaccesswikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
+
+#### Fields with arguments
+
+##### `ProjectMinimalAccess.complianceFrameworks`
+
+Compliance frameworks associated with the project.
+
+Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectminimalaccesscomplianceframeworkssort"></a>`sort` | [`ComplianceFrameworkSort`](#complianceframeworksort) | Sort compliance frameworks by the criteria. |
+
+##### `ProjectMinimalAccess.pipeline`
+
+Pipeline of the project. If no arguments are provided, returns the latest pipeline for the head commit on the default branch.
+
+Returns [`Pipeline`](#pipeline).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectminimalaccesspipelineid"></a>`id` | [`CiPipelineID`](#cipipelineid) | Global ID of the Pipeline. For example, "gid://gitlab/Ci::Pipeline/314". |
+| <a id="projectminimalaccesspipelineiid"></a>`iid` | [`ID`](#id) | IID of the Pipeline. For example, "1". |
+| <a id="projectminimalaccesspipelinesha"></a>`sha` | [`String`](#string) | SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b". |
 
 ### `ProjectNamespaceLinks`
 
@@ -51923,13 +52058,124 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectinterfaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
+| <a id="projectinterfaceaixrayreports"></a>`aiXrayReports` {{< icon name="warning-solid" >}} | [`AiXrayReportConnection`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
+| <a id="projectinterfaceallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
+| <a id="projectinterfaceallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean`](#boolean) | Project allows assigning multiple users to a merge request. |
+| <a id="projectinterfaceallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
+| <a id="projectinterfacearchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
+| <a id="projectinterfaceautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
+| <a id="projectinterfaceciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String`](#string) | Path of the CI configuration file. |
+| <a id="projectinterfacecodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
+| <a id="projectinterfacecomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
+| <a id="projectinterfacecontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container registry is enabled for the current user. |
+| <a id="projectinterfacecontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int`](#int) | Number of container repositories in the project. |
+| <a id="projectinterfacecontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Indicates whether Container Scanning for Registry is enabled or not for the project. Returns `null` if unauthorized. |
+| <a id="projectinterfacecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectinterfacedescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectinterfacedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="projectinterfaceduoagenticchatavailable"></a>`duoAgenticChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. User access to Duo agentic Chat feature. |
+| <a id="projectinterfaceduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="projectinterfaceexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
+| <a id="projectinterfaceforkscount"></a>`forksCount` | [`Int`](#int) | Number of times the project has been forked. |
 | <a id="projectinterfacefullpath"></a>`fullPath` | [`ID`](#id) | Full path of the project. |
+| <a id="projectinterfacegroup"></a>`group` | [`Group`](#group) | Group of the project. |
+| <a id="projectinterfacehasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
+| <a id="projectinterfacehttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | URL to connect to the project via HTTPS. |
 | <a id="projectinterfaceid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectinterfaceimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
+| <a id="projectinterfaceiscatalogresource"></a>`isCatalogResource` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
+| <a id="projectinterfaceisforked"></a>`isForked` | [`Boolean`](#boolean) | Project is forked. |
+| <a id="projectinterfaceisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is in progress. |
+| <a id="projectinterfaceisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is scheduled. |
+| <a id="projectinterfaceissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
+| <a id="projectinterfacejiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
+| <a id="projectinterfacejobs"></a>`jobs` | [`CiJobConnection`](#cijobconnection) | Jobs of a project. This field can only be resolved for one project in any single request. (see [Connections](#connections)) |
+| <a id="projectinterfacejobsenabled"></a>`jobsEnabled` | [`Boolean`](#boolean) | Indicates if CI/CD pipeline jobs are enabled for the current user. |
+| <a id="projectinterfacelastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
+| <a id="projectinterfacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
+| <a id="projectinterfacemarkedfordeletion"></a>`markedForDeletion` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates if the project or any ancestor is scheduled for deletion. |
+| <a id="projectinterfacemarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.10. **Status**: Experiment. Date when project was scheduled to be deleted. |
+| <a id="projectinterfacemergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectinterfacemergerequesttitleregex"></a>`mergeRequestTitleRegex` | [`String`](#string) | Regex used to validate the title of merge requests. |
+| <a id="projectinterfacemergerequesttitleregexdescription"></a>`mergeRequestTitleRegexDescription` | [`String`](#string) | Description of the regex used to validate the title of merge requests. |
+| <a id="projectinterfacemergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean`](#boolean) | Indicates that committers of the given merge request cannot approve. |
+| <a id="projectinterfacemergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
+| <a id="projectinterfacemergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | <a id="projectinterfacename"></a>`name` | [`String`](#string) | Name of the project without the namespace. |
 | <a id="projectinterfacenamewithnamespace"></a>`nameWithNamespace` | [`String`](#string) | Name of the project including the namespace. |
+| <a id="projectinterfaceonlyallowmergeifalldiscussionsareresolved"></a>`onlyAllowMergeIfAllDiscussionsAreResolved` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged when all the discussions are resolved. |
+| <a id="projectinterfaceonlyallowmergeifallstatuscheckspassed"></a>`onlyAllowMergeIfAllStatusChecksPassed` | [`Boolean`](#boolean) | Indicates that merges of merge requests should be blocked unless all status checks have passed. |
+| <a id="projectinterfaceonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
+| <a id="projectinterfaceopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
+| <a id="projectinterfaceopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
+| <a id="projectinterfaceorganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
+| <a id="projectinterfacepagesforcehttps"></a>`pagesForceHttps` | [`Boolean`](#boolean) | Project's Pages site redirects unsecured connections to HTTPS. |
+| <a id="projectinterfacepagesuseuniquedomain"></a>`pagesUseUniqueDomain` | [`Boolean`](#boolean) | Project's Pages site uses a unique subdomain. |
+| <a id="projectinterfacepath"></a>`path` | [`String`](#string) | Path of the project. |
+| <a id="projectinterfacepermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For projects pending deletion, returns the project's scheduled deletion date. For projects not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
+| <a id="projectinterfaceprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
+| <a id="projectinterfacepreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean`](#boolean) | Indicates if an associated issue from Jira is required. |
+| <a id="projectinterfaceprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
+| <a id="projectinterfaceproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Product Analytics instrumentation key assigned to the project. |
+| <a id="projectinterfaceprotectablebranches"></a>`protectableBranches` | [`[String!]`](#string) | List of unprotected branches, ignoring any wildcard branch rules. |
+| <a id="projectinterfacepublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
+| <a id="projectinterfaceremovesourcebranchaftermerge"></a>`removeSourceBranchAfterMerge` | [`Boolean`](#boolean) | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project. |
+| <a id="projectinterfacerepository"></a>`repository` | [`Repository`](#repository) | Git repository of the project. |
+| <a id="projectinterfacerepositorysizeexcess"></a>`repositorySizeExcess` | [`Float`](#float) | Size of repository that exceeds the limit in bytes. |
+| <a id="projectinterfacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
+| <a id="projectinterfacesecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
+| <a id="projectinterfacesecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
+| <a id="projectinterfaceservicedeskaddress"></a>`serviceDeskAddress` | [`String`](#string) | E-mail address of the Service Desk. |
+| <a id="projectinterfaceservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has Service Desk enabled. |
+| <a id="projectinterfacesharedrunnersenabled"></a>`sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
+| <a id="projectinterfacesnippetsenabled"></a>`snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
+| <a id="projectinterfacesquashcommittemplate"></a>`squashCommitTemplate` | [`String`](#string) | Template used to create squash commit message in merge requests. |
+| <a id="projectinterfacesquashreadonly"></a>`squashReadOnly` | [`Boolean`](#boolean) | Indicates if `squashReadOnly` is enabled. |
+| <a id="projectinterfacesshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
+| <a id="projectinterfacestarcount"></a>`starCount` | [`Int`](#int) | Number of times the project has been starred. |
+| <a id="projectinterfacesuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
+| <a id="projectinterfacetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.12. Use `topics`. |
+| <a id="projectinterfacetopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
+| <a id="projectinterfacetrackingkey"></a>`trackingKey` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Tracking key assigned to the project. |
+| <a id="projectinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the project was last updated. |
+| <a id="projectinterfaceuserpermissions"></a>`userPermissions` | [`ProjectPermissions`](#projectpermissions) | Permissions for the current user on the project. |
+| <a id="projectinterfacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
+| <a id="projectinterfacewikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
+
+##### Fields with arguments
+
+###### `ProjectInterface.complianceFrameworks`
+
+Compliance frameworks associated with the project.
+
+Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfacecomplianceframeworkssort"></a>`sort` | [`ComplianceFrameworkSort`](#complianceframeworksort) | Sort compliance frameworks by the criteria. |
+
+###### `ProjectInterface.pipeline`
+
+Pipeline of the project. If no arguments are provided, returns the latest pipeline for the head commit on the default branch.
+
+Returns [`Pipeline`](#pipeline).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfacepipelineid"></a>`id` | [`CiPipelineID`](#cipipelineid) | Global ID of the Pipeline. For example, "gid://gitlab/Ci::Pipeline/314". |
+| <a id="projectinterfacepipelineiid"></a>`iid` | [`ID`](#id) | IID of the Pipeline. For example, "1". |
+| <a id="projectinterfacepipelinesha"></a>`sha` | [`String`](#string) | SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b". |
 
 #### `ResolvableInterface`
 

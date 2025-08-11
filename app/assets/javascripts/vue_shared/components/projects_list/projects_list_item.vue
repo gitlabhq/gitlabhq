@@ -148,7 +148,10 @@ export default {
       );
     },
     hasTopics() {
-      return this.project.topics.length;
+      return this.project.topics?.length || 0;
+    },
+    hasStarData() {
+      return this.project.starCount !== undefined;
     },
     starCount() {
       return numberToMetricPrefix(this.project.starCount);
@@ -301,6 +304,7 @@ export default {
       <project-list-item-inactive-badge :project="project" />
       <gl-badge v-if="hasStatistics" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <list-item-stat
+        v-if="hasStarData"
         :href="starsHref"
         :tooltip-text="$options.i18n.stars"
         :a11y-text="starA11yText"

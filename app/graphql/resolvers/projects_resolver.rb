@@ -5,7 +5,7 @@ module Resolvers
     prepend ::Projects::LookAheadPreloads
     include ProjectSearchArguments
 
-    type Types::ProjectType.connection_type, null: true
+    type Types::Projects::ProjectInterface.connection_type, null: true
 
     argument :ids, [GraphQL::Types::ID],
       required: false,

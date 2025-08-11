@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/graphql_shared/fragments/project.fragment.graphql"
+#import "~/graphql_shared/fragments/project_fragment.fragment.graphql"
 
 query getYourWorkUserProjects(
   $contributed: Boolean = false
@@ -27,7 +27,7 @@ query getYourWorkUserProjects(
       includePersonal: true
     ) @include(if: $contributed) {
       nodes {
-        ...Project
+        ...ProjectFragment
       }
       pageInfo {
         ...PageInfo
@@ -45,7 +45,7 @@ query getYourWorkUserProjects(
       programmingLanguageName: $programmingLanguageName
     ) @include(if: $starred) {
       nodes {
-        ...Project
+        ...ProjectFragment
       }
       pageInfo {
         ...PageInfo
