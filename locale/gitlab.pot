@@ -751,6 +751,9 @@ msgid_plural "%{count} archived projects"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} bypass %{configurations} defined:"
+msgstr ""
+
 msgid "%{count} contact"
 msgid_plural "%{count} contacts"
 msgstr[0] ""
@@ -9028,9 +9031,6 @@ msgid "At least one approval from a code owner is required to change files match
 msgstr ""
 
 msgid "At least one field of %{one_of_required_fields} must be present"
-msgstr ""
-
-msgid "At least one of %{params} must be true"
 msgstr ""
 
 msgid "At least one of group_id or project_id must be specified"
@@ -28173,6 +28173,9 @@ msgid "Friday"
 msgstr ""
 
 msgid "From"
+msgstr ""
+
+msgid "From %{codeStart}%{source}%{codeEnd} to: %{codeStart}%{target}%{codeEnd}"
 msgstr ""
 
 msgid "From %{code_open}%{source_title}%{code_close} into"
@@ -57329,6 +57332,9 @@ msgstr ""
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr ""
 
+msgid "SecurityOrchestration|Branch exceptions (%{count})"
+msgstr ""
+
 msgid "SecurityOrchestration|Branch types don't match any existing branches."
 msgstr ""
 
@@ -57674,9 +57680,6 @@ msgstr ""
 msgid "SecurityOrchestration|Maximum security policy project schedule rule count exceeded"
 msgstr ""
 
-msgid "SecurityOrchestration|Merge Release Security"
-msgstr ""
-
 msgid "SecurityOrchestration|Merge Request Security"
 msgstr ""
 
@@ -57802,6 +57805,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policies are invalid"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy Bypass Options"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy Type"
 msgstr ""
 
@@ -57860,6 +57866,9 @@ msgid "SecurityOrchestration|Project cannot be deleted because it is linked as a
 msgstr ""
 
 msgid "SecurityOrchestration|Reason for snoozing policy (optional)"
+msgstr ""
+
+msgid "SecurityOrchestration|Release Security"
 msgstr ""
 
 msgid "SecurityOrchestration|Remove %{group}"
@@ -75199,6 +75208,11 @@ msgstr ""
 
 msgid "conaninfo is too large. Maximum size is %{max_size} characters"
 msgstr ""
+
+msgid "configuration"
+msgid_plural "configurations"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "contacts can only be added to root groups and groups configured as CRM targets"
 msgstr ""

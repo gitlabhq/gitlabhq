@@ -891,7 +891,11 @@ export default {
       this.updateState(tokens);
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      this.$router.push({ query: this.urlParams });
+      this.$router.push({ query: this.urlParams }).catch((error) => {
+        if (error.name !== 'NavigationDuplicated') {
+          throw error;
+        }
+      });
     },
     handleNextPage() {
       this.pageParams = {

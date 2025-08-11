@@ -352,7 +352,10 @@ describe('Job App', () => {
   });
 
   describe('job log', () => {
-    beforeEach(() => setupAndMount());
+    beforeEach(async () => {
+      await setupAndMount();
+      jest.spyOn(store, 'dispatch');
+    });
 
     it('should render job log header', () => {
       expect(findJobLogTopBar().exists()).toBe(true);
@@ -362,6 +365,12 @@ describe('Job App', () => {
       expect(findJobLog().exists()).toBe(true);
 
       expect(findJobLog().props()).toEqual({ searchResults: [] });
+    });
+
+    it('should toggle scroll buttons when line is toggled', () => {
+      findJobLog().vm.$emit('toggleCollapsibleLine');
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 

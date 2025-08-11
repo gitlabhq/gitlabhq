@@ -42,7 +42,7 @@ exactly which repositories are causing the trouble.
 - Receiving an error when trying to push code - `remote: error: cannot lock ref`
 - A 500 error when viewing the GitLab dashboard or when accessing a specific project.
 
-### Check project code repositories
+### Check all project code repositories
 
 This task loops through the project code repositories and runs the integrity check
 described previously. If a project uses a pool repository, that is also checked.
@@ -64,6 +64,39 @@ sudo gitlab-rake gitlab:git:fsck
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Check specific project code repositories
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197990) in GitLab 18.3.
+
+{{< /history >}}
+
+Limit the check to the repositories of projects with specific project IDs by setting the `PROJECT_IDS` environment
+variable to a comma-separated list of project IDs.
+
+For example, to check the repositories of projects with project IDs `1` and `3`:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo PROJECT_IDS="1,3" gitlab-rake gitlab:git:fsck
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H PROJECT_IDS="1,3" bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
 {{< /tab >}}

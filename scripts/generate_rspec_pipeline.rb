@@ -10,7 +10,7 @@ require_relative '../tooling/quality/test_level'
 
 # Class to generate RSpec test child pipeline with dynamically parallelized jobs.
 class GenerateRspecPipeline
-  SKIP_PIPELINE_YML_FILE = ".gitlab/ci/_skip.yml"
+  SKIP_PIPELINE_YML_FILE = ".gitlab/ci/overrides/skip.yml"
   TEST_LEVELS = %i[migration background_migration unit integration system].freeze
   MAX_NODES_COUNT = 50 # Maximum parallelization allowed by GitLab
 

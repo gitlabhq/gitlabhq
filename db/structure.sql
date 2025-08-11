@@ -8189,6 +8189,7 @@ CREATE TABLE ai_active_context_collections (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     connection_id bigint NOT NULL,
+    options jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_fe84a77f95 CHECK ((char_length(name) <= 255))
 );
 

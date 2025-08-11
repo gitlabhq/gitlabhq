@@ -2122,7 +2122,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/finders/gpg_keys_finder.rb'
     - 'ee/app/finders/group_saml_identity_finder.rb'
     - 'ee/app/finders/groups/saved_replies_finder.rb'
-    - 'ee/app/finders/groups/users_finder.rb'
     - 'ee/app/finders/groups_with_templates_finder.rb'
     - 'ee/app/finders/incident_management/escalation_policies_finder.rb'
     - 'ee/app/finders/incident_management/escalation_rules_finder.rb'

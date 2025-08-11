@@ -1084,27 +1084,6 @@
                 }
               ]
             },
-            "akeyless": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "data_key": {
-                  "type": "string"
-                },
-                "cert_user_name": {
-                  "type": "string"
-                },
-                "public_key_data": {
-                  "type": "string"
-                },
-                "csr_data": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false
-            },
             "file": {
               "type": "boolean",
               "default": true,
@@ -1134,11 +1113,6 @@
             {
               "required": [
                 "aws_secrets_manager"
-              ]
-            },
-            {
-              "required": [
-                "akeyless"
               ]
             }
           ],

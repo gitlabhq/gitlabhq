@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: none
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Integration administration
 description: "Configure and manage settings for project and group integrations on GitLab Self-Managed instances."

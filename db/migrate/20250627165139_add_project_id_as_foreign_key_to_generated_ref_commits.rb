@@ -12,14 +12,16 @@ class AddProjectIdAsForeignKeyToGeneratedRefCommits < Gitlab::Database::Migratio
     add_concurrent_partitioned_foreign_key TABLE_NAME,
       :projects,
       column: :project_id,
-      name: FK_NAME
+      name: FK_NAME,
+      reverse_lock_order: true
   end
 
   def down
     with_lock_retries do
       remove_foreign_key_if_exists TABLE_NAME,
         column: :project_id,
-        name: FK_NAME
+        name: FK_NAME,
+        reverse_lock_order: true
     end
   end
 end

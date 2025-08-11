@@ -4,7 +4,8 @@ module Gitlab
   module Database
     module LooseForeignKeys
       ALLOWED_WORKER_CLASSES = [
-        'LooseForeignKeys::CleanupWorker'
+        'LooseForeignKeys::CleanupWorker',
+        'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
       ].freeze
 
       def self.definitions_by_table

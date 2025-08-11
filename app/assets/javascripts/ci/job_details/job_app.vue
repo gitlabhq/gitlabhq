@@ -314,7 +314,7 @@ export default {
             @exitFullscreen="exitFullscreen"
           />
 
-          <log :search-results="searchResults" />
+          <log :search-results="searchResults" @toggleCollapsibleLine="updateScroll" />
 
           <nav
             v-if="displayStickyFooter"

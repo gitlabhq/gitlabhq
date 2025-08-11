@@ -357,6 +357,9 @@ RSpec.configure do |config|
 
       # New global topbar is still a WIP and not functional.
       stub_feature_flags(global_topbar: false)
+
+      # Handle dynamic partitions creation
+      stub_feature_flags(disallow_database_ddl_feature_flags: false)
     else
       unstub_all_feature_flags
     end

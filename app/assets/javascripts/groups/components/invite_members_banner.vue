@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       isDismissed: false,
+      // eslint-disable-next-line vue/no-unused-properties -- tracking property is accessed by trackingOptions() computed property in tracking mixin
       tracking: {
         label: this.trackLabel,
       },

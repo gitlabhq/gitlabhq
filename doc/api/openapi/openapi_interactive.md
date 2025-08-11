@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Interactive API documentation
 description: "Use OpenAPI to test the GitLab REST API."

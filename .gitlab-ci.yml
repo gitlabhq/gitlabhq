@@ -305,7 +305,7 @@ variables:
   FF_USE_FASTZIP: "true"
 
 include:
-  - local: .gitlab/ci/_skip.yml
+  - local: .gitlab/ci/overrides/skip.yml
     rules:
       - <<: *if-merge-request-security-canonical-sync
   - local: .gitlab/ci/version.yml
@@ -332,7 +332,10 @@ include:
       - if: '$CI_MERGE_REQUEST_LABELS =~ /quarantine/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
         when: never
       - when: always
-  - local: .gitlab/ci/_gem-cache.rails-next.yml
+  - local: .gitlab/ci/overrides/gem-cache.rails-next.yml
     rules:
       - *if-merge-request-labels-run-with-rails-next
       - *if-rails-next-schedule
+  - local: .gitlab/ci/overrides/assets-tmp-cache.yml
+    rules:
+      - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'

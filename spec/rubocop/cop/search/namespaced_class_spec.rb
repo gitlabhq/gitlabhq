@@ -61,9 +61,9 @@ RSpec.describe RuboCop::Cop::Search::NamespacedClass, feature_category: :global_
 
     context 'when Search root namespace is used' do
       it 'does not flag a class definition with Search as root namespace module' do
-        expect_no_offenses(<<~RUBY, keyword: keyword)
+        expect_no_offenses(<<~RUBY)
           module Search
-            class %{keyword}::MyClass < ApplicationRecord
+            class #{keyword}::MyClass < ApplicationRecord
               def some_method
                 true
               end
@@ -73,8 +73,8 @@ RSpec.describe RuboCop::Cop::Search::NamespacedClass, feature_category: :global_
       end
 
       it 'does not a flag a class definition with Search as root namespace inline' do
-        expect_no_offenses(<<~RUBY, keyword: keyword)
-          class Search::%{keyword}::MyClass < ApplicationRecord
+        expect_no_offenses(<<~RUBY)
+          class Search::#{keyword}::MyClass < ApplicationRecord
             def some_method
               true
             end
@@ -83,10 +83,10 @@ RSpec.describe RuboCop::Cop::Search::NamespacedClass, feature_category: :global_
       end
 
       it 'does not a flag a class definition with Search as root namespace in EE' do
-        expect_no_offenses(<<~RUBY, keyword: keyword)
+        expect_no_offenses(<<~RUBY)
           module EE
             module Search
-              class %{keyword}::MyClass < ApplicationRecord
+              class #{keyword}::MyClass < ApplicationRecord
                 def some_method
                   true
                 end

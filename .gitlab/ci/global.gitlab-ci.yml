@@ -112,6 +112,13 @@
     - ${GLCI_GITLAB_ASSETS_HASH_FILE}
   policy: pull-push
 
+.assets-tmp-cache: &assets-tmp-cache
+  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}"
+  paths:
+    - tmp/cache
+  policy: pull
+  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
+
 # used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
 .assets-cache-pull: &assets-cache-pull
   <<: *assets-cache
@@ -279,15 +286,17 @@
   extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
+    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
     - *node-modules-cache
     - *assets-cache
 
-.assets-compile-cache-pull:
+.assets-compile-cache-pull: # this cache is used only for gdk:compile-test-assets which should only pull, never push
   extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
     - *assets-cache-pull
+    - *assets-tmp-cache
 
 .storybook-yarn-cache:
   cache:

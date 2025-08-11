@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToDependencyListExports, feature_category: :dependency_management do
   let(:dependency_list_exports) { table(:dependency_list_exports) }
-  let(:pipelines) { partitioned_table(:p_ci_pipelines, database: :ci) }
+  let(:pipelines) { ci_partitioned_table(:p_ci_pipelines) }
   let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

@@ -2,10 +2,14 @@
 
 namespace :gitlab do
   namespace :git do
-    desc 'GitLab | Git | Check all repos integrity'
+    desc 'GitLab | Git | Check repo integrity'
     task fsck: :gitlab_environment do
+      project_ids = ENV['PROJECT_IDS']&.split(',')&.map(&:strip)&.reject(&:empty?)
+      projects = project_ids.present? ? Project.where(id: project_ids) : Project.all
+
       failures = []
-      Project.find_each(batch_size: 100) do |project|
+
+      projects.find_each(batch_size: 100) do |project|
         begin
           project.repository.fsck
 

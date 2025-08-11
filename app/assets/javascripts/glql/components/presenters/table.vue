@@ -73,7 +73,7 @@ export default {
           >
             <div
               :data-testid="`column-${fieldIndex}`"
-              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-px-5 gl-py-3 gl-transition-colors hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
+              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-px-5 gl-py-3 hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
               @click="sorter.sortBy(field.key)"
             >
               <gl-icon
@@ -95,7 +95,7 @@ export default {
           <td
             v-for="field in fields"
             :key="field.key"
-            class="!gl-border-l-0 !gl-border-r-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
+            class="!gl-border-l-0 !gl-border-r-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3"
           >
             <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
             <component :is="presenter.forField(item, field.key)" />
@@ -106,7 +106,7 @@ export default {
             <td
               v-for="field in fields"
               :key="field.key"
-              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
+              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3"
             >
               <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
             </td>

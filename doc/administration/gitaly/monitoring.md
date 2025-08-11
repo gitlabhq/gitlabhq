@@ -13,19 +13,6 @@ Metric definitions are available:
 - Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
   Grafana instance configured against Prometheus.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
-
-## Monitor Gitaly rate limiting (removed)
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitaly/-/issues/5011) in GitLab 17.7
-and was removed in 18.0. Use [concurrency limiting](concurrency_limiting.md) instead.
-
-{{< /alert >}}
-
-<!--- end_remove -->
-
 Gitaly can be configured to limit requests based on concurrency of requests (adaptive or non-adaptive).
 
 ## Monitor Gitaly concurrency limiting

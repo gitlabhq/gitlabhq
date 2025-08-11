@@ -686,7 +686,6 @@ lib/gitlab/checks/
 /doc/administration/settings/jira_cloud_app.md @msedlakjakubowski
 /doc/administration/settings/jira_cloud_app_troubleshooting.md @msedlakjakubowski
 /doc/administration/settings/package_registry_rate_limits.md @z_painter
-/doc/administration/settings/project_integration_management.md @ashrafkhamis
 /doc/administration/settings/push_event_activities_limit.md @brendan777
 /doc/administration/settings/rate_limit_on_groups_api.md @phillipwells
 /doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
@@ -715,12 +714,10 @@ lib/gitlab/checks/
 /doc/administration/uploads.md @axil @eread
 /doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @msedlakjakubowski
-/doc/api/_index.md @ashrafkhamis
 /doc/api/access_requests.md @idurham
 /doc/api/admin/data_management.md @axil
 /doc/api/admin/token.md @idurham
 /doc/api/admin_sidekiq_queues.md @axil @eread
-/doc/api/api_resources.md @ashrafkhamis
 /doc/api/appearance.md @idurham
 /doc/api/applications.md @idurham
 /doc/api/audit_events.md @eread
@@ -749,7 +746,6 @@ lib/gitlab/checks/
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
-/doc/api/graphql/_index.md @ashrafkhamis
 /doc/api/graphql/ai_impact_analytics.md @lciutacu
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/audit_event_streaming_groups.md @eread
@@ -758,10 +754,6 @@ lib/gitlab/checks/
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
 /doc/api/graphql/epic_work_items_api_migration_guide.md @msedlakjakubowski
-/doc/api/graphql/examples.md @ashrafkhamis
-/doc/api/graphql/getting_started.md @ashrafkhamis
-/doc/api/graphql/reference/ @ashrafkhamis
-/doc/api/graphql/removed_items.md @ashrafkhamis
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/graphql/users_example.md @idurham
 /doc/api/group_access_tokens.md @idurham
@@ -771,7 +763,6 @@ lib/gitlab/checks/
 /doc/api/group_enterprise_users.md @idurham
 /doc/api/group_epic_boards.md @msedlakjakubowski
 /doc/api/group_import_export.md @ashrafkhamis
-/doc/api/group_integrations.md @ashrafkhamis
 /doc/api/group_iterations.md @msedlakjakubowski
 /doc/api/group_labels.md @msedlakjakubowski
 /doc/api/group_ldap_links.md @lciutacu
@@ -816,7 +807,6 @@ lib/gitlab/checks/
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @kpaizee
 /doc/api/oauth2.md @idurham
-/doc/api/openapi/ @ashrafkhamis
 /doc/api/organizations.md @phillipwells
 /doc/api/packages.md @z_painter
 /doc/api/packages/ @z_painter
@@ -832,7 +822,6 @@ lib/gitlab/checks/
 /doc/api/project_badges.md @phillipwells
 /doc/api/project_forks.md @phillipwells
 /doc/api/project_import_export.md @ashrafkhamis
-/doc/api/project_integrations.md @ashrafkhamis
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_markdown_uploads.md @msedlakjakubowski
@@ -860,7 +849,6 @@ lib/gitlab/checks/
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
-/doc/api/rest/ @ashrafkhamis
 /doc/api/runners.md @rsarangadharan
 /doc/api/saml.md @idurham
 /doc/api/scim.md @lciutacu
@@ -991,7 +979,6 @@ lib/gitlab/checks/
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
-/doc/integration/_index.md @ashrafkhamis
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
@@ -1147,47 +1134,24 @@ lib/gitlab/checks/
 /doc/user/project/import/jira.md @msedlakjakubowski
 /doc/user/project/import/jira_migration_options.md @msedlakjakubowski
 /doc/user/project/insights/ @lciutacu
-/doc/user/project/integrations/_index.md @ashrafkhamis
-/doc/user/project/integrations/asana.md @msedlakjakubowski
+/doc/user/project/integrations/ @msedlakjakubowski
 /doc/user/project/integrations/bamboo.md @lyspin
 /doc/user/project/integrations/beyond_identity.md @brendan777
-/doc/user/project/integrations/bugzilla.md @msedlakjakubowski
-/doc/user/project/integrations/clickup.md @msedlakjakubowski
-/doc/user/project/integrations/confluence.md @msedlakjakubowski
-/doc/user/project/integrations/custom_issue_tracker.md @msedlakjakubowski
-/doc/user/project/integrations/discord_notifications.md @ashrafkhamis
 /doc/user/project/integrations/emails_on_push.md @brendan777
-/doc/user/project/integrations/ewm.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
 /doc/user/project/integrations/gitlab_slack_app_troubleshooting.md @ashrafkhamis
 /doc/user/project/integrations/gitlab_slack_application.md @ashrafkhamis
 /doc/user/project/integrations/google_artifact_management.md @z_painter
-/doc/user/project/integrations/hangouts_chat.md @ashrafkhamis
 /doc/user/project/integrations/harbor.md @z_painter
-/doc/user/project/integrations/irker.md @ashrafkhamis
-/doc/user/project/integrations/linear.md @msedlakjakubowski
 /doc/user/project/integrations/matrix.md @kpaizee
-/doc/user/project/integrations/mattermost.md @ashrafkhamis
 /doc/user/project/integrations/mattermost_slash_commands.md @ashrafkhamis
-/doc/user/project/integrations/microsoft_teams.md @ashrafkhamis
 /doc/user/project/integrations/mock_ci.md @lyspin
-/doc/user/project/integrations/phorge.md @msedlakjakubowski
 /doc/user/project/integrations/pipeline_status_emails.md @lyspin
-/doc/user/project/integrations/pivotal_tracker.md @msedlakjakubowski
-/doc/user/project/integrations/pumble.md @ashrafkhamis
-/doc/user/project/integrations/redmine.md @msedlakjakubowski
-/doc/user/project/integrations/slack.md @ashrafkhamis
 /doc/user/project/integrations/slack_slash_commands.md @ashrafkhamis
-/doc/user/project/integrations/squash_tm.md @msedlakjakubowski
-/doc/user/project/integrations/telegram.md @ashrafkhamis
-/doc/user/project/integrations/unify_circuit.md @ashrafkhamis
-/doc/user/project/integrations/webex_teams.md @ashrafkhamis
 /doc/user/project/integrations/webhook_events.md @ashrafkhamis
 /doc/user/project/integrations/webhooks.md @ashrafkhamis
 /doc/user/project/integrations/webhooks_troubleshooting.md @ashrafkhamis
-/doc/user/project/integrations/youtrack.md @msedlakjakubowski
-/doc/user/project/integrations/zentao.md @ashrafkhamis
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @ashrafkhamis

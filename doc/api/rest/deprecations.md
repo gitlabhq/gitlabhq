@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: REST API deprecations
 description: "List of deprecated fields and planned breaking changes in the GitLab REST API."
