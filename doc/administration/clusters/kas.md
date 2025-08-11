@@ -287,6 +287,44 @@ To enable receptive agents:
 1. Expand **GitLab Agent for Kubernetes**.
 1. Turn on the **Enable receptive mode** toggle.
 
+## Configure Kubernetes API proxy response header allowlist
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+The Kubernetes API proxy in KAS uses an allowlist for the response headers.
+Secure and well-known Kubernetes and HTTP headers are allowed by default.
+
+For a list of allowed response headers, see the [response header allowlist](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/internal/module/kubernetes_api/server/proxy_headers.go).
+
+If you require response headers
+that are not in the default allowlist,
+you can add your response headers
+in the KAS configuration.
+
+To add extra allowed response headers:
+
+```yaml
+agent:
+  kubernetes_api:
+    extra_allowed_response_headers:
+      - 'X-My-Custom-Header-To-Allow'
+```
+
+Support for the addition of more response headers is tracked in
+[issue 550614](https://gitlab.com/gitlab-org/gitlab/-/issues/550614).
+
 ## Troubleshooting
 
 If you have issues while using the agent server for Kubernetes, view the
@@ -391,3 +429,20 @@ gitlab-ctl reconfigure
 #### Note
 
 You can adjust the timeout value to suit your specific needs. Testing is recommended to ensure the issue is resolved without impacting system performance.
+
+### Error: `Blocked Kubernetes API proxy response header`
+
+If HTTP response headers are lost when sent from the Kubernetes cluster to the user through the Kubernetes API proxy, check the KAS logs or Sentry instance for the following error:
+
+```plaintext
+Blocked Kubernetes API proxy response header. Please configure extra allowed headers for your instance in the KAS config with `extra_allowed_response_headers` and have a look at the troubleshooting guide at https://docs.gitlab.com/administration/clusters/kas/#troubleshooting.
+```
+
+This error means that the Kubernetes API proxy blocked response headers because
+they are not defined in the response header allowlist.
+
+For more information on adding response headers,
+see [configure the response header allowlist](#configure-kubernetes-api-proxy-response-header-allowlist).
+
+Support for the addition of more response headers is tracked in
+[issue 550614](https://gitlab.com/gitlab-org/gitlab/-/issues/550614).

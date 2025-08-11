@@ -14,13 +14,14 @@ class AddMergeRequestForeignKeyToGeneratedRefCommits < Gitlab::Database::Migrati
       column: [:project_id, :merge_request_iid],
       target_column: [:target_project_id, :iid],
       on_delete: :cascade,
-      name: FK_NAME
+      name: FK_NAME,
+      reverse_lock_order: true
   end
 
   def down
     with_lock_retries do
       remove_foreign_key_if_exists(TABLE_NAME, column: :merge_request_iid,
-        name: FK_NAME)
+        name: FK_NAME, reverse_lock_order: true)
     end
   end
 end

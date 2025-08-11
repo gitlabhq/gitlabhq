@@ -102,7 +102,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To change GitLab Duo Core availability for the top-level group:
+To change GitLab Duo availability for the top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > GitLab Duo**.
@@ -118,7 +118,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To change GitLab Duo Core availability for a group or subgroup:
+To change GitLab Duo availability for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings > General**.
@@ -134,7 +134,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-To change GitLab Duo Core availability for a project:
+To change GitLab Duo availability for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -153,7 +153,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To change GitLab Duo Core availability for the instance:
+To change GitLab Duo availability for the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
@@ -169,7 +169,7 @@ Prerequisites:
 
 - You must have the Owner role for the group or subgroup.
 
-To turn GitLab Duo on or off for a group or subgroup:
+To change GitLab Duo availability for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings > General**.
@@ -185,7 +185,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-To turn GitLab Duo on or off for a project:
+To change GitLab Duo availability for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.

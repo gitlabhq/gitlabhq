@@ -20,7 +20,8 @@ $command-palette-spacing: px-to-rem(14px);
   z-index: $super-sidebar-skip-to-z-index;
 }
 
-.super-sidebar {
+.super-sidebar,
+.super-topbar {
   --super-sidebar-bg: var(--gl-background-color-strong);
   --super-sidebar-accent-color-fg: var(--gl-color-blue-800);
   --super-sidebar-accent-color-bg: var(--gl-color-blue-100);
@@ -66,7 +67,8 @@ $command-palette-spacing: px-to-rem(14px);
   $accent-color-bg,
   $accent-color-badge: $accent-color-fg,
 ) {
-  .super-sidebar {
+  .super-sidebar,
+  .super-topbar {
     --super-sidebar-bg: #{$background};
     --super-sidebar-accent-color-fg: #{$accent-color-fg};
     --super-sidebar-accent-color-bg: #{$accent-color-bg};
@@ -762,6 +764,6 @@ $scroll-scrim-height: 2.25rem;
   height: var(--header-height);
   padding: 0 1rem;
 
-  background-color: var(--gl-background-color-default);
+  background-color: var(--super-sidebar-bg);
   z-index: calc($super-sidebar-z-index + 1);
 }

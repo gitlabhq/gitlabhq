@@ -49040,6 +49040,9 @@ msgstr ""
 msgid "Profiles|Using emoji in names seems fun, but please try to set a status message instead"
 msgstr ""
 
+msgid "Profiles|Warning! Insecure key. %{message}"
+msgstr ""
+
 msgid "Profiles|Website URL"
 msgstr ""
 

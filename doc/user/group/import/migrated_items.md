@@ -117,101 +117,86 @@ initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 Project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab_base.OutdatedVersions = NO -->
+- Auto DevOps
+- Badges
+- Branches (including protected branches)
 
-| Project item                            | Introduced in                                                              |
-|:----------------------------------------|:---------------------------------------------------------------------------|
-| Projects                                | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
-| Auto DevOps                             | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339410)        |
-| Badges                                  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) |
-| Branches (including protected branches) <sup>1</sup> | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) |
-| CI Pipelines                            | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339407)        |
-| Commit comments                         | [GitLab 15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/391601)       |
-| Designs                                 | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339421)        |
-| Issues                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
-| Issue boards                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) |
-| Labels                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/339419)        |
-| LFS Objects                             | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339405)        |
-| Members <sup>2</sup>                    | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
-| Merge requests                          | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
-| Push rules                              | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
-| Milestones                              | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339417)        |
-| External pull requests                  | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339409)        |
-| Pipeline history                        | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339412)        |
-| Pipeline schedules                      | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339408)        |
-| Project features                        | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74722) |
-| Releases                                | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)        |
-| Release evidences                       | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/360567)        |
-| Repositories                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
-| Snippets                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/343438)        |
-| Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
-| Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
-| Vulnerability reports <sup>3</sup>      | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
-| Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
+  {{< alert type="note" >}}
 
-<!-- vale gitlab_base.OutdatedVersions = YES -->
+  Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
+  These settings might cause an unprotected branch to be imported as protected.
 
-**Footnotes**:
+  {{< /alert >}}
 
-1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
-   These settings might cause an unprotected branch to be imported as protected.
-1. See [user contribution and membership mapping](direct_transfer_migrations.md#user-contribution-and-membership-mapping).
-1. Vulnerability reports are migrated without their status.
-   For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
-   For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
-   see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
+- CI pipelines
+- Commit comments
+- Designs
+- External merge requests
+- Issues
+- Issue boards
+- Labels
+- LFS objects
+- [Members](direct_transfer_migrations.md#user-contribution-and-membership-mapping)
+- Merge requests
+- Milestones
+- Pipeline history
+- Pipeline schedules
+- Projects
+- Project features
+- Push rules
+- Releases
+- Release evidences
+- Repositories
+- Settings
+- Snippets
+- Uploads
+- Vulnerability reports
+
+  {{< alert type="note" >}}
+
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501466) in GitLab 17.7.
+  Vulnerability reports are migrated without their status.
+  For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
+  For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
+  see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
+
+  {{< /alert >}}
+
+- Wikis
 
 ### Issue-related items
 
 Issue-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab_base.OutdatedVersions = NO -->
-
-| Issue-related project item      | Introduced in                                                              |
-|:--------------------------------|:---------------------------------------------------------------------------|
-| Issue iterations                | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) |
-| Issue resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
-| Issue resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
-| Issue resource iteration events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
-| Merge request URL references    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947)        |
-| Time tracking                   | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
-| Comments                        | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
-
-<!-- vale gitlab_base.OutdatedVersions = YES -->
+- Issue comments
+- Issue iterations
+- Issue resource iteration events
+- Issue resource milestone events
+- Issue resource state events
+- Merge request URL references
+- Time tracking
 
 ### Merge request-related items
 
 Merge request-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab_base.OutdatedVersions = NO -->
-
-| Merge request-related project item      | Introduced in |
-|:----------------------------------------|:--------------|
-| Multiple merge request assignees        | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
-| Merge request reviewers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
-| Merge request approvers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
-| Merge request resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
-| Merge request resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
-| Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
-| Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
-| Comments                                | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
-
-<!-- vale gitlab_base.OutdatedVersions = YES -->
+- Issue URL references
+- Merge request approvers
+- Merge request comments
+- Merge request resource milestone events
+- Merge request resource state events
+- Merge request reviewers
+- Multiple merge request assignees
+- Time tracking
 
 ### Setting-related items
 
 Setting-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab_base.OutdatedVersions = NO -->
-
-| Setting-related project item | Introduced in                                                              |
-|:-----------------------------|:---------------------------------------------------------------------------|
-| Avatar                       | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75249) |
-| Container expiration policy  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) |
-| Project properties           | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75898) |
-| Service Desk                 | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) |
-
-<!-- vale gitlab_base.OutdatedVersions = YES -->
+- Avatar
+- Container expiration policy
+- Project properties
+- Service Desk
 
 ### Excluded items
 
@@ -239,6 +224,11 @@ Some project items are excluded from migration because they:
     from GitLab Self-Managed to GitLab.com or GitLab Dedicated
   - Linked issues
   - Merge request approval rules
+  - Merge request dependencies
+  - Package registry
+  - Pages domains
+  - Pending member invitations
+  - Remote mirrors
   - Wiki comments
 
     {{< alert type="note" >}}
@@ -247,11 +237,6 @@ Some project items are excluded from migration because they:
 
     {{< /alert >}}
 
-  - Merge request dependencies
-  - Package registry
-  - Pages domains
-  - Pending member invitations
-  - Remote mirrors
 - Do not contain recoverable data:
   - Merge requests with no diff or source information
     (for more information, see [issue 537943](https://gitlab.com/gitlab-org/gitlab/-/issues/537943))

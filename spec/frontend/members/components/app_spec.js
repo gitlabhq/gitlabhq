@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MembersApp from '~/members/components/app.vue';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
@@ -69,6 +70,9 @@ describe('MembersApp', () => {
       expect(alert.text()).toBe(
         "An error occurred while updating the member's role, please try again.",
       );
+
+      await waitForPromises();
+
       expect(commonUtils.scrollToElement).toHaveBeenCalledWith(alert.element);
     });
   });

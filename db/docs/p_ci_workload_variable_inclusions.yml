@@ -1,0 +1,16 @@
+---
+table_name: p_ci_workload_variable_inclusions
+classes:
+- Ci::Workloads::VariableInclusions
+- Ci::Workloads::WorkloadVariableInclusions
+feature_categories:
+- continuous_integration
+description: Stores the names of CI Variables that should be made available to a given
+  workload. These are an allowlist of CI variables that the workload should inject
+  to avoid needing to inject all CI variables in all workloads.
+introduced_by_url:
+milestone: '18.3'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

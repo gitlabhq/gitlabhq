@@ -47,8 +47,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/lib/ee/gitlab/ci/variables/builder/scan_execution_policies_spec.rb'
     - 'ee/spec/lib/ee/gitlab/database_spec.rb'
     - 'ee/spec/lib/ee/gitlab/observability_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/scim/attribute_transform_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/scim/value_parser_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/certificate_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/ldap_certificate_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/san_extension_spec.rb'

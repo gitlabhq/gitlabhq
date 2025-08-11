@@ -333,6 +333,137 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.seat_assignable' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:other_user) { create(:user) }
+
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      let_it_be(:group_member) { create(:group_member, source: group, user: user) }
+      let_it_be(:subgroup_member) { create(:group_member, source: subgroup, user: user) }
+
+      let_it_be(:other_group_member) { create(:group_member, user: user, source: other_group) }
+      let_it_be(:other_user_group_member) { create(:group_member, user: other_user, source: other_group) }
+
+      context 'without namespace' do
+        it 'returns members of the user' do
+          expect(described_class.seat_assignable(users: user))
+            .to match_array([group_member, subgroup_member, other_group_member])
+        end
+      end
+
+      context 'with group' do
+        it 'returns members in namespace hierarchy' do
+          expect(described_class.seat_assignable(users: user, namespace: group))
+            .to match_array([group_member, subgroup_member])
+        end
+      end
+
+      context 'with subgroup' do
+        it 'returns members in namespace hierarchy' do
+          expect(described_class.seat_assignable(users: user, namespace: subgroup))
+            .to match_array([group_member, subgroup_member])
+        end
+      end
+
+      context 'with another user' do
+        it 'returns other users namespaces' do
+          expect(described_class.seat_assignable(users: other_user))
+            .to match_array([other_user_group_member])
+        end
+      end
+
+      it 'returns non invited users' do
+        group_member.update!(invite_token: Time.zone.now, invite_email: user.email)
+
+        expect(described_class.seat_assignable(users: user)).not_to include(group_member)
+      end
+
+      it 'returns non requested users' do
+        group_member.update!(requested_at: Time.zone.now)
+
+        expect(described_class.seat_assignable(users: user)).not_to include(group_member)
+      end
+    end
+
+    describe '.seat_assignable?' do
+      let_it_be(:user) { create(:user) }
+
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_member) { create(:group_member, source: subgroup, user: user) }
+
+      it { expect(described_class.seat_assignable?(user: user)).to be true }
+      it { expect(described_class.seat_assignable?(user: user, namespace: group)).to be true }
+      it { expect(described_class.seat_assignable?(user: user, namespace: subgroup)).to be true }
+
+      it { expect(described_class.seat_assignable?(user: create(:user), namespace: subgroup)).to be false }
+      it { expect(described_class.seat_assignable?(user: user, namespace: create(:group))).to be false }
+    end
+
+    describe '.seat_assignable_highest_access_level' do
+      let_it_be(:user) { create(:user) }
+
+      let_it_be(:group) { create(:group).tap { |group| group.add_maintainer(user) } }
+      let_it_be(:subgroup) { create(:group, parent: group).tap { |group| group.add_developer(user) } }
+      let_it_be(:other_group) { create(:group).tap { |group| group.add_owner(user) } }
+
+      it 'returns the highest acecss level' do
+        expect(described_class.seat_assignable_highest_access_level(user: user))
+          .to eq Gitlab::Access::OWNER
+      end
+
+      it 'returns the highest access level scoped to a hierarchy' do
+        expect(described_class.seat_assignable_highest_access_level(user: user, namespace: group))
+          .to eq Gitlab::Access::MAINTAINER
+      end
+
+      it 'returns the highest access level scoped per hierarchy' do
+        expect(described_class.seat_assignable_highest_access_level(user: user, namespace: subgroup))
+          .to eq Gitlab::Access::MAINTAINER
+      end
+    end
+
+    describe '.seat_assignable_highest_access_levels' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+
+      let_it_be(:group1) do
+        create(:group).tap do |group|
+          group.add_guest(user1)
+          group.add_maintainer(user2)
+        end
+      end
+
+      let_it_be(:group2) { create(:group).tap { |group| group.add_developer(user1) } }
+
+      it 'returns the highest access level for all namespaces' do
+        expect(described_class.seat_assignable_highest_access_levels(users: user1))
+          .to eq({ user1.id => Gitlab::Access::DEVELOPER })
+      end
+
+      it 'returns the highest access level in the namespace hierarchy' do
+        expect(described_class.seat_assignable_highest_access_levels(users: user1, namespace: group1))
+          .to eq({ user1.id => Gitlab::Access::GUEST })
+      end
+
+      it 'returns access levels for each user' do
+        expect(described_class.seat_assignable_highest_access_levels(users: [user1, user2])).to eq(
+          {
+            user1.id => Gitlab::Access::DEVELOPER,
+            user2.id => Gitlab::Access::MAINTAINER
+          }
+        )
+      end
+
+      context 'without namespace members' do
+        it 'returns nothing' do
+          expect(described_class.seat_assignable_highest_access_levels(users: user2, namespace: group2)).to eq({})
+        end
+      end
+    end
+
     describe '.with_case_insensitive_invite_emails' do
       let_it_be(:email) { 'bob@example.com' }
 

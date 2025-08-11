@@ -1,4 +1,4 @@
-import { GlAlert, GlFormCheckbox, GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -38,6 +38,8 @@ describe('WikiCommentForm', () => {
     });
 
   const wikiCommentContainer = () => wrapper.findByTestId('wiki-note-comment-form-container');
+  const findResolveCheckbox = () => wrapper.findByTestId('wiki-note-resolve-checkbox');
+  const findUnresolveCheckbox = () => wrapper.findByTestId('wiki-note-unresolve-checkbox');
 
   describe('user is not logged in', () => {
     beforeEach(() => {
@@ -99,6 +101,24 @@ describe('WikiCommentForm', () => {
       it('should autofocus on the markdown editor when isEdit is true', () => {
         wrapper = createWrapper({ props: { isEdit: true } });
         expect(wrapper.vm.$refs.markdownEditor.autofocus).toBe(true);
+      });
+
+      it('should display resolve checkbox when isReply is true', () => {
+        wrapper = createWrapper({ props: { isReply: true } });
+        expect(findResolveCheckbox().exists()).toBe(true);
+        expect(findUnresolveCheckbox().exists()).toBe(false);
+      });
+
+      it('should display unresolve checkbox when isReply is true and discussionResolved is true', () => {
+        wrapper = createWrapper({ props: { isReply: true, discussionResolved: true } });
+        expect(findResolveCheckbox().exists()).toBe(false);
+        expect(findUnresolveCheckbox().exists()).toBe(true);
+      });
+
+      it('should not display any resolve checkbox when isReply is false', () => {
+        wrapper = createWrapper({ props: { isReply: false } });
+        expect(findResolveCheckbox().exists()).toBe(false);
+        expect(findUnresolveCheckbox().exists()).toBe(false);
       });
 
       describe('handle errors', () => {
@@ -217,18 +237,52 @@ describe('WikiCommentForm', () => {
             await wrapper.vm.handleSave();
             expect($apollo.mutate).toHaveBeenCalledWith({
               mutation: expect.any(Object),
-              variables: {
+              variables: expect.objectContaining({
                 input: {
                   body: 'Test comment',
                   id: 'gid://gitlab/Note/12',
                 },
-              },
+              }),
             });
           });
 
           it('should call apollo mutate with the correct data when isReply is true', async () => {
             createWrapperWithNote({ isReply: true });
             await wrapper.vm.handleSave();
+            expect($apollo.mutate).toHaveBeenCalledWith({
+              mutation: expect.any(Object),
+              variables: expect.objectContaining({
+                input: {
+                  body: 'Test comment',
+                  noteableId: '1',
+                  discussionId: '1',
+                  internal: false,
+                },
+              }),
+            });
+          });
+
+          it('should call apollo mutate with the correct data when isReply and isEdit are false', async () => {
+            await wrapper.vm.handleSave();
+
+            expect($apollo.mutate).toHaveBeenCalledWith({
+              mutation: expect.any(Object),
+              variables: expect.objectContaining({
+                input: {
+                  body: 'Test comment',
+                  noteableId: '1',
+                  discussionId: null,
+                  internal: false,
+                },
+              }),
+            });
+          });
+
+          it('should call apollo mutate with the correct data when resolve is selected', async () => {
+            createWrapperWithNote({ isReply: true, discussionId: '1' });
+            await findResolveCheckbox().vm.$emit('input', true);
+            await wrapper.vm.handleSave();
+
             expect($apollo.mutate).toHaveBeenCalledWith({
               mutation: expect.any(Object),
               variables: {
@@ -238,27 +292,15 @@ describe('WikiCommentForm', () => {
                   discussionId: '1',
                   internal: false,
                 },
+                changeResolve: true,
+                discussionId: '1',
+                resolve: true,
+                skipCreateNote: false,
               },
             });
           });
 
-          it('should call apollo mutate with the correct data when isReply and isEdit are false', async () => {
-            await wrapper.vm.handleSave();
-
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: expect.any(Object),
-              variables: {
-                input: {
-                  body: 'Test comment',
-                  noteableId: '1',
-                  discussionId: null,
-                  internal: false,
-                },
-              },
-            });
-          });
-
-          it('should not start sumitting if the user does not confirm to continue with sensitive tokens', async () => {
+          it('should not start submitting if the user does not confirm to continue with sensitive tokens', async () => {
             jest
               .spyOn(secretsDetection, 'detectAndConfirmSensitiveTokens')
               .mockImplementation(() => false);
@@ -267,7 +309,7 @@ describe('WikiCommentForm', () => {
             expect(Boolean(wrapper.emitted('creating-note:start'))).toBe(false);
           });
 
-          it('should start sumitting if the user confirms to continue with sensitive tokens', async () => {
+          it('should start submitting if the user confirms to continue with sensitive tokens', async () => {
             // also applies to when there are no sensitive tokens in the note
             jest
               .spyOn(secretsDetection, 'detectAndConfirmSensitiveTokens')
@@ -338,7 +380,7 @@ describe('WikiCommentForm', () => {
 
       describe('handle comment button and internal note check box', () => {
         const submitButton = () => wrapper.findByTestId('wiki-note-comment-button');
-        const internalNoteCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+        const internalNoteCheckbox = () => wrapper.findByTestId('wiki-internal-note-checkbox');
 
         beforeEach(() => {
           wrapper = createWrapper({ props: { canSetInternalNote: true } });

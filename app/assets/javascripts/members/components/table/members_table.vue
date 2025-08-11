@@ -284,7 +284,7 @@ export default {
       </template>
 
       <template #cell(maxRole)="{ item: member }">
-        <members-table-cell #default="{ permissions }" :member="member" data-testid="max-role">
+        <members-table-cell #default="{ permissions }" :member="member">
           <div v-if="glFeatures.showRoleDetailsInDrawer">
             <gl-button
               variant="link"

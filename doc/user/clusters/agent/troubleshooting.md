@@ -227,3 +227,12 @@ Because `kas` periodically deletes outdated agent versions, you should wait at l
 and GitLab to reconcile.
 
 If the warning persists, update the agent installed on your cluster.
+
+## Kubernetes API proxy response headers are lost or blocked
+
+HTTP response headers might get blocked when sent from the Kubernetes cluster to the user through the Kubernetes API proxy.
+
+This error likely occurs when a response header is not included in the default allowlist for KAS.
+
+For steps on how to resolve this issue, see
+[blocked response headers](../../../administration/clusters/kas.md#error-blocked-kubernetes-api-proxy-response-header).

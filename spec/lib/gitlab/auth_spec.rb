@@ -672,15 +672,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           .to have_attributes(auth_failure)
       end
 
-      it 'falls back to LDAP authentication when the feature flag is disabled' do
-        pat = create(:personal_access_token, :revoked, scopes: ['read_repository'], user: user)
-        stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
-
-        expect(Gitlab::Auth::Ldap::Authentication).to receive(:login)
-        expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: project, request: request))
-          .to have_attributes(auth_failure)
-      end
-
       context 'when registry is enabled' do
         before do
           stub_container_registry_config(enabled: true)
@@ -988,15 +979,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           deploy_token.revoke!
 
           expect_any_instance_of(::Gitlab::Auth::Database::Authentication).not_to receive(:login)
-          expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
-            .to have_attributes(auth_failure)
-        end
-
-        it 'falls back to database authentication when the feature flag is disabled' do
-          stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
-          deploy_token.revoke!
-
-          expect_any_instance_of(::Gitlab::Auth::Database::Authentication).to receive(:login)
           expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
             .to have_attributes(auth_failure)
         end
@@ -1475,6 +1457,30 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it "does not find non-ldap user by valid login/password" do
           expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'user_with_password_for_git' do
+    let(:user) { create(:user) }
+
+    context 'when password is a recognized token' do
+      it 'returns nil immediately without calling find_with_user_password' do
+        pat = create(:personal_access_token, :revoked, user: user)
+
+        expect(gl_auth).not_to receive(:find_with_user_password)
+
+        result = gl_auth.send(:user_with_password_for_git, user.username, pat.token)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when password is not a recognized token' do
+      it 'calls find_with_user_password for regular passwords' do
+        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password).and_return(user)
+
+        result = gl_auth.send(:user_with_password_for_git, user.username, user.password)
+        expect(result).to have_attributes(actor: user, type: :gitlab_or_ldap)
       end
     end
   end

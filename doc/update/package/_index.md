@@ -29,15 +29,6 @@ according to your upgraded operating system.
 As part of upgrading the operating system, if your `glibc` version changes, then you must follow
 [Upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md) to avoid corrupted indexes.
 
-## Downtime
-
-- For single node installations, GitLab is not available to users while an
-  upgrade is in progress. The user's web browser shows a **Deploy in progress** message or a `502` error.
-- For multi-node installations, see how to perform
-  [zero-downtime upgrades](../zero_downtime.md).
-- Upgrades to multi-node installations can also be performed
-  [with downtime](../with_downtime.md).
-
 ## Earlier GitLab versions
 
 For version-specific information for earlier GitLab versions, see the [documentation archives](https://archives.docs.gitlab.com).

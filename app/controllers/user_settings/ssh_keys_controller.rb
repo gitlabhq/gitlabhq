@@ -12,6 +12,7 @@ module UserSettings
 
     def show
       @key = current_user.keys.find(params[:id])
+      @ssh_public_key_warning = @key.public_key.weak_key_warning
     end
 
     def create

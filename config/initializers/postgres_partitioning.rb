@@ -33,6 +33,7 @@ Gitlab::Database::Partitioning.register_models(
     Ci::RunnerManagerBuild,
     Ci::Stage,
     Ci::Workloads::Workload,
+    Ci::Workloads::VariableInclusions,
     CommitStatus,
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,

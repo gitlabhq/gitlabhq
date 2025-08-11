@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Multi-node upgrades with downtime
+title: Upgrade a multi-node instance with downtime
 ---
 
 {{< details >}}
@@ -11,25 +11,6 @@ title: Multi-node upgrades with downtime
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
-
-While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
-there are a number of constraints. In particular, you can upgrade to only one minor release
-at a time, for example, from 14.6 to 14.7, then to 14.8, etc.
-
-If you want to upgrade to more than one minor release at a time (for example, from 14.6 to 14.9),
-you must take your GitLab instance offline, which implies downtime.
-Before starting this process, verify the version-specific upgrading instructions relevant to your [upgrade path](upgrade_paths.md):
-
-- [GitLab 17 changes](versions/gitlab_17_changes.md)
-- [GitLab 16 changes](versions/gitlab_16_changes.md)
-- [GitLab 15 changes](versions/gitlab_15_changes.md)
-
-For a single node installation, you must only [upgrade the GitLab package](package/_index.md).
-
-The process for upgrading a number of components of a multi-node GitLab
-installation is the same as for zero-downtime upgrades.
-The differences relate to the servers running Rails (Puma/Sidekiq) and
-the order of events.
 
 At a high level, the process is:
 

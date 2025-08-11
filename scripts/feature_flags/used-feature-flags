@@ -70,6 +70,12 @@ Dir.glob(flag_definition_paths).each do |flag_definition_path|
     puts "Skipping the #{feature_flag_name} feature flag since it starts with 'gitaly_'."
     next
   end
+  #
+  # TODO: we need a better way of tracking use of KAS FF across KAS and GitLab
+  if feature_flag_name.start_with?('kas_')
+    puts "Skipping the #{feature_flag_name} feature flag since it starts with 'kas_'."
+    next
+  end
 
   all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
 end

@@ -254,11 +254,8 @@ module Gitlab
       end
 
       def user_with_password_for_git(login, password)
-        if Feature.enabled?(:prevent_token_prefixed_password_fallback_sessionless, :instance) &&
-            password.present? &&
-            Authn::AgnosticTokenIdentifier.token?(password)
-          return
-        end
+        # Prevent LDAP and database authentication attempts when password is a token
+        return if password.present? && Authn::AgnosticTokenIdentifier.token?(password)
 
         user = find_with_user_password(login, password)
         return unless user

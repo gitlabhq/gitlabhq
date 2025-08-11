@@ -7969,27 +7969,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#object_pool_params' do
-    let(:project) { create(:project, :repository, :public) }
-
-    subject { project.object_pool_params }
-
-    context 'when the objects cannot be pooled' do
-      let(:project) { create(:project, :repository, :private) }
-
-      it { is_expected.to be_empty }
-    end
-
-    context 'when a pool is created' do
-      it 'returns that pool repository' do
-        expect(subject).not_to be_empty
-        expect(subject[:pool_repository]).to be_persisted
-
-        expect(project.reload.pool_repository).to eq(subject[:pool_repository])
-      end
-    end
-  end
-
   describe '#git_objects_poolable?' do
     subject { project }
 
@@ -10353,6 +10332,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.repository).to receive(:merge_base).once.and_call_original
 
       2.times { project.merge_base_commit(commit1.id, commit2.id) }
+    end
+  end
+
+  describe '#ensure_pool_repository' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    it 'returns existing pool repository when present' do
+      pool_repo = create(:pool_repository, source_project: project)
+
+      expect(project.ensure_pool_repository).to eq(pool_repo)
+    end
+
+    it 'creates new pool repository when none exists' do
+      expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
+      expect(project.ensure_pool_repository).to be_a(PoolRepository)
     end
   end
 end

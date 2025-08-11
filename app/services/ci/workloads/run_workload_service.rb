@@ -11,13 +11,16 @@ module Ci
     # In the future it's likely that this class will persist additional models and the concept of a `Workload` may
     # become first class. For that reason we abstract users from the underlying `Ci::Pipeline` semantics.
     class RunWorkloadService
-      def initialize(project:, current_user:, source:, workload_definition:, create_branch: false, source_branch: nil)
+      def initialize(
+        project:, current_user:, source:, workload_definition:, create_branch: false, source_branch: nil,
+        ci_variables_included: [])
         @project = project
         @current_user = current_user
         @source = source
         @workload_definition = workload_definition
         @create_branch = create_branch
         @source_branch = source_branch
+        @ci_variables_included = ci_variables_included
       end
 
       def execute
@@ -45,10 +48,21 @@ module Ci
           branch_name: @ref
         )
 
+        create_included_ci_variables(workload)
+
         ServiceResponse.success(payload: workload)
       end
 
       private
+
+      # By default a Workload will not get any of the CI variables configured at the project/group/instance level.
+      # Setting ci_included_variables option ensures these named variables will later be made available from the CI
+      # variables configured at the project/group/instance level.
+      def create_included_ci_variables(workload)
+        @ci_variables_included.each do |var|
+          workload.variable_inclusions.create!(variable_name: var, project: workload.project)
+        end
+      end
 
       def create_repository_branch(source_branch)
         branch_name = "workloads/#{SecureRandom.hex[0..10]}"

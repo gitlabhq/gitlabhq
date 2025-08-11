@@ -563,6 +563,13 @@ p_ci_stages:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_workload_variable_inclusions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: p_ci_workloads
+    column: workload_id
+    on_delete: async_delete
 p_ci_workloads:
   - table: projects
     column: project_id

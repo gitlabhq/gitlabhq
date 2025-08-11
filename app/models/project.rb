@@ -3119,14 +3119,6 @@ class Project < ApplicationRecord
     Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
-  def object_pool_params
-    return {} unless !forked? && git_objects_poolable?
-
-    {
-      pool_repository: pool_repository || create_new_pool_repository
-    }
-  end
-
   # Git objects are only poolable when the project is or has:
   # - Hashed storage -> The object pool will have a remote to its members, using relative paths.
   #                     If the repository path changes we would have to update the remote.
@@ -3642,6 +3634,11 @@ class Project < ApplicationRecord
   # Overridden for EE
   def licensed_ai_features_available?
     false
+  end
+
+  # Ensures project has a pool repository without exposing private creation logic
+  def ensure_pool_repository
+    pool_repository || create_new_pool_repository
   end
 
   private

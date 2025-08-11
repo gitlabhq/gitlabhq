@@ -214,7 +214,7 @@ Anyone in your project can use the Service Desk email address to create an issue
 of their role** in the project.
 
 The unique internal email address is visible to project members at least
-the Reporter role in your GitLab instance.
+the Planner role in your GitLab instance.
 An external user (issue creator) cannot see the internal email address
 displayed in the information note.
 

@@ -69,12 +69,32 @@ class Member < ApplicationRecord
   scope :in_hierarchy, ->(source) do
     source = source.root_ancestor
     groups = source.self_and_descendants
-    group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
-
     projects = source.root_ancestor.all_projects
-    project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
-    Member.default_scoped.from_union([group_members, project_members]).merge(self)
+    group_members = where(source: groups).select(*cached_column_list)
+    project_members = where(source: projects).select(*cached_column_list)
+
+    from_union([group_members, project_members])
+  end
+
+  scope :seat_assignable, ->(users:, namespace: nil) do
+    users = users.is_a?(ActiveRecord::Relation) ? users : Array.wrap(users)
+
+    scope = without_invites_and_requests(minimal_access: true).merge(with_user(users))
+    scope = scope.in_hierarchy(namespace) if namespace
+    scope
+  end
+
+  def self.seat_assignable?(user:, namespace: nil)
+    seat_assignable(users: user, namespace: namespace).exists?
+  end
+
+  def self.seat_assignable_highest_access_level(user:, namespace: nil)
+    seat_assignable(users: user, namespace: namespace).maximum(:access_level)
+  end
+
+  def self.seat_assignable_highest_access_levels(users:, namespace: nil)
+    seat_assignable(users: users, namespace: namespace).group(:user_id).maximum(:access_level)
   end
 
   scope :for_self_and_descendants, ->(group, columns = Member.cached_column_list) do

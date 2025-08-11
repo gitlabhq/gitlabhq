@@ -21,7 +21,7 @@ export default {
   inject: ['noteableType', 'currentUserData'],
   props: {
     discussion: {
-      type: Array,
+      type: Object,
       required: true,
     },
     noteableId: {
@@ -35,10 +35,16 @@ export default {
       replies: [],
       firstNote: {},
       placeholderNote: {},
-      collapsed: false,
+      collapsed: this.discussion.resolved,
     };
   },
   computed: {
+    notes() {
+      return this.discussion.notes.nodes;
+    },
+    resolved() {
+      return this.discussion.resolved;
+    },
     renderPlaceHolderNote() {
       return Boolean(this.placeholderNote.body);
     },
@@ -75,10 +81,22 @@ export default {
     },
   },
   watch: {
-    discussion: {
+    notes: {
       immediate: true,
       handler() {
         this.populateReplies();
+      },
+    },
+    discussion: {
+      deep: true,
+      handler(after, before) {
+        if (
+          before?.resolved !== after?.resolved &&
+          // only collapse if the user didn't add a new comment
+          before.notes.nodes.length === after.notes.nodes.length
+        ) {
+          this.collapsed = Boolean(after?.resolved);
+        }
       },
     },
   },
@@ -89,9 +107,9 @@ export default {
   },
   methods: {
     populateReplies() {
-      const discussionCopy = [...this.discussion];
-      this.firstNote = discussionCopy.shift() || {};
-      this.replies = discussionCopy;
+      const notesCopy = [...this.notes];
+      this.firstNote = notesCopy.shift() || {};
+      this.replies = notesCopy;
     },
     setPlaceHolderNote(note) {
       this.placeholderNote = note;
@@ -119,6 +137,11 @@ export default {
     :user-permissions="getUserPermissions(firstNote)"
     :note="firstNote"
     :noteable-id="noteableId"
+    :discussion-id="firstNote.discussion.id"
+    :discussion-root="Boolean(replies.length)"
+    :resolved="discussion.resolved"
+    :resolvable="discussion.resolvable"
+    :resolved-by="discussion.resolvedBy"
     @reply="toggleReplying(true)"
     @note-deleted="$emit('note-deleted', firstNote.id)"
   >
@@ -166,6 +189,7 @@ export default {
             :noteable-id="noteableId"
             :note-id="discussionId"
             :discussion-id="firstNote.discussion.id"
+            :discussion-resolved="resolved"
             @cancel="toggleReplying(false)"
             @creating-note:start="setPlaceHolderNote"
             @creating-note:success="updateNote"

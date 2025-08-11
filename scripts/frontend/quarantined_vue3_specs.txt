@@ -33,9 +33,7 @@ spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
-spec/frontend/editor/components/source_editor_toolbar_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
-spec/frontend/error_tracking/components/error_tracking_list_spec.js
 spec/frontend/feature_flags/components/strategy_spec.js
 spec/frontend/gitlab_version_check/index_spec.js
 spec/frontend/glql/components/common/facade_spec.js
@@ -51,8 +49,6 @@ spec/frontend/issues/show/components/fields/description_spec.js
 spec/frontend/jira_import/components/jira_import_form_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
-spec/frontend/members/components/app_spec.js
-spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/wikis/components/delete_wiki_modal_spec.js
@@ -66,6 +62,5 @@ spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spe
 spec/frontend/tooltips/index_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_popovers_spec.js
-spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js

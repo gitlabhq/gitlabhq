@@ -1528,6 +1528,91 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    context 'with an archived label' do
+      let(:archived) { create(:label, :archived, project: project, title: 'archived') }
+
+      it_behaves_like 'label command' do
+        let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~#{archived.title}) }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'label command' do
+        let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~#{archived.title}) }
+        let(:issuable) { merge_request }
+      end
+
+      it_behaves_like 'relabel command' do
+        let(:content) { %(/relabel ~"#{inprogress.title}" ~#{archived.title}) }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'relabel command' do
+        let(:content) { %(/relabel ~"#{inprogress.title}" ~#{archived.title}) }
+        let(:issuable) { merge_request }
+      end
+
+      context 'with the feature flag :labels_archived disabled' do
+        before do
+          stub_feature_flags(labels_archive: false)
+        end
+
+        shared_examples 'label command with archived label' do
+          it 'fetches label ids and populates add_label_ids if content contains /label' do
+            _, updates, _ = service.execute(content, issuable)
+
+            expect(updates).to match(add_label_ids: contain_exactly(bug.id, inprogress.id, archived.id))
+          end
+
+          it 'returns the label message' do
+            _, _, message = service.execute(content, issuable)
+
+            expect(message).to match %r{Added ~".*" ~".*" ~".*" labels.}
+            expect(message).to include(bug.to_reference(format: :name))
+            expect(message).to include(inprogress.to_reference(format: :name))
+            expect(message).to include(archived.to_reference(format: :name))
+          end
+        end
+
+        shared_examples 'relabel command with archived label' do
+          it 'populates label_ids: [] if content contains /relabel' do
+            issuable.update!(label_ids: [bug.id])
+            _, updates, _ = service.execute(content, issuable)
+
+            expect(updates).to match(label_ids: contain_exactly(inprogress.id, archived.id))
+          end
+
+          it 'returns the relabel message' do
+            issuable.update!(label_ids: [bug.id])
+            _, _, message = service.execute(content, issuable)
+
+            expect(message).to match %r{Replaced all labels with ~".*" ~".*" labels.}
+            expect(message).to include(inprogress.to_reference(format: :name))
+            expect(message).to include(archived.to_reference(format: :name))
+          end
+        end
+
+        it_behaves_like 'label command with archived label' do
+          let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~#{archived.title}) }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'label command with archived label' do
+          let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~#{archived.title}) }
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'relabel command with archived label' do
+          let(:content) { %(/relabel ~"#{inprogress.title}" ~#{archived.title}) }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'relabel command with archived label' do
+          let(:content) { %(/relabel ~"#{inprogress.title}" ~#{archived.title}) }
+          let(:issuable) { merge_request }
+        end
+      end
+    end
+
     it_behaves_like 'multiple label command' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{bug.title}) }
       let(:issuable) { issue }

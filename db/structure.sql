@@ -4894,6 +4894,18 @@ CREATE TABLE p_ci_stages (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_workload_variable_inclusions (
+    id bigint NOT NULL,
+    workload_id bigint,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    variable_name text NOT NULL,
+    CONSTRAINT check_9c26407a8f CHECK ((char_length(variable_name) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_workloads (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -19471,6 +19483,15 @@ CREATE SEQUENCE p_ci_job_inputs_id_seq
 
 ALTER SEQUENCE p_ci_job_inputs_id_seq OWNED BY p_ci_job_inputs.id;
 
+CREATE SEQUENCE p_ci_workload_variable_inclusions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_workload_variable_inclusions_id_seq OWNED BY p_ci_workload_variable_inclusions.id;
+
 CREATE SEQUENCE p_ci_workloads_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -28618,6 +28639,8 @@ ALTER TABLE ONLY p_ci_job_definitions ALTER COLUMN id SET DEFAULT nextval('p_ci_
 
 ALTER TABLE ONLY p_ci_job_inputs ALTER COLUMN id SET DEFAULT nextval('p_ci_job_inputs_id_seq'::regclass);
 
+ALTER TABLE ONLY p_ci_workload_variable_inclusions ALTER COLUMN id SET DEFAULT nextval('p_ci_workload_variable_inclusions_id_seq'::regclass);
+
 ALTER TABLE ONLY p_ci_workloads ALTER COLUMN id SET DEFAULT nextval('p_ci_workloads_id_seq'::regclass);
 
 ALTER TABLE ONLY p_generated_ref_commits ALTER COLUMN id SET DEFAULT nextval('p_generated_ref_commits_id_seq'::regclass);
@@ -30205,6 +30228,9 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE epic_issues
+    ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE gpg_signatures
     ADD CONSTRAINT check_271c7cad6d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -31482,6 +31508,9 @@ ALTER TABLE ONLY p_ci_runner_machine_builds
 
 ALTER TABLE ONLY p_ci_stages
     ADD CONSTRAINT p_ci_stages_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_workload_variable_inclusions
+    ADD CONSTRAINT p_ci_workload_variable_inclusions_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_workloads
     ADD CONSTRAINT p_ci_workloads_pkey PRIMARY KEY (id, partition_id);
@@ -37543,6 +37572,8 @@ CREATE INDEX index_p_ci_runner_machine_builds_on_project_id ON ONLY p_ci_runner_
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
 
+CREATE INDEX index_p_ci_workload_variable_inclusions_on_project_id ON ONLY p_ci_workload_variable_inclusions USING btree (project_id);
+
 CREATE INDEX index_p_ci_workloads_on_project_id ON ONLY p_ci_workloads USING btree (project_id);
 
 CREATE INDEX index_p_duo_workflows_checkpoints_on_namespace_id ON ONLY p_duo_workflows_checkpoints USING btree (namespace_id);
@@ -39702,6 +39733,8 @@ CREATE UNIQUE INDEX p_ci_stages_pipeline_id_name_partition_id_idx ON ONLY p_ci_s
 CREATE INDEX p_ci_stages_pipeline_id_position_idx ON ONLY p_ci_stages USING btree (pipeline_id, "position");
 
 CREATE INDEX p_ci_stages_project_id_idx ON ONLY p_ci_stages USING btree (project_id);
+
+CREATE INDEX p_ci_workload_variable_inclusions_workload_id_idx ON ONLY p_ci_workload_variable_inclusions USING btree (workload_id, partition_id);
 
 CREATE UNIQUE INDEX p_ci_workloads_pipeline_id_idx ON ONLY p_ci_workloads USING btree (pipeline_id, partition_id);
 
@@ -46791,6 +46824,9 @@ ALTER TABLE ONLY merge_request_user_mentions
 
 ALTER TABLE ONLY wiki_repository_states
     ADD CONSTRAINT fk_rails_aa2f8a61ba FOREIGN KEY (project_wiki_repository_id) REFERENCES project_wiki_repositories(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_workload_variable_inclusions
+    ADD CONSTRAINT fk_rails_aad487c58d FOREIGN KEY (partition_id, workload_id) REFERENCES p_ci_workloads(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY x509_commit_signatures
     ADD CONSTRAINT fk_rails_ab07452314 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

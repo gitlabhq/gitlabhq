@@ -1,8 +1,9 @@
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButtonGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import SourceEditorToolbar from '~/editor/components/source_editor_toolbar.vue';
 import SourceEditorToolbarButton from '~/editor/components/source_editor_toolbar_button.vue';
 import { EDITOR_TOOLBAR_BUTTON_GROUPS } from '~/editor/constants';
@@ -86,7 +87,7 @@ describe('Source Editor Toolbar', () => {
       });
 
       jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
 
       expect(findButtons()).toHaveLength(1);
     });

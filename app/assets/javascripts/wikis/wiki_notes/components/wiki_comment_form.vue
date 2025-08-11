@@ -72,6 +72,11 @@ export default {
       required: false,
       default: false,
     },
+    discussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -94,6 +99,8 @@ export default {
         confidential: false,
         issue_email_participants: [],
       },
+      resolve: false,
+      unresolve: this.discussionResolved,
     };
   },
   computed: {
@@ -131,6 +138,40 @@ export default {
         },
       };
     },
+    showResolveDiscussionToggle() {
+      return this.isReply;
+    },
+    saveShouldChangeResolvedState() {
+      return this.resolve || this.unresolve;
+    },
+    newResolvedState() {
+      return this.discussionResolved ? !this.unresolve : this.resolve;
+    },
+    noteHasContent() {
+      return Boolean(this.note.trim());
+    },
+    createNoteInput() {
+      return this.isEdit
+        ? {
+            id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
+            body: this.note,
+          }
+        : {
+            noteableId: this.noteableId,
+            body: this.note,
+            discussionId: this.isReply ? this.discussionId : null,
+            internal: this.noteIsInternal,
+          };
+    },
+    saveMutationVariables() {
+      return {
+        input: this.createNoteInput,
+        skipCreateNote: !this.noteHasContent,
+        changeResolve: this.saveShouldChangeResolvedState,
+        discussionId: this.discussionId,
+        resolve: this.newResolvedState,
+      };
+    },
   },
   beforeDestroy() {
     this.timeoutIds.forEach((id) => {
@@ -166,53 +207,49 @@ export default {
     async handleSave() {
       this.errors = [];
 
-      if (!this.note.trim()) return;
       this.isSubmitting = true;
 
-      const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.note });
-      if (!confirmSubmit) {
-        return;
+      // save to a block scoped variable so the value is still available in the finally block
+      const { noteHasContent } = this;
+      const noteBackup = this.note;
+
+      if (noteHasContent) {
+        const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.note });
+        if (!confirmSubmit) {
+          return;
+        }
+
+        this.$emit('creating-note:start', {
+          ...this.createNoteInput,
+          individualNote: this.noteType === constants.DISCUSSION,
+        });
       }
-
-      const input = this.isEdit
-        ? {
-            id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
-            body: this.note,
-          }
-        : {
-            noteableId: this.noteableId,
-            body: this.note,
-            discussionId: this.isReply ? this.discussionId : null,
-            internal: this.noteIsInternal,
-          };
-
-      this.$emit('creating-note:start', {
-        ...input,
-        individualNote: this.noteType === constants.DISCUSSION,
-      });
 
       trackSavedUsingEditor(
         this.$refs.markdownEditor?.isContentEditorActive,
         `${this.noteableType}_${this.noteType}`,
       );
 
-      this.note = '';
-
       try {
         const discussion = await this.$apollo.mutate({
           mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMutation,
-          variables: { input },
+          variables: this.saveMutationVariables,
         });
 
         const response = this.isEdit
           ? discussion.data.updateNote?.note
           : discussion.data.createNote?.note?.discussion;
 
-        this.$emit('creating-note:success', response);
+        if (noteHasContent) {
+          this.$emit('creating-note:success', response);
+          this.note = '';
+        }
       } catch (err) {
         this.setError(createNoteErrorMessages(err));
-        this.$emit('creating-note:failed', err);
-        this.note = input.body;
+        if (noteHasContent) {
+          this.$emit('creating-note:failed', err);
+        }
+        this.note = noteBackup;
 
         this.timeoutIds.push(
           setTimeout(() => {
@@ -221,14 +258,16 @@ export default {
         );
       } finally {
         this.isSubmitting = false;
-        this.$emit('creating-note:done');
+        if (noteHasContent) {
+          this.$emit('creating-note:done');
+        }
       }
     },
     onInput(value) {
       if (!this.isSubmitting) this.note = value;
     },
     disableSubmitButton() {
-      return !this.note.trim() || this.isSubmitting;
+      return (!this.noteHasContent && !this.saveShouldChangeResolvedState) || this.isSubmitting;
     },
   },
 };
@@ -283,7 +322,26 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
-            <div v-if="replyOrEdit" class="gl-font-size-0 gl-mt-4 gl-flex gl-flex-wrap gl-gap-4">
+            <div class="note-form-actions gl-font-size-0">
+              <template v-if="showResolveDiscussionToggle">
+                <label>
+                  <template v-if="discussionResolved">
+                    <gl-form-checkbox
+                      v-model="unresolve"
+                      data-testid="wiki-note-unresolve-checkbox"
+                    >
+                      {{ __('Reopen thread') }}
+                    </gl-form-checkbox>
+                  </template>
+                  <template v-else>
+                    <gl-form-checkbox v-model="resolve" data-testid="wiki-note-resolve-checkbox">
+                      {{ __('Resolve thread') }}
+                    </gl-form-checkbox>
+                  </template>
+                </label>
+              </template>
+            </div>
+            <div v-if="replyOrEdit" class="gl-font-size-0 gl-flex gl-flex-wrap gl-gap-4">
               <gl-button
                 :disabled="disableSubmitButton()"
                 category="primary"
