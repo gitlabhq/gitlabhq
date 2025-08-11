@@ -450,6 +450,8 @@ By default, Geo does not replicate objects that are stored in object storage. De
 - Use their cloud provider's built-in services to replicate object storage across Geo sites.
 - Configure secondary Geo sites to access the same object storage endpoint as the primary site.
 
+Read more about [Object Storage replication tests](geo/geo_validation_tests.md#object-storage-replication-tests).
+
 ## Verification
 
 ### Verification states

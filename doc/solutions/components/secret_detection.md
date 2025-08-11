@@ -85,7 +85,7 @@ To set the access and authentication, follow these steps:
 1. Create a group variable: Copy the token value and store safely. Add a group variable under `Settings` menu option called `SECRET_DETECTION_GROUP_TOKEN` as the key with the token value.
 1. Obtain the group token bot user: In the same group, navigate to `manage` menu option to select `member` and look up corresponding bot user for the group access token `Secrete Detection Group Token`, copy the value representing the bot user for the group in the format of `@group_[group_id]_bot_[random_number]`
 
-![Security Dashboard](img/secret_detection_group_token_bot_v17_9.png)
+![Secret detection group token bot](img/secret_detection_group_token_bot_v17_9.png)
 
 ## Implementation Guide
 
@@ -154,10 +154,10 @@ Once the policy is running. all the projects associated with the global policy w
 ![Security Dashboard](img/secret_detection_job_v17_9.png)
 
 Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed in the MR widget. If it is the default branch merged, they will be shown in the security vulnerability report as following:
-![Security Dashboard](img/secret_detection_pwd_vuln_v17_9.png)
+![Secret detection password vulnerability results](img/secret_detection_pwd_vuln_v17_9.png)
 
 The following is an example password in clear text:
-![Security Dashboard](img/secret_detection_pwd_v17_9.png)
+![Secret detection password findings](img/secret_detection_pwd_v17_9.png)
 
 ## Troubleshooting
 

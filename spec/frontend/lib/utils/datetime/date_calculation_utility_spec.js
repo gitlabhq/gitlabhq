@@ -44,6 +44,7 @@ import {
   nYearsBefore,
   removeTime,
   secondsToDays,
+  secondsToMinutes,
   secondsToMilliseconds,
   totalDaysInMonth,
   daysToSeconds,
@@ -436,6 +437,14 @@ describe('getDatesInRange', () => {
     range.forEach((formattedItem, index) => {
       expect(formattedItem).toEqual(index + 1);
     });
+  });
+});
+
+describe('secondsToMinutes', () => {
+  it('converts seconds to milliseconds correctly', () => {
+    expect(secondsToMinutes(0)).toBe(0);
+    expect(secondsToMinutes(60)).toBe(1);
+    expect(secondsToMinutes(123)).toBe(2.05);
   });
 });
 

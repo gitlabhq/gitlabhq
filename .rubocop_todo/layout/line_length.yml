@@ -1112,7 +1112,6 @@ Layout/LineLength:
     - 'ee/spec/helpers/projects/project_members_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/dast_profiles_helper_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
-    - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
     - 'ee/spec/lib/analytics/devops_adoption/snapshot_calculator_spec.rb'

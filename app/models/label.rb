@@ -25,6 +25,8 @@ class Label < ApplicationRecord
   before_validation :ensure_single_parent_for_given_type
   before_destroy :prevent_locked_label_destroy, prepend: true
 
+  after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
+
   validate :ensure_lock_on_merge_allowed
   validate :exactly_one_parent
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
@@ -204,6 +206,8 @@ class Label < ApplicationRecord
   end
 
   def prioritize!(project, value)
+    return if archived
+
     label_priority = priorities.find_or_initialize_by(project_id: project.id)
     label_priority.priority = value
     label_priority.save!
@@ -211,6 +215,12 @@ class Label < ApplicationRecord
 
   def unprioritize!(project)
     priorities.where(project: project).delete_all
+  end
+
+  def unprioritize_all!
+    return if id.blank?
+
+    LabelPriority.where(label_id: id).delete_all
   end
 
   def priority(project)

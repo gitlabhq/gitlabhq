@@ -2,7 +2,6 @@
 Gitlab/FeatureAvailableUsage:
   Exclude:
     - 'app/controllers/projects/application_controller.rb'
-    - 'app/graphql/types/project_type.rb'
     - 'app/helpers/events_helper.rb'
     - 'app/helpers/labels_helper.rb'
     - 'ee/app/controllers/concerns/description_diff_actions.rb'

@@ -105,22 +105,29 @@ To see all the application you've authorized with your GitLab credentials:
 The GitLab OAuth 2 applications support scopes, which allow application to perform
 different actions. See the following table for all available scopes.
 
-| Scope              | Description |
-|--------------------| ----------- |
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. |
-| `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
-| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
-| `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |
-| `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
-| `read_registry`    | Grants read-only access to container registry images on private projects. |
-| `write_registry`   | Grants read-only access to container registry images on private projects. |
-| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator user. |
-| `openid`           | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
-| `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
-| `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
-| `create_runner`    | Grants permission to create runners. |
-| `manage_runner`    | Grants permission to manage runners. |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
+| Scope                    | Description |
+|--------------------------|-------------|
+| `api`                    | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. |
+| `read_api`               | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
+| `read_user`              | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under `/users`. |
+| `create_runner`          | Grants create access to the runners. |
+| `manage_runner`          | Grants access to manage the runners. |
+| `k8s_proxy`              | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
+| `read_repository`        | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |
+| `write_repository`       | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
+| `read_registry`          | Grants read-only access to container registry images on private projects. |
+| `write_registry`         | Grants write access to container registry images on private projects. You need both read and write access to push images. |
+| `read_virtual_registry`  | Grants read-only access to container images through the dependency proxy in private projects and virtual registries. |
+| `write_virtual_registry` | Grants read, write, and delete access to container images through the dependency proxy in private projects. |
+| `read_observability`     | Grants read-only access to GitLab Observability. |
+| `write_observability`    | Grants write access to GitLab Observability. |
+| `ai_features`            | Grants access to GitLab Duo related API endpoints. |
+| `sudo`                   | Grants permission to perform API actions as any user in the system, when authenticated as an administrator user. |
+| `admin_mode`             | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. |
+| `read_service_ping`      | Grants access to download Service Ping payloads through the API when authenticated as an administrator user. |
+| `openid`                 | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
+| `profile`                | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
+| `email`                  | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
 At any time you can revoke any access by selecting **Revoke**.
 

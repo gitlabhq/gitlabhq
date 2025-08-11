@@ -35,7 +35,6 @@ RSpec/ExpectChange:
     - 'ee/spec/replicators/geo/container_repository_replicator_spec.rb'
     - 'ee/spec/requests/api/ci/minutes_spec.rb'
     - 'ee/spec/requests/api/ci/triggers_spec.rb'
-    - 'ee/spec/requests/api/ci/variables_spec.rb'
     - 'ee/spec/requests/api/features_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/boards/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/epics/create_spec.rb'

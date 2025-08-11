@@ -19,7 +19,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_enterprise/advantages_list_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_enterprise/lead_form_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_enterprise/lead_form_with_errors_component_spec.rb'
-    - 'ee/spec/components/gitlab_subscriptions/trials/duo_enterprise/trial_form_with_errors_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_pro/advantages_list_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_pro/lead_form_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_pro/lead_form_with_errors_component_spec.rb'

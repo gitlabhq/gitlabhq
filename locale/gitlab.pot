@@ -6250,9 +6250,6 @@ msgstr ""
 msgid "AiPowered|GitLab Duo availability"
 msgstr ""
 
-msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
-msgstr ""
-
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr ""
 
@@ -6304,9 +6301,6 @@ msgstr ""
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr ""
 
-msgid "AiPowered|Seat assignment for GitLab Duo has moved"
-msgstr ""
-
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr ""
 
@@ -6356,9 +6350,6 @@ msgid "AiPowered|Upgrade to"
 msgstr ""
 
 msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
-msgstr ""
-
-msgid "AiPowered|View GitLab Duo settings"
 msgstr ""
 
 msgid "AiPowered|View configuration"
@@ -11896,6 +11887,9 @@ msgstr ""
 msgid "CICDAnalytics|Deployment frequency"
 msgstr ""
 
+msgid "CICDAnalytics|Failure rate"
+msgstr ""
+
 msgid "CICDAnalytics|Instance runner duration is the total runtime of all jobs that ran on instance runners"
 msgstr ""
 
@@ -11903,6 +11897,9 @@ msgid "CICDAnalytics|Instance runner pipeline minute duration by month"
 msgstr ""
 
 msgid "CICDAnalytics|Lead time"
+msgstr ""
+
+msgid "CICDAnalytics|Median duration"
 msgstr ""
 
 msgid "CICDAnalytics|Projects with releases"
@@ -11922,7 +11919,25 @@ msgstr ""
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
 msgstr ""
 
+msgid "CICDAnalytics|Success rate"
+msgstr ""
+
+msgid "CICDAnalytics|The median time it takes for pipelines to complete."
+msgstr ""
+
+msgid "CICDAnalytics|The percentage of pipelines that completed successfully."
+msgstr ""
+
+msgid "CICDAnalytics|The percentage of pipelines that failed."
+msgstr ""
+
+msgid "CICDAnalytics|The total number of pipelines that have run in the selected time period."
+msgstr ""
+
 msgid "CICDAnalytics|Time to restore service"
+msgstr ""
+
+msgid "CICDAnalytics|Total pipeline runs"
 msgstr ""
 
 msgid "CICDAnalytics|What is instance runner duration?"
@@ -23946,6 +23961,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Agent sessions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Are you sure you want to delete this flow trigger? This action cannot be undone."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Automate"
 msgstr ""
 
@@ -23970,6 +23988,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Default"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Delete flow trigger"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Delete trigger"
 msgstr ""
 
@@ -23985,6 +24006,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Event Type"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Failed to delete flow trigger."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to fetch flow triggers"
 msgstr ""
 
@@ -23992,6 +24016,9 @@ msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Fetching logs..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Flow trigger deleted successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow trigger details"
@@ -67465,6 +67492,9 @@ msgstr ""
 msgid "Units|d"
 msgstr ""
 
+msgid "Units|m"
+msgstr ""
+
 msgid "Units|ms"
 msgstr ""
 
@@ -67927,9 +67957,6 @@ msgid "UsageQuota|Filter projects data by month"
 msgstr ""
 
 msgid "UsageQuota|Git repository."
-msgstr ""
-
-msgid "UsageQuota|GitLab Duo"
 msgstr ""
 
 msgid "UsageQuota|Gitlab-integrated Docker container registry for storing Docker Images."

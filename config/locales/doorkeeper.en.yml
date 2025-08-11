@@ -101,7 +101,7 @@ en:
       write_observability: Grants write access to GitLab Observability.
       ai_features: Grants access to GitLab Duo related API endpoints.
       openid: Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
-      sudo: Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+      sudo: Grants permission to perform API actions as any user in the system, when authenticated as an administrator user.
       profile: Grants read-only access to the user's profile data using OpenID Connect.
       email: Grants read-only access to the user's primary email address using OpenID Connect.
       admin_mode: Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
@@ -109,7 +109,7 @@ en:
       manage_runner: Grants access to manage the runners.
       mcp: Grants read-write access to remote Model Context Protocol (MCP) server for tools execution.
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
-      read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
+      read_service_ping: Grants access to download Service Ping payloads through the API when authenticated as an administrator user. |
       self_rotate: Grants permission for token to rotate itself.
     group_access_token_scope_desc:
       api: Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.

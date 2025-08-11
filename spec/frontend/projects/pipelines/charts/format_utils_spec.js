@@ -1,4 +1,5 @@
 import {
+  calculatePipelineCountPercentage,
   formatPipelineCount,
   formatPipelineCountPercentage,
   formatPipelineDuration,
@@ -19,6 +20,37 @@ describe('Stats formatting utilities', () => {
       ${undefined}      | ${'-'}
     `('formats $input as "$output"', ({ input, output }) => {
       expect(formatPipelineCount(input)).toBe(output);
+    });
+  });
+
+  describe('calculatePipelineCountPercentage', () => {
+    it.each`
+      input                                | output
+      ${['0', '100']}                      | ${0}
+      ${['33', '100']}                     | ${33}
+      ${['50', '100']}                     | ${50}
+      ${['66', '100']}                     | ${66}
+      ${['99', '100']}                     | ${99}
+      ${['10', '0']}                       | ${undefined}
+      ${[largeNumber, largeNumber]}        | ${100}
+      ${[largeNumber, `${largeNumber}00`]} | ${1}
+      ${['not-a-number', '1000']}          | ${undefined}
+      ${['50', 'not-a-number']}            | ${undefined}
+      ${[null, '100']}                     | ${undefined}
+      ${['50', null]}                      | ${undefined}
+    `('formats $input.0 / $input.1 to "$output"', ({ input, output }) => {
+      const [a, b] = input;
+      expect(calculatePipelineCountPercentage(a, b)).toBe(output);
+    });
+
+    it.each`
+      input              | output
+      ${['666', '1000']} | ${66.60000000000001}
+      ${['888', '1000']} | ${88.8}
+      ${['999', '1000']} | ${99.9}
+    `('formats by rounding $input.0 / $input.1 to "$output"', ({ input, output }) => {
+      const [a, b] = input;
+      expect(calculatePipelineCountPercentage(a, b)).toBe(output);
     });
   });
 

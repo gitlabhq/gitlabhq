@@ -319,6 +319,8 @@ To archive a label:
 1. Select the **Archived** checkbox.
 1. Select **Save changes**.
 
+The label is archived and [deprioritized](#set-label-priority).
+
 ### View archived labels
 
 To view archived labels:

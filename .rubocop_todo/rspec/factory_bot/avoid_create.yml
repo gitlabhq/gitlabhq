@@ -63,7 +63,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/helpers/seat_count_alert_helper_spec.rb'
     - 'ee/spec/helpers/security_helper_spec.rb'
-    - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/users/identity_verification_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'

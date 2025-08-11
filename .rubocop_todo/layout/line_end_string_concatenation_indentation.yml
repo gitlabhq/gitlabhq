@@ -24,7 +24,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'app/services/packages/debian/process_package_file_service.rb'
     - 'app/services/packages/nuget/odata_package_entry_service.rb'
     - 'app/services/projects/after_rename_service.rb'
-    - 'app/services/security/ci_configuration/base_create_service.rb'
     - 'app/services/uploads/destroy_service.rb'
     - 'app/services/users/deactivate_service.rb'
     - 'app/services/users/email_verification/validate_token_service.rb'

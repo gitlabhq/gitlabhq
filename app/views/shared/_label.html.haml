@@ -10,7 +10,7 @@
   .label-content.gl-pl-5.gl-pr-3.gl-py-4.gl-rounded-base{ class: "#{ 'gl-py-3' if force_priority }" }
     = render "shared/label_row", label: label, force_priority: force_priority
     %ul.label-actions-list
-      - if can?(current_user, :admin_label, @project)
+      - if can?(current_user, :admin_label, @project) && !label.archived
         %li.gl-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
           dom_id: dom_id(label), type: label.type } }
           = render Pajamas::ButtonComponent.new(category: :tertiary,

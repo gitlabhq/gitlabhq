@@ -362,6 +362,14 @@ RSpec.describe Label, feature_category: :team_planning do
           expect(priority.reload.priority).to eq 1
         end
       end
+
+      context 'when label is archived' do
+        subject(:label) { create(:label, :archived, project: project) }
+
+        it 'does not create label priority' do
+          expect { label.prioritize!(project, 1) }.not_to change(label.priorities, :count)
+        end
+      end
     end
 
     describe '#unprioritize!' do
@@ -369,6 +377,29 @@ RSpec.describe Label, feature_category: :team_planning do
         create(:label_priority, project: project, label: label, priority: 0)
 
         expect { label.unprioritize!(project) }.to change(label.priorities, :count).by(-1)
+      end
+
+      context 'when archiving label' do
+        it 'unprioritizes label' do
+          create(:label_priority, project: project, label: label, priority: 0)
+
+          label.archived = true
+          expect { label.save! }.to change(label.priorities, :count).by(-1)
+        end
+
+        it 'does not unprioritize other labels' do
+          other_label = create(:label)
+          create(:label_priority, project: project, label: other_label, priority: 0)
+
+          label.archived = true
+          expect { label.save! }.not_to change(other_label.priorities, :count)
+        end
+
+        it 'does not trigger the callbacks when not archived' do
+          label.archived = false
+          expect(label).not_to receive(:unprioritize_all!)
+          label.save!
+        end
       end
     end
 

@@ -2293,7 +2293,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/shared_examples/lib/gitlab/cache/json_cache_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/cycle_analytics/event_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/database/reestablished_connection_stack_shared_examples.rb'
-    - 'spec/support/shared_examples/loose_foreign_keys/have_loose_foreign_key.rb'
     - 'spec/support/shared_examples/models/boards/listable_shared_examples.rb'
     - 'spec/support/shared_examples/models/boards/user_preferences_shared_examples.rb'
     - 'spec/support/shared_examples/models/cluster_application_helm_cert_shared_examples.rb'

@@ -714,7 +714,6 @@ RSpec/NamedSubject:
     - 'ee/spec/serializers/license_compliance/collapsed_comparer_entity_spec.rb'
     - 'ee/spec/serializers/license_compliance/comparer_entity_spec.rb'
     - 'ee/spec/serializers/license_entity_spec.rb'
-    - 'ee/spec/serializers/merge_request_widget_entity_spec.rb'
     - 'ee/spec/serializers/metrics_report_metric_entity_spec.rb'
     - 'ee/spec/serializers/metrics_reports_comparer_entity_spec.rb'
     - 'ee/spec/serializers/pipeline_serializer_spec.rb'
