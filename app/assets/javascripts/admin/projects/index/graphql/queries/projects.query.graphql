@@ -1,6 +1,5 @@
-#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/graphql_shared/fragments/project_fragment.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
 
 query getAdminProjects(
   $active: Boolean
@@ -30,11 +29,9 @@ query getAdminProjects(
   ) {
     count
     nodes {
-      ...ProjectFragment
-      ... on Project {
-        statistics {
-          storageSize
-        }
+      ...Project
+      statistics {
+        storageSize
       }
     }
     pageInfo {

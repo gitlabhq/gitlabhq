@@ -11,12 +11,6 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
 
   subject(:service) { described_class.new(group, user) }
 
-  before_all do
-    automation_bot = Users::Internal.automation_bot
-    project.add_developer(automation_bot)
-    deployer_project.add_developer(Users::Internal.automation_bot)
-  end
-
   describe '#execute' do
     shared_examples 'returns error with status' do |message, status|
       it "returns #{status} error: #{message}" do
@@ -51,7 +45,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           issue = result[:issue]
           expect(issue).to be_confidential
           expect(issue.title).to eq("Request Observability Access for #{group.name}")
-          expect(issue.author).to eq(Users::Internal.automation_bot)
+          expect(issue.author).to eq(Users::Internal.admin_bot)
           expect(issue.project.namespace).to eq(group)
 
           description = issue.description
@@ -66,7 +60,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           existing_issue = create(:issue,
             project: project,
             title: "Request Observability Access for #{group.name}",
-            author: Users::Internal.automation_bot,
+            author: Users::Internal.admin_bot,
             confidential: true,
             state: 'opened'
           )
@@ -82,7 +76,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
         it 'uses automation bot to create the issue' do
           expect(Issues::CreateService).to receive(:new).with(
             container: instance_of(Project),
-            current_user: Users::Internal.automation_bot,
+            current_user: Users::Internal.admin_bot,
             params: hash_including(
               title: "Request Observability Access for #{group.name}",
               confidential: true
@@ -197,7 +191,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
         expected_container = expected_container_proc.call
         expect(Issues::CreateService).to receive(:new).with(
           container: expected_container,
-          current_user: Users::Internal.automation_bot,
+          current_user: Users::Internal.admin_bot,
           params: anything
         ).and_call_original
 

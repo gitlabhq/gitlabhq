@@ -88,6 +88,15 @@ Policies in a compliance and security policy group are stored in a `policy.yml` 
 - Instance administrators can monitor background job processing in **Admin Area** > **Monitoring** > **Background jobs**.
 - To verify that policies are successfully applied in a target group or project, go to **Secure** > **Policies** in the group or project.
 
+### Managing performance
+
+To prevent performance issues, plan your policy management strategy to minimize the number of modifications to your configuration:
+
+- Plan changes carefully: Avoid making multiple compliance and security policy group changes in quick succession.
+- Schedule changes during maintenance windows: Make changes during low-usage periods to minimize the impact on users.
+- Monitor system performance: Be prepared for potential performance degradation during synchronization.
+- Allow extra time: The synchronization process completion time depends on your instance size.
+
 ## Troubleshooting
 
 **Policy does not appear in the target group or project**
@@ -101,6 +110,7 @@ Policies in a compliance and security policy group are stored in a `policy.yml` 
 
 - Monitor policy propagation times, especially with large scope configurations.
 - Consider scoping policies to specific groups or projects instead of applying the policies to all projects.
+- To reduce performance impacts when modifying compliance security policy groups, see [managing performance](#managing-performance).
 
 ## Feedback and support
 

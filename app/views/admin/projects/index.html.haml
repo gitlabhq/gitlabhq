@@ -13,4 +13,22 @@
       = link_button_to new_project_path, variant: :confirm do
         = _('New Project')
 
-#js-admin-projects-app{ data: { app_data: admin_projects_app_data } }
+- if Feature.enabled?(:admin_projects_vue, current_user)
+  #js-admin-projects-app{ data: { app_data: admin_projects_app_data } }
+- else
+  .top-area
+    .scrolling-tabs-container.inner-page-scroll-tabs.gl-grow.gl-basis-0.gl-min-w-0
+      %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
+        = sprite_icon('chevron-lg-left', size: 12)
+      %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
+        = sprite_icon('chevron-lg-right', size: 12)
+      = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-flex gl-grow gl-w-full nav gl-tabs-nav nav gl-tabs-nav' }) do
+        = gl_tab_link_to _('All'), admin_projects_path(visibility_level: nil), { item_active: params[:visibility_level].empty? }
+        = gl_tab_link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        = gl_tab_link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        = gl_tab_link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+  .md:gl-flex.gl-min-w-0.gl-grow.gl-border-t-0.row-content-block
+    = render 'shared/projects/search_form', admin_view: true
+
+  = render 'projects'

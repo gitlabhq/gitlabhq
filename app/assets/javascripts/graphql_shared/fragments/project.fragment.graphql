@@ -1,0 +1,50 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+fragment Project on Project {
+  id
+  fullPath
+  archived
+  nameWithNamespace
+  webUrl
+  topics
+  forksCount
+  avatarUrl
+  starCount
+  visibility
+  openMergeRequestsCount
+  openIssuesCount
+  descriptionHtml
+  createdAt
+  updatedAt
+  lastActivityAt
+  group {
+    id
+  }
+  mergeRequestsAccessLevel {
+    stringValue
+  }
+  issuesAccessLevel {
+    stringValue
+  }
+  forkingAccessLevel {
+    stringValue
+  }
+  userPermissions {
+    removeProject
+    viewEditPage
+    adminAllResources @gl_introduced(version: "18.3.0")
+  }
+  maxAccessLevel {
+    integerValue
+  }
+  isCatalogResource
+  exploreCatalogPath
+  pipeline {
+    id
+    detailedStatus {
+      ...CiIcon
+    }
+  }
+  markedForDeletionOn
+  permanentDeletionDate
+}

@@ -20,7 +20,7 @@ title: Storage
 
 {{< /details >}}
 
-All Free projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
+Each project in a Free tier namespace on GitLab.com has 10 GiB of free storage for its Git repository and Large File Storage (LFS).
 
 When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
 You cannot push changes to a read-only project.

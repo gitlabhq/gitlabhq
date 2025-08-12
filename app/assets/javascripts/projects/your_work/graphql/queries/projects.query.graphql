@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/graphql_shared/fragments/project_fragment.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
 
 query getYourWorkProjects(
   $archived: ProjectArchived = EXCLUDE
@@ -28,7 +28,7 @@ query getYourWorkProjects(
     programmingLanguageName: $programmingLanguageName
   ) {
     nodes {
-      ...ProjectFragment
+      ...Project
     }
     pageInfo {
       ...PageInfo

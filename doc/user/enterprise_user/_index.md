@@ -206,6 +206,8 @@ To edit or remove a domain:
 In addition to the standard [group member permissions](../permissions.md#group-members-permissions),
 Owners of a top-level group can also manage enterprise users in their group.
 
+You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.
+
 ### Restrict authentication methods
 
 You can restrict the specific authentication methods available to enterprise users, which can help
@@ -222,43 +224,55 @@ You can restrict group and project creation for enterprise users, which helps yo
 - If enterprise users can create top-level groups.
 - The maximum number of personal projects each enterprise user can create.
 
-These restrcitions are defined in the SAML response. For more information, see [configure enterprise user settings from the SAML response](../group/saml_sso/_index.md#configure-enterprise-user-settings-from-saml-response).
+These restrictions are defined in the SAML response. For more information, see
+[configure enterprise user settings from the SAML response](../group/saml_sso/_index.md#configure-enterprise-user-settings-from-saml-response).
 
 ### Bypass email confirmation for provisioned users
 
-By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can configure GitLab with a custom domain and GitLab automatically confirms user accounts. Users still receive an enterprise user welcome email.
+By default, users provisioned with SAML or SCIM are sent a verification email to verify their
+identity. Instead, you can configure GitLab with a custom domain and GitLab automatically
+confirms user accounts. Users still receive an enterprise user welcome email.
 
 For more information, see [bypass user email confirmation with verified domains](../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
 
 ### View the email addresses for an enterprise user
 
-A top-level group Owner can use the UI to access enterprise users' email addresses:
+Prerequisites:
+
+- You must have the Owner role for a top-level group.
+
+To view an enterprise user's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Manage > Members**.
-1. In the group or project members page, hover over the enterprise user's name to
-   see their email address.
+1. Hover over the enterprise user's name.
 
-A group Owner can also use the [group and project members API](../../api/members.md)
+You can also use the [group and project members API](../../api/members.md)
 to access users' information. For enterprise users of the group, this information
 includes users' email addresses.
 
 ### Change the email addresses for an enterprise user
 
-Enterprise users can follow the same process as other GitLab users to [change their primary email address](../../user/profile/_index.md#change-your-primary-email). The new email address must be from a verified domain. If your organization has no verified domains, your enterprise users cannot change their primary email address.
+Enterprise users can follow the same process as other GitLab users to
+[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
+The new email address must be from a verified domain. If your organization has no verified
+domains, your enterprise users cannot change their primary email address.
 
-Only GitLab support can change the primary email address to an email address from a non-verified domain. Doing this [releases the enterprise user](#release-an-enterprise-user).
+Only GitLab support can change the primary email address to an email address from a
+non-verified domain. This action [releases the enterprise user](#release-an-enterprise-user).
 
 ### Release an enterprise user
 
-It's possible to remove enterprise management features from a user account. This might be required if, for
+You can remove enterprise management features from a user account. Removing an enterprise user might be required if, for
 example, a user wants to keep their GitLab account after leaving their company. Releasing a user
-does not alter their account roles or permissions, but does remove the management options
+does not alter their account roles or permissions, but removes the management options
 for the group Owner.
 
-To release the user, GitLab support must update the user's primary email address to an email address from a non-verified domain. This action automatically releases the account.
+To release the user, GitLab support must update the user's primary email address to an
+email address from a non-verified domain. This action automatically releases the account.
 
-Allowing group Owners to change primary emails is proposed in [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
+Allowing group Owners to change primary emails is proposed in
+[issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
@@ -282,18 +296,14 @@ Allowing group Owners to change primary emails is proposed in [issue 412966](htt
 
 Prerequisites:
 
-- In the **Admin** area, a GitLab administrator must
-  [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
+- An administrator must [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
+- You must have the Owner role for a top-level group.
 
-If you have the Owner role for a top-level group, you can enable the
-[extension marketplace](_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
-
-To enable the extension marketplace for the
-[Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md):
+To enable the extension marketplace for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.
 1. Select **Save changes**.
 

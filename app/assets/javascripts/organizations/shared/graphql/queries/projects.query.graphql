@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/graphql_shared/fragments/project_fragment.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
 
 query getOrganizationProjects(
   $id: OrganizationsOrganizationID!
@@ -21,7 +21,7 @@ query getOrganizationProjects(
       after: $after
     ) {
       nodes {
-        ...ProjectFragment
+        ...Project
         organizationEditPath
       }
       pageInfo {

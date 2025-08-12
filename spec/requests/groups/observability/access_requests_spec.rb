@@ -11,8 +11,6 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
 
   before_all do
     group.add_developer(user)
-    automation_bot = Users::Internal.automation_bot
-    project.add_developer(automation_bot)
   end
 
   before do

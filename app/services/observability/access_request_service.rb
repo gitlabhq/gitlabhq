@@ -30,7 +30,7 @@ module Observability
 
       result = Issues::CreateService.new(
         container: project,
-        current_user: Users::Internal.automation_bot,
+        current_user: Users::Internal.admin_bot,
         params: issue_params
       ).execute
 
@@ -65,7 +65,7 @@ module Observability
 
     def existing_issue?(project)
       ::IssuesFinder.new(
-        Users::Internal.automation_bot,
+        Users::Internal.admin_bot,
         {
           project_id: project.id,
           search: issue_title,
