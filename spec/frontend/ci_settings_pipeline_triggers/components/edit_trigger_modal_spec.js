@@ -1,6 +1,6 @@
 import { GlModal, GlFormGroup } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditTriggerModal from '~/ci_settings_pipeline_triggers/components/edit_trigger_modal.vue';
 
 const TEST_MODAL_ID = 'test-modal-id';
@@ -19,7 +19,7 @@ describe('EditTriggerModal', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(EditTriggerModal, {
+    wrapper = shallowMountExtended(EditTriggerModal, {
       propsData: {
         modalId: TEST_MODAL_ID,
         trigger: TEST_TRIGGER,
@@ -33,7 +33,7 @@ describe('EditTriggerModal', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findToken = () => wrapper.findComponent('[id=edit_trigger_token]');
+  const findToken = () => wrapper.findByTestId('edit-trigger-token');
   const findDescription = () => wrapper.findComponent('[id=edit_trigger_description]');
   const findFormFields = () => {
     return {

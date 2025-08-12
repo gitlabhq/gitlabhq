@@ -1,8 +1,0 @@
----
-name: issues_grid_view
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113012
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393152
-milestone: '16.0'
-type: development
-group: group::product planning
-default_enabled: false

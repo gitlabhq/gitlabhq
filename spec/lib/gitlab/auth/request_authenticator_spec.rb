@@ -114,33 +114,37 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
   describe '#find_authenticated_requester' do
     let_it_be(:api_user) { create(:user) }
-    let_it_be(:deploy_token_user) { create(:user) }
+    let_it_be(:deploy_token) { create(:deploy_token) }
 
-    it 'returns the deploy token if it exists' do
-      allow_next_instance_of(described_class) do |authenticator|
-        expect(authenticator).to receive(:deploy_token_from_request).and_return(deploy_token_user)
-        allow(authenticator).to receive(:user).and_return(nil)
+    context 'when deploy token is present' do
+      it 'returns the deploy token and skips user authentication' do
+        allow_next_instance_of(described_class) do |authenticator|
+          expect(authenticator).to receive(:deploy_token_from_request).and_return(deploy_token)
+          expect(authenticator).not_to receive(:user)
+        end
+
+        expect(subject.find_authenticated_requester([:api])).to eq deploy_token
       end
-
-      expect(subject.find_authenticated_requester([:api])).to eq deploy_token_user
     end
 
-    it 'returns the user id if it exists' do
-      allow_next_instance_of(described_class) do |authenticator|
-        allow(authenticator).to receive(:deploy_token_from_request).and_return(deploy_token_user)
-        expect(authenticator).to receive(:user).and_return(api_user)
+    context 'when deploy token is not present' do
+      it 'falls back to user authentication' do
+        allow_next_instance_of(described_class) do |authenticator|
+          expect(authenticator).to receive(:deploy_token_from_request).and_return(nil)
+          expect(authenticator).to receive(:user).with([:api]).and_return(api_user)
+        end
+
+        expect(subject.find_authenticated_requester([:api])).to eq api_user
       end
 
-      expect(subject.find_authenticated_requester([:api])).to eq api_user
-    end
+      it 'returns nil when no authentication method succeeds' do
+        allow_next_instance_of(described_class) do |authenticator|
+          expect(authenticator).to receive(:deploy_token_from_request).and_return(nil)
+          expect(authenticator).to receive(:user).with([:api]).and_return(nil)
+        end
 
-    it 'rerturns nil if no match is found' do
-      allow_next_instance_of(described_class) do |authenticator|
-        expect(authenticator).to receive(:deploy_token_from_request).and_return(nil)
-        expect(authenticator).to receive(:user).and_return(nil)
+        expect(subject.find_authenticated_requester([:api])).to be_nil
       end
-
-      expect(subject.find_authenticated_requester([:api])).to eq nil
     end
   end
 

@@ -87,6 +87,16 @@ describe('Source Viewer component', () => {
     it('should highlight the hash', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
+
+    it('hides the blame viewer if showBlame changes to false', async () => {
+      await triggerChunkAppear();
+      expect(findBlameComponents()).toHaveLength(1);
+
+      await wrapper.setProps({ showBlame: false });
+      await nextTick();
+
+      expect(findBlameComponents()).toHaveLength(0);
+    });
   });
 
   describe('event tracking', () => {

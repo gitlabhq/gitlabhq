@@ -273,6 +273,9 @@ export default {
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER);
       },
     },
+    $route(newValue, oldValue) {
+      if (newValue?.path !== oldValue?.path) this.setShowBlame(false); // Always hide blame panel when navigating
+    },
   },
   methods: {
     onError() {
@@ -370,12 +373,14 @@ export default {
       if (this.$route?.query?.plain === '0') {
         // If the user is not viewing plain code and clicks the blame button, we always want to show blame info
         // For instance, when viewing the rendered version of a Markdown file
-        this.showBlame = true;
+        this.setShowBlame(true);
       } else {
-        this.showBlame = !this.showBlame;
+        this.setShowBlame(!this.showBlame);
       }
-
-      const blame = this.showBlame === true ? '1' : '0';
+    },
+    setShowBlame(showBlame) {
+      this.showBlame = showBlame;
+      const blame = showBlame === true ? '1' : '0';
       if (this.$route?.query?.blame === blame) return;
       this.$router.push({ path: this.$route.path, query: { ...this.$route.query, blame } });
     },

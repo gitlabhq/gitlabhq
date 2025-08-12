@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -54,6 +55,8 @@ jest.mock('~/alert');
 let wrapper;
 let blobInfoMockResolver;
 let projectInfoMockResolver;
+let router;
+let mockRouterPush;
 
 Vue.use(Vuex);
 
@@ -64,16 +67,24 @@ const mockAxios = new MockAdapter(axios);
 const createMockStore = () =>
   new Vuex.Store({ actions: { fetchData: jest.fn, setInitialData: jest.fn() } });
 
-const mockRouterPush = jest.fn();
-const mockRouter = {
-  push: mockRouterPush,
-};
 const highlightWorker = { postMessage: jest.fn() };
 
 const legacyViewerUrl = '/some_file.js?format=json&viewer=simple';
 
-const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute = {}) => {
+const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
+
+  router = new VueRouter({
+    routes: [
+      { path: '/', name: 'root', component: { template: '<div/>' } },
+      { path: '/mock_path', name: 'mock_path', component: { template: '<div/>' } },
+    ],
+    mode: 'history',
+  });
+
+  mockRouterPush = jest.fn();
+  router.push = mockRouterPush;
 
   const {
     blob = simpleViewerMock,
@@ -126,16 +137,13 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       apolloProvider: fakeApollo,
       propsData: propsMock,
       mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
-      mocks: {
-        $route: mockRoute,
-        $router: mockRouter,
-      },
       provide: {
         targetBranch: 'test',
         originalBranch: 'default-ref',
         glFeatures: { inlineBlame: true },
         ...inject,
       },
+      router,
     }),
   );
 
@@ -198,12 +206,26 @@ describe('Blob content viewer component', () => {
 
         await triggerBlame();
 
-        expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '1' } });
+        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: { blame: '1' } });
         expect(findSourceViewer().props('showBlame')).toBe(true);
 
         await triggerBlame();
 
-        expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '0' } });
+        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: { blame: '0' } });
+        expect(findSourceViewer().props('showBlame')).toBe(false);
+      });
+
+      it('hides the blame when route changes', async () => {
+        loadViewer.mockReturnValueOnce(SourceViewer);
+        await createComponent({ blob: simpleViewerMock });
+        await triggerBlame(); // First open blame
+
+        await router.replace('/mock_path');
+
+        expect(mockRouterPush).toHaveBeenCalledWith({
+          path: '/mock_path',
+          query: { blame: '0' },
+        });
         expect(findSourceViewer().props('showBlame')).toBe(false);
       });
 
@@ -357,7 +379,8 @@ describe('Blob content viewer component', () => {
     });
 
     it('updates viewer type when viewer changed is clicked', async () => {
-      await createComponent({ blob: richViewerMock }, shallowMount, { path: '/mock_path' });
+      await createComponent({ blob: richViewerMock });
+      await router.replace('/mock_path');
 
       expect(findBlobContent().props('activeViewer')).toEqual(
         expect.objectContaining({
@@ -584,10 +607,8 @@ describe('Blob content viewer component', () => {
         await createComponent(
           { blob: hasRichViewer ? richViewerMock : simpleViewerMock },
           shallowMount,
-          { query: { plain } },
         );
-
-        await nextTick();
+        await router.replace(`?plain=${plain}`);
 
         expect(findBlobContent().props('activeViewer')).toEqual(
           expect.objectContaining({

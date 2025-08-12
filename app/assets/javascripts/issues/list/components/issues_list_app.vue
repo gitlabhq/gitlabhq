@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlButtonGroup,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlFilteredSearchToken,
@@ -30,7 +29,6 @@ import {
   mapWorkItemWidgetsToIssuableFields,
   updateUpvotesCount,
 } from 'ee_else_ce/issues/list/utils';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -108,9 +106,6 @@ import {
   CREATED_DESC,
   i18n,
   ISSUE_REFERENCE,
-  ISSUES_GRID_VIEW_KEY,
-  ISSUES_LIST_VIEW_KEY,
-  ISSUES_VIEW_TYPE_KEY,
   MAX_LIST_SIZE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
@@ -150,9 +145,6 @@ export default {
   i18n,
   issuableListTabs,
   issuableType: TYPE_ISSUE.toUpperCase(),
-  ISSUES_VIEW_TYPE_KEY,
-  ISSUES_GRID_VIEW_KEY,
-  ISSUES_LIST_VIEW_KEY,
   WORK_ITEM_TYPE_NAME_ISSUE,
   components: {
     CreateWorkItemModal,
@@ -162,13 +154,11 @@ export default {
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     GlButton,
-    GlButtonGroup,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
     NewResourceDropdown,
-    LocalStorageSync,
     WorkItemDrawer,
   },
   directives: {
@@ -236,7 +226,6 @@ export default {
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
-      viewType: ISSUES_LIST_VIEW_KEY,
       subscribeDropdownOptions: {
         items: [
           {
@@ -637,12 +626,6 @@ export default {
         })
       );
     },
-    gridViewFeatureEnabled() {
-      return Boolean(this.glFeatures?.issuesGridView);
-    },
-    isGridView() {
-      return this.viewType === ISSUES_GRID_VIEW_KEY;
-    },
     isIssuableSelected() {
       return !isEmpty(this.activeIssuable);
     },
@@ -908,15 +891,6 @@ export default {
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
-    switchViewType(type) {
-      // Filter the wrong data from localStorage
-      if (type === ISSUES_GRID_VIEW_KEY) {
-        this.viewType = ISSUES_GRID_VIEW_KEY;
-        return;
-      }
-      // The default view is list view
-      this.viewType = ISSUES_LIST_VIEW_KEY;
-    },
     handleSelectIssuable(issuable) {
       if (
         this.issuesDrawerEnabled &&
@@ -1074,7 +1048,6 @@ export default {
       :show-page-size-selector="showPageSizeSelector"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
-      :is-grid-view="isGridView"
       :active-issuable="activeIssuable"
       show-work-item-type-icon
       :prevent-redirect="issuesDrawerEnabled"
@@ -1091,30 +1064,6 @@ export default {
     >
       <template #nav-actions>
         <div class="gl-flex gl-gap-3">
-          <local-storage-sync
-            v-if="gridViewFeatureEnabled"
-            :value="viewType"
-            :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
-            @input="switchViewType"
-          >
-            <gl-button-group>
-              <gl-button
-                :variant="isGridView ? 'default' : 'confirm'"
-                data-testid="list-view-type"
-                @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
-              >
-                {{ __('List') }}
-              </gl-button>
-              <gl-button
-                :variant="isGridView ? 'confirm' : 'default'"
-                data-testid="grid-view-type"
-                @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
-              >
-                {{ __('Grid') }}
-              </gl-button>
-            </gl-button-group>
-          </local-storage-sync>
-
           <gl-button
             v-if="canBulkUpdate"
             :disabled="isBulkEditButtonDisabled"

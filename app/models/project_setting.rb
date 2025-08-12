@@ -7,6 +7,9 @@ class ProjectSetting < ApplicationRecord
   include Projects::SquashOption
   include Gitlab::EncryptedAttribute
   include AfterCommitQueue
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :auto_duo_code_review_enabled
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 

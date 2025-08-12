@@ -54,9 +54,6 @@ export default {
   apollo: {
     job: {
       query: getJobQuery,
-      pollInterval() {
-        return !this.shouldUseRealtimeStatus ? 30000 : null;
-      },
       variables() {
         return {
           fullPath: this.projectPath,
@@ -82,7 +79,7 @@ export default {
         },
         skip() {
           // ensure we have job data before updateQuery is called
-          return !this.jobId || !this.job || !this.shouldUseRealtimeStatus;
+          return !this.jobId || !this.job;
         },
         updateQuery(
           previousData,
@@ -156,9 +153,6 @@ export default {
     },
     userId() {
       return isGid(this.user?.id) ? getIdFromGraphQLId(this.user?.id) : this.user?.id;
-    },
-    shouldUseRealtimeStatus() {
-      return this.glFeatures?.ciJobStatusRealtime;
     },
   },
   methods: {

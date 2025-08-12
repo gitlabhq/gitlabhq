@@ -2623,10 +2623,10 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
-msgid "AICatalog|cannot be changed from public to private as it has catalog consumers"
+msgid "AICatalog|cannot be changed as it has been released"
 msgstr ""
 
-msgid "AICatalog|cannot change a released item version"
+msgid "AICatalog|cannot be changed from public to private as it has catalog consumers"
 msgstr ""
 
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
@@ -4333,6 +4333,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Features"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|GitLab Default %{defaultModel}"
 msgstr ""
 
@@ -4363,10 +4366,10 @@ msgstr ""
 msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"
 msgstr ""
 
-msgid "AdminAiPoweredFeatures|AI vendor"
+msgid "AdminAiPoweredFeatures|Disabled"
 msgstr ""
 
-msgid "AdminAiPoweredFeatures|Disabled"
+msgid "AdminAiPoweredFeatures|GitLab AI vendor model"
 msgstr ""
 
 msgid "AdminAiPoweredFeatures|Self-hosted model"
@@ -25400,12 +25403,6 @@ msgstr ""
 msgid "Enter the username for password-protected Elasticsearch servers."
 msgstr ""
 
-msgid "Enter the work item description"
-msgstr ""
-
-msgid "Enter the work item title"
-msgstr ""
-
 msgid "Enter values to populate the .gitlab-ci.yml configuration file."
 msgstr ""
 
@@ -30784,9 +30781,6 @@ msgid "Gravatar"
 msgstr ""
 
 msgid "Gravatar enabled"
-msgstr ""
-
-msgid "Grid"
 msgstr ""
 
 msgid "Group"
@@ -38959,6 +38953,9 @@ msgstr ""
 msgid "MemberRole|Admin role is used by one or more LDAP synchronizations. Remove LDAP syncs, then delete role."
 msgstr ""
 
+msgid "MemberRole|Also applies to users that are assigned a custom admin role."
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
@@ -39235,7 +39232,7 @@ msgstr ""
 msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
 msgstr ""
 
-msgid "MemberRole|To enhance security, we recommend %{linkStart}enabling Admin mode%{linkEnd} when using custom admin roles. Enabling Admin mode will require users to re-authenticate in GitLab before accessing the Admin area."
+msgid "MemberRole|To enhance security, we recommend enabling %{adminModeLinkStart}Admin Mode%{adminModeLinkEnd} and %{mfaLinkStart}Require administrators to enable 2FA%{mfaLinkEnd} when using custom admin roles. Enabling Admin Mode will require users to re-authenticate in GitLab before accessing the Admin area."
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
@@ -40996,10 +40993,19 @@ msgstr ""
 msgid "ModelSelection|Model Selection"
 msgstr ""
 
+msgid "ModelSelection|Model Selection is enabled for GitLab Duo, which requires a default namespace to be set. You must select a default namespace in profile preferences to continue using GitLab Duo features."
+msgstr ""
+
+msgid "ModelSelection|Select default namespace for GitLab Duo"
+msgstr ""
+
 msgid "ModelSelection|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
 msgid "ModelSelection|Successfully updated all %{mainFeature} features"
+msgstr ""
+
+msgid "ModelSelection|Update profile preferences"
 msgstr ""
 
 msgid "Modified"
@@ -72064,9 +72070,6 @@ msgstr ""
 msgid "WorkItem|Create lifecycle"
 msgstr ""
 
-msgid "WorkItem|Create new work item by email"
-msgstr ""
-
 msgid "WorkItem|Created %{timeago}"
 msgstr ""
 
@@ -72128,9 +72131,6 @@ msgid "WorkItem|Edit statuses"
 msgstr ""
 
 msgid "WorkItem|Edit work item"
-msgstr ""
-
-msgid "WorkItem|Email a new work item to this project"
 msgstr ""
 
 msgid "WorkItem|Email participants"
@@ -72527,9 +72527,6 @@ msgstr ""
 msgid "WorkItem|Select which type you would like to change this item to."
 msgstr ""
 
-msgid "WorkItem|Send email"
-msgstr ""
-
 msgid "WorkItem|Show all ancestors"
 msgstr ""
 
@@ -72695,12 +72692,6 @@ msgstr ""
 msgid "WorkItem|The current task"
 msgstr ""
 
-msgid "WorkItem|The subject is used as the title of the new work item, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
-msgstr ""
-
-msgid "WorkItem|There was an error when resetting email token."
-msgstr ""
-
 msgid "WorkItem|These existing items have a similar title and may represent potential duplicates."
 msgstr ""
 
@@ -72720,9 +72711,6 @@ msgid "WorkItem|This action cannot be undone."
 msgstr ""
 
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
-msgstr ""
-
-msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
 msgid "WorkItem|This item is hidden because its author has been banned."
@@ -72825,9 +72813,6 @@ msgid "WorkItem|Work items"
 msgstr ""
 
 msgid "WorkItem|Yes, close %{workItemType}"
-msgstr ""
-
-msgid "WorkItem|You can create a new work item inside this project by sending an email to the following email address:"
 msgstr ""
 
 msgid "WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels."

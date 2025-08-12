@@ -10,7 +10,7 @@ title: PlantUML
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -307,7 +307,9 @@ you must configure this redirection, because PlantUML uses the insecure HTTP pro
 Newer browsers, such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408),
 don't load insecure HTTP resources on pages served over HTTPS.
 
-To enable this redirection:
+#### Use bundled GitLab NGINX
+
+If you can modify `/etc/gitlab/gitlab.rb`, configure the bundled NGINX to handle the redirection:
 
 1. Add the following line in `/etc/gitlab/gitlab.rb`, depending on your setup method:
 
@@ -324,6 +326,75 @@ To enable this redirection:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+#### Use HTTPS PlantUML server
+
+If you cannot modify the `gitlab.rb` file, configure your PlantUML server to use
+HTTPS directly. This method is recommended for GitLab Dedicated instances.
+
+This setup uses NGINX to handle SSL termination and proxy requests to the PlantUML
+container. You can also use cloud-based load balancers like AWS Application Load Balancer (ALB) for
+SSL termination.
+
+1. Create an `nginx.conf` file:
+
+   ```nginx
+   events {
+       worker_connections 1024;
+   }
+
+   http {
+       server {
+           listen 443 ssl;
+           server_name _;
+           ssl_certificate /etc/nginx/ssl/plantuml.crt;
+           ssl_certificate_key /etc/nginx/ssl/plantuml.key;
+           location / {
+               proxy_pass http://plantuml:8080;
+               proxy_set_header Host $host;
+               proxy_set_header X-Real-IP $remote_addr;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_set_header X-Forwarded-Proto $scheme;
+           }
+       }
+   }
+   ```
+
+1. Add the `plantuml.crt` and `plantuml.key` files to an `ssl` directory.
+
+1. Configure the `docker-compose.yml` file:
+
+   ```yaml
+   version: '3.8'
+
+   services:
+     plantuml:
+       image: plantuml/plantuml-server:tomcat
+       container_name: plantuml
+       networks:
+         - plantuml-net
+
+     plantuml-ssl:
+       image: nginx
+       container_name: plantuml-ssl
+       ports:
+         - "8443:443"
+       volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf:ro
+         - ./ssl:/etc/nginx/ssl:ro
+       depends_on:
+         - plantuml
+       networks:
+         - plantuml-net
+
+   networks:
+     plantuml-net:
+       driver: bridge
+   ```
+
+1. Start your PlantUML server with `docker-compose up`.
+1. [Enable PlantUML integration](#enable-plantuml-integration) with the URL
+   `https://your-server:8443`.
 
 ### Verify the PlantUML installation
 

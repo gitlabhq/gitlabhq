@@ -8,7 +8,6 @@ import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
-import IssuableGrid from '~/vue_shared/issuable/list/components/issuable_grid.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
@@ -24,7 +23,6 @@ describe('IssuableListRoot component', () => {
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
-  const findIssuableGrid = () => wrapper.findComponent(IssuableGrid);
   const findIssuableItem = () => wrapper.findComponent(IssuableItem);
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
   const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
@@ -251,12 +249,6 @@ describe('IssuableListRoot component', () => {
 
       expect(wrapper.emitted('select-issuable')).toEqual([[issuable]]);
     });
-  });
-
-  it('renders IssuableGrid component when in grid view context', () => {
-    createComponent({ isGridView: true });
-
-    expect(findIssuableGrid().exists()).toBe(true);
   });
 
   it('renders contents for slot "empty-state" when there are no issuables', () => {

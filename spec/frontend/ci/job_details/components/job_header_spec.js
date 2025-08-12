@@ -52,7 +52,7 @@ describe('Header CI Component', () => {
     return createMockApollo(handlers);
   };
 
-  const createComponent = (props, handlers = defaultHandlers, flagEnabled = true) => {
+  const createComponent = (props, handlers = defaultHandlers) => {
     mockSubscription = createMockSubscription();
     subscriptionHandler = jest.fn().mockReturnValue(mockSubscription);
     apolloProvider = createMockApolloProvider(handlers);
@@ -69,9 +69,6 @@ describe('Header CI Component', () => {
       },
       provide: {
         projectPath: 'gitlab-org/gitlab',
-        glFeatures: {
-          ciJobStatusRealtime: flagEnabled,
-        },
       },
       apolloProvider,
     });
@@ -191,59 +188,45 @@ describe('Header CI Component', () => {
   });
 
   describe('real time updates', () => {
-    describe('with ciJobStatusRealtime enabled', () => {
-      beforeEach(async () => {
-        createComponent();
+    beforeEach(async () => {
+      createComponent();
 
-        await waitForPromises();
-      });
-
-      it('updates job status', async () => {
-        expect(findCiIcon().props('status')).toEqual({
-          __typename: 'DetailedStatus',
-          detailsPath: '/root/ci-project/-/jobs/13051',
-          icon: 'status_success',
-          id: 'success-13051-13051',
-          text: 'Passed',
-        });
-
-        mockSubscription.next({
-          data: {
-            ciJobStatusUpdated: {
-              id: 'gid://gitlab/Ci::Build/389',
-              detailedStatus: {
-                __typename: 'DetailedStatus',
-                detailsPath: '/root/ci-project/-/jobs/389',
-                icon: 'status_running',
-                id: 'running-389-389',
-                text: 'Running',
-              },
-            },
-          },
-        });
-
-        await waitForPromises();
-
-        expect(subscriptionHandler).toHaveBeenCalledWith({ jobId: 'gid://gitlab/Ci::Build/13051' });
-        expect(findCiIcon().props('status')).toEqual({
-          __typename: 'DetailedStatus',
-          id: 'running-389-389',
-          icon: 'status_running',
-          text: 'Running',
-          detailsPath: '/root/ci-project/-/jobs/389',
-        });
-      });
+      await waitForPromises();
     });
 
-    describe('with ciJobStatusRealtime disabled', () => {
-      beforeEach(async () => {
-        createComponent({}, defaultHandlers, false);
-
-        await waitForPromises();
+    it('updates job status', async () => {
+      expect(findCiIcon().props('status')).toEqual({
+        __typename: 'DetailedStatus',
+        detailsPath: '/root/ci-project/-/jobs/13051',
+        icon: 'status_success',
+        id: 'success-13051-13051',
+        text: 'Passed',
       });
 
-      it('updates job status', () => {
-        expect(subscriptionHandler).not.toHaveBeenCalled();
+      mockSubscription.next({
+        data: {
+          ciJobStatusUpdated: {
+            id: 'gid://gitlab/Ci::Build/389',
+            detailedStatus: {
+              __typename: 'DetailedStatus',
+              detailsPath: '/root/ci-project/-/jobs/389',
+              icon: 'status_running',
+              id: 'running-389-389',
+              text: 'Running',
+            },
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledWith({ jobId: 'gid://gitlab/Ci::Build/13051' });
+      expect(findCiIcon().props('status')).toEqual({
+        __typename: 'DetailedStatus',
+        id: 'running-389-389',
+        icon: 'status_running',
+        text: 'Running',
+        detailsPath: '/root/ci-project/-/jobs/389',
       });
     });
   });

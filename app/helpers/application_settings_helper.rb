@@ -760,6 +760,11 @@ module ApplicationSettingsHelper
       deletion_adjourned_period: @application_setting[:deletion_adjourned_period]
     }
   end
+
+  # Overridden in EE
+  def custom_admin_roles_available?
+    false
+  end
 end
 
 ApplicationSettingsHelper.prepend_mod_with('ApplicationSettingsHelper')

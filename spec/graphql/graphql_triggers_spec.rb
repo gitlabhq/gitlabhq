@@ -249,21 +249,5 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
 
       described_class.ci_job_status_updated(job)
     end
-
-    describe 'when ci_job_status_realtime is disabled' do
-      before do
-        stub_feature_flags(ci_job_status_realtime: false)
-      end
-
-      it 'does not trigger the ci_job_status_updated subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_job_status_updated,
-          { job_id: job.to_gid },
-          job
-        )
-
-        described_class.ci_job_status_updated(job)
-      end
-    end
   end
 end

@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def find_authenticated_requester(request_formats)
-        user(request_formats) || deploy_token_from_request
+        deploy_token_from_request || user(request_formats)
       end
 
       def user(request_formats)

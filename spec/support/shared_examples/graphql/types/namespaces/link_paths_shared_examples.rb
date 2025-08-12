@@ -17,9 +17,6 @@ RSpec.shared_examples "expose all link paths fields for the namespace" do
       register
       reportAbuse
       signIn
-      emailsHelpPagePath
-      markdownHelpPath
-      quickActionsHelpPath
     ]
 
     expected_fields.push(*type_specific_fields)
@@ -45,9 +42,6 @@ RSpec.shared_examples "common namespace link paths values" do
     :register | "/users/sign_up?redirect_to_referer=yes"
     :report_abuse | "/-/abuse_reports/add_category"
     :sign_in | "/users/sign_in?redirect_to_referer=yes"
-    :emails_help_page_path | "/help/development/emails.md#email-namespace"
-    :markdown_help_path | "/help/user/markdown.md"
-    :quick_actions_help_path | "/help/user/project/quick_actions.md"
   end
 
   with_them do

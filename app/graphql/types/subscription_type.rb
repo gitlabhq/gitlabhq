@@ -6,8 +6,7 @@ module Types
 
     field :ci_job_status_updated,
       subscription: Subscriptions::Ci::Jobs::StatusUpdated, null: true,
-      description: 'Triggered when a job status is updated.',
-      experiment: { milestone: '18.1' }
+      description: 'Triggered when a job status is updated.'
 
     field :ci_pipeline_status_updated,
       subscription: Subscriptions::Ci::Pipelines::StatusUpdated, null: true,

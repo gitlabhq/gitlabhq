@@ -14,7 +14,6 @@ import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
 import IssuableTabs from './issuable_tabs.vue';
-import IssuableGrid from './issuable_grid.vue';
 
 const VueDraggable = () => import('vuedraggable');
 
@@ -34,7 +33,6 @@ export default {
     IssuableTabs,
     FilteredSearchBar,
     IssuableItem,
-    IssuableGrid,
     IssuableBulkEditSidebar,
     GlPagination,
     VueDraggable,
@@ -203,11 +201,6 @@ export default {
       default: false,
     },
     showWorkItemTypeIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isGridView: {
       type: Boolean,
       required: false,
       default: false,
@@ -391,7 +384,7 @@ export default {
     <template v-else>
       <component
         :is="issuablesWrapper"
-        v-if="issuables.length > 0 && !isGridView"
+        v-if="issuables.length > 0"
         class="content-list issuable-list issues-list"
         :class="{ 'manual-ordering': isManualOrdering }"
         v-bind="$options.vueDraggableAttributes"
@@ -459,9 +452,6 @@ export default {
           </template>
         </issuable-item>
       </component>
-      <div v-else-if="issuables.length > 0 && isGridView">
-        <issuable-grid />
-      </div>
       <empty-result v-else-if="initialFilterValue.length > 0" />
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>

@@ -63,7 +63,9 @@ export default {
     @primary="onSubmit"
   >
     <gl-form-group :label="s__('Pipelines|Token')" label-for="edit_trigger_token">
-      <p id="edit_trigger_token" class="gl-text-subtle">{{ triggerModel.token }}</p>
+      <p id="edit_trigger_token" data-testid="edit-trigger-token" class="gl-text-subtle">
+        {{ triggerModel.token }}
+      </p>
     </gl-form-group>
     <gl-form-group :label="s__('Pipelines|Description')" label-for="edit_trigger_description">
       <gl-form-input id="edit_trigger_description" v-model="triggerModel.description" />

@@ -54,7 +54,6 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
-import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
@@ -124,7 +123,6 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
   const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
-  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
 
   const mountComponent = ({
     provide = {},
@@ -181,11 +179,6 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         showNewWorkItem: true,
         workItemType: null,
-        canCreateWorkItem: false,
-        newWorkItemEmailAddress: null,
-        emailsHelpPagePath: '/help/development/emails.md#email-namespace',
-        markdownHelpPath: '/help/user/markdown.md',
-        quickActionsHelpPath: '/help/user/project/quick_actions.md',
         hasStatusFeature: true,
         releasesPath: RELEASES_ENDPOINT,
         metadataLoading: false,
@@ -1550,52 +1543,6 @@ describeSkipVue3(skipReason, () => {
 
       expect(defaultQueryHandler).not.toHaveBeenCalled();
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('WorkItemByEmail component', () => {
-    describe.each`
-      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | exists
-      ${false}          | ${true}  | ${null}                 | ${false}
-      ${false}          | ${true}  | ${'test@example.com'}   | ${false}
-      ${true}           | ${true}  | ${null}                 | ${false}
-      ${true}           | ${true}  | ${'test@example.com'}   | ${false}
-      ${false}          | ${false} | ${null}                 | ${false}
-      ${false}          | ${false} | ${'test@example.com'}   | ${false}
-      ${true}           | ${false} | ${null}                 | ${false}
-      ${true}           | ${false} | ${'test@example.com'}   | ${true}
-    `(
-      'when canCreateWorkItem=$canCreateWorkItem, isGroup=$isGroup, newWorkItemEmailAddress=$newWorkItemEmailAddress',
-      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, exists }) => {
-        it(`${exists ? 'renders' : 'does not render'}`, async () => {
-          mountComponent({
-            provide: {
-              canCreateWorkItem,
-              isGroup,
-              newWorkItemEmailAddress,
-            },
-          });
-          await waitForPromises();
-
-          expect(findWorkItemByEmail().exists()).toBe(exists);
-        });
-      },
-    );
-
-    it('passes correct tracking attributes when rendered', async () => {
-      mountComponent({
-        provide: {
-          canCreateWorkItem: true,
-          isGroup: false,
-          newWorkItemEmailAddress: 'test@example.com',
-        },
-      });
-      await waitForPromises();
-
-      expect(findWorkItemByEmail().attributes()).toMatchObject({
-        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
-        'data-track-label': 'email_work_item_project_work_items_empty_list',
-      });
     });
   });
 });

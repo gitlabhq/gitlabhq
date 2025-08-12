@@ -308,9 +308,11 @@ Instead, contributions are mapped automatically to the user.
 
 {{< /history >}}
 
-When you delete a top-level group that contains placeholder users, those placeholder users are
-automatically removed. However, placeholder users remain in the system if they are also associated
-with projects or groups outside the deleted top-level group.
+When you delete a top-level group that contains placeholder users,
+these users are automatically scheduled for removal.
+This process might take some time to complete.
+However, placeholder users remain in the system if
+they're also associated with other projects or groups.
 
 {{< alert type="note" >}}
 
