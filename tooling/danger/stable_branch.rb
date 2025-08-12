@@ -158,7 +158,7 @@ module Tooling
       end
 
       def allowed_backport_changes?
-        allowed_categories = %i[docs ci_template]
+        allowed_categories = %i[docs ci_template test]
         categories_changed = helper.changes_by_category.keys
 
         categories_changed.all? { |category| allowed_categories.include?(category) }
