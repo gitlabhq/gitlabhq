@@ -578,6 +578,7 @@ class Project < ApplicationRecord
       delegate :separated_caches, :separated_caches=
       delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
       delegate :delete_pipelines_in_seconds, :delete_pipelines_in_seconds=
+      delegate :display_pipeline_variables, :display_pipeline_variables=
     end
   end
 
@@ -3310,6 +3311,12 @@ class Project < ApplicationRecord
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
     Projects::GitGarbageCollectWorker
+  end
+
+  def ci_display_pipeline_variables?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.display_pipeline_variables?
   end
 
   def ci_forward_deployment_enabled?

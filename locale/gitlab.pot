@@ -1841,6 +1841,9 @@ msgstr ""
 msgid "* All times are in UTC unless specified"
 msgstr ""
 
+msgid "*-stable"
+msgstr ""
+
 msgid "+ %{amount} more"
 msgstr ""
 
@@ -11161,7 +11164,7 @@ msgstr ""
 msgid "BranchRules|View details"
 msgstr ""
 
-msgid "BranchRules|Wildcards such as *-stable or production/* are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}"
+msgid "BranchRules|Wildcards such as %{stable} or %{production} are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "BranchRules|You are about to delete the %{name} status check."
@@ -76633,6 +76636,9 @@ msgid "private key does not match certificate."
 msgstr ""
 
 msgid "processing"
+msgstr ""
+
+msgid "production/*"
 msgstr ""
 
 msgid "project"

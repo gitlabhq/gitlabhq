@@ -475,6 +475,20 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    shared_examples 'spend command with empty timezone' do
+      let(:timezone) { '' }
+
+      before do
+        allow(developer).to receive(:timezone).and_return(timezone)
+      end
+
+      it 'uses the default timezone if developer timezone is an empty string' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates[:spend_time][:spent_at].zone).to eq(Time.zone.name)
+      end
+    end
+
     shared_examples 'remove_estimate command' do
       it 'populates time_estimate: 0 if content contains /remove_estimate' do
         _, updates, _ = service.execute(content, issuable)
@@ -1826,6 +1840,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     it_behaves_like 'spend command with valid date' do
+      let(:date) { '2016-02-02' }
+      let(:content) { "/spent 30m #{date}" }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with empty timezone' do
+      let(:date) { '2016-02-02' }
+      let(:content) { "/spend 30m #{date}" }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with empty timezone' do
       let(:date) { '2016-02-02' }
       let(:content) { "/spent 30m #{date}" }
       let(:issuable) { issue }

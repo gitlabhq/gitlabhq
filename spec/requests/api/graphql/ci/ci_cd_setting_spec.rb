@@ -53,6 +53,8 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
       expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled?
       expect(settings_data['pipelineVariablesMinimumOverrideRole']).to eql(
         project.ci_pipeline_variables_minimum_override_role)
+      expect(settings_data['displayPipelineVariables']).to eql(
+        project.ci_cd_settings.display_pipeline_variables?)
       expect(settings_data['pushRepositoryForJobTokenAllowed']).to eql(
         project.ci_cd_settings.push_repository_for_job_token_allowed?)
 

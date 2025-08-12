@@ -16,7 +16,7 @@ module Gitlab
 
       def initialize(spend_command_arg, timezone)
         @spend_arg = spend_command_arg
-        @timezone = timezone || Time.zone.name
+        @timezone = timezone.presence || Time.zone.name
       end
 
       def execute

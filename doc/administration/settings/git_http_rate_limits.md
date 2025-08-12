@@ -72,6 +72,9 @@ parameters, enable and configure these limits:
 1. Enter a value for **Authenticated Git HTTP rate limit period in seconds**.
 1. Select **Save changes**.
 
+If required, you can
+[allow specific users to bypass authenticated request rate limiting](user_and_ip_rate_limits.md#allow-specific-users-to-bypass-authenticated-request-rate-limiting).
+
 ## Related topics
 
 - [Rate limiting](../../security/rate_limits.md)

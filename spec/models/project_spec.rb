@@ -1695,7 +1695,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'push_repository_for_job_token_allowed' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_',
           'id_token_sub_claim_components' => 'ci_',
-          'delete_pipelines_in_seconds' => 'ci_'
+          'delete_pipelines_in_seconds' => 'ci_',
+          'display_pipeline_variables' => 'ci_'
         }
       end
 
@@ -1837,6 +1838,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_push_repository_for_job_token_allowed?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :push_repository_for_job_token_allowed? }
+      end
+    end
+
+    describe '#ci_display_pipeline_variables?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :display_pipeline_variables? }
       end
     end
 

@@ -4728,7 +4728,8 @@ CREATE TABLE p_ci_job_artifacts (
     exposed_as text,
     exposed_paths text[],
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
-    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
+    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_b8fac815e7 CHECK ((char_length(exposed_as) <= 100))
 )
 PARTITION BY LIST (partition_id);
 
@@ -21405,7 +21406,8 @@ CREATE TABLE project_ci_cd_settings (
     push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL,
     id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL,
     delete_pipelines_in_seconds integer,
-    allow_composite_identities_to_run_pipelines boolean DEFAULT false NOT NULL
+    allow_composite_identities_to_run_pipelines boolean DEFAULT false NOT NULL,
+    display_pipeline_variables boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -30202,9 +30204,6 @@ ALTER TABLE merge_request_context_commit_diff_files
 
 ALTER TABLE related_epic_links
     ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE p_ci_job_artifacts
-    ADD CONSTRAINT check_b8fac815e7 CHECK ((char_length(exposed_as) <= 100)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

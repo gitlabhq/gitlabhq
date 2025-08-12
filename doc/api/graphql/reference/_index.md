@@ -9898,6 +9898,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectcicdsettingsupdatedisplaypipelinevariables"></a>`displayPipelineVariables` | [`Boolean`](#boolean) | Indicates whether pipeline variables can be displayed in the UI. |
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
 | <a id="mutationprojectcicdsettingsupdategrouprunnersenabled"></a>`groupRunnersEnabled` | [`Boolean`](#boolean) | Indicates whether group runners are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in other projects have restricted access to this project. |
@@ -40171,6 +40172,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectcicdsettingdisplaypipelinevariables"></a>`displayPipelineVariables` | [`Boolean`](#boolean) | Indicates whether pipeline variables can be displayed in the UI. |
 | <a id="projectcicdsettinggrouprunnersenabled"></a>`groupRunnersEnabled` | [`Boolean`](#boolean) | Indicates whether group runners are enabled for the project. |
 | <a id="projectcicdsettinginboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in other projects have restricted access to this project. |
 | <a id="projectcicdsettingjobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in this project have restricted access to other projects. |

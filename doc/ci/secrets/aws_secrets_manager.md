@@ -15,6 +15,7 @@ title: Use AWS Secrets Manager secrets in GitLab CI/CD
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17822) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `ci_aws_secrets_manager`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/553970) in GitLab 18.3.
 
 {{< /history >}}
 
