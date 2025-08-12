@@ -51,7 +51,11 @@ module WorkItems
           })
         end
 
-        Gitlab::EventStore.publish_group(events) if events.any?
+        return if events.blank?
+
+        issuable.run_after_commit_or_now do
+          Gitlab::EventStore.publish_group(events)
+        end
       end
 
       override :previous_related_issuables

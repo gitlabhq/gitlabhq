@@ -1,5 +1,6 @@
 import { GlBadge } from '@gitlab/ui';
 import $ from 'jquery';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import '~/lib/utils/jquery_at_who';
 import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash';
 import * as Emoji from '~/emoji';
@@ -820,7 +821,7 @@ class GfmAutoComplete {
       },
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
-      limit: 20,
+      limit: 100,
       callbacks: {
         ...this.getDefaultCallbacks(),
         beforeSave(merges) {
@@ -887,6 +888,20 @@ class GfmAutoComplete {
           }
 
           return data;
+        },
+        sorter(query, items) {
+          this.setting.highlightFirst =
+            this.setting.alwaysHighlightFirst || query.trim().length > 0;
+          if (GfmAutoComplete.isLoading(items)) {
+            this.setting.highlightFirst = false;
+            return items;
+          }
+
+          if (query.trim()) {
+            return fuzzaldrinPlus.filter(items, query, { key: 'title' });
+          }
+
+          return items;
         },
       },
     });

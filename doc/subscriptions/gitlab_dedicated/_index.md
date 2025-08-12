@@ -218,17 +218,18 @@ Limitations:
 
 This section lists the features that are not available for GitLab Dedicated.
 
-### Authentication and security
+### Authentication, security, and networking
 
-| Feature                                       | Description                                                           | Impact                                                       |
-| --------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
-| LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead. |
-| Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.               |
-| Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                      |
-| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                       |
-| FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.       |
-| Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                   |
-| [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                   |
+| Feature                                       | Description                                                           | Impact                                                         |
+| --------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead.   |
+| Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.                 |
+| Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                        |
+| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                         |
+| FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.         |
+| Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                     |
+| [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                     |
+| Port remapping                                | Remap ports like SSH (22) to different inbound ports.     | GitLab Dedicated only uses default communication ports. |
 
 ### Communication and collaboration
 

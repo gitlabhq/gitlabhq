@@ -288,6 +288,20 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
           expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
         end
+
+        context 'when compare is missing' do
+          before do
+            allow_next_instance_of(CompareService) do |service|
+              expect(service).to receive(:execute).and_return(nil)
+            end
+          end
+
+          it 'returns a 404 error' do
+            show_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
 
       context 'when format is patch' do
@@ -297,6 +311,20 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
           show_request
 
           expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
+        end
+
+        context 'when compare is missing' do
+          before do
+            allow_next_instance_of(CompareService) do |service|
+              expect(service).to receive(:execute).and_return(nil)
+            end
+          end
+
+          it 'returns a 404 error' do
+            show_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 

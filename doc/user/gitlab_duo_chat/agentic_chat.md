@@ -105,7 +105,6 @@ To use Agentic Chat:
 1. Select **Refresh page** if prompted.
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
-Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
 ### Use Agentic Chat in JetBrains IDEs
 
@@ -127,7 +126,6 @@ To use Agentic Chat:
 1. Select the **Chat** tab.
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
-Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
 ### Use Agentic Chat in Visual Studio
 
@@ -149,28 +147,41 @@ To use Agentic Chat:
 1. In the message box, enter your question and press **Enter**.
 <!-- markdownlint-enable MD044 -->
 
+### View the chat history
+
+{{< history >}}
+
+- Chat history [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17922) on IDEs in GitLab 18.2.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/556875) for GitLab UI in GitLab 18.3.
+
+{{< /history >}}
+
+To view your chat history:
+
+- In the GitLab UI: In the upper-right corner of the Chat drawer, select
+  **Chat history** ({{< icon name="history" >}}).
+- In your IDE: In the upper-right corner of the message box, select
+  **Chat history** ({{< icon name="history" >}}).
+
+In the GitLab UI, all of the conversations in your chat history are visible.
+
+In your IDE, the last 20 conversations are visible. [Issue 1308](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1308) proposes to change this.
+
 ### Have multiple conversations
 
 {{< history >}}
 
-- Multiple conversations and conversation history [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556875) in GitLab 18.3.
+- Multiple conversations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556875) in GitLab 18.3.
 
 {{< /history >}}
 
 You can have an unlimited number of simultaneous conversations with Agentic Chat.
 
-Your conversations synchronize across Agentic Chat in the GitLab UI and your IDE:
-
-- In the GitLab UI, all of the conversations in your Agentic Chat history are visible.
-- In your IDE, the last 20 conversations are visible.
-  [Issue 1308](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1308)
-  proposes to change this.
-
-To manage your conversations and view your Agentic Chat history:
+Your conversations synchronize across Agentic Chat in the GitLab UI and your IDE.
 
 1. Open Agentic Chat in the GitLab UI or your IDE.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
-1. Create a new Agentic Chat conversation:
+1. Create a new conversation:
 
    - In the GitLab UI: In the upper-right corner of the drawer, select **New chat**
      ({{< icon name="duo-chat-new" >}}).
@@ -178,22 +189,27 @@ To manage your conversations and view your Agentic Chat history:
      ({{< icon name="plus" >}}).
 
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
-1. To view your Agentic Chat history:
-
-   - In the GitLab UI: In the upper-right corner of the Chat drawer, select
-     **Chat history** ({{< icon name="history" >}}).
-   - In your IDE: In the upper-right corner of the message box, select
-     **Chat history** ({{< icon name="history" >}}).
-
-1. To switch between conversations, in your Agentic Chat history, select the
+1. To view all of your conversations, look at your [chat history](#view-the-chat-history).
+1. To switch between conversations, in your chat history, select the
    appropriate conversation.
-1. IDE only: To search your Chat history, in the **Search chats** text box, enter
-   your search term.
-
-#### Truncation of conversation content
+1. IDE only: To search for a specific conversation in the chat history, in the
+   **Search chats** text box, enter your search term.
 
 Because of LLM context window limits, conversations are truncated to 200,000 tokens
-(roughly 800,000 characters).
+(roughly 800,000 characters) each.
+
+### Delete a conversation
+
+{{< history >}}
+
+- Ability to delete a conversation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545289) in GitLab 18.2.
+
+{{< /history >}}
+
+1. In the GitLab UI or your IDE, select the [chat history](#view-the-chat-history).
+1. In the history, select **Delete this chat** ({{< icon name="remove" >}}).
+
+Individual conversations expire and are automatically deleted after 30 days of inactivity.
 
 ### Create custom rules
 
@@ -264,7 +280,7 @@ Agentic Chat extends Chat capabilities with the following features:
 | Combine information from multiple sources |               No |                                                            Yes                                                                                                                   |
 | Analyze pipeline logs |                                   Yes. Requires Duo Enterprise add-on. |                          Yes                                                                                                                   |
 | Restart a conversation |                                  Yes. Use `/reset`. |                                            Yes. Use `/reset`.                                                                                                    |
-| Delete a conversation |                                   Yes. Use `/clear`.|                                             No                                                                                                                    |
+| Delete a conversation |                                   Yes. Use `/clear`.|                                             Yes, in the chat history                                                                                                            |
 | Create issues and MRs |                                   No |                                                            Yes                                                                                                                   |
 | Use Git |                                                 No |                                                            Yes, IDEs only                                                                                                        |
 | Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |

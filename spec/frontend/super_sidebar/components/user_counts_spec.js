@@ -3,11 +3,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Counter from '~/super_sidebar/components/counter.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
-import { userCounts } from '~/super_sidebar/user_counts_manager';
+import { userCounts, useCachedUserCounts } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import { sidebarData as mockSidebarData } from '../mock_data';
 
 jest.mock('~/super_sidebar/user_counts_fetch');
+jest.mock('~/super_sidebar/user_counts_manager', () => ({
+  ...jest.requireActual('~/super_sidebar/user_counts_manager'),
+  useCachedUserCounts: jest.fn(),
+}));
 
 describe('UserCounts component', () => {
   let wrapper;
@@ -120,6 +124,21 @@ describe('UserCounts component', () => {
       expect(fetchUserCounts).toHaveBeenCalled();
     });
 
+    it('calls useCachedUserCounts if merge requests count are null', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          user_counts: {
+            ...mockSidebarData.user_counts,
+            review_requested_merge_requests: null,
+            assigned_merge_requests: null,
+          },
+        },
+      });
+
+      expect(useCachedUserCounts).toHaveBeenCalled();
+    });
+
     it('does not call fetchUserCounts if merge requests count exist', () => {
       createWrapper({
         sidebarData: {
@@ -133,6 +152,21 @@ describe('UserCounts component', () => {
       });
 
       expect(fetchUserCounts).not.toHaveBeenCalled();
+    });
+
+    it('does not call useCachedUserCounts if merge requests count exist', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          user_counts: {
+            ...mockSidebarData.user_counts,
+            review_requested_merge_requests: 3,
+            assigned_merge_requests: 3,
+          },
+        },
+      });
+
+      expect(useCachedUserCounts).not.toHaveBeenCalled();
     });
   });
 });

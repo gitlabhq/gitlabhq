@@ -1417,6 +1417,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       it { is_expected.to be(false) }
     end
+
+    context 'with archived group' do
+      let_it_be(:group) { create(:group, :archived) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it { is_expected.to be(true) }
+    end
   end
 
   describe '#show_inactive_project_deletion_banner?' do
@@ -2055,6 +2062,21 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         expect(subject).to eq(options_for_select(blank_option + domain_options + gitlab_default_option))
       end
+    end
+  end
+
+  describe '#project_archive_settings_app_data' do
+    let_it_be(:project) { create(:project) }
+
+    subject { helper.project_archive_settings_app_data(project) }
+
+    it 'returns correct data' do
+      is_expected.to match({
+        resource_type: 'project',
+        resource_id: project.id,
+        resource_path: including(project.full_path),
+        help_path: '/help/user/project/working_with_projects.md#archive-a-project'
+      })
     end
   end
 end

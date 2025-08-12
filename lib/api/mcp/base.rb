@@ -46,6 +46,52 @@ module API
         not_found! unless Feature.enabled?(:mcp_server, current_user)
       end
 
+      helpers do
+        def find_handler_class(method_name)
+          JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
+        end
+
+        def method_not_found!(method_name)
+          # render error used to stop request and return early
+          render_structured_api_error!({
+            jsonrpc: JSONRPC_VERSION,
+            error: JSONRPC_ERRORS[:method_not_found].merge({ data: { method: method_name } }),
+            id: params[:id]
+          }, 404)
+        end
+
+        def oauth_access_token
+          token = Doorkeeper::OAuth::Token.from_request(
+            current_request,
+            *Doorkeeper.configuration.access_token_methods
+          )
+          unauthorized! unless token
+          token
+        end
+
+        def create_handler(handler_class, handler_params)
+          if handler_class == Handlers::CallToolRequest
+            handler_class.new(handler_params, oauth_access_token)
+          else
+            handler_class.new(handler_params)
+          end
+        end
+
+        def format_jsonrpc_response(result)
+          if params[:id].nil? || result.nil?
+            # JSON-RPC server must not send JSON-RPC response for notifications
+            # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/index#notifications
+            body false
+          else
+            {
+              jsonrpc: JSONRPC_VERSION,
+              result: result,
+              id: params[:id]
+            }
+          end
+        end
+      end
+
       # Model Context Protocol (MCP) specification
       # See: https://modelcontextprotocol.io/specification/2025-06-18
       namespace :mcp do
@@ -59,7 +105,7 @@ module API
         end
 
         rescue_from Grape::Exceptions::ValidationErrors do |e|
-          error!({
+          render_structured_api_error!({
             jsonrpc: JSONRPC_VERSION,
             error: JSONRPC_ERRORS[:invalid_request].merge({ data: { validations: e.full_messages } }),
             id: nil
@@ -67,7 +113,7 @@ module API
         end
 
         rescue_from ArgumentError do |e|
-          error!({
+          render_structured_api_error!({
             jsonrpc: JSONRPC_VERSION,
             error: JSONRPC_ERRORS[:invalid_params].merge({ data: { params: e.message } }),
             id: nil
@@ -76,30 +122,13 @@ module API
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#sending-messages-to-the-server
         post do
-          status 200
+          status :ok
 
-          handler_class = JSONRPC_METHOD_HANDLERS[params[:method]]
-          unless handler_class
-            error!({
-              jsonrpc: JSONRPC_VERSION,
-              error: JSONRPC_ERRORS[:method_not_found].merge({ data: { method: params[:method] } }),
-              id: params[:id]
-            }, 404)
-          end
+          handler_class = find_handler_class(params[:method])
+          handler = create_handler(handler_class, params[:params] || {})
+          result = handler.invoke
 
-          result = handler_class.new(params[:params] || {}).invoke
-
-          if params[:id].nil? || result.nil?
-            # JSON-RPC server must not send JSON-RPC response for notifications
-            # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/index#notifications
-            body false
-          else
-            {
-              jsonrpc: JSONRPC_VERSION,
-              result: result,
-              id: params[:id]
-            }
-          end
+          format_jsonrpc_response(result)
         end
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server

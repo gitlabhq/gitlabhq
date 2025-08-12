@@ -31,7 +31,7 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
           .to publish_event(::WorkItems::WorkItemDeletedEvent).with({
             id: work_item.id,
             namespace_id: work_item.namespace_id,
-            work_item_parent_id: work_item.work_item_parent&.id
+            previous_work_item_parent_id: work_item.work_item_parent&.id
           }.tap(&:compact_blank!))
       end
     end

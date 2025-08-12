@@ -18,7 +18,6 @@ module Issuable
 
     private
 
-    # overriden in EE
     def before_destroy(issuable); end
 
     def after_destroy(issuable)

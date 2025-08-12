@@ -3,10 +3,13 @@
 module API
   class Issues < ::API::Base
     include ::API::Concerns::AiWorkflowsAccess
+    include ::API::Concerns::McpAccess
     include APIGuard
     include PaginationParams
 
     allow_ai_workflows_access
+    allow_mcp_access_read
+    allow_mcp_access_create
 
     helpers Helpers::IssuesHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
@@ -445,7 +448,7 @@ module API
         authorize!(:destroy_issue, issue)
 
         destroy_conditionally!(issue) do |issue|
-          Issuable::DestroyService.new(container: user_project, current_user: current_user).execute(issue)
+          ::Issues::DestroyService.new(container: user_project, current_user: current_user).execute(issue)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

@@ -585,7 +585,7 @@ module ProjectsHelper
   def show_archived_project_banner?(project)
     return false unless project
 
-    project.persisted? && project.archived?
+    project.persisted? && project.self_or_ancestors_archived?
   end
 
   def show_inactive_project_deletion_banner?(project)
@@ -741,6 +741,15 @@ module ProjectsHelper
       blank_option + domain_options + gitlab_default_option,
       selected: @project.project_setting.pages_primary_domain
     )
+  end
+
+  def project_archive_settings_app_data(project)
+    {
+      resource_type: 'project',
+      resource_id: project.id,
+      resource_path: project_path(project),
+      help_path: help_page_path('user/project/working_with_projects.md', anchor: 'archive-a-project')
+    }
   end
 
   private

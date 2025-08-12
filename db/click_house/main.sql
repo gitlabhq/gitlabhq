@@ -304,6 +304,29 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE hierarchy_audit_events
+(
+    `traversal_path` String,
+    `id` Int64,
+    `group_id` Int64,
+    `author_id` Int64,
+    `target_id` Int64,
+    `event_name` String DEFAULT '',
+    `details` String DEFAULT '',
+    `ip_address` String DEFAULT '',
+    `author_name` String DEFAULT '',
+    `entity_path` String DEFAULT '',
+    `target_details` String DEFAULT '',
+    `target_type` String DEFAULT '',
+    `created_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE hierarchy_work_items
 (
     `traversal_path` String,
@@ -345,6 +368,21 @@ CREATE TABLE hierarchy_work_items
 ENGINE = ReplacingMergeTree(version, deleted)
 PRIMARY KEY (traversal_path, work_item_type_id, id)
 ORDER BY (traversal_path, work_item_type_id, id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE merge_request_label_links
+(
+    `id` Int64,
+    `label_id` Int64,
+    `merge_request_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY (merge_request_id, label_id, id)
+ORDER BY (merge_request_id, label_id, id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE namespace_traversal_paths
@@ -441,6 +479,28 @@ CREATE TABLE siphon_events
     `target_id` Nullable(Int64),
     `imported_from` Int8 DEFAULT 0,
     `personal_namespace_id` Nullable(Int64),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY id
+ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_group_audit_events
+(
+    `id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `group_id` Int64,
+    `author_id` Int64,
+    `target_id` Int64,
+    `event_name` String DEFAULT '',
+    `details` String DEFAULT '',
+    `ip_address` String DEFAULT '',
+    `author_name` String DEFAULT '',
+    `entity_path` String DEFAULT '',
+    `target_details` String DEFAULT '',
+    `target_type` String DEFAULT '',
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_deleted` Bool DEFAULT false
 )
@@ -1299,6 +1359,67 @@ FROM cte
 LEFT JOIN group_lookups ON group_lookups.id = cte.group_id
 LEFT JOIN project_lookups ON project_lookups.id = cte.project_id;
 
+CREATE MATERIALIZED VIEW hierarchy_audit_events_mv TO hierarchy_audit_events
+(
+    `traversal_path` String,
+    `id` Int64,
+    `group_id` Int64,
+    `author_id` Int64,
+    `target_id` Int64,
+    `event_name` String,
+    `details` String,
+    `ip_address` String,
+    `author_name` String,
+    `entity_path` String,
+    `target_details` String,
+    `target_type` String,
+    `created_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
+)
+AS WITH
+    cte AS
+    (
+        SELECT *
+        FROM siphon_group_audit_events
+    ),
+    namespace_paths AS
+    (
+        SELECT *
+        FROM
+        (
+            SELECT
+                id,
+                argMax(traversal_path, version) AS traversal_path,
+                argMax(deleted, version) AS deleted
+            FROM namespace_traversal_paths
+            WHERE id IN (
+                SELECT DISTINCT group_id
+                FROM cte
+            )
+            GROUP BY id
+        )
+        WHERE deleted = false
+    )
+SELECT
+    multiIf(namespace_paths.traversal_path != '', namespace_paths.traversal_path, '0/') AS traversal_path,
+    cte.id AS id,
+    cte.group_id AS group_id,
+    cte.author_id AS author_id,
+    cte.target_id AS target_id,
+    cte.event_name AS event_name,
+    cte.details AS details,
+    cte.ip_address AS ip_address,
+    cte.author_name AS author_name,
+    cte.entity_path AS entity_path,
+    cte.target_details AS target_details,
+    cte.target_type AS target_type,
+    cte.created_at AS created_at,
+    cte._siphon_replicated_at AS version,
+    cte._siphon_deleted AS deleted
+FROM cte
+LEFT JOIN namespace_paths ON namespace_paths.id = cte.group_id;
+
 CREATE MATERIALIZED VIEW hierarchy_work_items_mv TO hierarchy_work_items
 (
     `traversal_path` String,
@@ -1472,6 +1593,27 @@ LEFT JOIN namespace_paths ON namespace_paths.id = cte.namespace_id
 LEFT JOIN collected_assignee_ids ON collected_assignee_ids.issue_id = cte.id
 LEFT JOIN collected_label_ids ON collected_label_ids.work_item_id = cte.id
 LEFT JOIN collected_custom_status_records ON collected_custom_status_records.work_item_id = cte.id;
+
+CREATE MATERIALIZED VIEW merge_request_label_links_mv TO merge_request_label_links
+(
+    `id` Int64,
+    `label_id` Nullable(Int64),
+    `merge_request_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
+)
+AS SELECT
+    id,
+    label_id,
+    target_id AS merge_request_id,
+    created_at,
+    updated_at,
+    _siphon_replicated_at AS version,
+    _siphon_deleted AS deleted
+FROM siphon_label_links
+WHERE (target_type = 'MergeRequest') AND (target_id IS NOT NULL) AND (label_id IS NOT NULL);
 
 CREATE MATERIALIZED VIEW namespace_traversal_paths_mv TO namespace_traversal_paths
 (

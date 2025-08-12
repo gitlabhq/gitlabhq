@@ -52,11 +52,11 @@ class Projects::CompareController < Projects::ApplicationController
       end
 
       format.patch do
-        send_git_patch source_project.repository, compare.diff_refs
+        compare ? send_git_patch(source_project.repository, compare.diff_refs) : render_404
       end
 
       format.diff do
-        send_git_diff source_project.repository, compare.diff_refs
+        compare ? send_git_diff(source_project.repository, compare.diff_refs) : render_404
       end
     end
   end

@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import AutocompleteHelper, {
   defaultSorter,
@@ -273,7 +274,7 @@ describe('AutocompleteHelper', () => {
     ${'user'}          | ${'r'}
     ${'issue'}         | ${'q'}
     ${'snippet'}       | ${'s'}
-    ${'label'}         | ${'c'}
+    ${'label'}         | ${'bc'}
     ${'epic'}          | ${'n'}
     ${'milestone'}     | ${'16'}
     ${'iteration'}     | ${'27'}
@@ -373,6 +374,20 @@ describe('AutocompleteHelper', () => {
         const results = await dataSource.search(query);
         expect(results.map(({ name }) => name)).toMatchSnapshot();
       },
+    );
+  });
+
+  it('filters labels using fuzzy search', async () => {
+    const filterSpy = jest.spyOn(fuzzaldrinPlus, 'filter');
+    const dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });
+    await dataSource.search('bc');
+
+    expect(filterSpy).toHaveBeenCalledWith(
+      expect.any(Array),
+      'bc',
+      expect.objectContaining({
+        key: ['title'],
+      }),
     );
   });
 

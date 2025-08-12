@@ -37,6 +37,10 @@ module QA
             element 'transfer-project-button'
           end
 
+          view 'app/assets/javascripts/groups_projects/archive/components/archive_settings.vue' do
+            element 'archive-button'
+          end
+
           def update_project_path_to(path)
             fill_project_path(path)
             click_change_path_button
@@ -80,8 +84,8 @@ module QA
           end
 
           def archive_project
-            click_element 'archive-project-link'
-            click_confirmation_ok_button
+            click_element feature_flag_controlled_element(:archive_group, 'archive-button', 'archive-project-link')
+            click_confirmation_ok_button_if_present
           end
 
           def unarchive_project

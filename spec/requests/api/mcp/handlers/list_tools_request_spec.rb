@@ -35,7 +35,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :api do
 
       expect(mock_tool).to include(
         'name' => 'get_mcp_server_version',
-        'description' => 'Get the current version of MCP server',
+        'description' => 'Get the current version of MCP server.',
         'inputSchema' => {
           'type' => 'object',
           'properties' => {},

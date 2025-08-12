@@ -109,4 +109,76 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe 'GET #edit' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let(:url) { edit_group_path(group) }
+
+    before_all do
+      group.add_owner(owner)
+      group.add_maintainer(maintainer)
+    end
+
+    context 'when the group is archived' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      context 'when user is owner' do
+        before do
+          login_as(owner)
+        end
+
+        it 'allows access to edit page' do
+          get url
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user is maintainer' do
+        before do
+          login_as(maintainer)
+        end
+
+        it 'returns a 404' do
+          get url
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when the group is unarchived' do
+      before do
+        group.namespace_settings.update!(archived: false)
+      end
+
+      context 'when user is owner' do
+        before do
+          login_as(owner)
+        end
+
+        it 'allows access to edit page' do
+          get url
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user is maintainer' do
+        before do
+          login_as(maintainer)
+        end
+
+        it 'returns a 404' do
+          get url
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
 end

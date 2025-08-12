@@ -1,4 +1,5 @@
 import { identity, memoize, isEmpty } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -75,6 +76,7 @@ function sortMilestones(milestoneA, milestoneB) {
 }
 
 export function createDataSource({
+  referenceType,
   source,
   searchFields,
   filter,
@@ -104,12 +106,18 @@ export function createDataSource({
       if (filter) results = filter(results, query);
 
       if (query) {
-        results = results.filter((item) => {
-          if (!searchFields.length) return true;
-          return searchFields.some((field) =>
-            String(item[field]).toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-          );
-        });
+        // We want fuzzy search only on labels but it can
+        // be expanded to other commands if needed
+        if (referenceType === REFERENCE_TYPES.LABEL) {
+          results = fuzzaldrinPlus.filter(results, query, { key: searchFields });
+        } else {
+          results = results.filter((item) => {
+            if (!searchFields.length) return true;
+            return searchFields.some((field) =>
+              String(item[field]).toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+            );
+          });
+        }
       }
 
       return sorter(results, query).slice(0, limit);
@@ -265,6 +273,7 @@ export default class AutocompleteHelper {
     };
 
     return createDataSource({
+      referenceType,
       source: sources[referenceType],
       searchFields: searchFields[referenceType],
       mapper: mappers[referenceType] || mappers.default,

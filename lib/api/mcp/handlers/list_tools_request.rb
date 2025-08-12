@@ -5,28 +5,27 @@ module API
     module Handlers
       # See: https://modelcontextprotocol.io/specification/2025-06-18/schema#listtoolsrequest
       class ListToolsRequest < Base
+        # TODO: Autogenerate MCP Tools based on OpenAPI specification
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/554946
+        API_TOOLS = {
+          'get_issue' => ::Mcp::Tools::GetIssueService,
+          'create_issue' => ::Mcp::Tools::CreateIssueService
+        }.freeze
+        CUSTOM_TOOLS = {
+          'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService
+        }.freeze
+        TOOLS = CUSTOM_TOOLS.merge(API_TOOLS)
+
         def invoke
           {
-            tools: mock_tools
+            tools: tools
           }
         end
 
         private
 
-        # TODO: Implement tools capabilities in lib/services
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/554828
-        def mock_tools
-          [
-            {
-              name: 'get_mcp_server_version',
-              description: 'Get the current version of MCP server',
-              inputSchema: {
-                type: 'object',
-                properties: {},
-                required: []
-              }
-            }
-          ]
+        def tools
+          TOOLS.map { |tool_name, tool_klass| tool_klass.new(name: tool_name).to_h }
         end
       end
     end

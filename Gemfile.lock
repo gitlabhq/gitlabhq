@@ -2404,7 +2404,7 @@ DEPENDENCIES
   terser (= 1.0.2)
   test-prof (~> 1.4.0)
   test_file_finder (~> 0.3.1)
-  thrift (>= 0.16.0)
+  thrift (~> 0.22.0)
   timfel-krb5-auth (~> 0.8)
   toml-rb (~> 2.2.0)
   truncato (~> 0.7.13)

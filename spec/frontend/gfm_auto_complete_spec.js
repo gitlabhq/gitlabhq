@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GfmAutoComplete, {
@@ -31,6 +32,10 @@ const mockSpriteIcons = '/icons.svg';
 jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
+}));
+
+jest.mock('fuzzaldrin-plus', () => ({
+  filter: jest.fn((items) => items),
 }));
 
 describe('escape', () => {
@@ -883,6 +888,11 @@ describe('GfmAutoComplete', () => {
     const expectLabels = ({ input, output }) => {
       triggerDropdown($textarea, input);
 
+      if (input === '~bg') {
+        expect(fuzzaldrinPlus.filter).toHaveBeenCalledWith(expect.any(Array), 'bg', {
+          key: 'title',
+        });
+      }
       expect(getDropdownItems()).toEqual(output.map((label) => label.title));
     };
 
@@ -894,6 +904,7 @@ describe('GfmAutoComplete', () => {
       it.each`
         input           | output
         ${'~'}          | ${unassignedLabels}
+        ${'~bg'}        | ${unassignedLabels}
         ${'/label ~'}   | ${unassignedLabels}
         ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${unassignedLabels}
@@ -909,6 +920,7 @@ describe('GfmAutoComplete', () => {
       it.each`
         input           | output
         ${'~'}          | ${allLabels}
+        ${'~bg'}        | ${allLabels}
         ${'/label ~'}   | ${unassignedLabels}
         ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${allLabels}

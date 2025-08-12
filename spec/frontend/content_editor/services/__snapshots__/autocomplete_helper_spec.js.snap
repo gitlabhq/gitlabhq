@@ -189,17 +189,10 @@ exports[`AutocompleteHelper for reference type "iteration", searches for "27" co
 ]
 `;
 
-exports[`AutocompleteHelper for reference type "label", searches for "c" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "label", searches for "bc" correctly 1`] = `
 [
-  "Contour",
-  "Corolla",
-  "Cygsync",
-  "scoped label",
-  "Amsche",
   "Bronce",
   "Bryncefunc",
-  "Onesync",
-  "Pynefunc",
 ]
 `;
 

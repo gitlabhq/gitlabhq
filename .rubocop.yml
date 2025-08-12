@@ -1033,6 +1033,11 @@ Cop/PutGroupRoutesUnderScope:
     - 'config/routes/group.rb'
     - 'ee/config/routes/group.rb'
 
+Mcp/UseApiService:
+  Enabled: true
+  Include:
+    - 'app/services/mcp/tools/*'
+
 Migration/ComplexIndexesRequireName:
   Exclude:
     - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/

@@ -19154,9 +19154,6 @@ msgstr ""
 msgid "Couldn't delete link due to an internal error."
 msgstr ""
 
-msgid "Couldn't delete work item link due to an internal error."
-msgstr ""
-
 msgid "Couldn't fetch the linked file."
 msgstr ""
 
@@ -23970,6 +23967,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Agent sessions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|An error occurred while fetching users."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to delete this flow trigger? This action cannot be undone."
 msgstr ""
 
@@ -23979,13 +23979,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Config Path"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Config path"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Convert Jenkins to CI"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Create a new automated AI workflow trigger."
+msgid "DuoAgentsPlatform|Create a new flow trigger."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create flow trigger"
@@ -24006,13 +24009,25 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Edit flow trigger"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Edit flow trigger."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Edit trigger"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Enter a description for this flow trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event Type"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Event types"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to delete flow trigger."
@@ -24027,10 +24042,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Fetching logs..."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Flow trigger created successfully."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Flow trigger deleted successfully."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Flow trigger details"
+msgid "DuoAgentsPlatform|Flow trigger not found."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Flow trigger updated successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow triggers"
@@ -24075,10 +24096,28 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path must be a Jenkinsfile with the exact matching case."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Path to configuration file"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Save changes"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select a flow"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select a service account user"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select one or multiple event types"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select user"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Service account user"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
@@ -24093,13 +24132,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Status"
 msgstr ""
 
+msgid "DuoAgentsPlatform|The flow trigger could not be created. Try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|The flow trigger could not be updated. Try again."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Updated"
-msgstr ""
-
-msgid "DuoAgentsPlatform|View and manage this flow trigger."
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"

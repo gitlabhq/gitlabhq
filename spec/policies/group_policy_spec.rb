@@ -2128,4 +2128,52 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
   end
+
+  describe 'view_edit_page permission' do
+    subject(:policy) { described_class.new(current_user, group) }
+
+    context 'when user has remove_group permission' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:view_edit_page) }
+    end
+
+    context 'when user has archive_group permission' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:view_edit_page) }
+
+      context 'when archive_group feature flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be_allowed(:view_edit_page) }
+      end
+    end
+
+    context 'when user does not have archive_group permissions' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_disallowed(:view_edit_page) }
+    end
+
+    context 'with archived group' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      context 'when user is owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:view_edit_page) }
+      end
+
+      context 'when user is maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:view_edit_page) }
+      end
+    end
+  end
 end

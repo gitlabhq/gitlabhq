@@ -273,6 +273,9 @@ Use sentence case for topic titles. For example:
 When referring to specific user interface text, like a button label, page, tab,
 or menu item, use the same capitalization that's displayed in the user interface.
 
+The only exception is text that's all uppercase (for example, `RECENT FLOWS`).
+In this case, use sentence case.
+
 If you think the user interface text contains style mistakes,
 create an issue or an MR to propose a change to the user interface text.
 

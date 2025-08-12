@@ -153,7 +153,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :create_subgroup
     prevent :edit_billing
     prevent :import_projects
-    prevent :remove_group
     prevent :reopen_issue
     prevent :transfer_projects
     prevent :update_issue
@@ -486,7 +485,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:admin_group) | can?(:admin_runners) }.enable :admin_group_or_admin_runners
 
-  rule { can?(:remove_group) }.enable :view_edit_page
+  rule { can?(:remove_group) | can?(:archive_group) }.enable :view_edit_page
 
   # TODO: Remove this rule and move :read_package permission from reporter to guest
   # with the rollout of the FF allow_guest_plus_roles_to_pull_packages

@@ -98,7 +98,7 @@ export default {
           {{ i18n.helpLink }}
         </gl-link>
       </p>
-      <gl-button :loading="loading" @click="archive">
+      <gl-button :loading="loading" data-testid="archive-button" @click="archive">
         {{ s__('GroupProjectArchiveSettings|Archive') }}
       </gl-button>
     </template>

@@ -30203,6 +30203,9 @@ ALTER TABLE ONLY project_type_ci_runners
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
+ALTER TABLE merge_request_cleanup_schedules
+    ADD CONSTRAINT check_8ac5179c82 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
 

@@ -42,12 +42,18 @@ The following flows are available:
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
 
-## Monitor running flows
+## Monitor running flows in the GitLab UI
 
-To view flows that are running for your project on GitLab.com:
+To view flows that are running for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Automate > Sessions**.
+
+## View flow history in the IDEs
+
+To view a history of flows you've run in your project:
+
+- On the **Flows** tab, scroll down and view **Recent agent sessions**.
 
 ## Supported APIs and permissions
 

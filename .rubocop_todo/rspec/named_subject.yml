@@ -853,7 +853,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/epic_issues/destroy_service_spec.rb'
     - 'ee/spec/services/epic_issues/update_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
-    - 'ee/spec/services/epics/related_epic_links/destroy_service_spec.rb'
     - 'ee/spec/services/external_status_checks/dispatch_service_spec.rb'
     - 'ee/spec/services/external_status_checks/retry_service_spec.rb'
     - 'ee/spec/services/geo/base_file_service_spec.rb'

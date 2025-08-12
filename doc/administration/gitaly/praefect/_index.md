@@ -454,7 +454,7 @@ the current status of these issues, refer to the referenced issues and epics.
 
 Gitaly Cluster (Praefect) does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
-during a restore, you should use the [official backup and restore Rake tasks](../backup_restore/../_index.md).
+during a restore, you should use the [official backup and restore Rake tasks](../../backup_restore/_index.md).
 
 The [incremental backup method](../../backup_restore/backup_gitlab.md#incremental-repository-backups)
 can be used to speed up Gitaly Cluster (Praefect) backups.

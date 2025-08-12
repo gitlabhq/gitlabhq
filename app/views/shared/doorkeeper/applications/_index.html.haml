@@ -45,9 +45,9 @@
                           = uri
                       %td{ data: { label: _('Clients') } }
                         = application.access_tokens.count
-                      %td{ class: '!gl-py-3', data: { label: _('Actions') } }
-                        %div{ class: '!gl-flex !gl-pl-0' }
-                          = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip gl-mr-3', 'title': _('Edit'), 'aria-label': _('Edit') })
+                      %td.gl-items-center{ class: '!gl-flex sm:!gl-table-cell !gl-py-3', data: { label: _('Actions') } }
+                        .sm:gl-justify-end.gl-gap-2{ class: '!gl-flex !gl-pl-0' }
+                          = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip', 'title': _('Edit'), 'aria-label': _('Edit') })
                           = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
           - else
             .gl-text-subtle= _("You don't have any applications.")
@@ -88,10 +88,11 @@
                         = token.created_at
                       %td{ data: { label: _('Scope') } }
                         = token.scopes
-                      %td{ class: '!gl-py-3', data: { label: _('Actions') } }
-                        - if token.application
-                          = render 'doorkeeper/authorized_applications/delete_form', application: token.application
-                        - else
-                          = render 'doorkeeper/authorized_applications/delete_form', token: token
+                      %td.gl-items-center{ class: '!gl-flex sm:!gl-table-cell !gl-py-4', data: { label: _('Actions') } }
+                        .sm:gl-justify-end{ class: '!gl-flex !gl-pl-0' }
+                          - if token.application
+                            = render 'doorkeeper/authorized_applications/delete_form', application: token.application
+                          - else
+                            = render 'doorkeeper/authorized_applications/delete_form', token: token
           - else
             .gl-text-subtle= _("You don't have any authorized applications.")

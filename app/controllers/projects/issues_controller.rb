@@ -387,6 +387,10 @@ class Projects::IssuesController < Projects::ApplicationController
       perform_spam_check: true)
   end
 
+  def destroy_service
+    Issues::DestroyService.new(container: project, current_user: current_user)
+  end
+
   def finder_type
     IssuesFinder
   end

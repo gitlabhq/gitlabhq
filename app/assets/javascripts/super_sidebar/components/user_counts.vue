@@ -5,6 +5,7 @@ import {
   destroyUserCountsManager,
   createUserCountsManager,
   userCounts,
+  useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import Counter from './counter.vue';
@@ -54,6 +55,7 @@ export default {
       userCounts.assigned_merge_requests === null ||
       userCounts.review_requested_merge_requests === null
     ) {
+      useCachedUserCounts();
       fetchUserCounts();
     }
   },
