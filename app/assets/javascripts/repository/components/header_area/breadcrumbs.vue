@@ -174,7 +174,6 @@ export default {
               this.isBlobPath && isLastPath
                 ? `/-/blob/${joinPaths(this.escapedRef, path)}`
                 : `/-/tree/${joinPaths(this.escapedRef, path)}`;
-
             return acc.concat({
               name,
               path,
@@ -182,7 +181,7 @@ export default {
                 ? buildURLwithRefType({ path: to, refType: this.refType })
                 : null,
               url: buildURLwithRefType({
-                path: joinPaths(this.projectPath, to),
+                path: joinPaths(this.projectRootPath, to),
                 refType: this.refType,
               }),
             });
@@ -198,7 +197,7 @@ export default {
                   })
                 : null,
               url: buildURLwithRefType({
-                path: joinPaths(this.projectPath, '/-/tree', this.escapedRef),
+                path: joinPaths(this.projectRootPath, '/-/tree', this.escapedRef),
                 refType: this.refType,
               }),
             },

@@ -51,6 +51,7 @@ describe('Repository breadcrumbs component', () => {
     extraProps = {},
     mockRoute = {},
     glFeatures = { directoryCodeDropdownUpdates: false },
+    projectRootPath = TEST_PROJECT_PATH,
   } = {}) => {
     const apolloProvider = createApolloProvider([[permissionsQuery, permissionsQuerySpy]]);
 
@@ -64,7 +65,7 @@ describe('Repository breadcrumbs component', () => {
     wrapper = shallowMount(Breadcrumbs, {
       apolloProvider,
       provide: {
-        projectRootPath: TEST_PROJECT_PATH,
+        projectRootPath,
         isBlobView: extraProps.isBlobView,
         glFeatures,
       },
@@ -161,6 +162,27 @@ describe('Repository breadcrumbs component', () => {
             text: '',
             to: '/-/tree',
             href: '/test-project/path/-/tree',
+          },
+        ],
+      });
+    });
+
+    it('renders the correct breadcrumbs for an instance with relative URL', () => {
+      factory({
+        glFeatures: {
+          directoryCodeDropdownUpdates: true,
+        },
+        projectRootPath: 'repo/test-project/path',
+      });
+
+      expect(findGLBreadcrumb().exists()).toBe(true);
+      expect(findGLBreadcrumb().props()).toMatchObject({
+        items: [
+          {
+            path: '/',
+            text: '',
+            to: '/-/tree',
+            href: '/repo/test-project/path/-/tree',
           },
         ],
       });
