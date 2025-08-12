@@ -21,43 +21,59 @@ module Keeps
       @file_helper = ::Keeps::Helpers::RubocopFixer::FileHelper.new
     end
 
-    def each_change
+    def each_identified_change
       each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
         logger.puts "RubopCop rule #{rule}"
-        remove_allow_rule = true
 
-        if violating_files.count > limit_fixes
-          violating_files = violating_files.first(limit_fixes)
-          remove_allow_rule = false
-        end
+        limited_violating_files = if violating_files.count > limit_fixes
+                                    violating_files.first(limit_fixes)
+                                  else
+                                    violating_files
+                                  end
+
+        remove_allow_rule = violating_files.count <= limit_fixes
 
         change = ::Gitlab::Housekeeper::Change.new
-        change.title = "Fix #{violating_files.count} rubocop violations for #{rule}"
-        change.labels = %w[backend type::maintenance maintenance::refactor]
         change.identifiers = [self.class.name, rule]
-        change.description = <<~MARKDOWN
-          Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
-          that were previously excluded in `#{rule_file_path}`.
-          The exclusions have now been removed.
-        MARKDOWN
-
-        if remove_allow_rule
-          FileUtils.rm(rule_file_path)
-        else
-          file_helper.remove_first_exclusions(rule_file_path, violating_files.count)
-        end
-
-        unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files, logger: logger)
-          logger.warn "Failed to autocorrect files. Reverting"
-          # Ignore when it cannot be automatically fixed. But we need to checkout any files we might have updated.
-          ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', rule_file_path, *violating_files)
-          next
-        end
-
-        change.changed_files = [rule_file_path, *violating_files]
-
+        change.context = {
+          rule: rule,
+          rule_file_path: rule_file_path,
+          violating_files: limited_violating_files,
+          remove_allow_rule: remove_allow_rule
+        }
         yield(change)
       end
+    end
+
+    def make_change!(change)
+      rule = change.context[:rule]
+      rule_file_path = change.context[:rule_file_path]
+      violating_files = change.context[:violating_files]
+      remove_allow_rule = change.context[:remove_allow_rule]
+
+      change.title = "Fix #{violating_files.count} rubocop violations for #{rule}"
+      change.labels = %w[backend type::maintenance maintenance::refactor]
+      change.description = <<~MARKDOWN
+        Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
+        that were previously excluded in `#{rule_file_path}`.
+        The exclusions have now been removed.
+      MARKDOWN
+
+      if remove_allow_rule
+        FileUtils.rm(rule_file_path)
+      else
+        file_helper.remove_first_exclusions(rule_file_path, violating_files.count)
+      end
+
+      unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files, logger: logger)
+        logger.warn "Failed to autocorrect files. Reverting"
+        # Ignore when it cannot be automatically fixed. But we need to checkout any files we might have updated.
+        ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', rule_file_path, *violating_files)
+        return
+      end
+
+      change.changed_files = [rule_file_path, *violating_files]
+      change
     end
 
     private

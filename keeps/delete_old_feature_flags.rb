@@ -34,12 +34,21 @@ module Keeps
     FEATURE_FLAG_LOG_ISSUES_URL = "https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues/?search=%<feature_flag_name>s&sort=created_date&state=all&label_name%%5B%%5D=host%%3A%%3Agitlab.com"
     MISSING_URL_PLACEHOLDER = '(missing URL)'
 
-    def each_change
+    def each_identified_change
       each_feature_flag do |feature_flag|
-        change = prepare_change(feature_flag)
+        identifiers = build_ff_identifiers(feature_flag)
+        latest_feature_flag_status = get_latest_feature_flag_status(feature_flag)
+        next unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
 
-        yield(change) if change
+        change = ::Gitlab::Housekeeper::Change.new
+        change.identifiers = identifiers
+        change.context = { feature_flag: feature_flag, latest_feature_flag_status: latest_feature_flag_status }
+        yield change
       end
+    end
+
+    def make_change!(change)
+      prepare_change(change)
     end
 
     private
@@ -169,15 +178,15 @@ module Keeps
     end
     # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
 
-    def prepare_change(feature_flag)
-      identifiers = [self.class.name.demodulize, feature_flag.name]
-      latest_feature_flag_status = get_latest_feature_flag_status(feature_flag)
-      return unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
+    def build_ff_identifiers(feature_flag)
+      [self.class.name.demodulize, feature_flag.name]
+    end
 
-      change = ::Gitlab::Housekeeper::Change.new
+    def prepare_change(change)
+      feature_flag = change.context[:feature_flag]
+      latest_feature_flag_status = change.context[:latest_feature_flag_status]
       change.changelog_type = 'removed'
       change.title = "Delete the `#{feature_flag.name}` feature flag"
-      change.identifiers = identifiers
 
       FileUtils.rm(feature_flag.path)
       change.changed_files = [feature_flag.path]
@@ -191,6 +200,7 @@ module Keeps
         return change
       end
 
+      change.description = build_description(feature_flag, latest_feature_flag_status)
       change.labels = [
         'automation:feature-flag-removal',
         'maintenance::removal',

@@ -283,7 +283,7 @@ module SortingHelper
       {
         value: value,
         text: text,
-        href: admin_users_path(sort: value, **path_params)
+        href: admin_users_path(path_params.slice(:filter, :search_query, :admin_role_id).merge(sort: value))
       }
     end
   end

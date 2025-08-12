@@ -46,17 +46,21 @@ module Gitlab
           @keeps.each do |keep_class|
             @logger.puts "Running keep #{keep_class}"
             keep = keep_class.new(logger: @logger, filter_identifiers: @filter_identifiers)
-            keep.each_change do |change|
+            keep.each_identified_change do |change|
+              change.keep_class ||= keep_class
+              branch_name = git.create_branch(change)
+              next unless allowed_change?(change, branch_name)
+
+              keep.make_change!(change)
+
+              add_standard_change_data(change)
+
               unless change.valid?
                 @logger.warn "Ignoring invalid change from #{keep_class} with identifier #{change.identifiers}"
                 next
               end
 
-              change.keep_class ||= keep_class
-              branch_name = git.create_branch(change)
-              add_standard_change_data(change)
-
-              next if skip_change_if_necessary(change, branch_name)
+              next if skip_change_if_aborted(change, branch_name)
 
               setup_merge_request(change, branch_name) unless @dry_run
 
@@ -78,6 +82,20 @@ module Gitlab
         print_completion_message(mrs_created_count)
       end
 
+      def allowed_change?(change, branch_name)
+        unless @filter_identifiers.matches_filters?(change.identifiers)
+          @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+          return false
+        end
+
+        if !@dry_run && has_closed_merge_request?(branch_name)
+          @logger.puts "Skipping change: #{change.identifiers} as we have closed an MR for this branch #{branch_name}"
+          return false
+        end
+
+        true
+      end
+
       def print_completion_message(mrs_created_count)
         mr_count_string = "#{mrs_created_count} #{'MR'.pluralize(mrs_created_count)}"
 
@@ -96,28 +114,18 @@ module Gitlab
         change.labels << 'automation:gitlab-housekeeper-authored'
       end
 
-      def skip_change_if_necessary(change, branch_name)
-        if change.aborted? || !@filter_identifiers.matches_filters?(change.identifiers) ||
-            (!@dry_run && has_closed_merge_request?(branch_name))
-          git.in_branch(branch_name) do
-            git.create_commit(change)
-          end
+      def skip_change_if_aborted(change, branch_name)
+        return false unless change.aborted?
 
-          if change.aborted?
-            @logger.puts "Skipping change as it is marked aborted."
-          elsif !@filter_identifiers.matches_filters?(change.identifiers)
-            @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
-          else
-            @logger.puts "Skipping change as we have closed an MR for this branch #{branch_name}"
-          end
-
-          @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}, " \
-                       "but will not be pushed."
-          @logger.puts
-          return true
+        git.in_branch(branch_name) do
+          git.create_commit(change)
         end
 
-        false
+        @logger.puts "Skipping change as it is marked aborted."
+        @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}, " \
+                     "but will not be pushed."
+        @logger.puts
+        true
       end
 
       def setup_merge_request(change, branch_name)

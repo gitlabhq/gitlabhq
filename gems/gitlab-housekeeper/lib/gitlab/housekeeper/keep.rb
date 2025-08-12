@@ -31,7 +31,7 @@ module Gitlab
       # keeps which have expensive computation to perform. This is because
       # the Runner only gets the change object after the Keep has finished
       # computing the change.
-      # This can be done in the `each_change` method like:
+      # This can be done in the `each_identified_change` method like:
       # ```
       # next unless matches_filter_identifiers?(change.identifiers)
       # ... do the computation heavy work and yield change object.
@@ -42,14 +42,25 @@ module Gitlab
         filter_identifiers.matches_filters?(identifiers)
       end
 
-      # The each_change method must update local working copy files and yield a Change object which describes the
-      # specific changed files and other data that will be used to generate a merge request. This is the core
-      # implementation details for a specific housekeeper keep. This does not need to commit the changes or create the
-      # merge request as that is handled by the gitlab-housekeeper gem.
+      # The each_identified_change method should search the codebase to find potential changes based on the specific
+      # intention of the keep. It only needs to construct and yield a Change object with `identifiers` and `context`.
+      # This method should NOT perform file modifications or other side effects.
+      # All actual changes should be implemented in the make_change method.
       #
       # @yieldparam [Gitlab::Housekeeper::Change]
-      def each_change
-        raise NotImplementedError, "A Keep must implement each_change method"
+      def each_identified_change
+        raise NotImplementedError, "A Keep must implement each_identified_change method"
+      end
+
+      # The make_change method performs the actual file modifications and prepares the final Change object.
+      # This method receives a Change object from each_identified_change and should:
+      # - Perform all file modifications and side effects
+      # - Set the final change details (title, description, changed_files, etc.)
+      # - Return the completed Change object, or nil if no changes should be made
+      #
+      # @param [Gitlab::Housekeeper::Change] change The change object with context from each_change
+      def make_change!(change)
+        raise NotImplementedError, "A Keep must implement make_change method"
       end
 
       private

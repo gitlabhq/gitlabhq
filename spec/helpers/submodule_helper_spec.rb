@@ -269,6 +269,31 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
         end
       end
 
+      it 'handles URLs with comments and trailing content after .git' do
+        [
+          'https://gitlab.com/namespace/project.git # This is a comment',
+          'https://gitlab.com/namespace/project.git   # Change this later',
+          'https://gitlab.com/namespace/project.git some additional text',
+          'https://gitlab.com/namespace/project.git # https://gitlab.com/namespace/another_project.git'
+        ].each do |url_with_trailing_content|
+          stub_url(url_with_trailing_content)
+          aggregate_failures do
+            expect(subject.web).to eq('https://gitlab.com/namespace/project')
+            expect(subject.tree).to eq('https://gitlab.com/namespace/project/-/tree/hash')
+            expect(subject.compare).to be_nil
+          end
+        end
+      end
+
+      it 'handles URLs with .git in namespace path' do
+        stub_url('https://gitlab.com/namespace.git/project.git')
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/namespace.git/project')
+          expect(subject.tree).to eq('https://gitlab.com/namespace.git/project/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
+      end
+
       it 'returns original with non-standard url' do
         stub_url('http://gitlab.com/another/gitlab-org/gitlab-foss.git')
         aggregate_failures do

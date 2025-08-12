@@ -1174,6 +1174,9 @@ msgstr ""
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
+msgid "%{name} %{codeStart}%{username}%{codeEnd}"
+msgstr ""
+
 msgid "%{name} (Busy)"
 msgstr ""
 
@@ -37939,6 +37942,9 @@ msgstr ""
 msgid "Loading full blame…"
 msgstr ""
 
+msgid "Loading groups"
+msgstr ""
+
 msgid "Loading items"
 msgstr ""
 
@@ -37955,6 +37961,9 @@ msgid "Loading snippet"
 msgstr ""
 
 msgid "Loading the Web IDE"
+msgstr ""
+
+msgid "Loading users"
 msgstr ""
 
 msgid "Loading…"
@@ -58318,6 +58327,9 @@ msgstr ""
 msgid "SecurityOrchestration|Use this compliance and security policy group to create security policies. Do not create new projects in this group."
 msgstr ""
 
+msgid "SecurityOrchestration|Users and Groups (%{count})"
+msgstr ""
+
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr ""
 
@@ -75644,6 +75656,9 @@ msgid "https://your-bitbucket-server"
 msgstr ""
 
 msgid "i18n|%{language} (%{percent_translated}%% translated)"
+msgstr ""
+
+msgid "id:"
 msgstr ""
 
 msgid "if"

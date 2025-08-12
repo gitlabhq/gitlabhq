@@ -28,13 +28,17 @@ module Keeps
       super
     end
 
-    def each_change
+    def each_identified_change
       return unless obsolete_migrations_to_delete.size > 1
 
-      remove_obsolete_change = create_remove_obsolete_change
-      yield(remove_obsolete_change) if remove_obsolete_change
+      change = ::Gitlab::Housekeeper::Change.new
+      change.identifiers = [self.class.name.demodulize, 'remove_obsolete']
+      change.context = { obsolete_migrations: obsolete_migrations_to_delete }
+      yield(change)
+    end
 
-      nil
+    def make_change!(change)
+      create_remove_obsolete_change(change)
     end
 
     private
@@ -74,10 +78,8 @@ module Keeps
       Dir.glob("#{MIGRATIONS_PATH}/*.rb")
     end
 
-    def create_remove_obsolete_change
-      change = ::Gitlab::Housekeeper::Change.new
+    def create_remove_obsolete_change(change)
       change.title = 'Remove obsolete Advanced search migrations'
-      change.identifiers = [self.class.name.demodulize, 'remove_obsolete']
       change.labels = [
         'maintenance::removal',
         GROUP_LABEL
@@ -106,9 +108,10 @@ module Keeps
 
       change.changed_files = []
       # always leave one migration
-      last_key = obsolete_migrations_to_delete.keys.max
-      obsolete_migrations_to_delete.delete(last_key)
-      obsolete_migrations_to_delete.each do |version, migration_data|
+      obsolete_migrations = change.context[:obsolete_migrations].dup
+      last_key = obsolete_migrations.keys.max
+      obsolete_migrations.delete(last_key)
+      obsolete_migrations.each do |version, migration_data|
         FileUtils.rm_f(migration_data[:file])
         change.changed_files << migration_data[:file]
 

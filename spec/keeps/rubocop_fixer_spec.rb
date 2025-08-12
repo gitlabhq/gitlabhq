@@ -48,7 +48,7 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
     FileUtils.remove_entry(todo_dir)
   end
 
-  describe '#each_change' do
+  describe '#each_identified_change' do
     it 'iterates over todo_dir_pattern files' do
       yielded_times = 0
 
@@ -57,7 +57,8 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
       # Spy on rubocop
       allow(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect).and_call_original
 
-      rubocop_fixer.each_change do |change|
+      rubocop_fixer.each_identified_change do |change|
+        rubocop_fixer.make_change!(change)
         yielded_times += 1
 
         expect(change.title).to include("rubocop violations")
@@ -115,7 +116,7 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
           .once
           .with('git', 'checkout', rule2_file, *rule2_violating_files.first(5))
 
-        rubocop_fixer.each_change
+        rubocop_fixer.each_identified_change { |change| rubocop_fixer.make_change!(change) }
       end
     end
 
@@ -134,7 +135,8 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
 
         expect(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect).once.with(rule1_violating_files, anything)
 
-        rubocop_fixer.each_change do |change|
+        rubocop_fixer.each_identified_change do |change|
+          rubocop_fixer.make_change!(change)
           yielded_times += 1
 
           # Should only process rule1, not rule2

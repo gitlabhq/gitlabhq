@@ -56,9 +56,6 @@ class Issue < ApplicationRecord
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
 
-  # prevent caching this column by rails, as we want to easily remove it after the backfilling
-  ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
-
   # Interim columns to convert integer IDs to bigint
   ignore_column :author_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :closed_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
@@ -70,6 +67,8 @@ class Issue < ApplicationRecord
   ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+
+  ignore_column :external_key, remove_with: '18.5', remove_after: '2025-09-18'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues

@@ -25,9 +25,10 @@
           = link_to_label(label)
 
   .col-sm-3.gl-mt-3.sm:gl-mt-0.gl-text-right
-    - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
-      %li.gl-list-none
+    %li.gl-list-none
+      - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
         %span.has-tooltip{ title: _('Upvotes') }
           = sprite_icon('thumb-up', css_class: "gl-align-middle")
           = issuable.upvotes_count
+      = render_if_exists partial: 'search/results/work_item_status', locals: { issuable: issuable }
     %span.gl-text-subtle.gl-text-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe

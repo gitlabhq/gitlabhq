@@ -382,7 +382,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     end
   end
 
-  describe '#each_change' do
+  describe '#each_identified_change' do
     before do
       allow(keep).to receive(:can_remove_ff?).and_return(true)
     end
@@ -406,7 +406,10 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(FileUtils).to receive(:rm).with(feature_flag_file)
 
         actual_changes = []
-        keep.each_change { |change| actual_changes << change }
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_changes << change
+        end
 
         expect(actual_changes.size).to eq(1)
 
@@ -446,7 +449,10 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(FileUtils).to receive(:rm).with(feature_flag_patch_path)
 
         actual_changes = []
-        keep.each_change { |change| actual_changes << change }
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_changes << change
+        end
 
         expect(actual_changes.size).to eq(1)
 

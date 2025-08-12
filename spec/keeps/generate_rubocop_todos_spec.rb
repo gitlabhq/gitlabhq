@@ -15,7 +15,7 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
     allow(Rake::Task).to receive(:[]).with('rubocop:todo:generate').and_return(rake_task)
   end
 
-  describe '#each_change' do
+  describe '#each_identified_change' do
     context 'when there are changes in the rubocop_todo directory' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
@@ -33,16 +33,20 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
         expect(Gitlab::Application).to receive(:load_tasks)
         expect(rake_task).to receive(:invoke)
 
-        change = keep.each_change(&:itself)
+        actual_change = nil
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_change = change
+        end
 
-        expect(change).to be_a(Gitlab::Housekeeper::Change)
-        expect(change.title).to eq(described_class::TITLE)
-        expect(change.description).to eq(described_class::DESCRIPTION)
-        expect(change.identifiers).to eq(keep.send(:change_identifiers))
-        expect(change.changed_files).to contain_exactly('.rubocop_todo')
-        expect(change.assignees).to eq([backend_reviewer])
-        expect(change.reviewers).to eq([backend_maintainer])
-        expect(change.labels).to eq(keep.send(:labels))
+        expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
+        expect(actual_change.title).to eq(described_class::TITLE)
+        expect(actual_change.description).to eq(described_class::DESCRIPTION)
+        expect(actual_change.identifiers).to eq(keep.send(:change_identifiers))
+        expect(actual_change.changed_files).to contain_exactly('.rubocop_todo')
+        expect(actual_change.assignees).to eq([backend_reviewer])
+        expect(actual_change.reviewers).to eq([backend_maintainer])
+        expect(actual_change.labels).to eq(keep.send(:labels))
       end
     end
 
@@ -57,7 +61,15 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
         expect(Gitlab::Application).to receive(:load_tasks)
         expect(rake_task).to receive(:invoke)
 
-        expect(keep.each_change(&:itself)).to be_nil
+        actual_change = nil
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_change = change
+        end
+
+        expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
+        expect(actual_change.title).to be_nil
+        expect(actual_change.description).to be_nil
       end
     end
   end

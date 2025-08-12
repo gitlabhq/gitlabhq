@@ -70,6 +70,30 @@ RSpec.describe IconsHelper do
         .to eq "<svg class=\"s#{IconsHelper::DEFAULT_ICON_SIZE}\" data-testid=\"coffee-icon\"><use href=\"#{file_icons_path}#coffee\"></use></svg>"
     end
 
+    context 'with color parameter' do
+      it 'returns svg icon html with inline color style' do
+        expect(sprite_icon(icon_name, color: '#1f75cb').to_s).to include "style=\"fill: #1f75cb;\""
+      end
+
+      it 'returns svg icon html with all parameters including color' do
+        expect(sprite_icon(icon_name, size: 24, css_class: 'test-class', variant: 'danger', color: '#123456', aria_label: 'test label').to_s)
+          .to eq "<svg class=\"s24 gl-fill-icon-danger test-class\" data-testid=\"#{icon_name}-icon\" aria-label=\"test label\" style=\"fill: #123456;\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
+      end
+
+      it 'does not add style attribute when color is nil or an empty string' do
+        expect(sprite_icon(icon_name, color: nil).to_s).not_to include "style"
+        expect(sprite_icon(icon_name, color: '').to_s).not_to include "style"
+      end
+
+      it 'caches icons with different colors separately' do
+        icon1 = sprite_icon(icon_name, color: '#ff0000')
+        icon2 = sprite_icon(icon_name, color: '#00ff00')
+
+        expect(icon1.to_s).to include('style="fill: #ff0000;"')
+        expect(icon2.to_s).to include('style="fill: #00ff00;"')
+      end
+    end
+
     describe 'non existing icon' do
       let(:helper) do
         Class.new do

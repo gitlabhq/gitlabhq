@@ -8,7 +8,7 @@ MigrationRecord = Struct.new(:id, :finished_at, :updated_at, :gitlab_schema)
 RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :tooling do
   subject(:keep) { described_class.new }
 
-  describe '#initialize_change' do
+  describe '#initialize_change_details' do
     let(:migration) { { 'feature_category' => 'shared' } }
     let(:feature_category) { migration['feature_category'] }
     let(:migration_record) do
@@ -20,7 +20,12 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     let(:groups_helper) { instance_double(::Keeps::Helpers::Groups) }
     let(:identifiers) { [described_class.new.class.name.demodulize, job_name] }
 
-    subject(:change) { keep.initialize_change(migration, migration_record, job_name, last_migration_file) }
+    subject(:change) do
+      change = ::Gitlab::Housekeeper::Change.new
+      change.identifiers = identifiers
+      keep.send(:initialize_change_details, change, migration, migration_record, job_name, last_migration_file)
+      change
+    end
 
     before do
       allow(groups_helper).to receive(:labels_for_feature_category)

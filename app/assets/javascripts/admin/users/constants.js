@@ -75,6 +75,8 @@ export const getFilterTokenConfigs = (accessLevelOptions) => [
 ];
 
 // Overridden in EE.
+// NOTE: If you add a config, also add the querystring key to app/helpers/sorting_helper.rb.
+// Otherwise, changing the sort will remove the querystring for the config.
 export const getStandardTokenConfigs = () => [];
 // Overridden in EE.
 export const ACCESS_LEVEL_OPTIONS = [
