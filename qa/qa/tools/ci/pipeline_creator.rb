@@ -129,7 +129,7 @@ module QA
         #
         # @return [String]
         def noop_pipeline
-          @noop_pipeline ||= File.read(File.join(project_root, ".gitlab", "ci", "_skip.yml"))
+          @noop_pipeline ||= File.read(File.join(project_root, ".gitlab", "ci", "overrides", "skip.yml"))
         end
 
         # Path for ci configuration files

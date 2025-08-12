@@ -341,7 +341,7 @@ export default {
                 </label>
               </template>
             </div>
-            <div v-if="replyOrEdit" class="gl-font-size-0 gl-flex gl-flex-wrap gl-gap-4">
+            <div v-if="replyOrEdit" class="gl-font-size-0 gl-flex gl-flex-wrap gl-gap-3">
               <gl-button
                 :disabled="disableSubmitButton()"
                 category="primary"

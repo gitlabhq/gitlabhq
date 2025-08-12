@@ -1,5 +1,9 @@
 import { GlAlert, GlTab } from '@gitlab/ui';
+import { FEATURE_CATEGORY_HEADER } from '~/lib/apollo/instrumentation_link';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import getNamespaceStorageQuery from '~/usage_quotas/storage/namespace/queries/namespace_storage.query.graphql';
+import { getStorageTabMetadata } from '~/usage_quotas/storage/utils';
 import UsageQuotasApp from '~/usage_quotas/components/usage_quotas_app.vue';
 import Tracking from '~/tracking';
 import { defaultProvide, provideWithTabs } from '../mock_data';
@@ -57,6 +61,77 @@ describe('UsageQuotasApp', () => {
       findTabs().at(1).vm.$emit('click');
 
       expect(Tracking.event).not.toHaveBeenCalledWith();
+    });
+
+    it('sets initial tab hash to window.location.href', () => {
+      expect(window.location.href).toContain(provideWithTabs.tabs[0].hash);
+    });
+
+    it('updates window.location.href on tab change', () => {
+      findTabs().at(1).vm.$emit('click');
+      expect(window.location.href).toContain(provideWithTabs.tabs[1].hash);
+    });
+
+    it('updates gon.feature_category according to initial tab metadata', () => {
+      expect(gon.feature_category).toContain(provideWithTabs.tabs[0].featureCategory);
+    });
+
+    describe('apollo instrumentationLink', () => {
+      let tabs;
+      const originalFetch = global.fetch;
+
+      beforeEach(() => {
+        global.fetch = jest.fn().mockResolvedValue({
+          ok: true,
+          text: () => Promise.resolve('{"data":{"namespace": null}}'),
+        });
+        // This is just so we can create the object properly in getStorageTabMetadata()
+        setHTMLFixture('<div id="js-storage-usage-app"></div>');
+        tabs = [...provideWithTabs.tabs, getStorageTabMetadata({ parseProvideData: () => {} })];
+
+        createComponent({ provide: { tabs } });
+      });
+
+      afterEach(() => {
+        global.fetch = originalFetch;
+        resetHTMLFixture();
+      });
+
+      it('sets initial tab feature category on apollo call', async () => {
+        const apolloClient = tabs[2].component.apolloProvider.defaultClient;
+
+        await apolloClient.query({
+          query: getNamespaceStorageQuery,
+        });
+
+        expect(fetch).toHaveBeenCalledWith(
+          '/api/graphql',
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              [FEATURE_CATEGORY_HEADER]: tabs[0].featureCategory,
+            }),
+          }),
+        );
+      });
+
+      it('updates apollo feature category header on tab change', async () => {
+        findTabs().at(2).vm.$emit('click');
+
+        const apolloClient = tabs[2].component.apolloProvider.defaultClient;
+
+        await apolloClient.query({
+          query: getNamespaceStorageQuery,
+        });
+
+        expect(fetch).toHaveBeenCalledWith(
+          '/api/graphql',
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              [FEATURE_CATEGORY_HEADER]: tabs[2].featureCategory,
+            }),
+          }),
+        );
+      });
     });
   });
 });

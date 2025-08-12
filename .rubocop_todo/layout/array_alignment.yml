@@ -146,4 +146,3 @@ Layout/ArrayAlignment:
     - 'spec/requests/api/settings_spec.rb'
     - 'spec/requests/api/snippets_spec.rb'
     - 'spec/serializers/fork_namespace_entity_spec.rb'
-    - 'spec/serializers/group_child_entity_spec.rb'

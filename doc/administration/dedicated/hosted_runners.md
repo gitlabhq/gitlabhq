@@ -108,6 +108,8 @@ To create hosted runners:
 
 You will receive an email notification when your hosted runner is ready to use.
 
+[Outbound private links](#outbound-private-link) configured for existing runners don't apply to new runners. A separate request is required for each new runner. 
+
 #### View hosted runners in Switchboard
 
 To view hosted runners:

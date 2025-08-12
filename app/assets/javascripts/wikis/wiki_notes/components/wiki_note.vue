@@ -134,7 +134,7 @@ export default {
         },
         noteParent: {
           'gl-rounded-lg gl-border gl-border-section': !this.replyNote,
-          'gl-ml-7': this.replyNote,
+          'gl-pl-8 gl-pr-5 -gl-mx-5': this.replyNote,
           'gl-bg-section gl-ml-8': !this.replyNote,
           'internal-note-bg': this.note.internal,
         },

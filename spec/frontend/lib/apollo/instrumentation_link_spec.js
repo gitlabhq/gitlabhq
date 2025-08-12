@@ -1,3 +1,4 @@
+import { ApolloLink } from '@apollo/client/core';
 import { testApolloLink } from 'helpers/test_apollo_link';
 import { getInstrumentationLink, FEATURE_CATEGORY_HEADER } from '~/lib/apollo/instrumentation_link';
 
@@ -18,8 +19,20 @@ describe('~/lib/apollo/instrumentation_link', () => {
         setFeatureCategory(null);
       });
 
-      it('returns null', () => {
-        expect(getInstrumentationLink()).toBe(null);
+      it('returns memoized apollo link', () => {
+        const result = getInstrumentationLink();
+
+        expect(result).toBeInstanceOf(ApolloLink);
+        expect(result).toHaveProp('request');
+        expect(result).toBe(getInstrumentationLink());
+      });
+
+      it('does not add to headers', async () => {
+        const operation = await testApolloLink(getInstrumentationLink());
+
+        const { headers } = operation.getContext();
+
+        expect(headers).toEqual(undefined);
       });
     });
 
@@ -31,7 +44,7 @@ describe('~/lib/apollo/instrumentation_link', () => {
       it('returns memoized apollo link', () => {
         const result = getInstrumentationLink();
 
-        // expect.any(ApolloLink) doesn't work for some reason...
+        expect(result).toBeInstanceOf(ApolloLink);
         expect(result).toHaveProp('request');
         expect(result).toBe(getInstrumentationLink());
       });

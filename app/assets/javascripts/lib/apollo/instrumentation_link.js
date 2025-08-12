@@ -7,22 +7,23 @@ export const FEATURE_CATEGORY_HEADER = 'x-gitlab-feature-category';
  * Returns the ApolloLink (or null) used to add instrumentation metadata to the GraphQL request.
  *
  * - The result will be null if the `feature_category` cannot be found.
- * - The result is memoized since the `feature_category` is the same for the entire page.
+ * - The result is memoized since we don't need to reevaluate this every time we create a client
  */
 export const getInstrumentationLink = memoize(() => {
-  const { feature_category: featureCategory } = gon;
-
-  if (!featureCategory) {
-    return null;
-  }
-
   return new ApolloLink((operation, forward) => {
-    operation.setContext(({ headers = {} }) => ({
-      headers: {
-        ...headers,
-        [FEATURE_CATEGORY_HEADER]: featureCategory,
-      },
-    }));
+    operation.setContext((currentContext) => {
+      const { feature_category: featureCategory } = gon;
+
+      if (!featureCategory) return currentContext;
+
+      return {
+        ...currentContext,
+        headers: {
+          ...currentContext?.headers,
+          [FEATURE_CATEGORY_HEADER]: featureCategory,
+        },
+      };
+    });
 
     return forward(operation);
   });

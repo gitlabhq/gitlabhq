@@ -25,7 +25,7 @@ module QA
     let(:gitlab_version) { "18.0.0" }
     let(:ruby_version) { "3.2.5" }
 
-    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
+    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/overrides/skip.yml")) }
     let(:noop_reason) { "no-op run, nothing will be executed!" }
     let(:noop_pipeline) do
       <<~YML
