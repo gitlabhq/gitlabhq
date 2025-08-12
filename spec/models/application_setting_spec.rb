@@ -100,7 +100,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         top_level_group_creation_enabled: true,
         allow_bypass_placeholder_confirmation: false,
         ci_partitions_size_limit: 100.gigabytes,
-        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year')
+        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year'),
+        wiki_page_max_content_bytes: 5.megabytes
       )
     end
   end
