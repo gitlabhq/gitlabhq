@@ -17,8 +17,13 @@ const {
   },
 } = projectsGraphQLResponse;
 
+afterEach(() => {
+  window.gon = {};
+});
+
 describe('formatGraphQLProjects', () => {
   it('correctly formats the projects', () => {
+    window.gon = { relative_url_root: '/gitlab' };
     const [firstMockProject] = projects;
     const formattedProjects = formatGraphQLProjects(projects, (project) => ({
       customProperty: project.nameWithNamespace,
@@ -38,7 +43,7 @@ describe('formatGraphQLProjects', () => {
       availableActions: ['edit', 'delete'],
       customProperty: firstMockProject.nameWithNamespace,
       isPersonal: false,
-      relativeWebUrl: `/${firstMockProject.fullPath}`,
+      relativeWebUrl: `/gitlab/${firstMockProject.fullPath}`,
     });
 
     expect(formattedProjects).toHaveLength(projects.length);

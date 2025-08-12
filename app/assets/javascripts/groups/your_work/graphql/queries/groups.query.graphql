@@ -10,6 +10,7 @@ query yourWorkGroups(
   groups(active: $active, search: $search, sort: $sort, parentId: $parentId, page: $page) @client {
     nodes {
       ...Group
+      editPath
       children
       childrenCount
     }

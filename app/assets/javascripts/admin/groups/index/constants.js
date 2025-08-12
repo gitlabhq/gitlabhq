@@ -1,5 +1,6 @@
 import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { s__, __ } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
@@ -9,12 +10,12 @@ import {
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
-import adminGroupsQuery from 'ee_else_ce/admin/groups/index/graphql/queries/groups.query.graphql';
+import adminGroupsQuery from './graphql/queries/groups.query.graphql';
 
 const baseTab = {
   formatter: (groups) =>
     formatGraphQLGroups(groups, (group) => {
-      const adminPath = `/admin/groups/${group.fullPath}`;
+      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/groups/', group.fullPath);
 
       return {
         avatarLabelLink: adminPath,

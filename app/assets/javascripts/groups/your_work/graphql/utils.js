@@ -8,6 +8,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   name: group.name,
   fullName: group.full_name,
   fullPath: group.full_path,
+  editPath: group.edit_path,
   descriptionHtml: group.markdown_description,
   visibility: group.visibility,
   createdAt: group.created_at,

@@ -61,7 +61,7 @@ describe('GroupListItemActions', () => {
             action: expect.any(Function),
           },
         },
-        availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_RESTORE, ACTION_LEAVE],
+        availableActions: [ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
       });
     });
   });

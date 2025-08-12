@@ -16,8 +16,13 @@ const {
   },
 } = organizationGroupsGraphQlResponse;
 
+afterEach(() => {
+  window.gon = {};
+});
+
 describe('formatGraphQLGroups', () => {
   it('correctly formats the groups with edit, delete, and leave permissions', () => {
+    window.gon = { relative_url_root: '/gitlab' };
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGraphQLGroups(organizationGroups, (group) => ({
       customProperty: group.fullName,
@@ -36,7 +41,7 @@ describe('formatGraphQLGroups', () => {
       children: [],
       childrenLoading: false,
       hasChildren: false,
-      relativeWebUrl: `/${firstMockGroup.fullPath}`,
+      relativeWebUrl: `/gitlab/${firstMockGroup.fullPath}`,
       customProperty: firstMockGroup.fullName,
     });
     expect(formattedGroups).toHaveLength(organizationGroups.length);

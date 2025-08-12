@@ -5,6 +5,7 @@ import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import { joinPaths } from '~/lib/utils/url_utility';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 
 const baseTab = {
@@ -22,10 +23,14 @@ const baseTab = {
   },
   queryPath: 'projects',
   formatter: (projects) =>
-    formatGraphQLProjects(projects, (project) => ({
-      editPath: `/admin/projects/${project.fullPath}/edit`,
-      avatarLabelLink: `/admin/projects/${project.fullPath}`,
-    })),
+    formatGraphQLProjects(projects, (project) => {
+      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/projects', project.fullPath);
+
+      return {
+        editPath: `${adminPath}/edit`,
+        avatarLabelLink: adminPath,
+      };
+    }),
 };
 
 export const ACTIVE_TAB = {

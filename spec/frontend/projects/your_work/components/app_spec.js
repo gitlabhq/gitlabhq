@@ -1,6 +1,15 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
+import contributedProjectsQueryResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
-import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '~/projects/your_work/constants';
+import userProjectsQuery from '~/projects/your_work/graphql/queries/user_projects.query.graphql';
+import {
+  PROJECT_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
+  PROJECTS_DASHBOARD_ROUTE_NAME,
+} from '~/projects/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
@@ -20,25 +29,46 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { createRouter } from '~/projects/your_work';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
+import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 describe('YourWorkProjectsApp', () => {
   let wrapper;
+  let router;
 
   const defaultPropsData = {
     initialSort: 'created_desc',
     programmingLanguages,
   };
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(YourWorkProjectsApp, { propsData: defaultPropsData });
+  const defaultRoute = {
+    name: PROJECTS_DASHBOARD_ROUTE_NAME,
   };
 
-  beforeEach(() => {
-    createComponent();
+  const createComponent = async ({
+    mountFn = shallowMountExtended,
+    handlers = [],
+    route = defaultRoute,
+  } = {}) => {
+    const apolloProvider = createMockApollo(handlers);
+    router = createRouter();
+    await router.push(route);
+
+    wrapper = mountFn(YourWorkProjectsApp, { propsData: defaultPropsData, apolloProvider, router });
+  };
+
+  afterEach(() => {
+    window.gon = {};
   });
 
-  it('renders TabsWithList component and passes correct props', () => {
+  it('renders TabsWithList component and passes correct props', async () => {
+    await createComponent();
+
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
       tabs: PROJECT_DASHBOARD_TABS,
       filteredSearchSupportedTokens: [
@@ -80,5 +110,31 @@ describe('YourWorkProjectsApp', () => {
       paginationType: PAGINATION_TYPE_KEYSET,
       userPreferencesSortKey: 'projectsSort',
     });
+  });
+
+  it('renders relative URL that supports relative_url_root', async () => {
+    window.gon = { relative_url_root: '/gitlab' };
+
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [userProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsQueryResponse)],
+      ],
+    });
+    await waitForPromises();
+
+    const {
+      data: {
+        currentUser: {
+          contributedProjects: {
+            nodes: [expectedProject],
+          },
+        },
+      },
+    } = contributedProjectsQueryResponse;
+
+    expect(
+      wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
+    ).toBe(`/gitlab/${expectedProject.fullPath}`);
   });
 });

@@ -1,4 +1,5 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { availableGraphQLGroupActions } from './utils';
 
 export const formatGraphQLGroups = (groups, callback = () => {}) =>
@@ -26,7 +27,7 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
         childrenLoading: false,
         hasChildren: Boolean(descendantGroupsCount),
         fullPath,
-        relativeWebUrl: `/${fullPath}`,
+        relativeWebUrl: joinPaths('/', gon.relative_url_root, fullPath),
       };
 
       return {
