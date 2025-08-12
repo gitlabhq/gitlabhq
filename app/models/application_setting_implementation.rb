@@ -269,7 +269,7 @@ module ApplicationSettingImplementation
         user_default_internal_regex: nil,
         user_show_add_ssh_key_message: true,
         valid_runner_registrars: VALID_RUNNER_REGISTRAR_TYPES,
-        wiki_page_max_content_bytes: 50.megabytes,
+        wiki_page_max_content_bytes: 5.megabytes,
         wiki_asciidoc_allow_uri_includes: false,
         package_registry_cleanup_policies_worker_capacity: 2,
         container_registry_delete_tags_service_timeout: 250,

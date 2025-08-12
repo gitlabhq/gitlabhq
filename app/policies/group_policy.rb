@@ -45,7 +45,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:create_projects_disabled) do
     next true if @user.nil?
 
-    visibility_levels = if @user.can_admin_all_resources?
+    visibility_levels = if can?(:admin_all_resources)
                           # admin can create projects even with restricted visibility levels
                           Gitlab::VisibilityLevel.values
                         else
@@ -200,7 +200,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_issue
     enable :admin_work_item
     enable :update_issue
-    enable :destroy_issue
     enable :read_confidential_issues
     enable :read_crm_organization
     enable :read_crm_contact

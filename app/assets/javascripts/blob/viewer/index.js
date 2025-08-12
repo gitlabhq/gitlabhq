@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { sanitize } from '~/lib/dompurify';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
@@ -45,8 +46,8 @@ const loadViewer = (viewerParam) => {
   viewer.dataset.loading = 'true';
 
   return axios.get(url).then(({ data }) => {
-    // eslint-disable-next-line no-unsanitized/property
-    viewer.innerHTML = data.html;
+    const unsafeHtml = data.html;
+    viewer.innerHTML = sanitize(unsafeHtml);
 
     window.requestIdleCallback(() => {
       delete viewer.dataset.loading;

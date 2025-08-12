@@ -517,7 +517,7 @@ class Group < Namespace
 
     def prevent_project_creation?(user, project_creation_setting)
       return true if project_creation_setting == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
-      return false if user.can_admin_all_resources?
+      return false if Ability.allowed?(user, :admin_all_resources)
 
       project_creation_setting == ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS
     end

@@ -23,6 +23,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:tag) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     context 'when a release exists in the database without a name' do
       it 'does not require name' do

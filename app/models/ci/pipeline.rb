@@ -1356,6 +1356,10 @@ module Ci
       merge_request_id.present? && merge_request.present?
     end
 
+    def merge_request_from_forked_project?
+      merge_request? && merge_request.for_fork?
+    end
+
     def external_pull_request?
       external_pull_request_id.present?
     end

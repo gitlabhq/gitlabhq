@@ -268,7 +268,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
 
       markdown = '%{gitlab_server}'
 
-      expect(run_pipeline(markdown)).to include '&lt;script&gt;'
+      expect(run_pipeline(markdown)).to include '<span data-placeholder="%{gitlab_server}"></span>'
     end
   end
 
@@ -315,7 +315,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
         markdown = '[foo](%{gitlab_server})'
 
         expect(run_pipeline(markdown))
-          .to include "<a href=\"&amp;lt;script&amp;gt;\""
+          .to include "<a href=\"\""
       end
     end
   end
@@ -355,9 +355,9 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
         allow(Gitlab.config.gitlab).to receive(:host).and_return('<script>')
 
         markdown = '![](https://%{gitlab_server}/%{project_name}/foo.png)'
-        expected = "<p><img src=\"https://&amp;lt;script&amp;gt;/#{project.path}/foo.png\" " \
+        expected = "<p><img src=\"https:///#{project.path}/foo.png\" " \
           'data-placeholder="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png" alt="" ' \
-          "data-src=\"https://&amp;lt;script&amp;gt;/#{project.path}/foo.png\" " \
+          "data-src=\"https:///#{project.path}/foo.png\" " \
           'data-canonical-src="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png"></p>'
 
         expect(run_filter(markdown)).to eq expected
@@ -417,6 +417,34 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       markdown = '<code data-placeholder>%{gitlab-server}</code>'
 
       expect(run_filter(markdown)).to include '<code data-placeholder>%{gitlab-server}</code>'
+    end
+  end
+
+  context 'when tag has js- triggers' do
+    let_it_be(:xss) do
+      '<i/class=js-toggle-container><i/class=js-toggle-lazy-diff>' \
+        '<i/class="file-holder"data-lines-path="/flightjs/xss/-/raw/main/a.json">' \
+        '<i/class=gl-opacity-0><i/class="modal-backdrop"style="top&colon;-99px">' \
+        '<i/class=diff-content><table><tbody/>'
+    end
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group, create_tag: xss) }
+    let!(:label) { create(:label, name: 'foo', description: 'xss %{latest_tag}', project: project) }
+
+    before do
+      project.add_member(user, Gitlab::Access::OWNER)
+    end
+
+    it 'sanitizes and removes any js- triggers and tags' do
+      expect(Banzai::Filter::SanitizationFilter).to receive(:new).twice.and_call_original
+
+      markdown = '<span data-placeholder>foo ~foo</span>'
+      html = run_pipeline(markdown, project: project, current_user: user)
+
+      expect(html).not_to include 'js-'
+      expect(html).to include 'title="xss "'
     end
   end
 
