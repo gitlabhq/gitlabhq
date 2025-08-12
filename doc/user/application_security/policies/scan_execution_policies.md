@@ -44,6 +44,7 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five scan execution policies to each security policy project.
 - Local project YAML files cannot override scan execution policies. These policies take precedence over any configurations defined for a pipeline, even if you use the same job name in your project's CI/CD configuration.
+- Scan execution policies with `type: pipeline` rules do not create pipelines if the project's `.gitlab-ci.yml` file contains [`workflow:rules`](../../../ci/yaml/workflow.md) that prevent the creation of pipelines. This limitation does not apply to `type: schedule` rules.
 
 ## Jobs
 
@@ -604,3 +605,38 @@ To skip scan jobs with variables, you can use:
 - `DEPENDENCY_SCANNING_DISABLED: "true"` to skip dependency scanning jobs.
 
 For an overview of all variables that can skip jobs, see [CI/CD variables documentation](../../../topics/autodevops/cicd_variables.md#job-skipping-variables)
+
+## Troubleshooting
+
+### Scan execution policy pipelines are not created
+
+If scan execution policies do not create the pipelines defined in `type: pipeline` as expected, you may have [`workflow:rules`](../../../ci/yaml/workflow.md) in the project's `.gitlab-ci.yml` file that prevent the policy from creating the pipeline.
+
+Scan execution policies with `type: pipeline` rules rely on the merged CI/CD configuration to create pipelines. If the project's `workflow:rules` filter out the pipeline entirely, the scan execution policy cannot create a pipeline.
+
+For example, the following `workflow:rules` configuration prevents all pipelines from being created:
+
+```yaml
+# .gitlab-ci.yml
+workflow:
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "push"
+    when: never
+```
+
+Resolution:
+
+To resolve this issue, you can use any of these options:
+
+- Modify the `workflow:rules` in your project's `.gitlab-ci.yml` file to allow scan execution policies to create pipelines. You can use the `$CI_PIPELINE_SOURCE` variable to identify pipelines that are triggered by policies:
+
+  ```yaml
+  workflow:
+    rules:
+    - if: $CI_PIPELINE_SOURCE == "security_orchestration_policy"
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never
+  ```
+
+- Use `type: schedule` rules instead of `type: pipeline` rules. Scheduled scan execution policies are not affected by `workflow:rules` and create pipelines according to their defined schedule.
+- Use [pipeline execution policies](pipeline_execution_policies.md) for more control over when and how security scans are executed in your CI/CD pipelines.

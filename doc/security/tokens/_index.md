@@ -364,6 +364,8 @@ This table shows default scopes per token. For some tokens, you can limit scopes
 ## Token prefixes
 
 The following table shows the prefixes for each type of token.
+With the exception of Personal Access tokens, these prefixes cannot be configured,
+as they are designed to be standard identifications.
 
 |            Token name             |      Prefix        |
 |-----------------------------------|--------------------|

@@ -1490,6 +1490,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect { |b| diff.opening_external_diff(&b) }.to yield_with_args(File)
       end
 
+      it 'sets external_diff_store to local' do
+        expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+
       it 'is re-entrant' do
         outer_file_a =
           diff.opening_external_diff do |outer_file|
@@ -1502,6 +1506,36 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
         diff.opening_external_diff do |outer_file_b|
           expect(outer_file_a).not_to eq(outer_file_b)
+        end
+      end
+
+      context 'object storage' do
+        before do
+          stub_external_diffs_object_storage(ExternalDiffUploader)
+        end
+
+        context 'when diff storage is local' do
+          before do
+            diff_with_commits.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+          end
+
+          it 'updates value to remote' do
+            diff.opening_external_diff do
+              expect(diff.external_diff_store).to eq(ObjectStorage::Store::REMOTE)
+            end
+          end
+
+          context 'when feature flag update_external_diff_storage is disabled' do
+            before do
+              stub_feature_flags(update_external_diff_storage: false)
+            end
+
+            it 'does not update value to remote' do
+              diff.opening_external_diff do
+                expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
+              end
+            end
+          end
         end
       end
     end

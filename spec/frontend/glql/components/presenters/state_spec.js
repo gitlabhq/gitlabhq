@@ -4,21 +4,21 @@ import StatePresenter from '~/glql/components/presenters/state.vue';
 
 describe('StatePresenter', () => {
   it.each`
-    source             | issueState  | badgeVariant | badgeLabel  | badgeIcon
-    ${'issues'}        | ${'opened'} | ${'success'} | ${'Open'}   | ${'issue-open-m'}
-    ${'issues'}        | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
-    ${'workItems'}     | ${'OPEN'}   | ${'success'} | ${'Open'}   | ${'issue-open-m'}
-    ${'workItems'}     | ${'CLOSED'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
-    ${'epics'}         | ${'opened'} | ${'success'} | ${'Open'}   | ${'issue-open-m'}
-    ${'epics'}         | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
-    ${'mergeRequests'} | ${'opened'} | ${'success'} | ${'Open'}   | ${'merge-request-open'}
-    ${'mergeRequests'} | ${'closed'} | ${'danger'}  | ${'Closed'} | ${'merge-request-close'}
-    ${'mergeRequests'} | ${'merged'} | ${'info'}    | ${'Merged'} | ${'merge'}
+    source            | state       | badgeVariant | badgeLabel  | badgeIcon
+    ${'Issue'}        | ${'opened'} | ${'success'} | ${'Open'}   | ${'issue-open-m'}
+    ${'Issue'}        | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
+    ${'WorkItem'}     | ${'OPEN'}   | ${'success'} | ${'Open'}   | ${'issue-open-m'}
+    ${'WorkItem'}     | ${'CLOSED'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
+    ${'Epic'}         | ${'opened'} | ${'success'} | ${'Open'}   | ${'issue-open-m'}
+    ${'Epic'}         | ${'closed'} | ${'info'}    | ${'Closed'} | ${'issue-close'}
+    ${'MergeRequest'} | ${'opened'} | ${'success'} | ${'Open'}   | ${'merge-request-open'}
+    ${'MergeRequest'} | ${'closed'} | ${'danger'}  | ${'Closed'} | ${'merge-request-close'}
+    ${'MergeRequest'} | ${'merged'} | ${'info'}    | ${'Merged'} | ${'merge'}
   `(
-    'for $source state $issueState, it presents it as a badge with variant "$badgeVariant", label "$badgeLabel" and icon "$badgeIcon"',
-    ({ issueState, badgeVariant, badgeLabel, badgeIcon, source }) => {
+    'for $source state $state, it presents it as a badge with variant "$badgeVariant", label "$badgeLabel" and icon "$badgeIcon"',
+    ({ state, badgeVariant, badgeLabel, badgeIcon, source }) => {
       const wrapper = shallowMountExtended(StatePresenter, {
-        propsData: { data: issueState, source },
+        propsData: { data: state, item: { __typename: source, state } },
       });
       const badge = wrapper.findComponent(GlBadge);
 

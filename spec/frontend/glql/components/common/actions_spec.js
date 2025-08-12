@@ -8,14 +8,10 @@ describe('GlqlActions', () => {
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
-  const createComponent = (props = {}, provide = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(GlqlActions, {
       propsData: {
         ...props,
-      },
-      provide: {
-        queryKey: 'test-key',
-        ...provide,
       },
     });
   };

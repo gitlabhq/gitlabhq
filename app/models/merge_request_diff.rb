@@ -610,6 +610,10 @@ class MergeRequestDiff < ApplicationRecord
     return yield(nil) unless stored_externally?
     return yield(@external_diff_file) if @external_diff_file
 
+    if ::Feature.enabled?(:update_external_diff_storage, project) && use_external_diff? && Gitlab.config.external_diffs.object_store.enabled && external_diff_store == ObjectStorage::Store::LOCAL
+      update_column(:external_diff_store, ObjectStorage::Store::REMOTE)
+    end
+
     external_diff.open do |file|
       @external_diff_file = file
 

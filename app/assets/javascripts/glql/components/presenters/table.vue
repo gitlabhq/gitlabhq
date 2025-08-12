@@ -1,63 +1,58 @@
 <script>
-import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { eventHubByKey } from '../../utils/event_hub_factory';
-import Sorter from '../../core/sorter';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { sortBy } from '../../core/sorter';
 import ThResizable from '../common/th_resizable.vue';
+import FieldPresenter from './field.vue';
+
+const DEFAULT_PAGE_SIZE = 5;
 
 export default {
   name: 'TablePresenter',
   components: {
     GlIcon,
-    GlLink,
-    GlSprintf,
     GlSkeletonLoader,
     ThResizable,
+    FieldPresenter,
   },
-  inject: ['presenter', 'queryKey'],
   props: {
     data: {
-      required: true,
-      type: Object,
-      validator: ({ nodes }) => Array.isArray(nodes),
-    },
-    config: {
-      required: true,
-      type: Object,
-      validator: ({ fields }) => Array.isArray(fields) && fields.length > 0,
-    },
-    showPreview: {
       required: false,
-      type: Boolean,
+      type: Object,
+      default: () => ({ nodes: [] }),
+    },
+    fields: {
+      required: false,
+      type: Array,
+      default: () => [],
+    },
+    loading: {
+      required: false,
+      type: [Boolean, Number],
       default: false,
     },
   },
   data() {
-    const items = this.data.nodes.slice();
-
     return {
-      items,
-      fields: this.config.fields,
-      sorter: new Sorter(items),
-      eventHub: eventHubByKey(this.queryKey),
-      isLoadingMore: false,
-      pageSize: 5,
+      items: this.data.nodes.slice(),
+      sortOptions: { fieldName: null, ascending: true },
     };
   },
-  mounted() {
-    this.eventHub.$on('loadMore', (pageSize) => {
-      this.pageSize = pageSize;
-      this.isLoadingMore = true;
-    });
-
-    this.eventHub.$on('loadMoreComplete', (newData) => {
-      this.items = newData.nodes.slice();
-      this.sorter = this.sorter.clone(this.items);
-      this.isLoadingMore = false;
-    });
-
-    this.eventHub.$on('loadMoreError', () => {
-      this.isLoadingMore = false;
-    });
+  computed: {
+    pageSize() {
+      return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
+    },
+  },
+  watch: {
+    data() {
+      this.items = this.data.nodes.slice();
+    },
+  },
+  methods: {
+    sortBy(fieldName) {
+      const { options, items } = sortBy(this.items, fieldName, this.sortOptions);
+      this.items = items;
+      this.sortOptions = options;
+    },
   },
 };
 </script>
@@ -74,11 +69,11 @@ export default {
             <div
               :data-testid="`column-${fieldIndex}`"
               class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-px-5 gl-py-3 hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
-              @click="sorter.sortBy(field.key)"
+              @click="sortBy(field.key)"
             >
               <gl-icon
-                v-if="sorter.options.fieldName === field.key"
-                :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
+                v-if="sortOptions.fieldName === field.key"
+                :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
               />
               {{ field.label }}
             </div>
@@ -97,11 +92,10 @@ export default {
             :key="field.key"
             class="!gl-border-l-0 !gl-border-r-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3"
           >
-            <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
-            <component :is="presenter.forField(item, field.key)" />
+            <field-presenter :item="item" :field-key="field.key" />
           </td>
         </tr>
-        <template v-if="showPreview || isLoadingMore">
+        <template v-if="loading">
           <tr v-for="i in pageSize" :key="i">
             <td
               v-for="field in fields"

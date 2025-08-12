@@ -51123,9 +51123,15 @@ definitions:
     type: object
     properties:
       total:
-        type: integer
-        format: int32
-        example: 3363
+        type: object
+        example:
+          time: 0.42
+          count: 2
+          success: 2
+          failed: 0
+          skipped: 0
+          error: 0
+          suite_error:
       test_suites:
         "$ref": "#/definitions/TestSuiteSummaryEntity"
     description: TestReportSummaryEntity model

@@ -35,7 +35,7 @@ module Gitlab
       def from_user
         return unless user
 
-        ::Organizations::Organization.with_user(user).first
+        user.organization
       end
 
       def from_group_params

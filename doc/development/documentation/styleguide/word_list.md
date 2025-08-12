@@ -2734,6 +2734,19 @@ Pay attention to spacing by the letter **v**. In semantic versioning, no space e
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
+## virtual registry
+
+Use lowercase for **virtual registry**.
+
+On first mention on a page, use **GitLab virtual registry**.
+Thereafter, use **virtual registry** by itself.
+
+Use:
+
+- The GitLab virtual registry supports A, B, and C.
+- You can configure your applications to use one virtual registry instead
+of multiple upstream registries.
+
 ## VS Code user interface
 
 When describing the user interface of VS Code and the Web IDE, follow the usage and capitalization of the

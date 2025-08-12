@@ -15,9 +15,7 @@ description: "Import projects from GitHub to GitLab."
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
-- An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
+- **Imported** badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
 
 {{< /history >}}
 
@@ -56,16 +54,10 @@ by default on GitLab.com.
 
 ### Permissions and roles
 
-{{< history >}}
-
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-
-{{< /history >}}
-
 To use the GitHub importer, you must have:
 
-- Access to the GitHub project to import.
-- At least the Maintainer role on the destination GitLab group to import to.
+- Access to the source GitHub project
+- At least the Maintainer role for the destination GitLab group (introduced in GitLab 16.0)
 
 Also, the organization the GitHub repository belongs to must not impose restrictions of a
 [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
@@ -200,11 +192,9 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
-- Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
-- Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
-- Feature flag `github_import_extended_events` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
-- Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139410) in GitLab 16.8 [with a flag](../../../administration/feature_flags/_index.md) named `github_import_extended_events`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146695) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 {{< /history >}}
 
@@ -224,13 +214,6 @@ You can choose to import these items, but this could significantly increase impo
   Outside collaborators are never imported.
 
 ### Select which repositories to import
-
-{{< history >}}
-
-- Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
-- Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
-
-{{< /history >}}
 
 By default, the proposed repository namespaces match the names as they exist in GitHub, but based
 on your permissions, you can choose to edit these names before you proceed to import any of them.
@@ -284,13 +267,13 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
 The GitHub importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
-of mapping user contributions for GitLab.com and GitLab Self-Managed.
+of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 ### Old method of user contribution mapping
 
@@ -379,41 +362,39 @@ To enable a higher rate limit:
 
 The following items of a project are imported:
 
-- Repository description.
-- Git repository data.
-- All project branches.
-- All branches of forks of the project related to open pull requests, but not closed pull requests. Branches from forks are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
-- Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
-- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10. From GitLab 16.0, can
-  be imported [as an additional item](#select-additional-items-to-import).
-- Issues.
-- Pull requests.
-- Wiki pages.
-- Milestones.
-- Labels.
-- Release notes content.
-- Attachments for:
-  - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
-  - Comments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
-  - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
-  - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+- All fork branches of the project related to open pull requests
 
-  All attachment imports are disabled by default behind
-  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags/_index.md). From GitLab 15.5, can
-  be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
-- Pull request review comments.
-- Regular issue and pull request comments.
-- [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/_index.md).
-- Pull request reviews.
-- Pull request assigned reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
-- Pull request "merged by" information.
-- Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
-  GitLab 14.5.
-- Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
-- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
-  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags/_index.md) disabled by default.
-  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
-  removed.
+  {{< alert type="note" >}}
+
+  Fork branches are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
+
+  {{< /alert >}}
+
+- All project branches
+- Attachments for:
+  - Comments
+  - Issue descriptions
+  - Pull request descriptions
+  - Release notes
+- Branch protection rules
+- [Collaborators (members)](#collaborators-members)
+- [Git LFS objects](../../../topics/git/lfs/_index.md)
+- Git repository data
+- Issue and pull request comments
+- Issue and pull request events (can be imported as an [additional item](#select-additional-items-to-import))
+- Issues
+- Labels
+- Milestones
+- Pull request assigned reviewers
+- Pull request **merged by** information
+- Pull request reviews
+- Pull request review comments
+- Pull request review replies to discussions
+- Pull request review suggestions
+- Pull requests
+- Release notes content
+- Repository descriptions
+- Wiki pages
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
@@ -421,31 +402,29 @@ defaults to the default project visibility.
 
 ### Branch protection rules and project settings
 
-When they are imported, supported GitHub branch protection rules are mapped to either:
+Imported GitHub branch protection rules are mapped to one of the following:
 
-- GitLab branch protection rules.
-- Project-wide GitLab settings.
+- GitLab branch protection rules
+- Project-wide GitLab settings
 
-| GitHub rule                                                                                         | GitLab rule                                                                                                                                                                                                                                                          | Introduced in |
-|:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
-| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#protect-a-branch)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
-| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#require-signed-commits)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
-| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
-| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../repository/branches/protected.md#require-code-owner-approval)                                                                                                                        | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#protect-a-branch). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| GitHub rule                                                                                         | GitLab rule                                                                                                                                                                                                                                                          |
+|:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** [branch protection settings](../repository/branches/protected.md#protect-a-branch)                                                                                                            |
+| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#require-signed-commits)                                                                                                                                                          |
+| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push)                                                                                                                                               |
+| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../repository/branches/protected.md#require-code-owner-approval)                                                                                                                        |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** [branch protection settings](../repository/branches/protected.md#protect-a-branch). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. |
 
-Mapping GitHub rule **Require status checks to pass before merging** to
-[external status checks](../merge_requests/status_checks.md) was considered in issue
-[370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule is not imported during project import
-into GitLab due to technical difficulties. You can still create [external status checks](../merge_requests/status_checks.md)
-manually.
+The **Require status checks to pass before merging** GitHub rule is not imported.
+You can still create [external status checks](../merge_requests/status_checks.md) manually.
+For more information, see [issue 370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948).
 
 ### Collaborators (members)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+- Importing collaborators as an additional item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 
 {{< /history >}}
 

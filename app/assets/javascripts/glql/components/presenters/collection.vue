@@ -7,8 +7,9 @@ export default {
   components: {
     NullPresenter,
     GlIntersperse,
+    // Lazy load field presenter to avoid circular dependency
+    FieldPresenter: () => import('./field.vue'),
   },
-  inject: ['presenter'],
   props: {
     data: {
       required: true,
@@ -20,8 +21,12 @@ export default {
 </script>
 <template>
   <gl-intersperse separator=" ">
-    <span v-for="(field, index) in data.nodes" :key="index" class="gl-inline-block gl-pr-2">
-      <component :is="presenter.forField(field)" />
+    <span
+      v-for="(field, index) in data.nodes"
+      :key="field.id || index"
+      class="gl-inline-block gl-pr-2"
+    >
+      <field-presenter :item="field" />
     </span>
     <null-presenter v-if="!data.nodes.length" />
   </gl-intersperse>

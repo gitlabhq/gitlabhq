@@ -25,7 +25,7 @@ All Free projects on GitLab.com have 10 GiB of free storage for their Git reposi
 When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
 You cannot push changes to a read-only project.
 To increase storage of the project's repository and LFS to more than 10 GiB,
-you must [purchase more storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
+you must purchase more storage.
 
 Only the project's repository and LFS are included in the storage limit.
 The container registry, package registry, and build artifacts are not included in the limit.
@@ -88,8 +88,8 @@ The cost factor does not apply to private forks in namespaces on the Free plan.
 Excess storage usage is the amount that exceeds the 10 GiB free storage of a project's repository and LFS. If no purchased storage is available,
 the project is set to a read-only state. You cannot push changes to a read-only project.
 
-To remove the read-only state, you must [purchase more storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage)
-for the namespace. After the purchase has completed, the read-only state is removed and projects are automatically
+To remove the read-only state, you must purchase more storage for the namespace.
+After the purchase has completed, the read-only state is removed and projects are automatically
 restored. The amount of available purchased storage must always
 be greater than zero.
 
@@ -140,7 +140,7 @@ In this example:
 ## Manage storage usage
 
 To manage your storage, if you are a namespace Owner of a Free GitLab.com namespace,
-you can [purchase more storage for the namespace](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
+you can purchase more storage for the namespace.
 
 In the Premium and Ultimate tier, depending on your role, you can also
 [reduce repository size](project/repository/repository_size.md#methods-to-reduce-repository-size).
@@ -154,6 +154,76 @@ In addition to managing your storage usage you can consider these options for in
   - GitLab for Startups
 - Consider a [GitLab Self-Managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+
+## Purchase more storage
+
+{{< details >}}
+
+- Tier: Free
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
+To exceed the free tier 10 GiB limit on your Free GitLab.com namespace, you can purchase more storage for your personal or group namespace.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role.
+
+{{< alert type="note" >}}
+
+Storage subscriptions **renew automatically each year**.
+You can [disable automatic subscription renewal](../subscriptions/manage_subscription.md#turn-on-or-turn-off-automatic-subscription-renewal).
+
+{{< /alert >}}
+
+### For your personal namespace
+
+1. Sign in to GitLab.com.
+1. From either your personal homepage or the group's page, go to **Settings > Usage quotas**.
+1. Select the **Storage** tab.
+1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
+   storage. You must purchase the storage increment that exceeds this total.
+1. Select **Buy storage**. You are taken to the Customers Portal.
+1. In the **Subscription details** section, select the name of the user from the dropdown list.
+1. Enter the desired quantity of storage packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select the payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select **Buy storage**.
+
+The **Purchased storage available** total is incremented by the amount purchased. The read-only
+state for all projects is removed, and their excess usage is deducted from the additional storage.
+
+### For your group namespace
+
+If you're using GitLab.com, you can purchase additional storage so your
+pipelines aren't blocked after you have used all your storage from your
+main quota. You can find pricing for additional storage on the
+[GitLab Pricing page](https://about.gitlab.com/pricing/#storage).
+
+To purchase additional storage for your group on GitLab.com:
+
+1. Sign in to GitLab.com.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage quotas**.
+1. Select the **Storage** tab.
+1. Select **Buy storage**. You are taken to the Customers Portal.
+1. In the **Subscription details** section, enter the desired quantity of storage packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select **Buy storage**.
+
+After your payment is processed, the extra storage is available for your group namespace.
+
+To confirm the available storage, follow the first three steps listed previously.
+
+The **Purchased storage available** total is incremented by the amount purchased. All locked
+projects are unlocked and their excess usage is deducted from the additional storage.
 
 ## Fixed project limit
 
@@ -173,8 +243,3 @@ The 500 GiB fixed project limit is in place to ensure overall platform stability
 Expired storage can exist on a subscription when storage is mistakenly not de-provisioned at the end of your subscription period.
 If you experience an unexpected drop in purchased storage, expired storage could have been removed from your account.
 For more information and solutions, contact support.
-
-## Related topics
-
-- [Automate storage management](storage_management_automation.md)
-- [Purchase storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage)

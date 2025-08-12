@@ -1,7 +1,7 @@
 import { glql } from '@gitlab/query-language-rust';
 import { glqlAggregationEnabled } from '../utils/feature_flags';
 
-export const transform = async (data, config) => {
+export const transform = async (data = { project: { issues: { nodes: [] } } }, config) => {
   const result = await glql.transform(data, {
     fields: config.fields,
     aggregate: glqlAggregationEnabled() ? config.aggregate : undefined,
@@ -9,9 +9,5 @@ export const transform = async (data, config) => {
 
   if (!result.success) throw new Error(result.error);
 
-  // eslint-disable-next-line no-param-reassign
-  config.source = result.source || 'issues';
-  // eslint-disable-next-line no-param-reassign
-  config.fields = result.fields;
-  return result.data;
+  return { data: result.data, fields: result.fields };
 };

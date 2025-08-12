@@ -12,7 +12,7 @@ describe('ArtifactsBulkDelete component', () => {
     mockGetJobArtifactsResponse.data.project.jobs.nodes[0].artifacts.nodes[1].id,
   ];
 
-  const findText = () => wrapper.findComponent(GlSprintf).text();
+  const findText = () => wrapper.findByTestId('banner-text').text();
   const findDeleteButton = () => wrapper.findByTestId('bulk-delete-delete-button');
   const findClearButton = () => wrapper.findByTestId('bulk-delete-clear-button');
   const findAlertText = () => wrapper.findComponent(GlAlert).text();

@@ -77,6 +77,7 @@ export const MOCK_ISSUES = {
   nodes: [
     {
       __typename: 'Issue',
+      id: 'gid://gitlab/Issue/1',
       iid: '1',
       title: 'Issue 1',
       reference: '#1',
@@ -87,6 +88,7 @@ export const MOCK_ISSUES = {
     },
     {
       __typename: 'Issue',
+      id: 'gid://gitlab/Issue/2',
       iid: '2',
       title: 'Issue 2',
       reference: '#2',
@@ -102,11 +104,13 @@ export const MOCK_LABELS = {
   nodes: [
     {
       __typename: 'Label',
+      id: 'gid://gitlab/Label/1',
       title: 'Label 1',
       color: '#FFAABB',
     },
     {
       __typename: 'Label',
+      id: 'gid://gitlab/Label/2',
       title: 'Label 2',
       color: '#FFBBAA',
     },
@@ -160,3 +164,5 @@ export const MOCK_DIMENSION = {
   title: 'From 2025-01-01 to 2025-01-31',
   __typename: 'GlqlDimension',
 };
+
+export const MOCK_LINK = { title: 'title', webUrl: 'url' };

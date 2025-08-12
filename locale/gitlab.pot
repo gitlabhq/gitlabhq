@@ -23646,9 +23646,6 @@ msgstr ""
 msgid "Display blame info"
 msgstr ""
 
-msgid "Display block"
-msgstr ""
-
 msgid "Display by"
 msgstr ""
 
@@ -23668,6 +23665,9 @@ msgid "Display source"
 msgstr ""
 
 msgid "Display time tracking in issues in total hours only. %{link_start}What is time tracking?%{link_end}"
+msgstr ""
+
+msgid "Display view"
 msgstr ""
 
 msgid "Do not display content for customer experience improvement and offers from third parties"
@@ -44334,7 +44334,7 @@ msgstr ""
 msgid "Online license"
 msgstr ""
 
-msgid "Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this block."
+msgid "Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this view."
 msgstr ""
 
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
@@ -56691,6 +56691,9 @@ msgstr ""
 msgid "SecurityApprovals|Requires approval for decreases in test coverage."
 msgstr ""
 
+msgid "SecurityAttributes|+%{additionalAttributeCount} more"
+msgstr ""
+
 msgid "SecurityAttributes|Add attribute"
 msgstr ""
 
@@ -56761,6 +56764,9 @@ msgid "SecurityAttributes|Save changes"
 msgstr ""
 
 msgid "SecurityAttributes|Security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Security attributes for %{projectName}"
 msgstr ""
 
 msgid "SecurityAttributes|Security attributes help classify and organize your projects. Attributes are managed at the group level. You can add or remove attributes to this project as needed."
@@ -72596,10 +72602,10 @@ msgstr ""
 msgid "WorkItem|Something went wrong when removing item. Please refresh this page."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when trying to add a child. Please try again."
+msgid "WorkItem|Something went wrong when trying to add a child item. Please try again."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
+msgid "WorkItem|Something went wrong when trying to create a child item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to link a item. Please try again."

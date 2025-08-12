@@ -352,6 +352,34 @@ To prevent charges from seats owed, you can
 [turn on restricted access](../user/group/manage.md#turn-on-restricted-access).
 This setting restricts groups from adding new billable users when there are no seats left in the subscription.
 
+### Seat usage alerts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+
+{{< /history >}}
+
+If you have the Owner role for the top-level group, an alert notifies you
+of your total seat usage.
+
+The alert displays on group, subgroup, and project
+pages, and only for top-level groups linked to subscriptions enrolled
+in [quarterly subscription reconciliations](quarterly_reconciliation.md).
+After you dismiss the alert, it doesn't display until another seat is used.
+
+The alert displays based on the following seat usage. You cannot configure the
+amounts at which the alert displays.
+
+| Seats in subscription | Alert displays when |
+|-----------------------|---------------------|
+| 0-15                  | One seat remains.   |
+| 16-25                 | Two seats remain.   |
+| 26-99                 | 10% of seats remain.|
+| 100-999               | 8% of seats remain. |
+| 1000+                 | 5% of seats remain. |
+
 ### View seat usage
 
 To view a list of seats being used:
@@ -380,33 +408,22 @@ To view your subscription information and a summary of seat counts:
 - The **Last login** field is updated when a user signs in after they have signed out. If there is an active session
   when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
 
-### Seat usage alerts
+### Search seat usage
 
-{{< history >}}
+To search seat usage:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage quotas**.
+1. On the **Seats** tab, enter a string in the search field. A minimum of 3 characters are required.
 
-{{< /history >}}
+The search returns users whose first name, last name, or username contain the search string.
 
-If you have the Owner role for the top-level group, an alert notifies you
-of your total seat usage.
+For example:
 
-The alert displays on group, subgroup, and project
-pages, and only for top-level groups linked to subscriptions enrolled
-in [quarterly subscription reconciliations](quarterly_reconciliation.md).
-After you dismiss the alert, it doesn't display until another seat is used.
-
-The alert displays based on the following seat usage. You cannot configure the
-amounts at which the alert displays.
-
-| Seats in subscription | Alert displays when |
-|-----------------------|---------------------|
-| 0-15                  | One seat remains.   |
-| 16-25                 | Two seats remain.   |
-| 26-99                 | 10% of seats remain.|
-| 100-999               | 8% of seats remain. |
-| 1000+                 | 5% of seats remain. |
+| First name | Search string | Match ? |
+|:-----------|:--------------|:--------|
+| Amir       | `ami`         | Yes     |
+| Amir       | `amr`         | No      |
 
 ### Export seat usage
 

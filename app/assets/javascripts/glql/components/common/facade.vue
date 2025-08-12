@@ -1,31 +1,25 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlModal,
-  GlIntersectionObserver,
-  GlIcon,
-  GlLink,
-  GlSprintf,
-  GlExperimentBadge,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlModal, GlIntersectionObserver } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { sha256 } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
+import { sha256 } from '~/lib/utils/text_utility';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { parse, parseYAML, parseQuery } from '../../core/parser';
+import { execute } from '../../core/executor';
+import { transform } from '../../core/transformer';
+import DataPresenter from '../presenters/data.vue';
 import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
-import { executeAndPresentQuery, presentPreview, loadMore } from '../../core';
 import Counter from '../../utils/counter';
-import { eventHubByKey } from '../../utils/event_hub_factory';
 import GlqlPagination from './pagination.vue';
 import GlqlActions from './actions.vue';
 import GlqlFootnote from './footnote.vue';
 
 const MAX_GLQL_BLOCKS = 20;
+const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'GlqlFacade',
@@ -33,30 +27,29 @@ export default {
     GlAlert,
     GlButton,
     GlModal,
-    GlIcon,
-    GlLink,
-    GlSprintf,
-    GlExperimentBadge,
     GlIntersectionObserver,
     CrudComponent,
     GlqlPagination,
     GlqlFootnote,
     GlqlActions,
+    DataPresenter,
   },
   directives: {
     SafeHtml,
   },
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
-  inject: ['queryKey'],
   props: {
-    query: {
+    queryKey: {
+      required: true,
+      type: String,
+    },
+    queryYaml: {
       required: true,
       type: String,
     },
   },
   data() {
     return {
-      eventHub: eventHubByKey(this.queryKey),
       crudComponentId: `glql-${this.queryKey}`,
 
       queryModalSettings: {
@@ -68,8 +61,6 @@ export default {
       },
 
       loadOnClick: true,
-      previewPresenter: null,
-      finalPresenter: null,
       error: {
         variant: 'warning',
         title: null,
@@ -77,21 +68,20 @@ export default {
         action: null,
       },
 
+      loading: false,
+
+      query: undefined,
+      config: undefined,
+      variables: undefined,
+      fields: undefined,
+      data: undefined,
+
       preClasses: 'code highlight code-syntax-highlight-theme',
 
       isCollapsed: false,
     };
   },
   computed: {
-    data() {
-      return this.finalPresenter?.data || {};
-    },
-    config() {
-      return this.finalPresenter?.config || this.previewPresenter?.config || {};
-    },
-    isPreview() {
-      return !this.finalPresenter;
-    },
     title() {
       return (
         this.config.title ||
@@ -99,28 +89,21 @@ export default {
       );
     },
     showEmptyState() {
-      return this.data.nodes?.length === 0 && !this.isPreview;
+      return this.data?.nodes?.length === 0;
     },
     showCopyContentsAction() {
-      return Boolean(this.data.count) && !this.isCollapsed && !this.isPreview;
+      return Boolean(this.data?.count) && !this.isCollapsed;
     },
     hasError() {
       return this.error.title || this.error.message;
     },
     wrappedQuery() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `\`\`\`glql\n${this.query}\n\`\`\``;
-    },
-  },
-  watch: {
-    previewPresenter(previewPresenter) {
-      this.isCollapsed = previewPresenter?.config?.collapsed || false;
+      return `\`\`\`glql\n${this.queryYaml}\n\`\`\``;
     },
   },
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
-
-    this.eventHub.$on('loadMore', this.loadMore.bind(this));
   },
 
   methods: {
@@ -140,40 +123,53 @@ export default {
       await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
     },
 
-    async loadMore() {
+    async loadMore(count) {
       try {
-        const data = await loadMore(this.query, this.data.pageInfo.endCursor);
-        this.finalPresenter.data.pageInfo = data.pageInfo;
-        this.finalPresenter.data.nodes.push(...data.nodes);
+        this.loading = count;
+        const parsedYaml = parseYAML(this.queryYaml);
+        const { query, config, variables } = await parseQuery(parsedYaml.query, {
+          ...parsedYaml.config,
+          cursorAfter: this.data.pageInfo.endCursor,
+          limit: DEFAULT_PAGE_SIZE,
+        });
 
-        this.eventHub.$emit('loadMoreComplete', this.finalPresenter.data);
-      } catch (error) {
+        const { data } = await transform(await execute(query, variables), config);
+        this.data = {
+          ...this.data,
+          pageInfo: data.pageInfo,
+          nodes: [...this.data.nodes, ...data.nodes],
+        };
+      } catch {
         this.handleQueryError(__('Unable to load the next page.'));
-        this.eventHub.$emit('loadMoreError');
+      } finally {
+        this.loading = false;
       }
     },
 
-    loadGlqlBlock() {
-      if (this.finalPresenter || this.previewPresenter) return;
+    async loadGlqlBlock() {
+      if (this.data) return;
 
-      if (this.glFeatures.glqlLoadOnClick || this.checkGlqlBlocksCount()) {
-        this.loadPreviewPresenter();
-        this.loadFinalPresenter();
+      await this.parseQuery();
+      if (!this.hasError && (this.glFeatures.glqlLoadOnClick || this.checkGlqlBlocksCount())) {
+        await this.executeQuery();
       }
     },
 
     reloadGlqlBlock() {
-      this.finalPresenter = null;
-      this.previewPresenter = null;
-
+      this.data = undefined;
       this.dismissAlert();
-      this.loadPreviewPresenter();
-      this.loadFinalPresenter();
+      return this.executeQuery();
     },
 
-    async loadFinalPresenter() {
+    async executeQuery() {
       try {
-        this.finalPresenter = await executeAndPresentQuery(this.query, this.queryKey);
+        if (this.hasError) return;
+
+        this.loading = true;
+
+        const { data } = await transform(await execute(this.query, this.variables), this.config);
+        this.data = data;
+
         this.trackRender();
       } catch (error) {
         switch (error.networkError?.statusCode) {
@@ -186,16 +182,24 @@ export default {
           default:
             this.handleQueryError(error.message);
         }
+      } finally {
+        this.loading = false;
       }
     },
 
-    async loadPreviewPresenter() {
-      this.dismissAlert();
-
+    async parseQuery() {
       try {
-        this.previewPresenter = await presentPreview(this.query, this.queryKey);
+        const { query, config, variables } = await parse(this.queryYaml);
+        this.query = query;
+        this.config = config;
+        this.variables = variables;
+
+        const { fields } = await transform(undefined, this.config);
+        this.fields = fields;
+        this.loading = true;
       } catch (error) {
         this.handleQueryError(error.message);
+        this.loading = false;
       }
     },
 
@@ -227,7 +231,7 @@ export default {
     renderMarkdown,
     async trackRender() {
       try {
-        this.trackEvent('render_glql_block', { label: await sha256(this.query) });
+        this.trackEvent('render_glql_block', { label: await sha256(this.queryYaml) });
       } catch (e) {
         // ignore any tracking errors
       }
@@ -243,11 +247,11 @@ export default {
       variant: 'warning',
       title: sprintf(
         __(
-          'Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this block.',
+          'Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this view.',
         ),
         { n: MAX_GLQL_BLOCKS },
       ),
-      action: __('Display block'),
+      action: __('Display view'),
     },
     glqlTimeoutError: {
       variant: 'warning',
@@ -291,20 +295,23 @@ export default {
         style="transform: translate(-50%, -50%)"
         :aria-label="$options.i18n.loadGlqlView"
         @click="loadOnClick = false"
-      >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ query }}</code></pre>
+      >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ queryYaml }}</code></pre>
     </div>
     <gl-intersection-observer v-else @appear="loadGlqlBlock">
-      <template v-if="finalPresenter || previewPresenter">
+      <template v-if="query && !hasError">
         <crud-component
           :anchor-id="crudComponentId"
           :title="title"
           :description="config.description"
-          :count="data.count"
+          :count="data && data.count"
           is-collapsible
           :collapsed="isCollapsed"
           persist-collapsed-state
           class="!gl-mt-5"
-          :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview, '!gl-overflow-hidden': true }"
+          :body-class="{
+            '!gl-m-0 !gl-p-0': loading || (data && data.count),
+            '!gl-overflow-hidden': true,
+          }"
           @collapsed="isCollapsed = true"
           @expanded="isCollapsed = false"
         >
@@ -319,13 +326,23 @@ export default {
             />
           </template>
 
-          <component :is="finalPresenter.component" v-if="finalPresenter" ref="presenter" />
-          <component :is="previewPresenter.component" v-else-if="previewPresenter && !hasError" />
+          <data-presenter
+            ref="presenter"
+            :data="data"
+            :fields="fields"
+            :display-type="config.display"
+            :loading="loading"
+          />
           <div
-            v-if="data.count && data.nodes.length < data.count"
+            v-if="data && data.count && data.nodes.length < data.count"
             class="glql-load-more gl-border-t gl-border-section gl-p-3"
           >
-            <glql-pagination :count="data.nodes.length" :total-count="data.count" />
+            <glql-pagination
+              :count="data.nodes.length"
+              :total-count="data.count"
+              :loading="loading"
+              @loadMore="loadMore"
+            />
           </div>
 
           <template v-if="showEmptyState" #empty>
@@ -335,7 +352,7 @@ export default {
         <glql-footnote v-if="!isCollapsed" />
       </template>
       <div v-else-if="hasError" class="markdown-code-block gl-relative">
-        <pre :class="preClasses"><code>{{ query }}</code></pre>
+        <pre :class="preClasses"><code>{{ queryYaml }}</code></pre>
       </div>
     </gl-intersection-observer>
     <gl-modal

@@ -32,5 +32,5 @@ in the GitLab UI and the VS Code and JetBrains IDEs.
 
 ## Related topics
 
-- [GitLab Duo Agentic Chat](../gitlab_duo_chat/_index.md)
+- [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)
 - [Flows](flows/_index.md)

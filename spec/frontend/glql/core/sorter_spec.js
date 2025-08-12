@@ -1,4 +1,4 @@
-import Sorter, { sorterFor } from '~/glql/core/sorter';
+import { sorterFor, sortBy } from '~/glql/core/sorter';
 
 describe('sorterFor', () => {
   it('sorts by string property', () => {
@@ -212,9 +212,9 @@ describe('sorterFor', () => {
   });
 });
 
-describe('Sorter', () => {
+describe('sortBy', () => {
   let items;
-  let sorter;
+  let sortOptions;
 
   beforeEach(() => {
     items = [
@@ -222,31 +222,29 @@ describe('Sorter', () => {
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 35 },
     ];
-    sorter = new Sorter(items);
-  });
-
-  it('initializes with items', () => {
-    expect(sorter.options).toEqual({ fieldName: null, ascending: true });
+    sortOptions = { fieldName: null, ascending: true };
   });
 
   it('sorts by field in ascending order', () => {
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.name)).toEqual(['Alice', 'Bob', 'Charlie']);
-    expect(sorter.options).toEqual({ fieldName: 'name', ascending: true });
+    const { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    expect(sortedItems.map((item) => item.name)).toEqual(['Alice', 'Bob', 'Charlie']);
+    expect(options).toEqual({ fieldName: 'name', ascending: true });
   });
 
   it('sorts by field in descending order when called twice', () => {
-    sorter.sortBy('name');
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.name)).toEqual(['Charlie', 'Bob', 'Alice']);
-    expect(sorter.options).toEqual({ fieldName: 'name', ascending: false });
+    let { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    ({ options, items: sortedItems } = sortBy(sortedItems, 'name', options));
+
+    expect(sortedItems.map((item) => item.name)).toEqual(['Charlie', 'Bob', 'Alice']);
+    expect(options).toEqual({ fieldName: 'name', ascending: false });
   });
 
   it('sorts by different field resets ascending order', () => {
-    sorter.sortBy('name');
-    const sorted = sorter.sortBy('age');
-    expect(sorted.map((item) => item.age)).toEqual([25, 30, 35]);
-    expect(sorter.options).toEqual({ fieldName: 'age', ascending: true });
+    let { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    ({ options, items: sortedItems } = sortBy(sortedItems, 'age', options));
+
+    expect(sortedItems.map((item) => item.age)).toEqual([25, 30, 35]);
+    expect(options).toEqual({ fieldName: 'age', ascending: true });
   });
 
   it('maintains original order for equal values', () => {
@@ -255,8 +253,8 @@ describe('Sorter', () => {
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Alice', age: 35 },
     ];
-    sorter = new Sorter(items);
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.id)).toEqual([3, 1, 2]);
+    const { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    expect(sortedItems.map((item) => item.id)).toEqual([3, 1, 2]);
+    expect(options).toEqual({ fieldName: 'name', ascending: true });
   });
 });

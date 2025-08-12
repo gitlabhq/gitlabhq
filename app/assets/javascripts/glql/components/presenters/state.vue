@@ -3,15 +3,15 @@ import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const badgeVariants = {
-  mergeRequests: { opened: 'success', closed: 'danger', merged: 'info' },
+  MergeRequest: { opened: 'success', closed: 'danger', merged: 'info' },
   default: { opened: 'success', closed: 'info' },
 };
 const badgeLabels = {
-  mergeRequests: { opened: __('Open'), closed: __('Closed'), merged: __('Merged') },
+  MergeRequest: { opened: __('Open'), closed: __('Closed'), merged: __('Merged') },
   default: { opened: __('Open'), closed: __('Closed') },
 };
 const badgeIcons = {
-  mergeRequests: {
+  MergeRequest: {
     opened: 'merge-request-open',
     closed: 'merge-request-close',
     merged: 'merge',
@@ -39,15 +39,15 @@ export default {
       required: true,
       type: String,
     },
-    source: {
-      required: false,
-      type: String,
-      default: '',
+    item: {
+      required: true,
+      type: Object,
     },
   },
   data() {
     const state = normalizeState(this.data);
-    const source = normalizeSource(this.source);
+    // eslint-disable-next-line no-underscore-dangle
+    const source = normalizeSource(this.item?.__typename);
     const badgeVariant = badgeVariants[source][state];
     const badgeLabel = badgeLabels[source][state];
     const badgeIcon = badgeIcons[source][state];

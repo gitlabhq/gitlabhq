@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
-import { eventHubByKey } from '../../utils/event_hub_factory';
 import { DEFAULT_PAGE_SIZE } from '../../constants';
 
 export default {
@@ -9,7 +8,6 @@ export default {
   components: {
     GlButton,
   },
-  inject: ['queryKey'],
   props: {
     count: {
       type: Number,
@@ -21,12 +19,14 @@ export default {
       required: false,
       default: 0,
     },
+    loading: {
+      type: [Boolean, Number],
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      eventHub: eventHubByKey(this.queryKey),
-      isLoadingMore: false,
-
       pageSize: DEFAULT_PAGE_SIZE,
     };
   },
@@ -35,7 +35,7 @@ export default {
       return this.count < this.totalCount;
     },
     loadMoreLabel() {
-      if (this.isLoadingMore) {
+      if (this.loading) {
         return sprintf(__('Loading %{count} more...'), { count: this.actualPageSize });
       }
 
@@ -43,25 +43,6 @@ export default {
     },
     actualPageSize() {
       return Math.min(this.pageSize, this.totalCount - this.count);
-    },
-  },
-
-  mounted() {
-    this.eventHub.$on('loadMore', () => {
-      this.isLoadingMore = true;
-    });
-
-    this.eventHub.$on('loadMoreComplete', () => {
-      this.isLoadingMore = false;
-    });
-
-    this.eventHub.$on('loadMoreError', () => {
-      this.isLoadingMore = false;
-    });
-  },
-  methods: {
-    loadMore() {
-      this.eventHub.$emit('loadMore', this.actualPageSize);
     },
   },
 };
@@ -75,8 +56,8 @@ export default {
       size="small"
       variant="default"
       :aria-label="loadMoreLabel"
-      :loading="isLoadingMore"
-      @click="loadMore"
+      :loading="Boolean(loading)"
+      @click="$emit('loadMore', count)"
     >
       {{ loadMoreLabel }}
     </gl-button>

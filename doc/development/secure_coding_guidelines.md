@@ -1742,6 +1742,12 @@ The prefix pattern should be:
 1. lowercase letters abbreviating the token class name
 1. a hyphen (`-`)
 
+Token prefixes must **not** be configurable. These are static prefixes meant for
+standard identification, and detection. The ability to configure the
+[PAT prefix](../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
+contravenes the above guidance, but is allowed as pre-existing behavior.
+No other tokens should have configurable token prefixes.
+
 Add the new prefix to:
 
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
@@ -1749,6 +1755,11 @@ Add the new prefix to:
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
 - [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../security/tokens/_index.md) documentation
+
+Note that the token prefix is distinct to the proposed
+[instance token prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/388379),
+which is an optional, extra prefix that GitLab instances can prepend in front of
+the token prefix.
 
 ### Examples
 

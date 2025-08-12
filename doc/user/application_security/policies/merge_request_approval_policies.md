@@ -778,6 +778,20 @@ By using the **False Positive** attribute, similarly, you can ignore findings de
 
 The **False Positive** attribute only applies to findings detected by our Vulnerability Extraction Tool for SAST results.
 
+### Policy evaluation and vulnerability state changes
+
+When a user changes the status of a vulnerability (for example, dismisses the vulnerability
+in the vulnerability details page), GitLab does not automatically reevaluate merge request
+approval policies due to performance reasons. To retrieve updated data from vulnerability
+reports, update your merge request or rerun the related pipelines.
+
+This behavior ensures optimal system performance and maintains security policy
+enforcement. The policy evaluation occurs during the next pipeline run or when the
+merge request is updated, but not immediately when the vulnerability state changes.
+
+To reflect vulnerability state changes in the policies immediately
+manually run the pipeline or push a new commit to the merge request.
+
 ## Troubleshooting
 
 ### Merge request rules widget shows a merge request approval policy is invalid or duplicated

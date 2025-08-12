@@ -1,4 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import FieldPresenter from '~/glql/components/presenters/field.vue';
 import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
@@ -8,22 +9,17 @@ import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import LinkPresenter from '~/glql/components/presenters/link.vue';
-import ListPresenter from '~/glql/components/presenters/list.vue';
 import MilestonePresenter from '~/glql/components/presenters/milestone.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
-import TablePresenter from '~/glql/components/presenters/table.vue';
 import TextPresenter from '~/glql/components/presenters/text.vue';
 import TimePresenter from '~/glql/components/presenters/time.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import NullPresenter from '~/glql/components/presenters/null.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import TypePresenter from '~/glql/components/presenters/type.vue';
-import Presenter, { componentForField } from '~/glql/core/presenter';
 import {
   MOCK_EPIC,
-  MOCK_FIELDS,
   MOCK_ISSUE,
-  MOCK_ISSUES,
   MOCK_LABELS,
   MOCK_MILESTONE,
   MOCK_USER,
@@ -36,14 +32,24 @@ import {
   MOCK_STATUS,
   MOCK_WORK_ITEM_TYPE,
   MOCK_DIMENSION,
-} from '../mock_data';
+} from '../../mock_data';
 
 const MOCK_LINK = { title: 'title', webUrl: 'url' };
 
-describe('componentForField', () => {
+describe('FieldPresenter', () => {
+  let wrapper;
+  const createWrapper = (field, fieldKey) => {
+    wrapper = mountExtended(FieldPresenter, {
+      propsData: { item: field, fieldKey },
+    });
+  };
+
+  const propsOrAttributes = (component, propOrAttribute) => {
+    return component.props(propOrAttribute) || component.attributes(propOrAttribute);
+  };
+
   it.each`
     dataType       | field                   | presenter              | presenterName
-    ${'null'}      | ${null}                 | ${NullPresenter}       | ${'NullPresenter'}
     ${'string'}    | ${'text'}               | ${TextPresenter}       | ${'TextPresenter'}
     ${'number'}    | ${100}                  | ${TextPresenter}       | ${'TextPresenter'}
     ${'boolean'}   | ${true}                 | ${BoolPresenter}       | ${'BoolPresenter'}
@@ -64,47 +70,40 @@ describe('componentForField', () => {
     ${'status'}    | ${MOCK_STATUS}          | ${StatusPresenter}     | ${'StatusPresenter'}
     ${'type'}      | ${MOCK_WORK_ITEM_TYPE}  | ${TypePresenter}       | ${'TypePresenter'}
     ${'dimension'} | ${MOCK_DIMENSION}       | ${DimensionPresenter}  | ${'DimensionPresenter'}
-  `('returns $presenterName for data type: $dataType', ({ field, presenter }) => {
-    expect(componentForField(field)).toBe(presenter);
+  `('renders $presenterName for data type: $dataType', ({ field, presenter }) => {
+    createWrapper({ key: field }, 'key');
+
+    const component = wrapper.findComponent(presenter);
+
+    expect(propsOrAttributes(component, 'item')).toBeDefined();
+    expect(propsOrAttributes(component, 'data')).toBeDefined();
+    expect(propsOrAttributes(component, 'field-key')).toBe('key');
   });
 
-  describe('if field name is passed', () => {
+  it('renders NullPresenter for null data', () => {
+    createWrapper({ key: null }, 'key');
+    const component = wrapper.findComponent(NullPresenter);
+
+    expect(component.exists()).toBe(true);
+    expect(propsOrAttributes(component, 'data')).not.toBeDefined();
+  });
+
+  describe('if fieldKey is passed', () => {
     it.each`
-      fieldName         | field            | presenter          | presenterName
+      fieldKey          | field            | presenter          | presenterName
       ${'health'}       | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
       ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
       ${'state'}        | ${'opened'}      | ${StatePresenter}  | ${'StatePresenter'}
       ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}   | ${'HtmlPresenter'}
       ${'type'}         | ${'TASK'}        | ${TypePresenter}   | ${'TypePresenter'}
-    `('returns $presenterName for field name: $fieldName', ({ fieldName, field, presenter }) => {
-      expect(componentForField(field, fieldName)).toBe(presenter);
+    `('renders $presenterName for field key: $fieldKey', ({ fieldKey, field, presenter }) => {
+      createWrapper({ [fieldKey]: field }, fieldKey);
+
+      const component = wrapper.findComponent(presenter);
+
+      expect(propsOrAttributes(component, 'item')).toBeDefined();
+      expect(propsOrAttributes(component, 'data')).toBe(field);
+      expect(propsOrAttributes(component, 'field-key')).toBe(fieldKey);
     });
   });
-});
-
-describe('Presenter', () => {
-  it.each`
-    displayType      | additionalProps       | PresenterComponent
-    ${'list'}        | ${{ listType: 'ul' }} | ${ListPresenter}
-    ${'orderedList'} | ${{ listType: 'ol' }} | ${ListPresenter}
-    ${'table'}       | ${{}}                 | ${TablePresenter}
-  `(
-    'inits appropriate presenter component for displayType: $displayType with additionalProps: $additionalProps',
-    async ({ displayType, additionalProps, PresenterComponent }) => {
-      const element = document.createElement('div');
-      element.innerHTML =
-        '<pre><code data-canonical-lang="glql">assignee = currentUser()</code></pre>';
-      const data = MOCK_ISSUES;
-      const config = { display: displayType, fields: MOCK_FIELDS };
-
-      const { component } = await new Presenter().init({ data, config });
-      const wrapper = mountExtended(component);
-      const presenter = wrapper.findComponent(PresenterComponent);
-
-      expect(presenter.exists()).toBe(true);
-      expect(presenter.props('data')).toBe(data);
-      expect(presenter.props('config')).toBe(config);
-      expect(presenter.props()).toMatchObject(additionalProps);
-    },
-  );
 });

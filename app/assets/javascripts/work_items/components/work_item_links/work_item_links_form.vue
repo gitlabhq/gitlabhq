@@ -404,10 +404,10 @@ export default {
     projectInputLabel: __('Project'),
     groupInputLabel: __('Group'),
     addChildErrorMessage: s__(
-      'WorkItem|Something went wrong when trying to add a child. Please try again.',
+      'WorkItem|Something went wrong when trying to add a child item. Please try again.',
     ),
     createChildErrorMessage: s__(
-      'WorkItem|Something went wrong when trying to create a child. Please try again.',
+      'WorkItem|Something went wrong when trying to create a child item. Please try again.',
     ),
     titleInputPlaceholder: s__('WorkItem|Add a title'),
     projectInputPlaceholder: s__('WorkItem|Select a project'),

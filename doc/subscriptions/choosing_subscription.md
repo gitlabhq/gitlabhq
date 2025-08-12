@@ -51,7 +51,7 @@ Duo Chat, and more.
 - [Enterprise Agile Planning](manage_subscription.md#enterprise-agile-planning): Increase collaboration between
 technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
 measure impact with Value Stream Analytics, and gain visibility into software development velocity.
-- [Storage](gitlab_com/_index.md#purchase-more-storage): Buy more storage when you exceed your
+- [Storage](../user/storage_usage_quotas.md#purchase-more-storage): Buy more storage when you exceed your
 free 10 GiB storage quota.
 - [Compute minutes](gitlab_com/compute_minutes.md): Buy additional compute minutes when your
 plan exceeds its allocated amount and you need to continue running automated
