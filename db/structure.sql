@@ -8922,7 +8922,7 @@ CREATE TABLE application_settings (
     group_download_export_limit integer DEFAULT 1 NOT NULL,
     maintenance_mode boolean DEFAULT false NOT NULL,
     maintenance_mode_message text,
-    wiki_page_max_content_bytes bigint DEFAULT 52428800 NOT NULL,
+    wiki_page_max_content_bytes bigint DEFAULT 5242880 NOT NULL,
     enforce_namespace_storage_limit boolean DEFAULT false NOT NULL,
     container_registry_delete_tags_service_timeout integer DEFAULT 250 NOT NULL,
     kroki_url character varying,

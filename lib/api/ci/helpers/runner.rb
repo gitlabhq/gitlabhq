@@ -122,6 +122,7 @@ module API
 
           forbidden! unless current_job
           forbidden! unless can?(current_user, :read_build, current_job)
+          forbidden! unless current_authenticated_job
         end
 
         # current_job is queried by URL :id param with no authentication

@@ -140,7 +140,7 @@ Example response:
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
-  "wiki_page_max_content_bytes": 52428800,
+  "wiki_page_max_content_bytes": 5242880,
   "require_admin_approval_after_user_signup": false,
   "require_personal_access_token_expiry": true,
   "personal_access_token_prefix": "glpat-",
@@ -328,7 +328,7 @@ Example response:
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
-  "wiki_page_max_content_bytes": 52428800,
+  "wiki_page_max_content_bytes": 5242880,
   "require_admin_approval_after_user_signup": false,
   "require_personal_access_token_expiry": true,
   "personal_access_token_prefix": "glpat-",
@@ -786,7 +786,7 @@ to configure other related settings. These requirements are
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `vscode_extension_marketplace`           | hash             | no                                   | Settings for VS Code Extension Marketplace. Used by [Web IDE](../user/project/web_ide/_index.md) and [Workspaces](../user/workspace/_index.md). |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
-| `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
+| `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 5242880 Bytes (5 MB). The minimum value is 1024 bytes. |
 | `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous direct transfer batch exports to process. |
 | `concurrent_relation_batch_export_limit` | integer          | no                                   | Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6. |
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |

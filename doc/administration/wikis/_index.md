@@ -17,7 +17,7 @@ Adjust the wiki settings of your GitLab instance.
 ## Wiki page content size limit
 
 You can set a maximum content size limit for wiki pages. This limit can prevent
-abuse of the feature. The default value is **52428800 Bytes** (50 MB).
+abuse of the feature. The default value is **5242880 Bytes** (5 MB).
 
 ### How does it work?
 
@@ -56,7 +56,7 @@ To configure this setting through the Rails console:
 1. Update the wiki page maximum content size:
 
    ```ruby
-   ApplicationSetting.first.update!(wiki_page_max_content_bytes: 50.megabytes)
+   ApplicationSetting.first.update!(wiki_page_max_content_bytes: 5.megabytes)
    ```
 
 To retrieve the current value, start the Rails console and run:
@@ -71,7 +71,7 @@ To set the wiki page size limit through the Application Settings API, use a comm
 as you would to [update any other setting](../../api/settings.md#update-application-settings):
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=52428800"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=5242880"
 ```
 
 You can also use the API to [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings):
