@@ -105,7 +105,11 @@ export default {
       };
     },
     isPackageTypeConan() {
-      return this.packageEntity.packageType === PACKAGE_TYPE_CONAN;
+      return (
+        this.packageEntity.packageType === PACKAGE_TYPE_CONAN &&
+        this.packageEntity.metadata?.packageChannel !== '_' &&
+        this.packageEntity.metadata?.packageUsername !== '_'
+      );
     },
   },
   i18n: {

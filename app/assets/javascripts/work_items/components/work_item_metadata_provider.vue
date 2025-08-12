@@ -27,8 +27,13 @@ export default {
       registerPath: computed(() => this.metadata.register),
       reportAbusePath: computed(() => this.metadata.reportAbuse),
       signInPath: computed(() => this.metadata.signIn),
+      newWorkItemEmailAddress: computed(() => this.metadata.newWorkItemEmailAddress),
+      canCreateWorkItem: computed(() => this.metadata.createWorkItem),
       issuesSettings: computed(() => this.metadata?.issuesSettings),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
+      emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
+      markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
+      quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       metadataLoading: computed(() => this.$apollo.queries.metadata.loading),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
@@ -57,6 +62,7 @@ export default {
         return {
           ...(namespace.licensedFeatures || {}),
           ...(namespace.linkPaths || {}),
+          ...(namespace.userPermissions || {}),
         };
       },
     },

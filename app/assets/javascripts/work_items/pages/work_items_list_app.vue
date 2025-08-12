@@ -100,6 +100,7 @@ import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
+import WorkItemByEmail from '../components/work_item_by_email.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -153,12 +154,14 @@ export default {
     LocalBoard,
     WorkItemListHeading,
     WorkItemUserPreferences,
+    WorkItemByEmail,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
+    'canCreateWorkItem',
     'hasBlockedIssuesFeature',
     'hasEpicsFeature',
     'hasGroupBulkEditFeature',
@@ -173,6 +176,7 @@ export default {
     'isSignedIn',
     'showNewWorkItem',
     'workItemType',
+    'newWorkItemEmailAddress',
     'canReadCrmOrganization',
     'hasStatusFeature',
     'canReadCrmContact',
@@ -676,6 +680,9 @@ export default {
     },
     showPageSizeSelector() {
       return this.workItems.length > 0;
+    },
+    showWorkItemByEmail() {
+      return this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress;
     },
     sortOptions() {
       return getSortOptions({
@@ -1273,6 +1280,12 @@ export default {
         </template>
       </issuable-list>
     </template>
+    <work-item-by-email
+      v-if="showWorkItemByEmail"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
   </div>
 
   <div v-else>
@@ -1288,5 +1301,11 @@ export default {
         </template>
       </empty-state-without-any-issues>
     </slot>
+    <work-item-by-email
+      v-if="showWorkItemByEmail"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
   </div>
 </template>

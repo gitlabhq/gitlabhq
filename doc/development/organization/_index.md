@@ -104,9 +104,29 @@ The actual name of the foreign key can be anything but it must reference a row
 in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable.
 
 Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
-the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
+the table has a check constraint that correctly ensures exactly one of the keys must be non-nullable for a row in the table.
 See [`NOT NULL` constraints for multiple columns](../database/not_null_constraints.md#not-null-constraints-for-multiple-columns)
-for instructions on creating these constraints.
+for instructions on creating these constraints. The reasoning for adding sharding keys, and which keys to add to a table/row, goes like this:
+
+- In order to move organizations across cells, we want `organization_id` on all rows of all tables
+- But `organization_id` on rows that are actually owned by a top-level group (or its subgroups or projects) makes top-level group
+  transfer inefficient (due to `organization_id` rewrites) to the point of being impractical
+- Compromise: Add `organization_id` or `namespace_id` to all rows of all tables
+- But `namespace_id` on rows of tables that are actually owned by projects makes project transfer (and certain subgroup transfers) inefficient
+  (due to `namespace_id` rewrites) to the point of being impractical
+- Compromise: Add `organization_id` or `namespace_id` or `project_id` to all rows of all tables, which ever is the most specific
+
+#### Conclusions
+
+There is no benefit of filling `namespace_id` if a row is also owned by `project_id`
+
+There is a performance impact on group/project transfer to filling `namespace_id` if a row is also owned by `project_id`.
+Though if your table is small then the performance impact is small.
+It can be confusing to have 2 sharding key values on some rows.
+
+#### Guideline
+
+Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large tables.
 
 The following are examples of valid sharding keys:
 

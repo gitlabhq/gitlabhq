@@ -23,6 +23,13 @@ before attempting to use these tools.
 - [`gitlabsos`](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
   gathers information and recent logs from a Linux package or Docker-based GitLab instance
   and its operating system.
+
+  The Linux package and Docker image for GitLab versions 18.3 and up bundle `gitlabsos`:
+
+    ```shell
+    sudo gitlabsos
+    ```
+
 - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/)
   gathers k8s cluster configuration and recent logs from a GitLab Helm chart deployment.
 - [`gitlab:db:sos`](../raketasks/maintenance.md#collect-information-and-statistics-about-the-database)
@@ -38,6 +45,10 @@ The [`strace` zine](https://wizardzines.com/zines/strace/) is recommended for co
 
 [1](https://gitlab.com/gitlab-com/support/toolbox/gitlabrb_sanitizer/) outputs a copy of `/etc/gitlab/gitlab.rb` content with sensitive values redacted.
 
+The Linux package and Docker image for GitLab versions 18.3 and up
+bundle `gitlabrb_sanitizer` with `gitlabsos`. `gitlabsos` automatically uses it to
+sanitize the configuration.
+
 ## `fast-stats`
 
 [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#fast-stats)
@@ -45,6 +56,12 @@ summarizes errors and resource-intensive usage statistics quickly,
 to help debug performance and configuration problems.
 `fast-stats` is particularly useful to parse and compare large volumes of logs,
 or to start troubleshooting unknown problems.
+
+The Linux package and Docker image for GitLab versions 18.3 and up include `fast-stats`:
+
+```shell
+/opt/gitlab/embedded/bin/fast-stats
+```
 
 ## `greenhat`
 

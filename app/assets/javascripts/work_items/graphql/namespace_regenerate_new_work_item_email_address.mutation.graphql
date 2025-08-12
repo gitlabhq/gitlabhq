@@ -1,0 +1,13 @@
+mutation NamespaceRegenerateNewWorkItemEmailAddress($fullPath: ID!) {
+  namespacesRegenerateNewWorkItemEmailAddress(input: { fullPath: $fullPath }) {
+    namespace {
+      id
+      linkPaths {
+        ... on ProjectNamespaceLinks {
+          newWorkItemEmailAddress
+        }
+      }
+    }
+    errors
+  }
+}
