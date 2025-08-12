@@ -4,14 +4,18 @@ class ChatName < ApplicationRecord
   include Gitlab::EncryptedAttribute
 
   LAST_USED_AT_INTERVAL = 1.hour
+  MAX_PARAM_LENGTH = 8192
 
   belongs_to :user
 
   validates :user, presence: true
-  validates :team_id, presence: true
-  validates :chat_id, presence: true
+  validates :team_id, presence: true, length: { maximum: MAX_PARAM_LENGTH }
+  validates :team_domain, length: { maximum: MAX_PARAM_LENGTH }
+  validates :chat_id, presence: true, length: { maximum: MAX_PARAM_LENGTH }
+  validates :chat_name, length: { maximum: MAX_PARAM_LENGTH }
 
   validates :chat_id, uniqueness: { scope: :team_id }
+  validates :token, length: { maximum: MAX_PARAM_LENGTH }
 
   attr_encrypted :token,
     mode: :per_attribute_iv,

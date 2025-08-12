@@ -12,6 +12,11 @@ RSpec.describe ChatName, feature_category: :integrations do
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to validate_presence_of(:team_id) }
   it { is_expected.to validate_presence_of(:chat_id) }
+  it { is_expected.to validate_length_of(:token).is_at_most(described_class::MAX_PARAM_LENGTH) }
+  it { is_expected.to validate_length_of(:team_id).is_at_most(described_class::MAX_PARAM_LENGTH) }
+  it { is_expected.to validate_length_of(:team_domain).is_at_most(described_class::MAX_PARAM_LENGTH) }
+  it { is_expected.to validate_length_of(:chat_id).is_at_most(described_class::MAX_PARAM_LENGTH) }
+  it { is_expected.to validate_length_of(:chat_name).is_at_most(described_class::MAX_PARAM_LENGTH) }
 
   it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:team_id) }
 
