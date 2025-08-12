@@ -2,6 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import { createAlert } from '~/alert';
+import { encodeRepositoryPath } from './utils/url_utility';
 import { COMMIT_BATCH_SIZE, I18N_COMMIT_DATA_FETCH_ERROR } from './constants';
 
 let requestedOffsets = [];
@@ -33,14 +34,14 @@ const fetchData = (projectPath, path, ref, offset, refType) => {
   fetchedBatches.push(offset);
 
   // using encodeURIComponent() for ref to allow # as a part of branch name
-  // using encodeURI() for path to correctly display subdirectories
+  // using custom encodeRepositoryPath() for path to correctly handle directories with special characters
   const url = joinPaths(
     gon.relative_url_root || '/',
     projectPath,
     '/-/refs/',
     encodeURIComponent(ref),
     '/logs_tree/',
-    encodeURI(removeLeadingSlash(path)),
+    encodeRepositoryPath(removeLeadingSlash(path)),
   );
 
   return axios

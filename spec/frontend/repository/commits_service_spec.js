@@ -56,6 +56,15 @@ describe('commits service', () => {
     expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
   });
 
+  it('encodes the # character in path', async () => {
+    const pathWithHash = 'directory#with#hash/';
+    const encodedUrl = `/my-project/-/refs/main/logs_tree/directory%23with%23hash/`;
+
+    await requestCommits(1, 'my-project', pathWithHash, 'main');
+
+    expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
+  });
+
   it('calls axios get once per batch', async () => {
     await Promise.all([requestCommits(0), requestCommits(1), requestCommits(23)]);
 
