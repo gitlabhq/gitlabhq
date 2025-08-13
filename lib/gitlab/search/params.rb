@@ -33,7 +33,7 @@ module Gitlab
           # like @query_string
           #
           # This takes precedence over values in @raw_params
-          public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+          public_send(key) # rubocop:disable GitlabSecurity/PublicSend -- metaprogramming is needed
         else
           raw_params[key]
         end
@@ -67,14 +67,6 @@ module Gitlab
         abuse_detection.validate if detect_abuse?
 
         super
-      end
-
-      def valid?
-        if detect_abuse?
-          abuse_detection.valid? && super
-        else
-          super
-        end
       end
 
       private
