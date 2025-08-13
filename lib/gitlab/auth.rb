@@ -105,6 +105,8 @@ module Gitlab
 
     CI_JOB_USER = 'gitlab-ci-token'
 
+    extend Gitlab::InternalEventsTracking
+
     class << self
       prepend_mod_with('Gitlab::Auth') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -259,6 +261,16 @@ module Gitlab
 
         user = find_with_user_password(login, password)
         return unless user
+
+        if user.ldap_user? &&
+            Gitlab::CurrentSettings.password_authentication_enabled_for_git? &&
+            Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
+          track_internal_event(
+            'authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled',
+            user: user,
+            category: name
+          )
+        end
 
         verifier = TwoFactorAuthVerifier.new(user)
 

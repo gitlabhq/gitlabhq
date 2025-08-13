@@ -235,3 +235,15 @@ release-environments-notification-qa-failure:
       artifacts: false
     - job: release-environments-deploy-env
   when: on_failure
+
+release-environments-labeling-merge-request:
+  stage: finish
+  script:
+    - ruby scripts/release_environment/update_merge_requests_label.rb
+  needs:
+    - job: release-environments-deploy # To ensure this job starts as soon as deployment succeeds
+      artifacts: false
+    - project: gitlab-com/gl-infra/release-environments # To ensure this job can access $DEPLOYMENT_ID
+      job: track-deployment-start
+      artifacts: true
+  allow_failure: true

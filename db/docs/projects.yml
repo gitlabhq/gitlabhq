@@ -28,5 +28,5 @@ schema_inconsistencies:
   object_name: idx_projects_id_created_at_disable_overriding_approvers_false
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
 sharding_key:
-  namespace_id: namespaces
+  organization_id: organizations
 table_size: large

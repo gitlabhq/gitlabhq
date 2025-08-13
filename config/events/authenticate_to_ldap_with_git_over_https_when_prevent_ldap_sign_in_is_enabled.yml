@@ -1,0 +1,18 @@
+---
+description: >-
+  Tracks the number of times a user authenticates with Git over HTTP(S) using LDAP credentials, when the prevent_ldap_sign_in? admin setting is
+  enabled.
+internal_events: true
+status: active
+action: authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled
+identifiers:
+- user
+product_group: authentication
+product_categories:
+- system_access
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199886
+tiers:
+- free
+- premium
+- ultimate

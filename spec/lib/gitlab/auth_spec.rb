@@ -891,6 +891,77 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
+    describe '#user_with_password_for_git' do
+      let_it_be(:user) { create(:omniauth_user, :ldap) }
+      let_it_be(:ldap_username) { user.username }
+      let_it_be(:password) { user.password }
+
+      subject(:track_event) { gl_auth.find_for_git_client(ldap_username, password, project: nil, request: request) }
+
+      context 'when #password_authentication_enabled_for_git? is false' do
+        before do
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(false)
+        end
+
+        context 'when prevent_ldap_sign_in is disabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(false) # default
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+
+        context 'when prevent_ldap_sign_in is enabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(true)
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+      end
+
+      context 'when #password_authentication_enabled_for_git? is true' do
+        before do
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
+        end
+
+        context 'when prevent_ldap_sign_in is disabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(false) # default
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+
+        context 'when prevent_ldap_sign_in is enabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(true)
+          end
+
+          it 'tracks the internal event & increments its metrics' do
+            expect { track_event }
+              .to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+                .with(user: user, project: nil, namespace: nil)
+              .and increment_usage_metrics(
+                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_monthly',
+                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_weekly'
+              )
+          end
+        end
+      end
+    end
+
     it 'returns double nil for invalid credentials' do
       login = 'foo'
 
