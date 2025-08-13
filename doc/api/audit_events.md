@@ -40,6 +40,8 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/au
 
 {{< /history >}}
 
+Retrieve all available instance audit events, limited to a maximum of 30 days for each query.
+
 ```plaintext
 GET /audit_events
 ```

@@ -9,7 +9,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
-import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import { CREATION_CONTEXT_SUPER_SIDEBAR, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createNewMenuGroups, createNewMenuProjects } from '../mock_data';
 
@@ -111,10 +111,12 @@ describe('CreateMenu component', () => {
         findCreateWorkItemModalTrigger().vm.$emit('action');
         await nextTick();
 
-        expect(findCreateWorkItemModal().exists()).toBe(true);
-        expect(findCreateWorkItemModal().props('isGroup')).toBe(false);
-        expect(findCreateWorkItemModal().props('visible')).toBe(true);
-        expect(findCreateWorkItemModal().props('hideButton')).toBe(true);
+        expect(findCreateWorkItemModal().props()).toMatchObject({
+          creationContext: CREATION_CONTEXT_SUPER_SIDEBAR,
+          hideButton: true,
+          isGroup: false,
+          visible: true,
+        });
       });
 
       it('hides modal when hideModal event is emitted', async () => {

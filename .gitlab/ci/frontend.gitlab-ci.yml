@@ -681,3 +681,31 @@ compile-storybook:
   script:
     - yarn_install_script_storybook
     - yarn run storybook:build
+
+test-storybook:
+  extends:
+    - .frontend-test-base
+    - .storybook-yarn-cache
+    - .repo-from-artifacts
+    - .frontend:rules:test-storybook
+  stage: test-frontend
+  needs:
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+    - !reference [.with-graphql-schema-dump-needs, needs]
+  allow_failure: true
+  artifacts:
+    name: storybook-test-results
+    access: developer
+    expire_in: 31d
+    when: always
+    paths:
+      - storybook-results.json
+  script:
+    - yarn_install_script_storybook
+    - yarn run storybook:start &
+    - STORYBOOK_PID=$!
+    - timeout 60 bash -c 'until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done'  # Wait for Storybook to start
+    - yarn run storybook:dev:test
+    - kill $STORYBOOK_PID || true

@@ -18,6 +18,7 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TASK,
@@ -30,6 +31,7 @@ const CURSOR_GRAB = 'gl-cursor-grab';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   directives: {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
@@ -386,6 +388,7 @@ export default {
       </div>
     </div>
     <create-work-item-modal
+      :creation-context="$options.CREATION_CONTEXT_DESCRIPTION_CHECKLIST"
       :description="childDescription"
       :full-path="fullPath"
       hide-button

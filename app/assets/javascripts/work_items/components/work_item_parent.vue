@@ -237,14 +237,12 @@ export default {
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
           this.$emit('updateWidgetDraft', {
-            fullPath: this.fullPath,
             parent: this.isSelectedParentAvailable
               ? {
                   ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
                   webUrl: this.parentWebUrl ?? null,
                 }
               : null,
-            workItemType: this.workItemType,
           });
 
           this.searchStarted = false;

@@ -37,6 +37,10 @@ export default {
       required: false,
       default: false,
     },
+    creationContext: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: false,
@@ -101,6 +105,7 @@ export default {
   data() {
     const draftWorkItemType = getDraftWorkItemType({
       fullPath: this.fullPath,
+      context: this.creationContext,
       relatedItemId: this.relatedItem?.id,
     })?.name;
 
@@ -331,6 +336,7 @@ export default {
       <create-work-item
         :allowed-work-item-types="allowedWorkItemTypes"
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
+        :creation-context="creationContext"
         :description="description"
         :full-path="fullPath"
         hide-form-title

@@ -103,7 +103,6 @@ export default {
         :value="value"
         placeholder="#RRGGBB"
         :state="state"
-        :aria-labelledby="label"
         aria-describedby="color-picker-hint"
         @input="handleColorChange"
       >

@@ -1537,6 +1537,22 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.frontend:rules:test-storybook:
+  rules:
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    # If the MR isn't approved, only run when jest predictive jobs would
+    - <<: *if-merge-request-not-approved
+      changes:
+        - '{,ee/}app/**/*.vue'
+        - '{,ee/}app/**/*.stories.js'
+    - <<: *if-default-refs
+      changes:
+        - '{,ee/}app/**/*.vue'
+        - '{,ee/}app/**/*.stories.js'
+
 .frontend:rules:upload-frontend-fixtures:
   rules:
     # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable

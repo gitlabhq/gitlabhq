@@ -15355,6 +15355,7 @@ CREATE TABLE gpg_signatures (
     author_email text,
     committer_email text,
     CONSTRAINT check_0ce2b9f622 CHECK ((char_length(committer_email) <= 255)),
+    CONSTRAINT check_271c7cad6d CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d113461ed1 CHECK ((char_length(author_email) <= 255))
 );
 
@@ -30172,9 +30173,6 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE epic_issues
     ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE gpg_signatures
-    ADD CONSTRAINT check_271c7cad6d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;

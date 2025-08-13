@@ -21,6 +21,7 @@ import WorkItemProjectsListbox from '~/work_items/components/work_item_links/wor
 import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_namespace_listbox.vue';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -137,6 +138,7 @@ describe('Create work item component', () => {
     wrapper = shallowMountExtended(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
+        creationContext: CREATION_CONTEXT_LIST_ROUTE,
         fullPath: 'full-path',
         projectNamespaceFullPath: 'full-path',
         preselectedWorkItemType,
@@ -205,8 +207,6 @@ describe('Create work item component', () => {
     it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
       jest.spyOn(mockApollo.defaultClient, 'mutate');
       const mockInput = {
-        workItemType: 'Issue',
-        fullPath: 'full-path',
         assignees: [
           {
             __typename: 'CurrentUser',
@@ -224,8 +224,11 @@ describe('Create work item component', () => {
         mutation: updateNewWorkItemMutation,
         variables: {
           input: {
-            ...mockInput,
+            fullPath: 'full-path',
+            context: CREATION_CONTEXT_LIST_ROUTE,
+            workItemType: 'Epic',
             relatedItemId: mockRelatedItem.id,
+            ...mockInput,
           },
         },
       });
@@ -249,8 +252,8 @@ describe('Create work item component', () => {
     it('Default', async () => {
       createComponent();
       await waitForPromises();
-      const typeSpecificAutosaveKey = `new-full-path-epic-draft`;
-      const sharedWidgetsAutosaveKey = 'new-full-path-widgets-draft';
+      const typeSpecificAutosaveKey = 'new-full-path-list-route-epic-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-list-route-widgets-draft';
 
       findCancelButton().vm.$emit('click');
       await nextTick();
@@ -291,6 +294,7 @@ describe('Create work item component', () => {
 
         expect(setNewWorkItemCache).toHaveBeenCalledWith({
           fullPath: 'full-path',
+          context: CREATION_CONTEXT_LIST_ROUTE,
           widgetDefinitions: expect.any(Array),
           workItemType: expectedWorkItemTypeData.name,
           workItemTypeId: expectedWorkItemTypeData.id,
@@ -438,6 +442,7 @@ describe('Create work item component', () => {
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
         fullPath: 'full-path',
+        context: CREATION_CONTEXT_LIST_ROUTE,
         widgetDefinitions: expect.any(Array),
         workItemType: mockId,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
@@ -458,6 +463,7 @@ describe('Create work item component', () => {
 
       expect(updateDraftWorkItemType).toHaveBeenCalledWith({
         fullPath: 'full-path',
+        context: CREATION_CONTEXT_LIST_ROUTE,
         relatedItemId: mockRelatedItem.id,
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
@@ -511,8 +517,8 @@ describe('Create work item component', () => {
     });
 
     it('clears autosave draft on successful mutation', async () => {
-      const typeSpecificAutosaveKey = 'new-full-path-epic-related-22-draft';
-      const sharedWidgetsAutosaveKey = 'new-full-path-related-22-widgets-draft';
+      const typeSpecificAutosaveKey = 'new-full-path-list-route-related-id-22-epic-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-list-route-related-id-22-widgets-draft';
       updateDraft(typeSpecificAutosaveKey, JSON.stringify({ foo: 'bar' }));
       updateDraft(sharedWidgetsAutosaveKey, JSON.stringify({ foo: 'bar' }));
       createComponent({
@@ -1017,6 +1023,7 @@ describe('Create work item component', () => {
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
         fullPath: expect.anything(),
+        context: CREATION_CONTEXT_LIST_ROUTE,
         widgetDefinitions: expect.anything(),
         workItemType: expect.anything(),
         workItemTypeId: expect.anything(),

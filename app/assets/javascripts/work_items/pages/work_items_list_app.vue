@@ -102,6 +102,7 @@ import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
+  CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   STATE_CLOSED,
@@ -137,6 +138,7 @@ const statusMap = {
 };
 
 export default {
+  CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   components: {
     GlLoadingIcon,
@@ -1164,6 +1166,7 @@ export default {
               v-if="showNewWorkItem"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
@@ -1194,6 +1197,7 @@ export default {
                 v-if="showNewWorkItem"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
+                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
@@ -1280,6 +1284,7 @@ export default {
       <empty-state-without-any-issues>
         <template #new-issue-button>
           <create-work-item-modal
+            :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
             :full-path="rootPageFullPath"
             :is-group="isGroup"
             :preselected-work-item-type="preselectedWorkItemType"

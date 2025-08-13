@@ -311,13 +311,7 @@ describe('WorkItemLabels component', () => {
     await nextTick();
 
     expect(wrapper.emitted('updateWidgetDraft')).toEqual([
-      [
-        {
-          workItemType: mockWorkItemType,
-          fullPath: mockFullPath,
-          labels: [mockLabels[1], mockLabels[2]],
-        },
-      ],
+      [{ labels: [mockLabels[1], mockLabels[2]] }],
     ]);
     expect(successRemoveLabelWorkItemMutationHandler).not.toHaveBeenCalled();
   });

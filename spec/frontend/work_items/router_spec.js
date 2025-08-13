@@ -148,7 +148,7 @@ describe('Work items router', () => {
   it(`renders create work item page on /issues/new route work item type set via localStorage draft`, async () => {
     localStorage.setItem(
       // full-path in router is set to `/work_item
-      'autosave/new-/work_item-widgets-draft',
+      'autosave/new-/work_item-new-route-widgets-draft',
       JSON.stringify({ TYPE: { name: 'Task' } }),
     );
     await createComponent(`/issues/new`);

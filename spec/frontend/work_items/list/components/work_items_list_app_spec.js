@@ -60,6 +60,7 @@ import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_i
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
@@ -1382,6 +1383,13 @@ describeSkipVue3(skipReason, () => {
       await waitForPromises();
 
       expect(findCreateWorkItemModal().exists()).toBe(showNewWorkItem);
+    });
+
+    it('renders with "list route" creation context', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
     });
 
     describe('allowedWorkItemTypes', () => {

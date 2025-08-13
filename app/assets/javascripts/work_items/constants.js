@@ -3,6 +3,12 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 export const BULK_EDIT_NO_VALUE = 'no-value';
 
+export const CREATION_CONTEXT_DESCRIPTION_CHECKLIST = 'description-checklist';
+export const CREATION_CONTEXT_LIST_ROUTE = 'list-route';
+export const CREATION_CONTEXT_NEW_ROUTE = 'new-route';
+export const CREATION_CONTEXT_RELATED_ITEM = 'related-item';
+export const CREATION_CONTEXT_SUPER_SIDEBAR = 'super-sidebar';
+
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
 

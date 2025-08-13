@@ -17,6 +17,7 @@ import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
+  CREATION_CONTEXT_RELATED_ITEM,
   STATE_OPEN,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -691,12 +692,15 @@ describe('WorkItemActions component', () => {
     it('passes related item data to create work item modal', () => {
       createComponent();
 
-      expect(findCreateWorkItemModal().props('namespaceFullName')).toBe('GitLab.org / GitLab Test');
-      expect(findCreateWorkItemModal().props('relatedItem')).toEqual({
-        id: 'gid://gitlab/WorkItem/1',
-        reference: 'gitlab-org/gitlab-test#1',
-        type: 'Task',
-        webUrl: 'gitlab-org/gitlab-test/-/work_items/1',
+      expect(findCreateWorkItemModal().props()).toMatchObject({
+        creationContext: CREATION_CONTEXT_RELATED_ITEM,
+        namespaceFullName: 'GitLab.org / GitLab Test',
+        relatedItem: {
+          id: 'gid://gitlab/WorkItem/1',
+          reference: 'gitlab-org/gitlab-test#1',
+          type: 'Task',
+          webUrl: 'gitlab-org/gitlab-test/-/work_items/1',
+        },
       });
     });
 

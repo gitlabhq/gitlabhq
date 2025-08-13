@@ -1,6 +1,7 @@
 import { map } from 'lodash';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WIDGET_TYPE_LINKED_ITEMS,
   NEW_WORK_ITEM_IID,
   STATE_CLOSED,
@@ -7224,6 +7225,7 @@ export const mockCreateWorkItemDraftData = {
 
 export const mockNewWorkItemCache = {
   fullPath: 'gitlab-org',
+  context: CREATION_CONTEXT_LIST_ROUTE,
   widgetDefinitions: [
     {
       __typename: 'WorkItemWidgetDefinitionGeneric',
@@ -7308,7 +7310,7 @@ export const mockNewWorkItemCache = {
       type: WIDGET_TYPE_CUSTOM_FIELDS,
     },
   ],
-  workItemType: 'EPIC',
+  workItemType: 'Epic',
   workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
   workItemTypeIconName: 'issue-type-epic',
 };

@@ -1,4 +1,4 @@
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp, kebabCase } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -457,41 +457,38 @@ export const getAutosaveKeyQueryParamString = () => {
   return queryParams.toString();
 };
 
-export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType, relatedItemId }) => {
-  if (!workItemType || !fullPath) return '';
-
+const getBaseNewWorkItemAutoSaveKey = ({ fullPath, context, relatedItemId }) => {
   const relatedId = getIdFromGraphQLId(relatedItemId);
   const queryParamString = getAutosaveKeyQueryParamString();
-  let initialKey = `new-${fullPath}-${workItemType.toLowerCase()}`;
+
+  let baseKey = `new-${fullPath}-${context}`;
 
   if (relatedId) {
-    initialKey = `${initialKey}-related-${relatedId}`;
+    baseKey += `-related-id-${relatedId}`;
   }
-
   if (queryParamString) {
-    initialKey = `${initialKey}-${queryParamString}`;
+    baseKey += `-${queryParamString}`;
   }
 
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  return `${initialKey}-draft`;
+  return baseKey;
 };
 
-export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, relatedItemId }) => {
-  if (!fullPath) return '';
-
-  const relatedId = getIdFromGraphQLId(relatedItemId);
-  const queryParamString = getAutosaveKeyQueryParamString();
-  let initialKey = `new-${fullPath}`;
-
-  if (relatedId) {
-    initialKey = `${initialKey}-related-${relatedId}`;
+export const getNewWorkItemAutoSaveKey = ({ fullPath, context, workItemType, relatedItemId }) => {
+  if (!(fullPath && context && workItemType)) {
+    throw new Error('Must provide fullPath && context && workItemType');
   }
 
-  if (queryParamString) {
-    initialKey = `${initialKey}-${queryParamString}`;
+  const baseKey = getBaseNewWorkItemAutoSaveKey({ fullPath, context, workItemType, relatedItemId });
+  return `${baseKey}-${kebabCase(workItemType)}-draft`; // eslint-disable-line @gitlab/require-i18n-strings
+};
+
+export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, context, relatedItemId }) => {
+  if (!(fullPath && context)) {
+    throw new Error('Must provide fullPath && context');
   }
 
-  return `${initialKey}-widgets-draft`;
+  const baseKey = getBaseNewWorkItemAutoSaveKey({ fullPath, context, relatedItemId });
+  return `${baseKey}-widgets-draft`;
 };
 
 export const getWorkItemWidgets = (draftData) => {
@@ -509,9 +506,10 @@ export const getWorkItemWidgets = (draftData) => {
   return widgets;
 };
 
-export const updateDraftWorkItemType = ({ fullPath, workItemType, relatedItemId }) => {
+export const updateDraftWorkItemType = ({ fullPath, context, workItemType, relatedItemId }) => {
   const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
     fullPath,
+    context,
     relatedItemId,
   });
   const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
@@ -519,9 +517,10 @@ export const updateDraftWorkItemType = ({ fullPath, workItemType, relatedItemId 
   updateDraft(widgetsAutosaveKey, JSON.stringify(sharedCacheWidgets));
 };
 
-export const getDraftWorkItemType = ({ fullPath, relatedItemId }) => {
+export const getDraftWorkItemType = ({ fullPath, context, relatedItemId }) => {
   const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
     fullPath,
+    context,
     relatedItemId,
   });
   const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};

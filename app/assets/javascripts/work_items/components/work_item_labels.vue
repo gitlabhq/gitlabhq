@@ -262,11 +262,7 @@ export default {
         labels = labels.filter(({ id }) => !removeLabelIds.includes(id));
       }
 
-      this.$emit('updateWidgetDraft', {
-        workItemType: this.workItemType,
-        fullPath: this.fullPath,
-        labels,
-      });
+      this.$emit('updateWidgetDraft', { labels });
     },
     async updateLabels({ addLabelIds = [], removeLabelIds = [] }) {
       try {

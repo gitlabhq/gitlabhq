@@ -33,10 +33,6 @@ export default {
       type: Object,
       required: true,
     },
-    fullPath: {
-      type: String,
-      required: true,
-    },
     workItemType: {
       type: String,
       required: true,
@@ -175,8 +171,6 @@ export default {
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
         this.$emit('updateWidgetDraft', {
-          workItemType: this.workItemType,
-          fullPath: this.fullPath,
           rolledUpDates: {
             isFixed: true,
             dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,

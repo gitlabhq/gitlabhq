@@ -4,6 +4,7 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
@@ -25,8 +26,9 @@ describe('work items graphql resolvers', () => {
         mutation: updateNewWorkItemMutation,
         variables: {
           input: {
-            workItemType: 'issue',
             fullPath,
+            context: CREATION_CONTEXT_LIST_ROUTE,
+            workItemType: 'Issue',
             ...input,
           },
         },
@@ -201,8 +203,8 @@ describe('work items graphql resolvers', () => {
     });
 
     it('updates the local storage with every mutation', async () => {
-      const typeSpecificAutosaveKey = `autosave/new-fullPath-issue-draft`;
-      const sharedWidgetsAutosaveKey = 'autosave/new-fullPath-widgets-draft';
+      const typeSpecificAutosaveKey = `autosave/new-fullPath-list-route-issue-draft`;
+      const sharedWidgetsAutosaveKey = 'autosave/new-fullPath-list-route-widgets-draft';
 
       await mutate({ title: 'Title' });
 

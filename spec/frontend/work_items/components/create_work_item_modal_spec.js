@@ -7,6 +7,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -59,6 +60,7 @@ describe('CreateWorkItemModal', () => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
         fullPath: 'full-path',
+        creationContext: CREATION_CONTEXT_LIST_ROUTE,
         preselectedWorkItemType,
         asDropdownItem,
         hideButton,
@@ -88,7 +90,7 @@ describe('CreateWorkItemModal', () => {
 
   it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft', async () => {
     localStorage.setItem(
-      'autosave/new-full-path-widgets-draft',
+      'autosave/new-full-path-list-route-widgets-draft',
       JSON.stringify({ TYPE: { name: WORK_ITEM_TYPE_NAME_ISSUE } }),
     );
 
@@ -101,7 +103,7 @@ describe('CreateWorkItemModal', () => {
 
   it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft with related item id', async () => {
     localStorage.setItem(
-      'autosave/new-full-path-related-22-widgets-draft',
+      'autosave/new-full-path-list-route-related-id-22-widgets-draft',
       JSON.stringify({ TYPE: { name: WORK_ITEM_TYPE_NAME_ISSUE } }),
     );
 

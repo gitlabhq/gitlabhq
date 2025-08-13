@@ -27,6 +27,7 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
+  CREATION_CONTEXT_RELATED_ITEM,
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
@@ -44,6 +45,7 @@ import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
 
 export default {
+  CREATION_CONTEXT_RELATED_ITEM,
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
@@ -852,6 +854,7 @@ export default {
     <create-work-item-modal
       :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
+      :creation-context="$options.CREATION_CONTEXT_RELATED_ITEM"
       :full-path="fullPath"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"

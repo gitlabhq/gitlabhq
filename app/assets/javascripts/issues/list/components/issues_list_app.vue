@@ -92,6 +92,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
+  CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -142,6 +143,7 @@ const DateToken = () => import('~/vue_shared/components/filtered_search_bar/toke
 
 export default {
   name: 'IssuesListAppCE',
+  CREATION_CONTEXT_LIST_ROUTE,
   i18n,
   issuableListTabs,
   issuableType: TYPE_ISSUE.toUpperCase(),
@@ -1076,6 +1078,7 @@ export default {
             v-if="glFeatures.issuesListCreateModal"
             :allowed-work-item-types="allowedWorkItemTypes"
             always-show-work-item-type-select
+            :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
             :full-path="fullPath"
             :is-group="!isProject"
             :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_ISSUE"

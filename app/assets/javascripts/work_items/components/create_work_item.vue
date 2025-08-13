@@ -154,6 +154,10 @@ export default {
       required: false,
       default: false,
     },
+    creationContext: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: false,
@@ -290,6 +294,7 @@ export default {
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache({
             fullPath: this.selectedProjectFullPath,
+            context: this.creationContext,
             widgetDefinitions: workItemType?.widgetDefinitions,
             workItemType: workItemType.name,
             workItemTypeId: workItemType.id,
@@ -306,6 +311,7 @@ export default {
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
             fullPath: this.selectedProjectFullPath,
+            context: this.creationContext,
             relatedItemId: this.relatedItemId,
             workItemType: {
               id: selectedWorkItemType.id,
@@ -703,16 +709,18 @@ export default {
           this.discussionToResolve && this.mergeRequestToResolveDiscussionsOf ? '1' : 'all';
       }
     },
-    clearAutosaveDraft({ fullPath, workItemType }) {
+    clearAutosaveDraft() {
       const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
-        fullPath,
-        workItemType,
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
+        workItemType: this.selectedWorkItemTypeName,
         relatedItemId: this.relatedItemId,
       });
       clearDraft(fullDraftAutosaveKey);
 
       const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
-        fullPath,
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         relatedItemId: this.relatedItemId,
       });
       clearDraft(widgetsAutosaveKey);
@@ -720,6 +728,7 @@ export default {
     handleChangeType() {
       setNewWorkItemCache({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         widgetDefinitions: this.selectedWorkItemType?.widgetDefinitions || [],
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
@@ -729,6 +738,7 @@ export default {
 
       updateDraftWorkItemType({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         relatedItemId: this.relatedItemId,
         workItemType: {
           id: this.selectedWorkItemTypeId,
@@ -745,22 +755,7 @@ export default {
         this.validate();
       }
 
-      try {
-        this.$apollo.mutate({
-          mutation: updateNewWorkItemMutation,
-          variables: {
-            input: {
-              fullPath: this.selectedProjectFullPath,
-              workItemType: this.selectedWorkItemTypeName,
-              relatedItemId: this.relatedItemId,
-              [type]: value,
-            },
-          },
-        });
-      } catch {
-        this.error = this.createErrorText;
-        Sentry.captureException(this.error);
-      }
+      await this.handleUpdateWidgetDraft({ [type]: value });
     },
     async createWorkItem() {
       this.validate();
@@ -942,10 +937,7 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        this.clearAutosaveDraft({
-          fullPath: this.selectedProjectFullPath,
-          workItemType: this.selectedWorkItemTypeName,
-        });
+        this.clearAutosaveDraft();
       } catch {
         this.error = this.createErrorText;
         this.loading = false;
@@ -957,8 +949,11 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              ...input,
+              fullPath: this.selectedProjectFullPath,
+              context: this.creationContext,
+              workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
+              ...input,
             },
           },
         });
@@ -980,15 +975,13 @@ export default {
       }
     },
     handleDiscardDraft() {
-      this.clearAutosaveDraft({
-        fullPath: this.selectedProjectFullPath,
-        workItemType: this.selectedWorkItemTypeName,
-      });
+      this.clearAutosaveDraft();
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         widgetDefinitions: selectedWorkItemWidgets,
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
@@ -1208,7 +1201,6 @@ export default {
                   v-if="workItemWeight"
                   class="work-item-attributes-item"
                   :can-update="canUpdate"
-                  :full-path="selectedProjectFullPath"
                   :widget="workItemWeight"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
@@ -1247,7 +1239,6 @@ export default {
                   v-if="workItemStartAndDueDate"
                   class="work-item-attributes-item"
                   :can-update="canUpdate"
-                  :full-path="selectedProjectFullPath"
                   :start-date="workItemStartAndDueDate.startDate"
                   :due-date="workItemStartAndDueDate.dueDate"
                   :is-fixed="workItemStartAndDueDate.isFixed"
@@ -1272,7 +1263,6 @@ export default {
                   v-if="workItemColor"
                   class="work-item-attributes-item"
                   :work-item="workItem"
-                  :full-path="selectedProjectFullPath"
                   :can-update="canUpdate"
                   @updateWidgetDraft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
@@ -1282,7 +1272,6 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-type="selectedWorkItemTypeName"
                   :custom-fields="workItemCustomFields"
-                  :full-path="selectedProjectFullPath"
                   :can-update="canUpdate"
                   @updateWidgetDraft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"

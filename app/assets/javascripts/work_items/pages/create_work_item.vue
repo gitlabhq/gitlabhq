@@ -8,6 +8,7 @@ import {
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   BASE_ALLOWED_CREATE_TYPES,
+  CREATION_CONTEXT_NEW_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -19,6 +20,7 @@ import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.gr
 import { convertTypeEnumToName } from '../utils';
 
 export default {
+  CREATION_CONTEXT_NEW_ROUTE,
   name: 'CreateWorkItemPage',
   components: {
     CreateWorkItem,
@@ -164,6 +166,7 @@ export default {
 <template>
   <div>
     <create-work-item
+      :creation-context="$options.CREATION_CONTEXT_NEW_ROUTE"
       :full-path="rootPageFullPath"
       :preselected-work-item-type="workItemType"
       :is-group="isGroup"

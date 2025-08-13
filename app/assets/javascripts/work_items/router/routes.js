@@ -5,6 +5,7 @@ import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
 import { getDraftWorkItemType } from '../utils';
 import {
+  CREATION_CONTEXT_NEW_ROUTE,
   ROUTES,
   NAME_TO_ENUM_MAP,
   WORK_ITEM_BASE_ROUTE_MAP,
@@ -50,7 +51,9 @@ function getRoutes(fullPath) {
         workItemTypeEnum:
           query.type ||
           getIssueTypeEnumFromDocument() ||
-          NAME_TO_ENUM_MAP[getDraftWorkItemType({ fullPath })?.name] ||
+          NAME_TO_ENUM_MAP[
+            getDraftWorkItemType({ fullPath, context: CREATION_CONTEXT_NEW_ROUTE })?.name
+          ] ||
           WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },

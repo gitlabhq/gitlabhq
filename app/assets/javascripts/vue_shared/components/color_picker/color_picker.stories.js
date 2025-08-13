@@ -15,6 +15,7 @@ const makeStory = ({ props } = {}) => {
 
   Story.args = {
     ...Object.fromEntries(Object.keys(ColorPicker.props).map((prop) => [prop, propDefault(prop)])),
+    label: 'Select a color',
     suggestedColors: {},
     ...props,
   };

@@ -60,6 +60,7 @@ import {
   removeParams,
 } from '~/lib/utils/url_utility';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
@@ -382,6 +383,14 @@ describe('CE IssuesListApp component', () => {
           expect(findCreateWorkItemModal().exists()).toBe(issuesListCreateModal);
         },
       );
+
+      it('renders in "list route" creation context', () => {
+        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
+
+        expect(findCreateWorkItemModal().props('creationContext')).toBe(
+          CREATION_CONTEXT_LIST_ROUTE,
+        );
+      });
     });
 
     describe('new issue button', () => {

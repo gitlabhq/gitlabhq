@@ -293,7 +293,6 @@ export default {
       v-if="workItemWeight"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"
-      :full-path="fullPath"
       :widget="workItemWeight"
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
@@ -333,7 +332,6 @@ export default {
       v-if="workItemStartAndDueDate"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"
-      :full-path="fullPath"
       :start-date="workItemStartAndDueDate.startDate"
       :due-date="workItemStartAndDueDate.dueDate"
       :is-fixed="workItemStartAndDueDate.isFixed"
@@ -365,7 +363,6 @@ export default {
       v-if="workItemColor"
       class="work-item-attributes-item"
       :work-item="workItem"
-      :full-path="fullPath"
       :can-update="canUpdateMetadata"
       @error="$emit('error', $event)"
     />
@@ -374,7 +371,6 @@ export default {
       :work-item-id="workItem.id"
       :work-item-type="workItemType"
       :custom-fields="customFields"
-      :full-path="fullPath"
       :can-update="canUpdateMetadata"
       @error="$emit('error', $event)"
     />

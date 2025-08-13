@@ -16,6 +16,7 @@ import {
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATE_NEW_WORK_ITEM_MODAL,
+  CREATION_CONTEXT_SUPER_SIDEBAR,
   WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET } from '../constants';
@@ -24,6 +25,7 @@ import { DROPDOWN_Y_OFFSET } from '../constants';
 const DROPDOWN_X_OFFSET_BASE = -158;
 
 export default {
+  CREATION_CONTEXT_SUPER_SIDEBAR,
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
@@ -158,6 +160,7 @@ export default {
       v-if="loadCreateWorkItemModal"
       :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
+      :creation-context="$options.CREATION_CONTEXT_SUPER_SIDEBAR"
       :full-path="fullPath"
       hide-button
       :is-group="isGroup"

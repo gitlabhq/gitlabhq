@@ -12,6 +12,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 import {
+  CREATION_CONTEXT_NEW_ROUTE,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -80,11 +81,12 @@ describe('Create work item page component', () => {
   const findCancelConfirmationModal = () =>
     wrapper.findComponent(CreateWorkItemCancelConfirmationModal);
 
-  it('passes the isGroup prop to the CreateWorkItem component', () => {
+  it('renders CreateWorkItem component with expected props', () => {
     const pushMock = jest.fn();
     createComponent({ $router: { push: pushMock } });
 
     expect(findCreateWorkItem().props()).toMatchObject({
+      creationContext: CREATION_CONTEXT_NEW_ROUTE,
       isGroup: false,
       preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
     });

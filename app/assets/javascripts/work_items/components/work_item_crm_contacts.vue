@@ -210,11 +210,7 @@ export default {
       }
 
       if (this.createFlow) {
-        this.$emit('updateWidgetDraft', {
-          workItemType: this.workItemType,
-          fullPath: this.fullPath,
-          crmContacts: newSelectedItems,
-        });
+        this.$emit('updateWidgetDraft', { crmContacts: newSelectedItems });
         this.updateInProgress = false;
         return;
       }
