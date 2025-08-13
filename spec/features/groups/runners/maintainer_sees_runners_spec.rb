@@ -111,7 +111,7 @@ RSpec.describe "Group maintainer sees runner list", :freeze_time, :js, feature_c
 
     it 'allows user to search by paused and status' do
       page.within(search_bar_selector) do
-        expect(page).to have_link(s_('Runners|Paused'))
+        expect(page).to have_button('Paused')
         expect(page).to have_content('Status')
       end
     end

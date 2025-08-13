@@ -2079,4 +2079,47 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       })
     end
   end
+
+  describe '#show_archived_badge?' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+
+    subject { helper.show_archived_badge?(project) }
+
+    context 'when project is archived' do
+      before do
+        project.update!(archived: true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when ancestor is archived' do
+      before do
+        group.archive
+      end
+
+      it { is_expected.to be(true) }
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when project and ancestor is not archived' do
+      it { is_expected.to be(false) }
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
 end

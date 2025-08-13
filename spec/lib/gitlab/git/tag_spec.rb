@@ -37,6 +37,43 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.date).to eq(Time.at(1574261780).utc) }
     end
 
+    describe 'gpg tag' do
+      let(:gitaly_commit_author) { create(:gitaly_commit_author, date: now) }
+      let(:now) { Google::Protobuf::Timestamp.new(seconds: 1574261780) }
+      let(:find_all_tags_double) { double(tags: [gitaly_tag]) }
+      let(:gitaly_tag) { create(:gitaly_tag, signature_type: :PGP, tagger: gitaly_commit_author, id: 'stubbed_id') }
+      let(:signature) { 'stubbed_signature' }
+      let(:gitaly_signature) do
+        Gitaly::GetTagSignaturesResponse::TagSignature.new(signature: signature, tag_id: gitaly_tag.id)
+      end
+
+      let(:get_tag_signature_double) { double(signatures: [gitaly_signature]) }
+      let(:tag) { repository.tags.first }
+
+      before do
+        allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+        allow(Gitlab::GitalyClient).to receive(:call).with(repository.storage, :ref_service, :find_all_tags,
+          any_args).and_return([find_all_tags_double])
+        allow(Gitlab::GitalyClient).to receive(:call).with(repository.storage, :ref_service, :get_tag_signatures,
+          any_args).and_return([get_tag_signature_double])
+      end
+
+      it { expect(tag.signature_type).to eq(:PGP) }
+      it { expect(tag.has_signature?).to be_truthy }
+      it { expect(tag.signature).not_to be_nil }
+      it { expect(tag.user_name).to eq(gitaly_commit_author.name) }
+      it { expect(tag.user_email).to eq(gitaly_commit_author.email) }
+      it { expect(tag.date).to eq(Time.at(1574261780).utc) }
+
+      context 'when render_gpg_signed_tags_verification_status is not enabled' do
+        before do
+          stub_feature_flags(render_gpg_signed_tags_verification_status: false)
+        end
+
+        it { expect(tag.signature).to be_nil }
+      end
+    end
+
     it { expect(repository.tags.size).to be > 0 }
   end
 

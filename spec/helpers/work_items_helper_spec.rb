@@ -45,6 +45,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             time_tracking_limit_to_hours: "false",
             can_read_crm_organization: 'true',
             releases_path: project_releases_path(project, format: :json),
+            project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true'
           }
         )

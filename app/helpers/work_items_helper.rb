@@ -8,7 +8,10 @@ module WorkItemsHelper
     group = extract_group(resource_parent)
 
     base_data(resource_parent, current_user, group).tap do |data|
-      data[:releases_path] = project_releases_path(resource_parent, format: :json) if resource_parent.is_a?(Project)
+      if resource_parent.is_a?(Project)
+        data[:releases_path] = project_releases_path(resource_parent, format: :json)
+        data[:project_import_jira_path] = project_import_jira_path(resource_parent)
+      end
     end
   end
 

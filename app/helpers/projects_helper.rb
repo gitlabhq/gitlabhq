@@ -752,6 +752,12 @@ module ProjectsHelper
     }
   end
 
+  def show_archived_badge?(project)
+    return true if project.archived?
+
+    Feature.enabled?(:archive_group, project.root_ancestor) && project.ancestors_archived?
+  end
+
   private
 
   def can_admin_project_clusters?(project)

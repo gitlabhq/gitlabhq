@@ -74,6 +74,47 @@ RSpec.describe 'Fetching Job Token Auth Logs for project allowlist', feature_cat
           expect(fetched_project_paths).to match_array([origin_project_one.full_path, origin_project_two.full_path])
         end
       end
+
+      context 'when some origin projects are deleted' do
+        let_it_be(:origin_project_existing) { create(:project) }
+        let_it_be(:origin_project_to_delete) { create(:project) }
+
+        before do
+          create(:ci_job_token_authorization,
+            origin_project: origin_project_existing,
+            accessed_project: current_project)
+
+          create(:ci_job_token_authorization,
+            origin_project: origin_project_to_delete,
+            accessed_project: current_project)
+
+          origin_project_to_delete.delete
+        end
+
+        it 'returns only logs for existing projects without errors' do
+          post_graphql(query, current_user: current_user)
+
+          expect(graphql_errors).to be_blank
+          expect(fetched_job_token_auth_logs_data).not_to be_nil
+
+          fetched_project_paths = fetched_job_token_auth_logs_data['nodes'].pluck('originProject').pluck('fullPath')
+          expect(fetched_project_paths).to contain_exactly(origin_project_existing.full_path)
+        end
+
+        context 'when all origin projects are deleted' do
+          before do
+            Project.delete([origin_project_to_delete, origin_project_existing])
+          end
+
+          it 'returns empty logs without errors' do
+            post_graphql(query, current_user: current_user)
+
+            expect(graphql_errors).to be_blank
+            expect(fetched_job_token_auth_logs_data).not_to be_nil
+            expect(fetched_job_token_auth_logs_data['nodes']).to be_empty
+          end
+        end
+      end
     end
 
     context 'without access to scope' do

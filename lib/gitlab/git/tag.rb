@@ -101,7 +101,9 @@ module Gitlab
 
         case signature_type
         when :PGP
-          nil # not implemented, see https://gitlab.com/gitlab-org/gitlab/issues/19260
+          return unless Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
+
+          Gpg::Tag.new(@repository, self).signature
         when :X509
           X509::Tag.new(@repository, self).signature
         end

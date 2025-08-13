@@ -16,7 +16,8 @@ module Gitlab
         end
 
         def execute
-          pattern = [prefix, search, "*"].compact.join
+          # **/* allows to match any level of nesting
+          pattern = [prefix, "**/*", search, "*"].compact.join
 
           repository.list_refs(
             [pattern],

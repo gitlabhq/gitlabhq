@@ -59,6 +59,64 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
       end
     end
 
+    describe 'Search' do
+      context 'when searching by postfix' do
+        let(:params) do
+          { search: "aster", ref_type: :branches }
+        end
+
+        it "returns matching ref object" do
+          expect(subject.length).to eq(1)
+
+          expect(subject.first.name).to eq("refs/heads/master")
+        end
+      end
+
+      context 'when searching by scoped branch' do
+        let(:params) do
+          { search: "awesome", ref_type: :branches }
+        end
+
+        it "returns matching ref object" do
+          expect(subject.length).to eq(1)
+
+          expect(subject.first.name).to eq("refs/heads/improve/awesome")
+        end
+
+        context 'when mixed part is provided' do
+          let(:params) do
+            { search: "prove/awe", ref_type: :branches }
+          end
+
+          it "returns matching ref object" do
+            expect(subject.length).to eq(1)
+
+            expect(subject.first.name).to eq("refs/heads/improve/awesome")
+          end
+        end
+
+        context 'when branch has deeply nested name' do
+          before do
+            project.repository.create_branch('some/branch/deep')
+          end
+
+          after do
+            project.repository.delete_branch('some/branch/deep')
+          end
+
+          let(:params) do
+            { search: "deep", ref_type: :branches }
+          end
+
+          it "returns matching ref object" do
+            expect(subject.length).to eq(1)
+
+            expect(subject.first.name).to eq("refs/heads/some/branch/deep")
+          end
+        end
+      end
+    end
+
     describe 'Sort' do
       context 'without sort' do
         let(:params) do

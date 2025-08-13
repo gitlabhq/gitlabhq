@@ -2,5 +2,5 @@
 
 - if project.scheduled_for_deletion_in_hierarchy_chain?
   = render Pajamas::BadgeComponent.new(_('Pending deletion'), variant: 'warning', class: css_class)
-- elsif project.archived
+- elsif show_archived_badge?(project)
   = render Pajamas::BadgeComponent.new(_('Archived'), variant: 'info', class: css_class)

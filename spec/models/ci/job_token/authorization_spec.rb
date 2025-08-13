@@ -265,4 +265,41 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       expect(authorizations).not_to include(other_authorization)
     end
   end
+
+  describe '.with_existing_origin_projects' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:deleted_project) { create(:project) }
+
+    let_it_be(:auth_with_existing_project) { create(:ci_job_token_authorization, origin_project: project1) }
+    let_it_be(:auth_with_deleted_project) { create(:ci_job_token_authorization, origin_project: deleted_project) }
+
+    before do
+      deleted_project.delete
+    end
+
+    it 'only returns authorizations with existing origin projects' do
+      result = described_class.with_existing_origin_projects
+
+      expect(result).to include(auth_with_existing_project)
+      expect(result).not_to include(auth_with_deleted_project)
+    end
+
+    context 'when AUTHORIZATION_ROW_LIMIT is reached' do
+      before do
+        stub_const("#{described_class}::AUTHORIZATION_ROW_LIMIT", 5)
+
+        # Create more projects and authorizations to exceed the limit
+        create_list(:ci_job_token_authorization, 10) do |auth|
+          auth.update!(origin_project: create(:project))
+        end
+      end
+
+      it 'respects the stubbed AUTHORIZATION_ROW_LIMIT value' do
+        result = described_class.with_existing_origin_projects
+
+        expect(result.count).to eq(5)
+      end
+    end
+  end
 end

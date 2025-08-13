@@ -37,6 +37,9 @@ describe('WorkItemDevelopmentMRItem', () => {
         itemContent: mergeRequest,
         workItemFullPath,
       },
+      stubs: {
+        GlAvatarsInline,
+      },
     });
   };
 

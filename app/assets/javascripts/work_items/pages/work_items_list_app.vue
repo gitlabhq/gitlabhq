@@ -100,6 +100,7 @@ import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
+import WorkItemListActions from '../components/work_item_list_actions.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -155,6 +156,7 @@ export default {
     LocalBoard,
     WorkItemListHeading,
     WorkItemUserPreferences,
+    WorkItemListActions,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -1203,6 +1205,7 @@ export default {
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
               />
+              <work-item-list-actions />
             </div>
           </work-item-list-heading>
         </template>

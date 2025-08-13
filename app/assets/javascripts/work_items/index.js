@@ -69,6 +69,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canReadCrmOrganization,
     canReadCrmContact,
     releasesPath,
+    projectImportJiraPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -148,6 +149,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       canReadCrmContact: parseBoolean(canReadCrmContact),
       releasesPath,
+      projectImportJiraPath,
     },
     mounted() {
       performanceMarkAndMeasure({

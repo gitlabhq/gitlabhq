@@ -32,7 +32,7 @@ RSpec.describe 'Root explore', :saas, feature_category: :shared do
       visit explore_projects_path
       find_by_testid('filtered-search-term-input').click
 
-      expect(page).to have_link('Language')
+      expect(page).to have_button('Language')
     end
   end
 end

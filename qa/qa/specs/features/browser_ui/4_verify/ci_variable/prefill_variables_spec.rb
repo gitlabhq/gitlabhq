@@ -2,11 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline with prefill variables', product_group: :pipeline_authoring,
-      quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523094',
-        type: :investigating
-      } do
+    describe 'Pipeline with prefill variables', product_group: :pipeline_authoring do
       let(:prefill_variable_description1) { Faker::Lorem.sentence }
       let(:prefill_variable_value1) { Faker::Lorem.word }
       let(:prefill_variable_value5) { Faker::Lorem.word }
@@ -42,6 +38,8 @@ module QA
       end
 
       before do
+        project.change_pipeline_variables_minimum_override_role('developer')
+
         Flow::Login.sign_in
         project.visit!
         Support::Waiter.wait_until(message: 'Wait for pipeline creation') { project.pipelines.length == 1 }

@@ -19,6 +19,9 @@ describe('Work Items Application', () => {
       mocks: {
         $route: routeMock,
       },
+      propsData: {
+        rootPageFullPath: 'gitlab-org/gitlab',
+      },
     });
   };
 

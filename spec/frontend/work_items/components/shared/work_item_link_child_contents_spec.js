@@ -81,6 +81,9 @@ describe('WorkItemLinkChildContents', () => {
           getRoutes: getRoutesMock,
         },
       },
+      stubs: {
+        GlAvatarsInline,
+      },
     });
   };
 
