@@ -6052,6 +6052,15 @@ msgstr ""
 msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr ""
 
+msgid "AiFlowTriggers|✅ Agent has started. You can view the progress %{link_start}here%{link_end}."
+msgstr ""
+
+msgid "AiFlowTriggers|❌ Could not start the agent due to this error: %{error}"
+msgstr ""
+
+msgid "AiFlowTriggers|🔄 Processing the request and starting the agent..."
+msgstr ""
+
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
 msgstr ""
 

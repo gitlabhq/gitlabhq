@@ -68,6 +68,7 @@ export default {
     },
   },
   WORKSPACE_PROJECT,
+  TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
 };
 </script>
 
@@ -102,11 +103,10 @@ export default {
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <hidden-badge v-if="workItem.hidden" />
           <imported-badge v-if="workItem.imported" />
-          <gl-link
-            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
-            href="#top"
-            :title="workItem.title"
-          >
+          <span v-if="isDrawer" :class="$options.TITLE_CLASS">
+            {{ workItem.title }}
+          </span>
+          <gl-link v-else :class="$options.TITLE_CLASS" href="#top" :title="workItem.title">
             {{ workItem.title }}
           </gl-link>
           <gl-button

@@ -124,7 +124,7 @@ export default {
 </script>
 <template>
   <div v-if="loading" class="gl-mt-4">
-    <gl-skeleton-loader class="gl-mt-3" :height="20" viewbox="0 0 400 20">
+    <gl-skeleton-loader :height="20" viewbox="0 0 400 20">
       <rect width="26" height="8" rx="4" />
       <rect width="26" x="28" height="8" rx="4" />
       <rect width="36" x="56" height="8" rx="4" />

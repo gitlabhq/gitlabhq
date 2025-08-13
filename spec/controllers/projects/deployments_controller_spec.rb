@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DeploymentsController do
-  include ApiHelpers
-
+RSpec.describe Projects::DeploymentsController, feature_category: :deployment_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:environment) { create(:environment, name: 'production', project: project) }
@@ -85,6 +83,8 @@ RSpec.describe Projects::DeploymentsController do
   end
 
   describe 'GET #show' do
+    render_views
+
     let(:deployment) { create(:deployment, :success, environment: environment) }
 
     subject do

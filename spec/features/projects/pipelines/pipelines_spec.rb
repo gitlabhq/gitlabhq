@@ -117,7 +117,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when canceling' do
-            it 'indicates that pipeline was canceled', :sidekiq_inline do
+            it 'indicates that pipeline was canceled', :sidekiq_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541901' do
               find('.js-pipelines-cancel-button').click
               click_button 'Stop pipeline'
 

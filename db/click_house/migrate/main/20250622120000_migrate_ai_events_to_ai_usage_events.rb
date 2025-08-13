@@ -9,12 +9,17 @@ class MigrateAiEventsToAiUsageEvents < ClickHouse::Migration
       event,
       timestamp,
       namespace_path,
-      toJSONString(map(
-        'unique_tracking_id', unique_tracking_id,
-        'language', language,
-        'suggestion_size', suggestion_size,
-        'branch_name', branch_name
-      )) as extras
+      concat(
+        '{"unique_tracking_id":',
+        if(isNull(unique_tracking_id), 'null', toJSONString(toString(unique_tracking_id))),
+        ',"language":',
+        if(isNull(language), 'null', toJSONString(toString(language))),
+        ',"suggestion_size":',
+        if(isNull(suggestion_size), 'null', toString(suggestion_size)),
+        ',"branch_name":',
+        if(isNull(branch_name), 'null', toJSONString(toString(branch_name))),
+        '}'
+      ) as extras
     FROM code_suggestion_events
   SQL
 
@@ -26,7 +31,7 @@ class MigrateAiEventsToAiUsageEvents < ClickHouse::Migration
       6 as event,  -- request_duo_chat_response
       timestamp,
       namespace_path,
-      toJSONString(map()) as extras
+      '{}' as extras
     FROM duo_chat_events
   SQL
 
@@ -38,12 +43,17 @@ class MigrateAiEventsToAiUsageEvents < ClickHouse::Migration
       7 as event,  -- troubleshoot_job
       timestamp,
       namespace_path,
-      toJSONString(map(
-        'project_id', project_id,
-        'job_id', job_id,
-        'pipeline_id', pipeline_id,
-        'merge_request_id', merge_request_id
-      )) as extras
+      concat(
+        '{"project_id":',
+        if(isNull(project_id), 'null', toString(project_id)),
+        ',"job_id":',
+        if(isNull(job_id), 'null', toString(job_id)),
+        ',"pipeline_id":',
+        if(isNull(pipeline_id), 'null', toString(pipeline_id)),
+        ',"merge_request_id":',
+        if(isNull(merge_request_id), 'null', toString(merge_request_id)),
+        '}'
+      ) as extras
     FROM troubleshoot_job_events
   SQL
 
