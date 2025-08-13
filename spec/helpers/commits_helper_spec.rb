@@ -5,6 +5,30 @@ require 'spec_helper'
 RSpec.describe CommitsHelper do
   include ProjectForksHelper
 
+  describe '#commit_list_app_data' do
+    let_it_be(:project) { create(:project) }
+    let(:ref) { 'feature-branch' }
+    let(:ref_type) { 'heads' }
+
+    before do
+      # Mock the project_path helper method that would be provided by Rails routing
+      allow(helper).to receive(:project_path).with(project).and_return("/#{project.full_path}")
+    end
+
+    subject { helper.commit_list_app_data(project, ref, ref_type) }
+
+    it 'returns the correct data to commits app' do
+      expect(subject).to include({
+        'project_full_path' => project.full_path,
+        'project_root_path' => "/#{project.full_path}",
+        'project_id' => project.id.to_s,
+        'escaped_ref' => ref,
+        'ref_type' => ref_type.to_s,
+        'root_ref' => project.default_branch
+      })
+    end
+  end
+
   describe 'commit_author_link' do
     it 'escapes the author email' do
       commit = double(

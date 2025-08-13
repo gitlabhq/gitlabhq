@@ -206,6 +206,7 @@ project_setting:
     - model_prompt_cache_enabled
     - web_based_commit_signing_enabled
     - duo_context_exclusion_settings
+    - duo_remote_flows_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

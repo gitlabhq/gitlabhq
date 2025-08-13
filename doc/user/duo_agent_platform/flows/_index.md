@@ -26,7 +26,7 @@ A flow is a combination of one or more agents working together to solve a comple
 Flows are available in IDEs and the GitLab UI.
 
 - In the UI, they run directly in GitLab CI/CD,
-  helping you automate common development tasks without the need to leave your browser. 
+  helping you automate common development tasks without the need to leave your browser.
 - In IDEs, flows are available in VS Code and JetBrains.
 
 ## Available flows
@@ -78,3 +78,7 @@ Flows use each user's permissions and respect all project access controls and se
 Agents flows are part of GitLab AI-powered development platform. Your feedback helps us improve these workflows.
 To report issues or suggest improvements for flows,
 [complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).
+
+## Related topics
+
+- [Configure where flows run](execution.md)

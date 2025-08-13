@@ -9,6 +9,7 @@ title: Analytics dashboards
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/development_stages_support.md#experiment).
 - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+- Panel tooltip configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/550270) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -187,6 +188,9 @@ To create a built-in analytics dashboard:
      description: My cool dashboard
      panels:
        - title: "My cool panel"
+         tooltip:
+           description: "This is a cool panel. %{linkStart}Learn more%{linkEnd}."
+           descriptionLink: "https://gitlab.com"
          visualization:
            version: 1
            slug: 'cool_viz' # Recommended to define a slug when a visualization is inline
@@ -216,6 +220,9 @@ To create a built-in analytics dashboard:
 
      panels:
        - title: "My cool panel"
+         tooltip:
+           description: "This is a cool panel. %{linkStart}Learn more%{linkEnd}."
+           descriptionLink: "https://gitlab.com"
          visualization: cool_viz    # Must match the visualization config filename
          gridAttributes:
            yPos: 0
@@ -226,6 +233,7 @@ To create a built-in analytics dashboard:
 
    The `gridAttributes` position the panel within a 12x12 dashboard grid, powered by [gridstack](https://github.com/gridstack/gridstack.js/tree/master/doc#item-options).
 
+   `tooltip` adds a help icon next to the panel title that displays contextual help on hover, using `description` text and an optional `descriptionLink` to embed a link between the `%{linkStart}` and `%{linkEnd}` placeholders. You can also define a `tooltip` at the visualization level in `visualization.options` or dynamically using the [`setVisualizationOverrides`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue#L261) callback function from a data source. Note that panel-level tooltips take precedence over visualization-level tooltips.
 1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboard.rb).
    Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license or user role etc.
 

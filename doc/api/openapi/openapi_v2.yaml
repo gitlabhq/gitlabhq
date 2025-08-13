@@ -29815,6 +29815,11 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[spp_repository_pipeline_access]
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
@@ -30478,6 +30483,11 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
         type: boolean
         required: false
       - in: formData
@@ -31223,6 +31233,11 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
         type: boolean
         required: false
       - in: formData
@@ -45595,6 +45610,8 @@ definitions:
       prevent_merge_without_jira_issue:
         type: string
       auto_duo_code_review_enabled:
+        type: string
+      duo_remote_flows_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -60565,6 +60582,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -60981,6 +61001,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -61415,6 +61438,8 @@ definitions:
       prevent_merge_without_jira_issue:
         type: string
       auto_duo_code_review_enabled:
+        type: string
+      duo_remote_flows_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -61868,6 +61893,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for

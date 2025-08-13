@@ -17,6 +17,9 @@ export const transformGIDToString = (data, type) => {
   return data;
 };
 
+// eslint-disable-next-line @gitlab/require-i18n-strings
+const isSubquery = (value) => typeof value === 'string' && value.startsWith('query GLQL');
+
 export default class Executor {
   #client;
   static taskQueue;
@@ -31,20 +34,21 @@ export default class Executor {
     return this;
   }
 
-  async execute(query, variables = []) {
+  async execute(query, variables = {}) {
     return this.#enqueue(
       query,
       assign(
         ...(await Promise.all(
-          variables.map(async (variable) => ({
-            [variable.key]: transformGIDToString(
-              resolveToScalar(await this.#execute(variable.data)),
-              variable.data_type,
-            ),
+          Object.entries(variables).map(async ([key, { type, value }]) => ({
+            [key]: isSubquery(value) ? await this.#executeSubquery(value, type) : value,
           })),
         )),
       ),
     );
+  }
+
+  async #executeSubquery(query, variableType) {
+    return transformGIDToString(resolveToScalar(await this.#execute(query)), variableType);
   }
 
   async #execute(query, variables = {}) {
@@ -63,6 +67,6 @@ export default class Executor {
   }
 }
 
-export const execute = async (query, variables = []) => {
+export const execute = async (query, variables = {}) => {
   return new Executor().init().execute(query, variables);
 };

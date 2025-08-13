@@ -211,7 +211,6 @@ describe('Blob content viewer component', () => {
 
         await triggerBlame();
 
-        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: { blame: '0' } });
         expect(findSourceViewer().props('showBlame')).toBe(false);
       });
 
@@ -220,13 +219,11 @@ describe('Blob content viewer component', () => {
         await createComponent({ blob: simpleViewerMock });
         await triggerBlame(); // First open blame
 
-        await router.replace('/mock_path');
-
-        expect(mockRouterPush).toHaveBeenCalledWith({
-          path: '/mock_path',
-          query: { blame: '0' },
-        });
+        await router.replace({ path: '/mock_path', query: { blame: '0' } }); // Close it via param
         expect(findSourceViewer().props('showBlame')).toBe(false);
+
+        await router.replace({ path: '/mock_path', query: { blame: '1' } }); // Open it via param
+        expect(findSourceViewer().props('showBlame')).toBe(true);
       });
 
       describe('when viewing rich content', () => {

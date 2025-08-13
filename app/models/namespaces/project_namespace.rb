@@ -24,7 +24,8 @@ module Namespaces
     has_one :project, inverse_of: :project_namespace
 
     delegate :execute_hooks, :execute_integrations, :group, to: :project, allow_nil: true
-    delegate :external_references_supported?, :default_issues_tracker?, :self_deletion_in_progress?, to: :project
+    delegate :external_references_supported?, :default_issues_tracker?, :self_deletion_in_progress?,
+      :markdown_placeholders_feature_flag_enabled?, to: :project
 
     delegate :crm_group, :hashed_storage?, :disk_path, to: :project
 

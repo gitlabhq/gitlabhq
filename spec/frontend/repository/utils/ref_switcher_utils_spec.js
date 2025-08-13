@@ -21,6 +21,10 @@ describe('generateRefDestinationPath', () => {
     ${`${projectRootPath}/blob/${currentRef}/dir1/test.js`}             | ${`${projectRootPath}/blob/${selectedRef}/dir1/test.js`}
     ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js`}        | ${`${projectRootPath}/blob/${selectedRef}/dir1/dir2/test.js`}
     ${`${projectRootPath}/blob/${currentRef}/dir1/dir2/test.js#L123`}   | ${`${projectRootPath}/blob/${selectedRef}/dir1/dir2/test.js#L123`}
+    ${`${projectRootPath}/-/commits/${currentRef}`}                     | ${`${projectRootPath}/-/commits/${selectedRef}`}
+    ${`${projectRootPath}/-/commits/${currentRef}/test.js`}             | ${`${projectRootPath}/-/commits/${selectedRef}/test.js`}
+    ${`${projectRootPath}/-/commits/${currentRef}/dir1/test.js`}        | ${`${projectRootPath}/-/commits/${selectedRef}/dir1/test.js`}
+    ${`${projectRootPath}/-/commits/${currentRef}/dir1/dir2/test.js`}   | ${`${projectRootPath}/-/commits/${selectedRef}/dir1/dir2/test.js`}
   `('generates the correct destination path for $currentPath', ({ currentPath, result }) => {
     setWindowLocation(currentPath);
     expect(generateRefDestinationPath(projectRootPath, currentRef, selectedRef)).toBe(

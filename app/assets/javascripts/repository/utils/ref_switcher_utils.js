@@ -1,18 +1,30 @@
 import { joinPaths } from '~/lib/utils/url_utility';
 
 /**
- * Matches the namespace and target directory/blob in a path
- * Example: /root/Flight/-/blob/fix/main/test/spec/utils_spec.js
- * Group 1:  /-/blob
- * Group 2:  blob
- * Group 3: /test/spec/utils_spec.js
+ * Creates a regex pattern to extract namespace and target path information from repository URLs.
+ *
+ * @param {string} ref - The git reference (branch name, tag, or commit SHA) to match in the URL
+ * @returns {RegExp} A regex pattern that captures GitLab URL components
+ *
+ * Capture groups:
+ * - Group 1: The namespace format (e.g., "/-/blob", "/-/tree", "/-/commits", "/blob")
+ * - Group 2: The view type ("blob", "tree", or "commits")
+ * - Group 3: The target path after the ref (file/directory path, can be empty string)
+ *
+ * Supports:
+ * - Standard GitLab namespace formats: /-/blob, /-/tree, /-/commits
+ * - Alternative blob format: /blob
+ * - URLs ending with ref only (optional trailing slash)
+ * - Partial URL matching (no end anchor)
+ *
  */
-const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree)|/blob)/${ref}/(.*)`);
+const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree|commits)|/blob)/${ref}/?(.*)`);
 
 /**
  * Generates a ref destination path based on the selected ref and current path.
- * A user could either be in the project root, a directory on the blob view.
+ * A user could either be in the project root, a directory on the blob view, or commits view.
  * @param {string} projectRootPath - The root path for a project.
+ * @param {string} ref - The current ref.
  * @param {string} selectedRef - The selected ref from the ref dropdown.
  */
 export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {

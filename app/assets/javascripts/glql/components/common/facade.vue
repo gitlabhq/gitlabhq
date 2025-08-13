@@ -8,7 +8,7 @@ import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { parse, parseYAML, parseQuery } from '../../core/parser';
+import { parse } from '../../core/parser';
 import { execute } from '../../core/executor';
 import { transform } from '../../core/transformer';
 import DataPresenter from '../presenters/data.vue';
@@ -126,14 +126,10 @@ export default {
     async loadMore(count) {
       try {
         this.loading = count;
-        const parsedYaml = parseYAML(this.queryYaml);
-        const { query, config, variables } = await parseQuery(parsedYaml.query, {
-          ...parsedYaml.config,
-          cursorAfter: this.data.pageInfo.endCursor,
-          limit: DEFAULT_PAGE_SIZE,
-        });
+        this.variables.after.value = this.data.pageInfo.endCursor;
+        this.variables.limit.value = DEFAULT_PAGE_SIZE;
 
-        const { data } = await transform(await execute(query, variables), config);
+        const data = await transform(await execute(this.query, this.variables), this.config);
         this.data = {
           ...this.data,
           pageInfo: data.pageInfo,
@@ -147,8 +143,6 @@ export default {
     },
 
     async loadGlqlBlock() {
-      if (this.data) return;
-
       await this.parseQuery();
       if (!this.hasError && (this.glFeatures.glqlLoadOnClick || this.checkGlqlBlocksCount())) {
         await this.executeQuery();
@@ -166,9 +160,8 @@ export default {
         if (this.hasError) return;
 
         this.loading = true;
-
-        const { data } = await transform(await execute(this.query, this.variables), this.config);
-        this.data = data;
+        this.variables.limit.value = this.config.limit;
+        this.data = await transform(await execute(this.query, this.variables), this.config);
 
         this.trackRender();
       } catch (error) {
@@ -189,12 +182,10 @@ export default {
 
     async parseQuery() {
       try {
-        const { query, config, variables } = await parse(this.queryYaml);
+        const { query, config, variables, fields } = await parse(this.queryYaml);
         this.query = query;
         this.config = config;
         this.variables = variables;
-
-        const { fields } = await transform(undefined, this.config);
         this.fields = fields;
         this.loading = true;
       } catch (error) {
@@ -297,7 +288,7 @@ export default {
         @click="loadOnClick = false"
       >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ queryYaml }}</code></pre>
     </div>
-    <gl-intersection-observer v-else @appear="loadGlqlBlock">
+    <gl-intersection-observer v-else @appear.once="loadGlqlBlock">
       <template v-if="query && !hasError">
         <crud-component
           :anchor-id="crudComponentId"

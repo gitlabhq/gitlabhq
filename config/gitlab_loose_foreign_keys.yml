@@ -578,6 +578,10 @@ p_knowledge_graph_replicas:
   - table: p_knowledge_graph_enabled_namespaces
     column: knowledge_graph_enabled_namespace_id
     on_delete: async_nullify
+p_sent_notifications:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 packages_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id

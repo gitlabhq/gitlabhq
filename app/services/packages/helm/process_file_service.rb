@@ -37,8 +37,6 @@ module Packages
       attr_reader :channel, :package_file
 
       def package_protected?
-        return false if Feature.disabled?(:packages_protected_packages_helm, @package_file.project)
-
         service_response =
           ::Packages::Protection::CheckRuleExistenceService.for_push(
             project: @package_file.project,

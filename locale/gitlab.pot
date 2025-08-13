@@ -58803,6 +58803,9 @@ msgstr ""
 msgid "SecurityReports|A dismissal reason is required."
 msgstr ""
 
+msgid "SecurityReports|Active secret"
+msgstr ""
+
 msgid "SecurityReports|Activity"
 msgstr ""
 
@@ -59031,6 +59034,9 @@ msgstr ""
 msgid "SecurityReports|Image"
 msgstr ""
 
+msgid "SecurityReports|Inactive secret"
+msgstr ""
+
 msgid "SecurityReports|Investigate this vulnerability by creating an issue"
 msgstr ""
 
@@ -59119,6 +59125,9 @@ msgid "SecurityReports|Parsing errors in pipeline"
 msgstr ""
 
 msgid "SecurityReports|Parsing warnings in pipeline"
+msgstr ""
+
+msgid "SecurityReports|Possibly active secret"
 msgstr ""
 
 msgid "SecurityReports|Project"
@@ -59283,6 +59292,9 @@ msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr ""
 
 msgid "SecurityReports|Undo dismiss"
+msgstr ""
+
+msgid "SecurityReports|Validity check"
 msgstr ""
 
 msgid "SecurityReports|Vulnerabilities over time"
@@ -67100,6 +67112,9 @@ msgstr ""
 msgid "Trial|GitLab Subscription Agreement"
 msgstr ""
 
+msgid "Trial|Help us personalize your GitLab experience by answering a few questions"
+msgstr ""
+
 msgid "Trial|Privacy Statement"
 msgstr ""
 
@@ -67506,6 +67521,9 @@ msgid "Unarchive project"
 msgstr ""
 
 msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "Unassign"
 msgstr ""
 
 msgid "Unassign all"

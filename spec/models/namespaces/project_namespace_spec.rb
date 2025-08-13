@@ -131,4 +131,14 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
 
     it { expect { combined_calls }.not_to raise_error }
   end
+
+  describe '#markdown_placeholders_feature_flag_enabled? is delegated' do
+    let(:project) { create(:project) }
+    let(:project_namespace) { project.project_namespace }
+
+    it 'delegates to project' do
+      expect(project_namespace.markdown_placeholders_feature_flag_enabled?).to be_truthy
+      expect(project_namespace.project.markdown_placeholders_feature_flag_enabled?).to be_truthy
+    end
+  end
 end

@@ -1,4 +1,5 @@
 import { GlAlert, GlButton, GlSkeletonLoader, GlIntersectionObserver } from '@gitlab/ui';
+import { identity } from 'lodash';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,17 +15,22 @@ import Counter from '~/glql/utils/counter';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { MOCK_ISSUES, MOCK_FIELDS } from '../../mock_data';
 
-jest.mock('~/glql/core/parser', () => ({
-  parse: jest.fn(),
-}));
-
-jest.mock('~/glql/core/transformer', () => ({
-  transform: jest.fn(),
-}));
-
+jest.mock('~/glql/core/parser');
+jest.mock('~/glql/core/transformer');
 jest.mock('~/glql/core/executor', () => ({
   execute: jest.fn(),
 }));
+
+const MOCK_PARSE_OUTPUT = {
+  query: 'query {}',
+  config: { display: 'list', title: 'Some title', description: 'Some description' },
+  variables: {
+    limit: { value: null, type: 'Int' },
+    after: { value: null, type: 'String' },
+    before: { value: null, type: 'String' },
+  },
+  fields: MOCK_FIELDS,
+};
 
 describe('GlqlFacade', () => {
   let wrapper;
@@ -52,7 +58,11 @@ describe('GlqlFacade', () => {
     await waitForPromises();
   };
 
-  beforeEach(stubCrypto);
+  beforeEach(() => {
+    stubCrypto();
+    parse.mockResolvedValue(MOCK_PARSE_OUTPUT);
+    transform.mockImplementation(identity);
+  });
 
   describe('when glqlLoadOnClick feature flag is enabled', () => {
     beforeEach(async () => {
@@ -69,8 +79,6 @@ describe('GlqlFacade', () => {
   });
 
   it('shows skeleton loader when loading', async () => {
-    parse.mockResolvedValue({ query: 'query {}', config: { display: 'list' }, variables: {} });
-    transform.mockResolvedValue({ fields: MOCK_FIELDS });
     execute.mockImplementation(() => new Promise(() => {})); // Never resolves
 
     await createComponent();
@@ -82,13 +90,7 @@ describe('GlqlFacade', () => {
 
   describe('when the query is successful', () => {
     beforeEach(async () => {
-      parse.mockResolvedValue({
-        query: 'query {}',
-        config: { display: 'list', title: 'Some title', description: 'Some description' },
-        variables: {},
-      });
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
-      transform.mockResolvedValue({ fields: MOCK_FIELDS, data: { count: 2, ...MOCK_ISSUES } });
 
       await createComponent();
       await triggerIntersectionObserver();
@@ -124,7 +126,6 @@ describe('GlqlFacade', () => {
 
     it('shows a "No data" message if the list of items provided is empty', async () => {
       execute.mockResolvedValue({ count: 0, nodes: [] });
-      transform.mockResolvedValue({ fields: MOCK_FIELDS, data: { count: 0, nodes: [] } });
 
       await createComponent();
       await triggerIntersectionObserver();
@@ -173,7 +174,6 @@ describe('GlqlFacade', () => {
 
     it('retries query execution when primary action of timeout error alert is triggered', async () => {
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
-      transform.mockResolvedValue({ fields: MOCK_FIELDS, data: { count: 2, ...MOCK_ISSUES } });
 
       const alert = wrapper.findComponent(GlAlert);
       alert.vm.$emit('primaryAction');
@@ -236,12 +236,6 @@ describe('GlqlFacade', () => {
 
   describe('when number of GLQL blocks on page exceeds the limit', () => {
     beforeEach(async () => {
-      parse.mockResolvedValue({
-        query: 'query {}',
-        config: { display: 'list', title: 'Some title', description: 'Some description' },
-        variables: {},
-      });
-      transform.mockResolvedValue({ fields: MOCK_FIELDS, data: { count: 2, ...MOCK_ISSUES } });
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
 
       // Simulate exceeding the limit
@@ -265,7 +259,6 @@ describe('GlqlFacade', () => {
 
     it('retries query execution when primary action of limit error alert is triggered', async () => {
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
-      transform.mockResolvedValue({ fields: MOCK_FIELDS, data: { count: 2, ...MOCK_ISSUES } });
 
       const alert = wrapper.findComponent(GlAlert);
       alert.vm.$emit('primaryAction');

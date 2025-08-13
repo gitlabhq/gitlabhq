@@ -377,6 +377,26 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'returning tag name patterns when tag rules exist'
   end
 
+  describe '.statistics_token' do
+    let(:token) { described_class.statistics_token }
+
+    let(:access) do
+      [
+        {
+          'type' => 'registry',
+          'name' => 'statistics',
+          'actions' => ['*']
+        }
+      ]
+    end
+
+    subject { { token: token } }
+
+    it_behaves_like 'having the correct scope'
+    it_behaves_like 'a valid token'
+    it_behaves_like 'not a container repository factory'
+  end
+
   context 'user authorization' do
     let_it_be(:current_user) { create(:user) }
 

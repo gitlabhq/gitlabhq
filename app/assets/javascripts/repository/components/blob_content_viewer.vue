@@ -273,8 +273,10 @@ export default {
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER);
       },
     },
-    $route(newValue, oldValue) {
-      if (newValue?.path !== oldValue?.path) this.setShowBlame(false); // Always hide blame panel when navigating
+    $route({ query }) {
+      if (!this.glFeatures.inlineBlame) return;
+      if (query?.blame === '1') this.setShowBlame(true);
+      else this.setShowBlame(false); // Always hide blame panel by default
     },
   },
   methods: {
@@ -381,7 +383,8 @@ export default {
     setShowBlame(showBlame) {
       this.showBlame = showBlame;
       const blame = showBlame === true ? '1' : '0';
-      if (this.$route?.query?.blame === blame) return;
+      const routerBlameState = this.$route?.query?.blame;
+      if (routerBlameState === blame || (!showBlame && !routerBlameState)) return; // If blame state is the same as requested, ignore
       this.$router.push({ path: this.$route.path, query: { ...this.$route.query, blame } });
     },
   },

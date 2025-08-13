@@ -1,6 +1,6 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
-import { DEFAULT_DISPLAY_FIELDS, DEFAULT_DISPLAY_TYPE, REQUIRED_QUERY_FIELDS } from '../constants';
+import { DEFAULT_DISPLAY_FIELDS, DEFAULT_DISPLAY_TYPE } from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlAggregationEnabled, glqlFeatureFlags } from '../utils/feature_flags';
 
@@ -25,18 +25,17 @@ export const parseQueryTextWithFrontmatter = (text) => {
 };
 
 export const parseQuery = async (query, config) => {
-  const { output, success, variables } = await glql.compile(query, {
+  const { output, success, variables, fields } = await glql.compile(query, {
     ...config,
     ...extractGroupOrProject(),
     aggregate: glqlAggregationEnabled() ? config.aggregate : undefined,
     username: gon.current_username,
-    fields: `${REQUIRED_QUERY_FIELDS}, ${config.fields}`,
     featureFlags: glqlFeatureFlags(),
   });
 
   if (!success) throw new Error(output);
 
-  return { query: output, variables, config };
+  return { query: output, variables, config, fields };
 };
 
 export const parseYAML = (yaml) => {

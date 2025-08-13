@@ -1161,20 +1161,6 @@ export default {
                     @emoji-updated="$emit('work-item-emoji-updated', $event)"
                   />
                   <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
-                    <div class="sm:gl-ml-auto">
-                      <duo-workflow-action
-                        v-if="isDuoWorkflowEnabled"
-                        :project-id="projectIdAsNumber"
-                        :project-path="workItemFullPath"
-                        :title="__('Generate MR with Duo')"
-                        :hover-message="__('Generate merge request with Duo')"
-                        :goal="workItem.webUrl"
-                        workflow-definition="issue_to_merge_request"
-                        :agent-privileges="agentPrivileges"
-                        :duo-workflow-invoke-path="agentInvokePath"
-                        size="medium"
-                      />
-                    </div>
                     <gl-intersection-observer
                       v-if="showUploadDesign"
                       @appear="isDesignUploadButtonInViewport = true"
@@ -1196,6 +1182,20 @@ export default {
                       :is-confidential-work-item="workItem.confidential"
                       :project-id="workItemProjectId"
                     />
+                    <div>
+                      <duo-workflow-action
+                        v-if="isDuoWorkflowEnabled"
+                        :project-id="projectIdAsNumber"
+                        :project-path="workItemFullPath"
+                        :title="__('Generate MR with Duo')"
+                        :hover-message="__('Generate merge request with Duo')"
+                        :goal="workItem.webUrl"
+                        workflow-definition="issue_to_merge_request"
+                        :agent-privileges="agentPrivileges"
+                        :duo-workflow-invoke-path="agentInvokePath"
+                        size="medium"
+                      />
+                    </div>
                   </div>
                 </div>
               </section>

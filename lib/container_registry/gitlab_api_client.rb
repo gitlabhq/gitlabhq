@@ -31,7 +31,7 @@ module ContainerRegistry
     end
 
     def self.statistics
-      with_dummy_client(return_value_if_disabled: {}, &:statistics)
+      with_dummy_client(return_value_if_disabled: {}, token_config: { type: :statistics_token }, &:statistics)
     end
 
     def self.deduplicated_size(path)

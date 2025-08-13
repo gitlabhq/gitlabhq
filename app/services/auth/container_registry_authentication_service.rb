@@ -15,6 +15,7 @@ module Auth
       :build_destroy_container_image
     ].freeze
     PROTECTED_TAG_ACTIONS = %w[push delete].freeze
+    ALLOWED_REGISTRY_SCOPE_NAMES = %w[catalog statistics].freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
@@ -78,6 +79,10 @@ module Auth
         project: project,
         use_key_as_project_path: true
       )
+    end
+
+    def self.statistics_token
+      access_token({ 'statistics' => ['*'] }, 'registry')
     end
 
     def self.access_token(names_and_actions, type = 'repository', use_key_as_project_path: false, project: nil)
@@ -232,7 +237,7 @@ module Auth
 
     def process_registry_access(type, name, actions)
       return unless current_user&.admin?
-      return unless name == 'catalog'
+      return unless ALLOWED_REGISTRY_SCOPE_NAMES.include?(name)
       return unless actions == ['*']
 
       { type: type, name: name, actions: ['*'] }

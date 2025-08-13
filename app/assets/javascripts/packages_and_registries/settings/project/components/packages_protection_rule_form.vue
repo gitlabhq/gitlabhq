@@ -121,11 +121,8 @@ export default {
         { value: 'CONAN', text: s__('PackageRegistry|Conan') },
         { value: 'GENERIC', text: s__('PackageRegistry|Generic') },
         { value: 'NUGET', text: s__('PackageRegistry|NuGet') },
+        { value: 'HELM', text: s__('PackageRegistry|Helm') },
       ];
-
-      if (this.glFeatures.packagesProtectedPackagesHelm) {
-        packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });
-      }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },

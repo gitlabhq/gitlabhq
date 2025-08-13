@@ -99,6 +99,7 @@ describe('your work groups resolver', () => {
         },
       ],
       childrenCount: 1,
+      hasChildren: true,
     });
 
     expect(pageInfo).toEqual({

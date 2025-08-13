@@ -177,6 +177,27 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
         "[data-testid=\"groups-list-item-#{group.id}\"] [data-testid=\"groups-list-item-#{subgroup.id}\"]"
       )
     end
+
+    context 'when user has no access to root group but has access to subgroup' do
+      let!(:root_group) { create(:group, :private) }
+      let!(:accessible_subgroup) { create(:group, :private, parent: root_group) }
+
+      before do
+        accessible_subgroup.add_owner(user)
+        sign_in(user)
+        visit dashboard_groups_path
+      end
+
+      it 'shows caret button for root group and displays accessible subgroup when expanded' do
+        expect(has_testid?("groups-list-item-#{root_group.id}")).to be true
+        within_testid("groups-list-item-#{root_group.id}") do
+          expect(page).to have_testid('nested-groups-project-list-item-toggle-button')
+        end
+
+        click_group_caret(root_group)
+        expect(page).to have_selector("[data-testid=\"groups-list-item-#{accessible_subgroup.id}\"]")
+      end
+    end
   end
 
   context 'group actions dropdown' do

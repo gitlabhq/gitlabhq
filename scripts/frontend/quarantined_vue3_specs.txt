@@ -26,7 +26,6 @@ spec/frontend/ci/runner/components/registration/runner_instructions/runner_instr
 spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
-spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js

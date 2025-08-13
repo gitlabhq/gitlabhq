@@ -36,6 +36,17 @@ module CommitsHelper
     }
   end
 
+  def commit_list_app_data(project, ref, ref_type)
+    {
+      'project_full_path' => project.full_path,
+      'project_root_path' => project_path(project),
+      'project_id' => project.id.to_s,
+      'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(ref),
+      'ref_type' => ref_type.to_s,
+      'root_ref' => project.default_branch
+    }
+  end
+
   # Breadcrumb links for a Project and, if applicable, a tree path
   def commits_breadcrumbs
     return unless @project && @ref

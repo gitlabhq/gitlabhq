@@ -40,4 +40,5 @@ export const formatGroupForGraphQLResolver = (group) => ({
   projectsCount: group.project_count ?? null,
   children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
   childrenCount: group.subgroup_count ?? 0,
+  hasChildren: group.has_subgroups,
 });

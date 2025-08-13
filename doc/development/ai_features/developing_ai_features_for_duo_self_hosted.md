@@ -163,3 +163,26 @@ Please refer to the following Merge Requests for reference:
 - [Add prompts for Vulnerability Explanation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/2223)
 
 Your feature should now be available in GitLab Duo Self-Hosted. Restart your GDK instance to apply the changes and test the feature.
+
+## Testing your feature
+
+After implementing your AI feature, it's essential to validate its quality and effectiveness. This section outlines how to test your feature using the [Centralized Evaluation Framework (CEF)](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library#centralized-evaluation-framework).
+
+When designing your evaluation, you are responsible for selecting the most appropriate metric for your feature (for example, the percentage of responses rated 3 or 4 by an LLM judge) and setting a threshold that reflects acceptable performance. All evaluations use a standardized traffic-light scoring system:
+
+- **Green / Fully compatible:** The results meet or exceed your defined threshold for the chosen metric.
+- **Yellow / Largely compatible:** The results are close to the threshold but do not fully meet it.
+- **Red / Not compatible:** The results fall significantly below the threshold.
+
+The traffic-light system will automatically interpret your results according to these thresholds, providing a consistent classification across all AI features.
+
+For example, to evaluate Duo Chat's performance on GitLab documentation questions, we use an LLM-based scoring system. Another language model rates each response on a 1-4 scale, and we calculate the percentage of responses that achieve scores of 3 or 4. This percentage serves as our benchmark metric for comparing the effectiveness of different LLMs, and the traffic-light system indicates the level of compatibility for each model based on the defined threshold.
+
+The general process for testing your feature is as follows:
+
+1. **Create a dataset:** Prepare a representative dataset that covers the scenarios your feature is expected to handle.
+1. **Define evaluation metrics and thresholds:** Choose at least one metric that reflects your feature's goals and set a threshold for the traffic-light system.
+1. **Automate the evaluation:** Use the [evaluation-runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner) to automate running your evaluation pipeline. Refer to the evaluation-runner [README](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#how-to-use) for setup instructions.
+1. **Review and iterate:** After running your evaluation, review the results. If the results are unsatisfactory, iterate on your prompts, dataset, or model configuration, and re-run the evaluation.
+
+For more details, refer to the [CEF documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library#centralized-evaluation-framework) or this [step-by-step guide](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/index.md).

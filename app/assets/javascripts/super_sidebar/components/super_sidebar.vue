@@ -170,7 +170,7 @@ export default {
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.isAdmin) {
+      if (this.isAdmin && !this.glFeatures.globalTopbar) {
         return this.$refs.adminAreaLink.$el;
       }
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -257,7 +257,7 @@ export default {
             <help-center ref="helpCenter" :sidebar-data="sidebarData" />
 
             <gl-button
-              v-if="isAdmin"
+              v-if="isAdmin && !glFeatures.globalTopbar"
               ref="adminAreaLink"
               class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
               data-testid="sidebar-admin-link"

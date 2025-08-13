@@ -57,7 +57,7 @@ export default {
       variant="default"
       :aria-label="loadMoreLabel"
       :loading="Boolean(loading)"
-      @click="$emit('loadMore', count)"
+      @click="$emit('loadMore', actualPageSize)"
     >
       {{ loadMoreLabel }}
     </gl-button>

@@ -37,6 +37,7 @@ Gitlab::Database::Partitioning.register_models(
     CommitStatus,
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,
+    PartitionedSentNotification,
     Users::GroupVisit,
     Users::ProjectVisit,
     MergeRequest::CommitsMetadata,

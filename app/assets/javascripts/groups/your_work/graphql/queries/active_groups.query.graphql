@@ -5,6 +5,7 @@ query yourWorkActiveGroups($search: String, $sort: String, $parentId: Int, $page
     nodes {
       ...Group
       editPath
+      hasChildren
       children
       childrenCount
     }

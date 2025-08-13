@@ -300,7 +300,8 @@ describe('Design reply form component', () => {
       const clearAutosaveSpy = jest.fn();
       markdownEditorEventHub.$on(CLEAR_AUTOSAVE_ENTRY_EVENT, clearAutosaveSpy);
       createComponent();
-      await wrapper.destroy();
+      wrapper.destroy();
+      await waitForPromises();
       expect(clearAutosaveSpy).toHaveBeenCalled();
     });
   });

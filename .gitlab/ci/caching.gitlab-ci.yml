@@ -13,7 +13,7 @@
 #=================================
 cache:ruby-gems:
   extends:
-    - .with-ruby-postgres-slim-image
+    - .with-ruby-slim-image
     - .cache-pull-push-base
     - .ruby-cache-pull-push
   stage: sync
@@ -23,6 +23,14 @@ cache:ruby-gems:
     - source scripts/utils.sh
   script:
     - bundle_install_script
+
+cache:ruby-gems-ubi:
+  extends:
+    - cache:ruby-gems
+    - .with-ruby-ubi-image
+  variables:
+    BUILD_OS: ubi
+    OS_VERSION: $UBI_VERSION
 
 cache:node-modules:
   extends:
