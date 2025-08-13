@@ -1,13 +1,14 @@
 <script>
+import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
+import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
+import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
+
 import IssuablePresenter from './issuable.vue';
 import MilestonePresenter from './milestone.vue';
 import UserPresenter from './user.vue';
 import LabelPresenter from './label.vue';
-import IterationPresenter from './iteration.vue';
-import StatusPresenter from './status.vue';
 import TypePresenter from './type.vue';
 import DimensionPresenter from './dimension.vue';
-import HealthPresenter from './health.vue';
 import StatePresenter from './state.vue';
 import HtmlPresenter from './html.vue';
 import CodePresenter from './code.vue';

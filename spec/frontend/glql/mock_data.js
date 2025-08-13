@@ -55,6 +55,17 @@ export const MOCK_MILESTONE = {
 };
 
 export const MOCK_ITERATION = {
+  id: 'gid://gitlab/Iteration/1',
+  iid: '1',
+  startDate: '2024-10-01',
+  dueDate: '2024-10-14',
+  title: null,
+  webUrl: 'https://gitlab.com/groups/gitlab-org/-/iterations/1',
+  iterationCadence: {
+    id: 'gid://gitlab/Iterations::Cadence/7001',
+    title: 'testt',
+    __typename: 'IterationCadence',
+  },
   __typename: 'Iteration',
 };
 
