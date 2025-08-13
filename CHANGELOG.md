@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.1.4 (2025-08-12)
+
+### Fixed (4 changes)
+
+- [Fix numpad enter not working for revision compare dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfcc6cd8395c3038be6db16a251eb8fa4bd70ada)
+- [Fix another case where Sidekiq can take too long to shut down](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e653c4d1c8aad46bd21652fcb073bc4695af30b)
+- [Fix: include relative URL root in PDF worker and cMap paths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c2bc0d69c6317df9db3b7fdabaf282ff53f78f8)
+- [Skip Geo secondary for SyncProjectPolicyWorker](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46cc0c9398a878c31fc1a578cf2d2e61ca127e6e) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Check root namespace of project framework for SAAS only](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6d5a089a23b31cb4bd0d7bd8d162d96047842570) **GitLab Enterprise Edition**
+- [Fix case sensitivity in CODEOWNERS validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8152fbb8df5026f8c3cf76c8c6ce8c1bead50330) **GitLab Enterprise Edition**
+
+### Security (11 changes)
+
+- [Sanitize html for legacy simple blob viewer and code navigation nodes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4cf31d635d329618a1fd5781f4ae0d8da62d0fb9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5204))
+- [Remove the destroy issue permission from the planner role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9fc0d52f04f83ad1903d3ea937b1ddde6e8e6c46) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5129))
+- [Release names are unbounded, leads to server crash](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5e31c80d3bf6940ab0d40f322abe78f2b7be35c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5209))
+- [Block access to assigned issues when group has IP restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97d3f19798fe0ef7f201c4931d20fbb5d268d40b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5162))
+- [Restrict jobs artifacts API endpoint to token access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76f4fb8fbb9a5833637e3a8c96a173f98f54808c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5122))
+- [Only show titleHtml when valid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92b9a198e548991cdab54a51f0dedc22916f46d3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5178))
+- [Prevent edits to MRAP approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0db41a6626e55dc76b42fb2915ca2513f579319f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5199))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a8aec11fea6fa05fbd27c18b723a0f9c5adf47c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5188))
+- [Change wiki_page_max_content_bytes default to 5 MB and in existing instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ef6a9e7d85603049fd9eb482f03b829fc1e8714) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5136))
+- [Prevent unauthorized maintainers from modifying runner records](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56d359e0a914a37ed130d224929b1b70d2535b53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5173))
+- [Add length validations to ChatName model fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36007067bcc7853d0b175170303112a6be38b0ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5147))
+
 ## 18.1.3 (2025-07-22)
 
 ### Security (4 changes)

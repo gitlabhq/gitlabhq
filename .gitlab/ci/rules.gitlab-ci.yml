@@ -1036,7 +1036,7 @@
   rules:
     - <<: *if-merge-request
       changes: *db-patterns
-      when: always
+      when: never
 
 ################
 # Shared rules #

@@ -80,13 +80,6 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
         it_behaves_like 'mutation that deletes work item'
       end
 
-      context 'when user is planner' do
-        let(:work_item) { issue }
-        let(:current_user) { planner }
-
-        it_behaves_like 'mutation that deletes work item'
-      end
-
       context 'when user is owner' do
         let(:work_item) { issue }
         let(:current_user) { owner }

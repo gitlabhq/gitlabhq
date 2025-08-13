@@ -141,6 +141,7 @@ module API
         authenticate! unless params[:scope] == 'all'
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues)
+        issues = Ability.issues_readable_by_user(issues, current_user)
 
         options = {
           with: Entities::Issue,
