@@ -43,7 +43,7 @@ module Gitlab
 
       def project_claims
         ::JSONWebToken::ProjectTokenClaims
-         .new(project: project, user: user)
+         .new(project: source_project, user: user)
          .generate
       end
 
@@ -86,6 +86,14 @@ module Gitlab
 
       def environment_protected?
         false # Overridden in EE
+      end
+
+      # Only for Merge Request pipelines from forked projects, "source_project" is different from "project".
+      # In this case, the "project" is the target project of the merge request where the pipeline is created
+      # And "source_project" is the source project of the merge request.
+      # For all other cases "project" and "source_project" are one and the same
+      def source_project
+        pipeline.merge_request_from_forked_project? ? pipeline.merge_request.source_project : project
       end
     end
   end

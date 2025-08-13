@@ -228,8 +228,8 @@ RSpec.shared_examples 'abilities with group level work items license' do
       )
 
       # disallowed
-      expect(permissions(group_planner, work_item)).to be_allowed(:delete_work_item)
-      expect(permissions(group_planner, confidential_work_item)).to be_allowed(:delete_work_item)
+      expect(permissions(group_planner, work_item)).to be_disallowed(:delete_work_item)
+      expect(permissions(group_planner, confidential_work_item)).to be_disallowed(:delete_work_item)
     end
 
     it 'checks group reporter abilities' do

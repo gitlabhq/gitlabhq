@@ -248,7 +248,7 @@ RSpec.shared_examples 'project policies as planner' do
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
+        expect_disallowed(*owner_permissions)
       end
 
       it_behaves_like 'deploy token does not get confused with user' do
@@ -304,7 +304,7 @@ RSpec.shared_examples 'project policies as planner' do
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
+        expect_disallowed(*owner_permissions)
       end
     end
   end
@@ -317,7 +317,7 @@ RSpec.shared_examples 'project policies as reporter' do
 
     specify do
       expect_allowed(*guest_permissions)
-      expect_allowed(*(planner_permissions - %i[create_wiki admin_wiki destroy_issue]))
+      expect_allowed(*(planner_permissions - %i[create_wiki admin_wiki]))
       expect_allowed(*reporter_permissions)
       expect_allowed(*team_member_reporter_permissions)
       expect_disallowed(*developer_permissions)
@@ -341,7 +341,7 @@ RSpec.shared_examples 'project policies as reporter' do
 
       specify do
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - %i[create_wiki admin_wiki destroy_issue]))
+        expect_allowed(*(planner_permissions - %i[create_wiki admin_wiki]))
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
@@ -359,7 +359,7 @@ RSpec.shared_examples 'project policies as developer' do
 
     specify do
       expect_allowed(*guest_permissions)
-      expect_allowed(*(planner_permissions - %i[admin_wiki destroy_issue]))
+      expect_allowed(*(planner_permissions - %i[admin_wiki]))
       expect_allowed(*reporter_permissions)
       expect_allowed(*team_member_reporter_permissions)
       expect_allowed(*developer_permissions)
@@ -383,7 +383,7 @@ RSpec.shared_examples 'project policies as developer' do
 
       specify do
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - %i[admin_wiki destroy_issue]))
+        expect_allowed(*(planner_permissions - %i[admin_wiki]))
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -401,7 +401,7 @@ RSpec.shared_examples 'project policies as maintainer' do
 
     it do
       expect_allowed(*guest_permissions)
-      expect_allowed(*(planner_permissions - [:destroy_issue]))
+      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*team_member_reporter_permissions)
       expect_allowed(*developer_permissions)

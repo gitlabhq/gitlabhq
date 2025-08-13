@@ -37,9 +37,10 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:planner_permissions) do
     base_guest_permissions +
       %i[
-        admin_issue admin_work_item admin_issue_board admin_issue_board_list admin_label admin_milestone
-        read_confidential_issues update_issue reopen_issue destroy_issue read_internal_note
-        download_wiki_code create_wiki admin_wiki export_work_items
+        admin_issue admin_work_item admin_issue_board admin_issue_board_list admin_label
+        admin_milestone admin_wiki read_confidential_issues update_issue
+        reopen_issue read_internal_note
+        download_wiki_code create_wiki export_work_items
       ]
   end
 
@@ -65,8 +66,8 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_merge_request admin_tag create_build
       create_commit_status create_container_image create_deployment
       create_environment create_merge_request_from
-      create_pipeline create_release
-      create_wiki destroy_container_image destroy_container_image_tag push_code read_pod_logs
+      create_pipeline create_release create_wiki
+      destroy_container_image destroy_container_image_tag push_code read_pod_logs
       read_terraform_state resolve_note update_build cancel_build
       update_container_image update_deployment update_environment
       update_merge_request update_pipeline update_release destroy_release

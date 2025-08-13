@@ -161,7 +161,7 @@ class NamespaceSetting < ApplicationRecord
 
   def validate_enterprise_bypass_expires_at
     if enterprise_bypass_expires_at.blank?
-      errors.add(:enterprise_bypass_expires_at, 'An expiry date is required when bypass is enabled.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date is required when bypass is enabled.'))
       return
     end
 
@@ -169,9 +169,9 @@ class NamespaceSetting < ApplicationRecord
     max_date = Date.current.advance(years: 1, days: -1).end_of_day
 
     if enterprise_bypass_expires_at < min_date
-      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be a future date.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must be a future date.'))
     elsif enterprise_bypass_expires_at > max_date
-      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be within one year from today.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must not be more than a year in the future.'))
     end
   end
 

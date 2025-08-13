@@ -7,6 +7,7 @@ module Ci
   #
   module Metadatable
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
 
     included do
       has_one :metadata,
@@ -26,14 +27,14 @@ module Ci
       before_validation :ensure_metadata, on: :create
 
       scope :with_project_and_metadata, -> do
-        joins(:metadata).includes(:metadata).preload(:project)
+        joins(:metadata).includes(:metadata).preload(:project, :job_definition)
       end
 
       def self.any_with_exposed_artifacts?
         found_exposed_artifacts = false
 
         # TODO: Remove :project preload when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is removed
-        includes(:project).each_batch do |batch|
+        includes(:project, :job_definition).each_batch do |batch|
           # We only load what we need for `has_exposed_artifacts?`
           records = batch.select(:id, :partition_id, :project_id, :options).to_a
 
@@ -59,7 +60,7 @@ module Ci
       end
 
       def self.select_with_exposed_artifacts
-        includes(:metadata, :job_artifacts_metadata, :project).select(&:has_exposed_artifacts?)
+        includes(:metadata, :job_definition, :job_artifacts_metadata, :project).select(&:has_exposed_artifacts?)
       end
     end
 
@@ -85,11 +86,11 @@ module Ci
     end
 
     def options
-      read_metadata_attribute(:options, :config_options, {})
+      read_metadata_attribute(:options, :config_options, :options, {})
     end
 
     def yaml_variables
-      read_metadata_attribute(:yaml_variables, :config_variables, [])
+      read_metadata_attribute(:yaml_variables, :config_variables, :yaml_variables, [])
     end
 
     def options=(value)
@@ -152,14 +153,22 @@ module Ci
 
     private
 
-    def read_metadata_attribute(legacy_key, metadata_key, default_value = nil)
-      read_attribute(legacy_key) || metadata&.read_attribute(metadata_key) || default_value
+    def read_metadata_attribute(legacy_key, metadata_key, job_definition_key, default_value = nil)
+      (legacy_key && read_attribute(legacy_key)) ||
+        (read_from_new_destination? && job_definition && job_definition.config[job_definition_key]) ||
+        metadata&.read_attribute(metadata_key) ||
+        default_value
     end
 
     def write_metadata_attribute(legacy_key, metadata_key, value)
       ensure_metadata.write_attribute(metadata_key, value)
       write_attribute(legacy_key, nil)
     end
+
+    def read_from_new_destination?
+      Feature.enabled?(:read_from_new_ci_destinations, project)
+    end
+    strong_memoize_attr :read_from_new_destination?
   end
 end
 

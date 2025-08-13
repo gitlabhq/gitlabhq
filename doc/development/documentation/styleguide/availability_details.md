@@ -98,6 +98,32 @@ For status, choose one:
 
 Generally available features should not have a status.
 
+### Available on GitLab Duo with self-hosted models
+
+For GitLab Duo features, the possibilities are:
+
+```markdown
+- Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>): Yes
+- Available on GitLab Duo with self-hosted models: No
+```
+
+### LLMs
+
+If you need to document the LLMs that the GitLab Duo feature uses:
+
+- Include a link to the LLM.
+- Use a separate entry if the feature uses different LLMs for:
+  - Code generation and code completion.
+  - GitLab Duo with Amazon Q.
+
+For example:
+
+```markdown
+- LLMs for code completion: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- LLMs for code generation: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for Amazon Q: Amazon Q Developer
+```
+
 ### History
 
 The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history,

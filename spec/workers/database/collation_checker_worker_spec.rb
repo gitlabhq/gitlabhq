@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::CollationCheckerWorker, feature_category: :database do
+RSpec.describe Database::CollationCheckerWorker, :suppress_gitlab_schemas_validate_connection, feature_category: :database do
   let(:worker) { described_class.new }
   let(:mock_result) do
     {

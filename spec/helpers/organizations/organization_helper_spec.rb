@@ -221,7 +221,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
-          'organizations_path' => '/-/organizations',
+          'organizations_path' => '/o',
           'root_url' => 'http://test.host/',
           'preview_markdown_path' => '/-/organizations/preview_markdown'
         }
@@ -242,7 +242,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'avatar' => 'avatar.jpg',
             'visibility_level' => organization.visibility_level
           },
-          'organizations_path' => '/-/organizations',
+          'organizations_path' => '/o',
           'root_url' => 'http://test.host/',
           'preview_markdown_path' => '/-/organizations/preview_markdown'
         }

@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def custom_claims
-        { project_path: project.full_path,
+        { project_path: source_project.full_path,
           ref_type: ref_type,
           ref: source_ref }
       end

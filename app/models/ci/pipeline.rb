@@ -1176,11 +1176,11 @@ module Ci
     end
 
     def latest_test_report_builds_in_self_and_project_descendants
-      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, job_artifacts: :artifact_report)
+      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
     end
 
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, job_artifacts: :artifact_report)
+      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
     end
 
     def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
@@ -1371,6 +1371,10 @@ module Ci
 
     def merge_request?
       merge_request_id.present? && merge_request.present?
+    end
+
+    def merge_request_from_forked_project?
+      merge_request? && merge_request.for_fork?
     end
 
     def external_pull_request?

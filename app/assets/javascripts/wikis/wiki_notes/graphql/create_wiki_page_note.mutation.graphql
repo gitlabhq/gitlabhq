@@ -1,13 +1,7 @@
 #import "./wiki_page_note.fragment.graphql"
 
-mutation createWikiPageNote(
-  $input: CreateNoteInput!
-  $changeResolve: Boolean!
-  $resolve: Boolean!
-  $discussionId: DiscussionID!
-  $skipCreateNote: Boolean!
-) {
-  createNote(input: $input) @skip(if: $skipCreateNote) {
+mutation createWikiPageNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
     note {
       id
       discussion {
@@ -18,15 +12,6 @@ mutation createWikiPageNote(
           }
         }
       }
-    }
-    errors
-  }
-
-  discussionToggleResolve(input: { id: $discussionId, resolve: $resolve })
-    @include(if: $changeResolve) {
-    discussion {
-      id
-      resolved
     }
     errors
   }

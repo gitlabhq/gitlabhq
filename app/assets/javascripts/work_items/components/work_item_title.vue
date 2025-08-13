@@ -50,12 +50,12 @@ export default {
     };
   },
   computed: {
-    workItemTitle() {
-      return this.titleHtml || this.title;
-    },
     invalidFeedback() {
-      return this.workItemTitle ? '' : this.$options.i18n.requiredFieldFeedback;
+      return this.titleHtml || this.title ? '' : this.$options.i18n.requiredFieldFeedback;
     },
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji'],
   },
   methods: {
     overLimitText(count) {
@@ -111,6 +111,7 @@ export default {
     data-testid="work-item-title"
     class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"
   >
-    <span v-safe-html="workItemTitle"></span>
+    <span v-if="titleHtml" v-safe-html:[$options.safeHtmlConfig]="titleHtml"></span>
+    <span v-else>{{ title }}</span>
   </component>
 </template>

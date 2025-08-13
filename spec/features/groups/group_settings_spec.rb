@@ -340,8 +340,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
       specify { expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive')) }
     end
 
-    context 'when group is archived',
-      skip: 'Returns a 404 in CE due to a bug: https://gitlab.com/gitlab-org/gitlab/-/issues/558811' do
+    context 'when group is archived' do
       before do
         subgroup.archive
 

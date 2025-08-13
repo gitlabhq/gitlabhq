@@ -298,7 +298,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         vscode_extension_marketplace_enabled?: false,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
-        wiki_page_max_content_bytes: 50.megabytes
+        wiki_page_max_content_bytes: 5.megabytes
       )
     end
   end

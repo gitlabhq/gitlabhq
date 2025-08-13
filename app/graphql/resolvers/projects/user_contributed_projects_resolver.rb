@@ -51,6 +51,7 @@ module Resolvers
 
       def finder_params(args)
         {
+          organization: Current.organization,
           search: args[:search],
           sort: args[:sort],
           min_access_level: args[:min_access_level],

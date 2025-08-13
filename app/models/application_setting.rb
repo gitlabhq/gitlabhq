@@ -10,7 +10,8 @@ class ApplicationSetting < ApplicationRecord
   include SafelyChangeColumnDefault
   include IgnorableColumns
 
-  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period
+  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period,
+    :wiki_page_max_content_bytes
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'

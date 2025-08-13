@@ -4944,20 +4944,43 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#read_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated, pipeline: pipeline) }
-    let(:build_options) { { key: "build" } }
-    let(:metadata_options) { { key: "metadata" } }
-    let(:default_options) { { key: "default" } }
+    let(:build_options) { { key: 'build' } }
+    let(:job_definition_options) { { key: 'definition' } }
+    let(:metadata_options) { { key: 'metadata' } }
+    let(:default_options) { { key: 'default' } }
 
-    subject { build.send(:read_metadata_attribute, :options, :config_options, default_options) }
+    subject { build.send(:read_metadata_attribute, :options, :config_options, :options, default_options) }
 
-    context 'when build and metadata options is set' do
+    context 'when all destination options are set' do
       before do
         build.write_attribute(:options, build_options)
         build.ensure_metadata.write_attribute(:config_options, metadata_options)
+        build.build_job_definition.write_attribute(:config, { options: job_definition_options })
       end
 
       it 'prefers build options' do
         is_expected.to eq(build_options)
+      end
+    end
+
+    context 'when only job definition and metadata options are set' do
+      before do
+        build.ensure_metadata.write_attribute(:config_options, metadata_options)
+        build.build_job_definition.write_attribute(:config, { options: job_definition_options })
+      end
+
+      it 'returns job definition options' do
+        is_expected.to eq(job_definition_options)
+      end
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it 'returns metadata options' do
+          is_expected.to eq(metadata_options)
+        end
       end
     end
 

@@ -24,26 +24,25 @@ For more information, see also [Sharing projects and groups](../project/members/
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
-
-{{< /history >}}
-
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
 To configure push rules for a group:
 
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save push rules**.
 
-The group's new subgroups have push rules set for them based on either:
+New projects inherit push rules from:
 
 - The closest parent group with push rules defined.
 - Push rules set for the entire instance, if no parent groups have push rules defined.
+
+Only projects inherit push rules. Subgroups don't inherit push
+rules from parent groups. To verify which push rules apply to new projects,
+create a project in the subgroup and check the project's push rules.
 
 ## Restrict Git access protocols
 

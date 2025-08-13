@@ -6,6 +6,14 @@ class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_create_runners!, only: [:new, :register]
   before_action :runner, only: [:edit, :destroy, :pause, :resume, :show, :register]
 
+  before_action only: [:edit, :pause, :resume] do
+    authorize_runner!(:update_runner)
+  end
+
+  before_action only: [:destroy] do
+    authorize_runner!(:delete_runner)
+  end
+
   feature_category :runner
   urgency :low
 
@@ -74,6 +82,10 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def runner_update_service
     Ci::Runners::UpdateRunnerService.new(current_user, runner)
+  end
+
+  def authorize_runner!(ability)
+    access_denied! unless can?(current_user, ability, runner)
   end
 end
 

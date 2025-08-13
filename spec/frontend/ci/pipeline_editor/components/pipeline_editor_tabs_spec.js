@@ -78,6 +78,7 @@ describe('Pipeline editor tabs component', () => {
       stubs: {
         TextEditor: MockTextEditor,
         EditorTab,
+        'gl-emoji': true,
       },
       listeners,
       ...options,

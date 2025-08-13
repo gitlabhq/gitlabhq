@@ -44,7 +44,8 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five scan execution policies to each security policy project.
 - Local project YAML files cannot override scan execution policies. These policies take precedence over any configurations defined for a pipeline, even if you use the same job name in your project's CI/CD configuration.
-- Scan execution policies with `type: pipeline` rules do not create pipelines if the project's `.gitlab-ci.yml` file contains [`workflow:rules`](../../../ci/yaml/workflow.md) that prevent the creation of pipelines. This limitation does not apply to `type: schedule` rules.
+- Scheduled policies (`type: schedule`) execute according to their scheduled  `cadence` only. Updating a policy does not trigger an immediate scan.
+- Policy updates that you make directly to the YAML configuration files (with a commit or push instead of in the policy editor) may take up to 10 minutes to propagate through the system. (See [issue 512615](https://gitlab.com/gitlab-org/gitlab/-/issues/512615) for proposed changes to this limitation.)
 
 ## Jobs
 
@@ -504,6 +505,19 @@ In GitLab 16.9 and earlier:
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
+
+## Policy update propagation
+
+When you update a policy, the changes propagate differently depending on how you update the policy:
+
+- With a merge request on the [security policy project](../_index.md): Changes take effect immediately after the merge request is merged.
+- Direct commits to `.gitlab/security-policies/policy.yml`: Changes may take up to 10 minutes to take effect.
+
+### Triggering behavior
+
+Updates to pipeline-based policies (`type: pipeline`) do not trigger immediate pipelines or affect pipelines already in progress. The policy changes apply to future pipeline runs.
+
+You cannot manually trigger the rules in a scheduled policy outside their scheduled cadence.
 
 ## Example security policy project
 

@@ -167,7 +167,7 @@ module API
             .new(current_user: current_user, pipeline: pipeline, params: params)
             .execute
 
-          builds = builds.with_preloads.preload(:metadata, :runner_manager, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
+          builds = builds.with_preloads.preload(:metadata, :job_definition, :runner_manager, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
 
           present paginate(builds), with: Entities::Ci::Job
         end

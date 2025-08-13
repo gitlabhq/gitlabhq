@@ -81,7 +81,7 @@ To select an account:
 
 1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests**.
-1. Select the line containing **(multiple projects)** to expand the list of accounts.
+1. Select the line containing **(multiple projects, click to select)**.
 1. Select your desired project:
    ![select project-account combination](img/select-project-account_v17_7.png)
 
@@ -93,8 +93,8 @@ To change your project selection:
 
 1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests** to show the project list.
-1. Right-click the project's name.
-1. Select **Clear selected project**.
+1. Select the project.
+1. Next to the project name, select **Clear Selected Project** button ({{< icon name="close-xs" >}}).
 
 ## Use slash commands
 

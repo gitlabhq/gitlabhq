@@ -44,7 +44,6 @@ const mockDiscussion = (...children) => {
           adminNote: true,
           awardEmoji: true,
           createNote: true,
-          resolveNote: true,
         },
         discussion: null,
       })),
@@ -243,21 +242,15 @@ describe('WikiNotesApp', () => {
       expect(wikiDiscussions.at(1).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
       expect(wikiDiscussions.at(2).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
 
-      expect(wikiDiscussions.at(0).props('discussion').notes.nodes).toHaveLength(1);
-      expect(wikiDiscussions.at(1).props('discussion').notes.nodes).toHaveLength(1);
-      expect(wikiDiscussions.at(2).props('discussion').notes.nodes).toHaveLength(3);
+      expect(wikiDiscussions.at(0).props('discussion')).toHaveLength(1);
+      expect(wikiDiscussions.at(1).props('discussion')).toHaveLength(1);
+      expect(wikiDiscussions.at(2).props('discussion')).toHaveLength(3);
 
-      expect(wikiDiscussions.at(0).props('discussion').notes.nodes[0].body).toEqual('Discussion 1');
-      expect(wikiDiscussions.at(1).props('discussion').notes.nodes[0].body).toEqual('Discussion 2');
-      expect(wikiDiscussions.at(2).props('discussion').notes.nodes[0].body).toEqual(
-        'Discussion 3 Note 1',
-      );
-      expect(wikiDiscussions.at(2).props('discussion').notes.nodes[1].body).toEqual(
-        'Discussion 3 Note 2',
-      );
-      expect(wikiDiscussions.at(2).props('discussion').notes.nodes[2].body).toEqual(
-        'Discussion 3 Note 3',
-      );
+      expect(wikiDiscussions.at(0).props('discussion')[0].body).toEqual('Discussion 1');
+      expect(wikiDiscussions.at(1).props('discussion')[0].body).toEqual('Discussion 2');
+      expect(wikiDiscussions.at(2).props('discussion')[0].body).toEqual('Discussion 3 Note 1');
+      expect(wikiDiscussions.at(2).props('discussion')[1].body).toEqual('Discussion 3 Note 2');
+      expect(wikiDiscussions.at(2).props('discussion')[2].body).toEqual('Discussion 3 Note 3');
     });
 
     it('should not render error alert', () => {
@@ -317,7 +310,7 @@ describe('WikiNotesApp', () => {
       wikiDiscussions.at(2).vm.$emit('note-deleted', discussions.nodes[2].notes.nodes[0].id);
       await nextTick();
 
-      const findNotes = () => wikiDiscussions.at(2).props('discussion').notes.nodes;
+      const findNotes = () => wikiDiscussions.at(2).props('discussion');
       expect(findNotes()).toHaveLength(2);
       expect(findNotes()).not.toContainEqual({
         id: discussions.nodes[2].notes.nodes[0].id,

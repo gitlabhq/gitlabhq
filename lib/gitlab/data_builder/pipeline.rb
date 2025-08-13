@@ -53,6 +53,7 @@ module Gitlab
               job_artifacts_archive: [],
               user: [],
               metadata: [],
+              job_definition: [],
               ci_stage: []
             }
           }

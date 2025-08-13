@@ -109,7 +109,7 @@ module Resolvers
         marked_for_deletion_on: args[:marked_for_deletion_on],
         visibility_level: args[:visibility_level],
         active: args[:active],
-        current_organization: ::Current.organization
+        organization: ::Current.organization
       }
     end
 

@@ -125,7 +125,8 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
               namespace_id: group.id,
               organization_path: current_organization.path
             )
-            expect(page_content).to have_link(s_('GroupsEmptyState|Create project'), href: expected_path)
+            expect(page_content)
+              .to have_link(s_('GroupsEmptyState|Create project'), href: expected_path)
           end
         end
       end

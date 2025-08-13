@@ -103,7 +103,8 @@ export default {
         await this.fetchDbDiagnostics({ retry: true });
       } catch (error) {
         this.clearFetchRetries();
-        this.error = error.message ?? __('An error occurred while starting diagnostics');
+        this.error =
+          error.message ?? s__('DatabaseDiagnostics|An error occurred while starting diagnostics');
       }
     },
     clearFetchRetries() {

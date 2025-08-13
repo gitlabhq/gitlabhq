@@ -88,6 +88,7 @@ module Ci
     def self.with_preloads
       preload(
         :metadata,
+        :job_definition,
         user: [:followers, :followees],
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]

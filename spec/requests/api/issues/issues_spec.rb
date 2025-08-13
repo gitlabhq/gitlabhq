@@ -1109,6 +1109,36 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context "when issues are filtered by authorization" do
+      let_it_be(:current_user) { create(:user) }
+
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, namespace: group, developers: [current_user]) }
+
+      let_it_be(:restricted_issue) { create(:issue, project: project, assignees: [current_user]) }
+      let_it_be(:unrestricted_issue) { create(:issue, project: project, assignees: [current_user]) }
+
+      context "when unauthorized issues are not filtered out" do
+        it "includes all issues" do
+          get api('/issues', current_user), params: { scope: 'assigned_to_me' }
+
+          expect_paginated_array_response(restricted_issue.id, unrestricted_issue.id)
+        end
+      end
+
+      context "when Ability filters out unauthorized issues" do
+        before do
+          allow(Ability).to receive(:issues_readable_by_user).and_return([unrestricted_issue])
+        end
+
+        it "includes only authorized issues" do
+          get api('/issues', current_user), params: { scope: 'assigned_to_me' }
+
+          expect_paginated_array_response(unrestricted_issue.id)
+        end
+      end
+    end
   end
 
   describe 'GET /projects/:id/issues' do

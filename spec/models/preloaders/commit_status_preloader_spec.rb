@@ -13,7 +13,7 @@ RSpec.describe Preloaders::CommitStatusPreloader do
   let_it_be(:generic_commit_status2) { create(:generic_commit_status, pipeline: pipeline) }
 
   describe '#execute' do
-    let(:relations) { %i[pipeline metadata tags job_artifacts_archive { downstream_pipeline: [:user] }] }
+    let(:relations) { %i[pipeline metadata job_definition tags job_artifacts_archive { downstream_pipeline: [:user] }] }
     let(:statuses) { CommitStatus.where(commit_id: pipeline.id).all }
 
     subject(:execute) { described_class.new(statuses).execute(relations) }

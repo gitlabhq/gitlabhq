@@ -2,6 +2,42 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.2 (2025-08-12)
+
+### Added (1 change)
+
+- [Add outbound allowlist to allowed endpoints for SSRF filter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/23e2fe82bd5ccb84b739833ecd0092129c690c2a)
+
+### Fixed (7 changes)
+
+- [Detect CORS problems in Web IDE](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84bd4650037396a8b0df0dcf6b7747b669418e91)
+- [Fix Web IDE loading race condition](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8b48753fdce4a4fac10a07f45f1c1208afc32227)
+- [Fix numpad enter not working for revision compare dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a802fcffc7359add5f39acfd6a1ef057f4b5ea08)
+- [Fix another case where Sidekiq can take too long to shut down](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0d78035880ee5ed4f3fc7eac3b0aff67a5262103)
+- [Fix: include relative URL root in PDF worker and cMap paths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7254c6383db50493e211a79a5a3dec7a8b603c4)
+- [New projects inherit parent value for duo_features_enabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/478689b1f93ee21bb8bfa38eb7142e3e2ed3822b) **GitLab Enterprise Edition**
+- [Skip Geo secondary for SyncProjectPolicyWorker](https://gitlab.com/gitlab-org/security/gitlab/-/commit/20de308d39a6821b741b83d37cdef1d3718ace50) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Check root namespace of project framework for SAAS only](https://gitlab.com/gitlab-org/security/gitlab/-/commit/051fe36ef0e9b208a8ede74bce73c8a6082f94d5) **GitLab Enterprise Edition**
+- [Fix case sensitivity in CODEOWNERS validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c87a2c77787747a37be3069a91d7bdf7f98f42b) **GitLab Enterprise Edition**
+
+### Security (12 changes)
+
+- [Sanitize html for legacy simple blob viewer and code navigation nodes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/61f1c480da2916cd20eb82f1ae4ba8b0b96029c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5203))
+- [Remove the destroy issue permission from the planner role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d604e0418ef28a03d49aa38830e1e8a6862d50ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5145))
+- [Release names are unbounded, leads to server crash](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc504676f35f3cd17a6e397b2e14c232e4982c19) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5208))
+- [Block access to assigned issues when group has IP restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/859a6a48b098369ff31878d8caad7916be4bbc21) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5161))
+- [More rigorous sanitization of placeholders](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c5937032ef4ef28234fecfe291bd072550e2545) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5205))
+- [Restrict jobs artifacts API endpoint to token access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/408839b414bfe5715d02027dc180f3be03f1cc10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5154))
+- [Only show titleHtml when valid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d6a1743777deb7a142cd27343b7b88e960c2a328) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5177))
+- [Prevent edits to MRAP approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/65bebfb6a10cb6b53c10788b59dc783abbe4ad22) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5200))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ff776e5233cc24abc009930ede023782d42572e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5187))
+- [Change wiki_page_max_content_bytes default to 5 MB and in existing instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/337a1cf51c823e9cf3a2ab0891947b1bff855faf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5142))
+- [Prevent unauthorized maintainers from modifying runner records](https://gitlab.com/gitlab-org/security/gitlab/-/commit/07fdcbf5442a1a6088c0cc11837a38bdeae858c1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5172))
+- [Add length validations to ChatName model fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5438b5d6bd8afe47a127f9680a6e84bc52aa69a4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5149))
+
 ## 18.2.1 (2025-07-22)
 
 ### Fixed (1 change)
@@ -772,6 +808,34 @@ entry.
 - [Remove pat_last_used_at_optimization FF](https://gitlab.com/gitlab-org/gitlab/-/commit/07b0af7a1bef7be80a2b9ed8d1a8e1ee38b8b0fb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193718))
 - [Add NOT NULL on incident_management_pending_alert_escalations](https://gitlab.com/gitlab-org/gitlab/-/commit/9eb4353a140f28bb89931e52a7606657915e95b9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193647))
 - [Sync translations from crowdin (2025-05-28)](https://gitlab.com/gitlab-org/gitlab/-/commit/b7be101322f296e7351d9f2348e5ee32ead9228a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192769))
+
+## 18.1.4 (2025-08-12)
+
+### Fixed (4 changes)
+
+- [Fix numpad enter not working for revision compare dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfcc6cd8395c3038be6db16a251eb8fa4bd70ada)
+- [Fix another case where Sidekiq can take too long to shut down](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e653c4d1c8aad46bd21652fcb073bc4695af30b)
+- [Fix: include relative URL root in PDF worker and cMap paths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c2bc0d69c6317df9db3b7fdabaf282ff53f78f8)
+- [Skip Geo secondary for SyncProjectPolicyWorker](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46cc0c9398a878c31fc1a578cf2d2e61ca127e6e) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Check root namespace of project framework for SAAS only](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6d5a089a23b31cb4bd0d7bd8d162d96047842570) **GitLab Enterprise Edition**
+- [Fix case sensitivity in CODEOWNERS validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8152fbb8df5026f8c3cf76c8c6ce8c1bead50330) **GitLab Enterprise Edition**
+
+### Security (11 changes)
+
+- [Sanitize html for legacy simple blob viewer and code navigation nodes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4cf31d635d329618a1fd5781f4ae0d8da62d0fb9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5204))
+- [Remove the destroy issue permission from the planner role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9fc0d52f04f83ad1903d3ea937b1ddde6e8e6c46) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5129))
+- [Release names are unbounded, leads to server crash](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5e31c80d3bf6940ab0d40f322abe78f2b7be35c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5209))
+- [Block access to assigned issues when group has IP restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97d3f19798fe0ef7f201c4931d20fbb5d268d40b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5162))
+- [Restrict jobs artifacts API endpoint to token access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76f4fb8fbb9a5833637e3a8c96a173f98f54808c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5122))
+- [Only show titleHtml when valid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92b9a198e548991cdab54a51f0dedc22916f46d3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5178))
+- [Prevent edits to MRAP approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0db41a6626e55dc76b42fb2915ca2513f579319f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5199))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a8aec11fea6fa05fbd27c18b723a0f9c5adf47c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5188))
+- [Change wiki_page_max_content_bytes default to 5 MB and in existing instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ef6a9e7d85603049fd9eb482f03b829fc1e8714) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5136))
+- [Prevent unauthorized maintainers from modifying runner records](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56d359e0a914a37ed130d224929b1b70d2535b53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5173))
+- [Add length validations to ChatName model fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36007067bcc7853d0b175170303112a6be38b0ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5147))
 
 ## 18.1.3 (2025-07-22)
 
@@ -1725,6 +1789,30 @@ entry.
 - [Finalize BBM BackfillResourceLinkEventsNamespaceId](https://gitlab.com/gitlab-org/gitlab/-/commit/fd595f31be545706d287e85b9782b63e47a9f92f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190912))
 - [Change users_preferences.organization_groups_projects_display defaults](https://gitlab.com/gitlab-org/gitlab/-/commit/c0bed48fc7a755413edf1090c86a33a798771d37) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190331))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/06fdc6c5fb9a7490c5fe8e6b1eb3a8b0f065f950) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189248))
+
+## 18.0.6 (2025-08-12)
+
+### Fixed (1 change)
+
+- [Fix another case where Sidekiq can take too long to shut down](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d502aad3ad5a751cee92ead1d84aebef85ff689b)
+
+### Changed (2 changes)
+
+- [Check root namespace of project framework for SAAS only](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7beaf6c9acb89f676bc9456009f8d906259b253a) **GitLab Enterprise Edition**
+- [Fix case sensitivity in CODEOWNERS validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7cf05b250d3d82aa5c27ae29e2aea59ae76a84c) **GitLab Enterprise Edition**
+
+### Security (10 changes)
+
+- [Sanitize html for legacy simple blob viewer and code navigation nodes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26b86664fcb998f19d4e390ad4c4300bfd2cf910) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5213))
+- [Remove the destroy issue permission from the planner role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb5eca384ddcd42f44441fe4962bf5cf734ae30) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5130))
+- [Release names are unbounded, leads to server crash](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1a6785b7d3481c59a15c274dc7bae58a3da8b05) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5210))
+- [Block access to assigned issues when group has IP restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da0494b6c27a3627f289cdacf79ea2243637eca7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5163))
+- [Restrict jobs artifacts API endpoint to token access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1877ef19988a12e465bc030fdaab658acccba193) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5123))
+- [Prevent edits to MRAP approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e3d11c4957c36da2b10f734d004e4cc2ee0274db) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5198))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d712ee4fab370b985caa96c4c818e859d20b8c0d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5190))
+- [Change wiki_page_max_content_bytes default to 5 MB and in existing instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/22459d1d6b7e7adabe1867bcbcf681099c1d392e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5137))
+- [Prevent unauthorized maintainers from modifying runner records](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2dcadf0924a761166927b6324a57dee7ff982e46) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5174))
+- [Add length validations to ChatName model fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/033895b7b8635da9b617f1555600665f2aaad9fb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5148))
 
 ## 18.0.5 (2025-07-22)
 

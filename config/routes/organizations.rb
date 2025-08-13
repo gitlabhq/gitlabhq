@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+get '/o', to: 'organizations/organizations#index', as: 'organizations_scope'
+
 scope(
   path: '/o/:organization_path',
   constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },

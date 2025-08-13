@@ -95,9 +95,10 @@ class EnvironmentSerializer < BaseSerializer
       deployable: {
         user: [],
         metadata: [],
+        job_definition: [],
         pipeline: {
-          manual_actions: [:metadata, :deployment],
-          scheduled_actions: [:metadata],
+          manual_actions: [:metadata, :job_definition, :deployment],
+          scheduled_actions: [:metadata, :job_definition],
           latest_successful_jobs: []
         },
         project: project_associations

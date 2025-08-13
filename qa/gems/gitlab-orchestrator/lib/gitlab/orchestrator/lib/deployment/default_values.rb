@@ -52,8 +52,8 @@ module Gitlab
               },
               redis: { metrics: { enabled: false } },
               prometheus: { install: false },
-              certmanager: { install: false },
-              "gitlab-runner": { install: false }
+              "gitlab-runner": { install: false },
+              installCertmanager: false
             }
           end
 

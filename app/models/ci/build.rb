@@ -172,6 +172,7 @@ module Ci
     scope :eager_load_for_api, -> do
       preload(
         :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        :job_definition,
         pipeline: :project,
         user: [:user_preference, :user_detail, :followees, :followers]
       )

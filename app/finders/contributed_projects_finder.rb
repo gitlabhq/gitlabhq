@@ -7,6 +7,7 @@
 #   user: User to find contributed projects for
 #   current_user: The current user
 #   params:
+#     organization:  Scope the projects to the Organizations::Organization
 #     search: Return only projects that match search filter
 #     ignore_visibility: When true the list of projects will include all contributed
 #                        projects, regardless of their visibility to the current_user.
@@ -60,8 +61,15 @@ class ContributedProjectsFinder
   end
 
   def filter_projects(collection)
+    collection = by_organization(collection)
     collection = by_search(collection)
     by_programming_language(collection)
+  end
+
+  def by_organization(collection)
+    return collection.in_organization(params[:organization]) if params[:organization].present?
+
+    collection
   end
 
   def by_programming_language(collection)

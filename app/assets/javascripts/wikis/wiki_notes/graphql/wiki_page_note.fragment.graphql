@@ -34,7 +34,6 @@ fragment WikiPageNote on Note {
     adminNote
     awardEmoji
     createNote
-    resolveNote
   }
   discussion {
     id

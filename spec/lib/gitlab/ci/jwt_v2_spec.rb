@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
+  include ProjectForksHelper
+
   let(:namespace) { build_stubbed(:namespace) }
   let(:project) { build_stubbed(:project, namespace: namespace) }
   let(:user) do
@@ -232,6 +234,72 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
 
       it 'uses the custom issuer url for the iss: claim' do
         expect(payload[:iss]).to eq(custom_issuer_url)
+      end
+    end
+
+    context 'when the pipeline is for a merge request from a forked project' do
+      let_it_be(:target_project_namespace) { create(:namespace) }
+      let_it_be(:target_project) { create(:project, namespace: target_project_namespace) }
+      let_it_be(:forked_project_namespace) { create(:namespace) }
+      let_it_be(:forked_project) do
+        fork_project(target_project, nil, repository: true, namespace: forked_project_namespace)
+      end
+
+      let(:merge_request) do
+        build_stubbed(:merge_request, source_project: forked_project, source_branch: 'feature',
+          target_project: target_project, target_branch: 'master')
+      end
+
+      let(:pipeline) do
+        build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request,
+          project: target_project, user: user)
+      end
+
+      let(:build) do
+        build_stubbed(
+          :ci_build,
+          project: target_project,
+          user: user,
+          pipeline: pipeline
+        )
+      end
+
+      it 'sets the project related claims based on the source project of the merge request' do
+        expect(payload[:project_id]).to eq(forked_project.id.to_s)
+        expect(payload[:project_path]).to eq(forked_project.full_path)
+        expect(payload[:namespace_id]).to eq(forked_project_namespace.id.to_s)
+        expect(payload[:namespace_path]).to eq(forked_project_namespace.full_path)
+      end
+
+      it 'in the sub: claim, it sets the project path component based on the source project of the merge request' do
+        expect(payload[:project_id]).to eq(forked_project.id.to_s)
+        expect(payload[:sub])
+        .to eq("project_path:#{forked_project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+        expect(payload[:sub])
+        .not_to eq("project_path:#{target_project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+      end
+
+      describe 'claims delegated to mapper' do
+        let(:project_config) do
+          instance_double(
+            Gitlab::Ci::ProjectConfig,
+            url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
+            source: :repository_source
+          )
+        end
+
+        it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
+          expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
+            project: target_project,
+            sha: pipeline.sha,
+            pipeline_source: pipeline.source.to_sym,
+            pipeline_source_bridge: pipeline.source_bridge
+          ).and_return(project_config)
+
+          expect(payload[:project_id]).to eq(forked_project.id.to_s)
+          expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
+          expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+        end
       end
     end
   end

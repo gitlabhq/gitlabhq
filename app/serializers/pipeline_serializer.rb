@@ -46,8 +46,8 @@ class PipelineSerializer < BaseSerializer
       (:limited_failed_builds if disable_failed_builds),
       {
         **(disable_failed_builds ? {} : { failed_builds: %i[project metadata] }),
-        manual_actions: :metadata,
-        scheduled_actions: :metadata,
+        manual_actions: [:metadata, :job_definition],
+        scheduled_actions: [:metadata, :job_definition],
         merge_request: {
           source_project: [:route, { namespace: :route }],
           target_project: [:route, { namespace: :route }]

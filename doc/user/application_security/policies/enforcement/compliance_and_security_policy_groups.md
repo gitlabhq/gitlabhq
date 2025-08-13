@@ -16,6 +16,7 @@ title: Compliance and security policy groups
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 18.2 [with a feature flag](../../../../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/550318) on GitLab Self-Managed in GitLab 18.3.
 
 {{< /history >}}
 

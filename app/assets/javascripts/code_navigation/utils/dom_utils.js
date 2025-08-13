@@ -1,3 +1,5 @@
+import { sanitize } from '~/lib/dompurify';
+
 const TEXT_NODE = 3;
 
 const isTextNode = ({ nodeType }) => nodeType === TEXT_NODE;
@@ -27,8 +29,8 @@ const wrapTextWithSpan = (el, text, classList, dataset) => {
 
 const wrapNodes = (text, classList, dataset) => {
   const wrapper = createSpan();
-  // eslint-disable-next-line no-unsanitized/property
-  wrapper.innerHTML = wrapSpacesWithSpans(text);
+  const unSafeHtml = wrapSpacesWithSpans(text);
+  wrapper.innerHTML = sanitize(unSafeHtml);
   wrapper.childNodes.forEach((el) => wrapTextWithSpan(el, text, classList, dataset));
   return wrapper.childNodes;
 };

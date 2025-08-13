@@ -7658,9 +7658,6 @@ msgstr ""
 msgid "An error occurred while searching for labels, please try again."
 msgstr ""
 
-msgid "An error occurred while starting diagnostics"
-msgstr ""
-
 msgid "An error occurred while subscribing to this page. Please try again later."
 msgstr ""
 
@@ -11548,7 +11545,13 @@ msgstr ""
 msgid "Bulk update"
 msgstr ""
 
-msgid "BulkImports|Placeholder user confirmation"
+msgid "BulkImports|end date is required when bypass is enabled."
+msgstr ""
+
+msgid "BulkImports|end date must be a future date."
+msgstr ""
+
+msgid "BulkImports|end date must not be more than a year in the future."
 msgstr ""
 
 msgid "BulkImport|%{count} placeholder user has been matched to a user."
@@ -21384,6 +21387,9 @@ msgstr ""
 msgid "Database update failed"
 msgstr ""
 
+msgid "DatabaseDiagnostics|An error occurred while starting diagnostics"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Collation health check"
 msgstr ""
 
@@ -21396,7 +21402,19 @@ msgstr ""
 msgid "DatabaseDiagnostics|Database: %{name}"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Details"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Foreign keys"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Indexes"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Issues detected"
@@ -21408,10 +21426,31 @@ msgstr ""
 msgid "DatabaseDiagnostics|Learn more"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Missing items"
+msgstr ""
+
 msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
 msgstr ""
 
+msgid "DatabaseDiagnostics|No schema issues detected."
+msgstr ""
+
 msgid "DatabaseDiagnostics|Run collation check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Run schema check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Schema health check"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Select \"Run Schema Check\" to analyze your database schema for potential issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Sequences"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Tables"
 msgstr ""
 
 msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
@@ -26750,9 +26789,6 @@ msgid "Expires at"
 msgstr ""
 
 msgid "Expiring soon"
-msgstr ""
-
-msgid "Expiry date"
 msgstr ""
 
 msgid "Explain current vulnerability."
@@ -37988,6 +38024,9 @@ msgid "Loading %{count} more..."
 msgstr ""
 
 msgid "Loading %{name}"
+msgstr ""
+
+msgid "Loading custom roles"
 msgstr ""
 
 msgid "Loading file actions"
@@ -57457,6 +57496,9 @@ msgstr ""
 msgid "SecurityOrchestration|Any merge request"
 msgstr ""
 
+msgid "SecurityOrchestration|Applies policy evaluations to all projects in this instance."
+msgstr ""
+
 msgid "SecurityOrchestration|Apply this policy to %{projectScopeType} %{projectSelector}"
 msgstr ""
 
@@ -57466,10 +57508,10 @@ msgstr ""
 msgid "SecurityOrchestration|Apply this policy to current project."
 msgstr ""
 
-msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
+msgid "SecurityOrchestration|Are you sure you want to change the compliance and security policy group?"
 msgstr ""
 
-msgid "SecurityOrchestration|Are you sure you want to remove %{group} as CSP group?"
+msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
 msgid "SecurityOrchestration|At least one framework label should be selected"
@@ -57503,6 +57545,9 @@ msgid "SecurityOrchestration|Can't find project: %{boldStart}%{projectName}%{bol
 msgstr ""
 
 msgid "SecurityOrchestration|Cannot create an empty policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Change group"
 msgstr ""
 
 msgid "SecurityOrchestration|ChatOps command"
@@ -57829,6 +57874,12 @@ msgstr ""
 msgid "SecurityOrchestration|Maximum security policy project schedule rule count exceeded"
 msgstr ""
 
+msgid "SecurityOrchestration|May %{linkStart}impact system performance%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|May take significant time to complete, depending on your instance size, including the number of groups, projects, and merge requests."
+msgstr ""
+
 msgid "SecurityOrchestration|Merge Request Security"
 msgstr ""
 
@@ -58020,12 +58071,6 @@ msgstr ""
 msgid "SecurityOrchestration|Release Security"
 msgstr ""
 
-msgid "SecurityOrchestration|Remove %{group}"
-msgstr ""
-
-msgid "SecurityOrchestration|Remove group"
-msgstr ""
-
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -58045,6 +58090,9 @@ msgid "SecurityOrchestration|Resolved"
 msgstr ""
 
 msgid "SecurityOrchestration|Roles"
+msgstr ""
+
+msgid "SecurityOrchestration|Roles (%{count})"
 msgstr ""
 
 msgid "SecurityOrchestration|Rule mode"
@@ -58185,9 +58233,6 @@ msgstr ""
 msgid "SecurityOrchestration|Select suffix"
 msgstr ""
 
-msgid "SecurityOrchestration|Selecting this will disconnect your top level compliance and security policy (CSP) group from all the other top level groups. All frameworks shared by the top level CSP group will also be disconnected due to this action."
-msgstr ""
-
 msgid "SecurityOrchestration|Send a bot message when the conditions match."
 msgstr ""
 
@@ -58302,6 +58347,9 @@ msgstr ""
 msgid "SecurityOrchestration|This applies to following compliance frameworks:"
 msgstr ""
 
+msgid "SecurityOrchestration|This change starts a synchronization process that:"
+msgstr ""
+
 msgid "SecurityOrchestration|This group"
 msgstr ""
 
@@ -58342,6 +58390,9 @@ msgid "SecurityOrchestration|This project"
 msgstr ""
 
 msgid "SecurityOrchestration|This view only shows scan results for the agent %{agent}. You can view scan results for all agents in the %{linkStart}Operational Vulnerabilities tab of the vulnerability report%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|This will disconnect your top-level compliance and security policy group, and all the frameworks it shares, from all other top-level groups."
 msgstr ""
 
 msgid "SecurityOrchestration|Timezone is invalid"
@@ -68842,6 +68893,9 @@ msgstr ""
 msgid "UserMapping|Placeholder user"
 msgstr ""
 
+msgid "UserMapping|Placeholder user confirmation"
+msgstr ""
+
 msgid "UserMapping|Placeholder user could not be reassigned."
 msgstr ""
 
@@ -68863,9 +68917,6 @@ msgstr ""
 msgid "UserMapping|Placeholders"
 msgstr ""
 
-msgid "UserMapping|Placeholders can be reassigned to enterprise users without user confirmation."
-msgstr ""
-
 msgid "UserMapping|Please upload a valid CSV file."
 msgstr ""
 
@@ -68873,6 +68924,9 @@ msgid "UserMapping|Reassign"
 msgstr ""
 
 msgid "UserMapping|Reassign placeholder to"
+msgstr ""
+
+msgid "UserMapping|Reassign placeholders to enterprise users without user confirmation"
 msgstr ""
 
 msgid "UserMapping|Reassign to"
@@ -69005,6 +69059,9 @@ msgid "UserMapping|Use a CSV file to reassign contributions from placeholder use
 msgstr ""
 
 msgid "UserMapping|User ID"
+msgstr ""
+
+msgid "UserMapping|When to restore user confirmation"
 msgstr ""
 
 msgid "UserMapping|You can assign active users with regular or auditor access only."

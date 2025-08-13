@@ -385,6 +385,46 @@ On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
 
+### Bypass confirmation when reassigning placeholder users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To bypass confirmation for [enterprise users](../../enterprise_user/_index.md)
+when you reassign placeholders:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
+1. Select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Placeholder user confirmation**, select the
+   **Reassign placeholders to enterprise users without user confirmation** checkbox.
+1. In **When to restore user confirmation**,
+   select an end date for bypassing user confirmation.
+   The default value is one day.
+1. Select **Save changes**.
+
 #### Reassigning contributions from multiple placeholder users
 
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular

@@ -13,8 +13,6 @@ Choose and manage the subscription that's right for you and your organization.
 - [GitLab plans](choosing_subscription.md)
 - [Manage subscription](manage_subscription.md)
 - [Manage users and seats](manage_users_and_seats.md)
-- [GitLab.com subscription](gitlab_com/_index.md)
-- [GitLab Self-Managed subscription](self_managed/_index.md)
 - [GitLab Dedicated](gitlab_dedicated/_index.md)
 - [GitLab Duo add-ons](subscription-add-ons.md)
 - [Community programs](community_programs.md)

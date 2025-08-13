@@ -96,29 +96,14 @@ module Gitlab
             ]
           }
         },
-        'ci_tags' => {
-          'index_tags_on_name' => {
-            'columns' => %w[name],
+        'topics' => {
+          'index_topics_on_organization_id_and_name' => {
+            'columns' => %w[organization_id name],
             'unique' => true,
             'references' => [
               {
-                'table' => 'ci_build_tags',
-                'column' => 'tag_id',
-                'deduplication_column' => 'build_id'
-              },
-              {
-                'table' => 'ci_runner_taggings',
-                'column' => 'tag_id',
-                'deduplication_column' => 'runner_id'
-              },
-              {
-                'table' => 'ci_pending_builds',
-                'column' => 'tag_ids',
-                'type' => 'array'
-              },
-              {
-                'table' => 'dast_profile_tags',
-                'column' => 'tag_id'
+                'table' => 'project_topics',
+                'column' => 'topic_id'
               }
             ]
           }
@@ -131,6 +116,67 @@ module Gitlab
               {
                 'table' => 'p_ci_pipelines',
                 'column' => 'ci_ref_id'
+              }
+            ]
+          }
+        },
+        'ci_resource_groups' => {
+          'index_ci_resource_groups_on_project_id_and_key' => {
+            'columns' => %w[project_id key],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'p_ci_builds', # GitLab 16.7 and later
+                'column' => 'resource_group_id'
+              },
+              {
+                'table' => 'ci_builds', # GitLab 16.6 and earlier
+                'column' => 'resource_group_id'
+              },
+              {
+                'table' => 'ci_resources',
+                'column' => 'resource_group_id'
+              }
+            ]
+          }
+        },
+        'environments' => {
+          'index_environments_on_project_id_and_name' => {
+            'columns' => %w[project_id name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'deployment_merge_requests',
+                'column' => 'environment_id',
+                'deduplication_column' => 'merge_request_id'
+              },
+              {
+                'table' => 'alert_management_alerts',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'self_managed_prometheus_alert_events',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'prometheus_alerts',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'clusters_kubernetes_namespaces',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'metrics_dashboard_annotations',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'deployments',
+                'column' => 'environment_id'
+              },
+              {
+                'table' => 'dora_daily_metrics',
+                'column' => 'environment_id'
               }
             ]
           }
@@ -148,6 +194,33 @@ module Gitlab
                 'table' => 'sbom_component_versions',
                 'column' => 'component_id',
                 'deduplication_column' => 'version'
+              }
+            ]
+          }
+        },
+        'tags' => {
+          'index_tags_on_name' => {
+            'columns' => %w[name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'p_ci_build_tags',
+                'column' => 'tag_id',
+                'deduplication_column' => 'build_id'
+              },
+              {
+                'table' => 'ci_runner_taggings',
+                'column' => 'tag_id',
+                'deduplication_column' => 'runner_id'
+              },
+              {
+                'table' => 'ci_pending_builds',
+                'column' => 'tag_ids',
+                'type' => 'array'
+              },
+              {
+                'table' => 'dast_profile_tags',
+                'column' => 'tag_id'
               }
             ]
           }

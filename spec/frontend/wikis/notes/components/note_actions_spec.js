@@ -1,18 +1,12 @@
 import { GlDisclosureDropdownGroup } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteActions from '~/wikis/wiki_notes/components/note_actions.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import discussionToggleResolveMutation from '~/wikis/wiki_notes/graphql/discussion_toggle_resolve.mutation.graphql';
-
-Vue.use(VueApollo);
 
 describe('WikiNoteActions', () => {
   let wrapper;
-  let mockApollo;
 
   const findAuthorBadge = () => wrapper.findByTestId('wiki-note-user-author-badge');
   const findAuthorBadgeText = () => findAuthorBadge().text().trim();
@@ -25,12 +19,9 @@ describe('WikiNoteActions', () => {
   const findCopyNoteButton = () => wrapper.findByTestId('wiki-note-copy-note');
   const findDeleteButton = () => wrapper.findByTestId('wiki-note-delete-button');
   const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
-  const findResolveButton = () => wrapper.findByTestId('wiki-note-resolve-button');
 
   const createWrapper = (propsData, injectData) => {
-    mockApollo = createMockApollo();
     return shallowMountExtended(NoteActions, {
-      apolloProvider: mockApollo,
       provide: {
         containerName: 'test-project',
         pageAuthorEmail: 'author@example.com',
@@ -135,68 +126,6 @@ describe('WikiNoteActions', () => {
       it('should render emoji picker when canAwardEmoji is true', () => {
         wrapper = createWrapper({ canAwardEmoji: true });
         expect(findEmojiPicker().exists()).toBe(true);
-      });
-
-      it('should render a gray resolve button when canResolve is true', () => {
-        wrapper = createWrapper({ canResolve: true });
-        expect(findResolveButton().exists()).toBe(true);
-        expect(findResolveButton().classes('!gl-text-success')).toBe(false);
-      });
-
-      it('should not render resolve button when canResolve is false', () => {
-        wrapper = createWrapper({ canResolve: false });
-        expect(findResolveButton().exists()).toBe(false);
-      });
-
-      it('should render a green resolve button when isResolved is true', () => {
-        wrapper = createWrapper({ canResolve: true, isResolved: true });
-        expect(findResolveButton().exists()).toBe(true);
-        expect(findResolveButton().classes('!gl-text-success')).toBe(true);
-      });
-
-      it('should show the correct tooltip for the resolve button', () => {
-        wrapper = createWrapper({
-          canResolve: true,
-          isResolved: true,
-          resolvedBy: { name: 'user1' },
-        });
-        expect(findResolveButton().attributes('title')).toBe('Resolved by user1');
-      });
-
-      it('resolves the discussion when resolve button is clicked', async () => {
-        wrapper = createWrapper({ canResolve: true, discussionId: 'foo123' });
-        mockApollo.defaultClient.mutate = jest.fn();
-
-        expect(findResolveButton().exists()).toBe(true);
-
-        await findResolveButton().vm.$emit('click');
-        await nextTick();
-
-        expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
-          mutation: discussionToggleResolveMutation,
-          variables: {
-            id: 'foo123',
-            resolve: true,
-          },
-        });
-      });
-
-      it('unresolves the discussion when discussion is resolved and resolve button is clicked', async () => {
-        wrapper = createWrapper({ canResolve: true, isResolved: true, discussionId: 'foo123' });
-        mockApollo.defaultClient.mutate = jest.fn();
-
-        expect(findResolveButton().exists()).toBe(true);
-
-        await findResolveButton().vm.$emit('click');
-        await nextTick();
-
-        expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
-          mutation: discussionToggleResolveMutation,
-          variables: {
-            id: 'foo123',
-            resolve: false,
-          },
-        });
       });
     });
 

@@ -52,6 +52,34 @@ describe('Work Item title', () => {
     });
   });
 
+  describe('title sanitization', () => {
+    it('renders titleHtml when it is not empty', () => {
+      wrapper = shallowMountExtended(WorkItemTitle, {
+        propsData: {
+          title: '_test_',
+          titleHtml: '<em>test</em>',
+          isEditing: false,
+          isModal: false,
+        },
+      });
+
+      expect(findTitle().html()).toContain('<span><em>test</em></span>');
+    });
+
+    it('renders title when titleHtml has been sanitized to nothing', () => {
+      wrapper = shallowMountExtended(WorkItemTitle, {
+        propsData: {
+          title: '<script>',
+          titleHtml: '',
+          isEditing: false,
+          isModal: false,
+        },
+      });
+
+      expect(findTitle().html()).toContain('<span>&lt;script&gt;</span>');
+    });
+  });
+
   describe('Edit mode', () => {
     beforeEach(() => {
       createComponent({ isEditing: true });

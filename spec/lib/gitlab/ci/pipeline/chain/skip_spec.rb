@@ -12,7 +12,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
       project: project,
       current_user: user,
       ignore_skip_ci: false,
-      save_incompleted: true)
+      save_incompleted: true
+    )
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -39,6 +40,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
       expect(pipeline).to receive(:ensure_project_iid!)
 
       step.perform!
+    end
+
+    context 'when pipeline is readonly' do
+      before do
+        pipeline.readonly!
+      end
+
+      it 'breaks the chain' do
+        step.perform!
+
+        expect(step.break?).to be true
+
+        expect(pipeline).not_to receive(:skip)
+        expect(pipeline).not_to receive(:ensure_project_iid!)
+      end
+
+      it 'does not raise error' do
+        expect { step.perform! }.not_to raise_error
+      end
     end
   end
 

@@ -3,6 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization do
+  describe '.install' do
+    it 'only installs once' do
+      # Has already been installed as part of Rails initialization.
+      # Second call should not reinstall
+      expect(Rails.application.routes.url_helpers).not_to receive(:prepend)
+      described_class::MappedHelpers.install
+    end
+  end
+
   shared_examples 'organization aware route helper' do
     include Rails.application.routes.url_helpers
 
@@ -19,7 +28,10 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     context 'when organization context is not present' do
       before do
-        allow(Current).to receive_messages(organization_assigned: false, organization: nil)
+        allow(Current).to receive_messages(
+          organization_assigned: false,
+          organization: nil
+        )
       end
 
       it 'automatically routes to global path' do
@@ -43,7 +55,10 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
       end
 
       before do
-        allow(Current).to receive_messages(organization_assigned: true, organization: organization)
+        allow(Current).to receive_messages(
+          organization_assigned: true,
+          organization: organization
+        )
       end
 
       context 'and they are enabled' do
@@ -77,7 +92,10 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     context 'when organization context is nil' do
       before do
-        allow(Current).to receive_messages(organization_assigned: true, organization: nil)
+        allow(Current).to receive_messages(
+          organization_assigned: true,
+          organization: nil
+        )
       end
 
       it 'automatically routes to global path' do
@@ -90,13 +108,11 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     end
   end
 
-  describe '.install' do
-    it 'only installs once' do
-      # Has already been installed as part of Rails initialization.
-      # Second call should not reinstall
-      expect(Rails.application.routes.url_helpers).not_to receive(:prepend)
-      described_class::MappedHelpers.install
-    end
+  describe '#root_path' do
+    let(:helper) { :root }
+    let(:organization_helper) { :organization_root }
+
+    it_behaves_like 'organization aware route helper'
   end
 
   describe '#new_project_path' do
@@ -123,13 +139,6 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
   describe '#groups_path' do
     let(:helper) { :groups }
     let(:organization_helper) { :organization_groups }
-
-    it_behaves_like 'organization aware route helper'
-  end
-
-  describe '#root_path' do
-    let(:helper) { :root }
-    let(:organization_helper) { :organization_root }
 
     it_behaves_like 'organization aware route helper'
   end
