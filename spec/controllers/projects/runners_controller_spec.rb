@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:another_project) { create(:project) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:params) do
@@ -169,6 +170,28 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       expect(response).to have_gitlab_http_status(:found)
       expect(Ci::Runner.find_by(id: runner.id)).to be_nil
     end
+
+    context 'with an instance runner' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it 'does not allow deleting the runner' do
+        delete :destroy, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(Ci::Runner.exists?(runner.id)).to be_truthy
+      end
+    end
+
+    context 'with a project runner the user does not manage' do
+      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
+      it 'does not allow deleting the runner' do
+        delete :destroy, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(Ci::Runner.exists?(runner.id)).to be_truthy
+      end
+    end
   end
 
   describe '#resume' do
@@ -195,9 +218,11 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       project.add_maintainer(user)
     end
 
-    it 'marks the runner as inactive and ticks the queue' do
+    before do
       runner.update!(active: true)
+    end
 
+    it 'marks the runner as inactive and ticks the queue' do
       expect do
         post :pause, params: params
       end.to change { runner.ensure_runner_queue_value }
@@ -206,6 +231,28 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
 
       expect(response).to have_gitlab_http_status(:found)
       expect(runner.active).to eq(false)
+    end
+
+    context 'with an instance runner' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it 'does not allow pausing the runner' do
+        post :pause, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(runner.active).to eq(true)
+      end
+    end
+
+    context 'with a project runner the user does not manage' do
+      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
+      it 'does not allow pausing the runner' do
+        post :pause, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(runner.active).to eq(true)
+      end
     end
   end
 

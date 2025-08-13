@@ -1100,6 +1100,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           it_behaves_like 'unauthorized request'
         end
+
+        context 'when token is missing' do
+          let(:token) { nil }
+
+          it_behaves_like 'unauthorized request'
+        end
       end
 
       context 'when job does not have artifacts' do

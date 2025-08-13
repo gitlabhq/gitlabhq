@@ -39,7 +39,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:planner_permissions) do
     guest_permissions + %i[
       admin_label admin_milestone admin_issue_board admin_issue_board_list
-      admin_issue admin_work_item update_issue destroy_issue read_confidential_issues read_internal_note
+      admin_issue admin_work_item update_issue read_confidential_issues read_internal_note
       read_crm_contact read_crm_organization
     ]
   end

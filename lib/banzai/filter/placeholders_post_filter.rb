@@ -202,7 +202,10 @@ module Banzai
 
       # The action param represents the Proc to call in order to retrieve the value
       def replace_placeholder_action(action)
-        CGI.escapeHTML(action.call(context) || '')
+        replacement = action.call(context) || ''
+
+        node = Banzai::Filter::SanitizationFilter.new(replacement).call
+        CGI.escapeHTML(node.text)
       end
 
       def sanitize_link(node)

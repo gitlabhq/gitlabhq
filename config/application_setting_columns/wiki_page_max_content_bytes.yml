@@ -4,9 +4,9 @@ attr: wiki_page_max_content_bytes
 clusterwide: false
 column: wiki_page_max_content_bytes
 db_type: bigint
-default: '52428800'
-description: 'Maximum wiki page content size in **bytes**. Default: 52428800 Bytes
-  (50 MB). The minimum value is 1024 bytes.'
+default: '5242880'
+description: 'Maximum wiki page content size in **bytes**. Default: 5242880 Bytes
+  (5 MB). The minimum value is 1024 bytes.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false
