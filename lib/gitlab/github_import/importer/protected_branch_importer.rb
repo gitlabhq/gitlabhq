@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       class ProtectedBranchImporter
-        include Gitlab::GithubImport::PushPlaceholderReferences
+        include ::Import::PlaceholderReferences::Pusher
 
         attr_reader :project
 
@@ -21,7 +21,6 @@ module Gitlab
           @project = project
           @client = client
           @user_finder = GithubImport::UserFinder.new(project, client)
-          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
           @gitlab_user_id_to_github_user_id = {}
         end
 
@@ -38,20 +37,18 @@ module Gitlab
           # Call `#validate!` to pass any validation errors to the error handling in ImportProtectedBranchWorker.
           imported_protected_branch.validate!
 
-          return unless mapper.user_mapping_enabled?
-
           imported_protected_branch.push_access_levels.each do |push_access_level|
             next unless push_access_level.user_id
 
             source_user_identifier = gitlab_user_id_to_github_user_id[push_access_level.user_id]
 
-            push_with_record(push_access_level, :user_id, source_user_identifier, mapper.user_mapper)
+            push_reference(project, push_access_level, :user_id, source_user_identifier)
           end
         end
 
         private
 
-        attr_reader :gitlab_user_id_to_github_user_id, :protected_branch, :mapper, :user_finder
+        attr_reader :gitlab_user_id_to_github_user_id, :protected_branch, :user_finder
 
         def params
           {
@@ -141,7 +138,7 @@ module Gitlab
             gitlab_user_id_to_github_user_id[gitlab_user_id] = github_user_data.id
           end
 
-          return @allowed_to_push_gitlab_user_ids if mapper.user_mapping_enabled?
+          return @allowed_to_push_gitlab_user_ids if user_mapping_enabled?(project)
 
           @allowed_to_push_gitlab_user_ids &= project_member_ids
         end

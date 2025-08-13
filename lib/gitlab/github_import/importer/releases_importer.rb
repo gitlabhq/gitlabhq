@@ -5,7 +5,7 @@ module Gitlab
     module Importer
       class ReleasesImporter
         include BulkImporting
-        include Gitlab::GithubImport::PushPlaceholderReferences
+        include ::Import::PlaceholderReferences::Pusher
 
         # rubocop: disable CodeReuse/ActiveRecord
         def existing_tags
@@ -17,10 +17,6 @@ module Gitlab
           @github_users ||= []
         end
 
-        def mapper
-          @mapper ||= Gitlab::GithubImport::ContributionsMapper.new(project)
-        end
-
         # Note: if you're going to replace `legacy_bulk_insert` with something that triggers callback
         # to generate HTML version - you also need to regenerate it in
         # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
@@ -29,13 +25,10 @@ module Gitlab
 
           inserted_ids = bulk_insert(rows)
 
-          if mapper.user_mapping_enabled?
-            inserted_ids.zip(github_users).each do |id, user|
-              # `id` is the GitLab Release ID we just inserted.
-              # `user` is the GitHub user object.
-              release = Release.find_by(id: id, project_id: project.id) # rubocop:disable CodeReuse/ActiveRecord -- required
-              push_with_record(release, :author_id, user[:id], mapper.user_mapper)
-            end
+          inserted_ids.zip(github_users).each do |id, user|
+            # `id` is the GitLab Release ID we just inserted.
+            # `user` is the GitHub user object.
+            push_references_by_ids(project, [id], Release, :author_id, user[:id])
           end
 
           bulk_insert_failures(validation_errors) if validation_errors.any?

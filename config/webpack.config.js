@@ -119,6 +119,10 @@ const alias = {
   // the following resolves files which are different between CE/EE/JH
   any_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
+  // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
+  '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
+  '@gitlab/ui$': '@gitlab/ui/src',
+
   // override loader path for icons.svg so we do not duplicate this asset
   '@gitlab/svgs/dist/icons.svg': path.join(
     ROOT_PATH,
@@ -241,16 +245,6 @@ const shouldExcludeFromCompiling = (modulePath) => {
     new RegExp(path.join(ROOT_PATH, 'vendor/assets')).test(modulePath)
   );
 };
-
-// We explicitly set VUE_VERSION
-// Use @gitlab-ui from source to allow us to dig differences
-// between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
-if (EXPLICIT_VUE_VERSION) {
-  Object.assign(alias, {
-    '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
-    '@gitlab/ui$': '@gitlab/ui/src',
-  });
-}
 
 if (USE_VUE3) {
   Object.assign(alias, {

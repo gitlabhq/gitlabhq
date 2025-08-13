@@ -6,13 +6,12 @@ module Gitlab
       module PullRequests
         class ReviewRequestImporter
           include Gitlab::Utils::StrongMemoize
-          include Gitlab::GithubImport::PushPlaceholderReferences
+          include ::Import::PlaceholderReferences::Pusher
 
           def initialize(review_request, project, client)
             @review_request = review_request
             @project = project
             @user_finder = UserFinder.new(project, client)
-            @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
           end
 
           def execute
@@ -28,16 +27,14 @@ module Gitlab
                 created_at: Time.zone.now
               )
 
-              next unless mapper.user_mapping_enabled?
-
-              push_with_record(reviewer, :user_id, user&.id, mapper.user_mapper)
+              push_reference(project, reviewer, :user_id, user&.id)
             rescue PG::UniqueViolation, ActiveRecord::RecordNotUnique
             end
           end
 
           private
 
-          attr_reader :review_request, :project, :user_finder, :mapper
+          attr_reader :review_request, :project, :user_finder
         end
       end
     end

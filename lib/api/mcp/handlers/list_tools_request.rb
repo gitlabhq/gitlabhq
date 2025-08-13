@@ -9,7 +9,11 @@ module API
         # See: https://gitlab.com/gitlab-org/gitlab/-/issues/554946
         API_TOOLS = {
           'get_issue' => ::Mcp::Tools::GetIssueService,
-          'create_issue' => ::Mcp::Tools::CreateIssueService
+          'create_issue' => ::Mcp::Tools::CreateIssueService,
+          'get_merge_request' => ::Mcp::Tools::GetMergeRequestService,
+          'get_merge_request_changes' => ::Mcp::Tools::GetMergeRequestChangesService,
+          'get_merge_request_commits' => ::Mcp::Tools::GetMergeRequestCommitsService,
+          'get_pipeline_jobs' => ::Mcp::Tools::GetPipelineJobsService
         }.freeze
         CUSTOM_TOOLS = {
           'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService

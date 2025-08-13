@@ -6,6 +6,7 @@ require 'logger'
 class UpdateMergeRequestsLabel
   def initialize
     @client = Gitlab.client(endpoint: api_endpoint, private_token: api_token)
+    @logger = Logger.new($stdout)
   end
 
   def execute
@@ -23,7 +24,7 @@ class UpdateMergeRequestsLabel
           labels: ['workflow::release-environment', *labels].join(',')
         )
       rescue StandardError => e
-        logger.error("Could not update backport MR iid #{mr.iid} with " \
+        @logger.error("Could not update backport MR iid #{mr.iid} with " \
           "label 'workflow::release-environment'.\n[ERROR]: #{e.message}")
       end
     end
@@ -34,7 +35,7 @@ class UpdateMergeRequestsLabel
   def deployment_mrs
     @client.get("/projects/#{project_id}/deployments/#{deployment_id}/merge_requests")
   rescue StandardError => e
-    logger.error("Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: #{e.message}")
+    @logger.error("Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: #{e.message}")
     [] # Return empty array on error
   end
 

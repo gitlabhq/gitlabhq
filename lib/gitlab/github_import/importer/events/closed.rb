@@ -26,9 +26,7 @@ module Gitlab
               imported_from: imported_from
             )
 
-            return unless mapper.user_mapping_enabled?
-
-            push_with_record(created_event, :author_id, issue_event[:actor]&.id, mapper.user_mapper)
+            push_reference(project, created_event, :author_id, issue_event[:actor]&.id)
           end
 
           def create_state_event(issue_event)
@@ -45,9 +43,7 @@ module Gitlab
 
             state_event = ResourceStateEvent.create!(attrs)
 
-            return unless mapper.user_mapping_enabled?
-
-            push_with_record(state_event, :user_id, issue_event[:actor]&.id, mapper.user_mapper)
+            push_reference(project, state_event, :user_id, issue_event[:actor]&.id)
           end
         end
       end

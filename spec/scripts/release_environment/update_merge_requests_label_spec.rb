@@ -9,6 +9,7 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
   let(:deployment_id) { '12345' }
   let(:api_token) { 'test-token' }
   let(:gitlab_client) { double('Gitlab::Client') } # rubocop:disable RSpec/VerifiedDoubles -- mock only
+  let(:logger) { double('Logger') } # rubocop:disable RSpec/VerifiedDoubles -- mock only
 
   subject(:updater) { described_class.new }
 
@@ -24,6 +25,9 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
       endpoint: api_endpoint,
       private_token: api_token
     ).and_return(gitlab_client)
+
+    allow(Logger).to receive(:new).with($stdout).and_return(logger)
+    allow(logger).to receive(:error)
   end
 
   describe '#initialize' do
@@ -33,7 +37,12 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
         private_token: api_token
       )
 
-      described_class.new
+      updater
+    end
+
+    it 'creates a logger' do
+      expect(Logger).to receive(:new).with($stdout)
+      updater
     end
   end
 
@@ -75,14 +84,12 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
           allow(gitlab_client).to receive(:update_merge_request)
                                     .with(123, 456, anything)
                                     .and_raise(StandardError.new('API Error'))
-          allow(updater)
-            .to receive(:logger)
-                  .and_return(double('logger')) # rubocop:disable RSpec/VerifiedDoubles -- mock only
         end
 
         it 'logs error and continues processing other MRs' do
-          expect(updater.logger).to receive(:error).with(
-            "Could not update backport MR iid 456 with label 'workflow::release-environment'.\n[ERROR]: API Error"
+          expect(logger).to receive(:error).with(
+            "Could not update backport MR iid 456 with " \
+              "label 'workflow::release-environment'.\n[ERROR]: API Error"
           )
 
           updater.execute
@@ -104,13 +111,10 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
       before do
         allow(gitlab_client).to receive(:get)
                                   .and_raise(StandardError.new('Network Error'))
-        allow(updater)
-          .to receive(:logger)
-                .and_return(double('logger')) # rubocop:disable RSpec/VerifiedDoubles -- mock only
       end
 
       it 'logs error and returns empty array' do
-        expect(updater.logger).to receive(:error).with(
+        expect(logger).to receive(:error).with(
           "Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: Network Error"
         )
 

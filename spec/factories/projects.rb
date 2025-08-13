@@ -227,6 +227,12 @@ FactoryBot.define do
       import_type { :bitbucket_server }
     end
 
+    trait :github_import do
+      import_started
+      import_url { 'https://github.com' }
+      import_type { :github }
+    end
+
     trait :jira_dvcs_server do
       before(:create) do |project|
         create(:project_feature_usage, :dvcs_server, project: project)

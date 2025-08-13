@@ -3,10 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_category: :importers do
+  include Import::UserMappingHelper
+
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:project) do
+    create(
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
+  let_it_be(:source_user) { generate_source_user(project, 1000) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:issuable) { create(:issue, project: project) }
@@ -14,7 +22,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.new(
       id: 1196850910,
-      actor: { id: user.id, login: user.username },
+      actor: { id: source_user.source_user_identifier, login: source_user.source_username },
       event: 'commented',
       created_at: '2022-07-27T14:41:11Z',
       updated_at: '2022-07-27T14:41:11Z',
@@ -27,9 +35,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
     allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
       allow(finder).to receive(:database_id).and_return(issuable.id)
     end
-    allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-      allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-    end
   end
 
   shared_examples 'new note' do
@@ -38,7 +43,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
 
       expect(issuable.notes.last).to have_attributes(
         note: 'This is my note',
-        author_id: user.id,
+        author_id: source_user.mapped_user_id,
         noteable_type: issuable.class.name.to_s,
         imported_from: 'github'
       )

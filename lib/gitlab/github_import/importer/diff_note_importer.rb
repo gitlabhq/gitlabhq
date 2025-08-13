@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       class DiffNoteImporter
-        include Gitlab::GithubImport::PushPlaceholderReferences
+        include ::Import::PlaceholderReferences::Pusher
 
         DiffNoteCreationError = Class.new(ActiveRecord::RecordInvalid)
 
@@ -15,7 +15,6 @@ module Gitlab
           @note = note
           @project = project
           @client = client
-          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
         end
 
         def execute
@@ -43,7 +42,7 @@ module Gitlab
 
         private
 
-        attr_reader :note, :project, :client, :author_id, :author_found, :mapper
+        attr_reader :note, :project, :client, :author_id, :author_found
 
         def build_author_attributes
           @author_id, @author_found = user_finder.author_id_for(note)
@@ -83,9 +82,7 @@ module Gitlab
 
           ids = ApplicationRecord.legacy_bulk_insert(LegacyDiffNote.table_name, [attributes], return_ids: true)
 
-          return unless mapper.user_mapping_enabled?
-
-          push_refs_with_ids(ids, LegacyDiffNote, note[:author]&.id, mapper.user_mapper)
+          push_references_by_ids(project, ids, LegacyDiffNote, :author_id, note[:author]&.id)
         end
         # rubocop:enabled Gitlab/BulkInsert
 
@@ -109,9 +106,7 @@ module Gitlab
 
           raise DiffNoteCreationError, record unless record.persisted?
 
-          return unless mapper.user_mapping_enabled?
-
-          push_with_record(record, :author_id, note.author&.id, mapper.user_mapper)
+          push_reference(project, record, :author_id, note.author&.id)
         end
 
         def note_body

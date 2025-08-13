@@ -2,10 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::UserMappingHelper
+
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository, :with_import_url) }
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
@@ -15,7 +23,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       'id' => 6501124486,
-      'actor' => { 'id' => user.id, 'login' => user.username },
+      'actor' => { 'id' => 1000, 'login' => 'github_author' },
       'event' => event_type,
       'commit_id' => nil,
       'milestone_title' => milestone_title,
@@ -25,16 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
     )
   end
 
-  let(:event_attrs) do
-    {
-      user_id: user.id,
-      milestone_id: milestone.id,
-      state: 'opened',
-      created_at: issue_event.created_at,
-      imported_from: 'github'
-
-    }.stringify_keys
-  end
+  let(:cached_references) { placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id) }
 
   shared_examples 'new event' do
     context 'when a matching milestone exists in GitLab' do
@@ -61,16 +60,11 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
     let(:milestone_title) { milestone.title }
 
     it 'pushes the reference' do
-      expect(subject)
-      .to receive(:push_with_record)
-      .with(
-        an_instance_of(ResourceMilestoneEvent),
-        :user_id,
-        user.id,
-        an_instance_of(Gitlab::Import::SourceUserMapper)
-      )
-
       importer.execute(issue_event)
+
+      expect(cached_references).to match_array([
+        ['ResourceMilestoneEvent', an_instance_of(Integer), 'user_id', source_user.id]
+      ])
     end
   end
 
@@ -78,10 +72,9 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
     let(:milestone_title) { milestone.title }
 
     it 'does not push any reference' do
-      expect(subject)
-      .not_to receive(:push_with_record)
-
       importer.execute(issue_event)
+
+      expect(cached_references).to be_empty
     end
   end
 
@@ -94,19 +87,16 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
     end
 
     context 'when user mapping is enabled' do
-      let_it_be(:source_user) do
-        create(
-          :import_source_user,
-          placeholder_user_id: user.id,
-          source_user_identifier: user.id,
-          source_username: user.username,
-          source_hostname: project.safe_import_url,
-          namespace_id: project.root_ancestor.id
-        )
-      end
-
-      before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+      let_it_be(:source_user) { generate_source_user(project, 1000) }
+      let(:mapped_user_id) { source_user.mapped_user_id }
+      let(:event_attrs) do
+        {
+          user_id: mapped_user_id,
+          milestone_id: milestone.id,
+          state: 'opened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
       end
 
       context 'with Issue' do
@@ -146,13 +136,120 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, feature
           it_behaves_like 'push placeholder reference'
         end
       end
+
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+        let(:mapped_user_id) { user_namespace.owner_id }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        context 'with Issue' do
+          context 'when importing a milestoned event' do
+            let(:event_type) { 'milestoned' }
+            let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'add') }
+
+            it_behaves_like 'new event'
+            it_behaves_like 'do not push placeholder reference'
+          end
+
+          context 'when importing demilestoned event' do
+            let(:event_type) { 'demilestoned' }
+            let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'remove') }
+
+            it_behaves_like 'new event'
+            it_behaves_like 'do not push placeholder reference'
+          end
+        end
+
+        context 'with MergeRequest' do
+          let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+          context 'when importing a milestoned event' do
+            let(:event_type) { 'milestoned' }
+            let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'add') }
+
+            it_behaves_like 'new event'
+            it_behaves_like 'do not push placeholder reference'
+          end
+
+          context 'when importing demilestoned event' do
+            let(:event_type) { 'demilestoned' }
+            let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'remove') }
+
+            it_behaves_like 'new event'
+            it_behaves_like 'do not push placeholder reference'
+          end
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          let_it_be(:source_user) { generate_source_user(project, 1000) }
+          let(:mapped_user_id) { source_user.mapped_user_id }
+
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          context 'with Issue' do
+            context 'when importing a milestoned event' do
+              let(:event_type) { 'milestoned' }
+              let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'add') }
+
+              it_behaves_like 'new event'
+              it_behaves_like 'push placeholder reference'
+            end
+
+            context 'when importing demilestoned event' do
+              let(:event_type) { 'demilestoned' }
+              let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'remove') }
+
+              it_behaves_like 'new event'
+              it_behaves_like 'push placeholder reference'
+            end
+          end
+
+          context 'with MergeRequest' do
+            let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+            context 'when importing a milestoned event' do
+              let(:event_type) { 'milestoned' }
+              let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'add') }
+
+              it_behaves_like 'new event'
+              it_behaves_like 'push placeholder reference'
+            end
+
+            context 'when importing demilestoned event' do
+              let(:event_type) { 'demilestoned' }
+              let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'remove') }
+
+              it_behaves_like 'new event'
+              it_behaves_like 'push placeholder reference'
+            end
+          end
+        end
+      end
     end
 
     context 'when user mapping is disabled' do
+      let(:mapped_user_id) { user.id }
+      let(:event_attrs) do
+        {
+          user_id: mapped_user_id,
+          milestone_id: milestone.id,
+          state: 'opened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+          allow(finder).to receive(:find).with(1000, 'github_author').and_return(user.id)
         end
       end
 

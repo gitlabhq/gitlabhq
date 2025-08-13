@@ -4,6 +4,7 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
+import glob from 'glob';
 import webpackConfig from './config/webpack.config';
 import {
   IS_EE,
@@ -39,6 +40,7 @@ const aliasArr = Object.entries(webpackConfig.resolve.alias).map(([find, replace
 }));
 
 const assetsPath = path.resolve(__dirname, 'app/assets');
+const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
@@ -163,6 +165,20 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+  },
+  optimizeDeps: {
+    exclude: ['@gitlab/ui'],
+    include: [
+      // When building @gitlab/ui from source, lodash imports fail in vite because lodash publishes commonjs modules.
+      // Vite supports glob expansions in `optimizeDeps.include` that solves this, but it adds a `.js` extension in the
+      // resulting `includes` entries so lodash imports do not get re-included correctly. Make our own glob expansion
+      // that expands to:
+      //   [ '@gitlab/ui > lodash/add', '@gitlab/ui > lodash/after', '@gitlab/ui > lodash/array', ... ]
+      ...glob
+        .sync('lodash/**/[a-zA-Z]*.js', { cwd: nodeModulesPath })
+        .map((m) => m.replace('.js', ''))
+        .map((m) => `@gitlab/ui > ${m}`),
+    ],
   },
   build: {
     // speed up build in CI by disabling sourcemaps and compression

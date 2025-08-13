@@ -3,6 +3,7 @@
 module API
   module Ci
     class Pipelines < ::API::Base
+      include ::API::Concerns::McpAccess
       include PaginationParams
       include APIGuard
 
@@ -11,6 +12,7 @@ module API
 
       before { authenticate_non_get! }
 
+      allow_mcp_access_read
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       params do

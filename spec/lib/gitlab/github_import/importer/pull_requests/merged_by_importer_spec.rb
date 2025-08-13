@@ -5,27 +5,22 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:project) do
-    create(:project, :with_import_url, :import_user_mapping_enabled, import_type: Import::SOURCE_GITHUB)
-  end
-
-  let_it_be(:merge_request) { create(:merged_merge_request, project: project) }
-  let_it_be(:merger_source_user) do
+  let_it_be_with_reload(:project) do
     create(
-      :import_source_user,
-      source_user_identifier: 999,
-      source_hostname: project.safe_import_url,
-      import_type: Import::SOURCE_GITHUB,
-      namespace: project.root_ancestor
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
     )
   end
 
+  let_it_be(:merge_request) { create(:merged_merge_request, project: project) }
+  let_it_be(:merger_source_user) { generate_source_user(project, 999) }
+
   let(:merged_at) { Time.utc(2017, 1, 1, 12) }
+  let(:merger_user) { { id: 999, login: 'merger' } }
+  let(:cached_references) { placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id) }
   let(:client_double) do
     instance_double(Gitlab::GithubImport::Client, user: { id: 999, login: 'merger', email: 'merger@email.com' })
   end
-
-  let(:merger_user) { { id: 999, login: 'merger' } }
 
   let(:pull_request) do
     Gitlab::GithubImport::Representation::PullRequest.from_api_response(
@@ -57,17 +52,62 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
     it 'pushes placeholder references to the store' do
       subject.execute
 
-      user_references = placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id)
       metrics = merge_request.metrics.reload
 
-      expect(user_references).to match_array([
+      expect(cached_references).to match_array([
         ['MergeRequest::Metrics', metrics.id, 'merged_by_id', merger_source_user.id]
       ])
     end
 
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+
+      before_all do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'does not push any references' do
+        subject.execute
+
+        expect(cached_references).to be_empty
+      end
+
+      it 'imports the merged_by mapped to the personal namespace owner' do
+        subject.execute
+
+        expect(merge_request.metrics.reload.merged_by_id).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        let_it_be(:merger_source_user) { generate_source_user(project, 999) }
+
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references' do
+          subject.execute
+
+          metrics = merge_request.metrics.reload
+
+          expect(cached_references).to match_array([
+            ['MergeRequest::Metrics', metrics.id, 'merged_by_id', merger_source_user.id]
+          ])
+        end
+
+        it 'imports the merged_by mapped to the placeholder user' do
+          subject.execute
+
+          expect(merge_request.metrics.reload.merged_by_id).to eq(merger_source_user.mapped_user_id)
+        end
+      end
+    end
+
     context 'when user mapping is disabled' do
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       shared_examples 'adds a note referencing the merger user' do

@@ -7,7 +7,15 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
 
   let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :with_import_url, group: group) }
+
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      group: group
+    )
+  end
+
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
@@ -36,30 +44,12 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
     )
   end
 
-  let(:user_mapping_enabled) { true }
-  let_it_be(:source_user_alice) do
-    create(
-      :import_source_user,
-      source_user_identifier: '4',
-      source_hostname: project.safe_import_url,
-      namespace_id: group.id
-    )
-  end
+  let_it_be(:source_user_alice) { generate_source_user(project, '4') }
+  let_it_be(:source_user_bob) { generate_source_user(project, '5') }
 
-  let_it_be(:source_user_bob) do
-    create(
-      :import_source_user,
-      source_user_identifier: '5',
-      source_hostname: project.safe_import_url,
-      namespace_id: group.id
-    )
-  end
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
 
-  let(:importer) { described_class.new(issue, project, client) }
-
-  before do
-    project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled })
-  end
+  subject(:importer) { described_class.new(issue, project, client) }
 
   describe '.import_if_issue' do
     it 'imports an issuable if it is a regular issue' do
@@ -112,9 +102,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       importer.execute
 
       created_issue = Issue.last
-      user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
 
-      expect(user_references).to match_array([
+      expect(cached_references).to match_array([
         ['Issue', created_issue.id, 'author_id', source_user_alice.id],
         [
           'IssueAssignee', { 'user_id' => source_user_alice.mapped_user_id, 'issue_id' => created_issue.id },
@@ -141,10 +130,79 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
         expect(Issue.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
       end
     end
+
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+
+      before_all do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'does not push any references' do
+        importer.execute
+
+        expect(cached_references).to be_empty
+      end
+
+      it 'imports the issue mapped to the personal namespace owner' do
+        expect { importer.execute }.to change { Issue.count }.by(1)
+
+        expect(Issue.last).to have_attributes(
+          iid: 42,
+          title: 'My Issue',
+          author_id: user_namespace.owner_id,
+          assignee_ids: contain_exactly(user_namespace.owner_id)
+        )
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        let_it_be(:namespace_import_user) { create(:namespace_import_user, namespace: user_namespace) }
+        let_it_be(:source_user_alice) do
+          generate_source_user(project, '4', placeholder_user: namespace_import_user.import_user)
+        end
+
+        let_it_be(:source_user_bob) do
+          generate_source_user(project, '5', placeholder_user: namespace_import_user.import_user)
+        end
+
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references' do
+          importer.execute
+
+          created_issue = Issue.last
+
+          expect(cached_references).to match_array([
+            ['Issue', created_issue.id, 'author_id', source_user_alice.id],
+            [
+              'IssueAssignee', { 'user_id' => namespace_import_user.user_id, 'issue_id' => created_issue.id },
+              'user_id', instance_of(Integer)
+            ]
+          ])
+        end
+
+        it 'imports the issue mapped to import users' do
+          expect { importer.execute }.to change { Issue.count }.by(1)
+
+          expect(Issue.last).to have_attributes(
+            iid: 42,
+            title: 'My Issue',
+            author_id: namespace_import_user.user_id,
+            assignee_ids: contain_exactly(namespace_import_user.user_id)
+          )
+        end
+      end
+    end
   end
 
   context 'when user_mapping is not enabled' do
-    let(:user_mapping_enabled) { false }
+    before_all do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+    end
 
     describe '.import_if_issue' do
       it 'imports an issuable if it is a regular issue' do

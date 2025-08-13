@@ -13,8 +13,9 @@ module Gitlab
     # the database when most queries are not going to return results anyway.
     class UserFinder
       include Gitlab::ExclusiveLeaseHelpers
+      include Gitlab::Utils::StrongMemoize
 
-      attr_reader :project, :client, :mapper
+      attr_reader :project, :client
 
       # The base cache key to use for caching user IDs for a given GitHub user ID.
       ID_CACHE_KEY = 'github-import/user-finder/user-id/%s'
@@ -43,7 +44,6 @@ module Gitlab
       def initialize(project, client)
         @project = project
         @client = client
-        @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
       end
 
       # Returns the GitLab user ID of an object's author.
@@ -85,20 +85,20 @@ module Gitlab
           return ghost ? GithubImport.ghost_user_id : nil
         end
 
-        if mapper.user_mapping_enabled?
-          source_user(user).mapped_user_id
-        else
-          find(user[:id], user[:login])
-        end
+        return find(user[:id], user[:login]) unless user_mapping_enabled?
+
+        return project.root_ancestor.owner_id if map_to_personal_namespace_owner?
+
+        source_user(user).mapped_user_id
       end
 
       # Returns the GitLab user ID from placeholder or reassigned_to user.
       def source_user(user)
-        source_user = mapper.user_mapper.find_source_user(user[:id])
+        source_user = source_user_mapper.find_source_user(user[:id])
 
         return source_user if source_user
 
-        mapper.user_mapper.find_or_create_source_user(
+        source_user_mapper.find_or_create_source_user(
           source_name: fetch_source_name_from_github(user[:login]),
           source_username: user[:login],
           source_user_identifier: user[:id]
@@ -107,7 +107,8 @@ module Gitlab
 
       # Returns true if GitLab user has accepted their reassignment status or if UCM is not enabled
       def source_user_accepted?(user)
-        return true unless mapper.user_mapping_enabled?
+        return true unless user_mapping_enabled?
+        return true if map_to_personal_namespace_owner?
 
         source_user(user).accepted_status?
       end
@@ -380,6 +381,24 @@ module Gitlab
           username: username,
           message: message
         )
+      end
+
+      def source_user_mapper
+        ::Gitlab::Import::SourceUserMapper.new(
+          namespace: project.root_ancestor,
+          source_hostname: project.safe_import_url,
+          import_type: ::Import::SOURCE_GITHUB
+        )
+      end
+      strong_memoize_attr :source_user_mapper
+
+      def user_mapping_enabled?
+        project.import_data.user_mapping_enabled?
+      end
+
+      def map_to_personal_namespace_owner?
+        project.root_ancestor.user_namespace? &&
+          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
       end
     end
   end

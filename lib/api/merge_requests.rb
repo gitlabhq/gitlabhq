@@ -2,6 +2,7 @@
 
 module API
   class MergeRequests < ::API::Base
+    include ::API::Concerns::McpAccess
     include APIGuard
     include PaginationParams
     include Helpers::Unidiff
@@ -12,6 +13,7 @@ module API
 
     before { authenticate_non_get! }
 
+    allow_mcp_access_read
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? || mr_update?(request) || mr_create?(request)
     end

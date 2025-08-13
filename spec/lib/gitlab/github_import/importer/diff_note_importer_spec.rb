@@ -3,7 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_failures, feature_category: :importers do
-  let_it_be(:project) { create(:project, :repository, :with_import_url) }
+  include Import::UserMappingHelper
+
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :repository, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
@@ -40,65 +48,13 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
     )
   end
 
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
+
   subject(:importer) { described_class.new(note_representation, project, client) }
 
-  shared_examples 'diff notes without suggestion' do
-    it 'imports the note as legacy diff note' do
-      stub_user_finder(user.id, true)
-
-      expect { subject.execute }
-        .to change(LegacyDiffNote, :count)
-        .by(1)
-
-      note = project.notes.diff_notes.take
-      expect(note).to be_valid
-      expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
-      expect(note.author_id).to eq(user.id)
-      expect(note.commit_id).to eq('original123abc')
-      expect(note.created_at).to eq(created_at)
-      expect(note.diff).to be_an_instance_of(Gitlab::Git::Diff)
-      expect(note.discussion_id).to eq(discussion_id)
-      expect(note.line_code).to eq(note_representation.line_code)
-      expect(note.note).to eq('Hello')
-      expect(note.noteable_id).to eq(merge_request.id)
-      expect(note.noteable_type).to eq('MergeRequest')
-      expect(note.project_id).to eq(project.id)
-      expect(note.st_diff).to eq(note_representation.diff_hash)
-      expect(note.system).to eq(false)
-      expect(note.type).to eq('LegacyDiffNote')
-      expect(note.updated_at).to eq(updated_at)
-    end
-
-    it 'adds a "created by:" note when the author cannot be found' do
-      stub_user_finder(project.creator_id, false)
-
-      expect { subject.execute }
-        .to change(LegacyDiffNote, :count)
-        .by(1)
-
-      note = project.notes.diff_notes.take
-      expect(note).to be_valid
-      expect(note.author_id).to eq(project.creator_id)
-      expect(note.note).to eq("*Created by: #{user.username}*\n\nHello")
-    end
-  end
-
-  describe '#execute' do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when user mapping is enabled' do
-      let_it_be(:source_user) do
-        create(
-          :import_source_user,
-          placeholder_user_id: user.id,
-          source_user_identifier: user.id,
-          source_username: user.username,
-          source_hostname: project.safe_import_url,
-          namespace_id: project.root_ancestor.id
-        )
-      end
-
-      before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
-      end
+      let_it_be(:source_user) { generate_source_user(project, user.id) }
 
       context 'when the merge request no longer exists' do
         it 'does not import anything' do
@@ -123,20 +79,37 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           end
         end
 
-        it 'pushes placeholder references with ids' do
-          expect(subject)
-            .to receive(:push_refs_with_ids)
-            .with(
-              array_including(be_an(Integer)),
-              LegacyDiffNote,
-              note_representation.author.id,
-              an_instance_of(Gitlab::Import::SourceUserMapper)
-            )
-
+        it 'pushes placeholder references' do
           subject.execute
+
+          expect(cached_references).to contain_exactly(
+            ['LegacyDiffNote', instance_of(Integer), 'author_id', source_user.id]
+          )
         end
 
-        it_behaves_like 'diff notes without suggestion'
+        it 'imports the note as legacy diff note' do
+          expect { subject.execute }
+            .to change(LegacyDiffNote, :count)
+            .by(1)
+
+          note = project.notes.diff_notes.take
+          expect(note).to be_valid
+          expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
+          expect(note.author_id).to eq(source_user.mapped_user_id)
+          expect(note.commit_id).to eq('original123abc')
+          expect(note.created_at).to eq(created_at)
+          expect(note.diff).to be_an_instance_of(Gitlab::Git::Diff)
+          expect(note.discussion_id).to eq(discussion_id)
+          expect(note.line_code).to eq(note_representation.line_code)
+          expect(note.note).to eq('Hello')
+          expect(note.noteable_id).to eq(merge_request.id)
+          expect(note.noteable_type).to eq('MergeRequest')
+          expect(note.project_id).to eq(project.id)
+          expect(note.st_diff).to eq(note_representation.diff_hash)
+          expect(note.system).to eq(false)
+          expect(note.type).to eq('LegacyDiffNote')
+          expect(note.updated_at).to eq(updated_at)
+        end
 
         context 'when the note has suggestions' do
           let(:note_body) do
@@ -148,17 +121,12 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             EOB
           end
 
-          it 'pushes placeholder references with record' do
-            expect(subject)
-              .to receive(:push_with_record)
-              .with(
-                an_instance_of(DiffNote),
-                :author_id,
-                user.id,
-                an_instance_of(Gitlab::Import::SourceUserMapper)
-              )
-
+          it 'pushes placeholder references' do
             subject.execute
+
+            expect(cached_references).to contain_exactly(
+              ['DiffNote', instance_of(Integer), 'author_id', source_user.id]
+            )
           end
 
           it 'imports the note as diff note' do
@@ -178,7 +146,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(note.noteable_id).to eq(merge_request.id)
             expect(note.project_id).to eq(project.id)
             expect(note.namespace_id).to eq(project.project_namespace_id)
-            expect(note.author_id).to eq(user.id)
+            expect(note.author_id).to eq(source_user.mapped_user_id)
             expect(note.system).to eq(false)
             expect(note.discussion_id).to eq(discussion_id)
             expect(note.commit_id).to eq('original123abc')
@@ -250,6 +218,56 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
                 .and not_change(DiffNote, :count)
             end
           end
+
+          context 'when importing into a personal namespace' do
+            let_it_be(:user_namespace) { create(:namespace) }
+
+            before_all do
+              project.update!(namespace: user_namespace)
+            end
+
+            it 'does not push any references' do
+              subject.execute
+
+              expect(cached_references).to be_empty
+            end
+
+            it 'imports the diff note mapped to the personal namespace owner' do
+              expect { subject.execute }
+                .to change(DiffNote, :count)
+                .by(1)
+
+              note = project.notes.diff_notes.take
+              expect(note.author_id).to eq(user_namespace.owner_id)
+            end
+
+            context 'when user_mapping_to_personal_namespace_owner is disabled' do
+              let_it_be(:source_user) { generate_source_user(project, user.id) }
+
+              before_all do
+                project.build_or_assign_import_data(
+                  data: { user_mapping_to_personal_namespace_owner_enabled: false }
+                ).save!
+              end
+
+              it 'pushes placeholder references' do
+                subject.execute
+
+                expect(cached_references).to contain_exactly(
+                  ['DiffNote', instance_of(Integer), 'author_id', source_user.id]
+                )
+              end
+
+              it 'imports the diff note mapped to the placeholder user' do
+                expect { subject.execute }
+                  .to change(DiffNote, :count)
+                  .by(1)
+
+                note = project.notes.diff_notes.take
+                expect(note.author_id).to eq(source_user.mapped_user_id)
+              end
+            end
+          end
         end
 
         context 'when diff note is invalid' do
@@ -259,12 +277,62 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
+
+        context 'when importing into a personal namespace' do
+          let_it_be(:user_namespace) { create(:namespace) }
+          let_it_be(:project) do
+            project.update!(namespace: user_namespace)
+            project
+          end
+
+          it 'does not push any references' do
+            subject.execute
+
+            expect(cached_references).to be_empty
+          end
+
+          it 'imports the legacy diff note mapped to the personal namespace owner' do
+            expect { subject.execute }
+              .to change(LegacyDiffNote, :count)
+              .by(1)
+
+            note = project.notes.diff_notes.take
+            expect(note.author_id).to eq(user_namespace.owner_id)
+          end
+
+          context 'when user_mapping_to_personal_namespace_owner is disabled' do
+            let_it_be(:source_user) { generate_source_user(project, user.id) }
+
+            before_all do
+              project.build_or_assign_import_data(
+                data: { user_mapping_to_personal_namespace_owner_enabled: false }
+              ).save!
+            end
+
+            it 'pushes placeholder references' do
+              subject.execute
+
+              expect(cached_references).to contain_exactly(
+                ['LegacyDiffNote', instance_of(Integer), 'author_id', source_user.id]
+              )
+            end
+
+            it 'imports the legacy diff note mapped to the placeholder user' do
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                .by(1)
+
+              note = project.notes.diff_notes.take
+              expect(note.author_id).to eq(source_user.mapped_user_id)
+            end
+          end
+        end
       end
     end
 
     context 'when user mapping is disabled' do
-      before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      before_all do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       context 'when the merge request no longer exists' do
@@ -282,7 +350,13 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           create(:merge_request, source_project: project, target_project: project)
         end
 
+        let(:gitlab_user_id) { user.id }
+
         before do
+          expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+            expect(finder).to receive(:find).and_return(gitlab_user_id)
+          end
+
           expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
             expect(finder)
               .to receive(:database_id)
@@ -291,14 +365,49 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
         end
 
         it 'does not push placeholder references' do
-          stub_user_finder(user.id, true)
-
-          expect(subject).not_to receive(:push_note_refs_with_ids)
-
           subject.execute
+
+          expect(cached_references).to be_empty
         end
 
-        it_behaves_like 'diff notes without suggestion'
+        it 'imports the note as legacy diff note' do
+          expect { subject.execute }
+            .to change(LegacyDiffNote, :count)
+            .by(1)
+
+          note = project.notes.diff_notes.take
+          expect(note).to be_valid
+          expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
+          expect(note.author_id).to eq(user.id)
+          expect(note.commit_id).to eq('original123abc')
+          expect(note.created_at).to eq(created_at)
+          expect(note.diff).to be_an_instance_of(Gitlab::Git::Diff)
+          expect(note.discussion_id).to eq(discussion_id)
+          expect(note.line_code).to eq(note_representation.line_code)
+          expect(note.note).to eq('Hello')
+          expect(note.noteable_id).to eq(merge_request.id)
+          expect(note.noteable_type).to eq('MergeRequest')
+          expect(note.project_id).to eq(project.id)
+          expect(note.st_diff).to eq(note_representation.diff_hash)
+          expect(note.system).to eq(false)
+          expect(note.type).to eq('LegacyDiffNote')
+          expect(note.updated_at).to eq(updated_at)
+        end
+
+        context 'when the author is not found' do
+          let(:gitlab_user_id) { nil }
+
+          it 'sets the project creator as the author with a "created by:" note' do
+            expect { subject.execute }
+              .to change(LegacyDiffNote, :count)
+              .by(1)
+
+            note = project.notes.diff_notes.take
+            expect(note).to be_valid
+            expect(note.author_id).to eq(project.creator_id)
+            expect(note.note).to eq("*Created by: #{user.username}*\n\nHello")
+          end
+        end
 
         context 'when the note has suggestions' do
           let(:note_body) do
@@ -310,14 +419,10 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             EOB
           end
 
-          before do
-            stub_user_finder(user.id, true)
-          end
-
           it 'does not push placeholder references' do
-            expect(subject).not_to receive(:push_with_record)
-
             subject.execute
+
+            expect(cached_references).to be_empty
           end
 
           it 'imports the note as diff note' do
@@ -412,21 +517,11 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
         context 'when diff note is invalid' do
           it 'fails validation' do
-            stub_user_finder(user.id, true)
-
             expect(note_representation).to receive(:line_code).and_return(nil)
 
             expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
-      end
-    end
-
-    def stub_user_finder(user, found)
-      expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        expect(finder)
-          .to receive(:author_id_for)
-          .and_return([user, found])
       end
     end
   end

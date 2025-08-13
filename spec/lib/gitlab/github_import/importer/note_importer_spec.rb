@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :importers do
-  let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
-  let_it_be(:project) { create(:project, :with_import_url) }
-  let_it_be(:user) { create(:user) }
+  include Import::UserMappingHelper
 
-  let_it_be(:source_user) do
-    create(:import_source_user,
-      placeholder_user_id: user.id,
-      namespace_id: project.root_ancestor.id,
-      source_user_identifier: '4',
-      source_hostname: project.safe_import_url
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
     )
   end
+
+  let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:source_user) { generate_source_user(project, '4') }
 
   let(:client) { double(:client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
@@ -35,13 +35,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
   end
 
   let(:importer) { described_class.new(github_note, project, client) }
-  let(:user_mapping_enabled) { true }
 
-  before do
-    project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled })
-  end
-
-  describe '#execute' do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when the noteable exists' do
       let!(:issue_row) { create(:issue, project: project, iid: 1) }
 
@@ -51,7 +46,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
           .and_return(issue_row.id)
       end
 
-      context 'when user_mapping_enabled is true' do
+      context 'when user contribution mapping is enabled' do
         it 'maps the correct user and pushes a reference' do
           expect(importer.user_finder).to receive(:author_id_for).with(github_note).and_call_original
 
@@ -91,12 +86,83 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
 
           importer.execute
         end
+
+        context 'when importing into a personal namespace' do
+          let_it_be(:user_namespace) { create(:namespace) }
+          let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
+
+          before_all do
+            project.update!(namespace: user_namespace)
+          end
+
+          it 'does not push any references' do
+            importer.execute
+
+            expect(cached_references).to be_empty
+          end
+
+          it 'imports the note mapped to the personal namespace owner' do
+            expect(ApplicationRecord)
+              .to receive(:legacy_bulk_insert)
+              .with(
+                Note.table_name,
+                [
+                  {
+                    noteable_type: 'Issue',
+                    noteable_id: issue_row.id,
+                    project_id: project.id,
+                    namespace_id: project.project_namespace_id,
+                    author_id: user_namespace.owner_id,
+                    note: 'This is my note',
+                    discussion_id: match(/\A[0-9a-f]{40}\z/),
+                    system: false,
+                    created_at: created_at,
+                    updated_at: updated_at,
+                    imported_from: imported_from
+                  }
+                ],
+                { return_ids: true }
+              )
+              .and_call_original
+
+            importer.execute
+          end
+
+          context 'when user_mapping_to_personal_namespace_owner is disabled' do
+            let_it_be(:source_user) { generate_source_user(project, '4') }
+
+            before_all do
+              project.build_or_assign_import_data(
+                data: { user_mapping_to_personal_namespace_owner_enabled: false }
+              ).save!
+            end
+
+            it 'pushes placeholder references' do
+              importer.execute
+
+              expect(cached_references).to contain_exactly(
+                ['Note', instance_of(Integer), 'author_id', source_user.id]
+              )
+            end
+
+            it 'imports the note mapped to the placeholder user' do
+              expect(ApplicationRecord)
+                .to receive(:legacy_bulk_insert)
+                .with(
+                  Note.table_name,
+                  [a_hash_including(author_id: source_user.mapped_user_id)],
+                  { return_ids: true }
+                ).and_call_original
+
+              importer.execute
+            end
+          end
+        end
       end
 
-      context 'when user_mapping_enabled is false' do
-        let(:user_mapping_enabled) { false }
-
+      context 'when user contribution mapping is disabled' do
         before do
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
           allow(importer.user_finder)
             .to receive(:email_for_github_username)
             .and_return('alice@alice.com')

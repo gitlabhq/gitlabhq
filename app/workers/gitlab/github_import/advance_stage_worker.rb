@@ -47,7 +47,9 @@ module Gitlab
         project = Project.find_by_id(project_id)
         import_settings = Gitlab::GithubImport::Settings.new(project)
 
-        load_references(project) if import_settings.user_mapping_enabled?
+        if import_settings.user_mapping_enabled? && !import_settings.map_to_personal_namespace_owner?
+          load_references(project)
+        end
 
         super
       end

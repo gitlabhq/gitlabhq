@@ -6,6 +6,7 @@ module Gitlab
       # Maps buckets to their respective model classes and cleaners
       MAPPING = {
         artifacts: ::Gitlab::Cleanup::RemoteArtifacts,
+        ci_secure_files: ::Gitlab::Cleanup::RemoteCiSecureFiles,
         uploads: ::Gitlab::Cleanup::RemoteUploads
       }.freeze
 

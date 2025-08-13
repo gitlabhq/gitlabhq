@@ -53,6 +53,21 @@ module Mcp
         raise ArgumentError, validations.join(', ')
       end
 
+      def input_schema_pagination_params
+        {
+          per_page: {
+            type: 'integer',
+            description: 'Number of items to list per page. (default: 20)',
+            minimum: 1
+          },
+          page: {
+            type: 'integer',
+            description: 'Page number to retrieve. (default: 1)',
+            minimum: 1
+          }
+        }
+      end
+
       def description
         raise NoMethodError
       end

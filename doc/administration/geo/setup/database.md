@@ -28,6 +28,7 @@ the roles cannot perform all necessary configuration steps. In this case, use th
 
 The stages of the setup process must be completed in the documented order.
 If not, [complete all prior stages](_index.md#using-linux-package-installations) before proceeding.
+
 {{< /alert >}}
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
@@ -763,11 +764,7 @@ Leader instance**:
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
-
-   {{< alert type="warning" >}}
-   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
-   {{< /alert >}}
+1. Edit `/etc/gitlab/gitlab.rb` and add the following. Make sure that each password type has [matching values](#database-password-consistency-requirements) across all Geo sites.
 
    ```ruby
    roles(['patroni_role'])
