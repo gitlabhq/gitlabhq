@@ -402,7 +402,6 @@ class ProjectPolicy < BasePolicy
     enable :reopen_issue
     enable :admin_issue
     enable :admin_work_item
-    enable :destroy_issue
     enable :read_confidential_issues
     enable :create_design
     enable :update_design

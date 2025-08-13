@@ -5,6 +5,11 @@ import {
   setCurrentHoverElement,
   addInteractionClass,
 } from '~/code_navigation/utils';
+import { sanitize } from '~/lib/dompurify';
+
+jest.mock('~/lib/dompurify', () => ({
+  sanitize: jest.fn((val) => val),
+}));
 
 afterEach(() => {
   if (cachedData.has('current')) {
@@ -122,6 +127,12 @@ describe('addInteractionClass', () => {
       );
       addInteractionClass({ ...params, wrapTextNodes: true });
       expect(findAllSpans()[1].classList.contains('test')).toBe(true);
+    });
+
+    it('calls sanitize when wrapping text nodes', () => {
+      addInteractionClass({ ...params, wrapTextNodes: true });
+
+      expect(sanitize).toHaveBeenCalled();
     });
   });
 });

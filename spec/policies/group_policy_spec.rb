@@ -140,7 +140,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_disallowed(*(reporter_permissions - planner_permissions))
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*(owner_permissions - [:destroy_issue]))
+      expect_disallowed(*owner_permissions)
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -154,7 +154,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
-      expect_allowed(*(planner_permissions - [:destroy_issue]))
+      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -172,7 +172,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
-      expect_allowed(*(planner_permissions - [:destroy_issue]))
+      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -195,7 +195,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows permissions from lower roles' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - [:destroy_issue]))
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
@@ -210,7 +210,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows every maintainer permission' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions - [:destroy_issue])
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*maintainer_permissions)
@@ -393,7 +393,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         expect_disallowed(*(reporter_permissions - planner_permissions))
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -403,7 +403,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - [:destroy_issue]))
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -417,7 +417,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - [:destroy_issue]))
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -431,7 +431,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*(planner_permissions - [:destroy_issue]))
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
