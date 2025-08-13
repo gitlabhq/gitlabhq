@@ -50,7 +50,7 @@ export default {
           iid: `${this.getNoteableData.iid}`,
         };
       },
-      update: (data) => data.project?.mergeRequest?.userPermissions,
+      update: (data) => data.project?.mergeRequest?.userPermissions ?? {},
     },
   },
   components: {
