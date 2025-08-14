@@ -4,7 +4,9 @@ module Authn
   module Tokens
     class CiTriggerToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::Ci::Trigger::TRIGGER_TOKEN_PREFIX)
+        prefixes = [::Ci::Trigger::TRIGGER_TOKEN_PREFIX, ::Ci::Trigger.prefix_for_trigger_token].uniq
+
+        plaintext.start_with?(*prefixes)
       end
 
       attr_reader :revocable, :source

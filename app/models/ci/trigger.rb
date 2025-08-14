@@ -65,6 +65,12 @@ module Ci
       end
     }
 
+    def self.prefix_for_trigger_token
+      return TRIGGER_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(TRIGGER_TOKEN_PREFIX)
+    end
+
     def token=(token_value)
       super
       self.set_token(token_value)
@@ -72,7 +78,7 @@ module Ci
 
     def set_default_values
       self.set_token(self.attributes['token']) if self.attributes['token'].present?
-      self.set_token("#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}") if self.token.blank?
+      self.set_token("#{self.class.prefix_for_trigger_token}#{SecureRandom.hex(20)}") if self.token.blank?
     end
 
     def last_used
@@ -83,7 +89,10 @@ module Ci
     end
 
     def short_token
-      token.delete_prefix(TRIGGER_TOKEN_PREFIX)[0...4] if token.present?
+      return unless token.present?
+
+      token.delete_prefix(Authn::TokenField::PrefixHelper.instance_prefix)
+           .delete_prefix(TRIGGER_TOKEN_PREFIX)[0...4]
     end
     alias_method :trigger_short_token, :short_token
 

@@ -6,6 +6,7 @@ class NamespaceSetting < ApplicationRecord
   include ChronicDurationAttribute
   include EachBatch
   include SafelyChangeColumnDefault
+  include NullifyIfBlank
 
   columns_changing_default :require_dpop_for_manage_api_endpoints
 
@@ -57,11 +58,11 @@ class NamespaceSetting < ApplicationRecord
   validate :validate_enterprise_bypass_expires_at, if: ->(record) {
     record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
   }
+
   sanitizes! :default_branch_name
+  nullify_if_blank :default_branch_name
 
   before_validation :set_pipeline_variables_default_role, on: :create
-
-  before_validation :normalize_default_branch_name
 
   after_update :invalidate_namespace_descendants_cache, if: -> { saved_change_to_archived? }
 
@@ -187,10 +188,6 @@ class NamespaceSetting < ApplicationRecord
 
   def all_ancestors_allow_diff_preview_in_email?
     !self.class.where(namespace_id: namespace.self_and_ancestors, show_diff_preview_in_email: false).exists?
-  end
-
-  def normalize_default_branch_name
-    self.default_branch_name = default_branch_name.presence
   end
 
   def subgroup?

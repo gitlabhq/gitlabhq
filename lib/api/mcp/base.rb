@@ -44,6 +44,7 @@ module API
       before do
         authenticate!
         not_found! unless Feature.enabled?(:mcp_server, current_user)
+        forbidden! unless access_token&.scopes == [Gitlab::Auth::MCP_SCOPE]
       end
 
       helpers do

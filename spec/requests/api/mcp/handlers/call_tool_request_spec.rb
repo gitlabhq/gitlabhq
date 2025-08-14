@@ -3,13 +3,9 @@
 require "spec_helper"
 
 # rubocop:disable RSpec/SpecFilePathFormat -- JSON-RPC has single path for method invocation
-RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
+RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
-  let(:oauth_token) { instance_double(Doorkeeper::AccessToken) }
-
-  before do
-    allow(Doorkeeper::OAuth::Token).to receive(:from_request).and_return(oauth_token)
-  end
+  let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
   describe 'POST /mcp with tools/call method' do
     context 'with valid tool name' do
@@ -24,7 +20,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
       end
 
       before do
-        post api('/mcp', user), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
       end
 
       it 'returns success response' do
@@ -61,7 +57,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
       end
 
       before do
-        post api('/mcp', user), params: invalid_params
+        post api('/mcp', user, oauth_access_token: access_token), params: invalid_params
       end
 
       it 'returns success HTTP status with error result' do
@@ -81,7 +77,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
       end
 
       before do
-        post api('/mcp', user), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
       end
 
       it 'returns invalid params error' do
@@ -103,7 +99,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
       end
 
       before do
-        post api('/mcp', user), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
       end
 
       it 'returns invalid params error' do
@@ -124,7 +120,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
       end
 
       before do
-        post api('/mcp', user), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
       end
 
       it 'returns invalid params error' do
@@ -148,7 +144,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :api do
         id: '1'
       }
 
-      post api('/mcp', user), params: params
+      post api('/mcp', user, oauth_access_token: access_token), params: params
 
       expect(response).to have_gitlab_http_status(:unauthorized)
       expect(json_response['message']).to eq('401 Unauthorized')

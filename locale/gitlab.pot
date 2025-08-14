@@ -73080,6 +73080,9 @@ msgstr ""
 msgid "WorkItem|ticket"
 msgstr ""
 
+msgid "WorkItem|weight completed"
+msgstr ""
+
 msgid "Workflow"
 msgstr ""
 

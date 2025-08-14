@@ -133,6 +133,16 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
     TEXT
   end
 
+  let_it_be(:table_json_not_hash) do
+    <<~TEXT
+      <pre data-canonical-lang="json" data-lang-params="table">
+      <code>
+      []
+      </code>
+      </pre>
+    TEXT
+  end
+
   context 'when fields are provided' do
     it 'generates the correct HTML' do
       expect(filter(table_with_fields).to_html).to eq table_with_fields_html
@@ -154,6 +164,12 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
   context 'when json is invalid' do
     it 'does not change the HTML' do
       expect(filter(table_invalid_json).to_html).to eq table_invalid_json
+    end
+  end
+
+  context 'when json is not a hash' do
+    it 'does not change the HTML' do
+      expect(filter(table_json_not_hash).to_html).to eq table_json_not_hash
     end
   end
 end

@@ -29,6 +29,33 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
       expect(trigger.token).to eq('token')
     end
+
+    context 'with custom instance prefix' do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'sets an random token starting with instance prefix' do
+        trigger = create(:ci_trigger_without_token, project: project)
+
+        expect(trigger.token).not_to be_nil
+        expect(trigger.token).to start_with(instance_prefix)
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'starts with TRIGGER_TOKEN_PREFIX' do
+          trigger = create(:ci_trigger_without_token, project: project)
+
+          expect(trigger.token).to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
+        end
+      end
+    end
   end
 
   describe 'scopes' do
@@ -146,6 +173,38 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     end
   end
 
+  describe '.prefix_for_trigger_token' do
+    subject(:prefix_for_trigger_token) { described_class.prefix_for_trigger_token }
+
+    context 'without custom instance prefix' do
+      it 'starts with TRIGGER_TOKEN_PREFIX' do
+        expect(prefix_for_trigger_token).to start_with(described_class::TRIGGER_TOKEN_PREFIX)
+      end
+    end
+
+    context 'with custom instance prefix' do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns instance prefix with TRIGGER_TOKEN_PREFIX' do
+        expect(prefix_for_trigger_token).to start_with("#{instance_prefix}-#{described_class::TRIGGER_TOKEN_PREFIX}")
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'starts with TRIGGER_TOKEN_PREFIX' do
+          expect(prefix_for_trigger_token).to start_with(described_class::TRIGGER_TOKEN_PREFIX)
+        end
+      end
+    end
+  end
+
   describe '#last_used' do
     let_it_be(:project) { create :project }
     let_it_be_with_refind(:trigger) { create(:ci_trigger, project: project) }
@@ -178,7 +237,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     subject { trigger.short_token }
 
     it 'returns shortened token without prefix' do
-      is_expected.not_to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
+      is_expected.not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0..4])
     end
 
     context 'token does not have a prefix' do
@@ -188,6 +247,32 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
       it 'returns shortened token' do
         is_expected.to eq('1234')
+      end
+    end
+
+    context 'with custom instance prefix', :aggregate_failures do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns shortened token with neither custom, nor default prefix' do
+        trigger = create(:ci_trigger_without_token, project: project)
+        expect(trigger.token).to start_with(instance_prefix)
+        expect(trigger.short_token).not_to eq(instance_prefix[0...4])
+        expect(trigger.short_token).not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0...4])
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'returns shortened token without prefix' do
+          expect(trigger.token).to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
+          expect(trigger.short_token).not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0...4])
+        end
       end
     end
   end

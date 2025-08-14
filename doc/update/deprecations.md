@@ -1258,6 +1258,23 @@ Exact code search provides a better user experience and is compatible with exist
 
 <div class="deprecation " data-milestone="18.5">
 
+### Early Mistral models deprecated for GitLab Duo Self-Hosted
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- End of Support in GitLab <span class="milestone">18.5</span>
+- Removal in GitLab <span class="milestone">18.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/557156).
+
+</div>
+
+In GitLab 18.5, GitLab will deprecate support for the Mistral 7B-it, Mixtral 8x7B, and Mixtral 8x22B models for use with GitLab Duo Self-Hosted. GitLab Duo Enterprise customers can continue to use these models with GitLab Duo Self-Hosted, but will no longer receive technical support for configurations with these models. GitLab Duo Self-Hosted will continue to support Mistral Small 24B Instruct 2506, which has been [validated as fully compatible](https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/) with all generally available GitLab Duo Self-Hosted features.
+
+</div>
+
+<div class="deprecation " data-milestone="18.5">
+
 ### Support for OpenSearch 1.x in advanced search
 
 <div class="deprecation-notes">

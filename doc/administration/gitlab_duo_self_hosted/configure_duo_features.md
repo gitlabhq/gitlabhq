@@ -165,9 +165,44 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 
    ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
-#### GitLab Duo Chat sub-feature fall back configuration
+### Configure the feature to use a GitLab AI vendor model
 
-When configuring GitLab Duo Chat sub-features, if you do not select a specific self-hosted model for a sub-feature, that sub-feature automatically falls back to using the self-hosted model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own self-hosted model.
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+In GitLab 18.3 and later, even when you are using your self-hosted AI gateway and models, you can configure a specific GitLab Duo feature to use a GitLab AI vendor model.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. Select **Configure GitLab Duo Self-Hosted**.
+1. Select the **AI-native features** tab.
+1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab AI vendor model**.
+
+   For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **GitLab AI vendor model**.
+
+   ![GitLab Duo Self-Hosted Feature Configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
+
+For more information on this hybrid configuration, see the documentation on [GitLab Duo Self-Hosted configuration type](_index.md#decide-on-your-configuration-type).
+
+### GitLab Duo Chat sub-feature fall back configuration
+
+When configuring GitLab Duo Chat sub-features, if you do not select a specific model for a sub-feature, that sub-feature automatically falls back to using the model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own model.
 
 ### Self-host the GitLab documentation
 

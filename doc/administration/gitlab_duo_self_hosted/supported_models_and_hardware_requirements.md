@@ -75,6 +75,40 @@ The following models are configurable for the functionalities marked below, but 
 
 <!-- vale gitlab_base.Spelling = YES -->
 
+## GitLab AI vendor models
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+### Overview
+
+GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
+
+#### Configuration
+
+To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model).
+
+When enabled for a specific feature:
+
+- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
+- No detailed logs are generated in the GitLab-hosted AI gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
+
 ## Hardware requirements
 
 The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted on-premise. Requirements vary significantly based on the model size and intended usage:

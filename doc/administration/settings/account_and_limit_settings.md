@@ -392,6 +392,7 @@ Custom token prefixes apply only to the following tokens:
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)
+- [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 
 Prerequisites:
 

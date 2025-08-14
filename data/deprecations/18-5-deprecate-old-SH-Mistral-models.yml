@@ -1,0 +1,23 @@
+- title: "Early Mistral models deprecated for GitLab Duo Self-Hosted"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.5"
+  announcement_milestone: "18.3"
+  # Change breaking_change to false if needed.
+  breaking_change: false
+  # window:  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com < no window>
+  reporter: susie.bee
+  stage: ai-powered
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557156
+  check_impact: 'https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/'
+  impact: [low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=minimal&migration_complexity=automatic&scope=instance&identification_complexity=automatable&additional_complexity=no&base_impact=none&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=none
+  impact_offering: [self-managed]
+  scope: [instance]
+  resolution_role: [Owner]
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    In GitLab 18.5, GitLab will deprecate support for the Mistral 7B-it, Mixtral 8x7B, and Mixtral 8x22B models for use with GitLab Duo Self-Hosted. GitLab Duo Enterprise customers can continue to use these models with GitLab Duo Self-Hosted, but will no longer receive technical support for configurations with these models. GitLab Duo Self-Hosted will continue to support Mistral Small 24B Instruct 2506, which has been [validated as fully compatible](https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/) with all generally available GitLab Duo Self-Hosted features.
+  end_of_support_milestone: 18.5
+  available_in: [premium, ultimate]
+  add_ons: ["Duo Enterprise"]
+  gitlab_com: false

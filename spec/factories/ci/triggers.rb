@@ -5,7 +5,7 @@ FactoryBot.define do
     owner
 
     factory :ci_trigger do
-      sequence(:token) { |n| "#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}token#{n}" }
+      sequence(:token) { |n| "#{Ci::Trigger.prefix_for_trigger_token}token#{n}" }
     end
   end
 end

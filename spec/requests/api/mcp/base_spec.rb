@@ -2,8 +2,9 @@
 
 require "spec_helper"
 
-RSpec.describe API::Mcp::Base, feature_category: :api do
+RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
+  let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
   describe 'POST /mcp' do
     context 'when unauthenticated' do
@@ -27,9 +28,28 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
         end
       end
 
+      context 'when access token is PAT' do
+        it 'returns forbidden' do
+          post api('/mcp', user), params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when access token is OAuth without mcp scope' do
+        let(:insufficient_access_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+
+        it 'returns forbidden' do
+          post api('/mcp', user, oauth_access_token: insufficient_access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       context 'when required jsonrpc param is missing' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { id: '1', method: 'initialize' }
+          post api('/mcp', user, oauth_access_token: access_token), params: { id: '1', method: 'initialize' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -39,7 +59,8 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when required jsonrpc param is empty' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { jsonrpc: '', method: 'initialize', id: '1' }
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '', method: 'initialize', id: '1' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -49,7 +70,8 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when required jsonrpc param is invalid value' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { jsonrpc: '1.0', method: 'initialize', id: '1' }
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '1.0', method: 'initialize', id: '1' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -59,7 +81,7 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when required method param is missing' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { jsonrpc: '2.0', id: '1' }
+          post api('/mcp', user, oauth_access_token: access_token), params: { jsonrpc: '2.0', id: '1' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -69,7 +91,8 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when required method param is empty' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { jsonrpc: '2.0', method: '', id: '1' }
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: '', id: '1' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -79,7 +102,8 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when optional id param is empty' do
         it 'returns JSON-RPC Invalid Request error' do
-          post api('/mcp', user), params: { jsonrpc: '2.0', method: 'initialize', id: '' }
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
@@ -89,7 +113,8 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
 
       context 'when method does not exist' do
         it 'returns JSON-RPC Method not found error' do
-          post api('/mcp', user), params: { jsonrpc: '2.0', method: 'unknown/method', id: '1' }
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'unknown/method', id: '1' }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['error']['code']).to eq(-32601)
@@ -115,14 +140,14 @@ RSpec.describe API::Mcp::Base, feature_category: :api do
         end
 
         it 'returns not found' do
-          get api('/mcp', user)
+          get api('/mcp', user, oauth_access_token: access_token)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
       it 'returns not implemented' do
-        get api('/mcp', user)
+        get api('/mcp', user, oauth_access_token: access_token)
 
         expect(response).to have_gitlab_http_status(:not_implemented)
       end

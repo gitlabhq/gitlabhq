@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -48,6 +49,7 @@ export default {
     WorkItemRolledUpCount,
     WorkItemToggleClosedItems,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['hasSubepicsFeature'],
   provide() {
     return {
@@ -253,7 +255,9 @@ export default {
       return this.workItem?.namespace?.fullName;
     },
     showTaskWeight() {
-      return this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC;
+      return (
+        this.glFeatures.useCachedRolledUpWeights || this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC
+      );
     },
     allowedChildrenByType() {
       return this.workItemTypes.reduce((acc, type) => {

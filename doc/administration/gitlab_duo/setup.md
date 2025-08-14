@@ -13,13 +13,11 @@ gitlab_dedicated: no
 
 {{< /details >}}
 
-GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
-To use GitLab Duo on a GitLab Self-Managed instance, you can do either of the following:
+GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway. To use GitLab Duo on a GitLab Self-Managed instance, you can do one of the following:
 
-- Use the GitLab AI vendor models and the cloud-based AI gateway that's hosted by
-  GitLab. This is the default option.
-- [Use GitLab Duo Self-Hosted to self-host the AI gateway, with a supported self-hosted LLM](../../administration/gitlab_duo_self_hosted/_index.md#set-up-a-gitlab-duo-self-hosted-infrastructure).
-  This option provides full control over your data and security.
+- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by GitLab. This is the default option.
+- [Use GitLab Duo Self-Hosted to self-host the AI gateway, with supported self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms). This option provides full control over your data and security.
+- Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration), where you deploy your self-hosted AI gateway and models for some features, but configure specific features to use the GitLab AI gateway and vendor models.
 
 {{< alert type="note" >}}
 

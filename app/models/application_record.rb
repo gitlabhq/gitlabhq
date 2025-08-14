@@ -22,6 +22,15 @@ class ApplicationRecord < ActiveRecord::Base
 
   alias_method :reset, :reload
 
+  class << self
+    # It is strongly suggested use the `.ids` method instead.
+    #
+    #     User.ids # => returns all the user IDs
+    #     User.where(...).ids # => returns the IDs of records matching the where clause.
+    #
+    alias_method :pluck_primary_key, :ids
+  end
+
   def self.without_order
     reorder(nil)
   end
@@ -40,10 +49,6 @@ class ApplicationRecord < ActiveRecord::Base
 
   def self.id_not_in(ids)
     where.not(id: ids)
-  end
-
-  def self.pluck_primary_key
-    where(nil).pluck(primary_key)
   end
 
   def self.safe_ensure_unique(retries: 0)
