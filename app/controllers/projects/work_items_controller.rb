@@ -2,6 +2,8 @@
 
 class Projects::WorkItemsController < Projects::ApplicationController
   include WorkhorseAuthorization
+  include SearchRateLimitable
+  include WorkItemsCollections
   extend Gitlab::Utils::Override
 
   EXTENSION_ALLOWLIST = %w[csv].map(&:downcase).freeze
@@ -16,6 +18,12 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_frontend_feature_flag(:work_item_status_feature_flag, project&.root_ancestor)
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
   end
+
+  prepend_before_action(only: [:calendar]) do
+    authenticate_sessionless_user!(:ics)
+  end
+
+  before_action :check_search_rate_limit!, if: ->(c) { c.action_name.to_sym == :calendar }
 
   feature_category :team_planning
   urgency :high, [:authorize]
@@ -42,6 +50,16 @@ class Projects::WorkItemsController < Projects::ApplicationController
     return if show_params[:iid] == 'new'
 
     @work_item = issuable
+  end
+
+  def calendar
+    @work_items = work_items_for_calendar
+
+    respond_to do |format|
+      format.ics do
+        response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
+      end
+    end
   end
 
   private

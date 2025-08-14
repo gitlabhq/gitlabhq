@@ -49098,8 +49098,6 @@ definitions:
         type: boolean
       read_admin_groups:
         type: boolean
-      read_admin_projects:
-        type: boolean
       read_code:
         type: boolean
       read_runners:

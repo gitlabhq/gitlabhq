@@ -51,6 +51,7 @@ describe('Work item comment form component', () => {
   let workItemResponseHandler;
 
   const mockAutosaveKey = 'test-auto-save-key';
+  const mockAutosaveKeyInternalNote = 'test-auto-save-key/InternalNote';
 
   const emailParticipantsSuccessHandler = jest
     .fn()
@@ -114,6 +115,7 @@ describe('Work item comment form component', () => {
         workItemType,
         ariaLabel: 'test-aria-label',
         autosaveKey: mockAutosaveKey,
+        autosaveKeyInternalNote: mockAutosaveKeyInternalNote,
         isSubmitting,
         initialValue,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
@@ -493,8 +495,15 @@ describe('Work item comment form component', () => {
         expect(findConfirmButton().text()).toBe(WorkItemCommentForm.i18n.addInternalNote);
       });
 
+      it('calls `updateDraft` with correct parameters', () => {
+        findInternalNoteCheckbox().vm.$emit('input', true);
+
+        expect(autosave.updateDraft).toHaveBeenCalledWith(mockAutosaveKeyInternalNote, true);
+      });
+
       it('emits `submitForm` event on closing of work item', async () => {
         findInternalNoteCheckbox().vm.$emit('input', true);
+
         findWorkItemToggleStateButton().vm.$emit('submit-comment');
 
         await waitForPromises();

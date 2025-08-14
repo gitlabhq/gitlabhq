@@ -105,7 +105,7 @@ export default {
         } else {
           this.isLoading = false;
         }
-        if (data) {
+        if (data?.workspace) {
           this.newCustomEmojiPath =
             findAwardEmojiWidget(data.workspace?.workItem)?.newCustomEmojiPath || '';
           this.$emit('emoji-updated', data.workspace?.workItem);

@@ -17,6 +17,7 @@ RSpec.shared_examples "expose all link paths fields for the namespace" do
       register
       reportAbuse
       signIn
+      userExportEmail
     ]
 
     expected_fields.push(*type_specific_fields)

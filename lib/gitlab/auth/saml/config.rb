@@ -12,6 +12,8 @@ module Gitlab
         DEFAULT_EMAIL_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
           http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress
+          http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email
+          http://schemas.microsoft.com/ws/2008/06/identity/claims/email
         ].freeze
         DEFAULT_FIRST_NAME_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname

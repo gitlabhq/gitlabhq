@@ -344,7 +344,7 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result({ data }) {
-        this.workItemNamespace = data.workspace?.workItem?.namespace;
+        this.workItemNamespace = data?.workspace?.workItem?.namespace;
         this.isLoadingMore = false;
         if (this.hasNextPage) {
           this.fetchMoreNotes();

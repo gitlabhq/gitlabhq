@@ -116,7 +116,7 @@ To create and verify your security scanners and merge request approval policies 
 1. Create the project.
 1. Configure security scanners using the `.gitlab-ci.yml` configuration, a scan execution policy, or a pipeline execution policy.
 1. Wait for the initial pipeline to complete on the default branch. Resolve any issues and rerun the pipeline to ensure it completes successfully before you continue.
-1. Create merge requests using feature branches with the same security scanners configured. Again, ensure that the security scanners complete sucessfully.
+1. Create merge requests using feature branches with the same security scanners configured. Again, ensure that the security scanners complete successfully.
 1. Apply your merge request approval policies.
 
 ## Merge request with multiple pipelines

@@ -289,8 +289,7 @@ happens when there are:
 ### At subscription expiration
 
 If your subscription containing the GitLab Duo add-on expires, seat assignments are retained for 28 days. If the subscription is renewed, or a new subscription containing GitLab Duo is purchased during this 28-day window, users will be automatically re-assigned.
-
-At the end of the 28 day grace period, seat assignments are removed and users will need to be reassigned.
+Otherwise, seat assignments are removed and users must be reassigned.
 
 ### For seat overages
 

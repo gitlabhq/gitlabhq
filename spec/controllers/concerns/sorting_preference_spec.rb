@@ -100,6 +100,13 @@ RSpec.describe SortingPreference do
 
         it_behaves_like 'user can sort by merged date'
       end
+
+      context 'when action_name is search_merge_requests' do
+        let(:action_name) { 'search_merge_requests' }
+        let(:can_sort_by_merged_date?) { true }
+
+        it_behaves_like 'user can sort by merged date'
+      end
     end
   end
 

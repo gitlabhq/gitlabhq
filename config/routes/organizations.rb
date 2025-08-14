@@ -18,6 +18,12 @@ scope(
         get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
       end
     end
+
+    resources :groups, only: [:index] do
+      collection do
+        get :member, :inactive, to: 'groups#index'
+      end
+    end
   end
 end
 

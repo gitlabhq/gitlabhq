@@ -5,8 +5,10 @@ import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import createWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/create_wiki_page_note.mutation.graphql';
 import updateWikiPageMutation from '~/wikis/wiki_notes/graphql/update_wiki_page_note.mutation.graphql';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { COMMENT_FORM } from '~/notes/i18n';
 import { __ } from '~/locale';
@@ -113,6 +115,13 @@ export default {
 
       return '';
     },
+    autosaveKeyInternalNote() {
+      if (this.userSignedId) {
+        return getAutosaveKey(this.noteableType, `${this.noteId}/InternalNote`);
+      }
+
+      return '';
+    },
     saveButtonTitle() {
       if (this.isReply) return __('Reply');
       if (this.isEdit) return __('Save comment');
@@ -136,6 +145,9 @@ export default {
     this.timeoutIds.forEach((id) => {
       clearTimeout(id);
     });
+  },
+  mounted() {
+    this.noteIsInternal = parseBoolean(getDraft(this.autosaveKeyInternalNote));
   },
   methods: {
     async handleCancel() {
@@ -208,6 +220,9 @@ export default {
           ? discussion.data.updateNote?.note
           : discussion.data.createNote?.note?.discussion;
 
+        this.noteIsInternal = false;
+        clearDraft(this.autosaveKeyInternalNote);
+
         this.$emit('creating-note:success', response);
       } catch (err) {
         this.setError(createNoteErrorMessages(err));
@@ -229,6 +244,9 @@ export default {
     },
     disableSubmitButton() {
       return !this.note.trim() || this.isSubmitting;
+    },
+    setInternalNoteCheckbox() {
+      updateDraft(this.autosaveKeyInternalNote, this.noteIsInternal);
     },
   },
 };
@@ -311,6 +329,7 @@ export default {
                 v-model="noteIsInternal"
                 class="gl-mb-2 gl-basis-full"
                 data-testid="wiki-internal-note-checkbox"
+                @input="setInternalNoteCheckbox"
               >
                 {{ $options.i18n.internal }}
                 <help-icon

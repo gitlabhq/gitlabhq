@@ -68,7 +68,8 @@ export const SORT_OPTIONS = [SORT_OPTION_NAME, SORT_OPTION_CREATED, SORT_OPTION_
 
 export const GROUP_DASHBOARD_TABS = [MEMBER_TAB, INACTIVE_TAB];
 
-export const BASE_ROUTE = '/dashboard/groups';
+const organizationPath = gon?.current_organization?.full_path || '';
+export const BASE_ROUTE = `${organizationPath}/dashboard/groups`;
 
 export const GROUPS_DASHBOARD_ROUTE_NAME = 'groups-dashboard';
 

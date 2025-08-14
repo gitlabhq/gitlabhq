@@ -31,7 +31,7 @@ The [default branch](default.md) for your repository is protected by default.
 {{< /alert >}}
 
 For information about how protection rules behave when a branch matches multiple rules or has
-complex permission requirements, see [Protection rules and permissions](protection_rules.md).
+complex permission requirements, see [push and merge permissions](#push-and-merge-permissions).
 
 ## Protect a branch
 
@@ -103,6 +103,71 @@ To protect a branch for all the projects in a group:
 1. Select **Protect**.
 
 The protected branch is added to the list of protected branches.
+
+## Push and merge permissions
+
+The **Allowed to merge** and **Allowed to push and merge** settings control different
+aspects of branch protection:
+
+| Setting                       | Purpose                                                                                                        | Default behavior (not configured) |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------|
+| **Allowed to merge**          | Controls who can merge changes through merge requests and create new protected branches through the UI and API | No one can merge (unless they have **Allowed to push and merge**). |
+| **Allowed to push and merge** | Controls who can push directly to existing protected branches and merge through merge requests                 | No one can push. |
+
+{{< alert type="note" >}}
+
+**Allowed to push and merge** grants both push and merge capabilities.
+Users with this permission can merge through merge requests even without
+**Allowed to merge** permission.
+
+{{< /alert >}}
+
+For more information, see [protection rules and permissions](protection_rules.md).
+
+### Protection strategies by branch types
+
+Different branch types require different protection levels based on their purpose and
+security requirements.
+
+For branches deployed to production environments:
+
+- Set **Allowed to merge** to **Maintainers** only.
+- Set **Allowed to push and merge** to **No one** (not empty).
+- Enable **Require approval from code owners**.
+- Consider requiring multiple approvals.
+
+With this configuration, all changes require merge requests with maintainer approval.
+
+For active development branches:
+
+- Set **Allowed to merge** to **Developers + Maintainers**.
+- Set **Allowed to push and merge** to **No one** (not empty).
+
+With this configuration, developers can merge approved merge requests while requiring
+all changes to go through code review.
+
+{{< alert type="note" >}}
+
+When **Allowed to push and merge** is not configured, it does not restrict
+push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
+to **No one**.
+
+{{< /alert >}}
+
+### Permission combinations for Developer role
+
+The following examples show what users with the Developer role can do with
+different protection configurations:
+
+| Allowed to merge         | Allowed to push and merge | Direct push                                 | Merge through MR |
+|--------------------------|---------------------------|---------------------------------------------|------------------|
+| No one                   | Developers + Maintainers  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Not configured           | Developers + Maintainers  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Developers + Maintainers | Not configured            | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Not configured           | Not configured            | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
+| Maintainers              | Not configured            | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
+| Maintainers              | Maintainers               | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Developers + Maintainers | Maintainers               | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
 
 ## Default branch protection settings
 

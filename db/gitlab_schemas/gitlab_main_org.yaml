@@ -1,13 +1,9 @@
-name: gitlab_main_user
-description: >-
-  Schema for all User-related tables, ex. users, etc.
-  Most user functionality is organizational level (e.g. commenting on an issue),
-  but some functionality (e.g. login) is cluster-wide.
+name: gitlab_main_org
+description: Schema for all Organization Main tables, ex. namespaces, projects, etc.
 allow_cross_joins:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_cell
-  - gitlab_main_org
   - gitlab_main_clusterwide
   - gitlab_main_cell_local
 allow_cross_transactions:
@@ -15,15 +11,13 @@ allow_cross_transactions:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_cell
-  - gitlab_main_org
-  - gitlab_main_cell_local
   - gitlab_main_clusterwide
-  - gitlab_main_cell_setting
+  - gitlab_main_cell_local
 allow_cross_foreign_keys:
   - gitlab_main
   - gitlab_main_cell
-  - gitlab_main_org
 require_sharding_key: true
 sharding_root_tables:
+  - projects
   - organizations
-  - users
+  - namespaces

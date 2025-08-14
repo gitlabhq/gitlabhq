@@ -309,7 +309,7 @@ merge cyclonedx sboms:
 
 After you are confident in the Dependency Scanning results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scannign settings across groups.
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scanning settings across groups.
 - If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../offline_deployments/_index.md).
 
 ## Supported languages and package managers

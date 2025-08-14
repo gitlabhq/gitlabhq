@@ -16,6 +16,7 @@ title: GitLab-managed Terraform/OpenTofu state
 
 - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags/_index.md) named `allow_dots_on_tf_state_names`. Disabled by default.
 - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
+- [Introduced](https://gitlab.com/gitlab-org/cli/-/issues/7954) in GitLab 18.3. To manage OpenTofu state, you must have at least GitLab CLI (`glab`) 1.66 or later.
 
 {{< /history >}}
 
@@ -148,6 +149,22 @@ You should run these commands [on your local machine](#access-the-state-from-you
 
 ### Set up the initial backend
 
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
+
+To initialize a backend with `glab`, run the following command:
+
+```shell
+glab opentofu init <old_state_name>
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with OpenTofu CLI" >}}
+
+To initialize a backend with OpenTofu CLI, run the following command:
+
 ```shell
 PROJECT_ID="<gitlab-project-id>"
 TF_USERNAME="<gitlab-username>"
@@ -164,6 +181,13 @@ tofu init \
   -backend-config=unlock_method=DELETE \
   -backend-config=retry_wait_min=5
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+If the backend is initialized successfully,
+you receive the following response:
 
 ```plaintext
 Initializing the backend...
@@ -189,8 +213,20 @@ commands will detect it and remind you to do so if necessary.
 Now that `tofu init` has created a `.terraform/` directory that knows where
 the old state is, you can tell it about the new location:
 
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
+
 ```shell
-TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
+glab opentofu init <new-state-name> -- -migrate-state
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with OpenTofu CLI" >}}
+
+```shell
+TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/<new-state-name>"
 
 tofu init \
   -migrate-state \
@@ -203,6 +239,14 @@ tofu init \
   -backend-config=unlock_method=DELETE \
   -backend-config=retry_wait_min=5
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+If the backend is initialized successfully,
+you receive the following response. If you type `yes`, it copies your state from the old location to the new
+location. You can then go back to running it in GitLab CI/CD:
 
 ```plaintext
 Initializing the backend...
@@ -237,9 +281,6 @@ If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
-
-If you type `yes`, it copies your state from the old location to the new
-location. You can then go back to running it in GitLab CI/CD.
 
 ## Use your GitLab backend as a remote data source
 
@@ -312,42 +353,195 @@ To view OpenTofu state files:
 
 ### Manage individual OpenTofu state versions
 
-Individual state versions can be managed using the GitLab REST API.
+Manage individual state versions using either
+the GitLab CLI (`glab`) or the API.
 
-If you have at least the Developer role, you can retrieve state versions by using their serial number::
+Prerequisites:
+
+- To get state versions using their serial number, you must have at least the Developer role.
+- To remove state versions using their serial number, you must have at least the Maintainer role.
+
+To get state versions using their serial number:
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version-serial>"
+glab opentofu state download <your_state_name> <version_serial_number>
 ```
 
-If you have at least the Maintainer role, you can remove state versions by using their serial number:
+{{< /tab >}}
+
+{{< tab title="Manually with curl" >}}
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version-serial>"
+curl --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+To remove state versions using their serial number:
+
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
+
+```shell
+glab opentofu state delete <your_state_name> <version_serial_number>
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with curl" >}}
+
+```shell
+curl --request DELETE --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Remove a state file
 
-If you have at least the Maintainer role, you can remove a state file.
+Prerequisites:
 
-1. On the left sidebar, select **Operate > Terraform states**.
-1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) and then **Remove state file and versions**.
+- To remove a state file, you must have at least the Maintainer role.
 
-### Remove a state file by using the API
+{{< tabs >}}
 
-You can remove a state file by making a request to the REST API using a personal access token:
+{{< tab title="Using the GitLab CLI (glab)" >}}
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
+glab opentofu state delete <your_state_name>
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with curl" >}}
+
+```shell
+curl --request DELETE --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
 You can also use [CI/CD job token](../../../ci/jobs/ci_job_token.md) and basic authentication:
 
 ```shell
-curl --user "gitlab-ci-token:$CI_JOB_TOKEN" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
+curl --request DELETE --user "gitlab-ci-token:$CI_JOB_TOKEN" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
 You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#mutationterraformstatedelete).
+
+{{< /tab >}}
+
+{{< tab title="Using the UI" >}}
+
+To remove a state file using the UI:
+
+1. On the left sidebar, select **Operate > Terraform states**.
+1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Remove state file and versions**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Lock and unlock a state
+
+Prerequisites:
+
+- To lock a state file, you must have at least the Maintainer role.
+
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
+
+```shell
+# Lock a state file
+glab opentofu state lock <your_state_name>
+
+# Unlock a state file
+glab opentofu state unlock <your_state_name>
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with curl" >}}
+
+```shell
+# Lock a state file
+curl --request POST --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
+
+# Unlock a state file
+curl --request DELETE --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
+```
+
+{{< /tab >}}
+
+{{< tab title="Using the UI" >}}
+
+To lock or unlock a state file using the UI:
+
+1. On the left sidebar, select **Operate > Terraform states**.
+1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Lock** to lock or **Actions ({{< icon name="ellipsis_v" >}}) > Unlock**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Download a state file
+
+Prerequisites:
+
+- To download a state file, you must have at least the Developer role.
+
+{{< tabs >}}
+
+{{< tab title="Using the GitLab CLI (glab)" >}}
+
+```shell
+# Download the latest state
+glab opentofu state download <your_state_name>
+
+# Download a specific version (serial) of a state
+glab opentofu state download <your_state_name> <your_serial>
+```
+
+{{< /tab >}}
+
+{{< tab title="Manually with curl" >}}
+
+```shell
+# Download the latest state
+curl --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
+
+# Download a specific version (serial) of a state
+curl --request DELETE --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<your_serial>"
+```
+
+{{< /tab >}}
+
+{{< tab title="Using the UI" >}}
+
+To download the latest state file using the UI:
+
+1. On the left sidebar, select **Operate > Terraform states**.
+1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Download JSON**.
+
+There is no way to download a specific version of the state using the UI.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Related topics
 

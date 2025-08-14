@@ -122,6 +122,15 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     describe 'GET merge requests search' do
       it_behaves_like 'issuables requiring filter', :search_merge_requests
 
+      context 'when sorting by merged_at with merged state' do
+        it 'allows merged_at sorting' do
+          get :search_merge_requests, params: { author_id: user.id, state: 'merged', sort: 'merged_at' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:sort)).to eq('merged_at')
+        end
+      end
+
       context 'when an ActiveRecord::QueryCanceled is raised' do
         before do
           allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|

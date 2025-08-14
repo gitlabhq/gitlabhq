@@ -61,6 +61,7 @@ module Resolvers
 
     def resolve_groups(parent_path: nil, **args)
       args[:parent] = find_authorized_parent!(parent_path) if parent_path
+      args[:organization] = Current.organization.id
 
       GroupsFinder
         .new(context[:current_user], args)

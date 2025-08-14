@@ -15,7 +15,8 @@ module ContainerRegistry
       401 => :unauthorized,
       404 => :not_found,
       409 => :name_taken,
-      422 => :too_many_subrepositories
+      422 => :too_many_subrepositories,
+      501 => :rename_not_supported
     }.freeze
 
     REGISTRY_GITLAB_V1_API_FEATURE = 'gitlab_v1_api'

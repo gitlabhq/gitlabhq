@@ -57,4 +57,20 @@ RSpec.describe 'Organization routes', feature_category: :organization do
       end
     end
   end
+
+  describe 'groups dashboards' do
+    it "to #index" do
+      expect(get("/o/my-org/dashboard/groups")).to route_to("dashboard/groups#index", organization_path: 'my-org')
+    end
+
+    %w[
+      member
+      inactive
+    ].each do |action|
+      it "to #{action}" do
+        expect(get("/o/my-org/dashboard/groups/#{action}")).to route_to("dashboard/groups#index",
+          organization_path: 'my-org')
+      end
+    end
+  end
 end

@@ -2,6 +2,7 @@
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { i18n, STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
@@ -63,6 +64,10 @@ export default {
       required: true,
     },
     autosaveKey: {
+      type: String,
+      required: true,
+    },
+    autosaveKeyInternalNote: {
       type: String,
       required: true,
     },
@@ -169,7 +174,7 @@ export default {
     return {
       commentText: getDraft(this.autosaveKey) || this.initialValue || '',
       updateInProgress: false,
-      isNoteInternal: false,
+      isNoteInternal: parseBoolean(getDraft(this.autosaveKeyInternalNote)) || false,
       toggleResolveChecked: this.isDiscussionResolved,
       emailParticipants: [],
       workItem: {},
@@ -297,6 +302,10 @@ export default {
         }
       }
     },
+    setInternalNoteCheckbox(value) {
+      this.isNoteInternal = value;
+      updateDraft(this.autosaveKeyInternalNote, this.isNoteInternal);
+    },
     async cancelEditing() {
       // Don't cancel if autosuggest open in plain text editor
       if (
@@ -342,6 +351,7 @@ export default {
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
       }
+
       this.$emit('submitForm', {
         commentText: this.commentText,
         isNoteInternal: this.isNoteInternal,
@@ -413,6 +423,7 @@ export default {
             v-model="isNoteInternal"
             class="gl-mb-2"
             data-testid="internal-note-checkbox"
+            @input="setInternalNoteCheckbox($event)"
           >
             {{ $options.i18n.internal }}
             <help-icon

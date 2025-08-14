@@ -2,7 +2,9 @@
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions, mapState } from 'pinia';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import {
@@ -190,6 +192,13 @@ export default {
 
       return null;
     },
+    autosaveKeyInternalNote() {
+      if (this.isLoggedIn) {
+        return `${this.autosaveKey}/internalNote`;
+      }
+
+      return null;
+    },
     shouldDisableField() {
       return this.isSubmitting && !this.isMeasuringCommentTemperature;
     },
@@ -209,6 +218,10 @@ export default {
     $(document).on('issuable:change', (e, isClosed) => {
       this.toggleIssueLocalState(isClosed ? STATUS_CLOSED : STATUS_REOPENED);
     });
+
+    if (this.autosaveKeyInternalNote) {
+      this.noteIsInternal = parseBoolean(getDraft(this.autosaveKeyInternalNote));
+    }
   },
   methods: {
     ...mapActions(useNotes, [
@@ -286,6 +299,8 @@ export default {
             if (withIssueAction) {
               this.toggleIssueState();
             }
+
+            clearDraft(this.autosaveKeyInternalNote);
           })
           .catch(({ response }) => {
             this.handleSaveError(response);
@@ -356,6 +371,9 @@ export default {
     append(value) {
       this.$refs.markdownEditor.append(value);
     },
+    setInternalNoteCheckbox() {
+      updateDraft(this.autosaveKeyInternalNote, this.noteIsInternal);
+    },
   },
 };
 </script>
@@ -423,6 +441,7 @@ export default {
                 v-model="noteIsInternal"
                 class="gl-basis-full"
                 data-testid="internal-note-checkbox"
+                @input="setInternalNoteCheckbox"
               >
                 {{ $options.i18n.internal }}
                 <help-icon

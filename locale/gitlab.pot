@@ -9019,6 +9019,12 @@ msgstr ""
 msgid "Assigned to %{assignee_name}"
 msgstr ""
 
+msgid "Assigned weight"
+msgstr ""
+
+msgid "Assigned weight does not match total of its child items."
+msgstr ""
+
 msgid "Assignee"
 msgid_plural "%d Assignees"
 msgstr[0] ""
@@ -55443,9 +55449,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{labelStart}File path:%{labelEnd} %{filePath}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{period} %{days} around %{time} %{timezoneLabel} %{timezone}"
-msgstr ""
-
 msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{branchExceptions} %{namespaces} %{period}"
 msgstr ""
 
@@ -55615,6 +55618,9 @@ msgid "ScanExecutionPolicy|Value"
 msgstr ""
 
 msgid "ScanExecutionPolicy|agent"
+msgstr ""
+
+msgid "ScanExecutionPolicy|at the following times: %{period} %{days} around %{time} %{timezone}, run for: %{duration}, %{timezoneLabel}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|branch"
@@ -57351,6 +57357,9 @@ msgstr ""
 msgid "SecurityOrchestration| triggered by %{sources}"
 msgstr ""
 
+msgid "SecurityOrchestration| with scans distributed over %{humanizedTimeWindowValue}"
+msgstr ""
+
 msgid "SecurityOrchestration|%d project which has compliance framework:"
 msgid_plural "SecurityOrchestration|%d projects which have compliance framework:"
 msgstr[0] ""
@@ -57374,13 +57383,22 @@ msgstr ""
 msgid "SecurityOrchestration|%{branchName} (in %{codeStart}%{fullPath}%{codeEnd})"
 msgstr ""
 
-msgid "SecurityOrchestration|%{cadence} on %{branches}%{branchExceptionsString}"
+msgid "SecurityOrchestration|%{cadence} on %{branches}%{timeWindowInfo}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{hours}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{hours} and %{minutes}"
+msgstr ""
+
 msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
+msgid "SecurityOrchestration|%{minutes}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
@@ -57396,6 +57414,9 @@ msgid "SecurityOrchestration|%{scanners} of %{severities} severity level"
 msgid_plural "SecurityOrchestration|%{scanners} of %{severities} severity levels"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityOrchestration|%{seconds}"
+msgstr ""
 
 msgid "SecurityOrchestration|%{sources} or %{lastSource}"
 msgstr ""
@@ -57440,6 +57461,9 @@ msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxS
 msgstr ""
 
 msgid "SecurityOrchestration|API request"
+msgstr ""
+
+msgid "SecurityOrchestration|Access tokens (%{count})"
 msgstr ""
 
 msgid "SecurityOrchestration|Accounts exceptions (%{count})"
@@ -58641,16 +58665,7 @@ msgstr ""
 msgid "SecurityOrchestration|allowlist"
 msgstr ""
 
-msgid "SecurityOrchestration|and run for %{hours}"
-msgstr ""
-
-msgid "SecurityOrchestration|and run for %{hours} and %{minutes}"
-msgstr ""
-
-msgid "SecurityOrchestration|and run for %{minutes}"
-msgstr ""
-
-msgid "SecurityOrchestration|and run for %{seconds}"
+msgid "SecurityOrchestration|and run for %{timeWindowInfo}"
 msgstr ""
 
 msgid "SecurityOrchestration|any"
@@ -58692,7 +58707,7 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
-msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{branchExceptionsString}"
+msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{timeWindowInfo}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|compliance frameworks"
@@ -66782,6 +66797,9 @@ msgstr ""
 msgid "Total memory (GB)"
 msgstr ""
 
+msgid "Total of child items"
+msgstr ""
+
 msgid "Total test time for all commits/merges"
 msgstr ""
 
@@ -71406,6 +71424,9 @@ msgid "Weight %{weight}"
 msgstr ""
 
 msgid "Weight - %{maxIssueWeight}"
+msgstr ""
+
+msgid "Weight conflict warning"
 msgstr ""
 
 msgid "Welcome %{name},"

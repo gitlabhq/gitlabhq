@@ -184,4 +184,18 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     it_behaves_like 'organization aware route helper'
   end
+
+  describe '#dashboard_groups_path' do
+    let(:helper) { :dashboard_groups }
+    let(:organization_helper) { :organization_dashboard_groups }
+
+    it_behaves_like 'organization aware route helper'
+  end
+
+  describe '#inactive_dashboard_groups_path' do
+    let(:helper) { :inactive_dashboard_groups }
+    let(:organization_helper) { :inactive_organization_dashboard_groups }
+
+    it_behaves_like 'organization aware route helper'
+  end
 end

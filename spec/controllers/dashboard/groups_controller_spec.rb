@@ -6,6 +6,7 @@ RSpec.describe Dashboard::GroupsController do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:current_organization) { user.organization }
 
   before do
     sign_in(user)
@@ -16,7 +17,7 @@ RSpec.describe Dashboard::GroupsController do
   end
 
   describe '#index' do
-    it 'only includes projects the user is a member of' do
+    it 'only includes groups the user is a member of' do
       member_of_group = create(:group)
       member_of_group.add_developer(user)
       create(:group, :public)
@@ -24,6 +25,20 @@ RSpec.describe Dashboard::GroupsController do
       get :index
 
       expect(assigns(:groups)).to contain_exactly(member_of_group)
+    end
+
+    it 'only includes groups in the current Organization' do
+      current_org_group = create(:group)
+      another_org = create(:organization)
+      another_org_group = create(:group, organization: another_org)
+
+      # User is a member of both groups in different Organizations
+      current_org_group.add_developer(user)
+      another_org_group.add_developer(user)
+
+      get :index
+
+      expect(assigns(:groups)).to contain_exactly(current_org_group)
     end
 
     context 'when rendering an expanded hierarchy with public groups you are not a member of' do

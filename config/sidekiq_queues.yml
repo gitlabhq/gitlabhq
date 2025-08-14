@@ -915,6 +915,8 @@
   - 1
 - - search_zoekt_project_transfer
   - 1
+- - search_zoekt_project_visibility_changed_event
+  - 1
 - - search_zoekt_repo_marked_as_to_delete_event
   - 1
 - - search_zoekt_repo_to_index_event

@@ -2,19 +2,35 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects do
+RSpec.describe Resolvers::GroupsResolver, :with_current_organization, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   include GraphqlHelpers
 
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { user.organization }
     let_it_be(:public_group) { create(:group, name: 'public-group') }
     let_it_be_with_reload(:private_group) { create(:group, :private, name: 'private-group') }
 
     let(:params) { {} }
 
     subject { resolve(described_class, args: params, lookahead: positive_lookahead, ctx: { current_user: user }) }
+
+    before do
+      ::Current.organization = organization
+    end
+
+    context 'when in another Organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:another_org_group) { create(:group, organization: organization) }
+
+      it 'includes groups in the current Organization' do
+        another_org_group.add_developer(user)
+
+        expect(subject).to contain_exactly(another_org_group)
+      end
+    end
 
     it 'includes public groups' do
       expect(subject).to contain_exactly(public_group)

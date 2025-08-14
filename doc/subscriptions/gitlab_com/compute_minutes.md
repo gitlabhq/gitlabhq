@@ -31,7 +31,8 @@ Additional compute minutes:
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner role for the group or be a billing account manager.
+- The billing account must be linked to the subscription for the group's namespace.
 
 You can purchase additional compute minutes for your group.
 You cannot transfer purchased compute minutes from one group to another,

@@ -258,4 +258,22 @@ RSpec.shared_examples 'work item drawer on the list page' do
 
     expect(first_card).to have_link(milestone.title)
   end
+
+  it 'updates comment count when user adds comments from the drawer', :aggregate_failures do
+    expect(first_card).not_to have_selector('[data-testid="issuable-comments"]')
+
+    within_testid('work-item-drawer') do
+      fill_in 'Add a reply', with: 'Test comment from drawer'
+      click_button 'Comment'
+      wait_for_requests
+
+      close_drawer
+    end
+
+    page.refresh
+
+    within_testid 'issuable-comments' do
+      expect(page).to have_content('1')
+    end
+  end
 end

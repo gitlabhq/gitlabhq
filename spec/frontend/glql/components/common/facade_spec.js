@@ -154,6 +154,21 @@ describe('GlqlFacade', () => {
     });
   });
 
+  describe('for an aggregate query', () => {
+    beforeEach(async () => {
+      parse.mockResolvedValue({ ...MOCK_PARSE_OUTPUT, variables: {} });
+      execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
+
+      await createComponent();
+      await triggerIntersectionObserver();
+    });
+
+    it('renders the presenter component successfully when variables are missing', () => {
+      const presenter = wrapper.findComponent(DataPresenter);
+      expect(presenter.exists()).toBe(true);
+    });
+  });
+
   describe('when the query results in a timeout (503) error', () => {
     beforeEach(async () => {
       execute.mockRejectedValue({ networkError: { statusCode: 503 } });

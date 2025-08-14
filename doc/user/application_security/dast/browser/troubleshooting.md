@@ -74,15 +74,24 @@ may require additional configuration settings.
 
 ### What is DAST doing?
 
-Logging remains the best way to understand what DAST is doing:
+{{< history >}}
 
-- [Browser-based analyzer logging](#browser-based-analyzer-logging), useful for understanding what the analyzer is doing.
+- Concise logs introduced in GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/553625).
+
+{{< /history >}}
+
+The job console (CI/CD job log) provides a concise summary of what DAST is doing.
+For more detailed diagnostic information, you can configure the log file to produce granular output.
+
+The following logging options are available:
+
+- [Diagnostic logs](#diagnostic-logs), useful for understanding what the analyzer is doing.
 - [Chromium DevTools logging](#chromium-devtools-logging), useful to inspect the communication between DAST and Chromium.
 - [Chromium Logs](#chromium-logs), useful for logging errors when Chromium crashes unexpectedly.
 
-## Browser-based analyzer logging
+## Diagnostic logs
 
-The analyzer log is one of the most useful tools to help diagnose problems with a scan. Different parts of the analyzer can be logged at different levels.
+Use the analyzer log file to diagnose scan issues. You can log different parts of the analyzer at different levels.
 
 ### Log message format
 
@@ -96,9 +105,8 @@ For example, the following log entry has level `INFO`, is part of the `CRAWL` lo
 
 ### Log destination
 
-Logs are sent either to file or to console (the CI/CD job log). You can configure each destination to accept different logs using
-the environment variables `DAST_LOG_CONFIG` for console logs and `DAST_LOG_FILE_CONFIG` for file logs.
-
+Logs are sent to the log file artifact. You can configure each destination to accept different logs using
+the environment variable `DAST_LOG_FILE_CONFIG`.
 For example:
 
 ```yaml
@@ -108,7 +116,6 @@ include:
 dast:
   variables:
     DAST_BROWSER_SCAN: "true"
-    DAST_LOG_CONFIG: "auth:debug"                               # console log defaults to INFO level, logs AUTH module at DEBUG
     DAST_LOG_FILE_CONFIG: "loglevel:debug,cache:warn"           # file log defaults to DEBUG level, logs CACHE module at WARN
 ```
 
@@ -282,6 +289,23 @@ dast:
     DAST_LOG_DEVTOOLS_CONFIG: "Default:suppress;Fetch:messageAndBody,truncate:2000;Network:messageAndBody,truncate:2000;Log:messageAndBody,truncate:2000;Console:messageAndBody,truncate:2000"
 ```
 
+### Override the job console output
+
+By default, the job console displays a concise summary of DAST activity.
+To output the full diagnostic log to the job console, set both the `DAST_FF_DIAGNOSTIC_JOB_OUTPUT` and `DAST_LOG_CONFIG` variables:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_FF_DIAGNOSTIC_JOB_OUTPUT: "true"
+    DAST_LOG_CONFIG: "crawl:debug"                               # console log defaults to INFO level, logs AUTH module at DEBUG
+```
+
+[Issue 552171](https://gitlab.com/gitlab-org/gitlab/-/issues/552171) proposes to remove this option in GitLab 19.0.
+
 ## Chromium logs
 
 In the rare event that Chromium crashes, it can be helpful to write the Chromium process `STDOUT` and `STDERR` to log.
@@ -317,9 +341,6 @@ An example log is as follows, where DAST blocked the JavaScript file found at `h
 This can be changed using the configuration `DAST_PAGE_MAX_RESPONSE_SIZE_MB`. For example,
 
 ```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
 dast:
   variables:
     DAST_PAGE_MAX_RESPONSE_SIZE_MB: "25"

@@ -123,11 +123,18 @@ export default {
       await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
     },
 
+    setVariable(key, value) {
+      if (this.variables[key]) {
+        this.variables[key].value = value;
+      }
+    },
+
     async loadMore(count) {
       try {
         this.loading = count;
-        this.variables.after.value = this.data.pageInfo.endCursor;
-        this.variables.limit.value = DEFAULT_PAGE_SIZE;
+
+        this.setVariable('after', this.data.pageInfo.endCursor);
+        this.setVariable('limit', DEFAULT_PAGE_SIZE);
 
         const data = await transform(await execute(this.query, this.variables), this.config);
         this.data = {
@@ -160,7 +167,7 @@ export default {
         if (this.hasError) return;
 
         this.loading = true;
-        this.variables.limit.value = this.config.limit;
+        this.setVariable('limit', this.config.limit);
         this.data = await transform(await execute(this.query, this.variables), this.config);
 
         this.trackRender();

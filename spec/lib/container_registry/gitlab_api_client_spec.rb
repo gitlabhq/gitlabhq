@@ -19,6 +19,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       true  | 404 | :not_found
       true  | 409 | :name_taken
       true  | 422 | :too_many_subrepositories
+      true  | 501 | :rename_not_supported
 
       false | 204 | :ok
       false | 400 | :bad_request
@@ -26,6 +27,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       false | 404 | :not_found
       false | 409 | :name_taken
       false | 422 | :too_many_subrepositories
+      false | 501 | :rename_not_supported
     end
 
     with_them do

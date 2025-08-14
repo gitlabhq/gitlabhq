@@ -342,7 +342,6 @@ For example, if a subscription is valid from January 1, 2024 until January 1, 20
 
 - It expires at 11:59:59 PM UTC December 31, 2024.
 - It is considered expired from 12:00:00 AM UTC January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
 
 ### For GitLab.com
 
@@ -353,9 +352,9 @@ For example, if a subscription is valid from January 1, 2024 until January 1, 20
 
 {{< /details >}}
 
-When your subscription expires, you can continue to use paid features of GitLab for 14 days.
-After 14 days, paid features are no longer available, but you can continue to use free features.
-To resume paid feature functionality, purchase a new subscription.
+When your subscription expires, paid features are no longer available.
+However, you can continue to use free features.
+To resume paid feature functionality, renew your subscription.
 
 ### For GitLab Self-Managed
 
@@ -366,7 +365,7 @@ To resume paid feature functionality, purchase a new subscription.
 
 {{< /details >}}
 
-When your license expires, after a 14 day grace period:
+When your license expires:
 
 - Your instance becomes read-only.
 - GitLab locks features, such as Git pushes and issue creation.

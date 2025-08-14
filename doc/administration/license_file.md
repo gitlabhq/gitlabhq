@@ -90,18 +90,15 @@ date displays to GitLab administrators.
 Licenses expire at the start of the expiration date, 00:00 server time.
 
 When your license expires, GitLab locks features, like Git pushes
-and issue creation. Your instance becomes read-only and
-an expiration message displays to all administrators. You have a 14-day grace period
-before this occurs.
+and issue creation. Your instance becomes read-only, and
+an expiration message displays to all administrators.
 
 For example, if a license has a start date of January 1, 2024 and an end date of January 1, 2025:
 
 - It expires at 11:59:59 PM server time December 31, 2024.
 - It is considered expired from 12:00:00 AM server time January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM server time January 1, 2025 and ends at 11:59:59 PM server time January 14, 2025.
-- Your instance becomes read-only at 12:00:00 AM server time January 15, 2025.
 
-To resume functionality, [renew your subscription](../subscriptions/manage_subscription.md#renew-manually).
+To remove the read-only state and resume functionality, [renew your subscription](../subscriptions/manage_subscription.md#renew-manually).
 
 If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/self_managed/_index.md) to resume functionality.
 

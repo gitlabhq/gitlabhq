@@ -455,6 +455,10 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         })
       end
 
+      before do
+        Current.organization = user.organization
+      end
+
       it 'avoids N+1 queries' do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false, query_recorder_debug: true) do
           GitlabSchema.execute(single_group_query, context: { current_user: user })

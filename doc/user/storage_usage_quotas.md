@@ -171,7 +171,8 @@ To exceed the free tier 10 GiB limit on your Free GitLab.com namespace, you can 
 
 Prerequisites:
 
-- You must have the Owner role.
+- You must have the Owner role or be a billing account manager.
+- The billing account must be linked to the subscription for the personal or group's namespace.
 
 {{< alert type="note" >}}
 

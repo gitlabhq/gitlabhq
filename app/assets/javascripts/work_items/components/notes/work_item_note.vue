@@ -183,6 +183,9 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `${this.note.id}-comment`;
     },
+    autosaveKeyInternalNote() {
+      return `${this.note.id}-internal-note`;
+    },
     lastEditedBy() {
       return this.note.lastEditedBy;
     },
@@ -293,6 +296,7 @@ export default {
             : undefined,
         });
         clearDraft(this.autosaveKey);
+        clearDraft(this.autosaveKeyInternalNote);
       } catch (error) {
         updateDraft(this.autosaveKey, commentText);
         this.isEditing = true;
@@ -438,6 +442,7 @@ export default {
             :work-item-type="workItemType"
             :aria-label="__('Edit comment')"
             :autosave-key="autosaveKey"
+            :autosave-key-internal-note="autosaveKeyInternalNote"
             :initial-value="note.body"
             :comment-button-text="__('Save comment')"
             :autocomplete-data-sources="autocompleteDataSources"

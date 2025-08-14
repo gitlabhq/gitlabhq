@@ -16,7 +16,7 @@ title: Centralized compliance frameworks
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.3 [with feature flags](../../../administration/feature_flags/_index.md) named `security_policies_csp` and `include_csp_frameworks`. Enabled by default.
 
 {{< /history >}}
 
@@ -177,7 +177,6 @@ If compliance and security policy frameworks aren't visible in your groups:
 1. Verify the compliance and security policy group is properly designated in Admin settings.
 1. Check that frameworks exist in the compliance and security policy group.
 1. Ensure you have appropriate permissions to view frameworks.
-1. Confirm the feature flags `security_policies_csp` and `include_csp_frameworks` are enabled.
 
 ### Cannot modify compliance and security policy frameworks
 

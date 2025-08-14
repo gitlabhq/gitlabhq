@@ -119,6 +119,10 @@ describe('RevokeTokenButton', () => {
       expect(findRevokeBtn().attributes('aria-label')).toBe('Revoke token');
     });
 
+    it('renders a modal with the correct id', () => {
+      expect(findModal().props('modalId')).toBe(`revoke-token-${token.id}`);
+    });
+
     describe('when user cannot revoke token', () => {
       beforeEach(() => {
         createWrapper({ provideData: { canAdminCluster: false } });
