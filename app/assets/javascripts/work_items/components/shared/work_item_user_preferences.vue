@@ -56,7 +56,6 @@ export default {
     return {
       isDropdownVisible: false,
       isLoading: false,
-      isFieldPreferenceLoading: false,
     };
   },
   computed: {
@@ -86,8 +85,6 @@ export default {
     },
 
     async toggleMetadataDisplaySettings(metadataKey) {
-      if (this.isFieldPreferenceLoading) return;
-
       const wasHidden = this.hiddenMetadataKeys.includes(metadataKey);
       const newHiddenKeys = wasHidden
         ? this.hiddenMetadataKeys.filter((key) => key !== metadataKey)
@@ -97,14 +94,24 @@ export default {
         hiddenMetadataKeys: newHiddenKeys,
       };
 
-      this.isFieldPreferenceLoading = true;
-
       try {
         await this.$apollo.mutate({
           mutation: updateWorkItemListUserPreference,
           variables: {
             namespace: this.fullPath,
             displaySettings: input,
+          },
+          optimisticResponse: {
+            workItemUserPreferenceUpdate: {
+              errors: [],
+              userPreferences: {
+                displaySettings: {
+                  hiddenMetadataKeys: newHiddenKeys,
+                },
+                __typename: 'WorkItemTypesUserPreference',
+              },
+              __typename: 'WorkItemUserPreferenceUpdatePayload',
+            },
           },
           update: (
             cache,
@@ -141,8 +148,6 @@ export default {
           captureError: true,
           error,
         });
-      } finally {
-        this.isFieldPreferenceLoading = false;
       }
     },
 
@@ -230,7 +235,6 @@ export default {
             <gl-toggle
               :value="!hiddenMetadataKeys.includes(metadata.key)"
               :label="metadata.label"
-              :is-loading="isFieldPreferenceLoading"
               class="gl-w-full gl-justify-between"
               label-position="left"
             />

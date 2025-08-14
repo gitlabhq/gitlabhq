@@ -86,7 +86,8 @@
               %strong{ class: @user.two_factor_enabled? ? 'gl-text-success' : 'gl-text-danger' }
                 - if @user.two_factor_enabled?
                   = _('Enabled')
-                  = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'gl-float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
+                  - if current_user.admin?
+                    = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'gl-float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
                 - else
                   = _('Disabled')
 

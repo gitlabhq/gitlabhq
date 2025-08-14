@@ -755,6 +755,18 @@ RSpec.shared_examples 'handles authenticated requests, for tags create or delete
         end
       end
     end
+
+    if action == :delete
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        let(:headers) { build_headers_for_auth_type(:oauth) }
+
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
+
+        it_behaves_like 'accept delete package tag request', status: :ok
+      end
+    end
   end
 end
 

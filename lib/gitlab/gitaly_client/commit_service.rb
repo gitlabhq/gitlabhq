@@ -251,8 +251,8 @@ module Gitlab
       # else # defaults to :include_merges behavior
       #   ['foo_bar.rb', 'bar_baz.rb'],
       #
-      def find_changed_paths(objects, merge_commit_diff_mode: nil, find_renames: false)
-        request = find_changed_paths_request(objects, merge_commit_diff_mode, find_renames)
+      def find_changed_paths(objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
+        request = find_changed_paths_request(objects, merge_commit_diff_mode, find_renames, diff_filters)
 
         return [] if request.nil?
 
@@ -675,7 +675,7 @@ module Gitlab
         response.commit
       end
 
-      def find_changed_paths_request(objects, merge_commit_diff_mode, find_renames)
+      def find_changed_paths_request(objects, merge_commit_diff_mode, find_renames, diff_filters = nil)
         diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode]
 
         requests = objects.filter_map do |object|
@@ -695,7 +695,16 @@ module Gitlab
 
         return if requests.blank?
 
-        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: requests, merge_commit_diff_mode: diff_mode, find_renames: find_renames)
+        request_options = {
+          repository: @gitaly_repo,
+          requests: requests,
+          merge_commit_diff_mode: diff_mode,
+          find_renames: find_renames
+        }
+
+        request_options[:diff_filters] = diff_filters if diff_filters
+
+        Gitaly::FindChangedPathsRequest.new(request_options)
       end
 
       def path_error_message(path_error)

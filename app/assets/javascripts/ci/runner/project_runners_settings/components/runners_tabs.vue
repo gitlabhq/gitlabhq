@@ -68,6 +68,10 @@ export default {
     };
   },
   methods: {
+    notOwnedByProject(runner) {
+      // A runner owned by this project cannot be unassigned
+      return runner.ownerProject?.fullPath !== this.projectFullPath;
+    },
     onError(event) {
       this.$emit('error', event);
     },
@@ -106,7 +110,7 @@ export default {
       </template>
       <template #other-runner-actions="{ runner }">
         <runner-toggle-assign-button
-          v-if="runner.ownerProject.fullPath !== projectFullPath"
+          v-if="notOwnedByProject(runner)"
           :project-full-path="projectFullPath"
           :runner="runner"
           :assigns="false"

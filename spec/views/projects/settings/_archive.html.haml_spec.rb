@@ -28,15 +28,25 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
             .to have_selector("[data-help-path='/help/user/project/working_with_projects.md#archive-a-project']")
         end
 
+        it 'does not render #js-unarchive-settings' do
+          render 'projects/settings/archive', project: project
+
+          expect(rendered).not_to have_selector('#js-unarchive-settings')
+        end
+
         context 'when `archive_group` flag is disabled' do
           before do
             stub_feature_flags(archive_group: false)
+
+            render 'projects/settings/archive', project: project
           end
 
           it 'does not render #js-archive-settings' do
-            render 'projects/settings/archive', project: project
-
             expect(rendered).not_to have_selector('#js-archive-settings')
+          end
+
+          it 'does not render #js-unarchive-settings' do
+            expect(rendered).not_to have_selector('#js-unarchive-settings')
           end
         end
       end
@@ -44,6 +54,18 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
       context 'when project is archived' do
         before do
           project.update!(archived: true)
+        end
+
+        it 'renders #js-unarchive-settings' do
+          render 'projects/settings/archive', project: project
+
+          expect(rendered).to have_selector('#js-unarchive-settings')
+          expect(rendered).to have_selector('[data-resource-type="project"]')
+          expect(rendered).to have_selector("[data-resource-id='#{project.id}']")
+          expect(rendered).to have_selector("[data-resource-path='/#{project.full_path}']")
+          expect(rendered).to have_selector('[data-ancestors-archived="false"]')
+          expect(rendered)
+            .to have_selector("[data-help-path='/help/user/project/working_with_projects.md#unarchive-a-project']")
         end
 
         it 'does not render #js-archive-settings' do
@@ -55,12 +77,16 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
         context 'when `archive_group` flag is disabled' do
           before do
             stub_feature_flags(archive_group: false)
+
+            render 'projects/settings/archive', project: project
           end
 
           it 'does not render #js-archive-settings' do
-            render 'projects/settings/archive', project: project
-
             expect(rendered).not_to have_selector('#js-archive-settings')
+          end
+
+          it 'does not render #js-unarchive-settings' do
+            expect(rendered).not_to have_selector('#js-unarchive-settings')
           end
         end
       end
@@ -69,6 +95,18 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
     context 'when group is archived' do
       before do
         group.archive
+      end
+
+      it 'renders #js-unarchive-settings' do
+        render 'projects/settings/archive', project: project
+
+        expect(rendered).to have_selector('#js-unarchive-settings')
+        expect(rendered).to have_selector('[data-resource-type="project"]')
+        expect(rendered).to have_selector("[data-resource-id='#{project.id}']")
+        expect(rendered).to have_selector("[data-resource-path='/#{project.full_path}']")
+        expect(rendered).to have_selector('[data-ancestors-archived="true"]')
+        expect(rendered)
+          .to have_selector("[data-help-path='/help/user/project/working_with_projects.md#unarchive-a-project']")
       end
 
       it 'does not render #js-archive-settings' do
@@ -80,11 +118,11 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
       context 'when `archive_group` flag is disabled' do
         before do
           stub_feature_flags(archive_group: false)
+
+          render 'projects/settings/archive', project: project
         end
 
         it 'does not render #js-archive-settings' do
-          render 'projects/settings/archive', project: project
-
           expect(rendered).not_to have_selector('#js-archive-settings')
         end
       end

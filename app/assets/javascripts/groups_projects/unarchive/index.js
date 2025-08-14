@@ -6,7 +6,7 @@ export default function initUnarchiveSettings() {
   const el = document.getElementById('js-unarchive-settings');
   if (!el) return null;
 
-  const { resourceType, resourceId, resourcePath, ancestorsArchived } = el.dataset;
+  const { resourceType, resourceId, resourcePath, ancestorsArchived, helpPath } = el.dataset;
 
   return new Vue({
     el,
@@ -18,6 +18,7 @@ export default function initUnarchiveSettings() {
           resourceType,
           resourceId,
           resourcePath,
+          helpPath,
         },
       });
     },

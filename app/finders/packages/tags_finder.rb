@@ -12,10 +12,6 @@ class Packages::TagsFinder
   end
 
   def execute
-    packages = project.packages
-                      .with_name(package_name)
-    packages = packages.with_package_type(package_type) if package_type.present?
-
     Packages::Tag.for_package_ids(packages.select(:id))
   end
 
@@ -23,5 +19,20 @@ class Packages::TagsFinder
 
   def package_type
     params[:package_type]
+  end
+
+  def packages_class
+    params.fetch(:packages_class, ::Packages::Package)
+  end
+
+  def packages
+    if Feature.enabled?(:packages_tags_finder_use_packages_class, project)
+      packages_class.for_projects(project).with_name(package_name)
+    else
+      packages = project.packages.with_name(package_name)
+      return packages unless package_type.present?
+
+      packages.with_package_type(package_type)
+    end
   end
 end

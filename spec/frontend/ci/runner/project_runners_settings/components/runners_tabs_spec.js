@@ -26,7 +26,7 @@ describe('RunnersTabs', () => {
   let mockRefresh;
   let mockShowToast;
 
-  const createComponent = ({ props } = {}) => {
+  const createComponent = ({ props, runner = mockRunner } = {}) => {
     wrapper = shallowMount(RunnersTabs, {
       propsData: {
         projectFullPath: 'group/project',
@@ -41,7 +41,7 @@ describe('RunnersTabs', () => {
         RunnersTab: {
           props: RunnersTab.props,
           data() {
-            return { runner: mockRunner };
+            return { runner };
           },
           methods: {
             refresh() {
@@ -100,6 +100,16 @@ describe('RunnersTabs', () => {
         runner: mockRunner,
         assigns: false,
       });
+    });
+
+    it('renders unassign button even if owner project is unknown to the user', () => {
+      const { ownerProject, ...mockRunner2 } = mockRunner;
+
+      createComponent({
+        runner: mockRunner2,
+      });
+
+      expect(findRunnerToggleAssignButtonAt(0).exists()).toBe(true);
     });
 
     it('does not render unassign button for owner project', () => {

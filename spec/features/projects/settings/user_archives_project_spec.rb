@@ -19,8 +19,9 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
       visit edit_project_path(project)
     end
 
-    it 'cannot archive project' do
+    it 'cannot archive/unarchive project', :aggregate_failures do
       expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive'))
+      expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive'))
     end
 
     context 'when `archive_group` flag is disabled' do
@@ -49,7 +50,7 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         visit edit_project_path(project)
       end
 
-      it 'can archive project' do
+      it 'can archive project', :aggregate_failures do
         click_button s_('GroupProjectArchiveSettings|Archive')
 
         expect(page).to have_current_path(project_path(project))
@@ -81,11 +82,12 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         visit edit_project_path(project)
       end
 
-      it 'can unarchive project' do
+      it 'can unarchive project', :aggregate_failures do
         expect(page).to have_content('Unarchive project')
 
-        click_link('Unarchive')
+        click_button s_('GroupProjectUnarchiveSettings|Unarchive')
 
+        expect(page).to have_current_path(project_path(project))
         expect(page).not_to have_content('This is an archived project.')
       end
 

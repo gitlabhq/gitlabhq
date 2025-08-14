@@ -546,13 +546,13 @@ module Gitlab
         empty_diff_stats
       end
 
-      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false)
+      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
         processed_objects = treeish_objects.compact
 
         return [] if processed_objects.empty?
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames)
+          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames, diff_filters: diff_filters)
         end
       rescue CommandError, TypeError, NoRepository
         []

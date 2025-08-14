@@ -1,4 +1,4 @@
-import { GlButton, GlCard, GlIcon } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import UnarchiveSettings from '~/groups_projects/unarchive/components/unarchive_settings.vue';
@@ -28,6 +28,7 @@ describe('UnarchiveSettings', () => {
     resourcePath: '/groups/test-group',
     resourceId: '123',
     ancestorsArchived: false,
+    helpPath: '/help-path',
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -42,6 +43,7 @@ describe('UnarchiveSettings', () => {
   const findGlCard = () => wrapper.findComponent(GlCard);
   const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlIcon = () => wrapper.findComponent(GlIcon);
+  const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe.each(Object.values(RESOURCE_TYPES))('for %s', (resourceType) => {
     it('renders card header', () => {
@@ -56,6 +58,22 @@ describe('UnarchiveSettings', () => {
       expect(findGlCard().text()).toContain(
         `Restore your ${resourceType} to an active state. You'll be able to modify its content and settings again.`,
       );
+    });
+
+    describe('when helpPath is provided', () => {
+      it('renders helpLink', () => {
+        createComponent({ props: { resourceType } });
+
+        expect(findGlLink().text()).toBe(`How do I unarchive a ${resourceType}?`);
+      });
+    });
+
+    describe('when helpPath is not provided', () => {
+      it('does not render helpLink', () => {
+        createComponent({ props: { resourceType, helpPath: null } });
+
+        expect(findGlLink().exists()).toBe(false);
+      });
     });
 
     describe('when ancestorsArchived is false', () => {

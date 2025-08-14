@@ -29,7 +29,7 @@ module Resolvers
       end
 
       def unconditional_includes
-        [:namespace, :work_item_parent, :work_item_type]
+        [{ namespace: :route }, :work_item_parent, *super]
       end
     end
     # rubocop:enable Graphql/ResolverType

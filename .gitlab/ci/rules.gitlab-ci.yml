@@ -49,6 +49,9 @@
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly"'
 
+.if-default-branch-push: &if-default-branch-push
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.
 .if-sync-changes-on-stable-branches: &if-sync-changes-on-stable-branches
@@ -829,6 +832,14 @@
   - "ee/lib/ee/gitlab/observability.rb"
   - "ee/lib/api/internal/observability.rb"
 
+.gem-change-patterns: &gem-change-patterns
+  - Gemfile
+  - Gemfile.lock
+  - Gemfile.checksum
+  - Gemfile.next
+  - Gemfile.next.lock
+  - Gemfile.next.checksum
+
 ##################
 # Conditions set #
 ##################
@@ -1242,6 +1253,21 @@
         - "scripts/packages/automated_cleanup.rb"
       when: manual
       allow_failure: true
+
+# rules for gem cache population
+.caching:rules:gem-cache:
+  rules:
+    # populate cache in merge-train pipeline to ensure cache for non protected branches will exist in case 2 separate
+    # merge requests updating gems are being merged at the same time
+    - <<: *if-merge-train
+      changes: *gem-change-patterns
+    - <<: *if-merge-request
+      changes: *gem-change-patterns
+    - <<: *if-sync-changes-on-stable-branches
+      changes: *gem-change-patterns
+    - <<: *if-default-branch-push
+      changes: *gem-change-patterns
+    - *if-merge-request-labels-update-caches
 
 ######################
 # CI Templates Rules #

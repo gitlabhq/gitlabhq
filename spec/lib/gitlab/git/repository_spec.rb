@@ -1919,7 +1919,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         it 'returns default values' do
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
-            .with(['sha'], merge_commit_diff_mode: nil, find_renames: false)
+            .with(['sha'], merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
         end
       end
 
@@ -1933,7 +1933,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         it 'passes the value on to the commit client' do
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
-            .with(['sha'], merge_commit_diff_mode: merge_commit_diff_mode, find_renames: false)
+            .with(['sha'], merge_commit_diff_mode: merge_commit_diff_mode, find_renames: false, diff_filters: nil)
         end
       end
 
@@ -1947,7 +1947,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         it 'passes the value on to the commit client' do
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
-            .with(['sha'], merge_commit_diff_mode: nil, find_renames: find_renames)
+            .with(['sha'], merge_commit_diff_mode: nil, find_renames: find_renames, diff_filters: nil)
         end
       end
     end

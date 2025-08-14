@@ -41,6 +41,10 @@ module QA
             element 'archive-button'
           end
 
+          view 'app/assets/javascripts/groups_projects/unarchive/components/unarchive_settings.vue' do
+            element 'unarchive-button'
+          end
+
           def update_project_path_to(path)
             fill_project_path(path)
             click_change_path_button
@@ -89,8 +93,8 @@ module QA
           end
 
           def unarchive_project
-            click_element 'unarchive-project-link'
-            click_confirmation_ok_button
+            click_element feature_flag_controlled_element(:archive_group, 'unarchive-button', 'unarchive-project-link')
+            click_confirmation_ok_button_if_present
           end
 
           def delete_project!(project_name)

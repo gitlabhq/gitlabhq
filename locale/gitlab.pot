@@ -31149,6 +31149,12 @@ msgstr ""
 msgid "GroupProjectUnarchiveSettings|An error occurred while unarchiving the project. Please refresh the page and try again."
 msgstr ""
 
+msgid "GroupProjectUnarchiveSettings|How do I unarchive a group?"
+msgstr ""
+
+msgid "GroupProjectUnarchiveSettings|How do I unarchive a project?"
+msgstr ""
+
 msgid "GroupProjectUnarchiveSettings|Restore your group to an active state. You'll be able to modify its content and settings again."
 msgstr ""
 
@@ -55069,6 +55075,9 @@ msgstr ""
 msgid "Runners|Unassign"
 msgstr ""
 
+msgid "Runners|Unassign runner %{name}?"
+msgstr ""
+
 msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"
 msgstr ""
 
@@ -55212,7 +55221,13 @@ msgstr ""
 msgid "Runner|The CSV export contains a list of projects, the number of minutes used by instance runners, and the number of jobs that ran. When the export is completed, it is sent as an attachment to your email."
 msgstr ""
 
+msgid "Runner|The runner will be unassigned from this project. Depending on your permissions for this runner, you might not be able to assign it again. Are you sure you want to continue?"
+msgstr ""
+
 msgid "Runner|Unassign from project"
+msgstr ""
+
+msgid "Runner|Unassign runner from project"
 msgstr ""
 
 msgid "Runner|Your CSV export has started. It will be sent to your email inbox when its ready."

@@ -16,6 +16,7 @@ cache:ruby-gems:
     - .with-ruby-slim-image
     - .cache-pull-push-base
     - .ruby-cache-pull-push
+    - .caching:rules:gem-cache
   stage: sync
   variables:
     BUNDLE_WITHOUT: ""

@@ -5145,6 +5145,26 @@ CREATE TABLE p_knowledge_graph_tasks (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_sent_notifications (
+    id bigint NOT NULL,
+    project_id bigint,
+    noteable_id bigint,
+    recipient_id bigint,
+    issue_email_participant_id bigint,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    partition integer DEFAULT 1 NOT NULL,
+    noteable_type text,
+    commit_id text,
+    reply_key text NOT NULL,
+    in_reply_to_discussion_id text,
+    CONSTRAINT check_18a72130c5 CHECK ((char_length(commit_id) <= 255)),
+    CONSTRAINT check_21ab645552 CHECK ((char_length(reply_key) <= 255)),
+    CONSTRAINT check_4c25a085c6 CHECK ((char_length(noteable_type) <= 255)),
+    CONSTRAINT check_7e7dc3845d CHECK ((char_length(in_reply_to_discussion_id) <= 255))
+)
+PARTITION BY LIST (partition);
+
 CREATE TABLE project_audit_events (
     id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19523,26 +19543,6 @@ CREATE SEQUENCE p_knowledge_graph_tasks_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_knowledge_graph_tasks_id_seq OWNED BY p_knowledge_graph_tasks.id;
-
-CREATE TABLE p_sent_notifications (
-    id bigint NOT NULL,
-    project_id bigint,
-    noteable_id bigint,
-    recipient_id bigint,
-    issue_email_participant_id bigint,
-    namespace_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    partition integer DEFAULT 1 NOT NULL,
-    noteable_type text,
-    commit_id text,
-    reply_key text NOT NULL,
-    in_reply_to_discussion_id text,
-    CONSTRAINT check_18a72130c5 CHECK ((char_length(commit_id) <= 255)),
-    CONSTRAINT check_21ab645552 CHECK ((char_length(reply_key) <= 255)),
-    CONSTRAINT check_4c25a085c6 CHECK ((char_length(noteable_type) <= 255)),
-    CONSTRAINT check_7e7dc3845d CHECK ((char_length(in_reply_to_discussion_id) <= 255))
-)
-PARTITION BY LIST (partition);
 
 CREATE SEQUENCE p_sent_notifications_id_seq
     START WITH 1

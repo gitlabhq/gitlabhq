@@ -1,7 +1,10 @@
 - return unless archiving_available?(project)
 
-- if Feature.enabled?(:archive_group, project.root_ancestor) && !project.self_or_ancestors_archived?
-  #js-archive-settings{ data: project_archive_settings_app_data(project) }
+- if Feature.enabled?(:archive_group, project.root_ancestor)
+  - if project.self_or_ancestors_archived?
+    #js-unarchive-settings{ data: project_unarchive_settings_app_data(project) }
+  - else
+    #js-archive-settings{ data: project_archive_settings_app_data(project) }
 - else
   = render Pajamas::CardComponent.new do |c|
     - c.with_header do

@@ -323,17 +323,19 @@ vulnerability management is harder because the same vulnerability could be repor
 GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the
 same vulnerability has moved in the same file due to refactoring or unrelated changes.
 
-Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+Support for advanced vulnerability tracking is dependent on the language and analyzers used.
 
-- C, in the Semgrep-based only
-- C++, in the Semgrep-based only
-- C#, in the GitLab Advanced SAST and Semgrep-based analyzers
-- Go, in the GitLab Advanced SAST and Semgrep-based analyzers
-- Java, in the GitLab Advanced SAST and Semgrep-based analyzers
-- JavaScript, in the GitLab Advanced SAST and Semgrep-based analyzers
-- PHP, in the Semgrep-based analyzer only
-- Python, in the GitLab Advanced SAST and Semgrep-based analyzers
-- Ruby, in the Semgrep-based analyzer only
+| Language   | GitLab Advanced SAST analyzer               | Semgrep-based analyzers |
+|------------|---------------------------------------------|-------------------------|
+| C          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| C++        | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| C#         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Go         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Java       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| JavaScript | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| PHP        | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Python     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Ruby       | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
 
 Support for more languages and analyzers is tracked in [epic 5144](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 

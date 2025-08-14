@@ -37,8 +37,10 @@ module WorkItems
       {
         last_edited_by: :last_edited_by,
         assignees: :assignees_by_name_and_id,
+        can_invite_members: { project: [{ namespace: :owner }, { organization: :users }] },
         participants: WorkItem.participant_includes,
         parent: :work_item_parent,
+        has_parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         milestone: { milestone: [:project, :group] },
         subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],

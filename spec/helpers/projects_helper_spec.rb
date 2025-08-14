@@ -2080,6 +2080,41 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#project_unarchive_settings_app_data' do
+    let_it_be_with_reload(:ancestor) { create(:group) }
+    let_it_be(:project) { create(:project, group: ancestor) }
+
+    subject { helper.project_unarchive_settings_app_data(project) }
+
+    context 'when ancestor is not archived' do
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'project',
+          resource_id: project.id,
+          resource_path: including(project.full_path),
+          ancestors_archived: 'false',
+          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+        })
+      end
+    end
+
+    context 'when ancestor is archived' do
+      before do
+        ancestor.archive
+      end
+
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'project',
+          resource_id: project.id,
+          resource_path: including(project.full_path),
+          ancestors_archived: 'true',
+          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+        })
+      end
+    end
+  end
+
   describe '#show_archived_badge?' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, group: group) }

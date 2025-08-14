@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
@@ -12,6 +12,7 @@ export default {
     GlCard,
     GlButton,
     GlIcon,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,6 +35,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    helpPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   resourceStrings: {
     [RESOURCE_TYPES.GROUP]: {
@@ -47,6 +53,7 @@ export default {
       error: s__(
         'GroupProjectUnarchiveSettings|An error occurred while unarchiving the group. Please refresh the page and try again.',
       ),
+      helpLink: s__('GroupProjectUnarchiveSettings|How do I unarchive a group?'),
     },
     [RESOURCE_TYPES.PROJECT]: {
       header: s__('GroupProjectUnarchiveSettings|Unarchive project'),
@@ -59,6 +66,7 @@ export default {
       error: s__(
         'GroupProjectUnarchiveSettings|An error occurred while unarchiving the project. Please refresh the page and try again.',
       ),
+      helpLink: s__('GroupProjectUnarchiveSettings|How do I unarchive a project?'),
     },
   },
   data() {
@@ -105,8 +113,19 @@ export default {
       </h4>
     </template>
     <template #default>
-      <p class="gl-mb-0">{{ i18n.description }}</p>
-      <gl-button v-if="!ancestorsArchived" class="gl-mt-5" :loading="loading" @click="unarchive">
+      <p class="gl-mb-0">
+        {{ i18n.description }}
+        <gl-link v-if="helpPath" :href="helpPath" target="_blank">
+          {{ i18n.helpLink }}
+        </gl-link>
+      </p>
+      <gl-button
+        v-if="!ancestorsArchived"
+        data-testid="unarchive-button"
+        class="gl-mt-5"
+        :loading="loading"
+        @click="unarchive"
+      >
         {{ s__('GroupProjectUnarchiveSettings|Unarchive') }}
       </gl-button>
     </template>

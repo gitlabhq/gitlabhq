@@ -61,7 +61,7 @@ For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c
 
 You can use Agentic Chat in:
 
-- The GitLab UI.
+- If you have GitLab Duo Pro or Enterprise, the GitLab UI.
 - VS Code.
 - A JetBrains IDE.
 - Visual Studio for Windows.
@@ -74,6 +74,12 @@ Prerequisites:
 - You have [turned on beta and experimental features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your GitLab instance or group.
 
 ### Use Agentic Chat in the GitLab UI
+
+{{< details >}}
+
+- Add-on: GitLab Duo Pro or Enterprise
+
+{{< /details >}}
 
 To use Agentic Chat in the GitLab UI:
 

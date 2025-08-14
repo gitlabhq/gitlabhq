@@ -752,6 +752,16 @@ module ProjectsHelper
     }
   end
 
+  def project_unarchive_settings_app_data(project)
+    {
+      resource_type: 'project',
+      resource_id: project.id,
+      resource_path: project_path(project),
+      ancestors_archived: project.ancestors_archived?.to_s,
+      help_path: help_page_path('user/project/working_with_projects.md', anchor: 'unarchive-a-project')
+    }
+  end
+
   def show_archived_badge?(project)
     return true if project.archived?
 
