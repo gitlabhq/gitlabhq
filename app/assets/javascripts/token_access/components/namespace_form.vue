@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlButton, GlFormInput } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import addNamespaceMutation from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
 import editNamespaceMutation from '../graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
 import PoliciesSelector from './policies_selector.vue';
@@ -75,11 +75,6 @@ export default {
       }
     },
   },
-  i18n: {
-    groupOrProjectDescription: s__(
-      'CICD|Paste a group or project path to authorize access into this project.',
-    ),
-  },
 };
 </script>
 
@@ -89,7 +84,6 @@ export default {
       label-for="namespace-input"
       :label="s__('CICD|Group or project')"
       :state="!errorMessage"
-      :label-description="$options.i18n.groupOrProjectDescription"
       :invalid-feedback="errorMessage"
     >
       <gl-form-input

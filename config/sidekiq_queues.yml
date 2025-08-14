@@ -909,6 +909,8 @@
   - 1
 - - search_zoekt_orphaned_repo_event
   - 1
+- - search_zoekt_project_features_changed_event
+  - 1
 - - search_zoekt_project_marked_as_archived_event
   - 1
 - - search_zoekt_project_transfer

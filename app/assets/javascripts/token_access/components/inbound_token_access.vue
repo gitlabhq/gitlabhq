@@ -5,7 +5,6 @@ import {
   GlCollapsibleListbox,
   GlDisclosureDropdown,
   GlIcon,
-  GlLink,
   GlLoadingIcon,
   GlSprintf,
   GlTooltipDirective,
@@ -13,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
@@ -37,19 +35,14 @@ import RemoveAutopopulatedEntriesModal from './remove_autopopulated_entries_moda
 
 export default {
   i18n: {
-    radioGroupTitle: s__('CICD|Authorized groups and projects'),
     radioGroupDescription: s__(
       `CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}.`,
     ),
     cardHeaderTitle: s__('CICD|CI/CD job token allowlist'),
-    cardHeaderDescription: s__(
-      `CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist.`,
-    ),
     settingDisabledMessage: s__(
       'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project.',
     ),
     add: __('Add'),
-    addGroupOrProject: __('Add group or project'),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     saveButtonTitle: __('Save Changes'),
@@ -77,7 +70,6 @@ export default {
     GlCollapsibleListbox,
     GlDisclosureDropdown,
     GlIcon,
-    GlLink,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
@@ -170,11 +162,6 @@ export default {
         this.$apollo.queries.groupsAndProjectsWithAccess.loading ||
         this.allowlistLoadingMessage.length > 0
       );
-    },
-    ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token', {
-        anchor: 'control-job-token-access-to-your-project',
-      });
     },
     crudFormActions() {
       const actions = [
@@ -419,18 +406,6 @@ export default {
       @hide="hideSelectedAction"
       @remove-entries="removeAutopopulatedEntries"
     />
-    <div class="gl-font-bold">
-      {{ $options.i18n.radioGroupTitle }}
-    </div>
-    <div class="gl-mb-3">
-      <gl-sprintf :message="$options.i18n.radioGroupDescription">
-        <template #link="{ content }">
-          <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
-            content
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </div>
     <gl-form-radio-group
       v-if="!enforceAllowlist"
       v-model="inboundJobTokenScopeEnabled"
@@ -467,7 +442,6 @@ export default {
     </gl-alert>
     <crud-component
       :title="$options.i18n.cardHeaderTitle"
-      :description="$options.i18n.cardHeaderDescription"
       class="gl-mt-5"
       @hideForm="hideSelectedAction"
     >
@@ -478,6 +452,7 @@ export default {
           :toggle-text="$options.i18n.add"
           data-testid="form-selector"
           size="small"
+          placement="bottom-end"
           @select="selectAction($event, showForm)"
         />
         <gl-disclosure-dropdown

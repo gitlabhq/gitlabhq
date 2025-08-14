@@ -165,6 +165,15 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  .diff-grid-comments.diff-grid-comments-full-width {
+    grid-template-columns: 1fr;
+
+    .diff-td {
+      border-right: 0;
+      border-bottom: 0;
+    }
+  }
+
   .diff-grid-drafts {
     display: grid;
     grid-template-columns: 1fr 1fr;

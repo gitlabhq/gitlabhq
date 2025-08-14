@@ -2569,10 +2569,16 @@ msgstr ""
 msgid "AICatalog|Save changes"
 msgstr ""
 
+msgid "AICatalog|Search and select tools for this agent."
+msgstr ""
+
 msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
+msgid "AICatalog|Select tools that this agent will have access to."
 msgstr ""
 
 msgid "AICatalog|System prompt"
@@ -2603,6 +2609,9 @@ msgid "AICatalog|This agent specializes in... It can help you with... Best suite
 msgstr ""
 
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|Tools"
 msgstr ""
 
 msgid "AICatalog|User Prompt"
@@ -3949,9 +3958,6 @@ msgid "Add files"
 msgstr ""
 
 msgid "Add group"
-msgstr ""
-
-msgid "Add group or project"
 msgstr ""
 
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
@@ -12078,9 +12084,6 @@ msgstr ""
 msgid "CICD|Control whether pipeline variables are allowed by default in new projects in new groups."
 msgstr ""
 
-msgid "CICD|Default (user membership and role)"
-msgstr ""
-
 msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 
@@ -12100,9 +12103,6 @@ msgid "CICD|Enable and enforce job token allowlist for all projects."
 msgstr ""
 
 msgid "CICD|Enable feature to limit job token access to the following projects."
-msgstr ""
-
-msgid "CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist."
 msgstr ""
 
 msgid "CICD|Grant additional access permissions to this project's CI/CD job tokens."
@@ -12141,7 +12141,7 @@ msgstr ""
 msgid "CICD|Only this project and any groups and projects in the allowlist"
 msgstr ""
 
-msgid "CICD|Paste a group or project path to authorize access into this project."
+msgid "CICD|Permission configuration"
 msgstr ""
 
 msgid "CICD|Pipelines and jobs cannot be cancelled"
@@ -12211,6 +12211,9 @@ msgid "CICD|Unprotected branches will not have access to the cache from protecte
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
+msgid "CICD|User membership and role"
 msgstr ""
 
 msgid "CICD|When disabled (recommended), the %{default_role_link_start}default role to use pipeline variables%{default_role_link_end} setting is set to %{strongStart}No one allowed%{strongEnd} for new groups, which cascades to new projects in the new groups. When enabled, the setting defaults to %{strongStart}Developer%{strongEnd} instead. %{link_start}Learn more%{link_end}."
@@ -18800,7 +18803,7 @@ msgstr ""
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
 
-msgid "Control which projects can use CI/CD job tokens to authenticate with this project."
+msgid "Control which groups and projects can use CI/CD job tokens to authenticate with this project. Learn more about %{link_start}job token security%{link_end}."
 msgstr ""
 
 msgid "Convert Jenkins to GitLab CI/CD using Duo"
@@ -27861,6 +27864,9 @@ msgstr ""
 msgid "Filter by test cases that are currently open."
 msgstr ""
 
+msgid "Filter input"
+msgstr ""
+
 msgid "Filter list for %{title}"
 msgstr ""
 
@@ -28000,6 +28006,9 @@ msgid "Focus file tree browser filter bar"
 msgstr ""
 
 msgid "Focus filter bar"
+msgstr ""
+
+msgid "Focus on the filter bar"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -36279,9 +36288,6 @@ msgstr ""
 msgid "JobSource|Web IDE"
 msgstr ""
 
-msgid "JobToken|Apply permissions that grant access to individual resources."
-msgstr ""
-
 msgid "JobToken|Default permissions"
 msgstr ""
 
@@ -36294,7 +36300,16 @@ msgstr ""
 msgid "JobToken|Fine-grained permissions"
 msgstr ""
 
+msgid "JobToken|Job token inherits permissions from user role and membership."
+msgstr ""
+
+msgid "JobToken|Job token permissions are limited to user's role and selected resource and scopes."
+msgstr ""
+
 msgid "JobToken|Jobs"
+msgstr ""
+
+msgid "JobToken|Learn more about available %{linkStart}API endpoints%{linkEnd}."
 msgstr ""
 
 msgid "JobToken|Packages"
@@ -36312,16 +36327,13 @@ msgstr ""
 msgid "JobToken|Releases"
 msgstr ""
 
-msgid "JobToken|Resource"
-msgstr ""
-
 msgid "JobToken|Secure files"
 msgstr ""
 
-msgid "JobToken|Terraform state"
+msgid "JobToken|Select resources and scope"
 msgstr ""
 
-msgid "JobToken|Use the standard permissions model based on user membership and roles."
+msgid "JobToken|Terraform state"
 msgstr ""
 
 msgid "Jobs"
@@ -69998,6 +70010,9 @@ msgstr ""
 msgid "VirtualRegistry|Clear cache"
 msgstr ""
 
+msgid "VirtualRegistry|Clear cache for %{upstreamName}?"
+msgstr ""
+
 msgid "VirtualRegistry|Create Maven registry"
 msgstr ""
 
@@ -70032,6 +70047,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Enter password"
+msgstr ""
+
+msgid "VirtualRegistry|Failed to clear upstream cache. Please try again."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to delete cache entry."
@@ -70118,6 +70136,9 @@ msgstr ""
 msgid "VirtualRegistry|There is a problem with this cached upstream"
 msgstr ""
 
+msgid "VirtualRegistry|This will delete all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs may fail. Are you sure you want to continue?"
+msgstr ""
+
 msgid "VirtualRegistry|Time in hours"
 msgstr ""
 
@@ -70125,6 +70146,9 @@ msgid "VirtualRegistry|Updated %{date}"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream URL"
+msgstr ""
+
+msgid "VirtualRegistry|Upstream cache cleared successfully"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream created successfully"

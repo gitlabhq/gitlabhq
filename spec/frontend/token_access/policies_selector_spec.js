@@ -1,9 +1,16 @@
-import { GlTableLite, GlFormRadio, GlFormRadioGroup, GlCollapsibleListbox } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlFormGroup,
+  GlCollapsibleListbox,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import PoliciesSelector, { TABLE_FIELDS } from '~/token_access/components/policies_selector.vue';
-import { stubComponent } from 'helpers/stub_component';
-import { POLICIES_BY_RESOURCE, RESOURCE_JOBS, RESOURCE_RELEASES } from '~/token_access/constants';
+import PoliciesSelector from '~/token_access/components/policies_selector.vue';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import { POLICIES_BY_RESOURCE } from './mock_data';
 
 describe('Policies selector component', () => {
   let wrapper;
@@ -14,27 +21,30 @@ describe('Policies selector component', () => {
     disabled = false,
     stubs = {},
   } = {}) => {
-    wrapper = mountExtended(PoliciesSelector, {
+    wrapper = shallowMountExtended(PoliciesSelector, {
       propsData: { isDefaultPermissionsSelected, jobTokenPolicies, disabled },
-      stubs,
+      stubs: {
+        GlSprintf,
+        GlFormGroup: stubComponent(GlFormGroup, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+          props: ['label'],
+        }),
+        ...stubs,
+      },
     });
 
     return waitForPromises();
   };
 
-  const findTable = () => wrapper.findComponent(GlTableLite);
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findDefaultRadio = () => wrapper.findByTestId('default-radio');
   const findFineGrainedRadio = () => wrapper.findByTestId('fine-grained-radio');
-
-  const getResourceIndex = (item) =>
-    POLICIES_BY_RESOURCE.map(({ resource }) => resource).indexOf(item);
-
-  const findNameForResource = (resource) =>
-    findTable().findAll('tbody tr').at(getResourceIndex(resource)).findAll('td').at(0);
-
-  const findPolicyDropdownForResource = (resource) =>
-    wrapper.findAllComponents(GlCollapsibleListbox).at(getResourceIndex(resource));
+  const findResourcesFormGroup = () => wrapper.findComponent(GlFormGroup);
+  const findResourcesDescription = () =>
+    findResourcesFormGroup().find('[data-testid="slot-label-description"]');
+  const findPoliciesList = () => wrapper.find('ul');
+  const findPolicyAt = (index) => findPoliciesList().findAll('li').at(index);
+  const findPolicyDropdownAt = (index) => findPolicyAt(index).findComponent(GlCollapsibleListbox);
 
   describe('permission type radio options', () => {
     beforeEach(() =>
@@ -85,8 +95,8 @@ describe('Policies selector component', () => {
 
     it.each`
       name              | value    | findRadio               | expectedText
-      ${'default'}      | ${true}  | ${findDefaultRadio}     | ${'Default permissions Use the standard permissions model based on user membership and roles.'}
-      ${'fine-grained'} | ${false} | ${findFineGrainedRadio} | ${'Fine-grained permissions Apply permissions that grant access to individual resources.'}
+      ${'default'}      | ${true}  | ${findDefaultRadio}     | ${'Default permissions Job token inherits permissions from user role and membership.'}
+      ${'fine-grained'} | ${false} | ${findFineGrainedRadio} | ${"Fine-grained permissions Job token permissions are limited to user's role and selected resource and scopes."}
     `('shows the $name radio', ({ value, findRadio, expectedText }) => {
       expect(findRadio().text()).toMatchInterpolatedText(expectedText);
       expect(findRadio().props('value')).toBe(value);
@@ -96,47 +106,53 @@ describe('Policies selector component', () => {
   describe('when Default permissions is selected', () => {
     beforeEach(() => createWrapper({ isDefaultPermissionsSelected: true }));
 
-    it('does not show policies table', () => {
-      expect(findTable().exists()).toBe(false);
+    it('does not show resources and scope form group', () => {
+      expect(findResourcesFormGroup().exists()).toBe(false);
     });
   });
 
   describe('when Fine-grained permissions is selected', () => {
-    beforeEach(() => {
-      createWrapper({
-        stubs: { GlTableLite: stubComponent(GlTableLite, { props: ['fields', 'items'] }) },
+    beforeEach(() => createWrapper());
+
+    describe('resources and scope form group', () => {
+      it('shows form group', () => {
+        expect(findResourcesFormGroup().props('label')).toBe('Select resources and scope');
+      });
+
+      it('shows description', () => {
+        expect(findResourcesDescription().text()).toBe('Learn more about available API endpoints.');
+      });
+
+      it('shows description link', () => {
+        const link = findResourcesDescription().findComponent(GlLink);
+
+        expect(link.text()).toBe('API endpoints');
+        expect(link.props()).toMatchObject({
+          href: '/help/ci/jobs/fine_grained_permissions#available-api-endpoints',
+          target: '_blank',
+        });
       });
     });
 
-    it('shows policies table', () => {
-      expect(findTable().props()).toMatchObject({
-        items: POLICIES_BY_RESOURCE,
-        fields: TABLE_FIELDS,
+    describe('policies dropdowns', () => {
+      describe.each(POLICIES_BY_RESOURCE)('for resource $resource.text', (item) => {
+        const index = POLICIES_BY_RESOURCE.indexOf(item);
+
+        it('shows the resource name', () => {
+          expect(findPolicyAt(index).text()).toBe(item.resource.text);
+        });
+
+        it('shows the resource dropdown', () => {
+          expect(findPolicyDropdownAt(index).props('items')).toEqual(item.policies);
+        });
+
+        it.each(item.policies)(`emits $value policy when it is selected`, (policy) => {
+          const expected = policy.value ? [policy.value] : [];
+          findPolicyDropdownAt(index).vm.$emit('select', policy.value);
+
+          expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual(expected);
+        });
       });
-    });
-
-    describe('policies table', () => {
-      beforeEach(() => createWrapper());
-
-      describe.each(POLICIES_BY_RESOURCE)(
-        'for resource $resource.text',
-        ({ resource, policies }) => {
-          it('shows the resource name', () => {
-            expect(findNameForResource(resource).text()).toBe(resource.text);
-          });
-
-          it('shows the resource dropdown', () => {
-            expect(findPolicyDropdownForResource(resource).props('items')).toEqual(policies);
-          });
-
-          it.each(policies)(`emits $value policy when it is selected`, (policy) => {
-            const expected = policy.value ? [policy.value] : [];
-            findPolicyDropdownForResource(resource).vm.$emit('select', policy.value);
-
-            expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual(expected);
-          });
-        },
-      );
 
       describe('when multiple policies are selected across different resources', () => {
         const jobTokenPolicies = ['READ_JOBS', 'ADMIN_PACKAGES'];
@@ -144,7 +160,7 @@ describe('Policies selector component', () => {
         beforeEach(() => wrapper.setProps({ jobTokenPolicies }));
 
         it('adds the policy when there is no policy set for the resource', () => {
-          findPolicyDropdownForResource(RESOURCE_RELEASES).vm.$emit('select', 'READ_RELEASES');
+          findPolicyDropdownAt(5).vm.$emit('select', 'READ_RELEASES');
 
           expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
             ...jobTokenPolicies,
@@ -153,7 +169,7 @@ describe('Policies selector component', () => {
         });
 
         it('updates the policy when there is already a policy for the resource', () => {
-          findPolicyDropdownForResource(RESOURCE_JOBS).vm.$emit('select', 'ADMIN_JOBS');
+          findPolicyDropdownAt(2).vm.$emit('select', 'ADMIN_JOBS');
 
           expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
             'ADMIN_JOBS',

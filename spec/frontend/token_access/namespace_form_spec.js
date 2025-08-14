@@ -59,12 +59,6 @@ describe('Namespace form component', () => {
           placeholder: 'full/path',
         });
       });
-
-      it('shows description', () => {
-        expect(findFormGroup().props('labelDescription')).toBe(
-          'Paste a group or project path to authorize access into this project.',
-        );
-      });
     });
 
     describe('policies selector', () => {

@@ -1,6 +1,7 @@
 import { GlBadge, GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TokenAccessTable from '~/token_access/components/token_access_table.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockGroups, mockProjects } from './mock_data';
 
 describe('Token access table', () => {
@@ -10,6 +11,9 @@ describe('Token access table', () => {
     wrapper = mountExtended(TokenAccessTable, {
       provide: { fullPath: 'root/ci-project2', ...provided },
       propsData: props,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -42,12 +46,6 @@ describe('Token access table', () => {
       expect(findAllTableRows(type)).toHaveLength(items.length);
     });
 
-    it('remove button emits event with correct item to remove', async () => {
-      await findRemoveButton().trigger('click');
-
-      expect(wrapper.emitted('removeItem')).toEqual([[items[0]]]);
-    });
-
     it('displays icon and avatar', () => {
       expect(findIcon().props('name')).toBe(type);
       expect(findProjectAvatar().props('projectName')).toBe(items[0].name);
@@ -58,15 +56,23 @@ describe('Token access table', () => {
       expect(findName(type).attributes('href')).toBe(items[0].webUrl);
     });
 
-    describe('edit button', () => {
+    describe.each`
+      buttonName  | findButton          | icon        | tooltip               | eventName
+      ${'edit'}   | ${findEditButton}   | ${'pencil'} | ${'Edit permissions'} | ${'editItem'}
+      ${'remove'} | ${findRemoveButton} | ${'remove'} | ${'Remove access'}    | ${'removeItem'}
+    `('$buttonName button', ({ findButton, icon, tooltip, eventName }) => {
       it('shows button', () => {
-        expect(findEditButton().props('icon')).toBe('pencil');
+        expect(findButton().props('icon')).toBe(icon);
       });
 
-      it('emits editItem event when button is clicked', () => {
-        findEditButton().vm.$emit('click');
+      it('shows button tooltip', () => {
+        expect(getBinding(findButton().element, 'gl-tooltip').value).toBe(tooltip);
+      });
 
-        expect(wrapper.emitted('editItem')[0][0]).toBe(items[0]);
+      it('emits event when button is clicked', async () => {
+        await findButton().trigger('click');
+
+        expect(wrapper.emitted(eventName)[0][0]).toBe(items[0]);
       });
     });
 
@@ -123,7 +129,7 @@ describe('Token access table', () => {
     it('shows default text when item has default permissions selected', () => {
       createComponent({ items: [mockGroups[1]] });
 
-      expect(findPolicies().text()).toBe('Default (user membership and role)');
+      expect(findPolicies().text()).toBe('User membership and role');
     });
 
     it('shows minimal text when items has no policies', () => {

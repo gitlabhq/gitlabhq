@@ -22,6 +22,7 @@ describe('DiffView', () => {
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
+  const findNotesHolder = (wrapper) => wrapper.find('[data-testid="notes-holder"]');
 
   const createWrapper = ({ props } = {}) => {
     const propsData = {
@@ -89,6 +90,44 @@ describe('DiffView', () => {
     });
     expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
     expect(wrapper.findComponent(DraftNote).props('autosaveKey')).toBe('autosave');
+  });
+
+  describe('notes-holder class assignment', () => {
+    it.each`
+      leftType     | rightType    | hasFullWidthClass
+      ${null}      | ${null}      | ${true}
+      ${null}      | ${'new'}     | ${false}
+      ${'old'}     | ${null}      | ${false}
+      ${'old'}     | ${'new'}     | ${false}
+      ${'context'} | ${'context'} | ${false}
+    `(
+      'applies diff-grid-comments-full-width class when leftType=$leftType and rightType=$rightType',
+      ({ leftType, rightType, hasFullWidthClass }) => {
+        const line = {
+          renderCommentRow: true,
+          left: {
+            renderDiscussion: true,
+            type: leftType,
+          },
+          right: {
+            renderDiscussion: true,
+            type: rightType,
+          },
+        };
+
+        const wrapper = createWrapper({
+          props: { diffLines: [line] },
+        });
+
+        const notesHolder = findNotesHolder(wrapper);
+
+        if (hasFullWidthClass) {
+          expect(notesHolder.classes()).toContain('diff-grid-comments-full-width');
+        } else {
+          expect(notesHolder.classes()).not.toContain('diff-grid-comments-full-width');
+        }
+      },
+    );
   });
 
   describe('drag operations', () => {

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import micromatch from 'micromatch';
 import { createAlert } from '~/alert';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
@@ -12,10 +12,12 @@ import { getRefType } from '~/repository/utils/ref_type';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
+import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { normalizePath, dedupeByFlatPathAndId } from '../utils';
 
 export default {
   ROW_HEIGHT: 32,
+  FOCUS_FILE_TREE_BROWSER_FILTER_BAR,
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -25,6 +27,8 @@ export default {
     RecycleScroller,
     FileRow,
     GlLoadingIcon,
+    GlTooltip,
+    Shortcut,
   },
   props: {
     currentRef: {
@@ -289,11 +293,24 @@ export default {
         ref="filterInput"
         v-model="filter"
         data-testid="ftb-filter-input"
+        :aria-label="__('Filter input')"
         :aria-keyshortcuts="filterSearchShortcutKey"
         type="search"
         class="!gl-pl-7"
         :placeholder="placeholderText"
       />
+      <gl-tooltip
+        v-if="!shortcutsDisabled"
+        custom-class="file-browser-filter-tooltip"
+        :target="() => $refs.filterInput.$el"
+        trigger="hover focus"
+      >
+        {{ __('Focus on the filter bar') }}
+        <shortcut
+          class="gl-whitespace-nowrap"
+          :shortcuts="$options.FOCUS_FILE_TREE_BROWSER_FILTER_BAR.defaultKeys"
+        />
+      </gl-tooltip>
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />
     <nav v-else class="gl-mt-2 gl-flex gl-min-h-0 gl-flex-col" :aria-label="__('File tree')">
@@ -330,3 +347,9 @@ export default {
     </nav>
   </section>
 </template>
+
+<style>
+.file-browser-filter-tooltip .tooltip-inner {
+  max-width: 210px;
+}
+</style>

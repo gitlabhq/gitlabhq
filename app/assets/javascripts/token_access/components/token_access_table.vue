@@ -57,7 +57,7 @@ export default {
       };
       const policies = {
         key: 'jobTokenPolicies',
-        label: s__('CICD|Job token permissions'),
+        label: s__('CICD|Permission configuration'),
         class: '!gl-align-middle md:gl-w-2/5',
       };
       const actions = {
@@ -135,9 +135,7 @@ export default {
     </template>
 
     <template #cell(jobTokenPolicies)="{ item }">
-      <span v-if="item.defaultPermissions">
-        {{ s__('CICD|Default (user membership and role)') }}</span
-      >
+      <span v-if="item.defaultPermissions"> {{ s__('CICD|User membership and role') }}</span>
       <span v-else-if="!hasJobTokenPolicies(item)">
         {{ s__('CICD|No resources selected (minimal access only)') }}</span
       >
@@ -154,13 +152,15 @@ export default {
     <template #cell(actions)="{ item }">
       <div class="gl-flex gl-gap-2">
         <gl-button
+          v-gl-tooltip="s__('Members|Edit permissions')"
           icon="pencil"
-          :aria-label="__('Edit')"
+          :aria-label="s__('Members|Edit permissions')"
           data-testid="token-access-table-edit-button"
           @click="$emit('editItem', item)"
         />
         <gl-button
           v-if="!isCurrentProject(item)"
+          v-gl-tooltip="__('Remove access')"
           icon="remove"
           :aria-label="__('Remove access')"
           data-testid="token-access-table-remove-button"

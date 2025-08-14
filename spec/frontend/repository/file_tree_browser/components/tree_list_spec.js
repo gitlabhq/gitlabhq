@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlFormInput, GlIcon } from '@gitlab/ui';
+import { GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -62,6 +62,7 @@ describe('Tree List', () => {
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
   const findFilterIcon = () => wrapper.findComponent(GlIcon);
   const findNoFilesMessage = () => wrapper.findByText('No files found');
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
 
   it('calls apollo query with correct parameters', () => {
     expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
@@ -205,6 +206,11 @@ describe('Tree List', () => {
       expect(placeholder).toContain(`(f)`);
     });
 
+    it('displays tooltip', () => {
+      createComponent();
+      expect(findTooltip().exists()).toBe(true);
+    });
+
     it('binds and unbinds Mousetrap shortcut', () => {
       const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
       const unbindSpy = jest.spyOn(Mousetrap.prototype, 'unbind');
@@ -246,6 +252,11 @@ describe('Tree List', () => {
 
       expect(placeholder).not.toContain(`(${shortcutKey})`);
       expect(placeholder).toBe('Filter (e.g. *.vue)');
+    });
+
+    it('does not display tooltip', () => {
+      createComponent();
+      expect(findTooltip().exists()).toBe(false);
     });
 
     it('does not bind mousetrap shortcut when shortcuts are disabled', () => {

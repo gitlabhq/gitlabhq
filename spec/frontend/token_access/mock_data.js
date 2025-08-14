@@ -344,3 +344,134 @@ export const mockRemoveAutopopulatedEntriesResponse = ({ errorMessage } = {}) =>
     },
   },
 });
+
+export const POLICIES_BY_RESOURCE = [
+  {
+    resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_DEPLOYMENTS',
+        text: 'Read',
+        resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+      },
+      {
+        value: 'ADMIN_DEPLOYMENTS',
+        text: 'Read and write',
+        resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_ENVIRONMENTS',
+        text: 'Read',
+        resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+      },
+      {
+        value: 'ADMIN_ENVIRONMENTS',
+        text: 'Read and write',
+        resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'JOBS', text: 'Jobs' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_JOBS',
+        text: 'Read',
+        resource: { value: 'JOBS', text: 'Jobs' },
+      },
+      {
+        value: 'ADMIN_JOBS',
+        text: 'Read and write',
+        resource: { value: 'JOBS', text: 'Jobs' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'PACKAGES', text: 'Packages' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_PACKAGES',
+        text: 'Read',
+        resource: { value: 'PACKAGES', text: 'Packages' },
+      },
+      {
+        value: 'ADMIN_PACKAGES',
+        text: 'Read and write',
+        resource: { value: 'PACKAGES', text: 'Packages' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'PIPELINES', text: 'Pipelines' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_PIPELINES',
+        text: 'Read',
+        resource: { value: 'PIPELINES', text: 'Pipelines' },
+      },
+      {
+        value: 'ADMIN_PIPELINES',
+        text: 'Read and write',
+        resource: { value: 'PIPELINES', text: 'Pipelines' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'RELEASES', text: 'Releases' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_RELEASES',
+        text: 'Read',
+        resource: { value: 'RELEASES', text: 'Releases' },
+      },
+      {
+        value: 'ADMIN_RELEASES',
+        text: 'Read and write',
+        resource: { value: 'RELEASES', text: 'Releases' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'SECURE_FILES', text: 'Secure files' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_SECURE_FILES',
+        text: 'Read',
+        resource: { value: 'SECURE_FILES', text: 'Secure files' },
+      },
+      {
+        value: 'ADMIN_SECURE_FILES',
+        text: 'Read and write',
+        resource: { value: 'SECURE_FILES', text: 'Secure files' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_TERRAFORM_STATE',
+        text: 'Read',
+        resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+      },
+      {
+        value: 'ADMIN_TERRAFORM_STATE',
+        text: 'Read and write',
+        resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+      },
+    ],
+  },
+];
