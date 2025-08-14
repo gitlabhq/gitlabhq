@@ -37610,7 +37610,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | ---- | ---- | ----------- |
 | <a id="principalgroup"></a>`group` | [`Group`](#group) | Group who is provided access to. |
 | <a id="principalid"></a>`id` | [`ID!`](#id) | ID of the principal (User, MemberRole, Role, Group). |
-| <a id="principaltype"></a>`type` | [`String!`](#string) | Name of the principal (User, MemberRole, Role, Group). |
+| <a id="principaltype"></a>`type` | [`PrincipalType!`](#principaltype) | Name of the principal (User, MemberRole, Role, Group). |
 | <a id="principaluser"></a>`user` | [`UserCore`](#usercore) | User who is provided access to. |
 | <a id="principaluserroleid"></a>`userRoleId` | [`String`](#string) | RoleID of the user. |
 

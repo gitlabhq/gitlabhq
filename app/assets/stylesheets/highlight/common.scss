@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @import '../framework/variables';
 @import './conflict_colors';
 @import 'page_bundles/mixins_and_variables_and_functions';
@@ -131,7 +133,7 @@
 @mixin line-hover-bg($color: $gl-color-neutral-50) {
   &:hover,
   &:focus-within {
-    background-color: darken($color, 10);
+    background-color: color.adjust($color, $lightness: -10);
   }
 }
 

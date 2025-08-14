@@ -1,9 +1,11 @@
+@use "sass:color";
+
 @mixin tanuki-logo-colors($path-color) {
   fill: $path-color;
   transition: all 0.8s;
 
   &:hover {
-    fill: lighten($path-color, 25%);
+    fill: color.adjust($path-color, $lightness: 25%);
     transition: all 0.1s;
   }
 }
@@ -38,7 +40,7 @@
         }
 
         25% {
-          fill: lighten($tanuki-red, 25%);
+          fill: color.adjust($tanuki-red, $lightness: 25%);
         }
       }
     }
@@ -51,7 +53,7 @@
         }
 
         50% {
-          fill: lighten($tanuki-orange, 25%);
+          fill: color.adjust($tanuki-orange, $lightness: 25%);
         }
       }
     }
@@ -64,7 +66,7 @@
         }
 
         75% {
-          fill: lighten($tanuki-yellow, 25%);
+          fill: color.adjust($tanuki-yellow, $lightness: 25%);
         }
       }
     }
@@ -77,7 +79,7 @@
         }
 
         100% {
-          fill: lighten($tanuki-orange, 25%);
+          fill: color.adjust($tanuki-orange, $lightness: 25%);
         }
       }
     }

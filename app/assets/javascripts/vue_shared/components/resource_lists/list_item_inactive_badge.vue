@@ -3,8 +3,8 @@ import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
-  name: 'ProjectListItemInactiveBadge',
   i18n: {
+    deletionInProgress: __('Deletion in progress'),
     pendingDeletion: __('Pending deletion'),
     archived: __('Archived'),
   },
@@ -12,16 +12,29 @@ export default {
     GlBadge,
   },
   props: {
-    project: {
+    resource: {
       type: Object,
       required: true,
     },
   },
   computed: {
+    isSelfDeletionInProgress() {
+      return Boolean(this.resource.isSelfDeletionInProgress);
+    },
     isPendingDeletion() {
-      return Boolean(this.project.markedForDeletionOn);
+      return Boolean(this.resource.markedForDeletionOn || this.resource.markedForDeletion);
+    },
+    isArchived() {
+      return this.resource.archived;
     },
     inactiveBadge() {
+      if (this.isSelfDeletionInProgress) {
+        return {
+          variant: 'warning',
+          text: this.$options.i18n.deletionInProgress,
+        };
+      }
+
       if (this.isPendingDeletion) {
         return {
           variant: 'warning',
@@ -29,7 +42,7 @@ export default {
         };
       }
 
-      if (this.project.archived) {
+      if (this.isArchived) {
         return {
           variant: 'info',
           text: this.$options.i18n.archived,

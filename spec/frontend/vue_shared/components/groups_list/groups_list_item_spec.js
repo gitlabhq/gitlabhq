@@ -8,7 +8,7 @@ import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
-import GroupListItemInactiveBadge from '~/vue_shared/components/groups_list/group_list_item_inactive_badge.vue';
+import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
@@ -73,7 +73,7 @@ describe('GroupsListItem', () => {
   const findMembersCount = () => wrapper.findByTestId('members-count');
   const findStorageSize = () => wrapper.findByTestId('storage-size');
 
-  const findInactiveBadge = () => wrapper.findComponent(GroupListItemInactiveBadge);
+  const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
 
   const deleteModalFireConfirmEvent = async () => {
     findDeleteConfirmationModal().vm.$emit('confirm', {

@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* https://gist.github.com/qguv/7936275 */
 
 @import '../common';
@@ -105,10 +107,10 @@ $solarized-dark-il: #2aa198;
 .code.code-syntax-highlight-theme {
   --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
-  --diff-expansion-background-color: #{lighten($solarized-dark-pre-bg, 10%)};
+  --diff-expansion-background-color: #{color.adjust($solarized-dark-pre-bg, $lightness: 10%)};
 
   --code-background: #{$solarized-dark-pre-bg};
-  --code-empty-background: #{darken($solarized-dark-pre-bg, 1.5%)};
+  --code-empty-background: #{color.adjust($solarized-dark-pre-bg, $lightness: -1.5%)};
 
   --code-line-number-background-color: #{$solarized-dark-line-bg};
   --code-line-number-color: #{$solarized-dark-line-color};
@@ -138,9 +140,9 @@ $solarized-dark-il: #2aa198;
   --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
   --code-diff-hunk-header-color: #{$dark-diff-match-bg};
 
-  --code-diff-expand-button-background-color: #{lighten($solarized-dark-pre-bg, 10%)};
+  --code-diff-expand-button-background-color: #{color.adjust($solarized-dark-pre-bg, $lightness: 10%)};
   --code-diff-expand-button-color: #{$gl-color-neutral-200};
-  --code-diff-expand-button-hover-background-color: #{lighten($solarized-dark-pre-bg, 20%)};
+  --code-diff-expand-button-hover-background-color: #{color.adjust($solarized-dark-pre-bg, $lightness: 20%)};
   --code-diff-expand-button-hover-color: #{$gl-color-neutral-0};
 
   --code-highlighted-line-background-color: #{$gl-color-orange-800};
@@ -213,7 +215,7 @@ $solarized-dark-il: #2aa198;
   }
 
   .diff-line-expand-button {
-    @include diff-expansion(lighten($solarized-dark-pre-bg, 10%), $gl-color-neutral-200, lighten($solarized-dark-pre-bg, 20%), $gl-color-neutral-0);
+    @include diff-expansion(color.adjust($solarized-dark-pre-bg, $lightness: 10%), $gl-color-neutral-200, color.adjust($solarized-dark-pre-bg, $lightness: 20%), $gl-color-neutral-0);
   }
 
   // Diff line

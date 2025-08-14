@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .dropdown {
   position: relative;
 
@@ -572,7 +574,7 @@
   outline: 0;
 
   &:hover {
-    color: darken($dropdown-title-btn-color, 15%);
+    color: color.adjust($dropdown-title-btn-color, $lightness: -15%);
   }
 }
 

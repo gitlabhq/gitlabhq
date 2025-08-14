@@ -6,7 +6,7 @@ import {
   deleteParams,
 } from '~/vue_shared/components/projects_list/utils';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
-import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
+import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
@@ -51,7 +51,7 @@ export default {
     DeleteModal,
     ListItemDescription,
     ProjectListItemActions,
-    ProjectListItemInactiveBadge,
+    ListItemInactiveBadge,
     CiIcon,
     TopicBadges,
     ProjectListItemDelayedDeletionModalFooter,
@@ -298,7 +298,7 @@ export default {
 
     <template #stats>
       <ci-icon v-if="pipelineStatus" :status="pipelineStatus" />
-      <project-list-item-inactive-badge :project="project" />
+      <list-item-inactive-badge :resource="project" />
       <gl-badge v-if="hasStatistics" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <list-item-stat
         :href="starsHref"
