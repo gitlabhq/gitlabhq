@@ -52,6 +52,41 @@ cache:node-modules-production:
   variables:
     NODE_ENV: production
 
+cache:e2e-ruby-gems:
+  extends:
+    - .with-ruby-slim-image
+    - .cache-pull-push-base
+    - .qa-cache-pull-push
+  before_script:
+    - source scripts/utils.sh
+    - cd qa
+    # e2e tests do not have alternative Gemfile but it could be set by rails-next pipeline
+    # so it needs to be unset explicitly
+    - unset BUNDLE_GEMFILE
+  script:
+    - bundle_install_script
+
+# E2E runners have separate infra setup and different cache bucket
+cache:e2e-ruby-gems-e2e-runners:
+  extends:
+    - cache:e2e-ruby-gems
+  tags:
+    - e2e
+
+cache:orchestrator-gems:
+  extends:
+    - .with-ruby-slim-image
+    - .cache-pull-push-base
+    - .qa-orchestrator-cache-pull-push
+  before_script:
+    - source scripts/utils.sh
+    - cd qa/gems/gitlab-orchestrator
+    # orchestrator doesn't have alternative Gemfile but it could be set by rails-next pipeline
+    # so it needs to be unset explicitly
+    - unset BUNDLE_GEMFILE
+  script:
+    - bundle_install_script
+
 #=================================
 # Workhorse
 #=================================

@@ -41,6 +41,9 @@ module Gitlab
       def push_placeholder_reference(record, user_reference_column, source_user)
         return unless project.import_data.user_mapping_enabled?
 
+        return if project.root_ancestor.user_namespace? &&
+          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+
         user_id = record[user_reference_column]
 
         return if user_id.nil? || source_user.nil?

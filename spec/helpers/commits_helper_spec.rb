@@ -9,22 +9,29 @@ RSpec.describe CommitsHelper do
     let_it_be(:project) { create(:project) }
     let(:ref) { 'feature-branch' }
     let(:ref_type) { 'heads' }
+    let(:path) { 'app/javascript/components/app.js' }
 
     before do
-      # Mock the project_path helper method that would be provided by Rails routing
+      assign(:project, project)
+      assign(:ref, ref)
+      assign(:ref_type, ref_type)
+      assign(:path, path)
+
       allow(helper).to receive(:project_path).with(project).and_return("/#{project.full_path}")
     end
 
-    subject { helper.commit_list_app_data(project, ref, ref_type) }
+    subject { helper.commit_list_app_data }
 
     it 'returns the correct data to commits app' do
       expect(subject).to include({
         'project_full_path' => project.full_path,
         'project_root_path' => "/#{project.full_path}",
+        'project_path' => project.path,
         'project_id' => project.id.to_s,
         'escaped_ref' => ref,
         'ref_type' => ref_type.to_s,
-        'root_ref' => project.default_branch
+        'root_ref' => project.default_branch,
+        'path' => path
       })
     end
   end

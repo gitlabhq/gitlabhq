@@ -72,8 +72,10 @@ To configure a self-hosted model:
 1. Select **Add self-hosted model**.
 1. Complete the fields:
    - **Deployment name**: Enter a name to uniquely identify the model deployment, for example, `Mixtral-8x7B-it-v0.1 on GCP`.
-   - **Model family**: Select the model family the deployment belongs to. Only GitLab-supported models
-     are in this list.
+   - **Model family**: Select the model family the deployment belongs to. You can select either of the following:
+
+     - A [supported model family](supported_models_and_hardware_requirements.md#supported-models).
+     - **General** to [use your own model](supported_models_and_hardware_requirements.md#bring-your-own-compatible-model) that is not explicitly supported by GitLab.
    - **Endpoint**: Enter the URL where the model is hosted.
      - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
    - **API key**: Optional. Add an API key if you need one to access the model.

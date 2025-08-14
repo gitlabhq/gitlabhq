@@ -194,12 +194,60 @@ export default {
     await this.setSerializedContent(this.markdown);
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
     markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
+
+    // Set editor height if stored
+    this.contentEditor.tiptapEditor.view.dom.style.minHeight = this.getEditorSelectorDataset();
+
+    // Add event listener for custom resize event
+    document.addEventListener('mousedown', this.handleManualResize);
   },
   beforeDestroy() {
     markdownEditorEventHub.$off(CONTENT_EDITOR_PASTE, this.pasteContent);
     this.contentEditor.dispose();
   },
   methods: {
+    editorSelector() {
+      return this.contentEditor?.tiptapEditor?.view?.dom?.closest('.js-editor');
+    },
+    setEditorSelectorDataset(value) {
+      this.editorSelector().dataset.gfmEditorMinHeight = value;
+    },
+    getEditorSelectorDataset() {
+      return this.editorSelector()?.dataset?.gfmEditorMinHeight;
+    },
+    handleManualResize(e) {
+      const textarea = this.contentEditor.tiptapEditor.view.dom;
+      const rect = textarea.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const cornerSize = 16;
+      const isInBottomRight =
+        mouseX >= rect.right - cornerSize &&
+        mouseX <= rect.right &&
+        mouseY >= rect.bottom - cornerSize &&
+        mouseY <= rect.bottom;
+
+      if (isInBottomRight) {
+        this.isManuallyResizing = true;
+        textarea.style.minHeight = null;
+        this.setEditorSelectorDataset(null);
+
+        document.addEventListener('mouseup', this.handleManualResizeUp);
+      }
+    },
+    handleManualResizeUp() {
+      const textarea = this.contentEditor.tiptapEditor.view.dom;
+
+      // Set current height as min height, so autogrow will still work
+      if (textarea) {
+        const editorHeight = `${textarea.offsetHeight}px`;
+        textarea.style.minHeight = editorHeight;
+        // Store minHeight in global variable for RTE
+        this.setEditorSelectorDataset(editorHeight);
+      }
+
+      document.removeEventListener('mouseup', this.handleManualResizeUp);
+    },
     pasteContent(content) {
       this.contentEditor.tiptapEditor.chain().focus().pasteContent(content).run();
     },

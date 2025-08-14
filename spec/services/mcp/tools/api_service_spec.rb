@@ -247,6 +247,23 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
         })
       end
     end
+
+    context 'with invalid path' do
+      let(:invalid_arguments) { { id: 'group-1/../admin/test-123' } }
+      let(:success) { false }
+      let(:response_code) { 400 }
+      let(:response_body) { { error: '400 Bad Request' }.to_json }
+
+      it 'returns error response' do
+        result = service.execute(oauth_token, invalid_arguments)
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'Validation error: path is invalid' }],
+          structuredContent: {},
+          isError: true
+        })
+      end
+    end
   end
 
   describe 'POST requests' do

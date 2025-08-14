@@ -101,19 +101,22 @@ export default {
       @close="close"
     >
       <template #title>
-        <h2 id="whats-new-drawer-heading" class="page-title gl-heading-2-fixed gl-my-2 gl-ml-3">
+        <h3 id="whats-new-drawer-heading" class="gl-heading-3-fixed gl-my-3 gl-ml-3">
           {{ __("What's new at GitLab") }}
-        </h2>
+        </h3>
       </template>
 
-      <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" />
+      <div>
+        <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" />
 
-      <other-updates
-        :features="features"
-        :fetching="fetching"
-        :drawer-body-height="drawerBodyHeight"
-        @bottomReached="bottomReached"
-      />
+        <other-updates
+          :features="features"
+          :fetching="fetching"
+          :drawer-body-height="drawerBodyHeight"
+          class="gl-pt-3"
+          @bottomReached="bottomReached"
+        />
+      </div>
     </gl-drawer>
     <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="close"></div>
   </div>

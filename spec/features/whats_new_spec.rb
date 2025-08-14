@@ -9,13 +9,13 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
     it 'and on SaaS it renders', :saas do
       visit user_path(user)
 
-      within_testid('super-sidebar') { click_on 'Help' }
-
       expect(page).to have_button(text: "What's new")
     end
 
     it "doesn't render what's new" do
       visit user_path(user)
+
+      expect(page).not_to have_button(text: "What's new")
 
       within_testid('super-sidebar') { click_on 'Help' }
 
@@ -32,7 +32,6 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[:all_tiers])
 
       visit root_dashboard_path
-      within_testid('super-sidebar') { click_on 'Help' }
 
       expect(page).to have_button(text: "What's new")
     end
@@ -41,7 +40,6 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[:disabled])
 
       visit root_dashboard_path
-      within_testid('super-sidebar') { click_on 'Help' }
 
       expect(page).not_to have_button(text: "What's new")
     end
@@ -79,10 +77,6 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       visit root_dashboard_path
 
       within_testid('super-sidebar') do
-        find_by_testid('sidebar-help-button').click
-
-        find_by_testid('sidebar-help-button').click
-
         click_on "What's new"
       end
 
@@ -91,6 +85,18 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       find_by_testid('card-carousel-next-button').click
 
       expect(page).to have_css("[data-testid='duo-core-feature-card']")
+    end
+  end
+
+  context 'when items in the latest release does not populate the infinite scroll fully', :saas do
+    it 'automatically fetches more items' do
+      visit user_path(user)
+
+      page.current_window.resize_to(1200, 2400)
+
+      within_testid('super-sidebar') { click_on "What's new" }
+
+      expect(page).to have_selector('[data-testid="whats-new-release-heading"]', minimum: 2)
     end
   end
 end

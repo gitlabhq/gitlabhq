@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
+import CommitListBreadcrumb from '~/projects/commits/components/commit_list_breadcrumb.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -30,6 +31,7 @@ describe('CommitListHeader', () => {
   };
 
   const findCommitFilteredSearch = () => wrapper.findComponent(CommitFilteredSearch);
+  const findCommitListBreadcrumb = () => wrapper.findComponent(CommitListBreadcrumb);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
 
   beforeEach(() => {
@@ -37,6 +39,10 @@ describe('CommitListHeader', () => {
   });
 
   describe('template', () => {
+    it('renders the breadcrumb component', () => {
+      expect(findCommitListBreadcrumb().exists()).toBe(true);
+    });
+
     it('renders the page title', () => {
       expect(wrapper.find('h1').text()).toBe('Commits');
     });

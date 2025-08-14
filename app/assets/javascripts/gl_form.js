@@ -1,6 +1,4 @@
 import autosize from 'autosize';
-import $ from 'jquery';
-import { isEmpty } from 'lodash';
 import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_complete';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import dropzoneInput from './dropzone_input';
@@ -22,39 +20,62 @@ export default class GLForm {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
     this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
+    this.isManuallyResizing = false;
 
-    // Disable autocomplete for keywords which do not have dataSources available
-    let dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
+    // Cache DOM elements
+    [this.textareaElement] = this.textarea;
 
-    if (!isEmpty(gfmDataSources)) {
-      dataSources = gfmDataSources;
-    }
+    // Bind methods once to avoid repeated binding
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleManualResize = this.handleManualResize.bind(this);
+    this.handleManualResizeUp = this.handleManualResizeUp.bind(this);
 
-    Object.keys(this.enableGFM).forEach((item) => {
-      // `emojis` and `statuses` can be fetched
-      // without dataSource availability so we would
-      // bypass those in the check.
-      if (!['emojis', 'statuses'].includes(item) && !dataSources[item]) {
-        this.enableGFM[item] = false;
-      }
-    });
+    // Get data sources more efficiently
+    const dataSources = GLForm.getDataSources(gfmDataSources);
+    this.filterEnabledGFM(dataSources);
 
     // Before we start, we should clean up any previous data for this form
     this.destroy();
+
     // Set up the form
     this.setupForm(dataSources, forceNew);
     this.form.data('glForm', this);
+
+    // Set window variable from RTE
+    if (this.textarea[0]?.closest('.js-editor')?.dataset?.gfmEditorMinHeight) {
+      this.textarea[0].style.minHeight =
+        this.textarea[0].closest('.js-editor').dataset.gfmEditorMinHeight;
+    }
+  }
+
+  static getDataSources(gfmDataSources) {
+    if (Object.keys(gfmDataSources).length > 0) {
+      return gfmDataSources;
+    }
+    return (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
+  }
+
+  filterEnabledGFM(dataSources) {
+    for (const [item, enabled] of Object.entries(this.enableGFM)) {
+      if (enabled && item !== 'emojis' && !dataSources[item]) {
+        this.enableGFM[item] = false;
+      }
+    }
   }
 
   destroy() {
     // Clean form listeners
     this.clearEventListeners();
-    if (this.autoComplete) {
-      this.autoComplete.destroy();
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
     }
-    if (this.formDropzone) {
-      this.formDropzone.destroy();
-    }
+
+    // Clean up components
+    this.autoComplete?.destroy();
+    this.formDropzone?.destroy();
 
     this.form.data('glForm', null);
   }
@@ -62,28 +83,38 @@ export default class GLForm {
   setupForm(dataSources, forceNew = false) {
     const isNewForm = this.form.is(':not(.gfm-form)') || forceNew;
     this.form.removeClass('js-new-note-form');
-    if (isNewForm) {
-      this.form.find('.div-dropzone').remove();
-      this.form.addClass('gfm-form');
-      // remove notify commit author checkbox for non-commit notes
-      disableButtonIfEmptyField(
-        this.form.find('.js-note-text'),
-        this.form.find('.js-comment-button, .js-note-new-discussion'),
-      );
-      this.autoComplete = new GfmAutoComplete(dataSources);
-      this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
-      this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
 
-      if (this.form.is(':not(.js-no-autosize)')) {
-        autosize(this.textarea);
-      }
+    if (isNewForm) {
+      this.initializeNewForm(dataSources);
     }
+
     // form and textarea event listeners
     this.addEventListeners();
     addMarkdownListeners(this.form);
     this.form.show();
-    if (this.isAutosizeable) this.setupAutosize();
-    if (this.textarea.data('autofocus') === true) this.textarea.focus();
+
+    if (this.textarea.data('autofocus') === true) {
+      this.textarea.focus();
+    }
+  }
+
+  initializeNewForm(dataSources) {
+    this.form.find('.div-dropzone').remove();
+    this.form.addClass('gfm-form');
+
+    // remove notify commit author checkbox for non-commit notes
+    disableButtonIfEmptyField(
+      this.form.find('.js-note-text'),
+      this.form.find('.js-comment-button, .js-note-new-discussion'),
+    );
+
+    this.autoComplete = new GfmAutoComplete(dataSources);
+    this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
+    this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
+
+    if (this.form.is(':not(.js-no-autosize)')) {
+      autosize(this.textarea);
+    }
   }
 
   updateAutocompleteDataSources(dataSources) {
@@ -92,50 +123,63 @@ export default class GLForm {
     }
   }
 
-  setupAutosize() {
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    this.textarea.off('autosize:resized').on('autosize:resized', this.setHeightData.bind(this));
-
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    this.textarea.off('mouseup.autosize').on('mouseup.autosize', this.destroyAutosize.bind(this));
-
-    setTimeout(() => {
-      autosize(this.textarea);
-      this.textarea.css('resize', 'vertical');
-    }, 0);
-  }
-
-  setHeightData() {
-    this.textarea.data('height', this.textarea.outerHeight());
-  }
-
-  destroyAutosize() {
-    const outerHeight = this.textarea.outerHeight();
-
-    if (this.textarea.data('height') === outerHeight) return;
-
-    autosize.destroy(this.textarea);
-
-    this.textarea.data('height', outerHeight);
-    this.textarea.outerHeight(outerHeight);
-    this.textarea.css('max-height', window.outerHeight);
-  }
-
   clearEventListeners() {
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('focus');
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('blur');
+    // eslint-disable-next-line @gitlab/no-global-event-off
+    this.textarea.off('mousedown');
+
     removeMarkdownListeners(this.form);
   }
 
   addEventListeners() {
-    this.textarea.on('focus', function focusTextArea() {
-      $(this).closest('.md-area').addClass('is-focused');
-    });
-    this.textarea.on('blur', function blurTextArea() {
-      $(this).closest('.md-area').removeClass('is-focused');
-    });
+    this.textarea.on('focus', this.handleFocus);
+    this.textarea.on('blur', this.handleBlur);
+    this.textarea.on('mousedown', this.handleManualResize);
+  }
+
+  handleFocus() {
+    this.textarea.closest('.md-area').addClass('is-focused');
+  }
+
+  handleBlur() {
+    this.textarea.closest('.md-area').removeClass('is-focused');
+  }
+
+  handleManualResize(e) {
+    const textarea = this.textarea.closest('.md-area textarea')[0];
+    const rect = textarea.getBoundingClientRect();
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    const cornerSize = 16;
+    const isInBottomRight =
+      mouseX >= rect.right - cornerSize &&
+      mouseX <= rect.right &&
+      mouseY >= rect.bottom - cornerSize &&
+      mouseY <= rect.bottom;
+
+    if (isInBottomRight) {
+      this.isManuallyResizing = true;
+      this.textarea[0].style.minHeight = null;
+      this.textarea[0].closest('.js-editor').dataset.gfmEditorMinHeight = null;
+
+      this.textarea.on('mouseup', this.handleManualResizeUp);
+    }
+  }
+
+  handleManualResizeUp() {
+    // Set current height as min height, so autogrow will still work
+    if (this.textarea[0]) {
+      const editorHeight = `${this.textarea[0].offsetHeight}px`;
+      this.textarea[0].style.minHeight = editorHeight;
+      // Store min height in global variable for RTE
+      this.textarea[0].closest('.js-editor').dataset.gfmEditorMinHeight = editorHeight;
+    }
+
+    // eslint-disable-next-line @gitlab/no-global-event-off
+    this.textarea.off('mouseup');
   }
 
   get supportsQuickActions() {

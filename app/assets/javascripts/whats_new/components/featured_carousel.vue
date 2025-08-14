@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-mb-3 gl-flex gl-items-center gl-justify-between">
+    <div class="gl-mb-3 gl-ml-3 gl-flex gl-items-center gl-justify-between">
       <div class="gl-flex gl-items-center gl-gap-3">
         <gl-icon name="compass" :size="16" />
         <h5>{{ $options.i18n.featuredUpdates }}</h5>

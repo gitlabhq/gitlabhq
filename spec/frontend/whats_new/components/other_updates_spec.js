@@ -39,10 +39,6 @@ describe('OtherUpdates', () => {
       createWrapper({ features: mockFeatures });
     });
 
-    it('renders the "Other updates" title', () => {
-      expect(wrapper.find('h5').text()).toBe('Other updates');
-    });
-
     it('renders infinite scroll component', () => {
       const infiniteScroll = findInfiniteScroll();
 

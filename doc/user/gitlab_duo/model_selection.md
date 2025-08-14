@@ -29,20 +29,22 @@ For more information, see the history.
 
 {{< /alert >}}
 
-To help meet your performance and compliance requirements,
-on GitLab.com, you can choose to use different large language models (LLMs) with GitLab Duo.
+Every GitLab Duo feature has a pre-selected default large language model (LLM), chosen by GitLab.
 
-If you do not select a specific LLM, all GitLab Duo features use the default LLMs.
-You should use the defaults if you do not have unique requirements.
+GitLab can update this default LLM to optimize feature performance. Therefore, a feature's LLM might change without you taking any action.
+
+If you do not want to use the default LLM for each feature, or have specific requirements, you can choose from an array of other available supported LLMs.
+
+If you select a specific LLM for a feature, the feature uses that LLM until you select another.
 
 ## Select an LLM for a feature
 
 Prerequisites:
 
 - The group that you want to select LLMs for must:
-  - Be a [top-level group](../group/_index.md#group-hierarchy) on GitLab.com.
+  - Be a top-level group or namespace on GitLab.com.
   - Have GitLab Duo Core, Pro, or Enterprise enabled.
-- You must have the Owner role for the group.
+- You must have the Owner role for the group or namespace.
 - In GitLab 18.3 or later, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace) if you belong to multiple GitLab Duo namespaces.
 
 To select a different LLM for a feature:

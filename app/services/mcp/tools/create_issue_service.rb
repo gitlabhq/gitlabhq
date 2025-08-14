@@ -58,7 +58,8 @@ module Mcp
               default: false
             }
           },
-          required: %w[id title]
+          required: %w[id title],
+          additionalProperties: false
         }
       end
 

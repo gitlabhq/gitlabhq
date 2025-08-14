@@ -31,7 +31,8 @@ export default {
         },
       })
       .then(({ data, headers }) => {
-        commit(types.ADD_FEATURES, data);
+        const featuresPerRelease = [{ releaseHeading: true, release: data[0]?.release }, ...data];
+        commit(types.ADD_FEATURES, featuresPerRelease);
 
         const normalizedHeaders = normalizeHeaders(headers);
         const { nextPage } = parseIntPagination(normalizedHeaders);

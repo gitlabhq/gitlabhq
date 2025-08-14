@@ -25,6 +25,29 @@ export default {
     },
   },
   emits: ['bottomReached'],
+  data() {
+    return {
+      initialListPopulated: false,
+    };
+  },
+  watch: {
+    fetching(newVal) {
+      if (!newVal) {
+        const container = this.$refs.infiniteScroll?.$refs?.infiniteContainer;
+        if (!container) return;
+
+        // fetched items do not fully populate the container
+        if (container.scrollHeight <= container.clientHeight) {
+          this.bottomReached();
+        } else if (!this.initialListPopulated) {
+          this.initialListPopulated = true;
+        }
+      }
+    },
+    initialListPopulated() {
+      this.$refs.infiniteScroll.scrollUp();
+    },
+  },
   methods: {
     bottomReached() {
       this.$emit('bottomReached');
@@ -35,10 +58,9 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-m-3 gl-pt-0">{{ __('Other updates') }}</h5>
-
     <template v-if="features.length || !fetching">
       <gl-infinite-scroll
+        ref="infiniteScroll"
         :fetched-items="features.length"
         :max-list-height="drawerBodyHeight"
         class="gl-p-0"

@@ -50,6 +50,7 @@ changes between minor versions can expose bugs or cause problems in our projects
 
 - Always use `0` as the patch version (for example, `go 1.23.0`, not `go 1.23.4`).
 - Do not set a version newer than what is used in CNG and Omnibus, otherwise this will cause build failures.
+- Do not use the `toolchain` directive in `go.mod` files, as it has been causing issues when building the project with different Go versions.
 
 The Go version in your `go.mod` affects all downstream projects.
 When you specify a minimum Go version, any project that imports your package must use that version or newer.

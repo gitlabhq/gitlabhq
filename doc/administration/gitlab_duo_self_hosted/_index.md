@@ -40,7 +40,7 @@ For an overview, see [GitLab Duo Self-Hosted: AI in your private environment](ht
 
 With GitLab Duo Self-Hosted, you can:
 
-- Choose any GitLab-supported LLM.
+- Choose any GitLab-supported LLM, or bring your own compatible model.
 - Retain full control over data by keeping all request/response logs in your domain, ensuring complete privacy and security with no external API calls.
 - Isolate the GitLab instance, AI gateway, and models in your own environment.
 - Select specific GitLab Duo features tailored to your users.

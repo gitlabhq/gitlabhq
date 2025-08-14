@@ -89,7 +89,7 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
             click_button 'Copy Terraform init command'
           end
 
-          expect(page).to have_content("To get access to this terraform state from your local computer, run the following command at the command line.")
+          expect(page).to have_content('To access this Terraform state from your local computer, use either GitLab CLI (glab) or the REST API.')
         end
       end
     end

@@ -174,5 +174,16 @@ RSpec.describe Mcp::Tools::CreateIssueService, feature_category: :mcp_server do
         expect(result[:content].first[:text]).to include('title is invalid')
       end
     end
+
+    context 'with invalid path' do
+      let(:arguments) { { id: 'test-group/../admin/test-project', title: 'test issue' } }
+
+      it 'returns validation error' do
+        result = service.execute(oauth_token, arguments)
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('Validation error: path is invalid')
+      end
+    end
   end
 end

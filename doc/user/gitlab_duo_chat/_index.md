@@ -10,7 +10,7 @@ title: GitLab Duo Chat
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4), Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
+- LLMs: Anthropic Claude and Vertex AI Search. The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -88,12 +88,6 @@ To view the history:
 - In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
 
 ### Have multiple conversations
-
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 {{< history >}}
 
@@ -366,7 +360,7 @@ Different language models can be the source for GitLab Duo Chat.
 - On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
   cloud-based AI gateway that is hosted by GitLab.
 - On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
-  security and privacy by making sure nothing is sent to an external model.
+  security and privacy by making sure nothing is sent to an external model. You can use GitLab AI vendor models, other supported language models, or bring your own compatible model.
 
 ## Input and output length
 

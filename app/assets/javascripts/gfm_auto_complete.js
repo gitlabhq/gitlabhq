@@ -13,6 +13,7 @@ import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import { InternalEvents } from '~/tracking';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -1128,6 +1129,10 @@ class GfmAutoComplete {
 
     this.isLoadingData[at] = true;
     const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
+
+    if (GfmAutoComplete.atTypeMap[at] === 'wikis') {
+      InternalEvents.trackEvent('trigger_autocomplete_for_wiki_links');
+    }
 
     if (GfmAutoComplete.isTypeWithBackendFiltering(at)) {
       if (this.cachedData[at]?.[search]) {

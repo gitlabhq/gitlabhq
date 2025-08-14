@@ -337,7 +337,7 @@ module Gitlab
       end
 
       def load_placeholder_references
-        return unless project.import_data.user_mapping_enabled?
+        return unless should_map_users?
 
         ::Import::LoadPlaceholderReferencesWorker.perform_async(
           project.import_type,
@@ -346,12 +346,12 @@ module Gitlab
       end
 
       def placeholder_references_loaded?
-        return true unless project.import_data.user_mapping_enabled?
-
         project.placeholder_reference_store.empty?
       end
 
       def wait_for_placeholder_references
+        return unless should_map_users?
+
         # Since this importer is synchronous, wait until all placeholder references have been saved
         # to the database before completing the import
         time_waited = 0
@@ -374,6 +374,15 @@ module Gitlab
             "for placeholder references to finish saving"
           errors << { type: :placeholder_references, errors: timeout_error }
         end
+      end
+
+      def should_map_users?
+        return false unless project.import_data.user_mapping_enabled?
+
+        return false if project.root_ancestor.user_namespace? &&
+          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+
+        true
       end
 
       def imported?(resource_type)

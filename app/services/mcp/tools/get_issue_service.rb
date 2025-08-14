@@ -26,7 +26,8 @@ module Mcp
               description: 'The internal ID of a project\'s issue.'
             }
           },
-          required: %w[id iid]
+          required: %w[id iid],
+          additionalProperties: false
         }
       end
 

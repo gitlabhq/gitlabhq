@@ -26,15 +26,15 @@ module Gitlab
 
       def gitlab_id
         return find_by_email unless user_mapping_enabled?
-
         return GithubImport.ghost_user_id if ghost_user?
+        return project.root_ancestor.owner_id if map_to_personal_namespace_owner?
 
         gitlab_user&.id
       end
       strong_memoize_attr :gitlab_id
 
       def source_user
-        return if !user_mapping_enabled? || ghost_user?
+        return if !user_mapping_enabled? || map_to_personal_namespace_owner? || ghost_user?
 
         source_user_mapper.find_or_create_source_user(
           source_name: gitea_user[:full_name].presence || gitea_user[:login],
@@ -87,6 +87,12 @@ module Gitlab
         project.import_data.reset.user_mapping_enabled?
       end
       strong_memoize_attr :user_mapping_enabled?
+
+      def map_to_personal_namespace_owner?
+        project.root_ancestor.user_namespace? &&
+          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+      end
+      strong_memoize_attr :map_to_personal_namespace_owner?
     end
   end
 end

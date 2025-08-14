@@ -7,8 +7,16 @@ export default function initCommitListApp() {
 
   if (!commitListEl) return;
 
-  const { projectFullPath, projectRootPath, currentPath, projectId, escapedRef, refType, rootRef } =
-    commitListEl.dataset;
+  const {
+    projectFullPath,
+    projectRootPath,
+    projectPath,
+    projectId,
+    escapedRef,
+    refType,
+    rootRef,
+    path,
+  } = commitListEl.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -16,11 +24,12 @@ export default function initCommitListApp() {
     provide: {
       projectFullPath,
       projectRootPath,
-      currentPath,
+      projectPath,
       projectId,
       escapedRef,
       refType,
       rootRef,
+      path,
     },
     apolloProvider,
     render(h) {

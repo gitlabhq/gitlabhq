@@ -3,14 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
-  include_context 'with work item request context'
+  include GraphqlHelpers
 
-  let(:current_user) { developer }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:work_item) do
+    create(
+      :work_item,
+      project: project,
+      description: '- [x] List item',
+      start_date: Date.today,
+      due_date: 1.week.from_now,
+      created_at: 1.week.ago,
+      last_edited_at: 1.day.ago,
+      last_edited_by: guest,
+      user_agent_detail: create(:user_agent_detail)
+    ).tap do |work_item|
+      create_list(:discussion_note_on_issue, 3, noteable: work_item, project: project)
+    end
+  end
 
   let_it_be(:child_item1) { create(:work_item, :task, project: project, id: 1200) }
   let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project, id: 1400) }
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
   let_it_be(:child_link2) { create(:parent_link, work_item_parent: work_item, work_item: child_item2) }
+
+  let(:current_user) { developer }
+  let(:work_item_data) { graphql_data['workItem'] }
+  let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 2) }
+  let(:global_id) { work_item.to_gid.to_s }
+
+  let(:query) do
+    graphql_query_for('workItem', { 'id' => global_id }, work_item_fields)
+  end
 
   context 'when project is archived' do
     before do
@@ -221,52 +248,18 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           )
         end
 
-        context 'for N+1 queries checks' do
-          let_it_be(:work_item) { create(:work_item, project: project) }
-          let_it_be(:another_project) { create(:project, :repository) }
-          let_it_be(:another_label) { create(:label, project: another_project) }
-          let_it_be(:another_milestone) do
-            create(:milestone, project: another_project, start_date: start_date, due_date: due_date)
+        it 'avoids N+1 queries' do
+          post_graphql(query, current_user: current_user) # warm up
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            post_graphql(query, current_user: current_user)
           end
 
-          let(:work_item_fields) do
-            <<~GRAPHQL
-              id
-              widgets {
-                ... on WorkItemWidgetHierarchy {
-                  parent {
-                    id
-                  }
-                  children {
-                    nodes { #{widget_fields} }
-                  }
-                }
-              }
-            GRAPHQL
-          end
+          create_list(:parent_link, 3, work_item_parent: work_item)
 
-          before do
-            add_child_task(work_item, project, { milestone: milestone, labels: labels })
-            add_child_task(work_item, another_project, { milestone: another_milestone, labels: [another_label] })
-          end
-
-          it 'avoids N+1 queries' do
-            another_project.add_guest(current_user)
-            post_graphql(query, current_user: current_user) # warm up
-
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              post_graphql(query, current_user: current_user)
-            end
-            expect_graphql_errors_to_be_empty
-
-            add_child_task(work_item, project, { milestone: milestone, labels: labels })
-            add_child_task(work_item, another_project, { milestone: another_milestone, labels: [another_label] })
-
-            expect do
-              post_graphql(query, current_user: current_user)
-            end.not_to exceed_all_query_limit(control)
-            expect_graphql_errors_to_be_empty
-          end
+          expect do
+            post_graphql(query, current_user: current_user)
+          end.not_to exceed_all_query_limit(control)
         end
 
         context 'when user is guest' do
@@ -461,6 +454,10 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       end
 
       describe 'milestone widget' do
+        let_it_be(:milestone) { create(:milestone, project: project) }
+
+        let(:work_item) { create(:work_item, project: project, milestone: milestone) }
+
         let(:work_item_fields) do
           <<~GRAPHQL
             id

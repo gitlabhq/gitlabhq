@@ -7274,6 +7274,9 @@ msgstr ""
 msgid "AmazonQ|Within your AWS account, create an IAM role for Amazon Q and the relevant identity provider. %{helpStart}Learn how to create an IAM role%{helpEnd}."
 msgstr ""
 
+msgid "AmazonQ|Your Amazon Q connection is missing or has been deleted. You'll need to reconnect to use this feature. Please see [Set up GitLab Duo with Amazon Q](https://docs.gitlab.com/user/duo_amazon_q/setup/#setup) for how to reconnect your Amazon Q developer plugin."
+msgstr ""
+
 msgid "AmazonQ|dev"
 msgstr ""
 
@@ -15439,6 +15442,9 @@ msgid "Commits"
 msgstr ""
 
 msgid "Commits & branches"
+msgstr ""
+
+msgid "Commits breadcrumb"
 msgstr ""
 
 msgid "Commits feed"
@@ -27684,6 +27690,12 @@ msgstr ""
 msgid "FeaturedUpdate|%{current} / %{total}"
 msgstr ""
 
+msgid "FeaturedUpdate|%{releaseNumber} Release"
+msgstr ""
+
+msgid "FeaturedUpdate|Close article"
+msgstr ""
+
 msgid "FeaturedUpdate|Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate."
 msgstr ""
 
@@ -27694,6 +27706,9 @@ msgid "FeaturedUpdate|GitLab Premium and Ultimate with Duo"
 msgstr ""
 
 msgid "FeaturedUpdate|Granular access controls for GitLab Duo Core"
+msgstr ""
+
+msgid "FeaturedUpdate|Open article"
 msgstr ""
 
 msgid "FeaturedUpdate|Set detailed permissions for GitLab Duo Core across projects and groups to fit your workflow."
@@ -63498,6 +63513,9 @@ msgstr ""
 msgid "Terraform|Actions"
 msgstr ""
 
+msgid "Terraform|Alternatively, use the Terraform or OpenTofu CLI directly. You must use a personal access token with the scope set to api. %{linkStart}How do I create a personal access token?%{linkEnd}."
+msgstr ""
+
 msgid "Terraform|An error occurred while changing the state file"
 msgstr ""
 
@@ -63558,6 +63576,9 @@ msgstr ""
 msgid "Terraform|Pipeline"
 msgstr ""
 
+msgid "Terraform|Recommended. Run the following command with glab. You must use glab 1.66 or later:"
+msgstr ""
+
 msgid "Terraform|Remove"
 msgstr ""
 
@@ -63576,7 +63597,7 @@ msgstr ""
 msgid "Terraform|Support for periods (`.`) in Terraform state names might break existing states. Refer to the %{link_start}troubleshooting%{link_end} to learn more."
 msgstr ""
 
-msgid "Terraform|Terraform init command"
+msgid "Terraform|Terraform init"
 msgstr ""
 
 msgid "Terraform|Terraform states"
@@ -63588,7 +63609,7 @@ msgstr ""
 msgid "Terraform|The job %{strong_start}%{name}%{strong_end} generated a report."
 msgstr ""
 
-msgid "Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}."
+msgid "Terraform|To access this Terraform state from your local computer, use either GitLab CLI (glab) or the REST API."
 msgstr ""
 
 msgid "Terraform|To remove the State file and its versions, type %{name} to confirm:"

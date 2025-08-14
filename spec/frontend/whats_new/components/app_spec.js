@@ -3,7 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import App from '~/whats_new/components/app.vue';
 import FeaturedCarousel from '~/whats_new/components/featured_carousel.vue';
@@ -163,23 +163,7 @@ describe('App', () => {
 
       it('renders features when provided via ajax', () => {
         expect(actions.fetchItems).toHaveBeenCalled();
-        expect(wrapper.find('[data-testid="feature-name"]').text()).toBe('Whats New Drawer');
-      });
-
-      it('send an event when feature item is clicked', () => {
-        trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
-
-        const link = wrapper.find('[data-testid="whats-new-item-link"]');
-        triggerEvent(link.element);
-
-        expect(trackingSpy.mock.calls[1]).toMatchObject([
-          '_category_',
-          'click_whats_new_item',
-          {
-            label: 'Whats New Drawer',
-            property: 'www.url.com',
-          },
-        ]);
+        expect(wrapper.find('[data-testid="toggle-feature-name"]').text()).toBe('Whats New Drawer');
       });
 
       it('calls getDrawerBodyHeight and setDrawerBodyHeight when resize directive is triggered', () => {

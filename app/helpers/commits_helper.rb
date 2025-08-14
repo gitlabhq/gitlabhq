@@ -36,14 +36,16 @@ module CommitsHelper
     }
   end
 
-  def commit_list_app_data(project, ref, ref_type)
+  def commit_list_app_data
     {
-      'project_full_path' => project.full_path,
-      'project_root_path' => project_path(project),
-      'project_id' => project.id.to_s,
-      'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(ref),
-      'ref_type' => ref_type.to_s,
-      'root_ref' => project.default_branch
+      'project_full_path' => @project.full_path,
+      'project_root_path' => project_path(@project),
+      'project_path' => @project.path,
+      'project_id' => @project.id.to_s,
+      'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(@ref),
+      'ref_type' => @ref_type.to_s,
+      'root_ref' => @project.default_branch,
+      'path' => @path
     }
   end
 

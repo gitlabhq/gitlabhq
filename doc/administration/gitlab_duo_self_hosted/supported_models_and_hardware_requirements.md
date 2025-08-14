@@ -25,10 +25,11 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< /history >}}
 
-GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral,
-Claude, and GPT
-through your preferred serving platform. Choose from these models to match your specific performance
-needs and use cases.
+GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Claude, and GPT through your preferred serving platform.
+
+You can choose from these [supported models](#supported-models) to match your specific performance needs and use cases.
+
+In GitLab 18.3 and later, you can also bring your own compatible model, giving you the flexibility to experiment with additional language models beyond the officially supported options.
 
 ## Supported models
 
@@ -58,6 +59,34 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
 | Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+
+### Bring your own compatible model 
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18556) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+You can bring your own compatible models to use with GitLab Duo features. 
+
+The general model family provides support for compatible models and platforms that adhere to the OpenAI API specification. Use this model family to try language models that are not explicitly supported by GitLab.
+
+This feature is in beta and is therefore subject to change as we gather feedback and improve the integration:
+
+- GitLab does not provide technical support for issues specific to your chosen model or platform.
+- Not all GitLab Duo features are guaranteed to work optimally with every compatible model.
+- Response quality, speed, and performance overall might vary significantly based on your model choice.
+
+| Model Family | Model Requirements | Supported Platforms | Code completion | Code generation | GitLab Duo Chat |
+|-------------|-------|---------------------|-----------------|-----------------|-----------------|
+| General | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) | Any platform that provides OpenAI-compatible API endpoints | {{< icon name="check-circle-dashed" >}} Beta | {{< icon name="check-circle-dashed" >}} Beta | {{< icon name="check-circle-dashed" >}} Beta |
 
 ### Experimental and beta models
 

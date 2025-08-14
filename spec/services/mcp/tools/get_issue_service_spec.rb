@@ -111,5 +111,16 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
         expect(result[:content].first[:text]).to include('iid is missing')
       end
     end
+
+    context 'with invalid path' do
+      let(:arguments) { { id: 'test-group/../admin/test-project', iid: 1 } }
+
+      it 'returns validation error' do
+        result = service.execute(oauth_token, arguments)
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('Validation error: path is invalid')
+      end
+    end
   end
 end

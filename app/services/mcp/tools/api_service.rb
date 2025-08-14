@@ -7,13 +7,13 @@ module Mcp
 
       def http_get(oauth_token, path, query = {})
         options = request_options(oauth_token).merge(query: query)
-        response = Gitlab::HTTP.get(build_url(path), options)
+        response = Gitlab::HTTP.get(api_url(path), options)
         handle_response(response)
       end
 
       def http_post(oauth_token, path, body = {})
         options = request_options(oauth_token).merge(body: body.to_json)
-        response = Gitlab::HTTP.post(build_url(path), options)
+        response = Gitlab::HTTP.post(api_url(path), options)
         handle_response(response)
       end
 
@@ -23,8 +23,15 @@ module Mcp
         raise NoMethodError
       end
 
-      def build_url(path)
+      def api_url(path)
+        validate_path!(path)
         Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path)
+      end
+
+      def validate_path!(path)
+        Gitlab::PathTraversal.check_path_traversal!(path)
+      rescue Gitlab::PathTraversal::PathTraversalAttackError
+        raise ArgumentError, 'path is invalid'
       end
 
       def request_options(oauth_token)

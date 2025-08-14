@@ -3,23 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  include Import::GiteaHelper
+  include Import::UserMappingHelper
 
-  let_it_be(:project) do
+  let_it_be_with_reload(:project) do
     create(
       :project,
       :with_import_url,
       :import_user_mapping_enabled,
+      :user_mapping_to_personal_namespace_owner_enabled,
       :in_group,
       import_type: ::Import::SOURCE_GITEA)
-  end
-
-  let_it_be(:source_user_mapper) do
-    Gitlab::Import::SourceUserMapper.new(
-      namespace: project.root_ancestor,
-      import_type: project.import_type,
-      source_hostname: 'https://gitea.com'
-    )
   end
 
   let_it_be(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
@@ -30,6 +23,14 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       namespace: project.root_ancestor,
       source_hostname: 'https://gitea.com',
       import_type: ::Import::SOURCE_GITEA
+    )
+  end
+
+  let(:source_user_mapper) do
+    Gitlab::Import::SourceUserMapper.new(
+      namespace: project.root_ancestor,
+      import_type: project.import_type,
+      source_hostname: 'https://gitea.com'
     )
   end
 
@@ -145,11 +146,38 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         end
       end
 
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+        let(:raw_data) { base_data.merge(assignee: octocat) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'maps the assignee to the personal namespace owner' do
+          expect(issue.attributes.fetch(:assignee_ids)).to contain_exactly(user_namespace.owner_id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'maps the assignee to the import user' do
+            expect(issue.attributes.fetch(:assignee_ids)).to contain_exactly(
+              user_namespace.namespace_import_user.user_id
+            )
+          end
+        end
+      end
+
       context 'and user contribution mapping is disabled' do
         let(:raw_data) { base_data.merge(assignee: octocat) }
 
         before do
-          stub_user_mapping_chain(project, false)
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         end
 
         it 'returns nil as assignee_id when is not a GitLab user' do
@@ -213,11 +241,38 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         end
       end
 
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+        let(:raw_data) { base_data.merge(assignee: octocat) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'maps the author to the personal namespace owner' do
+          expect(issue.attributes.fetch(:author_id)).to eq(user_namespace.owner_id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'maps the author to the import user' do
+            expect(issue.attributes.fetch(:author_id)).to eq(
+              user_namespace.namespace_import_user.user_id
+            )
+          end
+        end
+      end
+
       context 'and user contribution mapping is disabled' do
         let(:raw_data) { base_data.merge(user: octocat) }
 
         before do
-          stub_user_mapping_chain(project, false)
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         end
 
         it 'returns project creator_id as author_id when is not a GitLab user' do
@@ -253,21 +308,14 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
   end
 
   context 'when importing a GitHub project' do
-    let_it_be(:project) do
+    let_it_be_with_reload(:project) do
       create(
         :project,
         :with_import_url,
         :in_group,
         :import_user_mapping_enabled,
+        :user_mapping_to_personal_namespace_owner_enabled,
         import_type: ::Import::SOURCE_GITHUB)
-    end
-
-    let_it_be(:source_user_mapper) do
-      Gitlab::Import::SourceUserMapper.new(
-        namespace: project.root_ancestor,
-        import_type: project.import_type,
-        source_hostname: 'https://github.com'
-      )
     end
 
     let_it_be(:import_source_user) do
@@ -277,6 +325,14 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         namespace: project.root_ancestor,
         source_hostname: 'https://github.com',
         import_type: ::Import::SOURCE_GITHUB
+      )
+    end
+
+    let(:source_user_mapper) do
+      Gitlab::Import::SourceUserMapper.new(
+        namespace: project.root_ancestor,
+        import_type: project.import_type,
+        source_hostname: 'https://github.com'
       )
     end
 
@@ -362,7 +418,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
 
   describe '#create!', :aggregate_failures do
     let(:raw_data) { base_data.merge(assignee: octocat) }
-    let(:store) { project.placeholder_reference_store }
+    let(:cached_references) { placeholder_user_references(Import::SOURCE_GITEA, project.import_state.id) }
 
     it 'saves the issue and assignees' do
       issue.create!
@@ -372,28 +428,18 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       expect(created_issue&.issue_assignees).not_to be_empty
     end
 
-    it 'pushes placeholder references for user references on the issue' do
+    it 'pushes placeholder references for the issue and assignees' do
       issue.create!
-      cached_references = store.get(100).filter_map do |item|
-        reference = Import::SourceUserPlaceholderReference.from_serialized(item)
-        reference if reference.model == 'Issue'
-      end
 
-      expect(cached_references.map(&:model)).to eq(['Issue'])
-      expect(cached_references.map(&:source_user_id)).to eq([import_source_user.id])
-      expect(cached_references.map(&:user_reference_column)).to eq(['author_id'])
-    end
-
-    it 'pushes placeholder references for user references on the issue assignees' do
-      issue.create!
-      cached_references = store.get(100).filter_map do |item|
-        reference = Import::SourceUserPlaceholderReference.from_serialized(item)
-        reference if reference.model == 'IssueAssignee'
-      end
-
-      expect(cached_references.map(&:model)).to match_array(['IssueAssignee'])
-      expect(cached_references.map(&:source_user_id)).to eq([import_source_user.id])
-      expect(cached_references.map(&:user_reference_column)).to match_array(['user_id'])
+      expect(cached_references).to match_array([
+        ['Issue', an_instance_of(Integer), 'author_id', import_source_user.id],
+        [
+          'IssueAssignee',
+          a_hash_including('issue_id' => anything, 'user_id' => anything),
+          'user_id',
+          import_source_user.id
+        ]
+      ])
     end
 
     context 'when the issue references deleted users in Gitea' do
@@ -401,18 +447,58 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
 
       it 'does not push any placeholder references' do
         issue.create!
-        expect(store.empty?).to eq(true)
+        expect(cached_references).to be_empty
+      end
+    end
+
+    context 'when importing into a personal namespace' do
+      before_all do
+        project.update!(namespace: create(:namespace))
+      end
+
+      it 'does not push any placeholder references' do
+        issue.create!
+        expect(cached_references).to be_empty
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references for the issue and assignees' do
+          issue.create!
+
+          import_source_user = Import::SourceUser.find_source_user(
+            source_user_identifier: octocat[:id],
+            namespace: project.root_ancestor,
+            source_hostname: 'https://gitea.com',
+            import_type: ::Import::SOURCE_GITEA
+          )
+
+          expect(cached_references).to match_array([
+            ['Issue', an_instance_of(Integer), 'author_id', import_source_user.id],
+            [
+              'IssueAssignee',
+              a_hash_including('issue_id' => anything, 'user_id' => anything),
+              'user_id',
+              import_source_user.id
+            ]
+          ])
+        end
       end
     end
 
     context 'when user contribution mapping is disabled' do
       before do
-        stub_user_mapping_chain(project, false)
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       it 'does not push any placeholder references' do
         issue.create!
-        expect(store.empty?).to eq(true)
+        expect(cached_references).to be_empty
       end
     end
   end

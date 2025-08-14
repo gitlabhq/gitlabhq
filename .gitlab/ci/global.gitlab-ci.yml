@@ -239,11 +239,11 @@
   cache:
     - *qa-ruby-gems-cache
 
-.qa-cache-push:
+.qa-cache-pull-push:
   variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-gems-cache
-      policy: push
+      policy: pull-push
 
 .cng-qa-cache:
   variables:
@@ -267,11 +267,11 @@
   cache:
     - <<: *qa-ruby-orchestrator-gems-cache
 
-.qa-orchestrator-cache-push:
+.qa-orchestrator-cache-pull-push:
   variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-orchestrator-gems-cache
-      policy: push
+      policy: pull-push
 
 .yarn-cache:
   cache:

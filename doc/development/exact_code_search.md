@@ -70,12 +70,12 @@ You can send search requests directly to any webserver (including the test webse
 
 - `version` - The webserver uses this value to make decisions about how to process the request
 - `timeout` - How long before the search request times out
-- `num_context_lines` - [`NumContextLines` in Zoekt API](https://github.com/sourcegraph/zoekt/blob/87bb21ae49ead6e0cd19ee57425fd3bc72b11743/api.go#L994)
-- `max_file_match_window` -  [`TotalMaxMatchCount` in Zoekt API](https://github.com/sourcegraph/zoekt/blob/87bb21ae49ead6e0cd19ee57425fd3bc72b11743/api.go#L966)
-- `max_file_match_results` - Max number of files returned in results
-- `max_line_match_window` - Max number of line matches across all files
-- `max_line_match_results` - Max number of line matches returned in results
-- `max_line_match_results_per_file` - Max line match results per file
+- `num_context_lines` - Maps to [`NumContextLines` in Zoekt API](https://github.com/sourcegraph/zoekt/blob/87bb21ae49ead6e0cd19ee57425fd3bc72b11743/api.go#L994)
+- `max_file_match_window` - Early termination limit for file matches during result aggregation (post-processing only). When combining results from multiple search nodes, cancels search early when total file count reaches this threshold.
+- `max_file_match_results` - Post-processing limit on the final number of file results returned. After all searches complete and results are combined, truncates the file results to this maximum number.
+- `max_line_match_window` - Early termination limit for line matches during search collection. When the total number of line matches across all search nodes reaches this threshold, the search is cancelled immediately. Maps to [`TotalMaxMatchCount` in Zoekt API](https://github.com/sourcegraph/zoekt/blob/87bb21ae49ead6e0cd19ee57425fd3bc72b11743/api.go#L966). `max_line_match_window` should be higher than `max_line_match_results` to ensure we get consistent results.
+- `max_line_match_results` - Post-processing limit on the total number of line matches returned across all files. After search completion, limits the total number of line matches returned, respecting max_line_match_results_per_file per individual file.
+- `max_line_match_results_per_file` - Max line match results per file. Maps to `chunkCount` in [`blobSearch` GraphQL API](../api/graphql/reference/_index.md#queryblobsearch).
 - `query` - Search query containing the search term, authorization, and filters
 - `endpoint` - Zoekt webserver that responds to the request
 

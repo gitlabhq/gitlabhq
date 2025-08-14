@@ -2739,6 +2739,10 @@ entry.
 - [Finalize migration BackfillContainerRepositoryStatesProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/78f333c76a39d0a85938318b3be49905c19074e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185869))
 - [Finalize migration BackfillPackagesRpmMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/d066d88be1fff7cfcf64017124af797e085a4b4f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184553))
 
+## 17.11.7 (2025-08-14)
+
+No changes.
+
 ## 17.11.6 (2025-07-09)
 
 ### Fixed (3 changes)
