@@ -217,4 +217,16 @@ to improve it. Share your experiences, suggestions, or issues in
 
 ## Troubleshooting
 
+### `Error starting server filesystem: Error: spawn ... ENOENT`
+
+This error occurs when you specify a command using a relative path (like `node` instead of `/usr/bin/node`), and that command cannot be found in the `PATH` environment variable that was passed to the GitLab Language Server.
+
+{{< alert type="note" >}}
+
+Improvements to resolving `PATH` are being planned in [issue 1345](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1345).
+
+{{< /alert >}}
+
+### Troubleshooting MCP in VS Code
+
 For troubleshooting information, see [troubleshooting the GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/troubleshooting.md).

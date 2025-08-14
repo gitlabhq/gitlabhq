@@ -141,14 +141,10 @@ module Ci
 
     def artifacts_exposed_paths
       if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
-        job_artifacts_metadata&.exposed_paths || artifacts_paths
+        job_artifacts_metadata&.exposed_paths || options.dig(:artifacts, :paths)
       else
-        artifacts_paths
+        options.dig(:artifacts, :paths)
       end
-    end
-
-    def artifacts_paths
-      options.dig(:artifacts, :paths)
     end
 
     private

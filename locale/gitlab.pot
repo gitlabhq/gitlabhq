@@ -38029,6 +38029,9 @@ msgstr ""
 msgid "Loading %{name}"
 msgstr ""
 
+msgid "Loading accounts"
+msgstr ""
+
 msgid "Loading custom roles"
 msgstr ""
 
@@ -57410,6 +57413,9 @@ msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxS
 msgstr ""
 
 msgid "SecurityOrchestration|API request"
+msgstr ""
+
+msgid "SecurityOrchestration|Accounts exceptions (%{count})"
 msgstr ""
 
 msgid "SecurityOrchestration|Actions"

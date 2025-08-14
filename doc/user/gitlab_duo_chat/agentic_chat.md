@@ -282,7 +282,8 @@ Agentic Chat extends Chat capabilities with the following features:
 | Restart a conversation |                                  Yes. Use `/reset`. |                                            Yes. Use `/reset`.                                                                                                    |
 | Delete a conversation |                                   Yes. Use `/clear`.|                                             Yes, in the chat history                                                                                                            |
 | Create issues and MRs |                                   No |                                                            Yes                                                                                                                   |
-| Use Git |                                                 No |                                                            Yes, IDEs only                                                                                                        |
+| Use Git read-only commands |                                                 No |                                                            Yes                                                  |
+| Use Git write commands |                                                 No |                                                            Yes, UI only                                                  |
 | Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |
 | Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
 

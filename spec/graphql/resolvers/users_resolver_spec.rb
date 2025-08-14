@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::UsersResolver do
+RSpec.describe Resolvers::UsersResolver, feature_category: :user_management do
   include GraphqlHelpers
 
   let_it_be(:user1) { create(:user, name: "SomePerson") }
@@ -97,6 +97,14 @@ RSpec.describe Resolvers::UsersResolver do
         expect(resolve_users(args: { search: "some" })).to contain_exactly(user1, user2)
         expect(resolve_users(args: { search: "123784" })).to contain_exactly(user2)
         expect(resolve_users(args: { search: "someperson" })).to contain_exactly(user1)
+      end
+    end
+
+    context 'when user_types are passed' do
+      it 'returns all users who match', :aggregate_failures do
+        expect(resolve_users(args: { user_types: %w[human service_account] })).to contain_exactly(
+          service_account_user, user1, user2, inactive_user, current_user
+        )
       end
     end
 
