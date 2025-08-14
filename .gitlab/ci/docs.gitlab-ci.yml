@@ -83,8 +83,32 @@ docs hugo_build:
   stage: lint
   needs: []
   dependencies: []
+  variables:
+    DOCS_BRANCH: "main"
   before_script:
-    - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
+    # Check if this a release branch, which would be the case for a backport.
+    # If this is a backport MR, we need to checkout the appropriate version
+    # of the Docs website.
+    - |
+      if [[ $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ [0-9]+-[0-9]+-stable ]]; then
+        BRANCH_NAME=$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+        echo "Detected merge request to stable branch: $BRANCH_NAME"
+      # Check if we're directly on a stable branch (direct push/commit)
+      elif [[ $CI_COMMIT_BRANCH =~ [0-9]+-[0-9]+-stable ]]; then
+        BRANCH_NAME=$CI_COMMIT_BRANCH
+        echo "Detected direct commit to stable branch: $BRANCH_NAME"
+      fi
+
+      # Extract version info if we found a stable branch
+      if [[ -n $BRANCH_NAME ]]; then
+        MAJOR=$(echo $BRANCH_NAME | cut -d '-' -f 1)
+        MINOR=$(echo $BRANCH_NAME | cut -d '-' -f 2)
+        # Convert GitLab style (17-9-stable-ee) to Docs style (17.9)
+        DOCS_BRANCH="$MAJOR.$MINOR"
+        echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+      fi
+    # Clone the Docs website project
+    - git clone --depth 1 --filter=tree:0 --branch $DOCS_BRANCH https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons
     # Copy the current project's docs to the appropriate location in the docs website
