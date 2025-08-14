@@ -102,6 +102,14 @@ build-cng-env:
     CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN
     CNG_SKIP_REDUNDANT_JOBS: "false"
     GIT_STRATEGY: none
+  # when running in backport, override CNG_COMMIT so it defaults to release branch instead
+  # this ensures images are built using same stable release branch in CNG repository
+  # this is needed in case CNG repository backports some fixes related to specific release
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/
+      variables:
+        CNG_COMMIT_SHA: ''
+    - when: always
 
 build-cng:
   stage: .pre
