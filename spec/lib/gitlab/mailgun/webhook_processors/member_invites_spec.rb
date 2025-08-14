@@ -20,9 +20,15 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::MemberInvites do
 
     it 'marks the member invite email success as false' do
       expect(Gitlab::AppLogger).to receive(:info).with(
+        message: 'Refresh member authorized projects on update',
+        previous_changes: %w[updated_at invite_email_success],
+        user_id: nil
+      )
+
+      expect(Gitlab::AppLogger).to receive(:info).with(
         message: /^UPDATED MEMBER INVITE_EMAIL_SUCCESS/,
         event: 'updated_member_invite_email_success'
-      ).and_call_original
+      )
 
       expect { service }.to change { member.reload.invite_email_success }.from(true).to(false)
     end

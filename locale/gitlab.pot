@@ -1189,9 +1189,6 @@ msgstr ""
 msgid "%{name} is reserved for %{type} report type"
 msgstr ""
 
-msgid "%{name} is scheduled for %{action}"
-msgstr ""
-
 msgid "%{name} not checked"
 msgstr ""
 
@@ -28557,9 +28554,6 @@ msgstr ""
 msgid "Geo|All"
 msgstr ""
 
-msgid "Geo|All %{replicableType} are being scheduled for %{action}"
-msgstr ""
-
 msgid "Geo|All projects"
 msgstr ""
 
@@ -28962,6 +28956,12 @@ msgstr ""
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr ""
 
+msgid "Geo|Scheduled %{name} for %{actionName}."
+msgstr ""
+
+msgid "Geo|Scheduled all %{replicableType} for %{actionName}."
+msgstr ""
+
 msgid "Geo|Secondary"
 msgstr ""
 
@@ -29103,7 +29103,10 @@ msgstr ""
 msgid "Geo|There was an error saving this Geo Site"
 msgstr ""
 
-msgid "Geo|There was an error scheduling action %{action} for %{replicableType}"
+msgid "Geo|There was an error scheduling %{actionName} for all %{replicableType}."
+msgstr ""
+
+msgid "Geo|There was an error scheduling %{name} for %{actionName}."
 msgstr ""
 
 msgid "Geo|There was an error updating the Geo Settings"
@@ -42531,11 +42534,6 @@ msgstr ""
 msgid "No work item found."
 msgstr ""
 
-msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} day to renew your subscription."
-msgid_plural "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} days to renew your subscription."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "No wrap"
 msgstr ""
 
@@ -47826,6 +47824,9 @@ msgid "PlantUML diagram"
 msgstr ""
 
 msgid "Please %{link_to_register} or %{link_to_sign_in} to comment"
+msgstr ""
+
+msgid "Please %{link_to_sign_in} to comment"
 msgstr ""
 
 msgid "Please %{registerLinkStart}register%{registerLinkEnd} or %{signInLinkStart}sign in%{signInLinkEnd} to add a comment."
@@ -53389,7 +53390,7 @@ msgstr ""
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter files (*.vue, *.rb...)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -64830,9 +64831,6 @@ msgstr ""
 msgid "There was an error summarizing your pending comments."
 msgstr ""
 
-msgid "There was an error syncing project %{name}"
-msgstr ""
-
 msgid "There was an error updating your display preferences."
 msgstr ""
 
@@ -74345,6 +74343,9 @@ msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
+msgstr ""
+
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription has expired. Please renew your subscription to continue using paid features."
 msgstr ""
 
 msgid "Your Activity"

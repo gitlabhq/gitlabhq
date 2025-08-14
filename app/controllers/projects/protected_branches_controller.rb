@@ -9,6 +9,10 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   protected
 
+  def ref_type
+    :branches
+  end
+
   def project_refs
     @project.repository.branches
   end

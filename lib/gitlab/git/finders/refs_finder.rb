@@ -35,6 +35,8 @@ module Gitlab
         attr_reader :repository, :search, :ref_type, :sort_by, :page_token
 
         def pagination_params
+          return unless @per_page
+
           { limit: per_page, page_token: page_token }.compact
         end
 

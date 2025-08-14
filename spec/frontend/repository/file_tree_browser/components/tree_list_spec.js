@@ -200,12 +200,6 @@ describe('Tree List', () => {
       expect(mockFocus).toHaveBeenCalled();
     });
 
-    it('displays shortcut in placeholder when shortcuts are enabled', () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
-      const placeholder = filterInput.props('placeholder');
-      expect(placeholder).toContain(`(f)`);
-    });
-
     it('displays tooltip', () => {
       createComponent();
       expect(findTooltip().exists()).toBe(true);
@@ -243,15 +237,6 @@ describe('Tree List', () => {
       await nextTick();
 
       expect(mockFocus).not.toHaveBeenCalled();
-    });
-
-    it('does not display shortcut in placeholder when shortcuts are disabled', () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
-      const placeholder = filterInput.props('placeholder');
-      const shortcutKey = keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0];
-
-      expect(placeholder).not.toContain(`(${shortcutKey})`);
-      expect(placeholder).toBe('Filter (e.g. *.vue)');
     });
 
     it('does not display tooltip', () => {

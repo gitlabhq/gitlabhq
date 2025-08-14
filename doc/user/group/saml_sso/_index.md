@@ -374,12 +374,12 @@ are then redirected to sign in through the identity provider.
 
 #### Automatic identity linking for enterprise users
 
-If an enterprise user is removed from the group and then returns, they can sign in 
+If an enterprise user is removed from the group and then returns, they can sign in
 with their enterprise SSO account.
-As long as the user's email address in the identity provider remains the same as the 
-email address on the existing GitLab account, the SSO identity is automatically linked 
+As long as the user's email address in the identity provider remains the same as the
+email address on the existing GitLab account, the SSO identity is automatically linked
 to the account and the user can sign in without any issues.
-This functionality also applies to existing users that have been claimed as an 
+This functionality also applies to existing users that have been claimed as an
 enterprise user but who may not have yet signed into the group.
 
 ### Sign in to GitLab.com with SAML
@@ -525,7 +525,7 @@ when their GitLab user session ends.
 {{< /history >}}
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
-[configure GitLab with a custom domain](../../enterprise_user/_index.md#set-up-a-verified-domain) and GitLab
+[configure GitLab with a custom domain](../../enterprise_user/_index.md#add-group-domains) and GitLab
 automatically confirms user accounts. Users still receive an
 [enterprise user](../../enterprise_user/_index.md) welcome email. Confirmation is bypassed if both of the following are true:
 

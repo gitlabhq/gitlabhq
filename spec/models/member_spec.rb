@@ -1949,6 +1949,22 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when after_commit :log_previous_state_on_update' do
+    let_it_be(:member) { create(:group_member) }
+
+    it 'logs a message on member update' do
+      expect(Gitlab::AppLogger)
+        .to receive(:info)
+        .with({
+          message: 'Refresh member authorized projects on update',
+          user_id: member.user.id,
+          previous_changes: %w[access_level updated_at]
+        })
+
+      member.update!(access_level: Gitlab::Access::GUEST)
+    end
+  end
+
   describe 'log_invitation_token_cleanup' do
     let_it_be(:project) { create :project }
 

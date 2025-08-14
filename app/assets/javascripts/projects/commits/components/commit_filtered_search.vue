@@ -1,8 +1,12 @@
 <script>
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TYPE_MESSAGE,
+  TOKEN_TITLE_MESSAGE,
   OPERATORS_IS_NOT_OR,
+  OPERATORS_IS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
@@ -37,6 +41,15 @@ export default {
           multiSelect: true,
           recentSuggestionsStorageKey: `${this.projectFullPath}-commits-recent-tokens-author`,
           preloadedUsers: this.preloadedUsers,
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_MESSAGE,
+          title: TOKEN_TITLE_MESSAGE,
+          icon: 'comment',
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          unique: true,
         },
       ];
     },
@@ -64,6 +77,8 @@ export default {
     :initial-filter-value="filterTokens"
     :search-input-placeholder="__('Search or filter results...')"
     recent-searches-storage-key="commits"
+    show-friendly-text
+    terms-as-tokens
     @onFilter="$emit('filter', $event)"
   />
 </template>

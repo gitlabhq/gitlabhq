@@ -187,11 +187,11 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           { ref_type: :tags, page_token: 'refs/tags/v1.1.0' }
         end
 
-        it "returns next page of limited results with default limit" do
+        it "returns all records" do
           refs = subject
 
-          expect(refs.length).to eq(1)
-          expect(refs.map(&:name)).to match_array(["refs/tags/v1.1.1"])
+          expect(refs.length).to eq(3)
+          expect(refs.map(&:name)).to match_array(['refs/tags/v1.0.0', 'refs/tags/v1.1.0', 'refs/tags/v1.1.1'])
         end
       end
 

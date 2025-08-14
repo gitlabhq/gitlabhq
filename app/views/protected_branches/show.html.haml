@@ -20,6 +20,7 @@
           %tbody
             - @matching_refs.each do |matching_branch|
               = render partial: "protected_branches/shared/matching_branch", object: matching_branch
+        = render('kaminari/gitlab/without_count', previous_path: @prev_path, next_path: @next_path, event_tracking: nil)
     - else
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
         - c.with_body do

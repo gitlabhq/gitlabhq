@@ -321,6 +321,65 @@ Example response:
 ]
 ```
 
+### Test connection before creating an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Tests the connection to a Maven upstream registry that hasn't been added to the virtual registry yet. This endpoint validates connectivity and credentials before creating the upstream registry.
+
+```plaintext
+POST /groups/:id/-/virtual_registries/packages/maven/upstreams/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:-----|:---------|:------------|
+| `id` | string/integer | yes | The group ID or full group path. Must be a top-level group. |
+| `url` | string | yes | The URL of the upstream registry. |
+| `username` | string | no | The username of the upstream registry. |
+| `password` | string | no | The password of the upstream registry. |
+
+{{< alert type="note" >}}
+
+You must include both the `username` and `password` in the request, or neither. If not set, a public (anonymous) request is used to test the connection.
+
+{{< /alert >}}
+
+#### Test workflow
+
+The `test` endpoint sends a HEAD request to the provided upstream URL using a test path to validate connectivity and authentication. The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Description | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success - upstream accessible | `{ "success": true }` |
+| 404 | Success - upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/packages/maven/upstreams/test" \
+     --data '{"url": "https://repo.maven.apache.org/maven2"}'
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
+
 ### List all upstream registries for a virtual registry
 
 {{< history >}}
@@ -706,6 +765,55 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
+### Test connection to an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Tests the connection to an existing Maven upstream registry.
+
+```plaintext
+GET /virtual_registries/packages/maven/upstreams/:id/test
+```
+
+#### How the test works
+
+The endpoint performs a HEAD request to the upstream URL using the test path to validate connectivity and authentication. If the upstream has a cached artifact, its relative path is used for testing. Otherwise, a dummy path is used. The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Meaning | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success - upstream accessible | `{ "success": true }` |
+| 404 | Success - upstream accessible but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+{{< alert type="note" >}}
+
+Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test validates that GitLab can reach and authenticate with the upstream, not whether a specific artifact exists.
+
+{{< /alert >}}
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
 
 ## Manage cache entries
 

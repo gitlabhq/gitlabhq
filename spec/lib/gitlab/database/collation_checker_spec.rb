@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
         .and_yield(connection, database_name)
 
       expect(described_class).to receive(:new)
-        .with(connection, database_name, logger)
+        .with(connection, database_name, logger, described_class::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK)
         .and_return(instance)
       expect(instance).to receive(:run).and_return(result)
 
@@ -31,7 +31,9 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
       let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
       let(:database_name) { 'main' }
       let(:logger) { instance_double(Gitlab::AppLogger, info: nil, warn: nil, error: nil) }
-      let(:checker) { described_class.new(connection, database_name, logger) }
+      let(:checker) do
+        described_class.new(connection, database_name, logger, described_class::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK)
+      end
 
       context 'when no collation mismatches are found' do
         let(:empty_results) { instance_double(ActiveRecord::Result, to_a: []) }
@@ -55,7 +57,7 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
 
           result = checker.run
 
-          expect(result).to eq({ 'collation_mismatches' => [], 'corrupted_indexes' => [] })
+          expect(result).to eq({ 'collation_mismatches' => [], 'corrupted_indexes' => [], 'skipped_indexes' => [] })
         end
       end
 
@@ -74,6 +76,7 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
         before do
           allow(checker).to receive_messages(
             transform_indexes_to_spot_check: ['test_index'],
+            fetch_index_info: [],
             identify_corrupted_indexes: []
           )
           allow(connection).to receive(:select_all)
@@ -95,7 +98,8 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
 
           expect(result).to eq({
             'collation_mismatches' => expected_mismatches,
-            'corrupted_indexes' => []
+            'corrupted_indexes' => [],
+            'skipped_indexes' => []
           })
         end
       end
@@ -114,6 +118,19 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
           ]
         end
 
+        let(:index_info) do
+          [
+            {
+              'table_name' => 'users',
+              'index_name' => 'index_users_on_username',
+              'affected_columns' => 'username',
+              'is_unique' => 't',
+              'table_size_bytes' => 10.megabytes,
+              'index_size_bytes' => 1.megabyte
+            }
+          ]
+        end
+
         let(:corrupted_indexes) do
           [
             {
@@ -121,7 +138,8 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
               'table_name' => 'users',
               'affected_columns' => 'username',
               'is_unique' => true,
-              'size_bytes' => 987654,
+              'table_size_bytes' => 10.megabytes,
+              'index_size_bytes' => 1.megabyte,
               'corruption_types' => ['duplicates'],
               'needs_deduplication' => true
             }
@@ -132,6 +150,7 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
           allow(checker).to receive_messages(
             check_collation_mismatches: mismatches,
             transform_indexes_to_spot_check: indexes,
+            fetch_index_info: index_info,
             identify_corrupted_indexes: corrupted_indexes
           )
         end
@@ -194,6 +213,80 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
           expect(result['corrupted_indexes']).to eq(corrupted_indexes)
         end
       end
+
+      context 'with table size-based skipping' do
+        let(:small_index) do
+          {
+            'table_name' => 'small_table',
+            'index_name' => 'index_small_table',
+            'affected_columns' => 'name',
+            'is_unique' => 't',
+            'table_size_bytes' => 100.megabytes,
+            'index_size_bytes' => 10.megabytes
+          }
+        end
+
+        let(:large_index) do
+          {
+            'table_name' => 'large_table',
+            'index_name' => 'index_large_table',
+            'affected_columns' => 'name',
+            'is_unique' => 't',
+            'table_size_bytes' => 2.gigabytes, # Exceeds default threshold (1GB)
+            'index_size_bytes' => 200.megabytes
+          }
+        end
+
+        let(:indexes_to_check) { [{ 'table_name' => 'small_table' }, { 'table_name' => 'large_table' }] }
+
+        it 'skips tables that exceed the size threshold' do
+          allow(checker).to receive_messages(
+            check_collation_mismatches: [],
+            transform_indexes_to_spot_check: indexes_to_check,
+            fetch_index_info: [small_index, large_index],
+            identify_corrupted_indexes: []
+          )
+
+          expect(logger).to receive(:info).with("Skipping duplicate checks for 1 indexes due to large table size")
+          expect(logger).to receive(:info).with(/Skipping index_large_table on table large_table/)
+
+          result = checker.run
+
+          expect(result['skipped_indexes']).to contain_exactly(
+            hash_including(
+              'index_name' => 'index_large_table',
+              'table_name' => 'large_table',
+              'table_size_bytes' => 2.gigabytes,
+              'index_size_bytes' => 200.megabytes,
+              'table_size_threshold' => described_class::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK,
+              'reason' => 'table_size_exceeds_threshold'
+            )
+          )
+        end
+
+        it 'respects custom table size threshold' do
+          small_threshold = 50.megabytes
+          checker_with_small_threshold = described_class.new(connection, database_name, logger, small_threshold)
+
+          allow(checker_with_small_threshold).to receive_messages(
+            check_collation_mismatches: [],
+            transform_indexes_to_spot_check: indexes_to_check,
+            fetch_index_info: [small_index, large_index],
+            identify_corrupted_indexes: []
+          )
+
+          # Both tables should be skipped since small_threshold is 50MB
+          expect(logger).to receive(:info).with("Skipping duplicate checks for 2 indexes due to large table size")
+
+          result = checker_with_small_threshold.run
+
+          expect(result['skipped_indexes'].size).to eq(2)
+          expect(result['skipped_indexes']).to include(
+            hash_including('index_name' => 'index_small_table'),
+            hash_including('index_name' => 'index_large_table')
+          )
+        end
+      end
     end
 
     # Real database test for the happy path
@@ -201,7 +294,9 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
       let(:connection) { ActiveRecord::Base.connection }
       let(:database_name) { connection.current_database }
       let(:logger) { instance_double(Logger, info: nil, warn: nil, error: nil) }
-      let(:checker) { described_class.new(connection, database_name, logger) }
+      let(:checker) do
+        described_class.new(connection, database_name, logger, described_class::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK)
+      end
 
       let(:table_name) { '_test_c_collation_table' }
       let(:index_name) { '_test_c_collation_index' }
@@ -284,7 +379,8 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
               'index_name' => index_name,
               'affected_columns' => 'test_col, test_col2',
               'is_unique' => 't',
-              'size_bytes' => 8192
+              'table_size_bytes' => 10.megabytes,
+              'index_size_bytes' => 1.megabyte
             }
           ])
         end

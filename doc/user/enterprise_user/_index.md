@@ -13,19 +13,16 @@ description: Domain verification, two-factor authentication, enterprise user man
 
 {{< /details >}}
 
-Enterprise users have user accounts that are administered by an organization that
-has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/_index.md).
+Enterprise users are administered by an organization that has [verified their email domain](#add-group-domains)
+and purchased a [GitLab subscription](../../subscriptions/_index.md).
 
-Enterprise users are identified by the `Enterprise` badge
-next to their names on the [Members list](../group/_index.md#filter-and-sort-members-in-a-group).
-
-You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.
+These users are identified by an `Enterprise` badge next to their names on the [Members list](../group/_index.md#filter-and-sort-members-in-a-group).
 
 ## Automatic claims of enterprise users
 
 A user is automatically claimed as an enterprise user of a group when both of the following conditions are met:
 
-- The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
+- The user's primary email has a domain that has been [verified](#add-group-domains) by the group.
 - The user account meets at least one of the following conditions:
   - It was created February 1, 2021 or later.
   - It has a SAML or SCIM identity tied to the organization's group.
@@ -77,129 +74,110 @@ From this list, unclaimed users one of the following:
 To claim these users, they must update their primary email address to match the verified domain.
 These users are automatically claimed when the next scheduled claim worker runs.
 
-## Verified domains for groups
+## Manage group domains
 
-The following automated processes use verified domains to run:
+To claim GitLab.com users as enterprise users, you must add and verify ownership of a domain.
+Group domains are added to the top-level group and apply to all subgroups and projects
+in the group. While each group can have multiple domains, you can associate each domain
+with only one group at a time.
 
-- [Automatic claims of enterprise users](#automatic-claims-of-enterprise-users).
-- [Bypass email confirmation for provisioned users](#bypass-email-confirmation-for-provisioned-users).
+Group domains are linked to a project in your top-level group. The
+linked project needs [GitLab Pages](../project/pages/_index.md), but does
+not need to create a GitLab Pages website. If GitLab Pages is turned off, you cannot
+verify the domain.
 
-### Set up a verified domain
+Group domains are linked to a specified project in the top-level group, but apply to the
+entire group hierarchy including all nested subgroups and projects. Members in the linked project with
+[at least the Maintainer role](../permissions.md#project-members-permissions) can modify or
+remove the domain. If this project is deleted, your associated domains are also removed.
+
+For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
+
+### Add group domains
 
 Prerequisites:
 
-- A custom domain name `example.com` or subdomain `subdomain.example.com`.
-- Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
-- A project in the group. This project will be linked to the verified domains, and should not be deleted. This project also needs to have the pages component enabled in its settings (**General** -> **Visibility, project features, permissions** -> **Pages**). If the pages component is disabled in its settings, a `500` error will be generated during domain verification.
-- Ensure that [GitLab Pages](../project/pages/_index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
-- You must have the Owner role for the top-level group.
+- You must have the Owner role for a top-level group.
+- You must control a custom domain `example.com` or subdomain `subdomain.example.com` that matches the email domain you want to verify.
+- You must be able to create DNS `TXT` records for your domain to prove ownership.
+- You must have a dedicated project in the top-level group that uses
+  [GitLab Pages](../project/pages/_index.md).
 
-Domain verification applies at the top-level group and to all subgroups and projects
-nested under that top-level parent group.
-
-You cannot verify a domain for more than one group. For example, if a group named
-'group1' has a verified domain named 'domain1', you cannot also verify 'domain1'
-for a different group named 'group2'.
-
-Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/_index.md). However, you:
-
-- Do not need to have a GitLab Pages website.
-- Must link the domain to a single project, despite domain verification applying
-  at the top-level group and to all nested subgroups and projects, because domain
-  verification:
-  - Is tied to the project you choose. If the project is deleted, the domain verification is removed.
-  - Reuses the GitLab Pages custom domain verification feature, which requires a project.
-- Must configure the `TXT` only in the DNS record to verify the domain's ownership.
-
-In addition to appearing in the top-level group Domain Verification list, the
-domain will also appear in the chosen project. A member in this project with
-[at least the Maintainer role](../permissions.md#project-members-permissions)
-can modify or remove the domain verification.
-
-If needed, you can create a new project to set up domain verification directly
-under your top-level group. This limits the ability to modify the domain verification
-to members with at least the Maintainer role, because these users are able to set up a domain and therefore allow the group's enterprise users to update their email to match that domain.
-
-For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
-
-#### 1. Add a custom domain for the matching email domain
-
-The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
+To add a custom domain for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
-1. In **Domain**, enter the domain name.
-1. In **Project**, link to a project.
-1. In **Certificate**:
-   - If you do not have or do not want to use an SSL certificate, leave **Automatic certificate management using Let's
-     Encrypt** selected.
-   - Optional. Turn on the **Manually enter certificate information** toggle to add an SSL/TLS certificate. You can also
-     add the certificate and key later.
+1. Configure the domain settings:
+   - **Domain**: Enter the domain name.
+   - **Project**: Link to an existing project in the group.
+   - **Certificate**: Select a certificate option:
+     - If you do not have or do not want to use an SSL/TLS certificate, select
+       **Automatic certificate management using Let's Encrypt**.
+     - If you want to provide your own SSL/TLS certificate, select
+       **Manually enter certificate information**. You can also add a certificate and key later.
+
+        {{< alert type="note" >}}
+
+        A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
+        if you are not using GitLab Pages.
+
+        {{< /alert >}}
+
 1. Select **Add Domain**.
+   GitLab saves the domain information.
+1. Verify ownership of the domain:
+   1. In **TXT**, copy the verification code.
+   1. In your domain provider DNS settings, add the verification code as a `TXT` record.
+   1. In GitLab, on the left sidebar, select **Search or go to** and find your group.
+   1. Select **Settings > Domain Verification**.
+   1. Next to the domain name, select **Retry verification** ({{< icon name="retry" >}}).
 
-{{< alert type="note" >}}
+After successful verification, the domain status changes to **Verified** and can be used for enterprise user management.
 
-A valid certificate is not required for domain verification. You can ignore error messages regarding the certificate if you are not using GitLab Pages.
+   {{< alert type="note" >}}
 
-{{< /alert >}}
+   Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
+   Until it completes, the domain remains unverified in GitLab.
 
-#### 2. Get a verification code
+   If the domain is still unverified after seven days, GitLab automatically removes the domain.
 
-After you create a new domain, the verification code prompts you. Copy the values from GitLab
-and paste them in your domain's control panel as a `TXT` record.
+   After verification, GitLab periodically reverifies the domain. To avoid potential issues,
+   maintain the `TXT` record on your domain provider.
 
-![Get the verification code](img/get_domain_verification_code_v16_0.png)
+   {{< /alert >}}
 
-#### 3. Verify the domain's ownership
+### View group domains
 
-After you have added all the DNS records:
+To view all custom domains for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Domain Verification**.
-1. On the domain table row, Select **Retry verification** ({{< icon name="retry" >}}).
 
-![Verify your domain](img/retry_domain_verification_v16_0.png)
+### Edit group domains
 
-{{< alert type="warning" >}}
-
-For GitLab instances with domain verification enabled, if the domain cannot be verified for 7 days, that domain is removed from the GitLab project.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-- Domain verification is **required for GitLab.com users** to be marked as enterprise users.
-- [DNS propagation can take up to 24 hours](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/), although it's usually a couple of minutes to complete. Until it completes, the domain shows as unverified.
-- Once your domain has been verified, leave the verification record in place. Your domain is periodically reverified, and may be disabled if the record is removed.
-- A valid certificate is not required for domain verification.
-
-{{< /alert >}}
-
-### View domains in group
-
-To view all configured domains in your group:
+To edit a custom domain for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
-You then see:
+From here, you can:
 
-- A list of added domains.
-- The domains' status of **Verified** or **Unverified**.
-- The project where the domain has been configured.
+- View the custom domain.
+- View the DNS record to add.
+- View the TXT verification entry.
+- Retry verification.
+- Edit the certificate settings.
 
-### Manage domains in group
+### Delete group domains
 
-To edit or remove a domain:
+To delete a custom domain for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
-1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
-1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/_index.md) instructions.
+1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}}).
+1. When prompted, select **Delete domain**.
 
 ## Manage enterprise users
 
@@ -314,3 +292,7 @@ To enable the extension marketplace for the [Web IDE](../project/web_ide/_index.
 If a user does not have an **Enterprise** badge, a group Owner cannot disable or reset 2FA for their
 account. Instead, the Owner should tell the enterprise user to consider available
 [recovery options](../profile/account/two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).
+
+## Related topics
+
+- [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/_index.md).

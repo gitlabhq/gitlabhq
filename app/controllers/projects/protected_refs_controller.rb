@@ -27,7 +27,13 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   end
 
   def show
-    @matching_refs = @protected_ref.matching(project_refs)
+    service_params = params.merge(ref_type: ref_type, search: @protected_ref.name)
+
+    @matching_refs, @prev_path, @next_path = Projects::RefsByPaginationService.new(
+      @protected_ref,
+      @project,
+      service_params
+    ).execute
   end
 
   def update

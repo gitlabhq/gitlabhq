@@ -256,7 +256,7 @@ Supported attributes:
 | `id`       | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `name`     | string         | no       | User account name. If not specified, uses `Service account user`. |
 | `username` | string         | no       | User account username. If not specified, generates a name prepended with `service_account_group_`. |
-| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -304,7 +304,7 @@ Parameters:
 | `user_id`  | integer        | yes      | The ID of the service account. |
 | `name`     | string         | no       | Name of the user. |
 | `username` | string         | no       | Username of the user. |
-| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 

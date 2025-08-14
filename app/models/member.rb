@@ -366,6 +366,7 @@ class Member < ApplicationRecord
   after_save :log_invitation_token_cleanup
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
+  after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
   after_commit on: [:create, :update, :destroy], unless: :importing? do
     refresh_member_authorized_projects
   end
@@ -722,6 +723,14 @@ class Member < ApplicationRecord
 
   def post_destroy_access_request_hook
     system_hook_service.execute_hooks_for(self, :revoke)
+  end
+
+  def log_previous_state_on_update
+    Gitlab::AppLogger.info(
+      message: 'Refresh member authorized projects on update',
+      user_id: self.user_id,
+      previous_changes: previous_changes.keys
+    )
   end
 
   # Refreshes authorizations of the current member.

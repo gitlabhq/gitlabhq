@@ -16,6 +16,8 @@ export default function initCommitListApp() {
     refType,
     rootRef,
     path,
+    browseFilesPath,
+    commitsFeedPath,
   } = commitListEl.dataset;
 
   // eslint-disable-next-line no-new
@@ -30,6 +32,8 @@ export default function initCommitListApp() {
       refType,
       rootRef,
       path,
+      browseFilesPath,
+      commitsFeedPath,
     },
     apolloProvider,
     render(h) {

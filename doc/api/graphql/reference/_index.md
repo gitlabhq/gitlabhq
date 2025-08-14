@@ -26417,7 +26417,7 @@ Represents the current license.
 | ---- | ---- | ----------- |
 | <a id="currentlicenseactivatedat"></a>`activatedAt` | [`Date`](#date) | Date when the license was activated. |
 | <a id="currentlicensebillableuserscount"></a>`billableUsersCount` | [`Int`](#int) | Number of billable users on the system. |
-| <a id="currentlicenseblockchangesat"></a>`blockChangesAt` | [`Date`](#date) | Date, including grace period, when licensed features will be blocked. |
+| <a id="currentlicenseblockchangesat"></a>`blockChangesAt` | [`Date`](#date) | Date when licensed features will be blocked. |
 | <a id="currentlicensecompany"></a>`company` | [`String`](#string) | Company of the licensee. |
 | <a id="currentlicensecreatedat"></a>`createdAt` | [`Date`](#date) | Date when the license was added. |
 | <a id="currentlicenseemail"></a>`email` | [`String`](#string) | Email of the licensee. |
@@ -32943,7 +32943,7 @@ Represents an entry from the Cloud License history.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="licensehistoryentryactivatedat"></a>`activatedAt` | [`Date`](#date) | Date when the license was activated. |
-| <a id="licensehistoryentryblockchangesat"></a>`blockChangesAt` | [`Date`](#date) | Date, including grace period, when licensed features will be blocked. |
+| <a id="licensehistoryentryblockchangesat"></a>`blockChangesAt` | [`Date`](#date) | Date when licensed features will be blocked. |
 | <a id="licensehistoryentrycompany"></a>`company` | [`String`](#string) | Company of the licensee. |
 | <a id="licensehistoryentrycreatedat"></a>`createdAt` | [`Date`](#date) | Date when the license was added. |
 | <a id="licensehistoryentryemail"></a>`email` | [`String`](#string) | Email of the licensee. |

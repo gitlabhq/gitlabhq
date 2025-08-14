@@ -6,18 +6,22 @@ RSpec.describe CommitsHelper do
   include ProjectForksHelper
 
   describe '#commit_list_app_data' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:ref) { 'feature-branch' }
     let(:ref_type) { 'heads' }
     let(:path) { 'app/javascript/components/app.js' }
+    let(:id) { 'commit-id' }
 
     before do
       assign(:project, project)
       assign(:ref, ref)
       assign(:ref_type, ref_type)
       assign(:path, path)
+      assign(:id, id)
 
-      allow(helper).to receive(:project_path).with(project).and_return("/#{project.full_path}")
+      allow(helper).to receive(:project_commits_path).with(project, id, { format: :atom }).and_return("/#{project.full_path}/-/commits/#{id}.atom")
+      allow(helper).to receive(:path_to_browse_file_or_directory).with(project, ref, path).and_return("/#{project.full_path}/-/tree/#{ref}/#{path}")
+      allow(helper).to receive(:rss_url_options).and_return({ format: :atom })
     end
 
     subject { helper.commit_list_app_data }
@@ -31,7 +35,9 @@ RSpec.describe CommitsHelper do
         'escaped_ref' => ref,
         'ref_type' => ref_type.to_s,
         'root_ref' => project.default_branch,
-        'path' => path
+        'path' => path,
+        'browse_files_path' => "/#{project.full_path}/-/tree/#{ref}/#{path}",
+        'commits_feed_path' => "/#{project.full_path}/-/commits/#{id}.atom"
       })
     end
   end

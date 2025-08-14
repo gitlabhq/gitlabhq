@@ -3,6 +3,10 @@
 class Projects::ProtectedTagsController < Projects::ProtectedRefsController
   protected
 
+  def ref_type
+    :tags
+  end
+
   def project_refs
     @project.repository.tags
   end

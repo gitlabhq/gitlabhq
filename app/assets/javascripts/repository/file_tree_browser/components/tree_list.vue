@@ -67,10 +67,6 @@ export default {
     shortcutsDisabled() {
       return shouldDisableShortcuts();
     },
-    placeholderText() {
-      const base = s__('Repository|Filter (e.g. *.vue)');
-      return this.shortcutsDisabled ? base : `${base} (${this.filterSearchShortcutKey})`;
-    },
     filteredFlatFilesList() {
       const filter = this.filter.trim();
       if (!filter) return this.flatFilesList;
@@ -279,6 +275,7 @@ export default {
       }
     },
   },
+  filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
 };
 </script>
 
@@ -297,7 +294,7 @@ export default {
         :aria-keyshortcuts="filterSearchShortcutKey"
         type="search"
         class="!gl-pl-7"
-        :placeholder="placeholderText"
+        :placeholder="$options.filterPlaceholder"
       />
       <gl-tooltip
         v-if="!shortcutsDisabled"

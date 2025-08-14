@@ -85,6 +85,8 @@ ERROR
       self.inheritance_column = :_type_disabled
       self.primary_key = :id
 
+      attr_readonly by if partitioning_options[:strategy] == :sliding_list
+
       partitioned_by by, **partitioning_options.reverse_merge(strategy: :monthly)
 
       def self.name

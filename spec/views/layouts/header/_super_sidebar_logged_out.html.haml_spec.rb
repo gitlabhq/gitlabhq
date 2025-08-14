@@ -33,10 +33,25 @@ RSpec.describe 'layouts/header/_super_sidebar_logged_out', feature_category: :na
     end
   end
 
-  it 'renders links to Explore and Sign-in and Register' do
-    render
-    expect(rendered).to have_content('Explore')
-    expect(rendered).to have_content('Sign in')
-    expect(rendered).to have_content('Register')
+  context 'when signup is allowed' do
+    it 'renders links to Explore, Sign-in and Register' do
+      render
+      expect(rendered).to have_content('Explore')
+      expect(rendered).to have_content('Sign in')
+      expect(rendered).to have_content('Register')
+    end
+  end
+
+  context 'when signup is disabled' do
+    before do
+      stub_application_setting(signup_enabled: false)
+    end
+
+    it 'renders links to Explore and Sign-in but not Register' do
+      render
+      expect(rendered).to have_content('Explore')
+      expect(rendered).to have_content('Sign in')
+      expect(rendered).not_to have_content('Register')
+    end
   end
 end

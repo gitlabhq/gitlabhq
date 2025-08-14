@@ -1,3 +1,4 @@
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
@@ -10,6 +11,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
 
+const commitsFeedPath = '/gitlab-org/gitlab/-/commits/main.atom';
+const browseFilesPath = '/gitlab-org/gitlab/-/tree/main';
+
 describe('CommitListHeader', () => {
   let wrapper;
 
@@ -19,6 +23,8 @@ describe('CommitListHeader', () => {
     escapedRef: 'feature',
     refType: 'heads',
     rootRef: 'main',
+    browseFilesPath,
+    commitsFeedPath,
   };
 
   const createComponent = (provide = {}) => {
@@ -31,6 +37,9 @@ describe('CommitListHeader', () => {
   };
 
   const findCommitFilteredSearch = () => wrapper.findComponent(CommitFilteredSearch);
+  const findOverflowMenu = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findBrowseFilesItem = () => wrapper.findByTestId('browse-files-link');
+  const findCommitsFeedItem = () => wrapper.findByTestId('commits-feed-link');
   const findCommitListBreadcrumb = () => wrapper.findComponent(CommitListBreadcrumb);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
 
@@ -49,6 +58,45 @@ describe('CommitListHeader', () => {
 
     it('renders CommitFilteredSearch component', () => {
       expect(findCommitFilteredSearch().exists()).toBe(true);
+    });
+
+    it('renders overflow menu with correct props', () => {
+      const overflowMenu = findOverflowMenu();
+
+      expect(overflowMenu.props()).toMatchObject({
+        icon: 'ellipsis_v',
+        toggleText: 'Actions',
+        textSrOnly: true,
+        noCaret: true,
+        category: 'tertiary',
+        placement: 'bottom-end',
+      });
+    });
+
+    it('renders browse files dropdown item with correct props', () => {
+      const browseFilesItem = findBrowseFilesItem();
+
+      expect(browseFilesItem.props('item')).toMatchObject({
+        text: 'Browse files',
+        icon: 'folder-open',
+        href: browseFilesPath,
+        extraAttrs: {
+          'data-testid': 'browse-files-link',
+        },
+      });
+    });
+
+    it('renders commits feed dropdown item with correct props', () => {
+      const commitsFeedItem = findCommitsFeedItem();
+
+      expect(commitsFeedItem.props('item')).toMatchObject({
+        text: 'Commits feed',
+        icon: 'rss',
+        href: commitsFeedPath,
+        extraAttrs: {
+          'data-testid': 'commits-feed-link',
+        },
+      });
     });
 
     it('renders RefSelector with correct props', () => {

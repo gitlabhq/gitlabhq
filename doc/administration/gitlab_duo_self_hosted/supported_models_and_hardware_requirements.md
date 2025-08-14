@@ -25,7 +25,7 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< /history >}}
 
-GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Claude, and GPT through your preferred serving platform.
+GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Meta, Anthropic, and OpenAI through your preferred serving platform.
 
 You can choose from these [supported models](#supported-models) to match your specific performance needs and use cases.
 
@@ -41,12 +41,12 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model Family | Model | Supported Platforms | Code completion | Code generation | GitLab Duo Chat |
+| Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat |
 |-------------|-------|---------------------|-----------------|-----------------|-----------------|
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Not applicable |
-| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
-| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
-| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
+| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Claude 3 |  [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Claude 3 |  [Claude 3.7 Sonnet](https://www.anthropic.com/news/claude-3-7-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
@@ -59,6 +59,10 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
 | Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+
+**Footnotes**:
+
+1. This model is scheduled for deprecation in GitLab 18.5. Mistral Small 24B Instruct 2506 is the recommended alternative.
 
 ### Bring your own compatible model 
 
