@@ -19,9 +19,16 @@ module Ci
 
       REQUEST_CACHE_KEY = :job_token_authorizations
       CAPTURE_DELAY = 5.minutes
+      AUTHORIZATION_ROW_LIMIT = 1000
 
       scope :for_project, ->(accessed_project) { where(accessed_project: accessed_project) }
       scope :preload_origin_project, -> { includes(origin_project: :route) }
+      scope :with_existing_origin_projects, -> {
+        origin_ids = limit(AUTHORIZATION_ROW_LIMIT).pluck(:origin_project_id)
+        existing_ids = Project.where(id: origin_ids).limit(AUTHORIZATION_ROW_LIMIT).pluck(:id)
+
+        where(origin_project_id: existing_ids)
+      }
 
       attribute :job_token_policies, ::Gitlab::Database::Type::SymbolizedJsonb.new
       validates :job_token_policies, json_schema: {

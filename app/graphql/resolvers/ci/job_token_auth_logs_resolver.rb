@@ -14,7 +14,11 @@ module Resolvers
       def resolve_with_lookahead(**_args)
         authorize!(object)
 
-        apply_lookahead(::Ci::JobToken::Authorization.for_project(object))
+        authorizations = ::Ci::JobToken::Authorization
+          .for_project(object)
+          .with_existing_origin_projects
+
+        apply_lookahead(authorizations)
       end
 
       private

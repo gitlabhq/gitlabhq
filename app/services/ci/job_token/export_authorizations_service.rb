@@ -26,7 +26,7 @@ module Ci
       attr_reader :accessed_project, :current_user
 
       def authorizations
-        Ci::JobToken::Authorization.for_project(accessed_project).preload_origin_project
+        Ci::JobToken::Authorization.for_project(accessed_project).with_existing_origin_projects.preload_origin_project
       end
 
       def header_to_value_hash
