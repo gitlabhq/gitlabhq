@@ -314,6 +314,7 @@ Example response:
     "name": "Maven Central",
     "description": "Maven Central repository",
     "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
     "username": "user",
     "created_at": "2024-05-30T12:28:27.855Z",
     "updated_at": "2024-05-30T12:28:27.855Z"
@@ -422,6 +423,7 @@ Example response:
     "name": "Maven Central",
     "description": "Maven Central repository",
     "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
     "username": "user",
     "created_at": "2024-05-30T12:28:27.855Z",
     "updated_at": "2024-05-30T12:28:27.855Z",
@@ -457,7 +459,10 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 | `url` | string | yes | The URL of the upstream registry. |
 | `username` | string | no | The username of the upstream registry. |
 | `password` | string | no | The password of the upstream registry. |
+| `name` | string | no | The name of the upstream registry. |
+| `description` | string | no | The description of the upstream registry. |
 | `cache_validity_hours` | integer | no | The cache validity period. Defaults to 24 hours. |
+| `metadata_cache_validity_hours` | integer | no | The metadata cache validity period. Defaults to 24 hours. |
 
 {{< alert type="note" >}}
 
@@ -470,7 +475,7 @@ Example request:
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data '{"url": "https://repo.maven.apache.org/maven2", "name": "Maven Central", "description": "Maven Central repository", "username": <your_username>, "password": <your_password>, "cache_validity_hours": 48}' \
+     --data '{"url": "https://repo.maven.apache.org/maven2", "name": "Maven Central", "description": "Maven Central repository", "username": <your_username>, "password": <your_password>, "cache_validity_hours": 48, "metadata_cache_validity_hours": 1}' \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1/upstreams"
 ```
 
@@ -484,6 +489,7 @@ Example response:
   "name": "Maven Central",
   "description": "Maven Central repository",
   "cache_validity_hours": 48,
+  "metadata_cache_validity_hours": 1,
   "username": "user",
   "created_at": "2024-05-30T12:28:27.855Z",
   "updated_at": "2024-05-30T12:28:27.855Z",
@@ -536,6 +542,7 @@ Example response:
   "name": "Maven Central",
   "description": "Maven Central repository",
   "cache_validity_hours": 24,
+  "metadata_cache_validity_hours": 24,
   "username": "user",
   "created_at": "2024-05-30T12:28:27.855Z",
   "updated_at": "2024-05-30T12:28:27.855Z",
@@ -575,6 +582,7 @@ PATCH /virtual_registries/packages/maven/upstreams/:id
 | `username` | string | no | The username of the upstream registry. |
 | `password` | string | no | The password of the upstream registry. |
 | `cache_validity_hours` | integer | no | The cache validity period. Defaults to 24 hours. |
+| `metadata_cache_validity_hours` | integer | no | The metadata cache validity period. Defaults to 24 hours. |
 
 {{< alert type="note" >}}
 

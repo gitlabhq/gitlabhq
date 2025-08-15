@@ -37523,7 +37523,7 @@ msgstr ""
 msgid "LearnGitLab|Add code owners"
 msgstr ""
 
-msgid "LearnGitLab|Add code to a repository"
+msgid "LearnGitLab|Add code to this project's repository"
 msgstr ""
 
 msgid "LearnGitLab|Analyze your application for vulnerabilities with DAST"
@@ -37616,6 +37616,9 @@ msgstr ""
 msgid "LearnGitLab|Next steps"
 msgstr ""
 
+msgid "LearnGitLab|Open the WebIDE"
+msgstr ""
+
 msgid "LearnGitLab|Plan and execute work together"
 msgstr ""
 
@@ -37655,10 +37658,10 @@ msgstr ""
 msgid "LearnGitLab|Try walkthrough"
 msgstr ""
 
-msgid "LearnGitLab|Use GitLab to deploy your application, monitor its health, and keep it secure:"
+msgid "LearnGitLab|Upload files"
 msgstr ""
 
-msgid "LearnGitLab|Use the Web IDE or upload code using your preferred method."
+msgid "LearnGitLab|Use GitLab to deploy your application, monitor its health, and keep it secure:"
 msgstr ""
 
 msgid "LearnGitLab|Use the built-in editor, WebIDE, or upload code using your preferred method."

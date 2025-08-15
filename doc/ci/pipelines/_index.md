@@ -109,6 +109,46 @@ To execute a pipeline manually:
 
 The pipeline now executes the jobs as configured.
 
+#### View manual pipeline variables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323097) in GitLab 17.2 [with a flag](../../administration/feature_flags/_index.md) named `ci_show_manual_variables_in_pipeline`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505440) in GitLab 18.4 with a project setting. Feature flag `ci_show_manual_variables_in_pipeline` removed.
+
+{{< /history >}}
+
+You can see all variables that are specified when the pipeline runs manually.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+The required role depends on what you want to do:
+
+| Action | Minimum role |
+|--------|-------------|
+| View variable names | Guest |
+| View variable values | Developer |
+| Configure visibility setting | Owner |
+
+{{< alert type="warning" >}}
+
+When you turn on this setting, users with the Developer role can view variable values that might contain sensitive information from any manual pipeline run. For sensitive data like credentials or tokens, use [protected variables](../variables/_index.md#protect-a-cicd-variable) or [external secrets management](../secrets/_index.md) instead of manual pipeline variables.
+
+{{< /alert >}}
+
+To view manual pipeline variables:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Select **Display pipeline variables**.
+1. Go to **Build > Pipelines** and select a pipeline that was run manually.
+1. Select the **Manual Variables** tab.
+
+Variable values are masked by default. If you have the Developer role or higher,
+you can select the eye icon to reveal values.
+
 #### Prefill variables in manual pipelines
 
 {{< history >}}
@@ -323,8 +363,7 @@ regardless of the tag pipeline's success, failure, or cancellation.
 Prerequisites:
 
 - The upstream project must be [public](../../user/public_access.md).
-- The user must have the Developer role
-  in the upstream project.
+- The user must have the Developer role in the upstream project.
 
 To trigger the pipeline when the upstream project is rebuilt:
 

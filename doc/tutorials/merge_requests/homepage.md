@@ -58,11 +58,11 @@ still giving you access to other recent work:
 
 GitLab shows the total number of **Active** merge requests on the left sidebar on all pages. For example, this user has:
 
-![The top left area of the ](img/homepage_totals_v17_9.png)
+![The top left area of the ](img/homepage_totals_v18_3.png)
 
-- 31 open issues ({{< icon name="issue-type-issue" >}})
-- 8 active merge requests ({{< icon name="merge-request-open" >}})
-- 29 to-do items ({{< icon name="todo-done" >}})
+- 9 open issues ({{< icon name="issue-type-issue" >}})
+- 1 active merge request ({{< icon name="merge-request-open" >}})
+- 1 to-do item ({{< icon name="todo-done" >}})
 
 Each table row groups related information about a merge request together into columns:
 

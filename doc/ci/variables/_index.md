@@ -472,7 +472,7 @@ The order of precedence for variables is (from highest to lowest):
    - [Variables passed to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
    - [Trigger variables](../triggers/_index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
-   - [Manual pipeline run variables](../pipelines/_index.md#run-a-pipeline-manually).
+   - [Manual pipeline variables](../pipelines/_index.md#run-a-pipeline-manually).
    - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
    - [Manual job variables](../jobs/job_control.md#specify-variables-when-running-manual-jobs).
 1. Project [variables](#for-a-project).

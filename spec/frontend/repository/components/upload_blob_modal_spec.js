@@ -10,6 +10,7 @@ import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { logError } from '~/lib/logger';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/alert');
 jest.mock('~/lib/logger');
@@ -175,6 +176,85 @@ describe('UploadBlobModal', () => {
 
       expect(wrapper.text()).not.toContain('Directories cannot be uploaded');
     });
+
+    describe('with tracking', () => {
+      const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      it('tracks on success', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        const validFile = new File(['content'], 'test.txt', { type: 'text/plain' });
+        findUploadDropzone().vm.$emit('change', validFile);
+        mockFileReader.onload({ target: { result: 'data:text/plain;base64,content' } });
+
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'file_upload_placement_successful_in_upload_blob_modal',
+          {},
+          undefined,
+        );
+      });
+
+      it('does not track load on error', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        const directoryFile = new File([''], 'test-folder', { type: '' });
+        findUploadDropzone().vm.$emit('change', directoryFile);
+        mockFileReader.onerror({ target: { error: new Error() } });
+
+        await nextTick();
+
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          'file_upload_placement_successful_in_upload_blob_modal',
+          {},
+          undefined,
+        );
+      });
+    });
+  });
+
+  describe('uploadPath prop functionality', () => {
+    const CUSTOM_UPLOAD_PATH = '/custom/upload/path';
+
+    beforeEach(() => {
+      mock.onPost(CUSTOM_UPLOAD_PATH).replyOnce(HTTP_STATUS_OK, { filePath: '/custom_file' });
+    });
+
+    it('uses uploadPath prop when provided instead of constructing from route', async () => {
+      createComponent({ uploadPath: CUSTOM_UPLOAD_PATH });
+
+      findUploadDropzone().vm.$emit('change', new File(['content'], 'test.txt'));
+
+      await submitForm();
+
+      expect(mock.history.post).toHaveLength(1);
+      expect(mock.history.post[0].url).toBe(CUSTOM_UPLOAD_PATH);
+      expect(visitUrlSpy).toHaveBeenCalledWith('/custom_file');
+    });
+
+    it('falls back to route-based path construction when uploadPath is not provided', async () => {
+      setupUploadMock();
+      createComponent();
+
+      findUploadDropzone().vm.$emit('change', new File(['content'], 'test.txt'));
+
+      await submitForm();
+
+      expect(mock.history.post).toHaveLength(1);
+      expect(mock.history.post[0].url).toBe(NEW_PATH);
+      expect(visitUrlSpy).toHaveBeenCalledWith('/new_file');
+    });
+
+    it('uses uploadPath prop even when route params exist', async () => {
+      createComponent({ uploadPath: CUSTOM_UPLOAD_PATH });
+      wrapper.vm.$route.params.path = 'some/route/path';
+
+      findUploadDropzone().vm.$emit('change', new File(['content'], 'test.txt'));
+
+      await submitForm();
+
+      expect(mock.history.post).toHaveLength(1);
+      expect(mock.history.post[0].url).toBe(CUSTOM_UPLOAD_PATH);
+    });
   });
 
   describe.each`
@@ -222,6 +302,36 @@ describe('UploadBlobModal', () => {
             message: 'Error uploading file. Please try again.',
           });
           expect(logError).toHaveBeenCalledWith(expectedError, mockError);
+        });
+
+        describe('with tracking', () => {
+          const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+          it('should call trackEvent method when file was uploaded successfully', async () => {
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+            await submitForm();
+
+            expect(trackEventSpy).toHaveBeenCalledWith(
+              'file_upload_successful_in_upload_blob_modal',
+              {},
+              undefined,
+            );
+          });
+
+          it('on error, it does not track', async () => {
+            mock.reset();
+            setupMockAsError();
+            await submitForm();
+
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+            expect(trackEventSpy).not.toHaveBeenCalledWith(
+              'file_upload_successful_in_upload_blob_modal',
+              {},
+              undefined,
+            );
+          });
         });
       });
     },

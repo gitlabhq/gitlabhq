@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Duo Workflow
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Describes Model Context Protocol and how to use it
 title: Use Model Context Protocol with AI-native features

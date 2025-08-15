@@ -12,7 +12,13 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can delete a page', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815' do
+      it(
+        'can delete a page',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815',
+        quarantine: {
+          type: :investigating,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/561679"
+        }) do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)
@@ -23,8 +29,13 @@ module QA
         end
       end
 
-      it 'can delete a page with spaces in the path',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442389' do
+      it(
+        'can delete a page with spaces in the path',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442389',
+        quarantine: {
+          type: :investigating,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/561679"
+        }) do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content

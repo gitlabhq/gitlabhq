@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlDrawer, GlButton, GlTooltipDirective, GlOutsideDirective } from '@gitlab/ui';
+import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -26,6 +27,7 @@ export default {
     GlLink,
     GlDrawer,
     GlButton,
+    MountingPortal,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
   mixins: [glFeatureFlagMixin()],
@@ -86,6 +88,9 @@ export default {
     },
     getDrawerHeight() {
       return `calc(${getContentWrapperHeight()} + var(--top-bar-height))`;
+    },
+    paneledViewEnabled() {
+      return this.glFeatures.paneledView;
     },
   },
   watch: {
@@ -281,6 +286,7 @@ export default {
 
 <template>
   <gl-drawer
+    v-if="!paneledViewEnabled"
     v-gl-outside="handleClickOutside"
     :open="open"
     :z-index="$options.DRAWER_Z_INDEX"
@@ -344,4 +350,57 @@ export default {
       />
     </template>
   </gl-drawer>
+  <mounting-portal v-else-if="open" mount-to="#contextual-panel-portal" append>
+    <div data-testid="work-item-panel" class="work-item-drawer gl-pt-10 gl-leading-reset">
+      <div class="gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 xl:gl-px-4">
+        <div class="gl-flex gl-grow gl-items-center gl-gap-2">
+          <gl-link
+            ref="workItemUrl"
+            data-testid="work-item-drawer-ref-link"
+            :href="activeItem.webUrl"
+            class="gl-text-sm gl-font-bold gl-text-default"
+            @click="redirectToWorkItem"
+          >
+            {{ headerReference }}
+          </gl-link>
+          <gl-button
+            v-gl-tooltip
+            data-testid="work-item-drawer-copy-button"
+            :title="copyTooltipText"
+            category="tertiary"
+            icon="link"
+            size="small"
+            :aria-label="$options.i18n.copyTooltipText"
+            :data-clipboard-text="activeItem.webUrl"
+            @click="handleCopyToClipboard"
+          />
+        </div>
+        <gl-button
+          v-gl-tooltip
+          data-testid="work-item-drawer-link-button"
+          :href="activeItem.webUrl"
+          :title="$options.i18n.openTooltipText"
+          category="tertiary"
+          icon="maximize"
+          size="small"
+          :aria-label="$options.i18n.openTooltipText"
+          @click="redirectToWorkItem"
+        />
+        <gl-button category="tertiary" icon="close" size="small" @click="handleClose" />
+      </div>
+      <work-item-detail
+        :key="activeItem.iid"
+        :work-item-iid="activeItem.iid"
+        :work-item-full-path="activeItemFullPath"
+        :modal-is-group="modalIsGroup"
+        :is-board="isBoard"
+        is-drawer
+        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
+        @deleteWorkItem="deleteWorkItem"
+        @work-item-updated="handleWorkItemUpdated"
+        @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
+        v-on="$listeners"
+      />
+    </div>
+  </mounting-portal>
 </template>

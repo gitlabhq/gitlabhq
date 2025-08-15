@@ -16,6 +16,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import validation, { initFormField } from '~/vue_shared/directives/validation';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { InternalEvents } from '~/tracking';
 import { COMMIT_MESSAGE_SUBJECT_MAX_LENGTH, COMMIT_MESSAGE_BODY_MAX_LENGTH } from '../constants';
 
 export default {
@@ -70,6 +71,7 @@ export default {
   directives: {
     validation: validation(),
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     modalId: {
       type: String,
@@ -221,6 +223,8 @@ export default {
     async handlePrimaryAction(e) {
       window.onbeforeunload = null;
       e.preventDefault(); // Prevent modal from closing
+
+      this.trackEvent('click_commit_changes_in_commit_changes_modal');
 
       if (this.showLfsWarning) {
         await this.handleContinueLfsWarning();

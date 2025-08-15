@@ -418,6 +418,7 @@ describe('Repository breadcrumbs component', () => {
           path: '',
           replacePath: null,
           targetBranch: '',
+          uploadPath: null,
         });
       });
     });

@@ -1,0 +1,15 @@
+---
+description: Commit changes button clicked in commit changes modal
+internal_events: true
+action: click_commit_changes_in_commit_changes_modal
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201020
+tiers:
+  - free
+  - premium
+  - ultimate
