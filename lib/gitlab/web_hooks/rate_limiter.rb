@@ -53,7 +53,7 @@ module Gitlab
       attr_reader :hook, :parent
 
       def no_limit?
-        limit == NO_LIMIT
+        limit == NO_LIMIT || Feature.enabled?(:no_webhook_rate_limit, root_namespace)
       end
 
       def root_namespace

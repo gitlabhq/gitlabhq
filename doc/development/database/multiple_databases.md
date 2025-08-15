@@ -29,6 +29,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | -------- | ----------- | ------- |
 | `gitlab_main` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_org` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_clusterwide` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
@@ -44,7 +45,7 @@ More schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
 
-- `ApplicationRecord` for `gitlab_main`/`gitlab_main_cell.`
+- `ApplicationRecord` for `gitlab_main_org`
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`

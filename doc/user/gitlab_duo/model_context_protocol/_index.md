@@ -50,10 +50,10 @@ Before using a GitLab Duo feature with MCP, you must:
   - MCP support requires version 6.28.2 and later.
   - Workspace and user configuration features require version 6.35.6 and later.
 
-- Meet the feature prerequisites as required:
+- Meet the prerequisites required for:
 
-  - [Agentic Chat prerequisites](../../../user/gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
-  - [Software development flow prerequisites](../../../user/duo_agent_platform/flows/software_development.md#prerequisites).
+  - [GitLab Duo Chat (Agentic)](../../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
+  - [Software development flow](../../../user/duo_agent_platform/flows/software_development.md#prerequisites).
 
 ## Turn on MCP for your group
 

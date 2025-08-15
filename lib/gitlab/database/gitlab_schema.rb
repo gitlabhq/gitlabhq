@@ -29,6 +29,7 @@ module Gitlab
       IMPLICIT_GITLAB_SCHEMAS = {
         '_test_gitlab_main_clusterwide_' => :gitlab_main_clusterwide,
         '_test_gitlab_main_cell_' => :gitlab_main_cell,
+        '_test_gitlab_main_org_' => :gitlab_main_org,
         '_test_gitlab_main_' => :gitlab_main,
         '_test_gitlab_ci_' => :gitlab_ci,
         '_test_gitlab_sec_' => :gitlab_sec,

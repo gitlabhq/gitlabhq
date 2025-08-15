@@ -721,10 +721,11 @@ tests = [
   {
     explanation: 'Spec for in-app duo pro trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller.rb',
+    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
     expected: %w[
       ee/spec/features/gitlab_subscriptions/trials/duo_pro/access_denied_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_pro/creation_with_multiple_existing_namespace_flow_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_pro/creation_with_one_existing_namespace_flow_spec.rb
+      ee/spec/features/gitlab_subscriptions/trials/duo_pro/two_step_creation_with_multiple_existing_namespace_flow_spec.rb
+      ee/spec/features/gitlab_subscriptions/trials/duo_pro/two_step_creation_with_one_existing_namespace_flow_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials/duo_pro_controller_spec.rb
     ]
   },
@@ -732,7 +733,6 @@ tests = [
   {
     explanation: 'Spec for in-app duo enterprise trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller.rb',
-    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
     expected: %w[
       ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/access_denied_spec.rb
       ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/two_step_creation_with_multiple_existing_namespace_flow_spec.rb

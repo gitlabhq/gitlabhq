@@ -22,21 +22,39 @@ RSpec.describe 'When a user filters Sentry errors by status', :js, :use_clean_ra
     .to_return(status: 200, body: filtered_errors_by_status_response, headers: return_header)
   end
 
-  it 'displays the results' do
-    sign_in(project.first_owner)
-    visit project_error_tracking_index_path(project)
-    page.within(find('.gl-table')) do
-      results = page.all('.table-row')
-      expect(results.count).to be(3)
+  context 'when the error tracking feature flag is disabled' do
+    before do
+      stub_feature_flags(hide_error_tracking_features: false)
     end
 
-    find('[data-testid="status-dropdown"] .dropdown-toggle').click
-    find('.dropdown-item', text: 'Ignored').click
+    it 'displays the results' do
+      sign_in(project.first_owner)
+      visit project_error_tracking_index_path(project)
+      page.within(find('.gl-table')) do
+        results = page.all('.table-row')
+        expect(results.count).to be(3)
+      end
 
-    page.within(find('.gl-table')) do
-      results = page.all('.table-row')
-      expect(results.count).to be(1)
-      expect(results.first).to have_content(filtered_errors_by_status_response[0]['title'])
+      find('[data-testid="status-dropdown"] .dropdown-toggle').click
+      find('.dropdown-item', text: 'Ignored').click
+
+      page.within(find('.gl-table')) do
+        results = page.all('.table-row')
+        expect(results.count).to be(1)
+        expect(results.first).to have_content(filtered_errors_by_status_response[0]['title'])
+      end
+    end
+  end
+
+  context 'when the error tracking feature flag is enabled' do
+    before do
+      sign_in(project.first_owner)
+
+      visit project_error_tracking_index_path(project)
+    end
+
+    it 'renders not found' do
+      expect(page).to have_content('Page not found')
     end
   end
 end

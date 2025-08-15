@@ -239,12 +239,28 @@ domains, your enterprise users cannot change their primary email address.
 Only GitLab support can change the primary email address to an email address from a
 non-verified domain. This action [releases the enterprise user](#release-an-enterprise-user).
 
+### Delete an enterprise user
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+You can use the [group enterprise users API](../../api/group_enterprise_users.md#delete-an-enterprise-user)
+to delete an enterprise user and permanently remove the account from GitLab. This action is different from
+releasing the user which only removes the enterprise management features from the user. When you delete
+the user, you can choose to either:
+
+- Permanently delete the user and their
+  [contributions](../../user/profile/account/delete_account.md#associated-records).
+- Keep their contributions and transfer them to a system-wide ghost user account.
+
 ### Release an enterprise user
 
 You can remove enterprise management features from a user account. Removing an enterprise user might be required if, for
 example, a user wants to keep their GitLab account after leaving their company. Releasing a user
 does not alter their account roles or permissions, but removes the management options
-for the group Owner.
+for the group Owner. If you need to permanently remove the account, you should
+[delete the user](#delete-an-enterprise-user) instead.
 
 To release the user, GitLab support must update the user's primary email address to an
 email address from a non-verified domain. This action automatically releases the account.

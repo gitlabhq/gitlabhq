@@ -24,59 +24,77 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     allow(::ServiceDesk).to receive(:supported?).and_return(true)
   end
 
-  it_behaves_like 'verified navigation bar' do
+  describe 'when hide_error_tracking_features is disabled' do
     before do
-      visit project_path(project)
+      stub_feature_flags(hide_error_tracking_features: false)
+    end
+
+    it_behaves_like 'verified navigation bar' do
+      before do
+        visit project_path(project)
+      end
+    end
+
+    context 'when pages are available' do
+      before do
+        stub_config(pages: { enabled: true })
+
+        insert_after_sub_nav_item(
+          _('Model registry'),
+          within: _('Deploy'),
+          new_sub_nav_item_name: _('Pages')
+        )
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
+    end
+
+    context 'when package registry is available' do
+      before do
+        stub_config(packages: { enabled: true })
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
+    end
+
+    context 'when container registry is available' do
+      before do
+        stub_config(registry: { enabled: true })
+
+        insert_container_nav
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
+    end
+
+    context 'when harbor registry is available' do
+      let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
+
+      before do
+        insert_harbor_registry_nav
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
     end
   end
 
-  context 'when pages are available' do
-    before do
-      stub_config(pages: { enabled: true })
+  describe 'when hide_error_tracking_features is enabled' do
+    context 'when error tracking feature flag is enabled' do
+      before do
+        remove_nav_item(_('Error Tracking'))
 
-      insert_after_sub_nav_item(
-        _('Model registry'),
-        within: _('Deploy'),
-        new_sub_nav_item_name: _('Pages')
-      )
+        visit project_path(project)
+      end
 
-      visit project_path(project)
+      it_behaves_like 'verified navigation bar'
     end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when package registry is available' do
-    before do
-      stub_config(packages: { enabled: true })
-
-      visit project_path(project)
-    end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when container registry is available' do
-    before do
-      stub_config(registry: { enabled: true })
-
-      insert_container_nav
-
-      visit project_path(project)
-    end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when harbor registry is available' do
-    let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
-
-    before do
-      insert_harbor_registry_nav
-
-      visit project_path(project)
-    end
-
-    it_behaves_like 'verified navigation bar'
   end
 end

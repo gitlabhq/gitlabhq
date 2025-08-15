@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Agentic Chat
+title: GitLab Duo Chat (Agentic)
 ---
 
 {{< details >}}
@@ -23,7 +23,7 @@ title: GitLab Duo Agentic Chat
 - GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
-- GitLab Duo Agentic Chat changed to beta in GitLab 18.2.
+- GitLab Duo Chat (Agentic) changed to beta in GitLab 18.2.
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 
 {{< /history >}}
@@ -35,15 +35,15 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab Duo Agentic Chat is an enhanced version of GitLab Duo Chat that can autonomously
-perform actions on your behalf to answer complex questions more comprehensively.
+GitLab Duo Chat (Agentic) is an enhanced version of GitLab Duo Chat (Classic). This new Chat can autonomously
+perform actions on your behalf, to help you answer complex questions more comprehensively.
 
-While Chat answers questions based on a single context, Agentic Chat searches,
+While the classic Chat answers questions based on a single context, the agentic Chat searches,
 retrieves, and combines information from multiple sources across your GitLab projects
-to provide more thorough and relevant answers. Agentic Chat can also create and edit
+to provide more thorough and relevant answers. The agentic Chat can also create and edit
 files for you.
 
-"Agentic" means that Agentic Chat:
+"Agentic" means that Chat:
 
 - Autonomously uses a large language model to determine what information is needed.
 - Executes a sequence of operations to gather that information.
@@ -54,12 +54,12 @@ For larger problems, like understanding a codebase or generating an implementati
 plan, use the [software development flow of the GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
+For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 
-## Use Agentic Chat
+## Use GitLab Duo Chat
 
-You can use Agentic Chat in:
+You can use GitLab Duo Chat in:
 
 - If you have GitLab Duo Pro or Enterprise, the GitLab UI.
 - VS Code.
@@ -73,7 +73,7 @@ Prerequisites:
 - You have an assigned seat for or access to GitLab Duo Chat.
 - You have [turned on beta and experimental features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your GitLab instance or group.
 
-### Use Agentic Chat in the GitLab UI
+### Use GitLab Duo Chat in the GitLab UI
 
 {{< details >}}
 
@@ -89,18 +89,18 @@ To use Agentic Chat in the GitLab UI:
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
-### Use Agentic Chat in VS Code
+### Use GitLab Duo Chat in VS Code
 
 Prerequisites:
 
 - You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
 
-You can only use Agentic Chat in a project:
+You can only use GitLab Duo Chat in a project:
 
 - Hosted on a GitLab instance.
 - That is part of a group that meets the prerequisites.
 
-To use Agentic Chat:
+To use GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
 1. In VS Code, go to **Settings > Settings**.
 1. Search for `agent platform`.
@@ -112,18 +112,18 @@ To use Agentic Chat:
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
 
-### Use Agentic Chat in JetBrains IDEs
+### Use GitLab Duo Chat in JetBrains IDEs
 
 Prerequisites:
 
 - You have [installed and configured the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
 
-To use Agentic Chat in a project, it must be:
+To use GitLab Duo Chat in a project, it must be:
 
 - Hosted on a GitLab instance.
 - Part of a group that meets the prerequisites.
 
-To use Agentic Chat:
+To use GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
 1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
 1. Under **GitLab Duo Agent Platform (Beta)**, select the **Enable GitLab Duo Agent Platform** checkbox.
@@ -133,18 +133,18 @@ To use Agentic Chat:
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 <!-- markdownlint-enable MD044 -->
 
-### Use Agentic Chat in Visual Studio
+### Use GitLab Duo Chat in Visual Studio
 
 Prerequisites:
 
 - You have [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
 
-To use Agentic Chat in a project, it must be:
+To use GitLab Duo Chat in a project, it must be:
 
 - Hosted on a GitLab instance.
 - Part of a group that meets the prerequisites.
 
-To use Agentic Chat:
+To use GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
 1. In Visual Studio, go to **Tools > Options > GitLab**.
 1. Under **GitLab**, select **General**.
@@ -181,11 +181,11 @@ In your IDE, the last 20 conversations are visible. [Issue 1308](https://gitlab.
 
 {{< /history >}}
 
-You can have an unlimited number of simultaneous conversations with Agentic Chat.
+You can have an unlimited number of simultaneous conversations with GitLab Duo Chat.
 
-Your conversations synchronize across Agentic Chat in the GitLab UI and your IDE.
+Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your IDE.
 
-1. Open Agentic Chat in the GitLab UI or your IDE.
+1. Open GitLab Duo Chat in the GitLab UI or your IDE.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 1. Create a new conversation:
 
@@ -226,7 +226,7 @@ Individual conversations expire and are automatically deleted after 30 days of i
 {{< /history >}}
 
 In your IDE, if you have specific instructions that you want
-Agentic Chat to follow in every conversation, you can create custom rules.
+GitLab Duo Chat to follow in every conversation, you can create custom rules.
 
 Prerequisites:
 
@@ -250,13 +250,13 @@ Conversations that existed before you created any custom rules do not follow tho
    ```
 
 1. Save the file.
-1. To have Agentic Chat follow the new custom rules, start a new conversation, or `/clear` the existing conversation.
+1. To have GitLab Duo Chat follow the new custom rules, start a new conversation, or `/clear` the existing conversation.
 
    You must do this every time you change the custom rules.
 
-## Agentic Chat capabilities
+## GitLab Duo Chat capabilities
 
-Agentic Chat extends Chat capabilities with the following features:
+GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:
 
 - **Project search**: Can search through your projects to find relevant
   issues, merge requests, and other artifacts using keyword-based search. Agentic
@@ -268,17 +268,17 @@ Agentic Chat extends Chat capabilities with the following features:
 - **Resource retrieval**: Can automatically retrieve detailed information about
   issues, merge requests, and pipeline logs of your current project.
 - **Multi-source analysis**: Can combine information from multiple sources to
-  provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect Agentic Chat to
+  provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect GitLab Duo Chat (Agentic) to
   external data sources and tools.
 - **Custom rules**: Conversations can follow any customised rules that you specify.
-- Agentic Chat in the GitLab UI only - **Commit creation**: Can create and push commits.
+- GitLab Duo Chat (Agentic) in the GitLab UI only - **Commit creation**: Can create and push commits.
 
 ### Chat feature comparison
 
-| Capability                                              | Chat |                                                         Agentic Chat                                                                                                          |
+| Capability                                              | GitLab Duo Chat (Classic) |                                                         GitLab Duo Chat (Agentic)                                                                                                          |
 | ------------                                            |------|                                                         -------------                                                                                                          |
 | Ask general programming questions |                       Yes  |                                                          Yes                                                                                                                   |
-| Get answers about currently open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
+| Get answers about an open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
 | Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. |        Yes. Provide the path of the file in your question.                                                                   |
 | Autonomously search project contents |                    No |                                                            Yes                                                                                                                   |
 | Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. Note, it may overwrite changes that you have made manually and have not committed, yet.  |
@@ -295,7 +295,7 @@ Agentic Chat extends Chat capabilities with the following features:
 
 ## Use cases
 
-You might find Agentic Chat particularly helpful when you:
+You might find GitLab Duo Chat particularly helpful when you:
 
 - Need answers that require information from multiple files or GitLab resources.
 - Want to ask questions about your codebase without having to specify exact file paths.
@@ -304,7 +304,7 @@ You might find Agentic Chat particularly helpful when you:
 
 ### Example prompts
 
-Agentic Chat works best with natural language questions. Here are some examples:
+GitLab Duo Chat works best with natural language questions. Here are some examples:
 
 - `Read the project structure and explain it to me`, or `Explain the project`.
 - `Find the API endpoints that handle user authentication in this codebase`.
@@ -317,21 +317,21 @@ Agentic Chat works best with natural language questions. Here are some examples:
 
 ## Troubleshooting
 
-When working with Agentic Chat, you might encounter the following issues.
+When working with GitLab Duo Chat, you might encounter the following issues.
 
 ### Network connectivity problems
 
-Because Agentic Chat requires network access to retrieve resources, network restrictions
+Because GitLab Duo Chat (Agentic) requires network access to retrieve resources, network restrictions
 might impact its functionality.
 
-To help resolve Agentic Chat networking issues, see the
+To help resolve GitLab Duo Chat networking issues, see the
 [GitLab Duo Agent Platform network issue troubleshooting documentation](../duo_agent_platform/troubleshooting.md#network-issues).
 
-### Agentic Chat does not show up in the IDE
+### GitLab Duo Chat does not show up in the IDE
 
-You might find that Agentic Chat is not visible in your IDE. To resolve this, make sure that:
+You might find that GitLab Duo Chat (Agentic) is not visible in your IDE. To resolve this, make sure that:
 
-1. You have enabled Agentic Chat in the [VS Code](#use-agentic-chat-in-vs-code) or [JetBrains IDE](#use-agentic-chat-in-jetbrains-ides) settings.
+1. You have enabled GitLab Duo Chat (Agentic) in the [VS Code](#use-gitlab-duo-chat-in-vs-code) or [JetBrains IDE](#use-gitlab-duo-chat-in-jetbrains-ides) settings.
 1. You have one project open in your IDE workspace, and that [project is connected to a GitLab project](../duo_agent_platform/troubleshooting.md#view-the-project-in-the-gitlab-workflow-extension).
 1. The [GitLab project is in a group namespace](../duo_agent_platform/troubleshooting.md#project-not-in-a-group-namespace).
 1. You have a Premium or Ultimate subscription.
@@ -340,20 +340,20 @@ You might find that Agentic Chat is not visible in your IDE. To resolve this, ma
 
 ### Slow response times
 
-Agentic Chat has significant latency when processing requests.
+Chat has significant latency when processing requests.
 
-This issue occurs because Agentic Chat makes multiple API calls to gather information,
+This issue occurs because Chat makes multiple API calls to gather information,
 so responses often take much longer compared to Chat.
 
 ### Limited permissions
 
-Agentic Chat can only access resources that your GitLab user has permission to
-access, which is the same as Chat.
+Chat can access the same resources that your GitLab user has permission to
+access.
 
 ### Search limitations
 
-Agentic Chat uses keyword-based search instead of semantic search. This means that
-Agentic Chat might miss relevant content that does not contain the exact keywords
+Chat uses keyword-based search instead of semantic search. This means that
+Chat might miss relevant content that does not contain the exact keywords
 used in the search.
 
 ## Feedback

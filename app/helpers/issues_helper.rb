@@ -80,7 +80,7 @@ module IssuesHelper
 
   def show_new_issue_link?(project)
     return false unless project
-    return false if project.archived?
+    return false if project.self_or_ancestors_archived?
 
     # We want to show the link to users that are not signed in, that way they
     # get directed to the sign-in/sign-up flow and afterwards to the new issue page.

@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Chat
+title: GitLab Duo Chat (Classic)
 ---
 
 {{< details >}}
@@ -24,10 +24,11 @@ title: GitLab Duo Chat
 - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Updated naming to GitLab Duo Chat (Classic) in 18.3.
 
 {{< /history >}}
 
-GitLab Duo Chat is an AI assistant that accelerates development with
+GitLab Duo Chat (Classic) is an AI assistant that accelerates development with
 contextual, conversational AI. Chat:
 
 - Explains code and suggests improvements directly in your development environment.
@@ -38,6 +39,8 @@ contextual, conversational AI. Chat:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
+
+Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).
 
 ## Supported editor extensions
 

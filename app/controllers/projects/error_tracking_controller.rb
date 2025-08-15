@@ -6,6 +6,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   before_action :authorize_read_sentry_issue!
   before_action :authorize_update_sentry_issue!, only: %i[update]
   before_action :set_issue_id, only: :details
+  before_action :check_error_tracking_feature_flag, only: [:index, :details]
 
   before_action only: [:index] do
     push_frontend_feature_flag(:integrated_error_tracking, project)
@@ -104,5 +105,11 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
     ::ErrorTracking::DetailedErrorSerializer
       .new(project: project, user: current_user)
       .represent(error)
+  end
+
+  def check_error_tracking_feature_flag
+    return unless Feature.enabled?(:hide_error_tracking_features, project)
+
+    render_404
   end
 end

@@ -2680,6 +2680,9 @@ msgstr ""
 msgid "AI|Explain with AI"
 msgstr ""
 
+msgid "AI|Flow"
+msgstr ""
+
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
 msgstr ""
 
@@ -24018,16 +24021,28 @@ msgstr ""
 msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|Activity"
+msgstr ""
+
+msgid "DuoAgentPlatform|Details"
+msgstr ""
+
 msgid "DuoAgentPlatform|Error occurred when starting the flow."
 msgstr ""
 
 msgid "DuoAgentPlatform|Executor ID"
 msgstr ""
 
+msgid "DuoAgentPlatform|Flow"
+msgstr ""
+
 msgid "DuoAgentPlatform|Flow started successfully."
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow started successfully. To view progress, see %{linkStart}Session %{id}%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"

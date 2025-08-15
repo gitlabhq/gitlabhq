@@ -8,6 +8,13 @@ module NavbarStructureHelper
     structure.insert(index + 1, new_nav_item)
   end
 
+  def remove_nav_item(item_name)
+    structure.reject! { |item| item[:nav_item] == item_name }
+    structure.each do |item|
+      item[:nav_sub_items]&.reject! { |sub| sub == item_name }
+    end
+  end
+
   def insert_before_nav_item(after_nav_item_name, new_nav_item:)
     expect(structure).to include(a_hash_including(nav_item: after_nav_item_name))
 
