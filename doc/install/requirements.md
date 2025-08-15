@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Prerequisites for installation.
 title: GitLab installation requirements
@@ -66,8 +66,8 @@ For the following versions of GitLab, use these PostgreSQL versions:
 
 | GitLab version | Helm chart version | Minimum PostgreSQL version | Maximum PostgreSQL version |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
-| 18.x           | 9.x                | 16.x                       | To be determined           |
-| 17.x           | 8.x                | 14.x                       | 16.x ([tested against GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)) |
+| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | To be determined           |
+| 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x ([tested against GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)) |
 | 16.x           | 7.x                | 13.6                       | 15.x ([tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)) |
 | 15.x           | 6.x                | 12.10                      | 14.x ([tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624)), 13.x |
 
@@ -134,8 +134,13 @@ Here are some required settings for externally managed PostgreSQL instances.
 | `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
 | `statement_timeout`    | maximum 1 min  | A statement timeout prevents runaway issues with locks and the database rejecting new clients. One minute matches the Puma rack timeout setting. |
 
-You can configure some PostgreSQL settings for the specific database, rather than for all databases on the server. You might limit configuration to specific databases when hosting
-multiple databases on the same server. For guidance on where to apply configuration, consult your database administrator.
+You can configure some PostgreSQL settings for the specific database, rather than for all
+databases on the server.
+
+- You might limit configuration to specific databases when hosting multiple databases on the same server.
+- For guidance on where to apply configuration, consult your database administrator or vendor.
+- For GCP Cloud SQL, you can set `statement_timeout` on a specific database or user, but not [as a database flag](https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres).
+  For example: `ALTER DATABASE gitlab SET statement_timeout = '60s';`
 
 ## Puma
 

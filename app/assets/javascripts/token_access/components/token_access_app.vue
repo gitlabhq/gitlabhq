@@ -28,9 +28,9 @@ export default {
 <template>
   <gl-intersection-observer @update="updateVisible">
     <template v-if="isVisible">
-      <token-permissions v-if="glFeatures.allowPushRepositoryForJobToken" />
       <inbound-token-access />
       <auth-log />
+      <token-permissions v-if="glFeatures.allowPushRepositoryForJobToken" class="gl-mt-5" />
     </template>
   </gl-intersection-observer>
 </template>

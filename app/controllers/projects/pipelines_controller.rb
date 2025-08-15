@@ -230,6 +230,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         disable_coverage: true,
         disable_failed_builds: true,
         disable_manual_and_scheduled_actions: true,
+        disable_stage_actions: true,
         preload: true,
         preload_statuses: false,
         preload_downstream_statuses: false

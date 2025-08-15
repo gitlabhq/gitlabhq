@@ -2599,6 +2599,9 @@ msgstr ""
 msgid "AICatalog|The flow could not be added. Please try again."
 msgstr ""
 
+msgid "AICatalog|The flow could not be updated. Please try again."
+msgstr ""
+
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
@@ -72300,6 +72303,9 @@ msgstr ""
 msgid "WorkItem|Copy %{workItemType} email address"
 msgstr ""
 
+msgid "WorkItem|Copy from existing lifecycle"
+msgstr ""
+
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
@@ -72310,6 +72316,9 @@ msgid "WorkItem|Create lifecycle"
 msgstr ""
 
 msgid "WorkItem|Created %{timeago}"
+msgstr ""
+
+msgid "WorkItem|Creating a lifecycle will not effect existing items. Change the lifecycle associated with an item type to use this new lifecycle."
 msgstr ""
 
 msgid "WorkItem|Creating this %{workItemType} will resolve all threads in"
@@ -72328,6 +72337,9 @@ msgid "WorkItem|Dark red"
 msgstr ""
 
 msgid "WorkItem|Dates"
+msgstr ""
+
+msgid "WorkItem|Default statuses"
 msgstr ""
 
 msgid "WorkItem|Delete %{workItemType}"
@@ -72403,6 +72415,9 @@ msgid "WorkItem|Failed to fetch namespace metadata."
 msgstr ""
 
 msgid "WorkItem|Failed to load custom fields."
+msgstr ""
+
+msgid "WorkItem|Failed to load default lifecycle"
 msgstr ""
 
 msgid "WorkItem|Failed to load statuses."
@@ -72625,6 +72640,9 @@ msgstr ""
 msgid "WorkItem|No matches found"
 msgstr ""
 
+msgid "WorkItem|No matching lifecycles."
+msgstr ""
+
 msgid "WorkItem|No matching results"
 msgstr ""
 
@@ -72730,6 +72748,9 @@ msgstr ""
 msgid "WorkItem|Search existing items or enter an item's URL or reference ID"
 msgstr ""
 
+msgid "WorkItem|Search lifecycles"
+msgstr ""
+
 msgid "WorkItem|Search or enter URL"
 msgstr ""
 
@@ -72743,6 +72764,9 @@ msgid "WorkItem|Select a namespace"
 msgstr ""
 
 msgid "WorkItem|Select a project"
+msgstr ""
+
+msgid "WorkItem|Select a set of statuses to start from. You can edit statuses once the lifecycle created."
 msgstr ""
 
 msgid "WorkItem|Select a status"
@@ -72890,6 +72914,12 @@ msgid "WorkItem|Something went wrong while updating the work item. Please try ag
 msgstr ""
 
 msgid "WorkItem|Start"
+msgstr ""
+
+msgid "WorkItem|Start from a default configuration"
+msgstr ""
+
+msgid "WorkItem|Starting statuses"
 msgstr ""
 
 msgid "WorkItem|Statuses"

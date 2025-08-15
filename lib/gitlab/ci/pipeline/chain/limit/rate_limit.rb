@@ -14,7 +14,7 @@ module Gitlab
               # sub-pipelines, as well as execution policy pipelines
               # that would otherwise hit the rate limit due to having the same scope (project, user, sha).
               #
-              return if pipeline.parent_pipeline? || command.pipeline_policy_context&.creating_policy_pipeline?
+              return if pipeline.parent_pipeline? || creating_policy_pipeline?
 
               if rate_limit_throttled?
                 create_log_entry
@@ -27,6 +27,10 @@ module Gitlab
             end
 
             private
+
+            def creating_policy_pipeline?
+              command.pipeline_policy_context&.pipeline_execution_context&.creating_policy_pipeline?
+            end
 
             def rate_limit_throttled?
               ::Gitlab::ApplicationRateLimiter.throttled?(

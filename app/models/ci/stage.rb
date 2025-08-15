@@ -197,7 +197,10 @@ module Ci
 
     # We only check jobs that are played by `Ci::PlayManualStageService`.
     def confirm_manual_job?
-      processables.manual.any? do |job|
+      manual_jobs = processables.manual
+      return false unless manual_jobs.exists?
+
+      manual_jobs.includes(:pipeline, :metadata, [deployment: [environment: :project]]).any? do |job|
         job.playable? && job.manual_confirmation_message
       end
     end
