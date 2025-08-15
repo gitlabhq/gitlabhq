@@ -26,7 +26,7 @@ flowchart LR
 
     A[Your<br>merge request] --> B{Reviewers<br>added?}
     B-->|Yes| D[<strong>Review<br>requested</strong>]
-    B -.->|No| C[<strong>Assigned<br>to you</strong>]
+    B -.->|No| C[<strong>Your merge<br>requests</strong>]
     D -->|Approved| E[<strong>Approved<br>by others</strong>]
     D -..->|Changes<br>requested| F[<strong>Returned<br>to you</strong>]
     F -->|You make<br>changes| D
@@ -126,7 +126,7 @@ merge requests from your review count.
 
 These merge requests need your attention. They count toward the total shown on the left sidebar:
 
-- **Assigned to you**: You're the merge request author or assignee. Add reviewers to start the review process.
+- **Your merge requests**: You're the merge request author or assignee. Add reviewers to start the review process.
   Statuses:
   - **Draft**: The merge request is a draft.
   - **Reviewers needed**: The merge request is not a draft, but has no reviewers.

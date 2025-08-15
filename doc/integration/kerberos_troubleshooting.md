@@ -134,7 +134,7 @@ You must comment the following if:
 # gitlab_rails['kerberos_https'] = false
 ```
 
-See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Documentation/RelNotes/2.11.0.txt#L482-L486)
+See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Documentation/RelNotes/2.11.0.adoc?plain=1#L482-L486)
 
 ## Helpful links
 

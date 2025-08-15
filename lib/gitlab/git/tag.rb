@@ -106,6 +106,10 @@ module Gitlab
           Gpg::Tag.new(@repository, self).signature
         when :X509
           X509::Tag.new(@repository, self).signature
+        when :SSH
+          return unless Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
+
+          Ssh::Tag.new(@repository, self).signature
         end
       end
 

@@ -245,5 +245,6 @@ release-environments-labeling-merge-request:
       artifacts: false
     - project: gitlab-com/gl-infra/release-environments # To ensure this job can access $DEPLOYMENT_ID
       job: track-deployment-start
+      ref: main
       artifacts: true
   allow_failure: true

@@ -857,6 +857,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_admin_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_admin_sync_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ldap_admin_sync_worker']['job_class'] = 'Authz::LdapAdminRoleWorker'
+  Settings.cron_jobs['ldap_add_on_seat_sync_worker'] ||= {}
+  Settings.cron_jobs['ldap_add_on_seat_sync_worker']['cron'] ||= '0 2 * * *'
+  Settings.cron_jobs['ldap_add_on_seat_sync_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::LdapAllAddOnSeatSyncWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'

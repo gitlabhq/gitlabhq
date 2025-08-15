@@ -665,6 +665,11 @@ production: &base
     ldap_group_sync_worker:
       cron: "0 * * * *"
 
+    # Periodically sync LDAP Duo add-on seat assignments.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_add_on_seat_sync_worker:
+      cron: "0 2 * * *"
+
     # GitLab Geo metrics update worker
     # NOTE: This will only take effect if Geo is enabled
     geo_metrics_update_worker:

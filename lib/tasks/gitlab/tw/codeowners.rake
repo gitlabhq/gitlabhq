@@ -60,7 +60,7 @@ namespace :tw do
       # CodeOwnerRule.new('MLOps', ''),
       # CodeOwnerRule.new('Mobile Devops', ''),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
-      CodeOwnerRule.new('Organizations', '@phillipwells'),
+      CodeOwnerRule.new('Organizations', '@z_painter'),
       CodeOwnerRule.new('Organization', '@lciutacu'),
       CodeOwnerRule.new('Package Registry', '@z_painter'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),

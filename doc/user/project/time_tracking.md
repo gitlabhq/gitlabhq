@@ -33,7 +33,7 @@ Time tracking:
 
 You can see time tracking information in the right sidebar of your work items:
 
-![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
+![Time tracking in the sidebar](img/time_tracking_sidebar_v18_3.png)
 
 Enter and remove time tracking data using [quick actions](quick_actions.md) or the user interface.
 Type quick actions on their own lines.
@@ -53,7 +53,7 @@ The estimate is designed to show the total time needed to complete an item.
 
 You can see the estimated time remaining when you hover over the time tracking information in the right sidebar.
 
-![Estimated time remaining](img/remaining_time_v14_2.png)
+![Estimated time remaining](img/remaining_time_v18_3.png)
 
 ### Add an estimate
 
@@ -268,7 +268,7 @@ To view a time tracking report of time spent on an item:
 
 - On the right sidebar, next to **Spent**, select the time.
 
-![Time tracking report](img/time_tracking_report_v15_1.png)
+![Time tracking report](img/time_tracking_report_v18_3.png)
 
 The breakdown of spent time displayed is limited to a maximum of 100 entries.
 

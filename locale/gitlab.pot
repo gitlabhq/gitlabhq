@@ -24947,9 +24947,6 @@ msgstr ""
 msgid "Edit user: %{user_name}"
 msgstr ""
 
-msgid "Edit value"
-msgstr ""
-
 msgid "Edit video description"
 msgstr ""
 
@@ -56692,6 +56689,9 @@ msgid "Secrets|Edit %{name}"
 msgstr ""
 
 msgid "Secrets|Enable the Secrets Manager to securely store and manage sensitive information for this project."
+msgstr ""
+
+msgid "Secrets|Enter a new value to update secret"
 msgstr ""
 
 msgid "Secrets|Enter a value for the secret"

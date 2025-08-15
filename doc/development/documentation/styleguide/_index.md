@@ -1353,7 +1353,7 @@ To emphasize an area in a screenshot, use an arrow.
 - Use the arrow style shown in the following image.
 - If you have multiple arrows, make them parallel when possible.
 
-![Red arrow callouts highlighting issue and merge request icons in the GitLab user interface.](img/callouts_v14_6.png)
+![Red arrow callouts highlighting ci/cd component tabs for all users and your groups.](img/callouts_v18_3.png)
 
 #### Image requirements
 

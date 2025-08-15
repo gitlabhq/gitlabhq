@@ -224,6 +224,13 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
+{{< alert type="warning" >}}
+
+For PostgreSQL replication between Geo sites, you must use private network connections, such as internal VPC peering.
+Never expose PostgreSQL ports to the internet. Exposing PostgreSQL ports to the internet can result in unauthorized access with full write permissions to your GitLab database, potentially compromising your entire GitLab instance and all associated data.
+
+{{< /alert >}}
+
 {{< alert type="note" >}}
 
 [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.

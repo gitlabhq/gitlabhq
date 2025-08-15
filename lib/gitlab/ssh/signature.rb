@@ -8,6 +8,7 @@ module Gitlab
   module Ssh
     class Signature
       include Gitlab::Utils::StrongMemoize
+      include SignatureType
 
       GIT_NAMESPACE = 'git'
 
@@ -18,6 +19,10 @@ module Gitlab
         @commit = commit
         @committer_email = commit.committer_email
         @author_email = author_email
+      end
+
+      def type
+        :ssh
       end
 
       def verification_status
@@ -47,6 +52,10 @@ module Gitlab
           public_key.fingerprint
         end
       end
+      # The fingerprint returned in key_fingerprint is a SHA256 given the lookup in signed_by_key
+      # method. We alias :key_fingerprint_sha256 here so app/views/projects/commit/_signature_badge.html.haml
+      # can render correctly
+      alias_method :key_fingerprint_sha256, :key_fingerprint
 
       def user_id
         if verification_status == :verified_system && Feature.enabled?(:check_for_mailmapped_commit_emails,

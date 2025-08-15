@@ -53,6 +53,10 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
     end
   end
 
+  it_behaves_like 'signature with type checking', :ssh do
+    subject { signature }
+  end
+
   describe 'signature verification' do
     context 'when signature is valid and user email is verified' do
       it_behaves_like 'verified signature'
@@ -399,6 +403,12 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       it 'returns public key fingerprint' do
         expect(signature.key_fingerprint).to eq('3dNIFKfIAXZb/JL30KKv95cps+mZwVAuAYQhIWxAb+8')
       end
+    end
+  end
+
+  describe '#key_fingerprint_sha256' do
+    it 'returns the pubkey sha256 fingerprint' do
+      expect(signature.key_fingerprint_sha256).to eq('dw7gPSvYtkCBU+BbTolbbckUEX3sL6NsGIJTQ4PYEnM')
     end
   end
 

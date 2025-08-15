@@ -468,6 +468,10 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
+.search-version-patterns: &search-version-patterns
+  - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
+  - "GITLAB_ZOEKT_VERSION"
+
 # Redis patterns
 .redis-patterns: &redis-patterns
   - "{,ee/,jh/}{,spec/}app/models/concerns/redis_cacheable{,_spec}.rb"
@@ -860,6 +864,8 @@
       changes: *search-backend-patterns
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
+    - <<: *if-merge-request
+      changes: *search-version-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

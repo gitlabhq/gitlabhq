@@ -62,7 +62,7 @@ experience (rather than the single file editor or the Web IDE). It includes:
 
 If you prefer to edit your pipeline configuration locally, you can use the
 GitLab CI/CD schema in your editor to verify basic syntax issues. Any
-[editor with Schemastore support](https://www.schemastore.org/json/#editors) uses
+[editor with Schemastore support](https://www.schemastore.org/) uses
 the GitLab CI/CD schema by default.
 
 If you need to link to the schema directly, use this URL:
