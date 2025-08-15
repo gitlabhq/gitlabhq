@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillRolledUpWeightForWorkItemsV2, migration: :gitlab_main, feature_category: :team_planning do
+RSpec.describe QueueBackfillRolledUpWeightForWorkItemsV3, migration: :gitlab_main, feature_category: :team_planning do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

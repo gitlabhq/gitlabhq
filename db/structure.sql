@@ -37079,8 +37079,6 @@ CREATE INDEX index_merge_requests_on_author_id_and_target_project_id ON merge_re
 
 CREATE INDEX index_merge_requests_on_created_at ON merge_requests USING btree (created_at);
 
-CREATE INDEX index_merge_requests_on_description_trigram ON merge_requests USING gin (description gin_trgm_ops) WITH (fastupdate='false');
-
 CREATE INDEX index_merge_requests_on_head_pipeline_id ON merge_requests USING btree (head_pipeline_id);
 
 CREATE INDEX index_merge_requests_on_latest_merge_request_diff_id ON merge_requests USING btree (latest_merge_request_diff_id);
@@ -37110,8 +37108,6 @@ CREATE INDEX index_merge_requests_on_target_project_id_and_squash_commit_sha ON 
 CREATE INDEX index_merge_requests_on_target_project_id_and_target_branch ON merge_requests USING btree (target_project_id, target_branch) WHERE ((state_id = 1) AND (merge_when_pipeline_succeeds = true));
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_updated_at_and_id ON merge_requests USING btree (target_project_id, updated_at, id);
-
-CREATE INDEX index_merge_requests_on_title_trigram ON merge_requests USING gin (title gin_trgm_ops) WITH (fastupdate='false');
 
 CREATE INDEX index_merge_requests_on_tp_id_and_merge_commit_sha_and_id ON merge_requests USING btree (target_project_id, merge_commit_sha, id);
 

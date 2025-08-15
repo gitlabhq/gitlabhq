@@ -22,7 +22,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     it 'creates labels on project creation' do
-      expect(project.labels).to include have_attributes(
+      expect(project.reload.labels).to include have_attributes(
         type: eq('ProjectLabel'),
         project_id: eq(project.id),
         title: eq('bug')
@@ -31,11 +31,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     context 'using gitlab project import' do
       before do
+        stub_application_setting(import_sources: %w[gitlab_project])
         opts[:import_type] = 'gitlab_project'
       end
 
       it 'does not creates labels on project creation' do
-        expect(project.labels.size).to eq(0)
+        expect(project.reload.labels).to be_empty
       end
     end
   end

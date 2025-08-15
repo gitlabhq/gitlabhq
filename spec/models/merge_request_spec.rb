@@ -3102,9 +3102,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject).to eq(true)
       end
 
-      context 'when FF show_child_reports_in_mr_page is disabled' do
+      context 'when feature flags are disabled' do
         before do
           stub_feature_flags(show_child_reports_in_mr_page: false)
+          stub_feature_flags(show_child_security_reports_in_mr_widget: false)
         end
 
         it 'returns false regardless of child pipeline reports' do
@@ -3199,51 +3200,35 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#has_terraform_reports?' do
-    context 'when head pipeline has terraform reports' do
-      it 'returns true' do
-        merge_request = create(:merge_request, :with_terraform_reports)
+    subject { merge_request.has_terraform_reports? }
 
-        expect(merge_request.has_terraform_reports?).to be_truthy
+    context 'when head pipeline has terraform reports' do
+      let_it_be(:merge_request) { create(:merge_request, :with_terraform_reports, source_project: project) }
+
+      it 'returns true' do
+        expect(subject).to be_truthy
       end
     end
 
     context 'when head pipeline does not have terraform reports' do
-      it 'returns false' do
-        merge_request = create(:merge_request)
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
-        expect(merge_request.has_terraform_reports?).to be_falsey
+      it 'returns false' do
+        expect(subject).to be_falsey
       end
     end
 
     context 'when head pipeline is not finished and has terraform reports' do
+      let_it_be(:merge_request) { create(:merge_request, :with_terraform_reports, source_project: project) }
+
       it 'returns true' do
-        merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)
 
-        expect(merge_request.has_terraform_reports?).to be_falsey
+        expect(subject).to be_falsey
       end
     end
 
-    context 'when child pipeline has terraform reports' do
-      let_it_be(:merge_request_with_pipeline) { create(:merge_request, :with_head_pipeline) }
-      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
-
-      it 'returns true even if head pipeline does not have reports' do
-        merge_request_with_pipeline.head_pipeline.update!(status: :success)
-
-        expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
-      end
-
-      context 'when FF show_child_reports_in_mr_page is disabled' do
-        before do
-          stub_feature_flags(show_child_reports_in_mr_page: false)
-        end
-
-        it 'does not take into account child pipeline reports' do
-          expect(merge_request_with_pipeline.has_terraform_reports?).to be_falsey
-        end
-      end
-    end
+    it_behaves_like 'reports in child pipelines', :terraform_reports
   end
 
   describe '#has_sast_reports?' do
@@ -6572,9 +6557,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
           it { is_expected.to be_truthy }
 
-          context 'with FF show_child_reports_in_mr_page disabled' do
+          context 'with FF show_child_security_reports_in_mr_widget disabled' do
             before do
-              stub_feature_flags(show_child_reports_in_mr_page: false)
+              stub_feature_flags(show_child_security_reports_in_mr_widget: false)
             end
 
             it { is_expected.to be_falsy }

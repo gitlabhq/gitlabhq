@@ -17,6 +17,18 @@ RSpec.describe Environments::StopJobSuccessWorker, feature_category: :continuous
         expect(environment.reload).to be_stopped
       end
 
+      it 'calls the managed resource deletion service' do
+        expect_next_instance_of(
+          Environments::DeleteManagedResourcesService,
+          environment,
+          current_user: job.user
+        ) do |service|
+          expect(service).to receive(:execute).once
+        end
+
+        subject
+      end
+
       context 'when the job fails' do
         before do
           job.update!(status: :failed)
@@ -29,6 +41,12 @@ RSpec.describe Environments::StopJobSuccessWorker, feature_category: :continuous
           subject
 
           expect(environment.reload).not_to be_stopped
+        end
+
+        it 'does not call the managed resource deletion service' do
+          expect(Environments::DeleteManagedResourcesService).not_to receive(:new)
+
+          subject
         end
       end
     end

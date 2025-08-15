@@ -1,0 +1,10 @@
+---
+name: show_child_security_reports_in_mr_widget
+description: This FF is split from show_child_reports_in_mr_page as security reports are rolled out separately
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/18377
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201187
+rollout_issue_url:
+milestone: '18.3'
+group: group::security insights
+type: wip
+default_enabled: false

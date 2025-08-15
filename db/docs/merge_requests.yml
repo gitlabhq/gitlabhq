@@ -10,11 +10,4 @@ milestone: "<6.0"
 gitlab_schema: gitlab_main_cell
 sharding_key:
   target_project_id: projects
-schema_inconsistencies:
-- type: missing_indexes
-  object_name: index_merge_requests_on_title_trigram
-  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198473
-- type: missing_indexes
-  object_name: index_merge_requests_on_description_trigram
-  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198473
 table_size: over_limit

@@ -2436,6 +2436,7 @@ Input type: `AiCatalogFlowUpdateInput`
 | <a id="mutationaicatalogflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to update. |
 | <a id="mutationaicatalogflowupdatename"></a>`name` | [`String`](#string) | Name for the flow. |
 | <a id="mutationaicatalogflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the flow is publicly visible in the catalog. |
+| <a id="mutationaicatalogflowupdatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]`](#aicatalogflowstepsinput) | Steps for the flow. |
 
 #### Fields
 

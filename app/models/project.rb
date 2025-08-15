@@ -2046,7 +2046,9 @@ class Project < ApplicationRecord
   def create_labels
     Label.templates.each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
-      params = label.attributes.slice(*Label.column_names).except('id', 'template', 'created_at', 'updated_at', 'type')
+      params = label.attributes
+                    .slice(*Label.column_names)
+                    .except('id', 'template', 'created_at', 'updated_at', 'type', 'organization_id')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end

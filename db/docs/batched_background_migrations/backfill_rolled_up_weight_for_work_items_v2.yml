@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillRolledUpWeightForWorkItemsV2
-description: Backfills rolled up weight calculations for work items by identifying leaf nodes (items without parents) and triggering weight updates through UpdateWeightsWorker.
-feature_category: team_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197781
-milestone: '18.3'
-queued_migration_version: 20250715091211
-finalized_by: # version of the migration that finalized this BBM
