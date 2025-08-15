@@ -26,6 +26,13 @@ module API
       yaml_content.gsub(Gitlab::Regex.helm_index_app_version_quote_regex, '\1"\2"')
     end
 
+    helpers do
+      def find_metadata_cache(project_id)
+        ::Packages::Helm::MetadataCache
+          .find_by_project_id_and_channel(project_id, params[:channel])
+      end
+    end
+
     authenticate_with do |accept|
       accept.token_types(:personal_access_token, :deploy_token, :job_token)
             .sent_through(:http_basic_auth)
@@ -58,6 +65,16 @@ module API
 
           project = authorized_user_project(action: :read_package)
           authorize_read_package!(project)
+
+          if Feature.enabled?(:packages_helm_metadata_cache, project)
+            helm_metadata_cache = find_metadata_cache(project.id)
+            if helm_metadata_cache
+              helm_metadata_cache.touch_last_downloaded_at
+              present_carrierwave_file!(helm_metadata_cache.file)
+
+              break
+            end
+          end
 
           packages = ::Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
           metadata = ::Packages::Helm::GenerateMetadataService.new(params[:id], params[:channel], packages).execute

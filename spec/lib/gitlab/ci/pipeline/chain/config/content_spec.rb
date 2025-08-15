@@ -9,7 +9,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
   let(:source) { :push }
   let(:inputs) { {} }
   let(:command) do
-    Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content, source: source, inputs: inputs)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project,
+      content: content,
+      source: source,
+      inputs: inputs,
+      origin_ref: project.default_branch_or_main
+    )
   end
 
   subject { described_class.new(pipeline, command) }

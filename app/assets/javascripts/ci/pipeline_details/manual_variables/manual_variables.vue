@@ -11,13 +11,15 @@ export default {
     GlLoadingIcon,
     VariableTable,
   },
-  inject: ['manualVariablesCount', 'projectPath', 'pipelineIid'],
+  inject: ['manualVariablesCount', 'projectPath', 'pipelineIid', 'displayPipelineVariables'],
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     variables: {
       query: getManualVariablesQuery,
       skip() {
         return !this.hasManualVariables;
+      },
+      update({ project }) {
+        return project?.pipeline?.manualVariables?.nodes || [];
       },
       variables() {
         return {
@@ -25,10 +27,12 @@ export default {
           iid: this.pipelineIid,
         };
       },
-      update({ project }) {
-        return project?.pipeline?.manualVariables?.nodes || [];
-      },
     },
+  },
+  data() {
+    return {
+      variables: [],
+    };
   },
   computed: {
     loading() {
@@ -37,13 +41,16 @@ export default {
     hasManualVariables() {
       return Boolean(this.manualVariablesCount > 0);
     },
+    shouldShowManualVariables() {
+      return this.hasManualVariables && this.displayPipelineVariables;
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <div v-if="hasManualVariables" class="manual-variables-table">
+    <div v-if="shouldShowManualVariables" class="manual-variables-table">
       <gl-loading-icon v-if="loading" />
       <variable-table v-else :variables="variables" />
     </div>

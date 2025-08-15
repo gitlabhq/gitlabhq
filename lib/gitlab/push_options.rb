@@ -33,6 +33,9 @@ module Gitlab
       },
       secret_push_protection: {
         keys: [:skip_all]
+      },
+      security_policy: {
+        keys: [:bypass_reason]
       }
     }).freeze
 

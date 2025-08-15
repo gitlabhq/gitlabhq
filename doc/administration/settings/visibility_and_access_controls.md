@@ -39,7 +39,10 @@ To access the visibility and access control options:
 
 You can add project creation protections to your instance. These protections define which roles can
 [add projects to a group](../../user/group/_index.md#specify-who-can-add-projects-to-a-group)
-on the instance. To alter which roles have permission to create projects:
+on the instance.
+
+When you configure the **Default minimum role required to create projects** setting, you set the
+default for new groups. Existing groups retain their current permissions.
 
 Prerequisites:
 

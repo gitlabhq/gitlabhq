@@ -1,0 +1,10 @@
+---
+name: packages_helm_metadata_cache
+description: Start serving Helm metadata via object storage and creating cache
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/545919
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201301
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/559242
+milestone: '18.3'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

@@ -82,6 +82,12 @@ attributes that describe how to display the GLQL query results, along with the q
 
 ### Supported areas
 
+{{< history >}}
+
+- Embedded views in repository Markdown files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197950) in GitLab 18.3.
+
+{{< /history >}}
+
 Embedded views can be displayed in the following areas:
 
 - Group and project wikis
@@ -90,6 +96,7 @@ Embedded views can be displayed in the following areas:
   - Issues
   - Merge requests
   - Work items (tasks, OKRs, or epics)
+- Repository Markdown files
 
 ### Syntax
 

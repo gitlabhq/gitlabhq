@@ -7,11 +7,18 @@ module WorkItemsCollections
   include SortingPreference
   include Gitlab::Utils::StrongMemoize
 
-  included do
-    helper_method :finder
-  end
-
   private
+
+  def work_items_for_rss
+    finder
+      .execute
+      .preload_namespace_routables
+      .preload_routables
+      .preload_for_rss
+      # TODO: Remove this limit and support pagination
+      # (see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201483#note_2689522423)
+      .limit(100)
+  end
 
   def work_items_for_calendar
     finder

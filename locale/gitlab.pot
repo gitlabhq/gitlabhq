@@ -13292,6 +13292,9 @@ msgstr ""
 msgid "CiVariables|Add variable"
 msgstr ""
 
+msgid "CiVariables|All manually-defined CI/CD variables and their values are visible to maintainers, which is a security risk if including credentials or other secrets in variables. Do not enable this feature if variables could contain sensitive data. Developers can only view manually-defined variables in their own manual pipelines."
+msgstr ""
+
 msgid "CiVariables|CI/CD Variables"
 msgstr ""
 
@@ -13308,6 +13311,15 @@ msgid "CiVariables|Delete variable"
 msgstr ""
 
 msgid "CiVariables|Disable pipeline variables in projects that don't use them"
+msgstr ""
+
+msgid "CiVariables|Display all manually-defined variables in the pipeline details page after running a pipeline manually."
+msgstr ""
+
+msgid "CiVariables|Display manually-defined pipeline variables"
+msgstr ""
+
+msgid "CiVariables|Display pipeline variables"
 msgstr ""
 
 msgid "CiVariables|Do you want to delete the variable %{key}?"
@@ -48395,6 +48407,9 @@ msgstr ""
 msgid "Preferences|Render whitespace characters in the Web IDE"
 msgstr ""
 
+msgid "Preferences|Select a default Duo namespace..."
+msgstr ""
+
 msgid "Preferences|Show one file at a time on merge request's Changes tab"
 msgstr ""
 
@@ -56682,6 +56697,12 @@ msgstr ""
 msgid "Secrets|Expires"
 msgstr ""
 
+msgid "Secrets|Failed to create Secrets manager permission. Please try again."
+msgstr ""
+
+msgid "Secrets|Failed to fetch secrets manager permissions. Please try again later."
+msgstr ""
+
 msgid "Secrets|Failed to load secret. Please try again later."
 msgstr ""
 
@@ -56721,9 +56742,6 @@ msgstr ""
 msgid "Secrets|Secret Manager permissions were successfully updated."
 msgstr ""
 
-msgid "Secrets|Secret manager user permissions"
-msgstr ""
-
 msgid "Secrets|Secrets"
 msgstr ""
 
@@ -56734,6 +56752,9 @@ msgid "Secrets|Secrets Manager has been provisioned for this project."
 msgstr ""
 
 msgid "Secrets|Secrets can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, secrets must be explicitly requested by a job."
+msgstr ""
+
+msgid "Secrets|Secrets manager user permissions"
 msgstr ""
 
 msgid "Secrets|Secure your sensitive information"

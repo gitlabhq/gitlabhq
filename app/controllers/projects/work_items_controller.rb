@@ -2,7 +2,6 @@
 
 class Projects::WorkItemsController < Projects::ApplicationController
   include WorkhorseAuthorization
-  include SearchRateLimitable
   include WorkItemsCollections
   extend Gitlab::Utils::Override
 
@@ -19,11 +18,12 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
   end
 
-  prepend_before_action(only: [:calendar]) do
-    authenticate_sessionless_user!(:ics)
+  before_action :check_search_rate_limit!, if: ->(c) do
+    c.action_name.to_sym == :calendar || c.action_name.to_sym == :rss
   end
 
-  before_action :check_search_rate_limit!, if: ->(c) { c.action_name.to_sym == :calendar }
+  prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
+  prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
 
   feature_category :team_planning
   urgency :high, [:authorize]
@@ -59,6 +59,14 @@ class Projects::WorkItemsController < Projects::ApplicationController
       format.ics do
         response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
       end
+    end
+  end
+
+  def rss
+    @work_items = work_items_for_rss
+
+    respond_to do |format|
+      format.atom { render layout: 'xml' }
     end
   end
 
@@ -104,8 +112,8 @@ class Projects::WorkItemsController < Projects::ApplicationController
 
   def issuable
     @issuable ||= ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
-                    .execute.with_work_item_type
-                    .find_by_iid(show_params[:iid])
+      .execute.with_work_item_type
+      .find_by_iid(show_params[:iid])
   end
 end
 

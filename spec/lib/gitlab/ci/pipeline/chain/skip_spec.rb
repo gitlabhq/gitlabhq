@@ -12,7 +12,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
       project: project,
       current_user: user,
       ignore_skip_ci: false,
-      save_incompleted: true
+      save_incompleted: true,
+      origin_ref: project.default_branch_or_main
     )
   end
 

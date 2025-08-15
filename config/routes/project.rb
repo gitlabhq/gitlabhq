@@ -359,6 +359,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
         get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
+        get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
         resources :work_items, only: [:show, :index], param: :iid do
           collection do
             post :import_csv

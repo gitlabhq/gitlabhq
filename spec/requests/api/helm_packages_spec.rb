@@ -82,6 +82,42 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         end
       end
     end
+
+    context 'when metadata cache exists' do
+      subject(:api_request) { get api(url) }
+
+      let_it_be(:channel) { 'stable' }
+      let_it_be(:metadata_cache) { create(:helm_metadata_cache, project: project, channel: channel) }
+
+      it 'returns response from metadata cache' do
+        expect(metadata_cache).to receive(:file).and_call_original
+
+        api_request
+
+        expect(response.body).to eq(metadata_cache.file.read)
+      end
+
+      it 'updates last_downloaded_at' do
+        freeze_time do
+          api_request
+
+          metadata_cache.reload
+          expect(metadata_cache.last_downloaded_at).to eq(Time.zone.now.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'))
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(packages_helm_metadata_cache: false)
+        end
+
+        it 'does not take response from metadata cache' do
+          expect(metadata_cache).not_to receive(:file)
+
+          api_request
+        end
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/charts/:file_name.tgz' do

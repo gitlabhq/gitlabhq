@@ -16,7 +16,8 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
-      save_incompleted: save_incompleted
+      save_incompleted: save_incompleted,
+      origin_ref: project.default_branch_or_main
     )
   end
 

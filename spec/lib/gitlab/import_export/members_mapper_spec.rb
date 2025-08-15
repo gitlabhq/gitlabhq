@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::MembersMapper do
+RSpec.describe Gitlab::ImportExport::MembersMapper, feature_category: :importers do
   describe 'map members' do
     shared_examples 'imports exported members' do
       let(:user) { create(:admin) }
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
         members_mapper.map
       end
 
-      context 'logging' do
+      context 'when logging' do
         let(:logger) { ::Import::Framework::Logger.build }
 
         before do
@@ -170,14 +170,16 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           end
 
           it 'logs member addition failure' do
-            expect(logger).to receive(:info).with(hash_including(message: a_string_including('Access level is not included in the list'))).once
+            expect(logger).to receive(:info)
+              .with(hash_including(message: a_string_including('Access level is not included in the list')))
+              .once
 
             members_mapper.map
           end
         end
       end
 
-      context 'user is not an admin' do
+      context 'when user is not an admin' do
         let(:user) { create(:user) }
 
         it 'does not map a member' do
@@ -189,7 +191,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
         end
       end
 
-      context 'chooses the one with an email' do
+      context 'when a user has a matching email' do
         let(:user3) { create(:user, username: 'test') }
 
         it 'maps the member that has a matching email' do
@@ -248,7 +250,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           expect(member_class.find_by_user_id(user2.id).access_level).to eq(ProjectMember::MAINTAINER)
         end
 
-        context 'importer same as group member' do
+        context 'when importer same as group member' do
           let(:user2) { create(:admin) }
           let(:group) { create(:group) }
           let(:importable) { create(:project, :public, name: 'searchable_project', namespace: group) }
@@ -272,7 +274,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           end
         end
 
-        context 'importing group members' do
+        context 'when importing group members' do
           let(:group) { create(:group) }
           let(:importable) { create(:project, namespace: group) }
           let(:members_mapper) do
@@ -315,7 +317,8 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           it 'includes importer specific error message' do
             expect(member_class).to receive(:create!).and_raise(StandardError.new(exception_message))
 
-            expect { members_mapper.map }.to raise_error(StandardError, "Error adding importer user to Project members. #{exception_message}")
+            expect { members_mapper.map }
+              .to raise_error(StandardError, "Error adding importer user to Project members. #{exception_message}")
           end
         end
       end

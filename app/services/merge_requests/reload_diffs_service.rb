@@ -13,11 +13,7 @@ module MergeRequests
       return if merge_request.reached_versions_limit?
       return if merge_request.reached_diff_commits_limit?
 
-      new_diff = if Feature.enabled?(:preload_mr_diff_gitaly_data, merge_request.project)
-                   merge_request.create_merge_request_diff(preload_gitaly: true)
-                 else
-                   merge_request.create_merge_request_diff(preload_gitaly: false)
-                 end
+      new_diff = merge_request.create_merge_request_diff(preload_gitaly: true)
 
       clear_cache(new_diff)
       update_diff_discussion_positions(old_diff_refs)

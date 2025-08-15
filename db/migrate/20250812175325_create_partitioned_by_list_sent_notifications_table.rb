@@ -15,6 +15,12 @@ class CreatePartitionedByListSentNotificationsTable < Gitlab::Database::Migratio
   def up
     create_partitioned_table
 
+    execute(<<~SQL)
+      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."#{PARTITIONED_TABLE_NAME}_1"
+        PARTITION OF "#{PARTITIONED_TABLE_NAME}"
+        FOR VALUES IN (1);
+    SQL
+
     add_sync_trigger
   end
 

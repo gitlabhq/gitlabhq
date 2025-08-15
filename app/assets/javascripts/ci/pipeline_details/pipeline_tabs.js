@@ -49,6 +49,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     testsCount,
     manualVariablesCount,
     canReadVariables,
+    displayPipelineVariables,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -99,6 +100,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       testsCount,
       manualVariablesCount: Number.parseInt(manualVariablesCount, 10),
       canReadVariables: parseBoolean(canReadVariables),
+      displayPipelineVariables: parseBoolean(displayPipelineVariables),
     },
     render(createElement, props = {}) {
       return createElement(PipelineTabs, { props });

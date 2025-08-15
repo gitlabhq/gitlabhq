@@ -2315,6 +2315,7 @@ class Project < ApplicationRecord
     end
   end
 
+  # Overridden in EE
   def membership_locked?
     false
   end

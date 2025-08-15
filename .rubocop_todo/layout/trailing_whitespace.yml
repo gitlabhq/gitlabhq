@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'lib/gitlab/database_warnings.rb'

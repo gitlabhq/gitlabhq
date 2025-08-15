@@ -23,9 +23,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_cancel_pipeline!, only: [:cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
-  before_action only: [:show, :builds, :failures, :test_report, :manual_variables] do
-    push_frontend_feature_flag(:ci_show_manual_variables_in_pipeline, project)
-  end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -207,7 +204,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def manual_variables
-    return render_404 unless ::Feature.enabled?(:ci_show_manual_variables_in_pipeline, project)
+    return render_404 unless can?(current_user, :update_pipeline, pipeline)
 
     render_show
   end

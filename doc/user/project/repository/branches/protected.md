@@ -434,6 +434,55 @@ In [GitLab Premium 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues
 who are allowed to push to protected branches do not need a merge request to merge their feature branches.
 Thus, they can skip merge request approval rules, Code Owners included.
 
+### Control who can unprotect branches
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+By default, users with at least the Maintainer role can unprotect protected branches.
+For organizations with regulatory or compliance requirements, you can restrict unprotect
+permissions to specific users, groups, or access levels.
+
+You can only configure unprotect permissions through the API. For detailed examples and parameter
+options, see the [Protected Branches API](../../../../api/protected_branches.md).
+
+Use this feature for:
+
+- Regulatory compliance: Ensure only authorized personnel can modify branch protections.
+- Large organizations: Prevent accidental removal of protections across multiple repositories.
+- Automated governance: Enable scripts to create admin-only protections that development teams
+  cannot override.
+
+{{< alert type="note" >}}
+
+When configuring specific unprotect permissions, ensure at least one user or group
+retains permission to unprotect the branch to avoid permanent lockout.
+
+{{< /alert >}}
+
+#### Unprotect permissions
+
+The following table shows who can unprotect a branch based on your configuration:
+
+| Scenario               | Who can unprotect                                           |
+|------------------------|-------------------------------------------------------------|
+| Default behavior       | Users with at least the Maintainer role.                    |
+| Specific users set     | Only designated users.                                      |
+| Specific groups set    | Only members of designated groups.                          |
+| Multiple access levels | Any user, group, or role from the configured access levels. |
+
+#### Lockout prevention
+
+GitLab includes safety mechanisms to prevent configuration errors:
+
+- Users cannot create, modify, or delete protected branch settings unless they can unprotect the
+  branch themselves.
+- This prevents creating overly restrictive rules that lock out all users.
+
 ## CI/CD on protected branches
 
 The permission to merge or push to protected branches defines

@@ -2460,7 +2460,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/import_export/import_export_spec.rb'
     - 'spec/lib/gitlab/import_export/lfs_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/log_util_spec.rb'
-    - 'spec/lib/gitlab/import_export/members_mapper_spec.rb'
     - 'spec/lib/gitlab/import_export/project/exported_relations_merger_spec.rb'
     - 'spec/lib/gitlab/import_export/project/object_builder_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_saver_spec.rb'

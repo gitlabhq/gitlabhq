@@ -4405,6 +4405,25 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION update_jira_tracker_data_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+SELECT
+  "integrations"."project_id",
+  "integrations"."group_id",
+  "integrations"."organization_id"
+INTO
+  NEW."project_id",
+  NEW."group_id",
+  NEW."organization_id"
+FROM "integrations"
+WHERE "integrations"."id" = NEW."integration_id";
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION update_location_from_vulnerability_occurrences() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -43073,6 +43092,8 @@ CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON integrations 
 CREATE TRIGGER trigger_insert_or_update_vulnerability_reads_from_occurrences AFTER INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION insert_or_update_vulnerability_reads();
 
 CREATE TRIGGER trigger_insert_vulnerability_reads_from_vulnerability AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS NOT TRUE) AND (new.present_on_default_branch IS TRUE))) EXECUTE FUNCTION insert_vulnerability_reads_from_vulnerability();
+
+CREATE TRIGGER trigger_jira_tracker_data_sharding_key_on_insert BEFORE INSERT ON jira_tracker_data FOR EACH ROW WHEN (((new.project_id IS NULL) AND (new.group_id IS NULL) AND (new.organization_id IS NULL))) EXECUTE FUNCTION update_jira_tracker_data_sharding_key();
 
 CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.traversal_ids IS DISTINCT FROM new.traversal_ids)) EXECUTE FUNCTION insert_namespaces_sync_event();
 

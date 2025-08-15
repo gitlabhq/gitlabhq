@@ -3080,7 +3080,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/json/ndjson_reader_spec.rb'
     - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'
-    - 'spec/lib/gitlab/import_export/members_mapper_spec.rb'
     - 'spec/lib/gitlab/import_export/project/export_task_spec.rb'
     - 'spec/lib/gitlab/import_export/project/import_task_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'

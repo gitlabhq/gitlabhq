@@ -5,7 +5,7 @@ module Projects
     extend ::Ci::BuildsHelper
 
     def js_pipeline_tabs_data(project, pipeline, _user)
-      data = {
+      {
         failed_jobs_count: pipeline.failed_builds.count,
         project_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
@@ -24,12 +24,11 @@ module Projects
         has_test_report: pipeline.has_test_reports?,
         empty_state_image_path: image_path('illustrations/empty-todos-md.svg'),
         artifacts_expired_image_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
-        tests_count: pipeline.test_report_summary.total[:count]
+        tests_count: pipeline.test_report_summary.total[:count],
+        manual_variables_count: pipeline.variables.count,
+        can_read_variables: can?(current_user, :read_pipeline_variable, pipeline).to_s,
+        display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s
       }
-
-      data.merge!(manual_variables_data(pipeline)) if ::Feature.enabled?(:ci_show_manual_variables_in_pipeline, project)
-
-      data
     end
 
     def js_pipeline_header_data(project, pipeline)
@@ -38,13 +37,6 @@ module Projects
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         pipeline_iid: pipeline.iid,
         pipelines_path: project_pipelines_path(project)
-      }
-    end
-
-    def manual_variables_data(pipeline)
-      {
-        manual_variables_count: pipeline.variables.count,
-        can_read_variables: can?(current_user, :read_pipeline_variable, pipeline).to_s
       }
     end
   end

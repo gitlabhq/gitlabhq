@@ -5036,7 +5036,6 @@
 - './spec/lib/gitlab/import_export/lfs_restorer_spec.rb'
 - './spec/lib/gitlab/import_export/lfs_saver_spec.rb'
 - './spec/lib/gitlab/import_export/log_util_spec.rb'
-- './spec/lib/gitlab/import_export/members_mapper_spec.rb'
 - './spec/lib/gitlab/import_export/merge_request_parser_spec.rb'
 - './spec/lib/gitlab/import_export/model_configuration_spec.rb'
 - './spec/lib/gitlab/import_export/project/export_task_spec.rb'

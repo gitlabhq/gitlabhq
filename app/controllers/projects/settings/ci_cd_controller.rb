@@ -143,6 +143,7 @@ module Projects
           :build_timeout_human_readable, :public_builds, :ci_separated_caches,
           :auto_cancel_pending_pipelines, :ci_config_path, :auto_rollback_enabled,
           :protect_merge_request_pipelines,
+          :ci_display_pipeline_variables,
           { auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
             ci_cd_settings_attributes: permitted_project_ci_cd_settings_params }
         ].tap do |list|
