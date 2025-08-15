@@ -39,6 +39,8 @@ class MergeRequest < ApplicationRecord
     updated_by_id_convert_to_bigint
   ], remove_with: '18.3', remove_after: '2025-07-17'
 
+  ignore_column :sprint_id, remove_with: '18.5', remove_after: '2025-09-18'
+
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha

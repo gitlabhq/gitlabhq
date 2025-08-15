@@ -234,8 +234,13 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 
 ## Use CycloneDX report as a source of license information
 
-The ability to use a CI report artifact as a source of license information data was introduced in GitLab 17.5 behind the feature flag `license_scanning_with_sbom_licenses` and enabled by default in 17.6.
-In GitLab 17.8 the feature flag `license_scanning_with_sbom_licenses` was removed.
+{{< history >}}
+
+- Introduced in GitLab 17.5 [with a flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.6.
+- Generally available in GitLab 17.8. Feature flag `license_scanning_with_sbom_licenses` removed.
+
+{{< /history >}}
 
 The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used(current behavior).
 License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
