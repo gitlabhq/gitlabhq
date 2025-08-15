@@ -59,7 +59,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/models/ai/namespace_setting_spec.rb'
     - 'ee/spec/models/ai/vectorizable_file_spec.rb'
     - 'ee/spec/models/analytics/cycle_analytics/value_stream_setting_spec.rb'
-    - 'ee/spec/models/analytics/dashboards_pointer_spec.rb'
     - 'ee/spec/models/analytics/devops_adoption/enabled_namespace_spec.rb'
     - 'ee/spec/models/analytics/devops_adoption/snapshot_spec.rb'
     - 'ee/spec/models/analytics/value_stream_dashboard/aggregation_spec.rb'

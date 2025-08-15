@@ -263,7 +263,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/create_issue_link_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/destroy_external_issue_link_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/work_items/update_spec.rb'
-    - 'ee/spec/requests/api/graphql/product_analytics/visualizations_spec.rb'
     - 'ee/spec/requests/api/graphql/project/google_cloud/artifact_registry/docker_images_spec.rb'
     - 'ee/spec/requests/api/graphql/vulnerabilities/fields_spec.rb'
     - 'ee/spec/requests/api/internal/base_spec.rb'

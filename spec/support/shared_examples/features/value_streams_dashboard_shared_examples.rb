@@ -203,3 +203,19 @@ RSpec.shared_examples 'renders unlicensed security metrics visualization' do
     expect(security_metrics_table).to have_text "This feature requires an Ultimate plan Learn more."
   end
 end
+
+RSpec.shared_examples 'renders licensed project VSD for a reporter' do
+  let(:lifecycle_metrics_table) { find_by_testid('panel-vsd-lifecycle-metrics-table') }
+  let(:security_metrics_table) { find_by_testid('panel-vsd-security-metrics-table') }
+  let(:dora_metrics_table) { find_by_testid('panel-vsd-dora-metrics-table') }
+
+  it 'renders the available visualizations' do
+    [lifecycle_metrics_table, dora_metrics_table].each do |table|
+      expect(table).to be_visible
+      expect(table).not_to have_text "This feature requires an Ultimate plan Learn more."
+    end
+
+    expect(security_metrics_table).to be_visible
+    expect(security_metrics_table).to have_text "This feature requires an Ultimate plan Learn more."
+  end
+end

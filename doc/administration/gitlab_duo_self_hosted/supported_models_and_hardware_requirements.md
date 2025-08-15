@@ -33,7 +33,7 @@ In GitLab 18.3 and later, you can also bring your own compatible model, giving y
 
 ## Supported models
 
-Support for the following GitLab-supported large language models (LLMs) is generally available. If the model you want to use is not in this documentation, provide feedback in the [model request issue (issue 526751)](https://gitlab.com/gitlab-org/gitlab/-/issues/526751).
+Support for the following GitLab-supported large language models (LLMs) is generally available.
 
 - Fully compatible: The model can likely handle the feature without any loss of quality.
 - Largely compatible: The model supports the feature, but there might be compromises or limitations.
@@ -98,6 +98,8 @@ The following models are configurable for the functionalities marked below, but 
 
 | Model family   | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
 |--------------- |-------|---------------------|--------|-----------------|-----------------|-----------------|
+| OpenAI GPT      | [GPT OSS 20b](https://huggingface.co/openai/gpt-oss-20b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/openai/), [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes |
+| OpenAI GPT      | [GPT OSS 120b](https://huggingface.co/openai/gpt-oss-120b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/), [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes |
 | CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |

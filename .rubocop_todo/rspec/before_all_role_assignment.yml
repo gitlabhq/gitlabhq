@@ -393,7 +393,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/create_issue_link_spec.rb'
     - 'ee/spec/requests/api/graphql/namespace/projects_spec.rb'
     - 'ee/spec/requests/api/graphql/pipeline_security_report_finding_spec.rb'
-    - 'ee/spec/requests/api/graphql/product_analytics/dashboards_spec.rb'
+    - 'ee/spec/requests/api/graphql/analytics/dashboards/dashboards_spec.rb'
     - 'ee/spec/requests/api/graphql/project/alert_management/integrations_spec.rb'
     - 'ee/spec/requests/api/graphql/project/branch_rules/approval_project_rules_spec.rb'
     - 'ee/spec/requests/api/graphql/project/branch_rules/branch_protection_spec.rb'

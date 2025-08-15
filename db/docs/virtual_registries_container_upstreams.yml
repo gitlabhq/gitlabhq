@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_container_upstreams
+classes:
+  - VirtualRegistries::Container::Upstream
+feature_categories:
+  - virtual_registry
+description: Upstream object for Virtual Registries.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195984
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

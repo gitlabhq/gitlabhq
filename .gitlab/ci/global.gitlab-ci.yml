@@ -139,6 +139,7 @@
   paths:
     - tmp/rubocop_cache/
   policy: pull
+  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
 
 .rubocop-cache-push: &rubocop-cache-push
   <<: *rubocop-cache

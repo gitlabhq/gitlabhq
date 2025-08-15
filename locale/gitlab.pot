@@ -2416,6 +2416,9 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
+msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
+msgstr ""
+
 msgid "AICatalog|Agent created successfully."
 msgstr ""
 
@@ -2459,6 +2462,9 @@ msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgstr ""
+
+msgid "AICatalog|Connect AI agents to automate complicated tasks."
 msgstr ""
 
 msgid "AICatalog|Create agent"

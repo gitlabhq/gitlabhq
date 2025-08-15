@@ -25525,6 +25525,73 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
+CREATE TABLE virtual_registries_container_registries (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    description text,
+    CONSTRAINT check_68bb0189e2 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_e721e79322 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE virtual_registries_container_registries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_container_registries_id_seq OWNED BY virtual_registries_container_registries.id;
+
+CREATE TABLE virtual_registries_container_registry_upstreams (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    registry_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    "position" smallint DEFAULT 1 NOT NULL,
+    CONSTRAINT check_918a83b32b CHECK (((1 <= "position") AND ("position" <= 5)))
+);
+
+CREATE SEQUENCE virtual_registries_container_registry_upstreams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_container_registry_upstreams_id_seq OWNED BY virtual_registries_container_registry_upstreams.id;
+
+CREATE TABLE virtual_registries_container_upstreams (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cache_validity_hours smallint DEFAULT 24 NOT NULL,
+    username jsonb,
+    password jsonb,
+    url text NOT NULL,
+    name text NOT NULL,
+    description text,
+    CONSTRAINT check_4b5467ff6f CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_5eb36d5a0e CHECK ((cache_validity_hours >= 0)),
+    CONSTRAINT check_6aea67ba05 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_df12da285f CHECK (((num_nonnulls(username, password) = 2) OR (num_nulls(username, password) = 2))),
+    CONSTRAINT check_f565894f21 CHECK ((char_length(url) <= 255))
+);
+
+CREATE SEQUENCE virtual_registries_container_upstreams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_container_upstreams_id_seq OWNED BY virtual_registries_container_upstreams.id;
+
 CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -29104,6 +29171,12 @@ ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_sta
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_container_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_registries_id_seq'::regclass);
+
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_registry_upstreams_id_seq'::regclass);
+
+ALTER TABLE ONLY virtual_registries_container_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_upstreams_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
@@ -30550,6 +30623,9 @@ ALTER TABLE ONLY compliance_requirements
 
 ALTER TABLE ONLY compromised_password_detections
     ADD CONSTRAINT compromised_password_detections_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams
+    ADD CONSTRAINT constraint_vreg_container_reg_upst_on_unique_reg_pos UNIQUE (registry_id, "position") DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT constraint_vreg_pkgs_mvn_reg_upst_on_unique_regid_pos UNIQUE (registry_id, "position") DEFERRABLE INITIALLY DEFERRED;
@@ -32368,6 +32444,15 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
+
+ALTER TABLE ONLY virtual_registries_container_registries
+    ADD CONSTRAINT virtual_registries_container_registries_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams
+    ADD CONSTRAINT virtual_registries_container_registry_upstreams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_container_upstreams
+    ADD CONSTRAINT virtual_registries_container_upstreams_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registries
     ADD CONSTRAINT virtual_registries_packages_maven_registries_pkey PRIMARY KEY (id);
@@ -34762,6 +34847,8 @@ CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details
 CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
 
 CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles USING btree (user_id);
+
+CREATE INDEX idx_vreg_container_reg_upst_on_group ON virtual_registries_container_registry_upstreams USING btree (group_id);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 
@@ -40141,7 +40228,13 @@ CREATE INDEX user_uploads_uploaded_by_user_id_idx ON user_uploads USING btree (u
 
 CREATE INDEX user_uploads_uploader_path_idx ON user_uploads USING btree (uploader, path);
 
+CREATE UNIQUE INDEX virtual_reg_cont_reg_upstreams_on_upstream_and_registry_ids ON virtual_registries_container_registry_upstreams USING btree (upstream_id, registry_id);
+
 CREATE UNIQUE INDEX virtual_reg_pkgs_mvn_registries_on_unique_group_id_and_name ON virtual_registries_packages_maven_registries USING btree (group_id, name);
+
+CREATE UNIQUE INDEX virtual_registries_container_registries_on_unique_group_ids ON virtual_registries_container_registries USING btree (group_id, name);
+
+CREATE INDEX virtual_registries_container_upstreams_on_group_id ON virtual_registries_container_upstreams USING btree (group_id);
 
 CREATE INDEX vulnerability_archive_export__model_id_model_type_uploader__idx ON vulnerability_archive_export_uploads USING btree (model_id, model_type, uploader, created_at);
 
@@ -45591,6 +45684,9 @@ ALTER TABLE ONLY zoom_meetings
 ALTER TABLE ONLY gpg_signatures
     ADD CONSTRAINT fk_rails_11ae8cb9a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams
+    ADD CONSTRAINT fk_rails_11d127aa33 FOREIGN KEY (registry_id) REFERENCES virtual_registries_container_registries(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY pm_affected_packages
     ADD CONSTRAINT fk_rails_1279c1b9a1 FOREIGN KEY (pm_advisory_id) REFERENCES pm_advisories(id) ON DELETE CASCADE;
 
@@ -46071,6 +46167,9 @@ ALTER TABLE ONLY snippet_user_mentions
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY virtual_registries_container_registries
+    ADD CONSTRAINT fk_rails_4e95663af5 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT fk_rails_4ed56f4720 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -46151,6 +46250,9 @@ ALTER TABLE ONLY incident_management_timeline_event_tag_links
 
 ALTER TABLE ONLY packages_debian_project_architectures
     ADD CONSTRAINT fk_rails_5808663adf FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams
+    ADD CONSTRAINT fk_rails_583c557285 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_5a22f40223 FOREIGN KEY (start_event_label_id) REFERENCES labels(id) ON DELETE CASCADE;
@@ -46580,6 +46682,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_rails_8a481bd22e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_container_registry_upstreams
+    ADD CONSTRAINT fk_rails_8aba3eb1d2 FOREIGN KEY (upstream_id) REFERENCES virtual_registries_container_upstreams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY snippet_repositories
     ADD CONSTRAINT fk_rails_8afd7e2f71 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
@@ -47075,6 +47180,9 @@ ALTER TABLE ONLY compromised_password_detections
 
 ALTER TABLE ONLY gpg_signatures
     ADD CONSTRAINT fk_rails_c97176f5f7 FOREIGN KEY (gpg_key_id) REFERENCES gpg_keys(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY virtual_registries_container_upstreams
+    ADD CONSTRAINT fk_rails_c97afd8bbd FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

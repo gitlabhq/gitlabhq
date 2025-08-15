@@ -1,7 +1,7 @@
 ---
 table_name: analytics_dashboards_pointers
 classes:
-- Analytics::DashboardsPointer
+- Analytics::Dashboards::DashboardsPointer
 feature_categories:
 - devops_reports
 description: Stores project link with configuration files for Analytics Dashboards
