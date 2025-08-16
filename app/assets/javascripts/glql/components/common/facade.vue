@@ -102,10 +102,14 @@ export default {
       return `\`\`\`glql\n${this.queryYaml}\n\`\`\``;
     },
   },
+  watch: {
+    config() {
+      this.isCollapsed = this.config?.collapsed || false;
+    },
+  },
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
   },
-
   methods: {
     viewSource({ title }) {
       Object.assign(this.queryModalSettings, { title, show: true });

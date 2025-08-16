@@ -27,7 +27,7 @@ module QA
 
         results = delete_ssh_keys(test_ssh_keys)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -55,7 +55,7 @@ module QA
       end
 
       def resource_request(key, **options)
-        Runtime::API::Request.new(@api_client, "/user/keys/#{key[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/user/keys/#{key[:id]}", **options).url
       end
 
       def resource_path(resource)

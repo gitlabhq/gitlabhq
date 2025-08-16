@@ -803,6 +803,64 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
     end
   end
 
+  describe '#branch_name_to_title' do
+    let_it_be(:test_project) { create(:project, :repository) }
+    let_it_be(:test_user) { create(:user) }
+    let(:test_service) { described_class.new(project: test_project, current_user: test_user, params: {}) }
+
+    context 'replicates Rails titleize.humanize behavior exactly' do
+      where(:branch_name) do
+        [
+          'feature/FFQAQT1',
+          'feature/CERFTQ-11',
+          'bugfix/parser_error',
+          'hotfix/critical_issue',
+          'feature',
+          'fix-issue',
+          '124-fix-issue',
+          'feature/my-cool-branch',
+          'update_user_model',
+          'api/v2/users',
+          'feature----with----many----hyphens',
+          'feature____with____many____underscores',
+          'mixed---separators___test----case',
+          '---___feature___---'
+        ]
+      end
+
+      with_them do
+        it 'matches Rails output for non-EE acronym cases' do
+          our_result = test_service.send(:branch_name_to_title, branch_name)
+          rails_result = branch_name.titleize.humanize
+
+          expect(our_result).to eq(rails_result)
+        end
+      end
+
+      where(:input, :rails_output, :our_output) do
+        'feature/EEQAQT1'     | 'Feature/EE qaqt1'     | 'Feature/eeqaqt1'
+        'EEQAQT1-fix-bug'     | 'EE qaqt1 fix bug'     | 'Eeqaqt1 fix bug'
+        'feature/EEQAQT1-608' | 'Feature/EE qaqt1 608' | 'Feature/eeqaqt1 608'
+      end
+
+      with_them do
+        it 'intentionally differs from Rails for EE acronym cases' do
+          our_result = test_service.send(:branch_name_to_title, input)
+          rails_result = input.titleize.humanize
+
+          # Verify Rails would produce the splitting behavior
+          expect(rails_result).to eq(rails_output)
+
+          # Verify our implementation fixes the splitting
+          expect(our_result).to eq(our_output)
+
+          # Verify they are indeed different
+          expect(our_result).not_to eq(rails_result)
+        end
+      end
+    end
+  end
+
   describe '#replace_variables_in_description' do
     before do
       project.add_developer(user)

@@ -48,16 +48,16 @@ module QA
 
       def run
         if ENV['TOP_LEVEL_GROUP_NAME']
-          group_id = fetch_group_id(@api_client, ENV['TOP_LEVEL_GROUP_NAME'])
+          group_id = fetch_group_id(api_client, ENV['TOP_LEVEL_GROUP_NAME'])
           results = delete_projects(group_id)
         else
           results = SANDBOX_GROUPS.flat_map do |name|
-            group_id = fetch_group_id(@api_client, name)
+            group_id = fetch_group_id(api_client, name)
             delete_projects(group_id)
           end.compact
         end
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -81,7 +81,7 @@ module QA
       end
 
       def resource_request(project, **options)
-        Runtime::API::Request.new(@api_client, "/projects/#{project[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/projects/#{project[:id]}", **options).url
       end
 
       def resource_exists?(project)

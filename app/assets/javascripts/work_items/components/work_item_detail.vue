@@ -145,7 +145,21 @@ export default {
     DuoWorkflowAction,
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
-  inject: ['groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
+  inject: {
+    groupPath: {
+      from: 'groupPath',
+    },
+    hasSubepicsFeature: {
+      from: 'hasSubepicsFeature',
+    },
+    hasLinkedItemsEpicsFeature: {
+      from: 'hasLinkedItemsEpicsFeature',
+    },
+    duoRemoteFlowsEnabled: {
+      from: 'duoRemoteFlowsEnabled',
+      default: false,
+    },
+  },
   props: {
     isModal: {
       type: Boolean,
@@ -577,7 +591,7 @@ export default {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
     isDuoWorkflowEnabled() {
-      return this.glFeatures.duoWorkflowInCi;
+      return this.duoRemoteFlowsEnabled && this.glFeatures.duoWorkflowInCi;
     },
     projectIdAsNumber() {
       return getIdFromGraphQLId(this.workItemProjectId);

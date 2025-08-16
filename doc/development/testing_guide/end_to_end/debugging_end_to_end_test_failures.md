@@ -1,6 +1,9 @@
 ---
-title: Debugging Failing Tests and Test Pipelines
+stage: none
+group: unassigned
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Guidelines for investigating end-to-end test pipeline failures
+title: Debugging Failing Tests and Test Pipelines
 ---
 
 ## Overview

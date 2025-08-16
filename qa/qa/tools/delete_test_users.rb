@@ -32,7 +32,7 @@ module QA
 
         results = delete_test_users(users)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -64,7 +64,7 @@ module QA
       end
 
       def resource_request(user, **options)
-        Runtime::API::Request.new(@api_client, "/users/#{user[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/users/#{user[:id]}", **options).url
       end
     end
   end

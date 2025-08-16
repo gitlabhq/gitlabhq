@@ -59,6 +59,7 @@ export const extendedPratExpiryWebhooksExecuteHelpPath = helpPagePath(
 export const duoHelpPath = helpPagePath('user/gitlab_duo/_index');
 export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 export const duoContextExclusionHelpPath = helpPagePath('user/gitlab_duo/context_exclusion');
+export const duoFlowHelpPath = helpPagePath('user/duo_agent_platform/flows/_index.md');
 
 export const pipelineExecutionPoliciesHelpPath = helpPagePath(
   'user/application_security/policies/pipeline_execution_policies',

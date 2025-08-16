@@ -13,6 +13,7 @@ module API
           'get_merge_request' => ::Mcp::Tools::GetMergeRequestService,
           'get_merge_request_changes' => ::Mcp::Tools::GetMergeRequestChangesService,
           'get_merge_request_commits' => ::Mcp::Tools::GetMergeRequestCommitsService,
+          'get_merge_request_pipelines' => ::Mcp::Tools::GetMergeRequestPipelinesService,
           'get_pipeline_jobs' => ::Mcp::Tools::GetPipelineJobsService
         }.freeze
         CUSTOM_TOOLS = {

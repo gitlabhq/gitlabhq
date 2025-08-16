@@ -38,7 +38,7 @@ module QA
 
         results = delete_snippets(snippets)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -58,7 +58,7 @@ module QA
       end
 
       def resource_request(snippet, **options)
-        Runtime::API::Request.new(@api_client, "/snippets/#{snippet[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/snippets/#{snippet[:id]}", **options).url
       end
     end
   end

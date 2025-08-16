@@ -62,7 +62,7 @@ module QA
 
       private
 
-      attr_reader :dry_run, :page_no, :api_client
+      attr_reader :dry_run, :page_no
       alias_method :dry_run?, :dry_run
 
       def fetch_tokens(user_id)

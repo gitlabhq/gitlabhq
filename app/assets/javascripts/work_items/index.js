@@ -59,6 +59,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     groupIssuesPath,
     labelsFetchPath,
     hasLinkedItemsEpicsFeature,
+    duoRemoteFlowsEnabled,
     canCreateProjects,
     newProjectPath,
     projectNamespaceFullPath,
@@ -106,6 +107,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     provide: {
       canAdminLabel: parseBoolean(canAdminLabel),
       canBulkUpdate: parseBoolean(canBulkUpdate),
+      duoRemoteFlowsEnabled: parseBoolean(duoRemoteFlowsEnabled),
       fullPath,
       isGroup,
       isProject: !isGroup,

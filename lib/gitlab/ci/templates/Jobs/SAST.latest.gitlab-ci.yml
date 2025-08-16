@@ -53,7 +53,6 @@ gitlab-advanced-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    FF_GLAS_ENABLE_PHP_SUPPORT: "true"
     SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"

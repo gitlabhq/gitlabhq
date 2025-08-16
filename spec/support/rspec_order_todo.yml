@@ -831,7 +831,6 @@
 - './ee/spec/lib/ee/gitlab/rack_attack/request_spec.rb'
 - './ee/spec/lib/ee/gitlab/repo_path_spec.rb'
 - './ee/spec/lib/ee/gitlab/repository_size_checker_spec.rb'
-- './ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb'
 - './ee/spec/lib/ee/gitlab/search_results_spec.rb'
 - './ee/spec/lib/ee/gitlab/security/scan_configuration_spec.rb'
 - './ee/spec/lib/ee/gitlab/snippet_search_results_spec.rb'

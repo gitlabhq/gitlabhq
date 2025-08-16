@@ -15,22 +15,24 @@ const defaultProps = {
   duoContextExclusionSettings: {
     exclusionRules: ['*.log', 'node_modules/'],
   },
+  initialDuoFlowEnabled: false,
 };
 
 describe('GitlabDuoSettings', () => {
   let wrapper;
 
-  const mountComponent = (props = {}, provide = {}, mountFn = mountExtended) => {
+  const createWrapper = (props = {}, provide = {}) => {
     const propsData = {
       ...defaultProps,
       ...props,
     };
 
-    return mountFn(GitlabDuoSettings, {
+    return mountExtended(GitlabDuoSettings, {
       propsData,
       provide: {
         glFeatures: {
           useDuoContextExclusion: true,
+          duoWorkflowInCi: false,
           ...provide,
         },
       },
@@ -46,16 +48,11 @@ describe('GitlabDuoSettings', () => {
     wrapper.findAll(
       'input[name="project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules][]"]',
     );
+  const findDuoRemoteFlowsToggle = () => wrapper.findByTestId('duo-remote-flows-enabled');
+  const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
   beforeEach(() => {
-    wrapper = mountComponent();
-  });
-
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper = createWrapper();
   });
 
   it('renders the component correctly', () => {
@@ -76,7 +73,7 @@ describe('GitlabDuoSettings', () => {
 
   describe('Duo', () => {
     it('shows duo toggle', () => {
-      wrapper = mountComponent({});
+      wrapper = createWrapper({});
 
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
@@ -90,54 +87,50 @@ describe('GitlabDuoSettings', () => {
 
     describe('Auto review settings', () => {
       it('hides auto review toggle within Duo settings when Amazon Q is not available', () => {
-        wrapper = mountComponent({ amazonQAvailable: false });
+        wrapper = createWrapper({ amazonQAvailable: false });
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        expect(autoReviewToggle.exists()).toBe(false);
+        expect(findAutoReviewToggle().exists()).toBe(false);
       });
 
       it('shows auto review toggle within Duo settings', () => {
-        wrapper = mountComponent({ amazonQAvailable: true });
+        wrapper = createWrapper({ amazonQAvailable: true });
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        expect(autoReviewToggle.exists()).toBe(true);
+        expect(findAutoReviewToggle().exists()).toBe(true);
       });
 
       it('disables auto review toggle when Duo features are locked', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           amazonQAvailable: true,
           duoFeaturesLocked: true,
         });
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        expect(autoReviewToggle.props('disabled')).toBe(true);
+        expect(findAutoReviewToggle().props('disabled')).toBe(true);
       });
 
       it('disables auto review toggle when Duo features are not enabled', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           amazonQAvailable: true,
           duoFeaturesEnabled: false,
         });
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        expect(autoReviewToggle.props('disabled')).toBe(true);
+        expect(findAutoReviewToggle().props('disabled')).toBe(true);
       });
 
       it('enables auto review toggle when Amazon Q and Duo features are enabled', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           amazonQAvailable: true,
           duoFeaturesEnabled: true,
         });
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        expect(autoReviewToggle.props('disabled')).toBe(false);
+        expect(findAutoReviewToggle().props('disabled')).toBe(false);
       });
 
       it('updates the hidden input value when toggled', async () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           amazonQAvailable: true,
           amazonQAutoReviewEnabled: true,
           duoFeaturesEnabled: true,
+          initialDuoFlowEnabled: false,
         });
 
         const findHiddenInput = () =>
@@ -145,8 +138,7 @@ describe('GitlabDuoSettings', () => {
 
         expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
 
-        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
-        await autoReviewToggle.vm.$emit('change', false);
+        await findAutoReviewToggle().vm.$emit('change', false);
 
         // Vue 3 returns an empty string, while Vue 2 returns 'false'
         // That's why we parse a boolean to verify the value both for Vue 2 and Vue 3
@@ -154,16 +146,60 @@ describe('GitlabDuoSettings', () => {
       });
     });
 
+    describe('Duo Flow settings', () => {
+      describe.each`
+        duoWorkflowInCi | amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
+        ${false}        | ${false}         | ${true}            | ${false}     | ${'duoWorkflowInCi flag is disabled'}
+        ${true}         | ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
+        ${true}         | ${false}         | ${false}           | ${false}     | ${'Duo features are not enabled'}
+        ${true}         | ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
+      `(
+        'when $scenario',
+        ({ duoWorkflowInCi, amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
+          beforeEach(() => {
+            wrapper = createWrapper({ amazonQAvailable, duoFeaturesEnabled }, { duoWorkflowInCi });
+          });
+
+          it(`${shouldRender ? 'renders' : 'does not render'} the Duo remote flows toggle`, () => {
+            expect(findDuoRemoteFlowsToggle().exists()).toBe(shouldRender);
+          });
+        },
+      );
+
+      describe('when Duo remote flows toggle is rendered', () => {
+        beforeEach(() => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoWorkflowInCi: true },
+          );
+        });
+
+        it('clicking on the checkbox and submitting passes along the data to the rest call', async () => {
+          const duoRemoteFlowsToggle = findDuoRemoteFlowsToggle();
+          const hiddenInput = wrapper.find(
+            'input[name="project[project_setting_attributes][duo_remote_flows_enabled]"]',
+          );
+
+          expect(duoRemoteFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoRemoteFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+      });
+    });
+
     describe('when areDuoSettingsLocked is false', () => {
       it('does not show CascadingLockIcon', () => {
-        wrapper = mountComponent({ duoFeaturesLocked: false });
+        wrapper = createWrapper({ duoFeaturesLocked: false });
         expect(findDuoCascadingLockIcon().exists()).toBe(false);
       });
     });
 
     describe('when areDuoSettingsLocked is true', () => {
       it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           cascadingSettingsData: {
             lockedByAncestor: false,
             lockedByApplicationSetting: false,
@@ -175,7 +211,7 @@ describe('GitlabDuoSettings', () => {
       });
 
       it('passes correct props to CascadingLockIcon', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           cascadingSettingsData: {
             lockedByAncestor: false,
             lockedByApplicationSetting: false,
@@ -191,7 +227,7 @@ describe('GitlabDuoSettings', () => {
       });
 
       it('does not show CascadingLockIcon when cascadingSettingsData is empty', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           cascadingSettingsData: {},
           duoFeaturesLocked: true,
         });
@@ -199,7 +235,7 @@ describe('GitlabDuoSettings', () => {
       });
 
       it('does not show CascadingLockIcon when cascadingSettingsData is null', () => {
-        wrapper = mountComponent({
+        wrapper = createWrapper({
           cascadingSettingsData: null,
           duoFeaturesLocked: true,
         });
@@ -210,7 +246,7 @@ describe('GitlabDuoSettings', () => {
 
   describe('Amazon Q', () => {
     it('shows Amazon Q text for duo field when Amazon Q is enabled', () => {
-      wrapper = mountComponent({ amazonQAvailable: true });
+      wrapper = createWrapper({ amazonQAvailable: true });
 
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
@@ -225,7 +261,7 @@ describe('GitlabDuoSettings', () => {
 
   describe('ExclusionSettings', () => {
     it('renders ExclusionSettings component when duo features are available', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: true },
       );
@@ -235,7 +271,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('does not render ExclusionSettings when duo features are not available', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: false },
         { useDuoContextExclusion: true },
       );
@@ -244,7 +280,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('does not render ExclusionSettings when feature flag is disabled', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: false },
       );
@@ -253,7 +289,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('updates exclusion rules when ExclusionSettings emits update', async () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: true },
       );
@@ -268,7 +304,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('renders hidden inputs for exclusion rules form submission', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: true },
       );
@@ -280,7 +316,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('updates hidden inputs when exclusion rules change', async () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: true },
       );
@@ -301,7 +337,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('handles empty exclusion rules', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         {
           licensedAiFeaturesAvailable: true,
           duoContextExclusionSettings: { exclusionRules: [] },
@@ -319,7 +355,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('handles missing duo context exclusion settings', () => {
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         {
           licensedAiFeaturesAvailable: true,
           duoContextExclusionSettings: {},
@@ -340,7 +376,7 @@ describe('GitlabDuoSettings', () => {
       // Mock the closest method to return our mock form
       const mockClosest = jest.fn().mockReturnValue(mockForm);
 
-      wrapper = mountComponent(
+      wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
         { useDuoContextExclusion: true },
       );

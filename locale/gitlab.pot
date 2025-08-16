@@ -24042,7 +24042,16 @@ msgstr ""
 msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
+msgstr ""
+
 msgid "DuoAgentPlatform|Activity"
+msgstr ""
+
+msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
+msgstr ""
+
+msgid "DuoAgentPlatform|Allow flow execution"
 msgstr ""
 
 msgid "DuoAgentPlatform|Details"
@@ -24061,6 +24070,9 @@ msgid "DuoAgentPlatform|Flow started successfully."
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow started successfully. To view progress, see %{linkStart}Session %{id}%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session ID"

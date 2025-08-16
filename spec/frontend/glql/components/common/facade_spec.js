@@ -5,6 +5,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { stubCrypto } from 'helpers/crypto';
+
 import GlqlFacade from '~/glql/components/common/facade.vue';
 import GlqlActions from '~/glql/components/common/actions.vue';
 import { parse } from '~/glql/core/parser';
@@ -88,6 +89,44 @@ describe('GlqlFacade', () => {
     expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
   });
 
+  describe('when the query includes a collapsed flag', () => {
+    beforeEach(async () => {
+      parse.mockResolvedValue({
+        ...MOCK_PARSE_OUTPUT,
+        config: { ...MOCK_PARSE_OUTPUT.config, collapsed: true },
+      });
+
+      await createComponent({
+        queryYaml: 'query: assignee = "foo"\n collapsed: true',
+      });
+      await triggerIntersectionObserver();
+    });
+
+    it('renders the crud component as collapsed', () => {
+      expect(wrapper.findComponent(CrudComponent).props('collapsed')).toBe(true);
+    });
+
+    describe('when the crud component dispatches an expanded event', () => {
+      beforeEach(() => {
+        wrapper.findComponent(CrudComponent).vm.$emit('expanded');
+      });
+
+      it('sets crud component state to not collapsed', () => {
+        expect(wrapper.findComponent(CrudComponent).props('collapsed')).toBe(false);
+      });
+
+      describe('and later a collapsed event', () => {
+        beforeEach(() => {
+          wrapper.findComponent(CrudComponent).vm.$emit('collapsed');
+        });
+
+        it('sets state to collapsed', () => {
+          expect(wrapper.findComponent(CrudComponent).props('collapsed')).toBe(true);
+        });
+      });
+    });
+  });
+
   describe('when the query is successful', () => {
     beforeEach(async () => {
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
@@ -96,12 +135,14 @@ describe('GlqlFacade', () => {
       await triggerIntersectionObserver();
     });
 
-    it('renders crud component', () => {
+    it('renders crud component in expanded state', () => {
       const crudComponent = wrapper.findComponent(CrudComponent);
       expect(crudComponent.props('anchorId')).toBe('glql-glql_key');
       expect(crudComponent.props('title')).toBe('Some title');
       expect(crudComponent.props('description')).toBe('Some description');
       expect(crudComponent.props('count')).toBe(2);
+
+      expect(crudComponent.props('collapsed')).toBe(false);
     });
 
     it('renders presenter component after successful query execution', () => {

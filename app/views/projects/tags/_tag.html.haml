@@ -3,7 +3,7 @@
 - commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
 
 %li.gl-justify-between{ class: "md:!gl-flex !gl-items-start !gl-px-5", data: { testid: 'tag-row' } }
-  .row-main-content
+  .gl-flex-auto
     %h2.gl-inline.gl-m-0.gl-font-bold.gl-text-size-h2
       = sprite_icon('tag', css_class: "gl-fill-icon-subtle")
       = link_to tag.name, project_tag_path(@project, tag.name)
@@ -26,7 +26,7 @@
       %pre.wrap.gl-mt-3.gl-max-w-80
         = strip_signature(tag.message)
 
-  .row-fixed-content.flex-row.gl-gap-3.gl-mt-2
+  .gl-grow-0.gl-shrink-0.gl-flex.gl-flex-row.gl-items-center.gl-gap-3.gl-mt-2
     - if tag.has_signature?
       = render partial: 'projects/commit/signature', object: tag.signature
 

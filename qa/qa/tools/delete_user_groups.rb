@@ -61,7 +61,7 @@ module QA
         groups = fetch_user_groups
         results = delete_user_groups(groups)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -93,7 +93,7 @@ module QA
       def fetch_token_user_info
         logger.info("Fetching GITLAB_QA_ACCESS_TOKEN user ...")
 
-        user_response = get Runtime::API::Request.new(@api_client, "/user").url
+        user_response = get Runtime::API::Request.new(api_client, "/user").url
 
         unless user_response.code == HTTP_STATUS_OK
           logger.error("Request for user returned (#{user_response.code}): `#{user_response}` ")
@@ -115,7 +115,7 @@ module QA
       end
 
       def resource_request(group, **options)
-        Runtime::API::Request.new(@api_client, "/groups/#{group[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/groups/#{group[:id]}", **options).url
       end
     end
   end

@@ -24,6 +24,7 @@ namespace :tw do
     CODE_OWNER_RULES = [
       # CodeOwnerRule.new('Activation', ''),
       # CodeOwnerRule.new('Acquisition', ''),
+      CodeOwnerRule.new('Agent Foundations', '@sselhorn'),
       CodeOwnerRule.new('AI Framework', '@sselhorn'),
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
       CodeOwnerRule.new('Authentication', '@idurham'),
@@ -43,7 +44,6 @@ namespace :tw do
       # CodeOwnerRule.new('Delivery', ''),
       CodeOwnerRule.new('Durability', '@axil'),
       CodeOwnerRule.new('Duo Chat', '@jglassman1'),
-      CodeOwnerRule.new('Duo Workflow', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),
       CodeOwnerRule.new('Editor Extensions', '@scawood'),
       CodeOwnerRule.new('Engagement', '@kpaizee'),

@@ -65,14 +65,14 @@ module QA
                              elsif qa_username == "gitlab-qa-user2" && ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
                                user_api_client(ENV['GITLAB_QA_USER2_ACCESS_TOKEN'])
                              else
-                               @api_client
+                               api_client
                              end
 
           projects = fetch_resources("/users/#{user_id}/projects")
           delete_user_projects(projects)
         end.compact
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -110,7 +110,7 @@ module QA
       end
 
       def fetch_qa_username(user_id)
-        response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
+        response = get Runtime::API::Request.new(api_client, "/users/#{user_id}").url
 
         unless response.code == HTTP_STATUS_OK
           logger.error("Request for #{user_id} returned (#{response.code}): `#{response}` ")

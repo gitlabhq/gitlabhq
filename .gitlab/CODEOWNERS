@@ -945,7 +945,6 @@ lib/gitlab/checks/
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill @sselhorn
-/doc/development/duo_agent_platform/ @gitlab-org/ai-powered
 /doc/development/exact_code_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/growth
