@@ -14,10 +14,10 @@
 
       .row
         .form-group.col-md-6
-          = f.label :o11y_service_url, s_('Observability|Service URL'), class: 'label-bold'
-          = f.text_field :o11y_service_url, class: 'form-control', placeholder: 'https://your-o11y-instance.com'
+          = f.label :o11y_service_name, s_('Observability|Service Name'), class: 'label-bold'
+          = f.text_field :o11y_service_name, class: 'form-control', placeholder: 'your-o11y-instance-name'
           %span.form-text.gl-text-subtle
-            = s_('Observability|The URL of your observability service instance.')
+            = s_('Observability|The Name of your observability service instance.')
 
         .form-group.col-md-6
           = f.label :o11y_service_user_email, s_('Observability|User Email'), class: 'label-bold'

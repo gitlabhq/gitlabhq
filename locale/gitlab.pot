@@ -43937,7 +43937,7 @@ msgstr ""
 msgid "Observability|See It In Action"
 msgstr ""
 
-msgid "Observability|Service URL"
+msgid "Observability|Service Name"
 msgstr ""
 
 msgid "Observability|Single pane of glass for logs, metrics, and traces within GitLab"
@@ -43961,7 +43961,7 @@ msgstr ""
 msgid "Observability|Thank You for Your Request!"
 msgstr ""
 
-msgid "Observability|The URL of your observability service instance."
+msgid "Observability|The Name of your observability service instance."
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"

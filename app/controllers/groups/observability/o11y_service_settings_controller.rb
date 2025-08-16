@@ -12,10 +12,12 @@ module Groups
       urgency :low
 
       def update
-        if ::Observability::GroupO11ySettingsUpdateService.new.execute(settings, settings_params).success?
+        result = ::Observability::GroupO11ySettingsUpdateService.new.execute(settings, settings_params)
+        if result.success?
           redirect_to edit_group_observability_o11y_service_settings_path(@group),
             notice: s_('Observability|Observability service settings updated successfully.')
         else
+          flash.now[:alert] = result.message
           render :edit
         end
       end
@@ -48,7 +50,7 @@ module Groups
 
       def settings_params
         params.require(:observability_group_o11y_setting).permit(
-          :o11y_service_url,
+          :o11y_service_name,
           :o11y_service_user_email,
           :o11y_service_password,
           :o11y_service_post_message_encryption_key
