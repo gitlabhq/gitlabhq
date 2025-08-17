@@ -1073,6 +1073,35 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION sync_work_item_transitions_from_issues() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+INSERT INTO work_item_transitions (
+  work_item_id,
+  namespace_id,
+  moved_to_id,
+  duplicated_to_id,
+  promoted_to_epic_id
+)
+VALUES (
+  NEW.id,
+  NEW.namespace_id,
+  NEW.moved_to_id,
+  NEW.duplicated_to_id,
+  NEW.promoted_to_epic_id
+)
+ON CONFLICT (work_item_id)
+DO UPDATE SET
+  moved_to_id = EXCLUDED.moved_to_id,
+  duplicated_to_id = EXCLUDED.duplicated_to_id,
+  promoted_to_epic_id = EXCLUDED.promoted_to_epic_id,
+  namespace_id = EXCLUDED.namespace_id;
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION table_sync_function_40ecbfb353() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -43118,6 +43147,8 @@ CREATE TRIGGER trigger_sync_packages_composer_with_packages AFTER INSERT OR DELE
 CREATE TRIGGER trigger_sync_push_rules_to_group_push_rules AFTER UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_push_rules_to_group_push_rules();
 
 CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE ON redirect_routes FOR EACH ROW WHEN ((new.namespace_id IS NULL)) EXECUTE FUNCTION sync_redirect_routes_namespace_id();
+
+CREATE TRIGGER trigger_sync_work_item_transitions_from_issues AFTER INSERT OR UPDATE OF moved_to_id, duplicated_to_id, promoted_to_epic_id, namespace_id ON issues FOR EACH ROW EXECUTE FUNCTION sync_work_item_transitions_from_issues();
 
 CREATE TRIGGER trigger_update_details_on_namespace_insert AFTER INSERT ON namespaces FOR EACH ROW WHEN (((new.type)::text <> 'Project'::text)) EXECUTE FUNCTION update_namespace_details_from_namespaces();
 
