@@ -11,6 +11,12 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
+  before_all do
+    project.update!(duo_remote_flows_enabled: true)
+  rescue StandardError
+    nil
+  end
+
   before do
     stub_feature_flags(hide_incident_management_features: false)
     sign_in(user)
