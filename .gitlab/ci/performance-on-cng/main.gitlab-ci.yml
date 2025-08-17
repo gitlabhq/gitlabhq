@@ -65,11 +65,9 @@ dotenv-vars:
 run-performance-tests:
   stage: test
   needs:
-    - job: build-cng-env
-      artifacts: true
-    - job: build-cng
-    - job: dotenv-vars
-      artifacts: true
+    - build-cng-env
+    - build-cng
+    - dotenv-vars
   trigger:
     project: gitlab-org/quality/component-performance-testing
     branch: main
@@ -98,8 +96,6 @@ run-performance-tests:
     - if: '$PARENT_CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org?($|\/)/'
       variables:
         PARENT_PIPELINE_CONTEXT: $CI_MERGE_REQUEST_IID
-      when: always
     - if: $CI_COMMIT_BRANCH == "master"
       variables:
         PARENT_PIPELINE_CONTEXT: "master"
-      when: always

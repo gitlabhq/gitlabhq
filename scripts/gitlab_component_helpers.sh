@@ -40,13 +40,6 @@ if [[ "${UPLOAD_TO_CURRENT_SERVER}" = "true" ]] && [[ "${CI_PROJECT_ID}" = "${CA
   export UPLOAD_PACKAGE_FLAG="true"
 fi
 
-# Workhorse constants
-export GITLAB_WORKHORSE_BINARIES_LIST="gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse"
-export GITLAB_WORKHORSE_PACKAGE_FILES_LIST="${GITLAB_WORKHORSE_BINARIES_LIST} WORKHORSE_TREE"
-export GITLAB_WORKHORSE_TREE=${GITLAB_WORKHORSE_TREE:-$(git rev-parse HEAD:workhorse)}
-export GITLAB_WORKHORSE_PACKAGE="workhorse-${GITLAB_WORKHORSE_TREE}.tar.gz"
-export GITLAB_WORKHORSE_PACKAGE_URL="${API_PACKAGES_BASE_URL}/${GITLAB_WORKHORSE_FOLDER}/${GITLAB_WORKHORSE_TREE}/${GITLAB_WORKHORSE_PACKAGE}"
-
 # Graphql Schema dump constants
 export GRAPHQL_SCHEMA_PACKAGE="graphql-schema.tar.gz"
 export GRAPHQL_SCHEMA_PATH="tmp/tests/graphql/"
@@ -64,35 +57,6 @@ fi
 # Fixtures constants
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
 export REUSE_FRONTEND_FIXTURES_ENABLED="${REUSE_FRONTEND_FIXTURES_ENABLED:-"true"}"
-
-# Workhorse functions
-function gitlab_workhorse_archive_doesnt_exist() {
-  archive_doesnt_exist "${GITLAB_WORKHORSE_PACKAGE_URL}"
-}
-
-function create_gitlab_workhorse_package() {
-  create_package "${GITLAB_WORKHORSE_PACKAGE}" "${GITLAB_WORKHORSE_FOLDER}" "${TMP_TEST_FOLDER}"
-}
-
-function upload_gitlab_workhorse_package() {
-  upload_package "${GITLAB_WORKHORSE_PACKAGE}" "${GITLAB_WORKHORSE_PACKAGE_URL}"
-}
-
-function download_and_extract_gitlab_workhorse_package() {
-  read_curl_package "${GITLAB_WORKHORSE_PACKAGE_URL}" | extract_package "${TMP_TEST_FOLDER}"
-}
-
-function select_gitlab_workhorse_essentials() {
-  local tmp_path="${CI_PROJECT_DIR}/tmp/${GITLAB_WORKHORSE_FOLDER}"
-  local original_gitlab_workhorse_path="${TMP_TEST_GITLAB_WORKHORSE_PATH}"
-
-  mkdir -p ${tmp_path}
-  cd ${original_gitlab_workhorse_path} && mv ${GITLAB_WORKHORSE_PACKAGE_FILES_LIST} ${tmp_path} && cd -
-  rm -rf ${original_gitlab_workhorse_path}
-
-  # Move the temp folder to its final destination
-  mv ${tmp_path} ${TMP_TEST_FOLDER}
-}
 
 function strip_executable_binaries() {
   local path="$1"

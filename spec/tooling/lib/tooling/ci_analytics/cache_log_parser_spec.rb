@@ -183,7 +183,7 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
 
     it 'identifies go cache from gitaly' do
       result = described_class.infer_cache_type('gitaly-binaries-debian-bookworm-22')
-      expect(result).to eq('go')
+      expect(result).to eq('gitaly')
     end
 
     it 'identifies rubocop cache' do

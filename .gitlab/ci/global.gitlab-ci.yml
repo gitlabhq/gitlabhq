@@ -147,6 +147,12 @@
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
   policy: push
 
+.workhorse-cache: &workhorse-cache
+  key: "workhorse-${BUILD_OS}-${OS_VERSION}-${GLCI_WORKHORSE_HASH}"
+  paths:
+    - ${TMP_TEST_GITLAB_WORKHORSE_PATH}
+  policy: pull-push
+
 .cache-analytics:
   after_script:
     - |
@@ -170,6 +176,7 @@
     - !reference [.ruby-gems-cache]
     - *gitaly-binaries-cache
     - *go-pkg-cache
+    - *workhorse-cache
 
 .setup-test-env-cache-push:
   extends: .cache-analytics

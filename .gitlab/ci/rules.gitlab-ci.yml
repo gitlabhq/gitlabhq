@@ -1227,22 +1227,6 @@
 #################
 # Caching rules #
 #################
-.caching:rules:cache-workhorse:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: ["workhorse/**/*"]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/gitlab_component_helpers.sh"
-      when: manual
-      allow_failure: true
-
 .caching:rules:packages-cleanup:
   rules:
     - <<: *if-not-ee

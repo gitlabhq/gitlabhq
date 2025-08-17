@@ -188,11 +188,13 @@ module Tooling
         case cache_key.downcase
         when /ruby-gems/ then 'ruby-gems'
         when /node-modules/ then 'node-modules'
-        when /go-pkg/, /gitaly/ then 'go'
+        when /go-pkg/ then 'go'
         when /assets/ then 'assets'
         when /rubocop/ then 'rubocop'
         when /qa-ruby/ then 'qa-ruby-gems'
         when /helm/ then 'cng-helm'
+        when /workhorse/ then 'workhorse'
+        when /gitaly/ then 'gitaly'
         else 'unknown'
         end
       end

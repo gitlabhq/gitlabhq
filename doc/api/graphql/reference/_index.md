@@ -38530,9 +38530,25 @@ Returns [`Deployment`](#deployment).
 | ---- | ---- | ----------- |
 | <a id="projectdeploymentiid"></a>`iid` | [`ID!`](#id) | Project-level internal ID of the Deployment. |
 
+##### `Project.duoWorkflowEvents`
+
+Checkpoints for GitLab Duo Agent Platform flows, for all users (remote flows only).
+
+Returns [`DuoWorkflowEventConnection`](#duoworkfloweventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectduoworkfloweventsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Array of request IDs to fetch. |
+
 ##### `Project.duoWorkflowWorkflows`
 
-GitLab Duo Agent Platform flows for a project, for all users (remote execution only).
+GitLab Duo Agent Platform flows for a project, for all users (remote flows only).
 
 Returns [`DuoWorkflowConnection`](#duoworkflowconnection).
 

@@ -16,6 +16,7 @@ setup-test-env:
     - .rails:rules:setup-test-env
   stage: prepare
   needs:
+    - job: cache:workhorse-hash
     - job: cache:ruby-gems
       optional: true
   variables:
@@ -25,9 +26,7 @@ setup-test-env:
       function setup_test_env() {
         echo $CI_MERGE_REQUEST_APPROVED
         source scripts/gitlab_component_helpers.sh
-        download_and_extract_gitlab_workhorse_package || true
         section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
-        select_gitlab_workhorse_essentials
         section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
         strip_executable_binaries "${TMP_TEST_FOLDER}"
       }
