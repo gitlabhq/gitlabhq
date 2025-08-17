@@ -81,6 +81,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       let(:pipeline_expedite_label_present) { false }
       let(:flaky_test_label_present) { false }
       let(:response_success) { true }
+      let(:mr_title) { 'Backport' }
 
       let(:changes_by_category_response) do
         {
@@ -161,6 +162,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         allow(fake_api).to receive(:pipeline_bridges).with(1, '1')
           .and_return(pipeline_bridges_response)
         allow(fake_helper).to receive(:mr_description).and_return(mr_description_response)
+        allow(fake_helper).to receive(:mr_title).and_return(mr_title)
       end
 
       # the stubbed behavior above is the success path
@@ -185,6 +187,12 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
         it_behaves_like 'with a failure', described_class::PIPELINE_EXPEDITED_ERROR_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
+      end
+
+      context 'with a default MR title' do
+        let(:mr_title) { "Merge branch '#{source_branch}' into '#{target_branch}'" }
+
+        it_behaves_like 'with a failure', described_class::NONDESCRIPTIVE_TITLE_MESSAGE
       end
 
       context 'without a pipeline::tier-3 label' do
