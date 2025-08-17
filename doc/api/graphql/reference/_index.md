@@ -2335,6 +2335,31 @@ Input type: `AiCatalogAgentDeleteInput`
 | <a id="mutationaicatalogagentdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog Agent was successfully deleted. |
 
+### `Mutation.aiCatalogAgentExecute`
+
+{{< details >}}
+**Introduced** in GitLab 18.3.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogAgentExecuteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentexecuteagentid"></a>`agentId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog agent to execute. |
+| <a id="mutationaicatalogagentexecuteagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific agent version to use. If not provided, the latest version will be used. |
+| <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentexecuteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogagentexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration file that can be used in Duo workflow service for flow execution. |
+
 ### `Mutation.aiCatalogAgentUpdate`
 
 {{< details >}}
@@ -49708,6 +49733,12 @@ An example `AiCatalogItemConsumerID` is: `"gid://gitlab/Ai::Catalog::ItemConsume
 A `AiCatalogItemID` is a global ID. It is encoded as a string.
 
 An example `AiCatalogItemID` is: `"gid://gitlab/Ai::Catalog::Item/1"`.
+
+### `AiCatalogItemVersionID`
+
+A `AiCatalogItemVersionID` is a global ID. It is encoded as a string.
+
+An example `AiCatalogItemVersionID` is: `"gid://gitlab/Ai::Catalog::ItemVersion/1"`.
 
 ### `AiConversationThreadID`
 
