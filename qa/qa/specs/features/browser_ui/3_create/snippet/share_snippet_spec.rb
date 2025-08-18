@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Sharing snippets', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Sharing snippets' do
       let(:snippet) do
         Resource::Snippet.fabricate! do |snippet|
           snippet.title = 'Shared snippet'

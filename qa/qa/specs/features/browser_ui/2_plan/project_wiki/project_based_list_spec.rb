@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :knowledge do
+  RSpec.describe 'Plan', feature_category: :wiki do
     describe 'Project Wiki' do
       let(:small_number_of_pages) { 5 }
       let(:large_number_of_pages) { 15 }

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_category: :groups_and_projects do
+  before do
+    stub_feature_flags(organization_users_internal: false)
+  end
+
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:organization) { organizations.create!(name: 'Foobar', path: 'path1') }

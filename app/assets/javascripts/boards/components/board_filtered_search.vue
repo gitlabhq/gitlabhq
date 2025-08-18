@@ -404,6 +404,7 @@ export default {
 
       return filtersCopy;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- updateTokens() is called via $refs by ee/boards/components/board_filtered_search.vue
     updateTokens() {
       this.$emit('setFilters', this.formattedFilterParams());
       this.filteredSearchKey += 1;

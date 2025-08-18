@@ -166,13 +166,11 @@ export default {
   },
   methods: {
     shouldShowWhatsNewNotification() {
-      if (
-        !this.sidebarData.display_whats_new ||
-        localStorage.getItem(STORAGE_KEY) === this.sidebarData.whats_new_version_digest
-      ) {
+      if (!localStorage || !this.sidebarData.display_whats_new) {
         return false;
       }
-      return true;
+
+      return localStorage.getItem(STORAGE_KEY) !== this.sidebarData.whats_new_version_digest;
     },
 
     async showWhatsNew() {

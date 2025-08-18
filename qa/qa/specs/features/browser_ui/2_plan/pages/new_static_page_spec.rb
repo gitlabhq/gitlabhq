@@ -4,12 +4,13 @@ module QA
   RSpec.describe 'Plan',
     :gitlab_pages,
     :orchestrated,
+    feature_category: :pages,
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383215',
       type: :broken
     } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
-    describe 'Pages', product_group: :knowledge do
+    describe 'Pages' do
       let!(:project) { create(:project, name: 'gitlab-pages-projects', template_name: :plainhtml) }
       let(:pipeline) do
         create(:pipeline,

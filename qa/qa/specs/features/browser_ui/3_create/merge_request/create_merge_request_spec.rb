@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Create a new merge request', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Create a new merge request' do
       let(:project) { create(:project) }
       let(:merge_request_title) { 'One merge request to rule them all' }
       let(:merge_request_description) { '... to find them, to bring them all, and in the darkness bind them' }

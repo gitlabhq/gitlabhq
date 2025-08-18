@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan' do
+  RSpec.describe 'Plan', feature_category: :team_planning do
     include Support::API
 
-    describe 'Issue', product_group: :project_management do
+    describe 'Issue' do
       let(:issue) { create(:issue, project: create(:project, :with_readme)) }
 
       it 'closes via pushing a commit',

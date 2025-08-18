@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
-    describe 'Project owner permissions', :smoke, :requires_admin, product_group: :organizations do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
+    describe 'Project owner permissions', :smoke, :requires_admin do
       let!(:owner) { Runtime::User::Store.test_user }
       let!(:owner_api_client) { owner.api_client }
       let!(:maintainer) { create(:user) }

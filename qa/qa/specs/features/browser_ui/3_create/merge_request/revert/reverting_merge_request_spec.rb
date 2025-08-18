@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Merged merge request', :requires_admin, product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Merged merge request', :requires_admin do
       let(:revertible_merge_request) { create(:merge_request) }
 
       before do

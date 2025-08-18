@@ -17,8 +17,8 @@ module QA
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
-    } do
-    describe 'Project import', product_group: :import do
+    }, feature_category: :importers do
+    describe 'Project import' do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:user) { create(:user) }
       let!(:user_api_client) do

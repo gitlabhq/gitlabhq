@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Merge request push options', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Merge request push options' do
       # If run locally on GDK, push options need to be enabled on the host with the following command:
       #
       # git config --global receive.advertisepushoptions true

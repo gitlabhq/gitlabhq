@@ -228,6 +228,7 @@ these parameters:
 - `throttle_unauthenticated_git_http_enabled`, `throttle_unauthenticated_git_http_period_in_seconds`, and `throttle_unauthenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147112) in GitLab 17.0.
 - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 - `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
+- `git_authenticated_http_limit` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 
 {{< /history >}}
 

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, :external_api_calls do
-    describe 'Maven project level endpoint', product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, :external_api_calls, feature_category: :package_registry do
+    describe 'Maven project level endpoint' do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 

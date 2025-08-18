@@ -1539,7 +1539,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/serializers/vulnerabilities/issue_link_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/merge_request_link_entity_spec.rb'
     - 'ee/spec/services/app_sec/fuzzing/api/ci_configuration_create_service_spec.rb'
-    - 'ee/spec/services/ee/resource_events/change_iteration_service_spec.rb'
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/registry_consistency_service_spec.rb'

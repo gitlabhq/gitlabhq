@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, :external_api_calls,
+  RSpec.describe 'Package', :object_storage, :external_api_calls, feature_category: :package_registry,
     quarantine: {
       only: { condition: -> { QA::Support::FIPS.enabled? } },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
       type: :investigating
-    }, product_group: :package_registry do
+    } do
     describe 'Maven Repository with Gradle' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

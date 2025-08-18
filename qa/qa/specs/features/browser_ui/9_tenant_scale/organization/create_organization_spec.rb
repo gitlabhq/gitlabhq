@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Tenant Scale',
     :skip_live_env,
     :requires_admin,
-    product_group: :organizations,
+    feature_category: :organization,
     quarantine: {
       type: :investigating,
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438840'

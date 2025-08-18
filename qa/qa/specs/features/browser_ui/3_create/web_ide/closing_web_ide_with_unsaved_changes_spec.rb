@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :remote_development, feature_category: :web_ide do
+  RSpec.describe 'Create', feature_category: :web_ide do
     describe 'Closing Web IDE' do
       include_context "Web IDE test prep"
       let(:file_name) { 'file.txt' }

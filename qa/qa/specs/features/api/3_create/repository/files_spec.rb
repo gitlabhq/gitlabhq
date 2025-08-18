@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', feature_category: :source_code_management do
     include Support::API
 
-    describe 'API basics', product_group: :source_code do
+    describe 'API basics' do
       let(:test_user) { Runtime::User::Store.test_user }
       let(:api_client) { test_user.api_client }
       let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }

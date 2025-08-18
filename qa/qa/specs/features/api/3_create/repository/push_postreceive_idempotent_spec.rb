@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'PostReceive idempotent', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'PostReceive idempotent' do
       # Tests that a push does not result in multiple changes from repeated PostReceive executions.
       # One of the consequences would be duplicate push events
 

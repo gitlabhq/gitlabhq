@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_execution do
+  RSpec.describe 'Verify', feature_category: :continuous_integration do
     describe 'Job artifacts' do
       context 'when exposed' do
         let(:total_jobs_count) { 3 }

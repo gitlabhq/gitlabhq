@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Manage', feature_category: :importers do
     include Support::API
 
-    describe 'Jira integration', :jira, :orchestrated, :requires_admin, product_group: :import do
+    describe 'Jira integration', :jira, :orchestrated, :requires_admin do
       let(:jira_project_key) { 'JITP' }
       let(:project) { create(:project, name: 'project_with_jira_integration') }
 

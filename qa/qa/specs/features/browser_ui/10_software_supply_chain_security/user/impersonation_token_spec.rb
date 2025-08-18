@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security' do
-    describe 'Impersonation tokens', :requires_admin, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', feature_category: :system_access do
+    describe 'Impersonation tokens', :requires_admin do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) { create(:user, :hard_delete, api_client: admin_api_client) }

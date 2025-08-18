@@ -30,10 +30,6 @@ export default {
     event: 'selectProject',
   },
   props: {
-    list: {
-      type: Object,
-      required: true,
-    },
     selectedProject: {
       type: Object,
       required: true,
@@ -87,9 +83,6 @@ export default {
     },
     selectedProjectName() {
       return this.selectedProject.name || this.$options.i18n.dropdownText;
-    },
-    isFetchResultEmpty() {
-      return this.activeGroupProjects.length === 0;
     },
     hasNextPage() {
       return this.projects.pageInfo?.hasNextPage;

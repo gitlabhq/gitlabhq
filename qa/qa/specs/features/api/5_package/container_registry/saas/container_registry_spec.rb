@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', only: { pipeline: %i[staging staging-canary preprod] },
-    product_group: :container_registry do
+    feature_category: :package_registry do
     include Support::Helpers::MaskToken
     include Support::Data::Image
 

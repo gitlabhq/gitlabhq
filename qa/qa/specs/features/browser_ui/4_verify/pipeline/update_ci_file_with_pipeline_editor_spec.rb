@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify' do
-    describe 'Update CI file with pipeline editor', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
+    describe 'Update CI file with pipeline editor' do
       let(:new_branch_name) { SecureRandom.hex(10) }
       let(:project) { create(:project, name: 'pipeline-editor-project') }
 

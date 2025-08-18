@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify' do
-    describe 'Pipeline with raw variables in YAML', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
+    describe 'Pipeline with raw variables in YAML' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:pipeline_job_name) { 'rspec' }
       let(:project) { create(:project, name: 'project-with-raw-variable-pipeline') }

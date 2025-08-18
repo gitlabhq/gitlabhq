@@ -1,4 +1,4 @@
-import { useLocalStorageSpy } from './local_storage_helper';
+import { useLocalStorageSpy, useWithoutLocalStorage } from './local_storage_helper';
 
 afterEach(() => {
   if (jest.isMockFunction(localStorage.setItem)) {
@@ -60,5 +60,13 @@ describe('nested calls', () => {
     it('also still work', () => {
       expect(jest.isMockFunction(localStorage.setItem)).toBe(true);
     });
+  });
+});
+
+describe('disabled localStorage helper', () => {
+  useWithoutLocalStorage();
+
+  it('returns empty localStorage', () => {
+    expect(localStorage).toBe(null);
   });
 });

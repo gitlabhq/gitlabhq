@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Commit data', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Commit data' do
       let(:user) { Runtime::User::Store.test_user }
       let(:project) { create(:project, :with_readme) }
       let(:commit_message) { 'Add second file' }

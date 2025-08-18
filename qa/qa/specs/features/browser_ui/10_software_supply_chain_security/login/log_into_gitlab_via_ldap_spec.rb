@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Software Supply Chain Security', :orchestrated, :ldap_no_tls, :ldap_tls,
-    product_group: :authentication do
+    feature_category: :system_access do
     describe 'LDAP login' do
       it 'user logs into GitLab using LDAP credentials',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347892' do

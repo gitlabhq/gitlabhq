@@ -112,7 +112,6 @@ describe('Issue boards new issue form', () => {
       const projectSelect = findBoardNewItem().findComponent(ProjectSelect);
 
       expect(projectSelect.exists()).toBe(true);
-      expect(projectSelect.props('list')).toEqual(mockList);
     });
   });
 

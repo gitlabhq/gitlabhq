@@ -14,7 +14,7 @@ export function initDuoPanel() {
       return createElement(
         'div',
         {
-          class: 'gl-border-l gl-pt-10 !gl-left-auto !gl-h-[100vh]',
+          class: 'gl-border-l gl-pt-4 gl-bg-default gl-rounded-lg !gl-left-auto !gl-h-[100vh]',
         },
         [
           createElement(

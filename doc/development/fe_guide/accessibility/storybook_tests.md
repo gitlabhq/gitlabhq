@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Accessibility Storybook tests
 ---
 
-## Storybook component tests
+## Storybook components tests
 
 We use [Storybook test-runner](https://storybook.js.org/docs/7/writing-tests/test-runner) with [axe-playwright](https://storybook.js.org/docs/7/writing-tests/accessibility-testing#automate-accessibility-tests-with-test-runner) to automatically test Vue components for accessibility violations.
 
@@ -80,6 +80,9 @@ Consider integrating Storybook accessibility testing into your development proce
 
 1. **During component development**: Run tests frequently to catch issues early
 1. **Before merge requests**: Ensure all new or modified components pass accessibility tests
+
+These tests will also run in CI, whenever you edit either `*.vue` or `*.stories.js` file.
+You can find them in `storybook-test` job, under `test-frontend` pipeline.
 
 ### Troubleshooting
 

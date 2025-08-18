@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
     describe(
-      'User', :requires_admin,
-      product_group: :organizations
+      'User', :requires_admin
     ) do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 

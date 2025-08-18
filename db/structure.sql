@@ -2745,22 +2745,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_765cae42cd77() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."organization_id" IS NULL THEN
-  SELECT "organization_id"
-  INTO NEW."organization_id"
-  FROM "bulk_import_entities"
-  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
-END IF;
-
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION trigger_77d9fbad5b12() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2900,22 +2884,6 @@ BEGIN
   NEW."user_id_convert_to_bigint" := NEW."user_id";
   RETURN NEW;
 END;
-$$;
-
-CREATE FUNCTION trigger_7f84f9c7b945() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."project_id" IS NULL THEN
-  SELECT "project_id"
-  INTO NEW."project_id"
-  FROM "bulk_import_entities"
-  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
-END IF;
-
-RETURN NEW;
-
-END
 $$;
 
 CREATE FUNCTION trigger_80578cfbdaf9() RETURNS trigger
@@ -4207,22 +4175,6 @@ IF NEW."protected_branch_namespace_id" IS NULL THEN
   INTO NEW."protected_branch_namespace_id"
   FROM "protected_branches"
   WHERE "protected_branches"."id" = NEW."protected_branch_id";
-END IF;
-
-RETURN NEW;
-
-END
-$$;
-
-CREATE FUNCTION trigger_eeb25d23ab2d() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."namespace_id" IS NULL THEN
-  SELECT "namespace_id"
-  INTO NEW."namespace_id"
-  FROM "bulk_import_entities"
-  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
 END IF;
 
 RETURN NEW;
@@ -42896,8 +42848,6 @@ CREATE TRIGGER trigger_744ab45ee5ac BEFORE INSERT OR UPDATE ON protected_branch_
 
 CREATE TRIGGER trigger_7495f5e0efcb BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_7495f5e0efcb();
 
-CREATE TRIGGER trigger_765cae42cd77 BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_765cae42cd77();
-
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
 
 CREATE TRIGGER trigger_78c85ddc4031 BEFORE INSERT OR UPDATE ON issue_emails FOR EACH ROW EXECUTE FUNCTION trigger_78c85ddc4031();
@@ -42917,8 +42867,6 @@ CREATE TRIGGER trigger_7d6a4f5b82c2 BEFORE UPDATE OF all_unarchived_project_ids 
 CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validations FOR EACH ROW EXECUTE FUNCTION trigger_7de792ddbc05();
 
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
-
-CREATE TRIGGER trigger_7f84f9c7b945 BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_7f84f9c7b945();
 
 CREATE TRIGGER trigger_80578cfbdaf9 BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_80578cfbdaf9();
 
@@ -43085,8 +43033,6 @@ CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_p
 CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
 
 CREATE TRIGGER trigger_ed554313ca66 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_ed554313ca66();
-
-CREATE TRIGGER trigger_eeb25d23ab2d BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_eeb25d23ab2d();
 
 CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_management_issuable_escalation_statuses FOR EACH ROW EXECUTE FUNCTION trigger_efb9d354f05a();
 

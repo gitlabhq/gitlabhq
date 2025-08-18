@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Software Supply Chain Security', :skip_live_env,
     requires_admin: 'creates users and instance OAuth application',
     only: { condition: -> { Runtime::Env.release } },
-    product_group: :authentication, quarantine: {
+    feature_category: :system_access, quarantine: {
       type: :investigating,
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/515686'
     } do

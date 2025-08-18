@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Deploy',
-    only: { pipeline: %i[staging staging-canary canary production] }, product_group: :environments do
+  RSpec.describe 'Deploy', feature_category: :environment_management,
+    only: { pipeline: %i[staging staging-canary canary production] } do
     describe 'Auto DevOps with a Kubernetes Agent' do
       let!(:app_project) { create(:project, :auto_devops, name: 'autodevops-app-project', template_name: 'express') }
       let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::Gcloud).create! }

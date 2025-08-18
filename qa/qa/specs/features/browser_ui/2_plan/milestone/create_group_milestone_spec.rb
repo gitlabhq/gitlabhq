@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :db_migrate, product_group: :project_management do
+  RSpec.describe 'Plan', :db_migrate, feature_category: :team_planning do
     describe 'Group milestone' do
       include Support::Dates
 

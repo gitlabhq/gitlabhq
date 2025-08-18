@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :skip_live_env, product_group: :remote_development, feature_category: :web_ide do
+  RSpec.describe 'Create', :skip_live_env, feature_category: :web_ide do
     describe 'Add first file in Web IDE' do
       include_context 'Web IDE test prep'
       let(:project) { create(:project, :with_readme, name: 'webide-create-file-project') }

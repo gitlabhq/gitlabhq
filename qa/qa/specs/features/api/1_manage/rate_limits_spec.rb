@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, only: {
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env, feature_category: :importers, only: {
     condition: -> { ENV['QA_RUN_TYPE']&.match?("e2e-test-on-omnibus") }
   } do
-    describe 'rate limits', product_group: :import do
+    describe 'rate limits' do
       let(:rate_limited_user) { create(:user, :with_personal_access_token) }
       let(:api_client) { rate_limited_user.api_client }
       let!(:request) { Runtime::API::Request.new(api_client, '/users') }

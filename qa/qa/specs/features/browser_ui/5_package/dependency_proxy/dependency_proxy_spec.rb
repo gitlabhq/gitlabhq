@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :registry, :skip_live_env, product_group: :container_registry do
+  RSpec.describe 'Package', :orchestrated, :registry, :skip_live_env, feature_category: :container_registry do
     describe 'Dependency Proxy' do
       using RSpec::Parameterized::TableSyntax
       include Support::Helpers::MaskToken

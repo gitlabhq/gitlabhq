@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Git clone over HTTP', :smoke, product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Git clone over HTTP', :smoke do
       let(:project) { create(:project, name: 'project-with-code', description: 'project for git clone tests') }
 
       before do

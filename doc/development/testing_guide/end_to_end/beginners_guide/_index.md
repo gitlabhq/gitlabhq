@@ -93,16 +93,16 @@ module QA
 end
 ```
 
-### The `product_group` metadata
+### The `feature_category` metadata
 
-Assign `product_group` metadata and specify what product group this test belongs to. In this case, `authentication_and_authorization`.
+Assign `feature_category` metadata and specify what feature category this test belongs to. In this case, `system_access`.
 
 ```ruby
 # frozen_string_literal: true
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication do
+    describe 'Login', feature_category: :system_access do
 
     end
   end
@@ -116,7 +116,7 @@ Every test suite contains at least one `it` block (example). A good way to start
 ```ruby
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication do
+    describe 'Login', feature_category: :system_access do
       it 'can login' do
 
       end
@@ -140,7 +140,7 @@ Begin by logging in.
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication do
+    describe 'Login', feature_category: :system_access do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -168,7 +168,7 @@ After [running the spec](#run-the-spec), our test should login and end; then we 
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication do
+    describe 'Login', feature_category: :system_access do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -212,7 +212,7 @@ Refactor your test to use a `before` block for test setup, since it's duplicatin
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication do
+    describe 'Login', feature_category: :system_access do
       before do
         Flow::Login.sign_in
       end
@@ -246,7 +246,7 @@ Next, let's test something other than Login. Let's test Issues, which are owned 
 
 module QA
   RSpec.describe 'Plan' do
-    describe 'Issues', product_group: :project_management do
+    describe 'Issues', feature_category: :team_planning do
       let(:issue) { create(:issue) }
 
       before do
@@ -336,7 +336,7 @@ Before submitting the test for code review, there are a few housecleaning tasks 
 
 1. Ensure that the test name follows the recommended [naming convention](../best_practices/_index.md#test-naming).
 1. Ensure that the spec is [linked to a test case](../best_practices/_index.md#link-a-test-to-its-test-case).
-1. Ensure that the spec has the correct `product_group` metadata. See [Product sections, stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/) for the comprehensive list of groups.
+1. Ensure that the spec has the correct `feature_category` metadata. See [Product sections, stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/) for the comprehensive list of groups.
 1. Ensure that the relevant [RSpec metadata](../best_practices/rspec_metadata_tests.md) are added to the spec.
 1. Ensure the page object elements are named according to the [recommended naming convention](../style_guide.md#element-naming-convention).
 

@@ -126,7 +126,7 @@ gem 'timfel-krb5-auth', '~> 0.8', group: :kerberos, feature_category: :system_ac
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 5.12', require: 'recaptcha/rails', feature_category: :insider_threat
 gem 'akismet', '~> 3.0', feature_category: :insider_threat
-gem 'invisible_captcha', '~> 2.1.0', feature_category: :insider_threat
+gem 'invisible_captcha', '~> 2.3.0', feature_category: :insider_threat
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 4.1.1', feature_category: :system_access

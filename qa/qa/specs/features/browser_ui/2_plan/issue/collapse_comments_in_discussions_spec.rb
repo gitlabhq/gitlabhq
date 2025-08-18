@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :project_management do
+  RSpec.describe 'Plan', feature_category: :team_planning do
     describe 'collapse comments in issue discussions' do
       let(:my_first_reply) { 'My first reply' }
       let(:one_reply) { '1 reply' }

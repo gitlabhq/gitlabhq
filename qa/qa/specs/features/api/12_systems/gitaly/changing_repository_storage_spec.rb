@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Systems', product_group: :gitaly do
+  RSpec.describe 'Systems', feature_category: :gitaly do
     describe 'Changing Gitaly repository storage',
       :requires_admin, :orchestrated, :skip_live_env, :repository_storage do
       praefect_manager = Service::PraefectManager.new

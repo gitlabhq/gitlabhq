@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'SSH key support', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'SSH key support' do
       # Note: If you run these tests against GDK make sure you've enabled sshd
       # See: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md
 

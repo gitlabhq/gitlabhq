@@ -186,6 +186,14 @@ module QA
         ENV['QA_COOKIES'] && ENV['QA_COOKIES'].split(';')
       end
 
+      def running_against_cell?
+        return false unless qa_cookies
+
+        qa_cookies.any? do |cookie|
+          cookie.start_with?("_gitlab_session=cell-")
+        end
+      end
+
       def signup_disabled?
         enabled?(ENV['SIGNUP_DISABLED'], default: false)
       end

@@ -50,3 +50,4 @@ const createLocalStorageSpy = () => {
  * Before each test, overwrite `window.localStorage` with a spy implementation.
  */
 export const useLocalStorageSpy = () => useLocalStorage(createLocalStorageSpy);
+export const useWithoutLocalStorage = () => useLocalStorage(() => null);

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage,
-    product_group: :package_registry, requires_admin: 'Updates application settings' do
+  RSpec.describe 'Package', :object_storage, feature_category: :package_registry,
+    requires_admin: 'Updates application settings' do
     describe 'Maven group level endpoint', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

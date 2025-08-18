@@ -33373,9 +33373,6 @@ msgstr ""
 msgid "ImportProjects|Imported files will be kept. You can import this repository again later."
 msgstr ""
 
-msgid "ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead."
-msgstr ""
-
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
@@ -33419,6 +33416,12 @@ msgid "ImportProjects|To import collaborators, or if your project has Git LFS fi
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
+msgstr ""
+
+msgid "ImportProjects|When you import to a personal namespace, all contributions are assigned to a single non-functional user and they cannot be reassigned. To map contributions to real users, import to a group instead."
+msgstr ""
+
+msgid "ImportProjects|When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned. To map contributions to real users, import to a group instead."
 msgstr ""
 
 msgid "Imported"

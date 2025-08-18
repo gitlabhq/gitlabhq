@@ -49,6 +49,7 @@ parameters, enable and configure these limits:
 {{< history >}}
 
 - Authenticated Git HTTP rate limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 
 {{< /history >}}
 

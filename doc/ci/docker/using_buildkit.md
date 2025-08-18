@@ -117,7 +117,9 @@ To build images without Docker daemon dependency, add a job similar to this exam
 
 ```yaml
 build-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -140,7 +142,9 @@ to specify the target platforms. For example:
 
 ```yaml
 build-multiarch-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -164,7 +168,9 @@ import and export in your build job. For example:
 
 ```yaml
 build-cached-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -191,7 +197,9 @@ To configure registry mirrors, create a `buildkit.toml` file that specifies the 
 
 ```yaml
 build-mirror-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox --config /tmp/buildkit.toml
@@ -220,7 +228,9 @@ as variables in your job. For example:
 
 ```yaml
 build-behind-proxy:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -251,7 +261,9 @@ container's certificate store before building. For example:
 
 ```yaml
 build-with-custom-certs:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -301,7 +313,9 @@ After, with BuildKit rootless:
 
 ```yaml
 build:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:

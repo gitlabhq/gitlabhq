@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "test": "test-storybook --url http://${STORYBOOK_HOST:-localhost}:${STORYBOOK_PORT:-9002} -c config --verbose --json --outputFile storybook-results.json",
-    "start": "storybook dev -p 9002 -c config",
+    "test": "test-storybook --url http://${STORYBOOK_HOST:-localhost}:${STORYBOOK_PORT:-6006} -c config --verbose --json --outputFile storybook-results.json",
+    "start": "storybook dev -p 6006 -c config",
     "build": "storybook build -c config -o public",
     "doctor": "storybook doctor  -c config --debug"
   },

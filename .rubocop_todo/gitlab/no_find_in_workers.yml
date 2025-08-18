@@ -13,7 +13,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/bulk_imports/user_contributions_export_worker.rb'
     - 'app/workers/concerns/cluster_applications.rb'
     - 'app/workers/concerns/project_import_options.rb'
-    - 'app/workers/create_pipeline_worker.rb'
     - 'app/workers/delete_diff_files_worker.rb'
     - 'app/workers/delete_merged_branches_worker.rb'
     - 'app/workers/design_management/copy_design_collection_worker.rb'

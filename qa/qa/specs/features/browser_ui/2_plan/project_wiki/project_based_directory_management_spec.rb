@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :knowledge do
+  RSpec.describe 'Plan', feature_category: :wiki do
     describe 'A project wiki' do
       let(:initial_wiki) { create(:project_wiki_page) }
       let(:new_path) { "a/new/path-with-spaces" }

@@ -946,6 +946,17 @@ When using variables to add text into translatable strings, several localization
    s_('WorkItem|Related items: %{workItemType} → %{relatedWorkItemType}')
 ```
 
+### Combining patterns
+
+You can combine translation helper functions to handle complex scenarios that require
+multiple features like namespacing, pluralization, and parameter substitution.
+
+For example:
+
+```ruby
+   ns_('BulkImport|%{count} placeholder user has been created.', 'BulkImport|%{count} placeholder users have been created.', @success_count)
+```
+
 ## Case transformation in translatable strings
 
 Different languages have different capitalization rules that may not match English. For example, in German all nouns are capitalized regardless of their position in the sentence. Avoid using `downcase` or `toLocaleLowerCase()` on translatable strings. Let translators control text.

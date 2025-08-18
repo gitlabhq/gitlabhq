@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_execution,
+  RSpec.describe 'Verify', feature_category: :continuous_integration,
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422863',
       type: :flaky

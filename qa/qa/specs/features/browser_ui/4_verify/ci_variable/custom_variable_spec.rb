@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
     describe 'Pipeline with customizable variable' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:pipeline_job_name) { 'customizable-variable' }

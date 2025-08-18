@@ -69,6 +69,9 @@ module QA
 
             test_user = user || Runtime::User::Store.test_user
 
+            # Requires refresh to get updated valid session cookie from server
+            page.refresh if QA::Runtime::Env.running_against_cell?
+
             if test_user.ldap_user?
               sign_in_using_ldap_credentials(user: test_user)
             else

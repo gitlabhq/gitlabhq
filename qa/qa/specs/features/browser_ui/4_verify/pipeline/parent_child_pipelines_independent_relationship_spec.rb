@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_execution do
+  RSpec.describe 'Verify', feature_category: :continuous_integration do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) { create(:project, name: 'pipeline-independent-relationship') }
       let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }

@@ -685,17 +685,19 @@ test-storybook:
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
   allow_failure: true
+  timeout: 30m
   artifacts:
     name: storybook-test-results
     access: developer
     expire_in: 31d
     when: always
     paths:
-      - storybook-results.json
+      - storybook/storybook-results.json
   script:
     - yarn_install_script_storybook
+    - yarn --cwd ./storybook playwright install --with-deps chromium
     - yarn run storybook:start &
     - STORYBOOK_PID=$!
-    - timeout 60 bash -c 'until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done'  # Wait for Storybook to start
+    - until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done  # Wait for Storybook to start
     - yarn run storybook:dev:test
     - kill $STORYBOOK_PID || true

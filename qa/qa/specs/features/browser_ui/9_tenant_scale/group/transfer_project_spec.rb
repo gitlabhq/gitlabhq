@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
-    describe 'Project transfer', product_group: :organizations do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
+    describe 'Project transfer' do
       let(:project) { create(:project, name: 'transfer-project', group: source_group) }
       let(:source_group) { create(:group, path: "source-group-#{SecureRandom.hex(8)}") }
       let!(:target_group) { create(:group, path: "target-group-for-transfer_#{SecureRandom.hex(8)}") }

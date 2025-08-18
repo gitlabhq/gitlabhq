@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
     describe 'Pipeline with project file variables' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-with-file-variables') }

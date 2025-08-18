@@ -4,7 +4,7 @@
 # implements functionality in https://gitlab.com/gitlab-org/gitlab/-/issues/415207
 
 module QA
-  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
+  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, feature_category: :cell do
     describe 'Demo 2' do
       let(:cell1_url) { ENV.fetch('CELL1_URL', 'http://gdk.test:3000/') }
       let(:cell2_url) { ENV.fetch('CELL2_URL', 'http://gdk.test:3001/') }

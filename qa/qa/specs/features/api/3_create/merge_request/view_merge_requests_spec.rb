@@ -3,8 +3,8 @@
 require 'net/http'
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Merge Requests', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Merge Requests' do
       let(:address) { Runtime::Address.new(:gitlab, '') }
 
       context 'with a malformed URL' do

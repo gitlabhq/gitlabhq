@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Manage', feature_category: :importers do
     describe(
       'WebHooks integration',
       :requires_admin,
       :integrations,
       :orchestrated,
-      product_group: :import,
       feature_flag: { name: :auto_disabling_web_hooks }
     ) do
       before(:context) do

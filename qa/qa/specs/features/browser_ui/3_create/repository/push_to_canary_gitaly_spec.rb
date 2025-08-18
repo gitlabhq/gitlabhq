@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', only: { pipeline: %i[staging staging-canary] }, product_group: :source_code do
+  RSpec.describe 'Create', only: { pipeline: %i[staging staging-canary] }, feature_category: :source_code_management do
     describe 'Git push to canary Gitaly node over HTTP' do
       it 'pushes to a project using a canary specific Gitaly repository storage', :smoke, :requires_admin, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/351116' do
         Flow::Login.sign_in_as_admin

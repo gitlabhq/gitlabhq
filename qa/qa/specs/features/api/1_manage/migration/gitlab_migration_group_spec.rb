@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe "Manage", product_group: :import do
+  RSpec.describe "Manage", feature_category: :importers do
     include_context "with gitlab group migration"
 
     describe "Gitlab migration", :import, :orchestrated, requires_admin: 'creates a user via API' do

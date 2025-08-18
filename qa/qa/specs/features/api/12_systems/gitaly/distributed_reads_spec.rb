@@ -3,7 +3,7 @@
 require 'parallel'
 
 module QA
-  RSpec.describe 'Systems', product_group: :gitaly do
+  RSpec.describe 'Systems', feature_category: :gitaly do
     describe 'Gitaly distributed reads', :orchestrated, :gitaly_cluster, :skip_live_env, :requires_admin do
       let(:number_of_reads_per_loop) { 9 }
       let(:praefect_manager) { Service::PraefectManager.new }

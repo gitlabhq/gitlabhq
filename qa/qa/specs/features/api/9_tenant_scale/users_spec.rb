@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
     include Support::API
 
-    describe 'Users API', :smoke, product_group: :organizations do
+    describe 'Users API', :smoke do
       let(:api_client) { Runtime::User::Store.test_user.api_client }
       let(:username) { Runtime::User::Store.test_user.username }
 

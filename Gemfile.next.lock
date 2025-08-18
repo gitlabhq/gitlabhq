@@ -716,7 +716,7 @@ GEM
     git (1.19.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (18.2.0)
+    gitaly (18.2.1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1037,7 +1037,7 @@ GEM
       parser (>= 2.5, != 2.5.1.1)
     influxdb-client (3.2.0)
       csv
-    invisible_captcha (2.1.0)
+    invisible_captcha (2.3.0)
       rails (>= 5.2)
     io-console (0.8.0)
     io-event (1.12.1)
@@ -2221,7 +2221,7 @@ DEPENDENCIES
   i18n_data (~> 0.13.1)
   icalendar (~> 2.10.1)
   influxdb-client (~> 3.1)
-  invisible_captcha (~> 2.1.0)
+  invisible_captcha (~> 2.3.0)
   io-event (~> 1.12)
   ipaddress (~> 0.8.3)
   ipynbdiff!

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Source editor toolbar preview', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Source editor toolbar preview' do
       let(:project) { create(:project, :with_readme, name: 'empty-project-with-md') }
       let(:edited_readme_content) { 'Here is the edited content.' }
 

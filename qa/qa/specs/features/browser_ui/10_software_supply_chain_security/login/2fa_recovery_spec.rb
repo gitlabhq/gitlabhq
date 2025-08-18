@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :requires_admin, :skip_live_env do
-    describe '2FA', product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :requires_admin, :skip_live_env, feature_category: :system_access do
+    describe '2FA' do
       let(:owner_user) { Runtime::User::Store.test_user }
       let(:owner_api_client) { owner_user.api_client }
       let(:developer_user) { create(:user) }

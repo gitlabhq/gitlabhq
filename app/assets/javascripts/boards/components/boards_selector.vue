@@ -73,8 +73,6 @@ export default {
       recentBoards: [],
       loadingBoards: false,
       loadingRecentBoards: false,
-      contentClientHeight: 0,
-      maxPosition: 0,
       filterTerm: '',
     };
   },

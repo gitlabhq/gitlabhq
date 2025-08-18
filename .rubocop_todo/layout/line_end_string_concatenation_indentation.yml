@@ -132,7 +132,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/services/ee/groups/group_links/update_service.rb'
     - 'ee/app/services/ee/resource_access_tokens/revoke_service.rb'
     - 'ee/app/services/group_saml/saml_group_links/create_service.rb'
-    - 'ee/app/services/groups/sync_service.rb'
     - 'ee/app/services/phone_verification/telesign_client/base_service.rb'
     - 'ee/app/services/phone_verification/telesign_client/risk_score_service.rb'
     - 'ee/app/services/phone_verification/users/send_verification_code_service.rb'

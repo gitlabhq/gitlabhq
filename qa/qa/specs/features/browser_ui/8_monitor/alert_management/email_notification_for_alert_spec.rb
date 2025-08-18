@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :platform_insights, feature_flag: {
-    name: :hide_incident_management_features
-  } do
+  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, feature_category: :incident_management,
+    feature_flag: {
+      name: :hide_incident_management_features
+    } do
     describe 'Alert' do
       shared_examples 'notification on new alert' do
         it 'sends email to user', :aggregate_failures do

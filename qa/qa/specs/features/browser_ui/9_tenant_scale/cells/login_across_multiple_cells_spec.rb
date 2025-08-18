@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
+  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, feature_category: :cell do
     describe 'Multiple Cells' do
       let(:url) { 'gitlab-cells.bridge' }
 

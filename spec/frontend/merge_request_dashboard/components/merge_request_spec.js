@@ -7,6 +7,7 @@ import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue
 import StatusBadge from '~/merge_request_dashboard/components/status_badge.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
+import diffStatsQuery from '~/merge_request_dashboard/queries/diff_stats.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -16,7 +17,23 @@ describe('Merge request dashboard merge request component', () => {
   const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
 
   function createComponent(mergeRequest = {}, newMergeRequestIds = [], isShowingLabels = false) {
-    const mockApollo = createMockApollo();
+    const mockApollo = createMockApollo([
+      [
+        diffStatsQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            mergeRequest: {
+              id: 1,
+              diffStatsSummary: {
+                fileCount: 1,
+                additions: 100,
+                deletions: 50,
+              },
+            },
+          },
+        }),
+      ],
+    ]);
 
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: isShowingLabelsQuery,

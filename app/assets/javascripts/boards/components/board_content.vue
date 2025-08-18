@@ -88,7 +88,6 @@ export default {
   },
   data() {
     return {
-      boardHeight: null,
       highlightedLists: [],
       columnsThatCannotFindActiveItem: 0,
       draggedType: null,

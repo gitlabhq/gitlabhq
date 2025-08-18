@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Merge request suggestions', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Merge request suggestions' do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
       let(:project) { create(:project, name: 'mr-suggestions-project') }
       let!(:merge_request) do

@@ -1,0 +1,10 @@
+query mergeRequestDiffStats($id: MergeRequestID!) {
+  mergeRequest(id: $id) {
+    id
+    diffStatsSummary {
+      fileCount
+      additions
+      deletions
+    }
+  }
+}

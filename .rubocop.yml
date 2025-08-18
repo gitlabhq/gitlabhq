@@ -753,7 +753,7 @@ RSpec/FactoriesInMigrationSpecs:
 RSpec/FeatureCategory:
   Enabled: true
   Exclude:
-    - 'qa/**/*.rb'
+    - 'qa/spec/**/*.rb'
     - 'gems/**/*.rb'
 
 RSpec/FactoryBot/AvoidCreate:

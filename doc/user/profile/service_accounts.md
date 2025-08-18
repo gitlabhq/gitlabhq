@@ -41,10 +41,7 @@ Service accounts:
 - Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
-You can also manage service accounts through the API.
-
-- For instance service accounts, use the [service account users API](../../api/service_accounts.md).
-- For group service accounts, use the [group service accounts API](../../api/service_accounts.md).
+You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).
 
 ## Prerequisites
 
@@ -100,10 +97,11 @@ To view service accounts for a top-level group:
 
 {{< /history >}}
 
-On GitLab.com, you can create service accounts owned by a top-level group.
+On GitLab.com, only top-level group Owners can create service accounts.
 
-By default, on GitLab Self-Managed and GitLab Dedicated, only administrators can create service
-accounts. You can [allow top-level group Owners to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+By default, on GitLab Self-Managed and GitLab Dedicated, only administrators can create either type of service account.
+However, you can [configure the instance](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts)
+to allow top-level group Owners to create group service accounts.
 
 The number of service accounts you can create is limited by your license:
 
@@ -149,7 +147,7 @@ You can also manage group and project assignments with the [members API](../../a
 ### Delete a service account
 
 When you delete a service account, any contributions made by the account are retained and ownership
-is transfered to a system-wide ghost user account. These contributions can include activity such as
+is transferred to a system-wide ghost user account. These contributions can include activity such as
 merge requests, issues, projects, and groups.
 
 To delete a service account:
@@ -172,7 +170,7 @@ contributions can include activity such as merge requests, issues, groups, and p
 You can also delete service accounts through the API.
 
 - For instance service accounts, use the [users API](../../api/users.md#delete-a-user).
-- For group service accounts, use the [group service accounts API](../../api/service_accounts.md#delete-a-group-service-account).
+- For group service accounts, use the [service accounts API](../../api/service_accounts.md#delete-a-group-service-account).
 
 ## View and manage personal access tokens for a service account
 
@@ -185,7 +183,7 @@ The personal access tokens page displays information about the personal access t
 You can also manage personal access tokens for service accounts through the API.
 
 - For instance service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
-- For group service accounts, use the [group service accounts API](../../api/service_accounts.md).
+- For group service accounts, use the [service accounts API](../../api/service_accounts.md).
 
 To view the personal access tokens page for a service account:
 

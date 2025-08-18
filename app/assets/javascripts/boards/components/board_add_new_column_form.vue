@@ -26,11 +26,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      searchValue: '',
-    };
-  },
   methods: {
     onSubmit() {
       this.$emit('add-list');

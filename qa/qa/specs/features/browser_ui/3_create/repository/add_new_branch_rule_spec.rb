@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Branch Rules Overview', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Branch Rules Overview' do
       let(:branch_name) { 'new-branch' }
       let(:allowed_to_push_role) { Resource::ProtectedBranch::Roles::NO_ONE }
       let(:allowed_to_merge_role) { Resource::ProtectedBranch::Roles::MAINTAINERS }

@@ -410,7 +410,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/analytics/language_trend.rb'
     - 'ee/app/models/analytics/language_trend/repository_language.rb'
     - 'ee/app/models/concerns/geo/replicable_registry.rb'
-    - 'ee/app/models/concerns/geo/selective_sync.rb'
     - 'ee/app/models/dast/profile_schedule.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
     - 'ee/app/models/epic/related_epic_link.rb'

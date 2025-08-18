@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
     describe 'CI component', :skip_live_env do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:tag) { '1.0.0' }

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify' do
-    describe 'Include local config file paths with wildcard', product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
+    describe 'Include local config file paths with wildcard' do
       let(:project) { create(:project, name: 'project-with-pipeline') }
 
       before do

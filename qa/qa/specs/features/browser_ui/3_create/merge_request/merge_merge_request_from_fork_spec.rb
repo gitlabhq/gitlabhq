@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Merge request creation from fork', :requires_admin, product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Merge request creation from fork', :requires_admin do
       let!(:user) { create(:user, :with_personal_access_token) }
       let!(:fork) { create(:fork, user: user) }
       let!(:merge_request) { create(:merge_request_from_fork, fork: fork) }

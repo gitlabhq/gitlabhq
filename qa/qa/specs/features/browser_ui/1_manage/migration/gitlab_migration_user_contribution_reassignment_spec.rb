@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  describe 'Manage', product_group: :import do
+  describe 'Manage', feature_category: :importers do
     describe 'Gitlab migration',
       feature_flag: {
         name: [:bulk_import_importer_user_mapping],

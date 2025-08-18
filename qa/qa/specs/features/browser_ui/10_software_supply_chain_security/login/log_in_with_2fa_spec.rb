@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :requires_admin, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :requires_admin, feature_category: :system_access do
     describe '2FA' do
       let!(:owner_user) { create(:user, username: "owner_user_#{SecureRandom.hex(4)}") }
 

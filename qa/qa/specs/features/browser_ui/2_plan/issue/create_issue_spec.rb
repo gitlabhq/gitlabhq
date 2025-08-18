@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke, :health_check, product_group: :project_management do
+  RSpec.describe 'Plan', :smoke, :health_check, feature_category: :team_planning do
     describe 'Issue creation' do
       let(:project) do
         Resource::Project.fabricate_via_api_unless_fips! do |project|

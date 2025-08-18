@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security' do
-    describe 'Project access token', product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', feature_category: :system_access do
+    describe 'Project access token' do
       include QA::Support::Helpers::Project
 
       let!(:project) { create(:project, name: "project-to-test-project-access-token") }

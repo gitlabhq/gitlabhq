@@ -12,6 +12,7 @@ import {
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
@@ -35,6 +36,7 @@ export default {
     GlSprintf,
     GlModal,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     userNamespace: {
       default: null,
@@ -127,6 +129,18 @@ export default {
       set(value) {
         this.updateImportTarget({ newName: value });
       },
+    },
+
+    personalNamespaceWarning() {
+      if (this.glFeatures.userMappingToPersonalNamespaceOwner) {
+        return s__(
+          'ImportProjects|When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned. To map contributions to real users, import to a group instead.',
+        );
+      }
+
+      return s__(
+        'ImportProjects|When you import to a personal namespace, all contributions are assigned to a single non-functional user and they cannot be reassigned. To map contributions to real users, import to a group instead.',
+      );
     },
   },
 
@@ -272,11 +286,7 @@ export default {
         @primary="handleImportRepo"
       >
         <p>
-          {{
-            s__(
-              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead.',
-            )
-          }}
+          {{ personalNamespaceWarning }}
           <help-page-link
             href="/user/project/import/_index"
             anchor="user-contribution-and-membership-mapping"
@@ -291,11 +301,7 @@ export default {
           trigger-class="!gl-text-warning"
           data-testid="memberships-warning"
         >
-          {{
-            s__(
-              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead.',
-            )
-          }}
+          {{ personalNamespaceWarning }}
           <help-page-link
             href="/user/project/import/_index"
             anchor="user-contribution-and-membership-mapping"

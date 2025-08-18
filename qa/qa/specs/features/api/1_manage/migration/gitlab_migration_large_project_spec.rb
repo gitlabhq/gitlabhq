@@ -4,7 +4,7 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", :skip_live_env, product_group: :import,
+  RSpec.describe "Manage", :skip_live_env, feature_category: :importers,
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }

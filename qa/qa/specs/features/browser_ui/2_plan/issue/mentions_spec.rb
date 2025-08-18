@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke, product_group: :project_management do
+  RSpec.describe 'Plan', :smoke, feature_category: :team_planning do
     describe 'mention' do
       let(:user) { Runtime::User::Store.additional_test_user }
 

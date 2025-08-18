@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
     describe 'Adding comments to project snippets' do
       let(:comment_author) { Runtime::User::Store.additional_test_user }
       let(:comment_content) { 'Comment 123' }

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Software Supply Chain Security', :skip_signup_disabled, :requires_admin,
-    product_group: :authentication do
+    feature_category: :system_access do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       it 'allows the user to register and login' do

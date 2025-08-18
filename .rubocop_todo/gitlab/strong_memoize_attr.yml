@@ -321,7 +321,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/workers/status_page/publish_worker.rb'
     - 'ee/lib/api/analytics/project_deployment_frequency.rb'
     - 'ee/lib/api/epic_links.rb'
-    - 'ee/lib/api/geo_nodes.rb'
     - 'ee/lib/api/vulnerability_exports.rb'
     - 'ee/lib/api/vulnerability_findings.rb'
     - 'ee/lib/ee/api/geo.rb'

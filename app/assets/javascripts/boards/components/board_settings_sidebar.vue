@@ -43,10 +43,6 @@ export default {
       type: String,
       required: true,
     },
-    boardId: {
-      type: String,
-      required: true,
-    },
     list: {
       type: Object,
       required: false,

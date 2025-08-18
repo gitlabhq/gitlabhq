@@ -1,5 +1,12 @@
 <script>
-import { GlLink, GlSprintf, GlIcon, GlTooltipDirective, GlLabel } from '@gitlab/ui';
+import {
+  GlLink,
+  GlSprintf,
+  GlIcon,
+  GlTooltipDirective,
+  GlLabel,
+  GlSkeletonLoader,
+} from '@gitlab/ui';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
@@ -10,6 +17,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import DiscussionsBadge from '~/merge_requests/list/components/discussions_badge.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import diffStatsQuery from '../queries/diff_stats.query.graphql';
 import AssignedUsers from './assigned_users.vue';
 import StatusBadge from './status_badge.vue';
 
@@ -19,12 +27,25 @@ export default {
       query: isShowingLabelsQuery,
       update: (data) => data.isShowingLabels,
     },
+    diffStats: {
+      query: diffStatsQuery,
+      variables() {
+        return {
+          id: this.mergeRequest.id,
+        };
+      },
+      update: (d) => d.mergeRequest?.diffStatsSummary,
+      context() {
+        return { batchKey: `MergeRequestDiffStats_${this.listId}` };
+      },
+    },
   },
   components: {
     GlLink,
     GlSprintf,
     GlIcon,
     GlLabel,
+    GlSkeletonLoader,
     UserAvatarImage,
     CiIcon,
     TimeAgoTooltip,
@@ -55,23 +76,18 @@ export default {
   data() {
     return {
       isShowingLabels: null,
+      diffStats: null,
     };
   },
   computed: {
     statsAriaLabel() {
-      const fileAdditions = n__(
-        '%d file addition',
-        '%d file additions',
-        this.mergeRequest.diffStatsSummary.additions,
-      );
-      const fileDeletions = n__(
-        '%d file deletion',
-        '%d file deletions',
-        this.mergeRequest.diffStatsSummary.deletions,
-      );
+      if (!this.diffStats) return null;
+
+      const fileAdditions = n__('%d file addition', '%d file additions', this.diffStats.additions);
+      const fileDeletions = n__('%d file deletion', '%d file deletions', this.diffStats.deletions);
 
       return sprintf(__('%{filesChanged}, %{fileAdditions}, %{fileDeletions}'), {
-        filesChanged: n__('%d file', '%d files', this.mergeRequest.diffStatsSummary.fileCount),
+        filesChanged: n__('%d file', '%d files', this.diffStats.fileCount),
         fileAdditions,
         fileDeletions,
       });
@@ -137,23 +153,31 @@ export default {
             </template>
           </template>
           <template #stats>
-            <div
-              v-if="mergeRequest.diffStatsSummary.fileCount"
-              class="gl-mr-2 gl-inline-flex gl-gap-2"
-              :aria-label="statsAriaLabel"
-              :title="statsAriaLabel"
-            >
-              <div class="gl-whitespace-nowrap">
-                <gl-icon name="doc-new" />
-                <span>{{ mergeRequest.diffStatsSummary.fileCount }}</span>
-              </div>
-              <div class="gl-flex gl-items-center gl-text-success">
-                <span>+</span>
-                <span>{{ mergeRequest.diffStatsSummary.additions }}</span>
-              </div>
-              <div class="gl-flex gl-items-center gl-text-danger">
-                <span>−</span>
-                <span>{{ mergeRequest.diffStatsSummary.deletions }}</span>
+            <div class="gl-mr-2 gl-inline-flex">
+              <gl-skeleton-loader
+                v-if="$apollo.queries.diffStats.loading"
+                :lines="1"
+                :width="100"
+                equal-width-lines
+              />
+              <div
+                v-else-if="diffStats"
+                class="gl-inline-flex gl-gap-2"
+                :aria-label="statsAriaLabel"
+                :title="statsAriaLabel"
+              >
+                <div class="gl-whitespace-nowrap">
+                  <gl-icon name="doc-new" />
+                  <span>{{ diffStats.fileCount }}</span>
+                </div>
+                <div class="gl-flex gl-items-center gl-text-success">
+                  <span>+</span>
+                  <span>{{ diffStats.additions }}</span>
+                </div>
+                <div class="gl-flex gl-items-center gl-text-danger">
+                  <span>−</span>
+                  <span>{{ diffStats.deletions }}</span>
+                </div>
               </div>
             </div>
           </template>
@@ -214,3 +238,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.gl-skeleton-loader-default-container svg {
+  display: block;
+}
+</style>

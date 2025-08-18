@@ -4,7 +4,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/finders/groups/projects_requiring_authorizations_refresh/base.rb'
     - 'app/finders/issuables/label_filter.rb'
     - 'app/finders/projects/members/effective_access_level_finder.rb'
-    - 'app/models/application_record.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_trace_chunks/fog.rb'
     - 'app/models/ci/build_trace_chunks/redis_base.rb'
