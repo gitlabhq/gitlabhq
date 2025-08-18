@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.4 (2025-08-18)
+
+### Fixed (1 change)
+
+- [Update gitlab-shell to v14.44.0](https://gitlab.com/gitlab-org/gitlab/-/commit/b68a4e61107e7317839d60ba2bd2ca9c75c2be4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201780))
+
 ## 18.2.3 (2025-08-18)
 
 ### Fixed (2 changes)
