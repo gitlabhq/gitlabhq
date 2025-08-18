@@ -146,7 +146,7 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let(:tag_name) { 'test' }
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
       let(:env) { { 'api.request.body': package.version } }
@@ -168,7 +168,7 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let_it_be(:package_tag) { create(:packages_tag, package: package) }
 
       let(:tag_name) { package_tag.name }

@@ -30,6 +30,8 @@ module Packages
             cleanup_temp_package
           end
         end
+
+        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(package.project_id, @channel)
       end
 
       private

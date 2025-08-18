@@ -58,6 +58,7 @@ module Packages
     }
 
     scope :preload_package, -> { preload(:package) }
+    scope :preload_project, -> { preload(package: :project) }
     scope :preload_pipelines, -> { preload(pipelines: :user) }
 
     scope :preload_pipelines_with_user_project_namespace_route, -> do

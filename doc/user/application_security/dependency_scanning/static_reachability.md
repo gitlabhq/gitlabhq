@@ -97,8 +97,8 @@ Yes
 
 Not Found
 : SRA ran successfully but did not detect usage of the vulnerable package. If a vulnerable
-dependency's reachability value is shown as **Not Found** exercise caution rather than completely
-dismissing it, because the beta version of SRA may produce false negatives.
+dependency's reachability value is shown as **Not Found**, exercise caution rather than completely
+dismissing it, as SRA cannot always definitively determine package usage.
 
 Not Available
 : SRA was not executed, so no reachability data exists.

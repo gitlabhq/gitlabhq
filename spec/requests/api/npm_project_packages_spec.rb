@@ -52,7 +52,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           .to change { npm_metadata_cache.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
       end
 
-      it_behaves_like 'does not enqueue a worker to sync a metadata cache'
+      it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
 
       context 'when metadata cache file does not exist' do
         before do
@@ -60,7 +60,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'generates metadata response "on-the-fly"'
-        it_behaves_like 'enqueue a worker to sync a metadata cache'
+        it_behaves_like 'enqueue a worker to sync a npm metadata cache'
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let(:tag_name) { 'test' }
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
       let(:env) { { 'api.request.body': package.version } }
@@ -128,7 +128,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let_it_be(:package_tag) { create(:packages_tag, package: package) }
 
       let(:tag_name) { package_tag.name }
@@ -428,7 +428,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           it_behaves_like 'handling upload with different authentications'
         end
 
-        it_behaves_like 'does not enqueue a worker to sync a metadata cache'
+        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
 
         context 'with an existing package' do
           let_it_be(:second_project) { create(:project, namespace: namespace) }
@@ -476,7 +476,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           expect(json_response['error']).to eq('Package already exists.')
         end
 
-        it_behaves_like 'does not enqueue a worker to sync a metadata cache' do
+        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache' do
           subject { upload_package_with_token }
         end
       end

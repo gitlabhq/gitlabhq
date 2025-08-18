@@ -33,8 +33,19 @@ RSpec.describe Packages::Helm::ProcessFileService, feature_category: :package_re
       end
     end
 
+    shared_examples 'metadata cache' do
+      it 'creates helm metadata cache' do
+        expect(Packages::Helm::CreateMetadataCacheWorker).to receive(:perform_async)
+          .with(package.project_id, channel)
+
+        execute
+      end
+    end
+
     context 'with existing package' do
       let!(:existing_package) { create(:helm_package, project: package.project, name: 'rook-ceph', version: 'v1.5.8') }
+
+      it_behaves_like 'metadata cache'
 
       it 'reuses existing package', :aggregate_failures do
         expect { execute }
@@ -69,6 +80,8 @@ RSpec.describe Packages::Helm::ProcessFileService, feature_category: :package_re
     end
 
     context 'with a valid file' do
+      it_behaves_like 'metadata cache'
+
       it 'processes file', :aggregate_failures do
         expect { execute }
           .to not_change { Packages::Package.count }

@@ -142,7 +142,7 @@ module API
 
                 track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
 
-                enqueue_sync_metadata_cache_worker(project, package_name)
+                enqueue_sync_npm_metadata_cache_worker(project, package_name)
 
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
@@ -179,7 +179,7 @@ module API
 
                 track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
 
-                enqueue_sync_metadata_cache_worker(project, package_name)
+                enqueue_sync_npm_metadata_cache_worker(project, package_name)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 

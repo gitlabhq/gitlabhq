@@ -31,6 +31,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:channel) { 'stable' }
     let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
+    it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
+      subject(:execute) { get api(url) }
+    end
+
     context 'with a project id' do
       it_behaves_like 'handling helm chart index requests'
     end

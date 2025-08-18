@@ -61,7 +61,7 @@ The availability objectives for Gitaly Cluster (Praefect) assuming a single node
 - Recovery Point Objective (RPO): Less than 1 minute.
 
   Writes are replicated asynchronously. Any writes that have not been replicated
-  to the newly promoted primary are lost.
+  to the newly promoted primary are lost. Any read operations that were in progress on the failed node are terminated.
 
   [Strong consistency](#strong-consistency) prevents loss in some circumstances.
 

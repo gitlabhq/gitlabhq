@@ -60,6 +60,7 @@ module Packages
     def after_marked_for_destruction(packages)
       sync_maven_metadata(packages)
       sync_npm_metadata(packages)
+      sync_helm_metadata(packages)
       mark_package_files_for_destruction(packages)
     end
 
@@ -86,6 +87,30 @@ module Packages
         npm_packages,
         arguments_proc: ->(package) { [package.project_id, package.name] },
         context_proc: ->(package) { { project: package.project, user: current_user } }
+      )
+    end
+
+    def sync_helm_metadata(packages)
+      helm_packages = packages.select(&:helm?)
+
+      files = ::Packages::PackageFile.most_recent_for(
+        ::Packages::Package.id_in(helm_packages.map(&:id)),
+        extra_join: :helm_file_metadatum
+      ).preload_helm_file_metadata
+        .preload_project
+
+      grouped = files.group_by { |f| [f.project_id, f.helm_file_metadatum.channel] }
+      file_with_metadata_infos = grouped.map do |(_, channel), files|
+        {
+          channel: channel,
+          project: files.first.package.project
+        }
+      end
+
+      ::Packages::Helm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
+        file_with_metadata_infos,
+        arguments_proc: ->(hash) { [hash[:project].id, hash[:channel]] },
+        context_proc: ->(hash) { { project: hash[:project], user: current_user } }
       )
     end
 
