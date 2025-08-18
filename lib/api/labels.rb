@@ -29,6 +29,10 @@ module API
           desc: 'Include ancestor groups'
         optional :search, type: String,
           desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
+        optional :archived, type: Boolean,
+          desc: 'Filter by archived status. This feature is gated by the :labels_archive feature flag',
+          documentation: false
+
         use :pagination
       end
       get ':id/labels' do

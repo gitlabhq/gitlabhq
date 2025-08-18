@@ -6391,7 +6391,7 @@ msgstr ""
 msgid "AiPowered|Turn on GitLab Duo Agent Platform"
 msgstr ""
 
-msgid "AiPowered|Turn on IDE features"
+msgid "AiPowered|Turn on Web and IDE features"
 msgstr ""
 
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
@@ -6424,7 +6424,7 @@ msgstr ""
 msgid "AiPowered|When GitLab Duo is not available, prompt caching cannot be turned on."
 msgstr ""
 
-msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in supported IDEs."
+msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in Web and supported IDEs."
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
@@ -61496,6 +61496,9 @@ msgid "Something went wrong while promoting the issue to an epic. Please try aga
 msgstr ""
 
 msgid "Something went wrong while promoting the note to timeline event."
+msgstr ""
+
+msgid "Something went wrong while removing the license. Please try again."
 msgstr ""
 
 msgid "Something went wrong while reopening a requirement."

@@ -14,11 +14,7 @@ module Namespaces
     end
 
     def execute
-      if Feature.enabled?(:optimistic_locking_for_namespace_descendants_cache, type: :beta) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- Resolving the actor is not trivial
-        execute_with_optimistic_locking
-      else
-        execute_with_transaction
-      end
+      execute_with_optimistic_locking
     end
 
     def execute_with_optimistic_locking
@@ -41,29 +37,6 @@ module Namespaces
       end
 
       :processed
-    end
-
-    def execute_with_transaction
-      Namespaces::Descendants.transaction do
-        namespace_exists = Namespace.primary_key_in(namespace_id).exists?
-
-        # Do not try to lock the namespace if it's already locked
-        locked_namespace = Namespace.primary_key_in(namespace_id).lock('FOR UPDATE SKIP LOCKED').first # rubocop: disable CodeReuse/ActiveRecord -- this is a special service for updating records
-        next if namespace_exists && locked_namespace.nil?
-
-        # If there is another process updating the hierarchy, this query will return nil and we just
-        # stop the processing.
-        descendants = Namespaces::Descendants.primary_key_in(namespace_id).lock('FOR UPDATE SKIP LOCKED').first # rubocop: disable CodeReuse/ActiveRecord -- this is a special service for updating records
-        next unless descendants
-
-        if namespace_exists
-          update_namespace_descendants(locked_namespace)
-        else
-          descendants.destroy
-        end
-
-        :processed
-      end
     end
 
     private

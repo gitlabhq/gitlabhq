@@ -69,14 +69,6 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     end
   end
 
-  context 'when MR is created from "release-tools/update-gitaly" source branch' do
-    let(:source_branch) { 'release-tools/update-gitaly' }
-    let(:changed_files) { ['GITALY_SERVER_VERSION'] }
-    let(:expected_job_name) { 'update-gitaly-binaries-cache' }
-
-    it_behaves_like 'merge request pipeline'
-  end
-
   context 'when MR targeting a stable branch is changing app/models/user.rb' do
     let(:target_branch)     { '16-10-stable-ee' }
     let(:changed_files)     { ['app/models/user.rb'] }

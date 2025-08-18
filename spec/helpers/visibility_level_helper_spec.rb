@@ -357,27 +357,6 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
   end
 
-  describe '#all_visibility_levels_restricted?' do
-    let(:user) { build(:user) }
-
-    subject { helper.all_visibility_levels_restricted? }
-
-    where(:restricted_visibility_levels, :expected) do
-      [public_vis]                   | false
-      [public_vis, internal_vis]     | false
-      Gitlab::VisibilityLevel.values | true
-    end
-
-    with_them do
-      before do
-        allow(helper).to receive(:current_user) { user }
-        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
-      end
-
-      it { is_expected.to eq(expected) }
-    end
-  end
-
   describe '#all_visibility_levels' do
     subject { helper.all_visibility_levels }
 

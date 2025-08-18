@@ -12,6 +12,12 @@ title: Group labels API
 
 {{< /details >}}
 
+{{< history >}}
+
+- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+
+{{< /history >}}
+
 This API supports managing [group labels](../user/project/labels.md#types-of-labels).
 It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and
 unsubscribe from group labels.
@@ -32,6 +38,7 @@ GET /groups/:id/labels
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. |
 | `only_group_labels` | boolean | no | Toggle to include only group labels or also project labels. Defaults to `true`. |
 | `search` | string | no | Keyword to filter labels by. |
+| `archived` | boolean | no | Whether the label is archived. Returns all labels, when not set. Requires the `:labels_archive` feature flag to be enabled. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true"
@@ -51,7 +58,8 @@ Example response:
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
-    "subscribed": false
+    "subscribed": false,
+    "archived": false
   },
   {
     "id": 4,
@@ -63,7 +71,8 @@ Example response:
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
-    "subscribed": false
+    "subscribed": false,
+    "archived": false
   }
 ]
 ```
@@ -101,7 +110,8 @@ Example response:
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
-  "subscribed": false
+  "subscribed": false,
+  "archived": false
 }
 ```
 
@@ -119,6 +129,7 @@ POST /groups/:id/labels
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label, |
+| `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
@@ -139,7 +150,8 @@ Example response:
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
-  "subscribed": false
+  "subscribed": false,
+  "archived": false
 }
 ```
 
@@ -158,6 +170,7 @@ PUT /groups/:id/labels/:label_id
 | `new_name`    | string  | no      | The new name of the label        |
 | `color`       | string  | no      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label. |
+| `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
@@ -177,7 +190,8 @@ Example response:
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
-  "subscribed": false
+  "subscribed": false,
+  "archived": false
 }
 ```
 
@@ -241,7 +255,8 @@ Example response:
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
-  "subscribed": true
+  "subscribed": true,
+  "archived": false
 }
 ```
 
@@ -277,6 +292,7 @@ Example response:
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
-  "subscribed": false
+  "subscribed": false,
+  "archived": false
 }
 ```

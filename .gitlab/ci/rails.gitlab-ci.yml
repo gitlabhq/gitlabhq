@@ -22,16 +22,8 @@ setup-test-env:
   variables:
     SETUP_DB: "false"
   script:
-    - |
-      function setup_test_env() {
-        echo $CI_MERGE_REQUEST_APPROVED
-        source scripts/gitlab_component_helpers.sh
-        section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
-        section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
-        strip_executable_binaries "${TMP_TEST_FOLDER}"
-      }
-
-      run_with_custom_exit_code setup_test_env
+    - source scripts/gitlab_component_helpers.sh
+    - setup_test_env
   artifacts:
     expire_in: 7d
     paths:
@@ -53,7 +45,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitlab-test.bundle
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
-      - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+      - ${TMP_TEST_FOLDER}/gitlab-workhorse
       - ${TMP_TEST_FOLDER}/openbao/bin/
       - log/*.log
     when: always
@@ -66,34 +58,6 @@ setup-test-env-fips:
   variables:
     BUILD_OS: "ubi"
     OS_VERSION: ${UBI_VERSION}
-
-update-setup-test-env-cache:
-  extends:
-    - setup-test-env
-    - .setup-test-env-cache-push
-    - .shared:rules:update-cache
-  artifacts:
-    paths: []  # This job's purpose is only to update the cache.
-
-update-setup-test-env-cache-fips:
-  extends:
-    - setup-test-env-fips
-    - .setup-test-env-cache-push
-    - .shared:rules:update-cache
-
-update-gitaly-binaries-cache:
-  extends:
-    - setup-test-env
-    - .gitaly-binaries-cache-push
-    - .shared:rules:update-gitaly-binaries-cache
-  artifacts:
-    paths: []  # This job's purpose is only to update the cache.
-
-update-gitaly-binaries-cache-fips:
-  extends:
-    - setup-test-env-fips
-    - .gitaly-binaries-cache-push
-    - .shared:rules:update-gitaly-binaries-cache
 
 # Used in:
 #   - rspec:coverage

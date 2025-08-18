@@ -58,10 +58,36 @@ fi
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
 export REUSE_FRONTEND_FIXTURES_ENABLED="${REUSE_FRONTEND_FIXTURES_ENABLED:-"true"}"
 
+function setup_test_env() {
+  mkdir -p ${GLCI_CACHED_SERVICES_FOLDER} ${TMP_TEST_FOLDER}
+
+  # move binaries from cache location to tmp test folder
+  echo "Moving cached binaries to '${TMP_TEST_FOLDER}'"
+  mv ${GLCI_CACHED_SERVICES_FOLDER}/* ${TMP_TEST_FOLDER}/ && echo "done!" || true
+
+  section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
+  section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
+
+  # restore binaries cache folder before stripping binaries to avoid cache re-upload
+  echo "Restoring binaries cache folder"
+  mv ${TMP_TEST_FOLDER}/* ${GLCI_CACHED_SERVICES_FOLDER}/
+  # remove workhorse config_path file which is recreated on every run and taints cache
+  rm -f ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-workhorse/config_path
+  # remove testdata folder which taints cache and causes re-upload
+  rm -rf ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/internal/testhelper/testdata
+  # copy all files to be saved as artifacts
+  cp -r ${GLCI_CACHED_SERVICES_FOLDER}/* ${TMP_TEST_FOLDER}/
+  echo "done!"
+
+  strip_executable_binaries "${TMP_TEST_FOLDER}"
+}
+
 function strip_executable_binaries() {
   local path="$1"
 
+  echo "Stripping executable binaries for size reduction"
   find "$path" -executable -type f ! -size 0 -print0 | xargs -0 grep -IL . | xargs strip || true
+  echo "done!"
 }
 
 # Fixtures functions

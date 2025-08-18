@@ -106,16 +106,6 @@ gdk:compile-test-assets:
     - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
 
-update-storybook-yarn-cache:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .storybook-yarn-cache-push
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - yarn_install_script_storybook
-
 retrieve-frontend-fixtures:
   variables:
     SETUP_DB: "false"
@@ -663,7 +653,7 @@ webpack-dev-server:
 compile-storybook:
   extends:
     - .frontend-test-base
-    - .storybook-yarn-cache
+    - .storybook-yarn-cache-pull-push
     - .repo-from-artifacts
     - .frontend:rules:compile-storybook
   stage: pages

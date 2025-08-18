@@ -121,10 +121,6 @@ module VisibilityLevelHelper
     restricted_visibility_levels.many? # rubocop:disable CodeReuse/ActiveRecord -- False positive, not AR object
   end
 
-  def all_visibility_levels_restricted?
-    Gitlab::VisibilityLevel.values == restricted_visibility_levels
-  end
-
   private
 
   def max_allowed_visibility_level(form_model)

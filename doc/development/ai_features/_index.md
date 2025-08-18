@@ -25,6 +25,12 @@ to install the AI gateway with GDK.
 
 ### Required: Run `gitlab:duo:setup` script
 
+{{< alert type="note" >}}
+Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
+For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
+
+{{< /alert >}}
+
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
 
 **How**:

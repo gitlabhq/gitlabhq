@@ -195,6 +195,7 @@ module Tooling
         when /helm/ then 'cng-helm'
         when /workhorse/ then 'workhorse'
         when /gitaly/ then 'gitaly'
+        when /zoekt-elasticsearch-indexer/ then 'zoekt-elasticsearch-indexer'
         else 'unknown'
         end
       end

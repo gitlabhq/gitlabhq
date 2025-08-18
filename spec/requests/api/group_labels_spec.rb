@@ -151,13 +151,15 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
         params: {
           name: valid_new_label_title,
           color: '#FFAABB',
-          description: 'test'
+          description: 'test',
+          archived: true
         }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_new_label_title)
       expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to eq('test')
+      expect(json_response['archived']).to be_truthy
     end
 
     it 'returns created label when only required params are given' do
@@ -231,6 +233,13 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
     it_behaves_like '412 response' do
       let(:request) { api("/groups/#{group.id}/labels", user) }
       let(:params) { { name: group_label1.name } }
+    end
+
+    context 'with valid label params' do
+      let(:api_path) { api("/groups/#{group.id}/labels", user) }
+      let(:label_title) { valid_new_label_title }
+
+      it_behaves_like 'ignores archived param when feature flag is disabled'
     end
   end
 
@@ -316,7 +325,7 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       put api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('new_name, color, description are missing, '\
+      expect(json_response['error']).to eq('new_name, color, description, archived are missing, '\
                                            'at least one parameter must be provided')
     end
   end
@@ -363,8 +372,16 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       put api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user)
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('new_name, color, description are missing, '\
+      expect(json_response['error']).to eq('new_name, color, description, archived are missing, '\
                                            'at least one parameter must be provided')
+    end
+
+    context 'when updating archived status' do
+      let(:api_path) { api("/groups/#{group.id}/labels/#{group_label1.id}", user) }
+
+      let(:label) { group_label1 }
+
+      it_behaves_like 'updating labels archived status'
     end
   end
 

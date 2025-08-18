@@ -1080,12 +1080,6 @@
     - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
 
-.shared:rules:update-gitaly-binaries-cache:
-  rules:
-    - <<: *if-merge-request-labels-update-caches
-    - <<: *if-default-refs
-      changes: *gitaly-patterns
-
 # This rule is used by new cache implementation which updates cache automatically when cache is invalidated by changes
 .shared:rules:update-cache-v2:
   rules:
