@@ -7,6 +7,7 @@ module Enums
     }.with_indifferent_access.freeze
 
     PURL_TYPES = {
+      not_provided: 0,
       composer: 1, # refered to as `packagist` in gemnasium-db and semver_dialects
       conan: 2,
       gem: 3,
@@ -23,7 +24,8 @@ module Enums
       cargo: 14,
       swift: 15,
       conda: 16,
-      pub: 17
+      pub: 17,
+      unknown: 999
     }.with_indifferent_access.freeze
 
     UNKNOWN = :unknown
@@ -129,9 +131,11 @@ module Enums
     end
 
     def self.purl_types
-      # return 0 by default if the purl_type is not found, to prevent
-      # consumers from producing invalid SQL caused by null entries
-      @_purl_types ||= PURL_TYPES.dup.tap { |h| h.default = 0 }
+      # if PURL is empty or nil then mark it as not_provided,
+      # othewise mark it as unsupported
+      @_purl_types ||= PURL_TYPES.dup.tap do |h|
+        h.default_proc = proc { |_, key| key.to_s.blank? ? 0 : 999 }
+      end
     end
 
     def self.purl_types_numerical

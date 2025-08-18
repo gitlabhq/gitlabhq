@@ -339,6 +339,7 @@ export default {
       }
     },
     handleViewerChanged(newViewer) {
+      this.setShowBlame(false);
       this.switchViewer(newViewer);
       const plain = newViewer === SIMPLE_BLOB_VIEWER ? '1' : '0';
       if (this.$route?.query?.plain === plain) return;

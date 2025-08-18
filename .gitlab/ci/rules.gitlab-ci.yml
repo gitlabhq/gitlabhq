@@ -1259,6 +1259,13 @@
       changes: *gem-change-patterns
     - *if-merge-request-labels-update-caches
 
+# e2e runners are only available in .com and in gitlab-org grouped projects
+.caching:rules:e2e-gem-cache-e2e-runners:
+  rules:
+    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
+      when: never
+    - !reference [.shared:rules:update-cache-v2, rules]
+
 ######################
 # CI Templates Rules #
 ######################
@@ -1749,42 +1756,6 @@
 ############
 # QA rules #
 ############
-.qa:rules:update-gem-cache:
-  rules:
-    - <<: *if-merge-train
-      when: never
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
-      changes:
-        - qa/Gemfile.lock
-    - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock
-    - when: manual
-      allow_failure: true
-
-.qa:rules:update-gem-cache-e2e:
-  rules:
-    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
-      when: never
-    - !reference [.qa:rules:update-gem-cache, rules]
-
-.qa:rules:update-orchestrator-gem-cache:
-  rules:
-    - <<: *if-merge-train
-      when: never
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
-      changes:
-        - qa/gems/gitlab-orchestrator/Gemfile.lock
-    - <<: *if-merge-request
-      changes:
-        - qa/gems/gitlab-orchestrator/Gemfile.lock
-    - when: manual
-      allow_failure: true
-
 .qa:rules:metadata-lint:
   rules:
     - <<: *if-default-refs

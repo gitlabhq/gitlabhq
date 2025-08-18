@@ -226,6 +226,17 @@ describe('Blob content viewer component', () => {
         expect(findSourceViewer().props('showBlame')).toBe(true);
       });
 
+      it('hides the blame whenever the viewer changes', async () => {
+        loadViewer.mockReturnValueOnce(SourceViewer);
+        await createComponent({ blob: simpleViewerMock });
+        await triggerBlame(); // First open blame
+
+        findBlobHeader().vm.$emit('viewer-changed', SIMPLE_BLOB_VIEWER);
+        await nextTick();
+
+        expect(findSourceViewer().props('showBlame')).toBe(false);
+      });
+
       describe('when viewing rich content', () => {
         it('always shows the blame when clicking on the blame button', async () => {
           loadViewer.mockReturnValueOnce(SourceViewer);

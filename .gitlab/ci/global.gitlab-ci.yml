@@ -165,6 +165,7 @@
   cache: !reference [.ruby-gems-cache]
 
 .ruby-cache-pull-push:
+  extends: .cache-analytics
   cache:
     key: !reference [.ruby-gems-cache, key]
     paths: !reference [.ruby-gems-cache, paths]

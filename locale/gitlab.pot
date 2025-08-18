@@ -24144,6 +24144,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Do not assign the service account a role in your project with higher permissions than the users of that service account."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Edit flow trigger"
 msgstr ""
 
@@ -24277,6 +24280,9 @@ msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Updated"
+msgstr ""
+
+msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"

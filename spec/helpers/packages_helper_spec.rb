@@ -563,10 +563,10 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
     end
   end
 
-  describe '#package_from_presenter' do
+  describe '#terraform_module_presenter' do
     let_it_be(:package) { create(:terraform_module_package) }
 
-    subject(:presenter) { helper.package_from_presenter(package) }
+    subject(:presenter) { helper.terraform_module_presenter(package) }
 
     it 'uses terraform module presenter' do
       expect_next_instance_of(::Packages::TerraformModule::PackagePresenter) do |presenter|
@@ -574,20 +574,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
       end
 
       presenter
-    end
-
-    context 'when packages_terraform_module_presenter is disabled' do
-      before do
-        stub_feature_flags(packages_terraform_module_presenter: false)
-      end
-
-      it 'uses package details presenter' do
-        expect_next_instance_of(::Packages::Detail::PackagePresenter) do |presenter|
-          expect(presenter).to receive_message_chain(:detail_view, :to_json)
-        end
-
-        presenter
-      end
     end
   end
 end

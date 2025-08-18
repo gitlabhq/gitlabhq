@@ -637,10 +637,10 @@ module ApplicationSettingsHelper
       :reindexing_minimum_relative_bloat_size,
       :anonymous_searches_allowed,
       :git_push_pipeline_limit,
-      :delay_user_account_self_deletion
+      :delay_user_account_self_deletion,
+      :resource_usage_limits
     ].tap do |settings|
       unless Gitlab.com?
-        settings << :resource_usage_limits
         settings << :deactivate_dormant_users
         settings << :deactivate_dormant_users_period
         settings << :nuget_skip_metadata_url_validation
