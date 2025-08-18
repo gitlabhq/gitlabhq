@@ -9,15 +9,6 @@ RSpec.describe QueueMigrateCiTriggersTokenToTokenEncrypted, migration: :gitlab_c
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
-    shared_examples 'finalizes the migration' do
-      it 'finalizes the migration' do
-        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-          expect(runner).to receive(:finalize).with('QueueMigrateCiTriggersTokenToTokenEncrypted', :ci_triggers, :id,
-            [])
-        end
-      end
-    end
-
     context 'with migration present' do
       let!(:ci_trigger_token_encryption_migration) do
         batched_migrations.create!(
@@ -50,25 +41,6 @@ RSpec.describe QueueMigrateCiTriggersTokenToTokenEncrypted, migration: :gitlab_c
             batch_size: described_class::BATCH_SIZE,
             sub_batch_size: described_class::SUB_BATCH_SIZE
           )
-        end
-      end
-
-      context 'with different migration statuses' do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:status, :description) do
-          0 | 'paused'
-          1 | 'active'
-          4 | 'failed'
-          5 | 'finalizing'
-        end
-
-        with_them do
-          before do
-            ci_trigger_token_encryption_migration.update!(status: status)
-          end
-
-          it_behaves_like 'finalizes the migration'
         end
       end
     end

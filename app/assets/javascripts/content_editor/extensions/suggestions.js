@@ -14,6 +14,19 @@ import Code from './code';
 
 const CODE_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name, Code.name];
 
+function expandRangeToIncludeText(range, text, tiptapEditor) {
+  const { state } = tiptapEditor;
+  const { from, to: originalTo } = range;
+  const maxTo = Math.min(from + text.length, state.doc.content.size);
+  const docSliceText = state.doc.textBetween(from, maxTo, '\n', '\uFFFC');
+  let matchedLen = 0;
+  for (; matchedLen < docSliceText.length; matchedLen += 1) {
+    if (docSliceText[matchedLen] !== text[matchedLen]) break;
+  }
+  const expandedTo = Math.max(originalTo, from + matchedLen);
+  return { from, to: expandedTo };
+}
+
 function createSuggestionPlugin({
   editor,
   char,
@@ -50,7 +63,9 @@ function createSuggestionPlugin({
         ];
       }
 
-      tiptapEditor.chain().focus().insertContentAt(range, content).run();
+      // Try to expand the range forward to include as much of props.text as possible
+      const expandedRange = expandRangeToIncludeText(range, props.text, tiptapEditor);
+      tiptapEditor.chain().focus().insertContentAt(expandedRange, content).run();
     },
 
     async items({ query, editor: tiptapEditor }) {

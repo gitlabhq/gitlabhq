@@ -30,7 +30,6 @@
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
 #     organization: Scope the groups to the Organizations::Organization
-#     current_organization: Organizations::Organization - The current organization from the request
 #     language: int
 #     language_name: string
 #     active: boolean - Whether to include projects that are not archived.
@@ -62,6 +61,8 @@ class ProjectsFinder < UnionFinder
       else
         init_collection
       end
+
+    collection = by_organization(collection)
 
     use_cte = params.delete(:use_cte)
     collection = Project.wrap_with_cte(collection) if use_cte
@@ -102,7 +103,6 @@ class ProjectsFinder < UnionFinder
     collection = by_language(collection)
     collection = by_feature_availability(collection)
     collection = by_updated_at(collection)
-    collection = by_organization(collection)
     collection = by_marked_for_deletion_on(collection)
     collection = by_aimed_for_deletion(collection)
     by_repository_storage(collection)
@@ -214,18 +214,16 @@ class ProjectsFinder < UnionFinder
     return items unless params[:topic].present?
 
     topics = params[:topic].instance_of?(String) ? params[:topic].split(',') : params[:topic]
-    topics.map(&:strip).uniq.reject(&:empty?).each do |topic|
-      items = items.with_topic_by_name_and_organization_id(topic, topic_organization_ids)
-    end
+    sanitized_topics = topics.map(&:strip).uniq.reject(&:empty?)
 
-    items
+    items.contains_all_topic_names(sanitized_topics)
   end
 
   def by_topic_id(items)
     return items unless params[:topic_id].present?
 
-    topic = Projects::Topic.find_by_id_and_organization_id(params[:topic_id], topic_organization_ids)
-    return Project.none unless topic
+    topic = Projects::Topic.find_by_id(params[:topic_id])
+    return items.none unless topic
 
     items.with_topic(topic)
   end
@@ -330,17 +328,6 @@ class ProjectsFinder < UnionFinder
     return {} unless min_access_level?
 
     { min_access_level: params[:min_access_level] }
-  end
-
-  # Returns the available organizations to filter topics
-  def topic_organization_ids
-    @topic_organization_ids ||= begin
-      organization_ids = []
-      organization_ids << current_user.organization_ids if current_user
-      organization_ids << params[:organization].id if params[:organization]
-      organization_ids << params[:current_organization].id if params[:current_organization]
-      organization_ids.flatten.uniq.compact
-    end
   end
 
   def namespace_id

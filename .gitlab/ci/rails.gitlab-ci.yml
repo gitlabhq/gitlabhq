@@ -583,6 +583,9 @@ rspec:coverage:
       optional: true
   script:
     - run_with_custom_exit_code bundle exec scripts/merge-simplecov
+    - 'echo "coverage.xml size before stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"'
+    - sed -i -E 's/^ +//' coverage/coverage.xml
+    - 'echo "coverage.xml size after stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"'
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage

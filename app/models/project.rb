@@ -964,10 +964,15 @@ class Project < ApplicationRecord
 
   scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
 
-  scope :with_topic_by_name_and_organization_id, ->(topic_name, organization_ids) do
-    topic = Projects::Topic.find_by_name_and_organization_id(topic_name, organization_ids)
+  scope :contains_all_topic_names, ->(topic_names) do
+    topic_names = Array.wrap(topic_names)
 
-    topic ? with_topic(topic) : none
+    project_topics = Projects::ProjectTopic.joins(:topic)
+      .where(topic: { name: topic_names })
+      .group(:project_id)
+      .having(%(COUNT(DISTINCT "topic"."name") = ?), topic_names.count)
+
+    where(id: project_topics.select(:project_id))
   end
 
   scope :pending_data_repair_analysis, -> do

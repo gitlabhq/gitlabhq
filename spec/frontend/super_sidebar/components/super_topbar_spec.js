@@ -25,7 +25,6 @@ describe('SuperTopbar', () => {
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
   const findSearchButton = () => wrapper.findByTestId('super-topbar-search-button');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
-  const findStopImpersonationButton = () => wrapper.findByTestId('stop-impersonation-btn');
   const findUserCounts = () => wrapper.findComponent(UserCounts);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
 
@@ -36,7 +35,6 @@ describe('SuperTopbar', () => {
         ...props,
       },
       provide: {
-        isImpersonating: false,
         ...provideOverrides,
       },
       stubs: {
@@ -102,22 +100,6 @@ describe('SuperTopbar', () => {
       describe('when there are menu items for it', () => {
         it('passes the "Create new…" menu groups to the create-menu component', () => {
           expect(findCreateMenu().props('groups')).toBe(mockSidebarData.create_new_menu_groups);
-        });
-      });
-    });
-
-    describe('Impersonate', () => {
-      describe('when not impersonating another user', () => {
-        it('does not render the "Stop impersonation" button', () => {
-          createComponent({}, { isImpersonating: false });
-          expect(findStopImpersonationButton().exists()).toBe(false);
-        });
-      });
-
-      describe('when impersonating another user', () => {
-        it('renders the "Stop impersonation" button', () => {
-          createComponent({}, { isImpersonating: true });
-          expect(findStopImpersonationButton().exists()).toBe(true);
         });
       });
     });

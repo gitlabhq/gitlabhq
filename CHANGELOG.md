@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.3 (2025-08-18)
+
+### Fixed (2 changes)
+
+- [Merge branch 'bw-delegate-placeholder-check' into 'master'](https://gitlab.com/gitlab-org/gitlab/-/commit/c7370850eefb04eca86be0119b28fd85fe4b74b3) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201366))
+- [Fix the reset of sidebar navigation](https://gitlab.com/gitlab-org/gitlab/-/commit/6908b7b9653109d202e13973da3f91a38f30b961) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200234))
+
 ## 18.2.2 (2025-08-12)
 
 ### Added (1 change)

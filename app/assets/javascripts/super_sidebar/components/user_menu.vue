@@ -6,8 +6,10 @@ import {
   GlDisclosureDropdownItem,
   GlButton,
   GlModalDirective,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -34,6 +36,7 @@ export default {
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
     enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
     leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
+    stopImpersonating: __('Stop impersonating'),
     signOut: __('Sign out'),
   },
   components: {
@@ -51,8 +54,10 @@ export default {
   directives: {
     SafeHtml,
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  inject: ['isImpersonating'],
   props: {
     data: {
       required: true,
@@ -66,6 +71,9 @@ export default {
     };
   },
   computed: {
+    superTopbarEnabled() {
+      return this.glFeatures.globalTopbar;
+    },
     avatarUrl() {
       return this.updatedAvatarUrl || this.data.avatar_url;
     },
@@ -222,6 +230,9 @@ export default {
         crossAxis: DROPDOWN_X_OFFSET_BASE,
       };
     },
+    hasEmoji() {
+      return this.data?.status?.emoji;
+    },
   },
   mounted() {
     document.addEventListener('userAvatar:update', this.updateAvatar);
@@ -286,11 +297,28 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div
+    :class="{
+      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-alpha-light-36': superTopbarEnabled,
+    }"
+  >
+    <gl-button
+      v-if="superTopbarEnabled && isImpersonating"
+      v-gl-tooltip.bottom
+      :href="data.stop_impersonation_path"
+      :title="$options.i18n.stopImpersonating"
+      :aria-label="$options.i18n.stopImpersonating"
+      icon="incognito"
+      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0"
+      category="tertiary"
+      data-method="delete"
+      data-testid="stop-impersonation-btn"
+    />
+
     <gl-disclosure-dropdown
       ref="userDropdown"
       :dropdown-offset="dropdownOffset"
-      class="super-sidebar-user-dropdown"
+      class="super-sidebar-user-dropdown gl-relative"
       data-testid="user-dropdown"
       :auto-close="false"
       @shown="onShow"
@@ -299,6 +327,7 @@ export default {
         <gl-button
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
+          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': superTopbarEnabled }"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
@@ -306,7 +335,7 @@ export default {
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
-            :size="24"
+            :size="superTopbarEnabled ? 32 : 24"
             :entity-name="data.name"
             :src="avatarUrl"
             aria-hidden="true"
@@ -320,6 +349,17 @@ export default {
           >
           </span>
         </gl-button>
+
+        <div
+          v-if="superTopbarEnabled && hasEmoji"
+          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
+          :title="data.status.message"
+        >
+          <gl-emoji
+            :data-name="data.status.emoji"
+            class="gl-pointer-events-none gl-ml-[0.09375rem] !gl-text-[1em]"
+          />
+        </div>
       </template>
 
       <gl-disclosure-dropdown-group>

@@ -220,6 +220,7 @@ export const initSuperTopbar = async ({
   commandPaletteLinks,
   contextSwitcherLinks,
   isImpersonating,
+  isGroup,
 }) => {
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
@@ -242,6 +243,12 @@ export const initSuperTopbar = async ({
       projectsPath,
       groupsPath,
       groupPath: groupsPath,
+      fullPath: sidebarData.work_items?.full_path,
+      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
+      workItemPlanningViewEnabled: parseBoolean(
+        sidebarData.work_items?.work_item_planning_view_enabled,
+      ),
+      isGroup,
     },
     store: createStore({
       searchPath,

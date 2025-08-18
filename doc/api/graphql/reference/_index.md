@@ -39494,6 +39494,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectprojectmembersrelations"></a>`relations` | [`[ProjectMemberRelation!]`](#projectmemberrelation) | Filter members by the given member relations. |
 | <a id="projectprojectmemberssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="projectprojectmemberssort"></a>`sort` | [`MemberSort`](#membersort) | sort query. |
+| <a id="projectprojectmembersusertypes"></a>`userTypes` {{< icon name="warning-solid" >}} | [`[UserType!]`](#usertype) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filter by user type. |
 
 ##### `Project.release`
 

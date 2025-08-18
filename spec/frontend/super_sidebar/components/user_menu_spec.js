@@ -27,6 +27,7 @@ describe('UserMenu component', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSetStatusModal = () => wrapper.findComponent(SetStatusModal);
   const showDropdown = () => findDropdown().vm.$emit('shown');
+  const findStopImpersonationButton = () => wrapper.findByTestId('stop-impersonation-btn');
 
   const closeDropdownSpy = jest.fn();
 
@@ -45,6 +46,7 @@ describe('UserMenu component', () => {
         ...stubs,
       },
       provide: {
+        glFeatures: { globalTopbar: false },
         isImpersonating: false,
         ...provide,
       },
@@ -95,6 +97,22 @@ describe('UserMenu component', () => {
 
     it('renders screen reader text', () => {
       expect(toggle.find('.gl-sr-only').text()).toBe(`${userMenuMockData.name} user’s menu`);
+    });
+  });
+
+  describe('Impersonate', () => {
+    describe('when not impersonating another user', () => {
+      it('does not render the "Stop impersonation" button', () => {
+        createWrapper({}, {}, { isImpersonating: false, glFeatures: { globalTopbar: true } });
+        expect(findStopImpersonationButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when impersonating another user', () => {
+      it('renders the "Stop impersonation" button', () => {
+        createWrapper({}, {}, { isImpersonating: true, glFeatures: { globalTopbar: true } });
+        expect(findStopImpersonationButton().exists()).toBe(true);
+      });
     });
   });
 

@@ -19,9 +19,6 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
       'abuse_report_notes',                                     # gitlab_main_clusterwide now deprecated
       'abuse_report_uploads',                                   # gitlab_main_clusterwide now deprecated
       'admin_roles',                                            # gitlab_main_clusterwide now deprecated
-      'ai_feature_settings',                                    # gitlab_main_clusterwide now deprecated
-      'ai_self_hosted_models',                                  # gitlab_main_clusterwide now deprecated
-      'ai_testing_terms_acceptances',                           # gitlab_main_clusterwide now deprecated
       'audit_events_instance_amazon_s3_configurations',         # gitlab_main_clusterwide now deprecated
       'audit_events_instance_external_streaming_destinations',  # gitlab_main_clusterwide now deprecated
       'audit_events_instance_streaming_event_type_filters',     # gitlab_main_clusterwide now deprecated

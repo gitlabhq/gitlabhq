@@ -32,8 +32,10 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role:, internal_di
         discussions = next_page_discussions_service.execute
 
         expect(discussions.count).to eq(2)
+
+        added_labels = [label, label_2].sort_by(&:name)
         expect(discussions.first.notes.map(&:note)).to match_array(
-          ["added #{label.to_reference} #{label_2.to_reference} labels"]
+          ["added #{added_labels.map(&:to_reference).join(' ')} labels"]
         )
         expect(discussions.second.notes.map(&:note)).to match_array(["removed #{label.to_reference} label"])
       end

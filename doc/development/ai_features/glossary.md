@@ -103,10 +103,6 @@ A LLM running on a user's workstation. [More information](https://gitlab.com/gro
 
 A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/gitlab_duo/_index.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
 
-### Model Validation
-
-Group within the AI-powered Stage working on the Prompt Library, supporting AI Validation of GitLab Duo features, and researching AI/ML models to support other use-cases for AI at GitLab. [Team handbook section](https://handbook.gitlab.com/handbook/product/categories/features/index.html#ai-powered-ai-model-validation-group)
-
 ### Offline Model
 
 A model that runs without internet or intranet connection (for example, you are running a model on your laptop on a plane).
@@ -115,9 +111,9 @@ A model that runs without internet or intranet connection (for example, you are 
 
 Models that are published with their source code and weights and are available for modifications and re-distribution. Examples: Llama / Llama 2, BLOOM, Falcon, Mistral, Gemma.
 
-### Prompt library
+### Centralized Evaluation Framework
 
-The ["Prompt Library"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for testing different prompting techniques with LLMs. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. Key features include the ability to manage and run dataflow pipelines using Apache Beam, and the execution of multiple evaluation experiments in a single pipeline run on prompts with various third-party AI Services. [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
+The ["Centralized Evaluation Framework"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for evaluating GitLab AI features. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 
 ### Prompt Registry
 

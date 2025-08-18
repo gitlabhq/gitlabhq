@@ -24,15 +24,10 @@ module Ci
 
     validate :expires_at_before_instance_max_expiry_date, on: :create
 
-    attr_encrypted :encrypted_token_tmp,
-      attribute: :encrypted_token,
-      mode: :per_attribute_iv,
-      algorithm: 'aes-256-gcm',
-      key: :db_key_base_32,
-      encode: false
-
     before_validation :set_default_values
-    before_save :copy_token_to_encrypted_token
+
+    ignore_column :encrypted_token, remove_with: '18.4', remove_after: '2025-09-30'
+    ignore_column :encrypted_token_iv, remove_with: '18.4', remove_after: '2025-09-30'
 
     # rubocop:disable Gitlab/TokenWithoutPrefix -- we are doing this ourselves here since ensure_token
     # does not work as expected
@@ -56,7 +51,7 @@ module Ci
     end
 
     scope :with_token, ->(tokens) {
-      tokens = Array.wrap(tokens).compact.reject(&:blank?)
+      tokens = Array.wrap(tokens).reject(&:blank?)
       if Feature.enabled?(:encrypted_trigger_token_lookup, :instance)
         encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
         where(token_encrypted: encrypted_tokens)
@@ -114,12 +109,6 @@ module Ci
         :expires_at,
         format(_("must be before %{expiry_date}"), expiry_date: max_expiry_date)
       )
-    end
-
-    private
-
-    def copy_token_to_encrypted_token
-      self.encrypted_token_tmp = token
     end
   end
 end

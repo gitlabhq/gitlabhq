@@ -1040,6 +1040,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         expect(group.members.excluding_users(active_group_member.user_id)).not_to include active_group_member
       end
     end
+
+    describe '.by_user_types' do
+      it 'returns users with matching types', :aggregate_failures do
+        service_account = create(:user, :service_account, developer_of: project)
+        bot = create(:user, :project_bot, developer_of: project)
+
+        expect(described_class.by_user_types([:service_account, :project_bot]).map(&:user)).to contain_exactly(service_account, bot)
+      end
+    end
   end
 
   describe 'Delegate methods' do

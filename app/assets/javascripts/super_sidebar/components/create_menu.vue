@@ -19,6 +19,7 @@ import {
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DROPDOWN_Y_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
@@ -40,6 +41,7 @@ export default {
   i18n: {
     createNew: __('Create new…'),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled'],
   props: {
     groups: {
@@ -55,6 +57,9 @@ export default {
     };
   },
   computed: {
+    superTopbarEnabled() {
+      return this.glFeatures.globalTopbar;
+    },
     allowedWorkItemTypes() {
       if (this.isGroup) {
         return [];
@@ -64,7 +69,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: DROPDOWN_X_OFFSET_BASE,
+        crossAxis: this.superTopbarEnabled ? -8 : DROPDOWN_X_OFFSET_BASE,
       };
     },
     preselectedWorkItemType() {
@@ -111,13 +116,14 @@ export default {
   <gl-disclosure-dropdown
     v-gl-tooltip.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
-    icon="plus"
+    :icon="superTopbarEnabled ? 'plus-square-o' : 'plus'"
     no-caret
     text-sr-only
     :toggle-text="$options.i18n.createNew"
     :toggle-id="$options.toggleId"
     :dropdown-offset="dropdownOffset"
     class="super-sidebar-new-menu-dropdown"
+    :toggle-class="{ '!gl-rounded-lg': superTopbarEnabled }"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"
     @hidden="dropdownOpen = false"

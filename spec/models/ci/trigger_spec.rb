@@ -100,10 +100,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
       end
     end
 
-    it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
-      let(:record) { create(:ci_trigger_without_token, project: project) }
-    end
-
     describe '.with_token' do
       context 'when ff lookup for encrypted token is enabled' do
         let_it_be(:project) { create(:project) }
@@ -330,10 +326,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         trigger = create(:ci_trigger_without_token, project: project)
 
         expect(trigger.token).not_to be_nil
-        expect(trigger.encrypted_token).not_to be_nil
-        expect(trigger.encrypted_token_iv).not_to be_nil
-
-        expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
         expect(trigger.token_encrypted).not_to be_nil
       end
     end
@@ -343,10 +335,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         trigger = create(:ci_trigger, project: project)
 
         expect(trigger.token).not_to be_nil
-        expect(trigger.encrypted_token).not_to be_nil
-        expect(trigger.encrypted_token_iv).not_to be_nil
-
-        expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
         expect(trigger.token_encrypted).not_to be_nil
       end
     end
@@ -355,10 +343,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
       it 'encrypts the given token' do
         trigger = create(:ci_trigger, project: project, token: "token")
         expect { trigger.update!(token: "new token") }
-          .to change { trigger.encrypted_token }
-          .and change { trigger.encrypted_token_iv }
-          .and change { trigger.encrypted_token_tmp }.from("token").to("new token")
-          .and change { trigger.token }.from("token").to("new token")
+          .to change { trigger.token }.from("token").to("new token")
           .and change { trigger.token_encrypted }
       end
     end

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon, GlModalDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
@@ -30,15 +30,12 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
-    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
-    stopImpersonating: __('Stop impersonating'),
   },
-  inject: ['isImpersonating'],
   props: {
     sidebarData: {
       type: Object,
@@ -65,64 +62,61 @@ export default {
   <header
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
-    <div class="gl-flex gl-items-center gl-gap-2">
-      <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
+    <div class="gl-flex gl-items-center gl-gap-3">
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
-      <gl-badge
-        v-if="sidebarData.gitlab_com_and_canary"
-        variant="success"
-        data-testid="canary-badge-link"
-        :href="sidebarData.canary_toggle_com_url"
-      >
-        {{ $options.NEXT_LABEL }}
-      </gl-badge>
+        <gl-badge
+          v-if="sidebarData.gitlab_com_and_canary"
+          variant="success"
+          data-testid="canary-badge-link"
+          :href="sidebarData.canary_toggle_com_url"
+        >
+          {{ $options.NEXT_LABEL }}
+        </gl-badge>
+      </div>
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" />
     </div>
 
     <gl-button
+      id="super-sidebar-search"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      button-text-classes="gl-flex"
+      button-text-classes="gl-flex gl-w-full"
+      class="topbar-search-button !gl-rounded-lg !gl-border-strong !gl-pl-3 !gl-pr-2 dark:!gl-bg-alpha-light-8"
       data-testid="super-topbar-search-button"
     >
-      <gl-icon name="search" />
-      <span class="gl-min-w-[20vw] gl-text-left">{{ $options.i18n.searchBtnText }}</span>
-      <gl-icon name="quick-actions" />
+      <gl-icon name="search" class="gl-shrink-0" />
+      <span
+        class="topbar-search-button-placeholder gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal"
+        >{{ $options.i18n.searchBtnText }}</span
+      >
+      <kbd class="gl-mr-1 gl-shrink-0 gl-shadow-none">/</kbd>
     </gl-button>
 
-    <div class="gl-flex gl-justify-end gl-gap-2">
+    <div class="gl-flex gl-justify-end gl-gap-3">
       <create-menu
         v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
         :groups="sidebarData.create_new_menu_groups"
       />
+      <div class="gl-border-r gl-my-3 gl-h-5 gl-w-1 gl-border-r-strong"></div>
 
       <user-counts
         v-if="isLoggedIn"
         :sidebar-data="sidebarData"
-        counter-class="gl-button btn btn-default btn-default-tertiary"
+        counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
       />
 
       <gl-button
         v-if="isAdmin"
-        data-testid="topbar-admin-link"
         :href="sidebarData.admin_url"
         icon="admin"
-        size="small"
+        class="!gl-rounded-lg"
+        data-testid="topbar-admin-link"
       >
         {{ $options.i18n.adminArea }}
       </gl-button>
 
-      <gl-button
-        v-if="isImpersonating"
-        v-gl-tooltip.bottom
-        :href="sidebarData.stop_impersonation_path"
-        :title="$options.i18n.stopImpersonating"
-        :aria-label="$options.i18n.stopImpersonating"
-        icon="incognito"
-        category="tertiary"
-        data-method="delete"
-        data-testid="stop-impersonation-btn"
-      />
       <user-menu v-if="isLoggedIn" :data="sidebarData" />
     </div>
 

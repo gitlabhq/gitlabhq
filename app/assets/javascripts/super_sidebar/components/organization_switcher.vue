@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
 import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -40,6 +41,7 @@ export default {
   feedbackUrl:
     'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
   components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       organizations: {},
@@ -69,6 +71,9 @@ export default {
     },
   },
   computed: {
+    superTopbarEnabled() {
+      return this.glFeatures.globalTopbar;
+    },
     organizationSwitchingEnabled() {
       return gon?.features?.organizationSwitching;
     },
@@ -129,6 +134,12 @@ export default {
 
       return [currentOrganizationGroup];
     },
+    dropdownOffset() {
+      return {
+        mainAxis: 0,
+        crossAxis: this.superTopbarEnabled ? 12 : 0,
+      };
+    },
   },
   methods: {
     onShown() {
@@ -141,13 +152,18 @@ export default {
 <template>
   <gl-disclosure-dropdown
     :items="items"
-    class="super-sidebar-org-switcher-dropdown gl-mx-1 gl-block"
+    class="super-sidebar-org-switcher-dropdown gl-block"
     placement="bottom"
+    :dropdown-offset="dropdownOffset"
     @shown="onShown"
   >
     <template #toggle>
       <button
-        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3 gl-text-left gl-font-semibold gl-leading-1"
+        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-text-left gl-font-semibold gl-leading-1"
+        :class="{
+          'gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3': !superTopbarEnabled,
+          'btn gl-button btn-default gl-gap-3 !gl-rounded-lg !gl-px-2': superTopbarEnabled,
+        }"
         data-testid="toggle-button"
       >
         <gl-avatar

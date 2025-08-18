@@ -264,6 +264,10 @@ class Member < ApplicationRecord
       .order('source_id, source_type, LOWER(invite_email)')
   end
 
+  scope :by_user_types, ->(user_types) do
+    left_join_users.where(users: { user_type: user_types })
+  end
+
   scope :order_name_asc, -> do
     build_keyset_order_on_joined_column(
       scope: left_join_users,

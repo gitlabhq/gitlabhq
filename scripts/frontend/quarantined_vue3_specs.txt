@@ -1,7 +1,6 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
-ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_content_sidebar_spec.js

@@ -7,7 +7,6 @@ feature_categories:
 description: An AI Self Hosted Model definition
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151793
 milestone: '17.0'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_setting
 notes: Used only for self-managed. Not used in GitLab.com, nor Cells
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553439

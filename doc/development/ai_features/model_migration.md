@@ -23,7 +23,7 @@ query: label = "AI Model Migration" AND opened = true
 - **[GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)**: View all features and their current model mappings
 - **[AI Model Version Migration Initiative Epic](https://gitlab.com/groups/gitlab-org/-/epics/15650)**: Central tracking epic for all model migration work
 - **[AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)**: Where model configurations are managed
-- **[Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)**: For evaluating models and prompts
+- **[Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)**: For evaluating models and prompts
 
 ## Introduction
 
@@ -176,7 +176,7 @@ Before starting a model migration:
 
 1. **Ensure access** to testing environments and monitoring tools
 
-1. **Complete model evaluation** using the [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md)
+1. **Complete model evaluation** using the [Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
 
 ### Additional Prerequisites for Model Deprecations
 
@@ -444,5 +444,5 @@ See an example in our [Claude 3.7 Model Upgrade](https://gitlab.com/gitlab-org/g
 - **GitLab Resources**
   - [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)
   - [AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
-  - [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+  - [Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
   - [AI Model Version Migration Initiative](https://gitlab.com/groups/gitlab-org/-/epics/15650)
