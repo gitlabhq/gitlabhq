@@ -34,12 +34,13 @@ Maintenance is performed outside standard working hours:
 | Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM |
 | Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM |
 
-View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance.
-You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
+You choose your maintenance window during [onboarding](create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance).
+This window cannot be changed after your instance is created.
+To view your maintenance window, go to [Switchboard](tenant_overview.md#maintenance-windows).
 
 {{< alert type="note" >}}
 
-The scheduled weekly maintenance window is separate from [emergency maintenance](#emergency-maintenance), which cannot be postponed.
+The scheduled weekly maintenance window is separate from [emergency maintenance](#emergency-maintenance), which can happen at any time.
 
 {{< /alert >}}
 
@@ -91,7 +92,7 @@ PCLs help ensure system stability when support resources may be limited.
 
 Emergency maintenance is initiated when urgent actions are required on a GitLab Dedicated tenant instance. For example, when a critical (S1) security vulnerability requires urgent patching, GitLab performs emergency maintenance to upgrade your tenant instance to a secure version. This maintenance can occur outside scheduled maintenance windows.
 
-GitLab prioritizes stability and security while minimizing customer impact during emergency maintenance. The specific maintenance procedures follow established internal processes, and all changes undergo appropriate review and approval before they are applied.
+GitLab prioritizes stability and security while minimizing customer impact during emergency maintenance. The specific maintenance procedures follow established internal processes, and all changes undergo appropriate internal review and approval before they are applied.
 
 GitLab provides advance notice when possible and sends complete details
 after the issue is resolved. The GitLab Support team:
@@ -101,8 +102,7 @@ after the issue is resolved. The GitLab Support team:
   **Customer communication** section of Switchboard.
 - Copies your Customer Success Manager (CSM) on all communications.
 
-You cannot postpone emergency maintenance, because the same process must be applied to all
-GitLab Dedicated instances to ensure their security and availability.
+You cannot postpone emergency maintenance because it is critical to stability and security.
 
 ### Verify your operational contacts
 

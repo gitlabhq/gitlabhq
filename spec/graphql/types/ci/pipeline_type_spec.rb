@@ -88,6 +88,24 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
+  describe '.authorization_scopes' do
+    it 'includes :ai_workflows' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'field scopes' do
+    {
+      'id' => %i[api read_api ai_workflows],
+      'name' => %i[api read_api ai_workflows],
+      'createdAt' => %i[api read_api ai_workflows]
+    }.each do |field, scopes|
+      it "includes the correct scopes for #{field}" do
+        expect(described_class.fields[field].instance_variable_get(:@scopes)).to include(*scopes)
+      end
+    end
+  end
+
   describe 'manual_variables' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }

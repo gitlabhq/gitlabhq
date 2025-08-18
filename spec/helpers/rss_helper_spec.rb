@@ -10,7 +10,7 @@ RSpec.describe RssHelper do
         allow(helper).to receive(:current_user).and_return(current_user)
 
         feed_token = helper.rss_url_options[:feed_token]
-        expect(feed_token).to match(Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX)
+        expect(feed_token).to match(Gitlab::Auth::AuthFinders.path_dependent_feed_token_regex)
         expect(feed_token).to end_with(current_user.id.to_s)
       end
     end

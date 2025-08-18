@@ -14,8 +14,8 @@
   = render_if_exists "layouts/session_expire_modal"
 
   - if Feature.enabled?(:paneled_view, current_user)
-    .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-bg-strong gl-gap-3' }
-      .content-wrapper.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-rounded-lg.gl-bg-default{ class: "#{@content_wrapper_class}" }
+    .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-gap-3' }
+      .content-wrapper.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
         -# Broadcast messages
         .broadcast-wrapper
           = dispensable_render_if_exists "shared/token_expiration_banner"
@@ -38,9 +38,9 @@
         = render_if_exists "shared/footer/global_footer"
 
 
-      #contextual-panel-portal.panel.gl-@container.gl-flex-1.gl-overflow-y-auto.gl-rounded-lg.gl-bg-default.empty:gl-hidden
+      #contextual-panel-portal.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-rounded-lg.gl-bg-default.empty:gl-hidden{ class: 'gl-@container' }
 
-      .panel
+      .paneled-view
         #duo-chat-panel
 
   - else

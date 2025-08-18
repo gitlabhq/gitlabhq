@@ -259,6 +259,33 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
           expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
         end
+
+        context 'with instance prefix' do
+          let(:instance_prefix) { 'instanceprefix' }
+          let(:feed_token_with_prefix) { "#{instance_prefix}-#{feed_token}" }
+
+          before do
+            stub_application_setting(instance_token_prefix: instance_prefix)
+          end
+
+          it 'returns user if valid feed_token' do
+            set_param(:feed_token, feed_token)
+
+            expect(find_user_from_feed_token(:rss)).to eq feed_user
+          end
+
+          it 'returns user if valid feed_token_with_prefix' do
+            set_param(:feed_token, feed_token_with_prefix)
+
+            expect(find_user_from_feed_token(:rss)).to eq feed_user
+          end
+
+          it 'returns exception if invalid feed_token prefix' do
+            set_param(:feed_token, "invalid#{feed_token}")
+
+            expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
       end
 
       context 'when old format rss_token param is provided' do

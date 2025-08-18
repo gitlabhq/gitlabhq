@@ -9,27 +9,30 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
 
   subject(:flow) { described_class.new(session: session, provider: provider, scope: scope) }
 
-  describe '#requested? and #succeeded?' do
+  describe '#requested?, #succeeded?, #failed?' do
     using RSpec::Parameterized::TableSyntax
 
     # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
-    where(:session, :provider, :scope, :expected_requested?, :expected_succeeded?) do
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | true  | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | true
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => {} } } }                         | 'openid_connect' | :admin_mode | false | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :admin_mode | false | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :namespace  | false | true
-      { 'omniauth_step_up_auth' => { 'openid_connect' => {} } }                                             | 'openid_connect' | :admin_mode | false | false
-      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | false | false
-      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | false
-      { 'omniauth_step_up_auth' => {} }                                                                     | 'openid_connect' | :admin_mode | false | false
-      {}                                                                                                    | 'openid_connect' | :admin_mode | false | false
-      nil                                                                                                   | 'openid_connect' | :admin_mode | false | false
+    where(:session, :provider, :scope, :expected_requested?, :expected_succeeded?, :expected_failed?) do
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | true  | false | false
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | true  | false
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } } } }    | 'openid_connect' | :admin_mode | false | false | true
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => {} } } }                         | 'openid_connect' | :admin_mode | false | false | false
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :admin_mode | false | false | false
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :namespace  | false | true  | false
+      { 'omniauth_step_up_auth' => { 'openid_connect' => {} } }                                             | 'openid_connect' | :admin_mode | false | false | false
+      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | false | false | false
+      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | false | false
+      { 'omniauth_step_up_auth' => {} }                                                                     | 'openid_connect' | :admin_mode | false | false | false
+      {}                                                                                                    | 'openid_connect' | :admin_mode | false | false | false
+      nil                                                                                                   | 'openid_connect' | :admin_mode | false | false | false
     end
     # rubocop:enable Layout/LineLength
 
     with_them do
-      it { is_expected.to have_attributes(requested?: expected_requested?, succeeded?: expected_succeeded?) }
+      it { is_expected.to have_attributes(requested?: expected_requested?) }
+      it { is_expected.to have_attributes(succeeded?: expected_succeeded?) }
+      it { is_expected.to have_attributes(failed?: expected_failed?) }
     end
   end
 
@@ -73,8 +76,8 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
         expect { evaluate_flow }.not_to change { flow.succeeded? }
       end
 
-      it 'sets the state to rejected' do
-        expect { evaluate_flow }.to change { flow.rejected? }.from(false).to(true)
+      it 'sets the state to failed' do
+        expect { evaluate_flow }.to change { flow.failed? }.from(false).to(true)
       end
     end
   end
@@ -102,8 +105,8 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
   end
 
   describe '#fail!' do
-    it 'sets the state to rejected' do
-      expect { flow.fail! }.to change { flow.rejected? }.from(false).to(true)
+    it 'sets the state to failed' do
+      expect { flow.fail! }.to change { flow.failed? }.from(false).to(true)
     end
   end
 end

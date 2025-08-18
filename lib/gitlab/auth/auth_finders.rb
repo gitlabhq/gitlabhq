@@ -42,7 +42,6 @@ module Gitlab
       DEPLOY_TOKEN_HEADER = 'HTTP_DEPLOY_TOKEN'
       RUNNER_TOKEN_PARAM = :token
       RUNNER_JOB_TOKEN_PARAM = :token
-      PATH_DEPENDENT_FEED_TOKEN_REGEX = /\A#{User::FEED_TOKEN_PREFIX}(\h{64})-(\d+)\z/
 
       PARAM_TOKEN_KEYS = [
         PRIVATE_TOKEN_PARAM,
@@ -228,6 +227,10 @@ module Gitlab
           parsed_oauth_token.present?
       end
 
+      def self.path_dependent_feed_token_regex
+        /\A(#{User::FEED_TOKEN_PREFIX}|#{User.prefix_for_feed_token})(\h{64})-(\d+)\z/
+      end
+
       private
 
       def extract_personal_access_token
@@ -343,13 +346,13 @@ module Gitlab
       end
 
       def find_user_from_path_feed_token(token)
-        glft = token.match(PATH_DEPENDENT_FEED_TOKEN_REGEX)
+        glft = token.match(AuthFinders.path_dependent_feed_token_regex)
 
         return unless glft
 
         # make sure that user id uses decimal notation
-        user_id = glft[2].to_i(10)
-        digest = glft[1]
+        user_id = glft[3].to_i(10)
+        digest = glft[2]
 
         user = User.find_by_id(user_id)
         return unless user

@@ -24,7 +24,7 @@ module Gitlab
           state.to_s == STATE_SUCCEEDED.to_s
         end
 
-        def rejected?
+        def failed?
           state.to_s == STATE_FAILED.to_s
         end
 

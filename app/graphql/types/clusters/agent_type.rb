@@ -7,6 +7,10 @@ module Types
 
       authorize :read_cluster_agent
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       connection_type_class Types::CountableConnectionType
 
       field :created_at,
@@ -21,12 +25,14 @@ module Types
 
       field :id, GraphQL::Types::ID,
         null: false,
-        description: 'ID of the cluster agent.'
+        description: 'ID of the cluster agent.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :name,
         GraphQL::Types::String,
         null: true,
-        description: 'Name of the cluster agent.'
+        description: 'Name of the cluster agent.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :project, Types::ProjectType,
         description: 'Project the cluster agent is associated with.',
@@ -46,7 +52,8 @@ module Types
       field :web_path,
         GraphQL::Types::String,
         null: true,
-        description: 'Web path of the cluster agent.'
+        description: 'Web path of the cluster agent.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :connections,
         Types::Kas::AgentConnectionType.connection_type,

@@ -12,6 +12,6 @@ module FeedTokenHelper
     final_path = path
     final_path += ".#{type}" unless path.ends_with?(".#{type}")
     digest = OpenSSL::HMAC.hexdigest("SHA256", feed_token, final_path)
-    "#{User::FEED_TOKEN_PREFIX}#{digest}-#{current_user.id}"
+    "#{::User.prefix_for_feed_token}#{digest}-#{current_user.id}"
   end
 end

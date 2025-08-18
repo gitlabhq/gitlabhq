@@ -83,6 +83,12 @@ You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberr
 
 ## Create a custom admin role
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 To create a custom admin role, you add [permissions](abilities.md) that allow actions typically
 limited to administrators. Each custom admin role can have one or more permissions.
 
@@ -197,11 +203,17 @@ You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberr
 
 ## Assign a custom admin role
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 You can assign or modify admin roles to users in your instance. You can do this for existing users or when you add a user to the [instance](../profile/account/create_accounts.md).
 
 Prerequisites:
 
-- You must be an administrator for the GitLab Self-Managed instance.
+- You must be an administrator for the GitLab instance.
 
 To assign a custom admin role to an existing user:
 
