@@ -10,12 +10,22 @@ describe('Registry Breadcrumb', () => {
     return 'mock name';
   });
 
-  const routes = [
+  const defaultRoutes = [
     { name: 'list', path: '/', meta: { nameGenerator, root: true } },
-    { name: 'details', path: '/:id', meta: { nameGenerator, path: '/details' } },
+    { name: 'details', path: '/:id', params: { id: '1' } },
   ];
 
-  const mountComponent = ($route, props = {}) => {
+  const routesWithNameGenerator = [
+    { name: 'list', path: '/', meta: { nameGenerator, root: true } },
+    {
+      name: 'details',
+      path: '/:id',
+      params: { id: '1' },
+      meta: { nameGenerator },
+    },
+  ];
+
+  const mountComponent = ({ $route, props = {}, routes = defaultRoutes } = {}) => {
     wrapper = shallowMount(component, {
       propsData: { staticBreadcrumbs: [], ...props },
       mocks: {
@@ -35,7 +45,7 @@ describe('Registry Breadcrumb', () => {
 
   describe('when is rootRoute', () => {
     beforeEach(() => {
-      mountComponent(routes[0]);
+      mountComponent({ $route: defaultRoutes[0] });
     });
 
     it('only passes root to `items` prop', () => {
@@ -50,22 +60,51 @@ describe('Registry Breadcrumb', () => {
 
   describe('when is not rootRoute', () => {
     beforeEach(() => {
-      mountComponent(routes[1]);
+      mountComponent({ $route: defaultRoutes[1] });
     });
 
     it('passes root and details to `items` prop', () => {
       const breadcrumbItems = wrapper.findComponent(GlBreadcrumb).props('items');
       expect(breadcrumbItems).toHaveLength(2);
-      expect(breadcrumbItems[0]).toEqual({
-        text: 'mock name',
-        to: '/',
-      });
-      expect(breadcrumbItems[1].href).toBe('/:id');
+      expect(breadcrumbItems).toEqual([
+        {
+          text: 'mock name',
+          to: '/',
+        },
+        {
+          text: '1',
+          to: { name: 'details', params: defaultRoutes[1].params },
+        },
+      ]);
+    });
+  });
+
+  describe('when is not rootRoute and has meta.nameGenerator', () => {
+    beforeEach(() => {
+      mountComponent({ $route: routesWithNameGenerator[1], routes: routesWithNameGenerator });
+    });
+
+    it('passes root and details to `items` prop', () => {
+      const breadcrumbItems = wrapper.findComponent(GlBreadcrumb).props('items');
+      expect(breadcrumbItems).toHaveLength(2);
+      expect(breadcrumbItems).toEqual([
+        {
+          text: 'mock name',
+          to: '/',
+        },
+        {
+          text: 'mock name',
+          to: { name: 'details', params: defaultRoutes[1].params },
+        },
+      ]);
     });
   });
 
   it('passes static breadcrumbs along with route breadcrumbs', () => {
-    mountComponent(routes[1], { staticBreadcrumbs: [{ text: 'Static', href: '/static' }] });
+    mountComponent({
+      $route: defaultRoutes[1],
+      props: { staticBreadcrumbs: [{ text: 'Static', href: '/static' }] },
+    });
     const breadcrumbItems = wrapper.findComponent(GlBreadcrumb).props('items');
     expect(breadcrumbItems).toHaveLength(3);
     expect(breadcrumbItems[0]).toEqual({ text: 'Static', href: '/static' });

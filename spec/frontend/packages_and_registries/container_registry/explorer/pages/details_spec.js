@@ -18,7 +18,6 @@ import {
   UNFINISHED_STATUS,
   DELETE_SCHEDULED,
   ALERT_DANGER_IMAGE,
-  MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
@@ -351,36 +350,6 @@ describe('Details Page', () => {
 
         expect(findPartialCleanupAlert().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('Breadcrumb connection', () => {
-    it('when the details are fetched updates the name', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(breadCrumbState.updateName).toHaveBeenCalledWith(containerRepositoryMock.name);
-    });
-
-    it(`when the image is missing set the breadcrumb to ${MISSING_OR_DELETED_IMAGE_BREADCRUMB}`, async () => {
-      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLEmptyImageDetailsMock) });
-
-      await waitForApolloRequestRender();
-
-      expect(breadCrumbState.updateName).toHaveBeenCalledWith(MISSING_OR_DELETED_IMAGE_BREADCRUMB);
-    });
-
-    it(`when the image has no name set the breadcrumb to project name`, async () => {
-      mountComponent({
-        resolver: jest
-          .fn()
-          .mockResolvedValue(graphQLImageDetailsMock({ ...containerRepositoryMock, name: null })),
-      });
-
-      await waitForApolloRequestRender();
-
-      expect(breadCrumbState.updateName).toHaveBeenCalledWith('gitlab-test');
     });
   });
 

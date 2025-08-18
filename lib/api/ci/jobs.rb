@@ -51,6 +51,8 @@ module API
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
           check_rate_limit!(:jobs_index, scope: current_user)
 

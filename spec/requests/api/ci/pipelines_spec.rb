@@ -370,183 +370,194 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
     let(:guest) { create(:project_member, :guest, project: project).user }
 
-    before do |example|
-      unless example.metadata[:skip_before_request]
-        project.update!(public_builds: false)
-        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
-      end
-    end
-
-    context 'authorized user' do
-      it 'returns pipeline jobs', :aggregate_failures do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-      end
-
-      context 'with oauth token that has ai_workflows scope' do
-        let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
-
-        it "allows access", :skip_before_request do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", oauth_access_token: token), params: query
+    context 'when public_builds is false' do
+      before do |example|
+        unless example.metadata[:skip_before_request]
           project.update!(public_builds: false)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      it 'returns correct values', :aggregate_failures do
-        expect(json_response).not_to be_empty
-        expect(json_response.first['commit']['id']).to eq project.commit.id
-        expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
-        expect(json_response.first['artifacts_file']).to be_nil
-        expect(json_response.first['artifacts']).to be_an Array
-        expect(json_response.first['artifacts']).to be_empty
-      end
-
-      it_behaves_like 'a job with artifacts and trace' do
-        let(:api_endpoint) { "/projects/#{project.id}/pipelines/#{pipeline.id}/jobs" }
-      end
-
-      it 'returns pipeline data', :aggregate_failures do
-        json_job = json_response.first
-
-        expect(json_job['pipeline']).not_to be_empty
-        expect(json_job['pipeline']['id']).to eq job.pipeline.id
-        expect(json_job['pipeline']['project_id']).to eq job.pipeline.project_id
-        expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
-        expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
-        expect(json_job['pipeline']['status']).to eq job.pipeline.status
-      end
-
-      context 'filter jobs with one scope element' do
-        let(:query) { { 'scope' => 'pending' } }
-
-        it :aggregate_failures do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_an Array
-
-          expect(json_response).to all match a_hash_including(
-            'duration' => be_nil,
-            'queued_duration' => (be >= 0.0)
-          )
-        end
-      end
-
-      context 'when filtering to only running jobs' do
-        let(:query) { { 'scope' => 'running' } }
-
-        it :aggregate_failures do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_an Array
-
-          expect(json_response).to all match a_hash_including(
-            'duration' => (be >= 0.0),
-            'queued_duration' => (be >= 0.0)
-          )
-        end
-      end
-
-      context 'filter jobs with hash' do
-        let(:query) { { scope: { hello: 'pending', world: 'running' } } }
-
-        it { expect(response).to have_gitlab_http_status(:bad_request) }
-      end
-
-      context 'filter jobs with array of scope elements' do
-        let(:query) { { scope: %w[pending running] } }
-
-        it :aggregate_failures do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_an Array
-        end
-      end
-
-      context 'respond 400 when scope contains invalid state' do
-        let(:query) { { scope: %w[unknown running] } }
-
-        it { expect(response).to have_gitlab_http_status(:bad_request) }
-      end
-
-      context 'jobs in different pipelines' do
-        let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
-        let!(:job2) { create(:ci_build, pipeline: pipeline2) }
-
-        it 'excludes jobs from other pipelines' do
-          json_response.each { |job| expect(job['pipeline']['id']).to eq(pipeline.id) }
-        end
-      end
-
-      it 'avoids N+1 queries' do
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end
-
-        create_list(:ci_build, 3, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
-
-        expect do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
-        end.not_to exceed_all_query_limit(control)
       end
 
-      context 'pipeline has retried jobs' do
-        before_all do
-          job.update!(retried: true)
-        end
-
-        let_it_be(:successor) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
-
-        it 'does not return retried jobs by default', :aggregate_failures do
+      context 'authorized user' do
+        it 'returns pipeline jobs', :aggregate_failures do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(1)
         end
 
-        context 'when include_retried is false' do
-          let(:query) { { include_retried: false } }
+        context 'with oauth token that has ai_workflows scope' do
+          let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
-          it 'does not return retried jobs', :aggregate_failures do
+          it "allows access", :skip_before_request do
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", oauth_access_token: token), params: query
+            project.update!(public_builds: false)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        it 'returns correct values', :aggregate_failures do
+          expect(json_response).not_to be_empty
+          expect(json_response.first['commit']['id']).to eq project.commit.id
+          expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
+          expect(json_response.first['artifacts_file']).to be_nil
+          expect(json_response.first['artifacts']).to be_an Array
+          expect(json_response.first['artifacts']).to be_empty
+        end
+
+        it_behaves_like 'a job with artifacts and trace' do
+          let(:api_endpoint) { "/projects/#{project.id}/pipelines/#{pipeline.id}/jobs" }
+        end
+
+        it 'returns pipeline data', :aggregate_failures do
+          json_job = json_response.first
+
+          expect(json_job['pipeline']).not_to be_empty
+          expect(json_job['pipeline']['id']).to eq job.pipeline.id
+          expect(json_job['pipeline']['project_id']).to eq job.pipeline.project_id
+          expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
+          expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
+          expect(json_job['pipeline']['status']).to eq job.pipeline.status
+        end
+
+        context 'filter jobs with one scope element' do
+          let(:query) { { 'scope' => 'pending' } }
+
+          it :aggregate_failures do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+
+            expect(json_response).to all match a_hash_including(
+              'duration' => be_nil,
+              'queued_duration' => (be >= 0.0)
+            )
+          end
+        end
+
+        context 'when filtering to only running jobs' do
+          let(:query) { { 'scope' => 'running' } }
+
+          it :aggregate_failures do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+
+            expect(json_response).to all match a_hash_including(
+              'duration' => (be >= 0.0),
+              'queued_duration' => (be >= 0.0)
+            )
+          end
+        end
+
+        context 'filter jobs with hash' do
+          let(:query) { { scope: { hello: 'pending', world: 'running' } } }
+
+          it { expect(response).to have_gitlab_http_status(:bad_request) }
+        end
+
+        context 'filter jobs with array of scope elements' do
+          let(:query) { { scope: %w[pending running] } }
+
+          it :aggregate_failures do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+          end
+        end
+
+        context 'respond 400 when scope contains invalid state' do
+          let(:query) { { scope: %w[unknown running] } }
+
+          it { expect(response).to have_gitlab_http_status(:bad_request) }
+        end
+
+        context 'jobs in different pipelines' do
+          let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+          let!(:job2) { create(:ci_build, pipeline: pipeline2) }
+
+          it 'excludes jobs from other pipelines' do
+            json_response.each { |job| expect(job['pipeline']['id']).to eq(pipeline.id) }
+          end
+        end
+
+        it 'avoids N+1 queries' do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
+          end
+
+          create_list(:ci_build, 3, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
+
+          expect do
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
+          end.not_to exceed_all_query_limit(control)
+        end
+
+        context 'pipeline has retried jobs' do
+          before_all do
+            job.update!(retried: true)
+          end
+
+          let_it_be(:successor) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
+
+          it 'does not return retried jobs by default', :aggregate_failures do
             expect(json_response).to be_an Array
             expect(json_response.length).to eq(1)
           end
-        end
 
-        context 'when include_retried is true' do
-          let(:query) { { include_retried: true } }
+          context 'when include_retried is false' do
+            let(:query) { { include_retried: false } }
 
-          it 'returns retried jobs', :aggregate_failures do
-            expect(json_response).to be_an Array
-            expect(json_response.length).to eq(2)
-            expect(json_response[0]['name']).to eq(json_response[1]['name'])
+            it 'does not return retried jobs', :aggregate_failures do
+              expect(json_response).to be_an Array
+              expect(json_response.length).to eq(1)
+            end
+          end
+
+          context 'when include_retried is true' do
+            let(:query) { { include_retried: true } }
+
+            it 'returns retried jobs', :aggregate_failures do
+              expect(json_response).to be_an Array
+              expect(json_response.length).to eq(2)
+              expect(json_response[0]['name']).to eq(json_response[1]['name'])
+            end
           end
         end
       end
-    end
 
-    context 'no pipeline is found' do
-      it 'does not return jobs', :aggregate_failures do
-        get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/jobs", user)
-
-        expect(json_response['message']).to eq '404 Project Not Found'
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'unauthorized user' do
-      context 'when user is not logged in' do
-        let(:api_user) { nil }
-
+      context 'no pipeline is found' do
         it 'does not return jobs', :aggregate_failures do
+          get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/jobs", user)
+
           expect(json_response['message']).to eq '404 Project Not Found'
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
-      context 'when user is guest' do
-        let(:guest) { create(:project_member, :guest, project: project).user }
-        let(:api_user) { guest }
+      context 'unauthorized user' do
+        context 'when user is not logged in' do
+          let(:api_user) { nil }
 
-        it 'does not return jobs' do
-          expect(response).to have_gitlab_http_status(:forbidden)
+          it 'does not return jobs', :aggregate_failures do
+            expect(json_response['message']).to eq '404 Project Not Found'
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when user is guest' do
+          let(:guest) { create(:project_member, :guest, project: project).user }
+          let(:api_user) { guest }
+
+          it 'does not return jobs' do
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+    end
+
+    context 'when public_builds is true' do
+      it_behaves_like 'enforcing job token policies', :read_jobs,
+        allow_public_access_for_enabled_project_features: [:repository, :builds] do
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs"), params: { job_token: target_job.token }
         end
       end
     end

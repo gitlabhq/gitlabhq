@@ -44,15 +44,7 @@ export default () => {
     ...config
   } = el.dataset;
 
-  // This is a mini state to help the breadcrumb have the correct name in the details page
-  const breadCrumbState = Vue.observable({
-    name: '',
-    updateName(value) {
-      this.name = value;
-    },
-  });
-
-  const router = createRouter(endpoint, breadCrumbState);
+  const router = createRouter(endpoint);
 
   const attachMainComponent = () =>
     new Vue({
@@ -64,7 +56,6 @@ export default () => {
       },
       provide() {
         return {
-          breadCrumbState,
           config: {
             ...config,
             expirationPolicy: expirationPolicy ? JSON.parse(expirationPolicy) : undefined,

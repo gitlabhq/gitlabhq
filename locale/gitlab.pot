@@ -18090,9 +18090,6 @@ msgstr ""
 msgid "ContainerRegistry|Image repository deletion failed"
 msgstr ""
 
-msgid "ContainerRegistry|Image repository not found"
-msgstr ""
-
 msgid "ContainerRegistry|Image repository temporarily cannot be marked for deletion. Please try again in a few minutes. %{docLinkStart}More details%{docLinkEnd}"
 msgstr ""
 

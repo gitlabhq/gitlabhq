@@ -160,6 +160,9 @@ module API
           use :pagination
         end
 
+        route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs,
+          allow_public_access_for_enabled_project_features: [:repository, :builds]
         get ':id/pipelines/:pipeline_id/jobs', urgency: :low, feature_category: :continuous_integration do
           authorize!(:read_pipeline, user_project)
 

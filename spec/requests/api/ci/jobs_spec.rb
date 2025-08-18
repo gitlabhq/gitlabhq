@@ -553,6 +553,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     def go
       get api("/projects/#{project.id}/jobs", api_user), params: query
     end
+
+    it_behaves_like 'enforcing job token policies', :read_jobs do
+      let(:request) do
+        get api("/projects/#{project.id}/jobs"), params: { job_token: target_job.token }
+      end
+    end
   end
 
   describe 'GET /projects/:id/jobs offset pagination' do

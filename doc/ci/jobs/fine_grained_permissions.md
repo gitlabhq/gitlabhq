@@ -89,6 +89,8 @@ The following endpoints are available for CI/CD job tokens.
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts` | Download the artifacts archive from a job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/artifacts/:ref_name/download` | Download the artifacts archive from a job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | Download a specific file from artifacts archive from a ref |
+| Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs` | Get a projects jobs |
+| Jobs: Read | `READ_JOBS` | `GET /projects/:id/pipelines/:pipeline_id/jobs` | Get pipeline jobs |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` | Delete repository tag |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags` | Delete repository tags (in bulk) |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id` | Delete repository |
