@@ -66,6 +66,72 @@ This job triggers a downstream multi-project pipeline in [Component Performance 
       1. GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
    1. test runner instance: which runs the k6 tests download as an artifact from `dotenv-vars` job and runs it against the CNG GitLab instance created on the server instance.
 
+### Adding a new test
+
+You can add a new k6 tests which will then run as a part of `run-performance-test` job.
+
+To add a new test:
+
+1. Create a new `.js` file under [`qa/performance_test/k6_test`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/performance_test/k6_test?ref_type=heads).
+1. Copy and paste the following boilerplate to it before beginning to write the test.
+1. Update the comment sections with the respective values and code.
+
+```javascript
+export const TTFB_THRESHOLD= /* TTFB THRESHOLD VALUE EXPECTED */;
+export const RPS_THRESHOLD= /* RPS THRESHOLD VALUE EXPECTED */;
+export const TEST_NAME=/* 'NAME OF THE TEST IN QUOTES' */;
+export const LOAD_TEST_VUS = 2; /* THE NUMBER OF THREADS OF ACTUAL TEST */
+export const LOAD_TEST_DURATION = '50s'; /* THE DURATION FOR THE ACTUAL TEST RUN */
+export const WARMUP_TEST_VUS = 1; /* THE NUMBER OF THREADS FOR WARMING UP THE SYSTEM */
+export const WARMUP_TEST_DURATION = '10s'; /* THE DURATION FOR THE WARMUP RUN */
+export const LOAD_TEST_START_TIME = '10s'; /* THE TIME TO WAIT AFTER WHICH THE LOAD TEST STARTS
+                                              USUALLY THIS WOULD BE EQUAL TO WARMUP_TEST_DURATION */
+
+export const options = {
+scenarios:  {
+    warmup: {
+      executor: 'constant-vus',
+      vus: WARMUP_TEST_VUS,
+      duration: WARMUP_TEST_DURATION,
+      gracefulStop: '0s',
+      tags: { scenario: 'warmup' },
+    },
+    load_test: {
+      executor: 'constant-vus',
+      vus: LOAD_TEST_VUS,
+      duration: LOAD_TEST_DURATION,
+      startTime: LOAD_TEST_START_TIME,
+      tags: { scenario: 'load_test' },
+    },
+  },
+  thresholds: {
+    'http_req_waiting{scenario:load_test}': [
+      { threshold: `p(90)<${TTFB_THRESHOLD}`, abortOnFail: false }
+    ],
+    'http_reqs{scenario:load_test}': [
+      { threshold: `rate>=${RPS_THRESHOLD}`, abortOnFail: false }
+    ]
+  },
+};
+
+export default function () {
+
+  // WRITE THE TEST HERE
+
+
+}
+
+```
+
+You can currently give any value for `TTFB_THRESHOLD` and `RPS_THRESHOLD` as they are currenlty not being used for reporting and will be removed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/75>
+
+You can refer to other test present in [`qa/performance_test/k6_test`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/performance_test/k6_test?ref_type=heads) to write your tests.
+
+If you tests required data in the environment you can update the [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads) file to add the resources you need to create.
+Note: Do not remove any existing resources being created form [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads).
+
+[Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) currently doesn't support multiple seed files but this will be addressed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/76>
+
 ### Troubleshooting
 
 Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatibility error.

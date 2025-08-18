@@ -225,7 +225,7 @@ describe('New project creation app', () => {
 
   describe('import by URL form', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent({ namespaceId: '2', namespaceFullPath: 'my-group' });
 
       findSingleChoiceSelector().vm.$emit('change', 'import_project');
 
@@ -236,9 +236,9 @@ describe('New project creation app', () => {
 
     it('renders import by URL form', () => {
       expect(findImportByUrlForm().props('namespace')).toEqual({
-        id: '1',
-        fullPath: 'root',
-        isPersonal: true,
+        id: '2',
+        fullPath: 'my-group',
+        isPersonal: false,
       });
     });
 

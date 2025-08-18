@@ -51,6 +51,9 @@ describe('NewProjectUrlSelect component', () => {
       namespace: {
         id: 'gid://gitlab/Namespace/1',
         fullPath: 'root',
+        name: 'Root',
+        visibility: 'private',
+        webUrl: 'http://127.0.0.1:3000/root',
       },
     },
   };
@@ -109,8 +112,12 @@ describe('NewProjectUrlSelect component', () => {
   const findHiddenSelectedNamespaceInput = () =>
     wrapper.find('[name="project[selected_namespace_id]"]');
 
-  const clickDropdownItem = async () => {
+  const clickGroupNamespaceDropdownItem = async () => {
     await findAllListboxItems().at(0).trigger('click');
+  };
+
+  const clickUserNamespaceDropdownItem = async () => {
+    await findAllListboxItems().at(3).trigger('click');
   };
 
   const showDropdown = async () => {
@@ -284,7 +291,7 @@ describe('NewProjectUrlSelect component', () => {
     expect(wrapper.find('[data-testid="listbox-no-results-text"]').text()).toBe('No matches found');
   });
 
-  it('emits `update-visibility` event to update the visibility radio options', async () => {
+  it('emits `update-visibility` event to update the visibility radio options for a group namespace', async () => {
     wrapper = mountComponent({ mountFn: mountExtended });
 
     const spy = jest.spyOn(eventHub, '$emit');
@@ -292,7 +299,7 @@ describe('NewProjectUrlSelect component', () => {
     // Show dropdown to fetch projects
     await showDropdown();
 
-    await clickDropdownItem();
+    await clickGroupNamespaceDropdownItem();
 
     const namespace = data.currentUser.groups.nodes[0];
 
@@ -304,16 +311,48 @@ describe('NewProjectUrlSelect component', () => {
     });
   });
 
-  it('updates hidden input with selected namespace', async () => {
+  it('updates hidden input with selected group namespace', async () => {
     wrapper = mountComponent({ mountFn: mountExtended });
 
     // Show dropdown to fetch projects
     await showDropdown();
 
-    await clickDropdownItem();
+    await clickGroupNamespaceDropdownItem();
 
     expect(findHiddenNamespaceInput().attributes('value')).toBe(
       getIdFromGraphQLId(data.currentUser.groups.nodes[0].id).toString(),
+    );
+  });
+
+  it('emits `update-visibility` event to update the visibility radio options for a user namespace', async () => {
+    wrapper = mountComponent({ mountFn: mountExtended });
+
+    const spy = jest.spyOn(eventHub, '$emit');
+
+    // Show dropdown to fetch projects
+    await showDropdown();
+
+    await clickUserNamespaceDropdownItem();
+
+    const { namespace } = data.currentUser;
+
+    expect(spy).toHaveBeenCalledWith('update-visibility', {
+      name: namespace.name,
+      visibility: namespace.visibility,
+      showPath: namespace.webUrl,
+    });
+  });
+
+  it('updates hidden input with selected user namespace', async () => {
+    wrapper = mountComponent({ mountFn: mountExtended });
+
+    // Show dropdown to fetch projects
+    await showDropdown();
+
+    await clickUserNamespaceDropdownItem();
+
+    expect(findHiddenNamespaceInput().attributes('value')).toBe(
+      getIdFromGraphQLId(data.currentUser.namespace.id).toString(),
     );
   });
 

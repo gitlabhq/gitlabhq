@@ -2410,6 +2410,15 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
+msgid "AICatalog| Agent"
+msgstr ""
+
+msgid "AICatalog| Draft node"
+msgstr ""
+
+msgid "AICatalog| Flow nodes (Coming soon)"
+msgstr ""
+
 msgid "AICatalog|A public agent can be made private only if it is not used."
 msgstr ""
 
@@ -2486,6 +2495,9 @@ msgid "AICatalog|Description"
 msgstr ""
 
 msgid "AICatalog|Description is required."
+msgstr ""
+
+msgid "AICatalog|Draft node"
 msgstr ""
 
 msgid "AICatalog|Edit"
@@ -2579,6 +2591,9 @@ msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
+msgid "AICatalog|Select agent"
 msgstr ""
 
 msgid "AICatalog|Select tools that this agent will have access to."
@@ -53046,6 +53061,9 @@ msgstr ""
 msgid "Reopens this %{quick_action_target}."
 msgstr ""
 
+msgid "Reorder"
+msgstr ""
+
 msgid "Replace"
 msgstr ""
 
@@ -65511,6 +65529,9 @@ msgstr ""
 msgid "This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}."
+msgstr ""
+
 msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group."
 msgstr ""
 
@@ -70094,9 +70115,6 @@ msgid "VirtualRegistry|%{hours} hour cache"
 msgid_plural "VirtualRegistry|%{hours} hours cache"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "VirtualRegistry|%{size} KB"
-msgstr ""
 
 msgid "VirtualRegistry|%{size} storage used"
 msgstr ""

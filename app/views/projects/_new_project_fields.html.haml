@@ -19,19 +19,14 @@
       = f.label :namespace_id, class: 'label-bold' do
         %span= _('Project URL')
       .input-group.gl-flex-nowrap
-        - if current_user.can_select_namespace?
-          - namespace_id = namespace_id_from(params)
-          .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,
-            namespace_id: namespace_id || @current_user_group&.id,
-            input_id: 'project_namespace_id',
-            input_name: 'project[namespace_id]',
-            root_url: root_url,
-            track_label: track_label,
-            user_namespace_id: current_user.namespace_id } }
-        - else
-          .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
-            .input-group-text.border-0
-              #{user_url(current_user.username)}/
+        - namespace_id = namespace_id_from(params)
+        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
+          namespace_id: namespace_id,
+          input_id: 'project_namespace_id',
+          input_name: 'project[namespace_id]',
+          root_url: root_url,
+          track_label: track_label,
+          user_namespace_id: current_user.namespace_id } }
           = f.hidden_field :namespace_id, value: current_user.namespace_id
         .gl-self-center.gl-pl-5 /
     .form-group.project-path.col-sm-6

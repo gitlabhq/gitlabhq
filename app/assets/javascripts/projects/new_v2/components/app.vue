@@ -76,8 +76,8 @@ export default {
   data() {
     return {
       namespace: {
-        id: this.namespaceId ? this.namespaceId : this.userNamespaceId,
-        fullPath: this.namespaceFullPath ? this.namespaceFullPath : this.userNamespaceFullPath,
+        id: this.namespaceId,
+        fullPath: this.namespaceFullPath,
         isPersonal: this.namespaceId === '',
       },
       selectedProjectType: OPTIONS.blank.value,
@@ -161,7 +161,7 @@ export default {
       setLocationHash();
     },
     onNext() {
-      if (this.namespace.id === '') {
+      if (this.currentStep === 2 && this.namespace.id === '') {
         this.showValidation = true;
         return;
       }

@@ -292,7 +292,7 @@ For more information about our plans for language support in SAST, see the [cate
 
 **Footnotes**:
 
-1. <a id="spotbugs-footnote"></a>The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), [Grails](https://grails.org/), and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.
+1. <a id="spotbugs-footnote"></a>The SpotBugs-based analyzer supports Gradle, Maven, and SBT. It can also be used with variants like the Gradle wrapper, Grails, and the Maven wrapper. However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against Ant-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.
 1. <a id="yaml-footnote"></a>`YAML` support is restricted to the following file patterns:
 
    - `application*.yml`
@@ -418,7 +418,7 @@ You can enable SAST across many projects by [enforcing scan execution](../detect
 
 To configure GitLab Advanced SAST (available in GitLab Ultimate only), see [GitLab Advanced SAST](gitlab_advanced_sast.md#configuration).
 
-You can [change configuration variables](_index.md#available-cicd-variables) or [customize detection rules](customize_rulesets.md) if needed, but GitLab SAST is designed to be used in its default configuration.
+You can [change configuration variables](#available-cicd-variables) or [customize detection rules](customize_rulesets.md) if needed, but GitLab SAST is designed to be used in its default configuration.
 
 ### Configure SAST in your CI/CD YAML
 
@@ -477,8 +477,8 @@ The method you can use depends on your GitLab license tier.
 {{< alert type="note" >}}
 
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
+configuration file. If you have a complex GitLab configuration file it might not be parsed
+successfully, and an error might occur.
 
 {{< /alert >}}
 
@@ -503,8 +503,8 @@ Pipelines now include a SAST job.
 {{< alert type="note" >}}
 
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
+configuration file. If you have a complex GitLab configuration file it might not be parsed
+successfully, and an error might occur.
 
 {{< /alert >}}
 
@@ -541,7 +541,7 @@ In some cases, you may need to use a specific version.
 For example, you might need to avoid a regression in a later release.
 
 To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
-in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
+in your CI/CD configuration file after you include the `SAST.gitlab-ci.yml` template.
 
 Only set this variable within a specific job.
 If you set it [at the top level](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
@@ -847,7 +847,7 @@ The following are Docker image-related CI/CD variables.
         <code>SEARCH_MAX_DEPTH</code>
       </td>
       <td rowspan="3">
-        The number of directory levels the analyzer will descend into when searching for matching files to scan.<sup><b><a href="#search-max-depth-description">5</a></b></sup>
+        The number of directory levels the analyzer descends into when searching for matching files to scan.<sup><b><a href="#search-max-depth-description">5</a></b></sup>
       </td>
       <td rowspan="2">
         <code>
