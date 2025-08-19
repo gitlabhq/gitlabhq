@@ -80,7 +80,7 @@ namespace :tw do
       CodeOwnerRule.new('Security Policies', '@rlehmann1'),
       CodeOwnerRule.new('Secret Detection', '@phillipwells'),
       CodeOwnerRule.new('Security Insights', '@rlehmann1'),
-      CodeOwnerRule.new('Self Managed', '@axil @eread'),
+      CodeOwnerRule.new('Operate', '@axil @eread'),
       CodeOwnerRule.new('Solutions Architecture', '@jfullam @Darwinjs @sbrightwell'),
       CodeOwnerRule.new('Source Code', '@brendan777'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
@@ -120,7 +120,7 @@ namespace :tw do
       CodeOwnerRule.new('Pipeline Execution', '@gitlab-org/maintainers/cicd-verify'),
       CodeOwnerRule.new('Platform Insights', '@gitlab-org/analytics-section/product-analytics/engineers/frontend'),
       CodeOwnerRule.new('Organizations', '@abdwdd @alexpooley'),
-      CodeOwnerRule.new('Self Managed', '@gitlab-org/distribution'),
+      CodeOwnerRule.new('Operate', '@gitlab-org/distribution'),
       CodeOwnerRule.new('Threat Insights', '@gitlab-org/govern/threat-insights-frontend-team')
     ].freeze
 

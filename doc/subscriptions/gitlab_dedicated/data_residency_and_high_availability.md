@@ -39,6 +39,7 @@ The following regions are verified for use:
 | Europe (Ireland) | `eu-west-1` |
 | Europe (London) | `eu-west-2` |
 | Europe (Stockholm) | `eu-north-1` |
+| Israel (Tel Aviv) | `il-central-1` |
 | US East (Ohio) | `us-east-2` |
 | US East (N. Virginia) | `us-east-1` |
 | US West (N. California) | `us-west-1` |
@@ -73,7 +74,6 @@ The following regions are verified for use as a secondary region but with known 
 | Europe (Milan) | `eu-south-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 | Europe (Spain) | `eu-south-2` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
 | Europe (Paris) | `eu-west-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Israel (Tel Aviv) | `il-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 | Middle East (UAE) | `me-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
 | Mexico (Central) | `mx-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
 | South America (São Paulo) | `sa-east-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |

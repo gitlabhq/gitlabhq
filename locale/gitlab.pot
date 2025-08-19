@@ -32850,6 +32850,9 @@ msgstr ""
 msgid "IdentityVerification|Email Verification"
 msgstr ""
 
+msgid "IdentityVerification|Email Verification has been disabled and resending a code is not required. Log in again."
+msgstr ""
+
 msgid "IdentityVerification|Enter a code."
 msgstr ""
 
