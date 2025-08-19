@@ -270,7 +270,7 @@ Example response:
 
 ## Get a recipe file
 
-Gets a recipe file from the package regitry.
+Gets a recipe file from the package registry.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name

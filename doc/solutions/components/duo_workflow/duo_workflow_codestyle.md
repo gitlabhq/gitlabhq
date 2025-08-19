@@ -22,7 +22,7 @@ title: Duo Workflow Use Case for Applying Coding Style
 
 ## Duo Workflow Use Case: Improve Java Application with Style Guide
 
-The document describes GitLab Duo Workflow Solution with prompt and context library. The purpose of the solution is to improve appliction coding based on defined style.
+The document describes GitLab Duo Workflow Solution with prompt and context library. The purpose of the solution is to improve application coding based on defined style.
 
 This solution provides a GitLab issue as the prompt and the style guide as the context, designed to automate Java style guidelines to codebases using GitLab Duo Workflow. The prompt and context library enables Duo Workflow to:
 
@@ -55,7 +55,7 @@ When properly configured, the prompt will transform your code to match enterpris
 
 To run the agentic workflow to review and apply style to your application, you need to set up this use case prompt and context library.
 
-1. **Set up the prompt and contet library** by cloning `Enterprise Code Quality Standards` project
+1. **Set up the prompt and context library** by cloning `Enterprise Code Quality Standards` project
 1. **Create a GitLab issue** `Review and Apply Style` with the prompt content from the library file `.gitlab/workflows/java-style-workflow.md`
 1. **In the issue** `Review and Apply Style` configure the workflow variables as detailed in the [Configuration section](#configuration-guide)
 1. **In your VS code** with the project `Enterprise Code Quality Standards`, start the Duo Workflow with a simple [workflow prompt](#example-duo-workflow-prompt)

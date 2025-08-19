@@ -52,7 +52,7 @@ The base role defines the minimum permissions available to the custom role. You 
 [auditor](../../administration/auditor_users.md) as a base role.
 
 Custom permissions can allow actions typically restricted to the Maintainer or Owner role. For
-example, a custom role with permission to manage CI/CD variables also allows manangement of CI/CD
+example, a custom role with permission to manage CI/CD variables also allows management of CI/CD
 variables added by other Maintainers or Owners.
 
 Custom member roles are available to groups and projects:

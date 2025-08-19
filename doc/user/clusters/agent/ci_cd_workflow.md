@@ -479,7 +479,7 @@ For example, the following configuration grants access to unprotected branches i
 ci_access:
   project:
     - id: example/my-project # Project of the group below
-      protected_branches_only: false # This configuration supercedes the group configuration
+      protected_branches_only: false # This configuration supersedes the group configuration
       environments:
         - dev
   groups:

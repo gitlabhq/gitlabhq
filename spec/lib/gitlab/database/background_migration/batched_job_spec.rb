@@ -214,18 +214,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
 
           expect { job.failure!(error: Sidekiq::Shutdown.new) }.not_to change { job.reload.attempts }
         end
-
-        context 'when bbm_retry_sidekiq_shutdown_exception is disabled' do
-          before do
-            stub_feature_flags(bbm_retry_sidekiq_shutdown_exception: false)
-          end
-
-          it 'does not decrements job attemts' do
-            job.update!(attempts: 2)
-
-            expect { job.failure!(error: Sidekiq::Shutdown.new) }.not_to change { job.reload.attempts }
-          end
-        end
       end
 
       context 'with other exception' do

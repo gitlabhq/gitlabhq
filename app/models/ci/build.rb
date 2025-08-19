@@ -256,6 +256,7 @@ module Ci
           yaml_variables when environment coverage_regex
           description tag_list protected needs_attributes
           job_variables_attributes resource_group scheduling_type
+          timeout timeout_source debug_trace_enabled
           ci_stage partition_id id_tokens interruptible execution_config_id].freeze
       end
 

@@ -1610,7 +1610,7 @@ To configure step-up authentication for Admin Mode in GitLab using Microsoft Ent
          step_up_auth: {
            admin_mode: {
              id_token: {
-               # In this example, the Microsoft Entra ID administrators have definded `c20`
+               # In this example, the Microsoft Entra ID administrators have defined `c20`
                # as the authentication context ID with the desired security level and
                # an optional claim `acrs` to be included in the ID token.
                # The `included` field declares that the id token claim `acrs` must include the value `c20`.

@@ -410,7 +410,7 @@ panels:
       filters:
         projectTopics:
           - ruby
-          - javasript
+          - javascript
     gridAttributes:
       yPos: 26
       xPos: 1

@@ -572,7 +572,8 @@ CREATE TABLE siphon_issues
     `promoted_to_epic_id_convert_to_bigint` Nullable(Int64),
     `updated_by_id_convert_to_bigint` Nullable(Int64),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `namespace_traversal_ids` Array(Int64) DEFAULT []
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id

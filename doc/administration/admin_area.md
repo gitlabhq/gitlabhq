@@ -575,7 +575,7 @@ perform background processes.
 
 The Sidekiq dashboard contains:
 
-- A tab per jobs' status.
+- A tab for each [job's lifecycle status](https://github.com/sidekiq/sidekiq/wiki/Job-Lifecycle).
 - A breakdown of background job statistics.
 - A live graph of **Processed** and **Failed** jobs, with a selectable polling interval.
 - An historical graph of **Processed** and **Failed** jobs, with a selectable time span.

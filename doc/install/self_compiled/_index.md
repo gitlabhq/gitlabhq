@@ -1217,7 +1217,7 @@ bundle check | grep google-protobuf
 ```
 
 In the following command, `3.2.0` is used as an example. Replace it with the version number
-you found prevously:
+you found previously:
 
 ```shell
 cd /home/git/gitlab

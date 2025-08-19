@@ -259,7 +259,6 @@ module Gitlab
         end
 
         def handle_sidekiq_shutdown_failure?(exception)
-          return false unless Feature.enabled?(:bbm_retry_sidekiq_shutdown_exception, Feature.current_request)
           return false unless exception.is_a?(Sidekiq::Shutdown)
           return false unless attempts > 1
           return false unless sidekiq_shutdown_failures_count <= MAX_SIDEKIQ_SHUTDOWN_FAILURES

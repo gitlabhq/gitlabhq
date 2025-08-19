@@ -62,13 +62,15 @@ export default {
     :hide-footer="true"
     @hidden="$emit('hidden')"
   >
-    <div class="gl-sticky gl-top-0 gl-flex gl-items-center gl-bg-overlap gl-px-5 gl-py-5">
+    <div
+      class="gl-sticky gl-top-0 gl-flex gl-flex-wrap gl-items-center gl-bg-overlap gl-px-5 gl-py-5"
+    >
       <gl-search-box-by-type
         v-model.trim="searchTerm"
         :aria-label="$options.i18n.search"
-        class="gl-mr-3 gl-w-1/2"
+        class="gl-mr-3 gl-w-full"
       />
-      <span>
+      <p class="gl-mb-0 gl-mt-2">
         <gl-sprintf
           :message="
             __(
@@ -80,7 +82,7 @@ export default {
             <gl-link :href="absoluteUserPreferencesPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
-      </span>
+      </p>
     </div>
     <div v-if="filteredKeybindings.length === 0" class="gl-px-5">
       {{ $options.i18n.noMatch }}

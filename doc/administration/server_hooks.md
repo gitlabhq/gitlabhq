@@ -127,7 +127,7 @@ If the server hook code is properly implemented, it should execute when the Git 
 ### Server hooks on a Gitaly Cluster (Praefect)
 
 If you use [Gitaly Cluster (Praefect)](gitaly/praefect/_index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
-Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
+Consequently, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
 To accomplish this, follow the same steps for setting custom repository hooks for the applicable version and repeat for each storage.
 
 The location to copy the scripts to depends on where repositories are stored. New repositories are created using

@@ -153,7 +153,7 @@ RSpec.describe 'Database schema',
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],
       p_ci_builds: %w[erased_by_id partition_id auto_canceled_by_partition_id execution_config_id
-        upstream_pipeline_partition_id],
+        upstream_pipeline_partition_id scoped_user_id],
       p_ci_builds_metadata: %w[project_id build_id partition_id],
       p_ci_build_trace_metadata: %w[project_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],

@@ -56,7 +56,12 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
           description: 'my-job', stage_id: stage.id,
           pipeline: pipeline, auto_canceled_by: another_pipeline,
-          scheduled_at: 10.seconds.since
+          scheduled_at: 10.seconds.since,
+          scoped_user_id: 1,
+          timeout: 3600,
+          timeout_source: 2,
+          exit_code: 127, # command not found
+          debug_trace_enabled: false
         )
       end
 
@@ -65,6 +70,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let(:clone_accessors) do
         %i[pipeline project ref tag options name allow_failure stage_idx yaml_variables
            when environment coverage_regex description tag_list protected needs_attributes job_variables_attributes
+           timeout timeout_source debug_trace_enabled
            resource_group scheduling_type ci_stage partition_id id_tokens interruptible]
       end
 
@@ -85,7 +91,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            job_artifacts_requirements job_artifacts_coverage_fuzzing
            job_artifacts_requirements_v2 job_artifacts_repository_xray
            job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx
-           job_annotations job_artifacts_annotations job_artifacts_jacoco].freeze
+           scoped_user_id exit_code job_annotations job_artifacts_annotations
+           job_artifacts_jacoco].freeze
       end
 
       let(:ignore_accessors) do

@@ -542,11 +542,11 @@ rspec:artifact-collector ee remainder:
     - job: rspec-ee fail-fast # 1 job
       optional: true
   rules:
+    - !reference ['.rails:rules:rspec fail-fast', rules]
     - !reference ['.rails:rules:ee-only-migration', rules]
     - !reference ['.rails:rules:ee-only-background-migration', rules]
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
-    - !reference ['.rails:rules:rspec fail-fast', rules]
 
 rspec:coverage:
   extends:

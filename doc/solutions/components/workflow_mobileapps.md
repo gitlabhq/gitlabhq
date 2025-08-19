@@ -127,7 +127,7 @@ Update the component path in the `.gitlab-ci.yml` file so that the pipeline can 
       token: $SNYK_TOKEN
 ```
 
-### Sauce Labs Intergration
+### Sauce Labs Integration
 
 This mobile app demo project CI/CD is integrated with Sauce Labs for automated functional testing. In order to run the automated test in Sauce Labs, the application needs to be uploaded into Sauce Labs app storage. You will need to set the required variables for the project in GitLab to access Sauce Labs and upload the artifacts.
 

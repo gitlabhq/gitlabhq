@@ -13,11 +13,11 @@ title: Integrated Change Management - ServiceNow
 
 {{< /details >}}
 
-This document provides the instruction and functional detail for GitLab to orcestrate the change management with integrated ServiceNow solution using ServiceNow DevOps Change Velocity.
+This document provides the instruction and functional detail for GitLab to orchestrate the change management with integrated ServiceNow solution using ServiceNow DevOps Change Velocity.
 
 With the ServiceNow DevOps Change Velocity integration, it's able to track information about activity in GitLab repositories and CI/CD pipelines in ServiceNow.
 
-It automates the creation of change requests and automatically approve the change requests based on the policy critieria when it's integrated with GitLab CI/CD pipelines.
+It automates the creation of change requests and automatically approve the change requests based on the policy criteria when it's integrated with GitLab CI/CD pipelines.
 
 This document shows you how to
 
@@ -35,7 +35,7 @@ This document shows you how to
 
 ## Integration Options for Change Management
 
-There are multiple ways to integrate GitLab with ServiceNow. The followings options are provided in this solution component:
+There are multiple ways to integrate GitLab with ServiceNow. The following options are provided in this solution component:
 
 1. ServiceNow DevOps Change Velocity for Built-in Change Request Process
 1. ServiceNow DevOps Change Velocity with Custom Change Request with Velocity Container Image
