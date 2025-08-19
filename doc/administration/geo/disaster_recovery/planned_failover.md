@@ -37,7 +37,8 @@ and minimize the risk of data loss or extended downtime.
 
 ### Resolve sync and verification failures
 
-If there are Failed or Queued items during [preflight checks](#preflight-checks), the failover is blocked until these are either:
+If there are **Failed** or **Queued** items during [preflight checks](#preflight-checks) (either manual validation
+or when running `gitlab-ctl promotion-preflight-checks`), the failover is blocked until these are either:
 
 - **Resolved**: Successfully synced (by hand-copying to secondary if necessary) and verified.
 - **Documented as acceptable**: With clear justification such as:
@@ -221,13 +222,22 @@ To recover data for advanced search on the newly promoted primary site:
 
 ## Preflight checks
 
-Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process goes smoothly:
+Before scheduling your planned failover, verify the following preflight checks manually to ensure the
+process goes smoothly. Each step is described in more detail below.
+
+During the actual failover process, after the primary is down, run this command to perform
+final validation checks before promoting the secondary:
 
 ```shell
 gitlab-ctl promotion-preflight-checks
 ```
 
-Each step is described in more detail below.
+The `gitlab-ctl promotion-preflight-checks` command is part of the failover process and requires the
+primary site to be down. It cannot be used as a pre-maintenance validation tool while the primary is
+still running. When you run this command, a prompt asks you if the primary site is down. If you answer
+`No`, this error is shown: `ERROR: primary node must be down`.
+
+For pre-maintenance validation while the primary is still operational, use the manual checks below.
 
 ### DNS TTL
 

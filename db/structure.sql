@@ -40003,6 +40003,8 @@ CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHER
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
+CREATE INDEX tmp_idx_members_for_group_members_with_member_role ON members USING btree (id, source_id) WHERE ((member_role_id IS NOT NULL) AND ((source_type)::text = 'Namespace'::text) AND (state = 0));
+
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));

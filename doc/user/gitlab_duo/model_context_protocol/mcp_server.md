@@ -8,7 +8,7 @@ title: GitLab MCP server
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
