@@ -12,9 +12,9 @@ RSpec.shared_examples 'manage applications' do
 
     click_button 'Add new application' if page.has_css?('[data-testid="crud-action-toggle"]')
 
-    fill_in :doorkeeper_application_name, with: application_name
-    fill_in :doorkeeper_application_redirect_uri, with: application_redirect_uri
-    check :doorkeeper_application_scopes_read_user
+    fill_in :authn_oauth_application_name, with: application_name
+    fill_in :authn_oauth_application_redirect_uri, with: application_redirect_uri
+    check :authn_oauth_application_scopes_read_user
     click_on 'Save application'
 
     validate_application(application_name, 'Yes')
@@ -27,8 +27,8 @@ RSpec.shared_examples 'manage applications' do
 
     application_name_changed = "#{application_name} changed"
 
-    fill_in :doorkeeper_application_name, with: application_name_changed
-    uncheck :doorkeeper_application_confidential
+    fill_in :authn_oauth_application_name, with: application_name_changed
+    uncheck :authn_oauth_application_confidential
     click_on 'Save application'
 
     validate_application(application_name_changed, 'No')
@@ -49,8 +49,8 @@ RSpec.shared_examples 'manage applications' do
 
       expect(page).to have_content 'Add new application'
 
-      fill_in :doorkeeper_application_name, with: application_name
-      fill_in :doorkeeper_application_redirect_uri, with: application_redirect_uri
+      fill_in :authn_oauth_application_name, with: application_name
+      fill_in :authn_oauth_application_redirect_uri, with: application_redirect_uri
       click_on 'Save application'
 
       expect(page).to have_content("Scopes can't be blank")

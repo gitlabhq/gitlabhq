@@ -653,7 +653,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
 
                 let(:application) do
-                  Doorkeeper::Application.create!(
+                  Authn::OauthApplication.create!(
                     name: "MyApp",
                     redirect_uri: "https://app.com",
                     owner: user)
@@ -1356,7 +1356,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
 
                 let(:application) do
-                  Doorkeeper::Application.create!(
+                  Authn::OauthApplication.create!(
                     name: "MyApp",
                     redirect_uri: "https://app.com",
                     owner: user)

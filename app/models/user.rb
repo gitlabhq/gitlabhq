@@ -243,7 +243,7 @@ class User < ApplicationRecord
   has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- This association is from a third party gem
   has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report

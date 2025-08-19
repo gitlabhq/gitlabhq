@@ -394,7 +394,6 @@ RSpec/RedundantMetatagType:
     - 'spec/models/diff_note_position_spec.rb'
     - 'spec/models/doorkeeper/access_grant_spec.rb'
     - 'spec/models/doorkeeper/access_token_spec.rb'
-    - 'spec/models/doorkeeper/application_spec.rb'
     - 'spec/models/doorkeeper/device_authorization_grant/device_grant_spec.rb'
     - 'spec/models/doorkeeper/openid_connect/request_spec.rb'
     - 'spec/models/error_tracking/client_key_spec.rb'

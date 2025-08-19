@@ -154,7 +154,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
       end
 
       it 'ensures web_ide_oauth_application' do
-        expect(Doorkeeper::Application).to receive(:new).and_call_original
+        expect(Authn::OauthApplication).to receive(:new).and_call_original
 
         subject
 
@@ -166,7 +166,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
         existing_app = create(:oauth_application, owner_id: nil, owner_type: nil)
 
         stub_application_setting({ web_ide_oauth_application: existing_app })
-        expect(Doorkeeper::Application).not_to receive(:new)
+        expect(Authn::OauthApplication).not_to receive(:new)
 
         subject
 

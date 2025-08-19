@@ -3013,8 +3013,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/diff/inline_diff_marker_spec.rb'
     - 'spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb'
     - 'spec/lib/gitlab/diff/suggestion_spec.rb'
-    - 'spec/lib/gitlab/doorkeeper_secret_storing/secret/pbkdf2_sha512_spec.rb'
-    - 'spec/lib/gitlab/doorkeeper_secret_storing/token/pbkdf2_sha512_spec.rb'
     - 'spec/lib/gitlab/email/failure_handler_spec.rb'
     - 'spec/lib/gitlab/email/handler/create_issue_handler_spec.rb'
     - 'spec/lib/gitlab/email/handler/create_merge_request_handler_spec.rb'

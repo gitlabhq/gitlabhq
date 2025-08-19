@@ -63,7 +63,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
     end
 
     describe 'PUT #update' do
-      subject { put :update, params: { id: application.id, doorkeeper_application: { name: 'application' } } }
+      subject { put :update, params: { id: application.id, authn_oauth_application: { name: 'application' } } }
 
       it { is_expected.to redirect_to(oauth_application_url(application)) }
 
@@ -94,7 +94,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
 
       context 'when renew fails' do
         before do
-          allow_next_found_instance_of(Doorkeeper::Application) do |application|
+          allow_next_found_instance_of(Authn::OauthApplication) do |application|
             allow(application).to receive(:save).and_return(false)
           end
         end
@@ -153,7 +153,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
     describe 'POST #create' do
       let(:oauth_params) do
         {
-          doorkeeper_application: {
+          authn_oauth_application: {
             name: 'foo',
             redirect_uri: redirect_uri,
             scopes: scopes

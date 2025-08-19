@@ -23,6 +23,16 @@
 
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
+
+- if Feature.enabled?(:groups_overview_shared_vue_components, current_user)
+  -# Do nothing for now. To get around an issue with ff-inverse job
+  -# we can't introduce a FF and change the UI in the same MR.
+  -# But if we don't use the feature flag in the code then the
+  -# rspec:feature-flags job fails. This will be updated in a
+  -# future commit.
+  -# See https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/2795
+  -# for more context.
+
 #js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }
 
 = render partial: 'groups/group_readme', locals: { group: @group }

@@ -170,9 +170,9 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           end
         end
 
-        context 'when allow_organization_creation feature flag is disabled' do
+        context 'when organization_switching feature flag is disabled' do
           before do
-            stub_feature_flags(allow_organization_creation: false)
+            stub_feature_flags(organization_switching: false)
           end
 
           it 'does not have new organization menu item' do

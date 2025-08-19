@@ -194,6 +194,21 @@ Retrieves the jobs for a specific CI/CD pipeline.
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
+### `get_merge_request_pipelines_service`
+
+Retrieves the pipelines for a specific merge request.
+
+**Parameters**:
+
+- `project_id` (required): The ID or URL-encoded path of the project
+- `merge_request_iid` (required): The internal ID of the merge request
+
+**Example usage in AI tool**:
+
+```plaintext
+Show me all pipelines for merge request 42 in project gitlab-org/gitlab
+```
+
 ## Feedback
 
 This feature is experimental. Your feedback is valuable in helping us to improve it. Share your experiences, suggestions, or issues in [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).

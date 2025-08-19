@@ -188,10 +188,10 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
 
         expect do
-          post :create, params: { group_id: group, doorkeeper_application: create_params }
-        end.to change { Doorkeeper::Application.count }.by(1)
+          post :create, params: { group_id: group, authn_oauth_application: create_params }
+        end.to change { Authn::OauthApplication.count }.by(1)
 
-        application = Doorkeeper::Application.last
+        application = Authn::OauthApplication.last
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template :show
@@ -200,8 +200,8 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
       it 'renders the application form on errors' do
         expect do
-          post :create, params: { group_id: group, doorkeeper_application: attributes_for(:application).merge(redirect_uri: nil) }
-        end.not_to change { Doorkeeper::Application.count }
+          post :create, params: { group_id: group, authn_oauth_application: attributes_for(:application).merge(redirect_uri: nil) }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to render_template :index
         expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -212,10 +212,10 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
 
           expect do
-            post :create, params: { group_id: group, doorkeeper_application: create_params }
-          end.to change { Doorkeeper::Application.count }.by(1)
+            post :create, params: { group_id: group, authn_oauth_application: create_params }
+          end.to change { Authn::OauthApplication.count }.by(1)
 
-          application = Doorkeeper::Application.last
+          application = Authn::OauthApplication.last
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template :show
@@ -228,8 +228,8 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           create_params = attributes_for(:application, trusted: true, confidential: false)
 
           expect do
-            post :create, params: { group_id: group, doorkeeper_application: create_params }
-          end.not_to change { Doorkeeper::Application.count }
+            post :create, params: { group_id: group, authn_oauth_application: create_params }
+          end.not_to change { Authn::OauthApplication.count }
 
           expect(response).to render_template :index
         end
@@ -249,10 +249,10 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
 
           expect do
-            post :create, params: { group_id: group, doorkeeper_application: create_params }
-          end.to change { Doorkeeper::Application.count }.by(1)
+            post :create, params: { group_id: group, authn_oauth_application: create_params }
+          end.to change { Authn::OauthApplication.count }.by(1)
 
-          application = Doorkeeper::Application.last
+          application = Authn::OauthApplication.last
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template :show
@@ -270,7 +270,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         end
 
         it 'renders a 404' do
-          post :create, params: { group_id: group, doorkeeper_application: create_params }
+          post :create, params: { group_id: group, authn_oauth_application: create_params }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -289,10 +289,10 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
             create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
 
             expect do
-              post :create, params: { group_id: group, doorkeeper_application: create_params }
-            end.to change { Doorkeeper::Application.count }.by(1)
+              post :create, params: { group_id: group, authn_oauth_application: create_params }
+            end.to change { Authn::OauthApplication.count }.by(1)
 
-            application = Doorkeeper::Application.last
+            application = Authn::OauthApplication.last
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template :show
@@ -349,7 +349,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
       context 'when renew fails' do
         before do
-          allow_next_found_instance_of(Doorkeeper::Application) do |application|
+          allow_next_found_instance_of(Authn::OauthApplication) do |application|
             allow(application).to receive(:save).and_return(false)
           end
         end
@@ -408,7 +408,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       it 'updates the application' do
         doorkeeper_params = { redirect_uri: 'http://example.com/', trusted: true, confidential: false }
 
-        patch :update, params: { group_id: group, id: application.id, doorkeeper_application: doorkeeper_params }
+        patch :update, params: { group_id: group, id: application.id, authn_oauth_application: doorkeeper_params }
 
         application.reload
 
@@ -418,7 +418,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       end
 
       it 'renders the application form on errors' do
-        patch :update, params: { group_id: group, id: application.id, doorkeeper_application: { redirect_uri: nil } }
+        patch :update, params: { group_id: group, id: application.id, authn_oauth_application: { redirect_uri: nil } }
 
         expect(response).to render_template :edit
         expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -428,7 +428,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         it 'successfully sets the application to confidential' do
           doorkeeper_params = { confidential: true }
 
-          patch :update, params: { group_id: group, id: application.id, doorkeeper_application: doorkeeper_params }
+          patch :update, params: { group_id: group, id: application.id, authn_oauth_application: doorkeeper_params }
 
           application.reload
 
@@ -450,7 +450,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         it 'updates the application' do
           doorkeeper_params = { redirect_uri: 'http://example.com/', trusted: true, confidential: false }
 
-          patch :update, params: { group_id: group, id: application.id, doorkeeper_application: doorkeeper_params }
+          patch :update, params: { group_id: group, id: application.id, authn_oauth_application: doorkeeper_params }
 
           application.reload
 
@@ -470,7 +470,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         it 'renders a 404' do
           doorkeeper_params = { redirect_uri: 'http://example.com/', trusted: true, confidential: false }
 
-          patch :update, params: { group_id: group, id: application.id, doorkeeper_application: doorkeeper_params }
+          patch :update, params: { group_id: group, id: application.id, authn_oauth_application: doorkeeper_params }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -488,7 +488,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           it 'updates the application' do
             doorkeeper_params = { redirect_uri: 'http://example.com/', trusted: true, confidential: false }
 
-            patch :update, params: { group_id: group, id: application.id, doorkeeper_application: doorkeeper_params }
+            patch :update, params: { group_id: group, id: application.id, authn_oauth_application: doorkeeper_params }
 
             application.reload
 
@@ -510,7 +510,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       it 'deletes the application' do
         delete :destroy, params: { group_id: group, id: application.id }
 
-        expect(Doorkeeper::Application.exists?(application.id)).to be_falsy
+        expect(Authn::OauthApplication.exists?(application.id)).to be_falsy
         expect(response).to redirect_to(group_settings_applications_url(group))
       end
 
@@ -527,7 +527,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         it 'deletes the application' do
           delete :destroy, params: { group_id: group, id: application.id }
 
-          expect(Doorkeeper::Application.exists?(application.id)).to be_falsy
+          expect(Authn::OauthApplication.exists?(application.id)).to be_falsy
           expect(response).to redirect_to(group_settings_applications_url(group))
         end
       end
@@ -558,7 +558,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           it 'deletes the application' do
             delete :destroy, params: { group_id: group, id: application.id }
 
-            expect(Doorkeeper::Application.exists?(application.id)).to be_falsy
+            expect(Authn::OauthApplication.exists?(application.id)).to be_falsy
             expect(response).to redirect_to(group_settings_applications_url(group))
           end
         end

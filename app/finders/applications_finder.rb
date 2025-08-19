@@ -8,7 +8,7 @@ class ApplicationsFinder
   end
 
   def execute
-    applications = Doorkeeper::Application.where(owner_id: nil) # rubocop: disable CodeReuse/ActiveRecord
+    applications = Authn::OauthApplication.where(owner_id: nil) # rubocop: disable CodeReuse/ActiveRecord
     by_id(applications)
   end
 

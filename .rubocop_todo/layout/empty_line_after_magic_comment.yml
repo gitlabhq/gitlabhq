@@ -280,7 +280,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/gitlab/diff/rendered/notebook/diff_file_helper.rb'
     - 'lib/gitlab/diff/stats_cache.rb'
     - 'lib/gitlab/discussions_diff/highlight_cache.rb'
-    - 'lib/gitlab/doorkeeper_secret_storing/secret/pbkdf2_sha512.rb'
     - 'lib/gitlab/git/base_error.rb'
     - 'lib/gitlab/graphql/board/issues_connection_extension.rb'
     - 'lib/gitlab/graphql/extensions/externally_paginated_array_extension.rb'

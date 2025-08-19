@@ -16,7 +16,7 @@ describe('ExperimentComponent', () => {
   };
 
   const mockVariant = (expectedVariant) => {
-    window.gon = { experiment: { experiment_name: { variant: expectedVariant } } };
+    window.gl = { experiments: { experiment_name: { variant: expectedVariant } } };
   };
 
   describe('when variant and experiment is set', () => {

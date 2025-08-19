@@ -32,8 +32,6 @@ export default {
     'app/assets/javascripts/diffs/components/diff_row.vue',
     'app/assets/javascripts/diffs/components/diff_view.vue',
     'app/assets/javascripts/diffs/components/image_diff_overlay.vue',
-    'app/assets/javascripts/integrations/beyond_identity/components/exclusions_list.vue',
-    'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue',
     'app/assets/javascripts/jira_connect/branches/components/new_branch_form.vue',
     'app/assets/javascripts/ml/model_registry/components/model_detail.vue',
     'app/assets/javascripts/ml/model_registry/components/model_edit.vue',

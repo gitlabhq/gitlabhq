@@ -58,7 +58,7 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
   belongs_to :push_rule
-  belongs_to :web_ide_oauth_application, class_name: 'Doorkeeper::Application'
+  belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
 
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 

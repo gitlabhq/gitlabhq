@@ -46,7 +46,7 @@ describe('AdminOrganizationsIndexApp', () => {
   };
 
   beforeEach(() => {
-    gon.features = { allowOrganizationCreation: true };
+    gon.features = { organizationSwitching: true };
   });
 
   afterEach(() => {

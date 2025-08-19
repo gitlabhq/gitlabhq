@@ -17,7 +17,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   def show; end
 
   def new
-    @application = Doorkeeper::Application.new
+    @application = Authn::OauthApplication.new
   end
 
   def edit; end

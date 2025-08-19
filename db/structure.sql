@@ -38299,6 +38299,8 @@ CREATE INDEX index_protected_tag_create_access_levels_on_user_id ON protected_ta
 
 CREATE UNIQUE INDEX index_protected_tags_on_project_id_and_name ON protected_tags USING btree (project_id, name);
 
+CREATE INDEX index_push_event_payloads_on_project_id ON push_event_payloads USING btree (project_id);
+
 CREATE INDEX index_push_rules_on_is_sample ON push_rules USING btree (is_sample) WHERE is_sample;
 
 CREATE INDEX index_push_rules_on_organization_id ON push_rules USING btree (organization_id);
@@ -43648,6 +43650,9 @@ ALTER TABLE ONLY duo_workflows_workflows
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT fk_2f85abf8f1 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY push_event_payloads
+    ADD CONSTRAINT fk_2f8fdf5cac FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_2fbc7071a3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;

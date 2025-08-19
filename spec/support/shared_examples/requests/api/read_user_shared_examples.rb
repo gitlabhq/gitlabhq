@@ -52,7 +52,7 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
   end
 
   context 'for doorkeeper (OAuth) tokens' do
-    let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
+    let!(:application) { Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
 
     context 'when the requesting token has the "api" scope' do
       let!(:token) do

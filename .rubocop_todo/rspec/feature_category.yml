@@ -2285,8 +2285,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/diff/suggestions_parser_spec.rb'
     - 'spec/lib/gitlab/discussions_diff/file_collection_spec.rb'
     - 'spec/lib/gitlab/discussions_diff/highlight_cache_spec.rb'
-    - 'spec/lib/gitlab/doorkeeper_secret_storing/secret/pbkdf2_sha512_spec.rb'
-    - 'spec/lib/gitlab/doorkeeper_secret_storing/token/pbkdf2_sha512_spec.rb'
     - 'spec/lib/gitlab/email/attachment_uploader_spec.rb'
     - 'spec/lib/gitlab/email/failure_handler_spec.rb'
     - 'spec/lib/gitlab/email/handler/create_issue_handler_spec.rb'

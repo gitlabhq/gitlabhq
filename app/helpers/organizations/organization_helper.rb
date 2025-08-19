@@ -105,7 +105,7 @@ module Organizations
     def shared_organization_index_app_data
       {
         new_organization_url: new_organization_path,
-        can_create_organization: Feature.enabled?(:allow_organization_creation, current_user) &&
+        can_create_organization: Feature.enabled?(:organization_switching, current_user) &&
           can?(current_user, :create_organization)
       }
     end

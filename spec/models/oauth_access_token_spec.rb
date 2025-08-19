@@ -80,7 +80,7 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
       end
 
       it 'finds token stored with PBKDF2 strategy' do
-        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512.transform_secret(plain_secret)
+        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plain_secret)
         pbkdf2_token.update_column(:token, pbkdf2_hash)
 
         result = described_class.find_by_fallback_token(:token, plain_secret)
@@ -104,7 +104,7 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
       it 'finds token stored with SHA512 strategy when PBKDF2 fails' do
         plaintext_token_value = "123456"
-        value = Gitlab::DoorkeeperSecretStoring::Token::Sha512Hash.transform_secret(plaintext_token_value)
+        value = Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(plaintext_token_value)
         sha512_token.update_column(:token, value)
 
         result = described_class.find_by_fallback_token(:token, plaintext_token_value)
@@ -116,7 +116,7 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
       it 'upgrade legacy plain text tokens' do
         described_class.find_by_fallback_token(:token, plain_token.plaintext_token)
-        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512.transform_secret(plain_token.plaintext_token)
+        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plain_token.plaintext_token)
         expect(plain_token.reload.token).to eq(pbkdf2_hash)
       end
 

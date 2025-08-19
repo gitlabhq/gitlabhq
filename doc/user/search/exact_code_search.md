@@ -76,23 +76,13 @@ The following scopes are available for exact code search:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143666) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_search_api`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17522) in GitLab 18.4. Feature flag `zoekt_search_api` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 With the Zoekt search API, you can use the [search API](../../api/search.md) for exact code search.
 If you want to use [advanced search](advanced_search.md) or basic search instead, see
 [specify a search type](_index.md#specify-a-search-type).
-
-By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
-To request access to this feature, contact GitLab.
 
 ## Global code search
 

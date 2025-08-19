@@ -54,7 +54,7 @@ RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
   describe '#ensure_oauth_application!' do
     it 'if web_ide_oauth_application already exists, does nothing' do
       expect(application_settings).not_to receive(:lock!)
-      expect(::Doorkeeper::Application).not_to receive(:new)
+      expect(::Authn::OauthApplication).not_to receive(:new)
 
       stub_application_setting({ web_ide_oauth_application: oauth_application })
 
@@ -65,7 +65,7 @@ RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
       expect(application_settings).to receive(:lock!) do
         stub_application_setting({ web_ide_oauth_application: oauth_application })
       end
-      expect(::Doorkeeper::Application).not_to receive(:new)
+      expect(::Authn::OauthApplication).not_to receive(:new)
       expect(::Gitlab::CurrentSettings).not_to receive(:expire_current_application_settings)
 
       described_class.ensure_oauth_application!
@@ -73,7 +73,7 @@ RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
 
     it 'creates web_ide_oauth_application' do
       expect(application_settings).to receive(:transaction).and_call_original
-      expect(::Doorkeeper::Application).to receive(:new).and_call_original
+      expect(::Authn::OauthApplication).to receive(:new).and_call_original
       expect(::Gitlab::CurrentSettings).to receive(:expire_current_application_settings).and_call_original
 
       expect(application_settings.web_ide_oauth_application).to be_nil

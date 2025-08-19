@@ -4,8 +4,6 @@ class ProjectCiCdSetting < ApplicationRecord
   include ChronicDurationAttribute
   include EachBatch
 
-  ignore_column :restrict_user_defined_variables, remove_with: '18.3', remove_after: '2025-08-14'
-
   belongs_to :project, inverse_of: :ci_cd_settings
 
   DEFAULT_GIT_DEPTH = 20

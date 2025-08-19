@@ -101,9 +101,9 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   access_token_methods :from_access_token_param, :from_bearer_authorization, :from_bearer_param
 
-  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512', fallback: :plain
+  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512', fallback: :plain
 
-  hash_application_secrets using: '::Gitlab::DoorkeeperSecretStoring::Secret::Pbkdf2Sha512', fallback: :plain
+  hash_application_secrets using: '::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512', fallback: :plain
 
   # Specify what grant flows are enabled in array of Strings. The valid
   # strings and the flows they enable are:
@@ -205,4 +205,6 @@ Doorkeeper.configure do
       )
     end
   end
+
+  application_class "Authn::OauthApplication"
 end

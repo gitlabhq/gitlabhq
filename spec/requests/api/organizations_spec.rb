@@ -68,7 +68,7 @@ RSpec.describe API::Organizations, feature_category: :organization do
 
     context 'when feature flag is disabled' do
       before do
-        stub_feature_flags(allow_organization_creation: false)
+        stub_feature_flags(organization_switching: false)
       end
 
       it 'returns forbidden' do

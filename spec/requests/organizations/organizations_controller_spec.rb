@@ -283,11 +283,11 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
 
     it_behaves_like 'controller action that requires authentication by any user'
 
-    context 'when user is signed in and `allow_organization_creation` feature flag is disabled' do
+    context 'when user is signed in and `organization_switching` feature flag is disabled' do
       let_it_be(:user) { create(:user) }
 
       before do
-        stub_feature_flags(allow_organization_creation: false)
+        stub_feature_flags(organization_switching: false)
         sign_in(user)
       end
 

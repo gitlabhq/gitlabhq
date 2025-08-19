@@ -10,7 +10,7 @@ module QA
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438840'
     },
     feature_flag: {
-      name: [:ui_for_organizations, :allow_organization_creation],
+      name: [:ui_for_organizations, :organization_switching],
       scope: :global
     } do
     describe 'Organization' do
@@ -18,9 +18,9 @@ module QA
 
       around do |example|
         Runtime::Feature.enable(:ui_for_organizations)
-        Runtime::Feature.enable(:allow_organization_creation)
+        Runtime::Feature.enable(:organization_switching)
         example.run
-        Runtime::Feature.disable(:allow_organization_creation)
+        Runtime::Feature.disable(:organization_switching)
         Runtime::Feature.disable(:ui_for_organizations)
       end
 

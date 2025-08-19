@@ -42137,7 +42137,8 @@ paths:
       description: |-
         This feature was introduced in GitLab 17.5. \
                             This feature is currently in an experimental state. \
-                            This feature is behind the `allow_organization_creation` feature flag.
+                            This feature is behind the `allow_organization_creation` feature flag. \
+                            In GitLab 18.3, feature flag changed to `organization_switching`.
       produces:
       - application/json
       consumes:

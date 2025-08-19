@@ -147,11 +147,11 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
   describe 'API requests authenticated with OAuth token', :api do
     let(:user) { create(:user) }
-    let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
+    let(:application) { Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
     let(:token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: user.id, scopes: "api", expires_in: period_in_seconds + 1) }
 
     let(:other_user) { create(:user) }
-    let(:other_user_application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: other_user) }
+    let(:other_user_application) { Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: other_user) }
     let(:other_user_token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: other_user.id, scopes: "api") }
 
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
@@ -1456,7 +1456,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     end
 
     context 'authenticated with OAuth token' do
-      let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
+      let(:application) { Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
       let(:oauth_token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: user.id, scopes: "api", expires_in: period_in_seconds + 1) }
 
       it 'request is authenticated by token in query string' do

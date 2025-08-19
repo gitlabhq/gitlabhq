@@ -255,6 +255,8 @@ Conversations that existed before you created any custom rules do not follow tho
 
    You must do this every time you change the custom rules.
 
+For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
+
 ## GitLab Duo Chat capabilities
 
 GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:

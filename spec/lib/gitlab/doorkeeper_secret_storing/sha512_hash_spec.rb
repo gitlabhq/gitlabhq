@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::Sha512Hash, feature_category: :system_access do
+RSpec.describe Gitlab::DoorkeeperSecretStoring::Sha512Hash, feature_category: :system_access do
   describe '.transform_secret' do
     let(:plaintext_token) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
 

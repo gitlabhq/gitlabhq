@@ -2,6 +2,7 @@
 table_name: oauth_applications
 classes:
 - Doorkeeper::Application
+- Authn::OauthApplication
 feature_categories:
 - system_access
 description: TODO

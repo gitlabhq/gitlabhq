@@ -65,7 +65,7 @@ module Groups
         @applications_total_count = @group.oauth_applications.count
 
         # Don't overwrite a value possibly set by `create`
-        @application ||= Doorkeeper::Application.new
+        @application ||= Authn::OauthApplication.new
       end
 
       def set_application

@@ -4,7 +4,7 @@ module Organizations
   class CreateService < ::Organizations::BaseService
     def execute
       return error_no_permissions unless can?(current_user, :create_organization)
-      return error_feature_flag unless Feature.enabled?(:allow_organization_creation, current_user)
+      return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
 
       add_organization_owner_attributes
       organization = Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification
@@ -39,7 +39,7 @@ module Organizations
 
     def error_feature_flag
       # Don't translate feature flag error because it's temporary.
-      ServiceResponse.error(message: ['Feature flag `allow_organization_creation` is not enabled for this user.'])
+      ServiceResponse.error(message: ['Feature flag `organization_switching` is not enabled for this user.'])
     end
   end
 end

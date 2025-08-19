@@ -67,7 +67,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
                                      .preload_application
 
     # Don't overwrite a value possibly set by `create`
-    @application ||= Doorkeeper::Application.new
+    @application ||= Authn::OauthApplication.new
   end
 
   # Override Doorkeeper to scope to the current user

@@ -16,7 +16,7 @@ module Applications
 
     # EE would override and use `request` arg
     def execute(request)
-      @application = Doorkeeper::Application.new(params)
+      @application = Authn::OauthApplication.new(params)
 
       unless params[:scopes].present?
         @application.errors.add(:base, _("Scopes can't be blank"))

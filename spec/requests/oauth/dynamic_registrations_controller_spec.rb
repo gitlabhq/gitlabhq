@@ -26,7 +26,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
   end
 
   RSpec.shared_examples 'rejects request with bad_request' do
-    let(:initial_count) { Doorkeeper::Application.count }
+    let(:initial_count) { Authn::OauthApplication.count }
 
     before do
       initial_count
@@ -38,7 +38,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
     end
 
     it 'does not create application' do
-      expect { create_registration }.not_to change { Doorkeeper::Application.count }
+      expect { create_registration }.not_to change { Authn::OauthApplication.count }
     end
   end
 
@@ -52,7 +52,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
         let(:request_body) { valid_request_body }
 
         it 'creates a new OAuth application' do
-          expect { create_registration }.to change { Doorkeeper::Application.count }.by(1)
+          expect { create_registration }.to change { Authn::OauthApplication.count }.by(1)
         end
 
         it_behaves_like 'creates application successfully'
@@ -60,7 +60,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
         it 'returns correct JSON response structure' do
           create_registration
 
-          application = Doorkeeper::Application.last.reload
+          application = Authn::OauthApplication.last.reload
           expect(response.parsed_body).to include(
             'client_id' => application.uid,
             'client_id_issued_at' => application.created_at.to_i,
@@ -75,7 +75,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
         it 'creates application with correct attributes' do
           create_registration
 
-          application = Doorkeeper::Application.last
+          application = Authn::OauthApplication.last
           expect(application).to have_attributes(
             name: '[Unverified Dynamic Application] Test Application',
             redirect_uri: 'http://example.com/callback',
@@ -95,7 +95,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             create_registration
           end
 
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           it 'generates unique client_id and client_secret' do
             expect(created_application.uid).to be_present
@@ -120,7 +120,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             )
           end
 
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -141,7 +141,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             valid_request_body.merge(redirect_uris: 'http://example.com/callback')
           end
 
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -202,7 +202,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
       context 'with scope variations' do
         context 'with no scope provided' do
           let(:request_body) { valid_request_body.except(:scope) }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -219,7 +219,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with empty scope' do
           let(:request_body) { valid_request_body.merge(scope: '') }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -232,7 +232,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with nil scope' do
           let(:request_body) { valid_request_body.merge(scope: nil) }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -245,7 +245,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with mcp scope' do
           let(:request_body) { valid_request_body.merge(scope: 'mcp') }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -258,7 +258,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with different scope' do
           let(:request_body) { valid_request_body.merge(scope: 'api') }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -284,7 +284,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
             expect(response).to have_gitlab_http_status(:created)
 
-            application = Doorkeeper::Application.last
+            application = Authn::OauthApplication.last
             expect(application.name).to eq('[Unverified Dynamic Application] Minimal App')
             expect(application.redirect_uri).to eq('http://example.com/callback')
             expect(application.scopes.to_s).to eq('mcp')
@@ -299,7 +299,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with special characters in client name' do
           let(:request_body) { valid_request_body.merge(client_name: 'Test App & Co. (v1.0)') }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -312,7 +312,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         context 'with Unicode characters in client name' do
           let(:request_body) { valid_request_body.merge(client_name: 'Test 应用程序 🚀') }
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -357,7 +357,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
             )
           end
 
-          let(:created_application) { Doorkeeper::Application.last }
+          let(:created_application) { Authn::OauthApplication.last }
 
           before do
             create_registration
@@ -381,7 +381,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           )
         end
 
-        let(:created_application) { Doorkeeper::Application.last }
+        let(:created_application) { Authn::OauthApplication.last }
 
         before do
           create_registration
@@ -405,7 +405,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           it 'does not create application' do
             expect do
               post oauth_registration_path, params: request_body, headers: headers
-            end.not_to change { Doorkeeper::Application.count }
+            end.not_to change { Authn::OauthApplication.count }
           end
         end
 
@@ -430,7 +430,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           end
 
           it 'allows duplicate names' do
-            expect { create_registration }.to change { Doorkeeper::Application.count }.by(1)
+            expect { create_registration }.to change { Authn::OauthApplication.count }.by(1)
           end
         end
 
@@ -452,7 +452,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           let(:request_body) { valid_request_body }
 
           before do
-            allow_next_instance_of(Doorkeeper::Application) do |application|
+            allow_next_instance_of(Authn::OauthApplication) do |application|
               errors = ActiveModel::Errors.new(application)
               allow(errors).to receive(:full_messages).and_return(['Name is invalid'])
               allow(application).to receive_messages(persisted?: false, errors: errors)
@@ -488,7 +488,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
       end
 
       it 'does not create application' do
-        expect { create_registration }.not_to change { Doorkeeper::Application.count }
+        expect { create_registration }.not_to change { Authn::OauthApplication.count }
       end
     end
   end
